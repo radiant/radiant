@@ -1,0 +1,97 @@
+= Radius -- Powerful Tag-Based Templates
+
+Radius is a powerful tag-based template language for Ruby inspired by the template languages
+used in MovableType[http://www.movabletype.org] and TextPattern[http://www.textpattern.com].
+It uses tags similar to XML, but can be used to generate any form of plain text (HTML, e-mail,
+etc...).
+
+== Example
+
+With Radius, it is extremely easy to create custom tags and parse them. Here's a small
+example:
+
+  require 'radius'
+
+  # Define tags on a context that will be available to a template:
+  context = Radius::Context.new do |c|
+    c.define_tag 'hello' do
+      'Hello world'
+    end
+    c.define_tag 'repeat' do |tag|
+      number = (tag.attr['times'] || '1').to_i
+      result = ''
+      number.times { result << tag.expand }
+      result
+    end
+  end
+  
+  # Create a parser to parse tags that begin with 'r:'
+  parser = Radius::Parser.new(context, :tag_prefix => 'r')
+  
+  # Parse tags and output the result
+  puts parser.parse(%{A small example:\n<r:repeat times="3">* <r:hello />!\n</r:repeat>})
+  
+Output:
+
+  A small example:
+  * Hello world!
+  * Hello world!
+  * Hello world!
+
+
+= Quick Start
+
+Read the QUICKSTART[link:files/QUICKSTART.html] to get up and running fast with Radius.
+
+
+== Download
+
+The latest version of Radius can be found on RubyForge:
+
+http://rubyforge.org/projects/radius/
+
+
+== Installation
+
+It is recommended that you install Radius using the RubyGems packaging system:
+
+  % gem install --remote radius
+
+You can also install Radius by copying lib/radius.rb into the Ruby load path.
+
+
+== License
+
+Radius is free software and may be redistributed under the terms of the MIT-LICENSE:
+
+Copyright (c) 2006, John W. Long
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this
+software and associated documentation files (the "Software"), to deal in the Software
+without restriction, including without limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons
+to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or
+substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+
+
+== The Future
+
+Radius is nearing completion, but is still very much in the development stages. Take a look
+at the ROADMAP[link:files/ROADMAP.html] to see where we want to go.
+
+If you are interested in helping with the development of Radiant, contact me and we'll talk.
+
+Enjoy!
+
+--
+John Long ::
+http://wiseheartdesign.com

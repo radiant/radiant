@@ -1,0 +1,323 @@
+= Radius Quick Start
+
+
+== Defining Tags
+
+Before you can parse a template with Radius you need to create a Context object which defines
+the tags that will be used in the template. This is actually quite simple:
+
+  require 'radius'
+  
+  context = Context.new
+  context.define_tag "hello" do |tag|
+    "Hello #{tag.attr['name'] || 'World'}!"
+  end
+
+Once you have defined a context you can easily create a Parser:
+
+  parser = Radius::Parser.new(context)
+  puts parser.parse('<p><radius:hello /></p>')
+  puts parser.parse('<p><radius:hello name="John" /></p>')
+
+This code will output:
+
+  <p>Hello World!</p>
+  <p>Hello John!</p>
+
+Note how you can pass attributes from the template to the context using the attributes hash.
+Above, the first tag that was parsed didn't have a name attribute so the code in the +hello+
+tag definition uses "World" instead. The second time the tag is parsed the name attribute is
+set to "John" which is used to create the string "Hello John!". Tags that do not follow this
+rule will be treated as if they were undefined (like normal methods).
+
+
+== Container Tags
+
+Radius also allows you to define "container" tags. That is, tags that contain content and
+that may optionally manipulate it in some way. For example, if you have RedCloth installed
+you could define another tag to parse and create Textile output:
+
+  require 'redcloth'
+  
+  context.define_tag "textile" do |tag|
+    contents = tag.expand
+    RedCloth.new(contents).to_html
+  end
+
+(The code <tt>tag.expand</tt> above returns the contents of the template between the start and end
+tags.)
+
+With the code above your parser can easily handle Textile:
+
+  parser.parse('<radius:textile>h1. Hello **World**!</radius:textile>')
+
+This code will output:
+
+  <h1>Hello <strong>World</strong>!</h1>
+
+
+== Nested Tags
+
+But wait!--it gets better. Because container tags can manipulate the content they contain
+you can use them to iterate over collections:
+
+  context = Context.new
+  
+  context.define_tag "stooge" do |tag|
+    content = ''
+    ["Larry", "Moe", "Curly"].each do |name|
+      tag.locals.name = name
+      content << tag.expand
+    end
+    content
+  end
+  
+  context.define_tag "stooge:name" do
+    tag.locals.name
+  end
+  
+  parser = Radius::Parser.new(context)
+  
+  template = <<-TEMPLATE
+  <ul>
+  <radius:stooge>
+    <li><radius:name /></li>
+  </radius:stooge>
+  </ul>
+  TEMPLATE
+  
+  puts parser.parse(template)
+  
+This code will output:
+
+  <ul>
+  
+    <li>Larry</li>
+  
+    <li>Moe</li>
+  
+    <li>Curly</li>
+  
+  </ul>
+
+Note how the definition for the +name+ tag is defined. Because "name" is prefixed
+with "stooge:" the +name+ tag cannot appear outside the +stooge+ tag. Had it been defined
+simply as "name" it would be valid anywhere, even outside the +stooge+ tag (which was
+not what we wanted). Using the colon operator you can define tags with any amount of
+nesting.
+
+
+== Exposing Objects to Templates
+
+During normal operation, you will often want to expose certain objects to your templates.
+Writing the tags to do this all by hand would be cumbersome of Radius did not provide
+several mechanisms to make this easier. The first is a way of exposing objects as tags
+on the context object. To expose an object simply call the +define_tag+
+method with the +for+ option:
+
+  context.define_tag "count", :for => 1
+
+This would expose the object <tt>1</tt> to the template as the +count+ tag. It's basically the
+equivalent of writing:
+
+  context.define_tag("count") { 1 }
+
+So far this doesn't save you a whole lot of typing, but suppose you want to expose certain
+methods that are on that object? You could do this:
+
+  context.define_tag "user", :for => user, :expose => [ :name, :age, :email ]
+  
+This will add a total of four tags to the context. One for the <tt>user</tt> variable, and
+one for each of the three methods listed in the +expose+ clause. You could now get the user's
+name inside your template like this:
+
+  <radius:user><radius:name /></radius:user>
+
+If "John" was the value stored in <tt>user.name</tt> the template would render as "John".
+
+
+== Tag Shorthand
+
+In the example above we made reference to <tt>user.name</tt> in our template by using the
+following code:
+
+  <radius:user><radius:name /></radius:user>
+  
+There is a much easer way to refer to the <tt>user.name</tt> variable. Use the colon operator
+to "scope" the reference to <tt>name</tt>:
+
+  <radius:user:name />
+
+Radius allows you to use this shortcut for all tags.
+  
+
+== Changing the Tag Prefix
+
+By default, all Radius tags must begin with "radius". You can change this by altering the
+tag_prefix attribute on a Parser. For example:
+
+  parser = Radius::Parser.new(context, :tag_prefix => 'r')
+
+Now, when parsing templates with +parser+, Radius will require that every tag begin with "r"
+instead of "radius".
+
+
+== Custom Behavior for Undefined Tags
+
+Context#tag_missing behaves much like Object#method_missing only it allows you to define
+specific behavior for when a tag is not defined on a Context. For example:
+
+  class LazyContext < Radius::Context
+    def tag_missing(tag, attr, &block)
+      "<strong>ERROR: Undefined tag `#{tag}' with attributes #{attr.inspect}</strong>"
+    end
+  end
+  
+  parser = Radius::Parser.new(LazyContext.new, :tag_prefix => 'lazy')
+  puts parser.parse('<lazy:weird value="true" />')
+
+This will output:
+
+  <strong>ERROR: Undefined tag `weird' with attributes {"value"=>"true"}</strong>
+
+Normally, when the Radius Parser encounters an undefined tag for a Context it raises an
+UndefinedTagError, but since we have defined #tag_missing on LazyContext the Parser now
+outputs a nicely formated error message when we parse a string that does not contain a
+valid tag.
+
+
+== Tag Bindings
+
+Radius passes a TagBinding into the block of the Context#define_tag method. The tag
+binding is useful for a number of tasks. A tag binding has an #expand instance method
+which processes a tag's contents and returns the result. It also has a #attr method
+which returns a hash of the attributes that were passed into the tag. TagBinding also
+contains the TagBinding#single? and TagBinding#double? methods which return true or false
+based on wether the tag is a container tag or not. More about the methods which are
+available on tag bindings can be found on the Radius::TagBinding documentation page.
+
+
+== Tag Binding Locals, Globals, and Context Sensitive Tags
+
+A TagBinding also contains two OpenStruct-like objects which are useful when developing
+tags. TagBinding#globals is useful for storing variables which you would like to be
+accessible to all tags:
+
+  context.define_tag "inc" do |tag|
+    tag.globals.count ||= 0
+    tag.globals.count += 1
+  end
+  
+  context.define_tag "count" do |tag|
+    tag.globals.count || 0
+  end
+
+TagBinding#locals mirrors the variables that are in TagBinding#globals, but allows child
+tags to redefine variables. This is valuable when defining context sensitive tags:
+
+  require 'radius'
+
+  class Person
+    attr_accessor :name, :friend
+    def initialize(name)
+      @name = name
+    end
+  end
+
+  jack = Person.new('Jack')
+  jill = Person.new('Jill')
+  jack.friend = jill
+  jill.friend = jack
+
+  context = Radius::Context.new do |c|
+    c.define_tag "jack" do |tag|
+      tag.locals.person = jack
+      tag.expand
+    end
+    c.define_tag "jill" do |tag|
+      tag.locals.person = jill
+      tag.expand
+    end
+    c.define_tag "name" do |tag|
+      tag.locals.person.name rescue tag.missing!
+    end
+    c.define_tag "friend" do |tag|
+      tag.locals.person = tag.locals.person.friend rescue tag.missing!
+      tag.expand
+    end
+  end
+  
+  parser = Radius::Parser.new(context, :tag_prefix => 'r')
+  
+  parser.parse('<r:jack:name />') #=> "Jack"
+  parser.parse('<r:jill:name />') #=> "Jill"
+  parser.parse('<r:jill:friend:name />') #=> "Jack"
+  parser.parse('<r:jill:friend:friend:name />') #=> "Jack"
+  parser.parse('<r:jill><r:friend:name /> and <r:name /></r:jill>') #=> "Jack and Jill"
+  parser.parse('<r:name />') # raises an UndefinedTagError exception
+
+Notice how TagBinding#locals enables intelligent nesting. "<r:jill:name />" evaluates to
+"Jill", but "<r:jill:friend:name />" evaluates to "Jack". Locals loose scope as soon as
+the tag they were defined in closes. Globals on the other hand, never loose scope.
+
+The final line in the example above demonstrates that calling "<r:name />" raises a
+TagMissing error. This is because of the way the name tag was defined:
+
+  tag.locals.person.name rescue tag.missing!
+  
+If person is not defined on locals it will return nil. Calling #name on nil would normally
+raise a NoMethodError exception, but because of the 'rescue' clause the TagBinding#missing!
+method is called which fires off Context#tag_missing. By default Context#tag_missing raises
+a UndefinedTagError exception. The 'rescue tag.missing!' idiom is extremly useful for adding
+simple error checking to context sensitive tags.
+
+
+== Tag Specificity
+
+When Radius is presented with two tags that have the same name, but different nesting
+Radius uses an algorithm similar to the way winning rules are calculated in Cascading Style
+Sheets (CSS) to determine which definition should be used. Each time a tag is encountered
+in a template potential tags are assigned specificity values and the tag with the highest
+specificity wins.
+
+For example, given the following tag definitions:
+
+  nesting
+  extra:nesting
+  parent:child:nesting
+
+And template:
+
+  <r:parent:extra:child:nesting />
+
+Radius will calculate specificity values like this:
+
+  nesting => 1.0.0.0
+  extra:nesting => 1.0.1.0
+  parent:child:nesting => 1.1.0.1
+
+Meaning that parent:child:nesting will win. If a template contained:
+
+  <r:parent:child:extra:nesting />
+
+The following specificity values would be assigned to each of the tag definitions:
+
+  nesting => 1.0.0.0
+  extra:nesting => 1.1.0.0
+  parent:child:nesting => 1.0.1.1
+
+Meaning that extra:nesting would win because it is more "specific".
+
+Values are assigned by assigning points to each of the tags from right to left.
+Given a tag found in a template with nesting four levels deep, the maximum
+specificity a tag could be assigned would be:
+
+  1.1.1.1
+
+One point for each of the levels.
+
+A deep understanding of tag specificity is not necessary to be effective with
+Radius. For the most part you will find that Radius resolves tags precisely the
+way that you would expect. If you find this section confusing forget about it and
+refer back to it if you find that tags are resolving differently from the way that
+you expected.

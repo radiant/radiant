@@ -1,0 +1,2 @@
+class BasicExtensionModel
+end

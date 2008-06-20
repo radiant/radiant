@@ -1,0 +1,25 @@
+#
+# This is only an example configuration. Please see the Rails
+# documentation for more details.
+#
+
+development:
+  adapter: mysql
+  database: radiant_dev
+  username: root
+  password:
+  socket: /tmp/mysql.sock
+
+test:
+  adapter: mysql
+  database: radiant_test
+  username: root
+  password:
+  socket: /tmp/mysql.sock
+
+production:
+  adapter: mysql
+  database: radiant_live
+  username: root
+  password:
+  socket: /tmp/mysql.sock

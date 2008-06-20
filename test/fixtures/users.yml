@@ -1,0 +1,30 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+existing:
+  id: 1
+  name: Existing User
+  login: existing
+  password: <%= User.sha1 'password' %>
+  email: existing.user@gmail.com
+another:
+  id: 2
+  name: Another User
+  login: another
+  password: <%= User.sha1 'password' %>
+admin:
+  id: 3
+  name: Admin User
+  login: admin
+  password: <%= User.sha1 'password' %>
+  admin: true
+developer:
+  id: 4
+  name: Developer User
+  login: developer
+  password: <%= User.sha1 'password' %>
+  developer: true
+non_admin:
+  id: 5
+  name: Non-Admin User
+  login: non-admin
+  password: <%= User.sha1 'password' %>
+  admin: false

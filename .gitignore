@@ -1,0 +1,5 @@
+config/database.yml
+db/*.db
+log/*.log
+pkg
+.DS_Store

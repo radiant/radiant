@@ -1,0 +1,12 @@
+= Roadmap
+
+This is a prioritized roadmap for future releases:
+
+1. Clean up the current code base. [Done]
+
+2. Add support for multi-level contexts: tags should be able to be
+   defined to only be valid within other sets of tags. [Done]
+
+3. Create a simple DSL for defining contexts. [Done]
+
+4. Optimize for speed. Incorporate strscan?

@@ -1,0 +1,44 @@
+- content_for 'page_css' do
+  :sass
+    #content
+      text-align: center
+      #login
+        background-color: #f5f1e2
+        border: 5px solid #efead3
+        text-align: left
+        margin: 2em
+        margin-left: auto
+        margin-right: auto
+        padding-left: 20px
+        width: 23.5em
+        h1
+          font-size: 140%    
+          margin: 0
+          margin-top: 18px
+          margin-bottom: 18px
+        label
+          float: left
+          clear: left
+          margin-top: 4px
+          width: 6em
+        input.textbox
+          font-size: 100%
+          width: 16em
+        .buttons
+          margin-top: 15px
+          margin-bottom: 20px
+
+#login
+  %h1 Please Login
+  
+  - form_tag login_url do
+    %p
+      %label{:for=>"user_login"} Username
+      = text_field "user", "login", :class => 'textbox', :value => '', :maxlength => 40 
+    %p
+      %label{:for=>"user_password"} Password
+      = password_field "user", "password", :class => 'textbox', :value => '', :maxlength => 40 
+    %p.buttons
+      %input.button{:type=>"submit", :value=>"Login"}/
+  
+= javascript_tag "$('user_login').activate();"

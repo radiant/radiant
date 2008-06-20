@@ -1,0 +1,28 @@
+- content_for :page_css do
+  :sass
+    table.index 
+      h4
+        font-size: 110%
+        margin-top: .5em
+        margin-bottom: .25em
+      p
+        margin-top: .25em
+        margin-bottom: .5em
+
+%h1 Extensions
+
+%table#extensions.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0"}
+  %thead
+    %tr
+      %th.extension Extension
+      %th.website Website
+      %th.version Version
+  %tbody
+    - @extensions.each do |extension|
+      %tr.node.level-1
+        %td.extension
+          %h4= h extension.extension_name
+          %p= h extension.description
+        %td.website
+          = extension.url.nil? || extension.url.empty? ? "" : link_to("Website", extension.url, :target => "_blank")
+        %td.version= h extension.version

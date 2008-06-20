@@ -1,0 +1,30 @@
+Description:
+    The extension generator creates stubs for a new Radiant extension.
+
+    The generator takes an extension name as its argument.  The extension name may be
+    given in CamelCase or under_score and should not be suffixed with 'Extension'.
+
+    The generator creates an extension directory in vendor/extensions that includes
+    <extension_name>_extension.rb, README and Rakefile files as well as db, lib, task,
+    and test directories.
+
+Example:
+    ./script/generate extension AssetManagement
+
+    This will create:
+    vendor/extensions/asset_management/app/controllers
+    vendor/extensions/asset_management/app/helpers
+    vendor/extensions/asset_management/app/models
+    vendor/extensions/asset_management/app/views
+    vendor/extensions/asset_management/db/migrate
+    vendor/extensions/asset_management/lib/tasks
+    vendor/extensions/asset_management/README
+    vendor/extensions/asset_management/asset_management_extension.rb
+    vendor/extensions/asset_management/lib/tasks/asset_management_extension_tasks.rake
+    vendor/extensions/asset_management/spec/controllers
+    vendor/extensions/asset_management/spec/models
+    vendor/extensions/asset_management/spec/views
+    vendor/extensions/asset_management/spec/helpers
+    vendor/extensions/asset_management/Rakefile
+    vendor/extensions/asset_management/spec/spec_helper.rb
+    vendor/extensions/asset_management/spec/spec.opts

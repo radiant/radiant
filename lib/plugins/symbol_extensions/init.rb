@@ -1,0 +1,1 @@
+require 'symbol_extensions'

@@ -1,0 +1,25 @@
+#
+# This is only an example configuration. Please see the Rails
+# documentation for more details.
+#
+
+development:
+  adapter: postgresql
+  database: radiant_dev
+  username: root
+  password:
+  host: localhost
+  
+test:
+  adapter: postgresql
+  database: radiant_test
+  username: root
+  password:
+  host: localhost
+
+production:
+  adapter: postgresql
+  database: radiant_live
+  username: root
+  password:
+  host: localhost

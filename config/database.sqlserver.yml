@@ -1,0 +1,20 @@
+development:
+  adapter: sqlserver
+  database: radiant_dev
+  username:
+  password:
+  host:
+
+test:
+  adapter: sqlserver
+  database: radiant_test
+  username:
+  password:
+  host:
+
+production:
+  adapter: sqlserver
+  database: radiant_live
+  username:
+  password:
+  host:

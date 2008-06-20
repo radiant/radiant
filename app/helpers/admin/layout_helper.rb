@@ -1,0 +1,2 @@
+module Admin::LayoutHelper
+end

@@ -1,0 +1,69 @@
+= h("&&&&&&&&&&&") # This is an ActionView Helper... should load
+- foo = capture do # This ActionView Helper is designed for ERB, but should work with haml
+  %div
+    %p.title Title
+    %p.text
+      Woah this is really crazy
+      I mean wow,
+      man.
+- 3.times do
+  = foo
+%p foo
+- tab_up
+%p reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeally loooooooooooooooooong
+- tab_down
+.woah
+  #funky
+    = capture_haml do
+      %div
+        %h1 Big!
+        %p Small
+        / Invisible
+    = capture do
+      .dilly
+        %p foo
+        %h1 bar
+  = surround '(', ')' do
+    %strong parentheses!
+= precede '*' do
+  %span.small Not really
+click
+= succeed '.' do
+  %a{:href=>"thing"} here
+%p baz
+- haml_buffer.tabulation = 10
+%p boom
+- concat "foo\n"
+- haml_buffer.tabulation = 0
+- def url_for(*stuff); stuff.join(' '); end
+-# The form URLs must be empty
+-# because of a weird bug that causes url_for to misbehave.
+%p
+  = form_tag ''
+- form_tag '' do
+  %div= submit_tag 'save'
+  - @foo = 'value one'
+  = render :partial => './partial'
+- form_for :article, @article, :url => '' do |f|
+  Title:
+  = f.text_field :title
+  Body:
+  = f.text_field :body
+= list_of({:google => 'http://www.google.com'}) do |name, link|
+  %a{ :href => link }= name
+%p
+  - puts "foo"
+  %div
+    - puts "bar"
+  - puts "boom"
+  baz
+  - puts "boom, again"
+- haml_tag :table do
+  - haml_tag :tr do
+    - haml_tag :td, {:class => 'cell'} do
+      - haml_tag :strong, "strong!"
+      - puts "data"
+    - haml_tag :td do
+      - puts "more_data"
+- haml_tag :hr
+- haml_tag :div, ''

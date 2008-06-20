@@ -1,0 +1,23 @@
+%h1 Users
+
+%table#users.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0"}
+  %thead
+    %tr
+      %th.user Name / Login
+      %th.roles Roles
+      %th.modify Modify
+  %tbody
+    - @users.each do |user|
+      %tr.node.level-1
+        %td.user
+          = link_to user.name, user_edit_url(:id => user)
+          %small.login= h user.login
+        %td.roles= roles(user)
+        %td.remove
+          - if user == current_user
+            = image('remove-disabled', :alt => 'Remove')
+          - else
+            = link_to(image('remove', :alt => 'Remove User'), user_remove_url(:id => user)) 
+
+%p
+  = link_to image('new-user', :alt => 'New User'), user_new_url, :title => "New User"
