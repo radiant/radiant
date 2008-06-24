@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Fix Users fixtures for extensions that still use test/unit. [Nick Plante]
 * Don't search for missing Page subclasses before bootstrap. [Sean Cribbs]
 * Added tolerance for missing Page class definitions. [Loren Johnson]
 * Don't require an authenticity token check on the login action. [Sean Cribbs]
