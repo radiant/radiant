@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Don't search for missing Page subclasses before bootstrap. [Sean Cribbs]
 * Added tolerance for missing Page class definitions. [Loren Johnson]
 * Don't require an authenticity token check on the login action. [Sean Cribbs]
 * Make sure region sets are reloaded when activating extensions in development
