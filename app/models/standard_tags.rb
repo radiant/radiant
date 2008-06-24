@@ -33,14 +33,15 @@ module StandardTags
   end
   
   desc %{
-    Gives access to a page's children.
+    Gives access to a page's children and will only show the contents if the
+    current page hase children.
     
     *Usage:*
     <pre><code><r:children>...</r:children></code></pre>
   }
   tag 'children' do |tag|
     tag.locals.children = tag.locals.page.children
-    tag.expand
+    tag.expand unless tag.locals.page.children.blank?
   end
   
   desc %{
@@ -284,9 +285,19 @@ module StandardTags
   tag 'if_content' do |tag|
     page = tag.locals.page
     part_name = tag_part_name(tag)
-    unless page.part(part_name).nil?
-      tag.expand
+    parts_arr = part_name.split(',')
+    all_parts_present = true
+    parts_arr.each do |name|
+      name.strip!
+      all_parts_present = false if page.part(name).nil?
     end
+    tag.expand if all_parts_present
+    
+    # page = tag.locals.page
+    # part_name = tag_part_name(tag)
+    # unless page.part(part_name).nil?
+    #   tag.expand
+    # end
   end
   
   desc %{
