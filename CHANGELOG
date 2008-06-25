@@ -1,8 +1,7 @@
 == Change Log
 
 === Edge
-* Only expand r:children if children exist [Jim Gay]
-* Allow an inclusive list of parts in r:if_content [Jim Gay]
+* Allow an inclusive list of parts in r:if_content and r:unless_content [Jim Gay]
 * Added a defaults.page.filter config setting for setting a default page
 filter. [Alex Wayne]
 * Fix Users fixtures for extensions that still use test/unit. [Nick Plante]
