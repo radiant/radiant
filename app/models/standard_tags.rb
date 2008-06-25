@@ -41,7 +41,7 @@ module StandardTags
   }
   tag 'children' do |tag|
     tag.locals.children = tag.locals.page.children
-    tag.expand unless tag.locals.page.children.blank?
+    tag.expand
   end
   
   desc %{

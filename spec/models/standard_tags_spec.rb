@@ -37,11 +37,6 @@ describe "Standard Tags" do
     page(:home).should render('<r:unless_parent>true</r:unless_parent>').as('true')
   end
 
-  it '<r:children> should render the contained block if the current page has child pages' do
-    page(:home).should render('<r:children>true</r:children>').as('true')
-    page(:childless).should render('<r:children>false</r:children>').as('')
-  end
-  
   it '<r:if_children> should render the contained block if the current page has child pages' do
     page(:home).should render('<r:if_children>true</r:if_children>').as('true')
     page(:childless).should render('<r:if_children>true</r:if_children>').as('')
