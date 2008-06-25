@@ -1,6 +1,8 @@
 == Change Log
 
 === Edge
+* Only expand r:children if children exist [Jim Gay]
+* Allow an inclusive list of parts in r:if_content [Jim Gay]
 * Don't search for missing Page subclasses before bootstrap. [Sean Cribbs]
 * Added tolerance for missing Page class definitions. [Loren Johnson]
 * Don't require an authenticity token check on the login action. [Sean Cribbs]
