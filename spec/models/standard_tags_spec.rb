@@ -282,6 +282,14 @@ describe "Standard Tags" do
     it "should render the contained block if the specified part does not exist" do
       page.should render('<r:unless_content part="asdf">false</r:unless_content>').as('false')
     end
+    
+    it "should not render the contained block if at least one specified part (as separated by comma) exists" do
+      page(:home).should render('<r:unless_content part="body, madeup">true</r:unless_content>').as('')
+    end
+    
+    it "should render the contained block if none of the specified parts (as separated by comma) exist" do
+      page(:home).should render('<r:unless_content part="imaginary, madeup">true</r:unless_content>').as('true')
+    end
   end
 
   describe "<r:author>" do

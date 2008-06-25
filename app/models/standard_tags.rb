@@ -278,7 +278,7 @@ module StandardTags
   desc %{ 
     Renders the containing elements only if all of the listed parts exists on a page.
     By default the @part@ attribute is set to @body@, but you may list more than one
-    part by seprating them by a comma.
+    part by seprating them with a comma.
     
     *Usage:*
     <pre><code><r:if_content [part="part_name, other_part"]>...</r:if_content></code></pre>
@@ -290,25 +290,28 @@ module StandardTags
     all_parts_present = true
     parts_arr.each do |name|
       name.strip!
-      if page.part(name).nil?
-        all_parts_present = false
-      end
+      all_parts_present = false if page.part(name).nil?
     end
     tag.expand if all_parts_present
   end
   
   desc %{
-    The opposite of the @if_content@ tag.
+    The opposite of the @if_content@ tag. It renders the contained elements if none of the 
+    specified parts exist. If at least one of the specified parts exists, it will render nothing.
     
     *Usage:*
-    <pre><code><r:unless_content [part="part_name"]>...</r:unless_content></code></pre>
+    <pre><code><r:unless_content [part="part_name, other_part"]>...</r:unless_content></code></pre>
   }
   tag 'unless_content' do |tag|
     page = tag.locals.page
     part_name = tag_part_name(tag)
-    if page.part(part_name).nil?
-      tag.expand
+    parts_arr = part_name.split(',')
+    all_parts_present = false
+    parts_arr.each do |name|
+      name.strip!
+      all_parts_present = true if !page.part(name).nil?
     end
+    tag.expand unless all_parts_present
   end
   
   desc %{  
