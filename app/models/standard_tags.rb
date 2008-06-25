@@ -298,10 +298,6 @@ module StandardTags
       end
     end
     tag.expand if all_parts_present
-    
-    # unless page.part(part_name).nil?
-    #   tag.expand
-    # end
   end
   
   desc %{
