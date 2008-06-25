@@ -19,6 +19,8 @@ class Admin::WelcomeController < ApplicationController
   end
   
   def logout
+    cookies[:session_token] = { :expires => 1.day.ago }
+    self.current_user.forget_me
     self.current_user = nil
     announce_logged_out
     redirect_to login_url

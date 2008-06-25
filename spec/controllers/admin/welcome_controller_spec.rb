@@ -27,17 +27,22 @@ describe Admin::WelcomeController do
     response.should render_template("login")
     flash[:error].should_not be_nil
   end
-  
-  it "should clear the current user and redirect on logout" do
-    controller.should_receive(:current_user=).with(nil)
-    get :logout
-    response.should be_redirect
-    response.should redirect_to(login_url)
-  end
 
   describe "with a logged-in user" do
     before do
       login_as :admin
+    end
+
+    it "should clear the current user and redirect on logout" do
+      controller.should_receive(:current_user=).with(nil)
+      get :logout
+      response.should be_redirect
+      response.should redirect_to(login_url)
+    end
+
+    it "should forget user on logout" do
+      controller.send(:current_user).should_receive(:forget_me)
+      get :logout
     end
 
     it "should not show /login again" do
