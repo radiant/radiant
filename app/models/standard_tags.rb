@@ -33,8 +33,7 @@ module StandardTags
   end
   
   desc %{
-    Gives access to a page's children and will only show the contents if the
-    current page has children.
+    Gives access to a page's children.
     
     *Usage:*
     <pre><code><r:children>...</r:children></code></pre>
