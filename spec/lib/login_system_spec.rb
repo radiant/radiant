@@ -45,6 +45,62 @@ describe StubController, :type => :controller do
   it "should add self to controllers_where_no_login_required" do
     StubController.controllers_where_no_login_required.should include(NoLoginRequiredController)
   end
+
+  describe ".authenticate" do
+    it "should attempt to login from cookie" do
+      controller.should_receive(:login_from_cookie)
+      get :action
+    end
+  end
+
+  describe ".login_from_cookie" do
+
+    before do
+      Radiant::Config.stub!(:[]).with('session_timeout').and_return(2.weeks)
+    end
+
+    it "should not login user if no cookie found" do
+      controller.should_not_receive(:current_user=)
+      get :index
+    end
+
+    describe "with session_token" do
+      scenario :users
+
+      before do
+        @user = users(:admin)
+        User.should_receive(:find_by_session_token).and_return(@user)
+        @user.should_receive(:session_token?).and_return(true)
+        @cookies = { :session_token => 12345 }
+        controller.stub!(:cookies).and_return(@cookies)
+      end
+
+      after do
+        controller.send :login_from_cookie
+      end
+
+      it "should log in user" do
+        controller.should_receive(:current_user=).with(@user).and_return {
+          # can't mock current_user before current_user= is
+          # called, else the method doesn't run
+          controller.stub!(:current_user).and_return(@user)
+        }
+      end
+
+      it "should remember user" do
+        @user.should_receive(:remember_me)
+      end
+
+      it "should update cookie" do
+        @cookies.should_receive(:[]=) do |name,content|
+          name.should eql(:session_token)
+          content[:value].should eql(@user.session_token)
+          content[:expires].should be_close(2.weeks.from_now.utc, 1.minute) # sometimes specs are slow
+        end
+      end
+
+    end
+  end
 end
 
 describe NoLoginRequiredChildController = NoLoginRequiredController.subclass('NoLoginRequiredChildController') { }, :type => :controller do
