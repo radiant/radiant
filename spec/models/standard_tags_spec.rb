@@ -23,7 +23,7 @@ describe "Standard Tags" do
   it '<r:parent> should change the local context to the parent page' do
     page(:parent)
     page.should render('<r:parent><r:title /></r:parent>').as(pages(:home).title)
-    page.should render('<r:parent><r:children:each by="title" order="asc"><r:title /></r:children:each></r:parent>').as(page_eachable_children(pages(:home)).collect(&:title).sort!.join(""))
+    page.should render('<r:parent><r:children:each by="title"><r:title /></r:children:each></r:parent>').as(page_eachable_children(pages(:home)).collect(&:title).join(""))
     page.should render('<r:children:each><r:parent:title /></r:children:each>').as(@page.title * page.children.count)
   end
 
@@ -55,8 +55,8 @@ describe "Standard Tags" do
   describe "<r:children:each>" do
     it "should iterate through the children of the current page" do
       page(:parent)
-      page.should render('<r:children:each by="title"><r:title /> </r:children:each>').as('Child Child 2 Child 3 ')
-      page.should render('<r:children:each by="title"><r:page><r:slug />/<r:child:slug /> </r:page></r:children:each>').as('parent/child parent/child-2 parent/child-3 ')
+      page.should render('<r:children:each><r:title /> </r:children:each>').as('Child Child 2 Child 3 ')
+      page.should render('<r:children:each><r:page><r:slug />/<r:child:slug /> </r:page></r:children:each>').as('parent/child parent/child-2 parent/child-3 ')
       page(:assorted).should render(page_children_each_tags).as('a b c d e f g h i j ')
     end
 
@@ -101,7 +101,7 @@ describe "Standard Tags" do
     end
 
     it "should change the sort order when given an 'order' attribute" do
-      page.should render(page_children_each_tags(%{order="desc" by="slug"})).as('j i h g f e d c b a ')
+      page.should render(page_children_each_tags(%{order="desc"})).as('j i h g f e d c b a ')
     end
 
     it "should sort by the 'by' attribute" do
@@ -114,7 +114,7 @@ describe "Standard Tags" do
 
     describe 'with "status" attribute' do
       it "set to 'all' should list all children" do
-        page.should render(page_children_each_tags(%{status="all" by="slug"})).as("a b c d draft e f g h i j ")
+        page.should render(page_children_each_tags(%{status="all"})).as("a b c d e f g h i j draft ")
       end
 
       it "set to 'draft' should list only children with 'draft' status" do
@@ -171,7 +171,7 @@ describe "Standard Tags" do
       page.should render(page_children_first_tags).as('a')
       page.should render(page_children_first_tags(%{limit="5"})).as('a')
       page.should render(page_children_first_tags(%{offset="3" limit="5"})).as('d')
-      page.should render(page_children_first_tags(%{order="desc" by="slug"})).as('j')
+      page.should render(page_children_first_tags(%{order="desc"})).as('j')
       page.should render(page_children_first_tags(%{by="breadcrumb"})).as('f')
       page.should render(page_children_first_tags(%{by="breadcrumb" order="desc"})).as('g')
     end
@@ -183,14 +183,14 @@ describe "Standard Tags" do
 
   describe "<r:children:last>" do
     it 'should render its contents in the context of the last child page' do
-      page(:parent).should render('<r:children:last by="slug" order="asc"><r:title /></r:children:last>').as('Child 3')
+      page(:parent).should render('<r:children:last:title />').as('Child 3')
     end
 
     it 'should accept the same scoping attributes as <r:children:each>' do
       page.should render(page_children_last_tags).as('j')
       page.should render(page_children_last_tags(%{limit="5"})).as('e')
       page.should render(page_children_last_tags(%{offset="3" limit="5"})).as('h')
-      page.should render(page_children_last_tags(%{order="desc" by="slug "})).as('a')
+      page.should render(page_children_last_tags(%{order="desc"})).as('a')
       page.should render(page_children_last_tags(%{by="breadcrumb"})).as('g')
       page.should render(page_children_last_tags(%{by="breadcrumb" order="desc"})).as('f')
     end
@@ -248,7 +248,7 @@ describe "Standard Tags" do
 
       it "should render parts with respect to the current contextual page" do
         expected = "Child body. Child 2 body. Child 3 body. "
-        page(:parent).should render('<r:children:each by="title"><r:content /> </r:children:each>').as(expected)
+        page(:parent).should render('<r:children:each><r:content /> </r:children:each>').as(expected)
       end
     end
   end
@@ -266,12 +266,12 @@ describe "Standard Tags" do
       page.should render('<r:if_content part="asdf">true</r:if_content>').as('')
     end
     
-    it "should render the contained block if all specified parts (as separated by comma) exist" do
-      page.should render('<r:if_content part="body, extended">true</r:if_content>').as('true')
+    it "should render the contained block only if all specified parts (as separated by comma) exist" do
+      page(:home).should render('<r:if_content part="body, extended">true</r:if_content>').as('true')
     end
     
-    it "should not render the contained block if all specified parts (as separated by comma) exist" do
-      page.should render('<r:if_content part="body, madeup">true</r:if_content>').as('')
+    it "should not render the contained block if at least one of the specified parts (as separated by comma) does not exist" do
+      page(:home).should render('<r:if_content part="body, madeup">true</r:if_content>').as('')
     end
   end
 
@@ -362,7 +362,7 @@ describe "Standard Tags" do
 
     it "should render a link for the current contextual page" do
       expected = %{<a href="/parent/child/">Child</a> <a href="/parent/child-2/">Child 2</a> <a href="/parent/child-3/">Child 3</a> }
-      page(:parent).should render('<r:children:each by="slug"><r:link /> </r:children:each>' ).as(expected)
+      page(:parent).should render('<r:children:each><r:link /> </r:children:each>' ).as(expected)
     end
 
     it "should scope the link within the relative URL root" do
@@ -489,7 +489,7 @@ describe "Standard Tags" do
     end
 
     it "should scope contained tags to the found page" do
-      page.should render(%{<r:find url="/parent/"><r:children:each by="slug"><r:slug /> </r:children:each></r:find>}).as('child child-2 child-3 ')
+      page.should render(%{<r:find url="/parent/"><r:children:each><r:slug /> </r:children:each></r:find>}).as('child child-2 child-3 ')
     end
 
     it "should accept a path relative to the current page" do

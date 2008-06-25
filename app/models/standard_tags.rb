@@ -34,7 +34,7 @@ module StandardTags
   
   desc %{
     Gives access to a page's children and will only show the contents if the
-    current page hase children.
+    current page has children.
     
     *Usage:*
     <pre><code><r:children>...</r:children></code></pre>
@@ -276,25 +276,29 @@ module StandardTags
   end
   
   desc %{ 
-    Renders the containing elements only if the part exists on a page. By default the
-    @part@ attribute is set to @body@.
+    Renders the containing elements only if all of the listed parts exists on a page.
+    By default the @part@ attribute is set to @body@, but you may list more than one
+    part by seprating them by a comma.
     
     *Usage:*
-    <pre><code><r:if_content [part="part_name"]>...</r:if_content></code></pre>
+    <pre><code><r:if_content [part="part_name, other_part"]>...</r:if_content></code></pre>
   }
   tag 'if_content' do |tag|
     page = tag.locals.page
+    puts page.parts.to_json
     part_name = tag_part_name(tag)
     parts_arr = part_name.split(',')
     all_parts_present = true
     parts_arr.each do |name|
+      puts name
       name.strip!
-      all_parts_present = false if page.part(name).nil?
+      puts page.part(name)
+      if page.part(name).nil?
+        all_parts_present = false
+      end
     end
     tag.expand if all_parts_present
     
-    # page = tag.locals.page
-    # part_name = tag_part_name(tag)
     # unless page.part(part_name).nil?
     #   tag.expand
     # end
