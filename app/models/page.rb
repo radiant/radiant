@@ -199,7 +199,7 @@ class Page < ActiveRecord::Base
       default_parts = config['defaults.page.parts'].to_s.strip.split(/\s*,\s*/)
       page = new
       default_parts.each do |name|
-        page.parts << PagePart.new(:name => name)
+        page.parts << PagePart.new(:name => name, :filter_id => config['defaults.page.filter'])
       end
       default_status = config['defaults.page.status']
       page.status = Status[default_status] if default_status

@@ -49,6 +49,7 @@ module Radiant
         step { Radiant::Config['admin.subtitle'] = 'Publishing for Small Teams' }
         step { Radiant::Config['defaults.page.parts' ] = 'body, extended' }
         step { Radiant::Config['defaults.page.status' ] = 'draft' }
+        step { Radiant::Config['defaults.page.filter' ] = nil }
       end
     end
     

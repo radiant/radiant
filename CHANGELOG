@@ -3,6 +3,9 @@
 === Edge
 * Only expand r:children if children exist [Jim Gay]
 * Allow an inclusive list of parts in r:if_content [Jim Gay]
+* Added a defaults.page.filter config setting for setting a default page
+filter. [Alex Wayne]
+* Fix Users fixtures for extensions that still use test/unit. [Nick Plante]
 * Don't search for missing Page subclasses before bootstrap. [Sean Cribbs]
 * Added tolerance for missing Page class definitions. [Loren Johnson]
 * Don't require an authenticity token check on the login action. [Sean Cribbs]
@@ -15,11 +18,11 @@ mode. [Sean Cribbs]
 * Convert all views to Haml. [Sean Cribbs, John Long]
 * Avoid authenticity check when listing page children. [Sean Cribbs]
 * Add radiant:extensions:update_all task. [Josh French]
-* Tweak LoginSystem to allow attempted URL redirection after login and 
+* Tweak LoginSystem to allow attempted URL redirection after login and
 auto-redirect from login URL if logged in. [Josh French]
 * Add per-user salting to password encryption. [Sean Cribbs]
 * Address CSRF vulnerabilities in forms. [Sean Cribbs]
-* Remove clear cache action, always clear cache after saving a page. [Sean 
+* Remove clear cache action, always clear cache after saving a page. [Sean
 Cribbs]
 
 === 0.6.6 Chiseled
