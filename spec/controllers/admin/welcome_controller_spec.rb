@@ -27,6 +27,27 @@ describe Admin::WelcomeController do
     response.should render_template("login")
     flash[:error].should_not be_nil
   end
+  
+  describe "remember me" do
+
+    before do
+      Radiant::Config.stub!(:[]).with('session_timeout').and_return(2.weeks)
+      @user = users(:admin)
+      controller.stub!(:current_user).and_return(@user)
+    end
+
+    after do
+      post :login, :user => {:login => "admin", :password => "password"}, :remember_me => 1
+    end
+
+    it "should remember user" do
+      @user.should_receive(:remember_me)
+    end
+
+    it "should set cookie" do
+      controller.should_receive(:set_session_cookie)
+    end
+  end
 
   describe "with a logged-in user" do
     before do

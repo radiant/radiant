@@ -13,6 +13,10 @@ class Admin::WelcomeController < ApplicationController
       announce_invalid_user unless self.current_user = User.authenticate(login, password)
     end
     if current_user
+      if params[:remember_me]
+        current_user.remember_me
+        set_session_cookie
+      end
       redirect_to (session[:return_to] || welcome_url)
       session[:return_to] = nil
     end

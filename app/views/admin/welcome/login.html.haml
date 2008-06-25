@@ -24,6 +24,10 @@
         input.textbox
           font-size: 100%
           width: 16em
+        label.checkbox
+          float: none
+        input.checkbox
+          margin-left: 87px
         .buttons
           margin-top: 15px
           margin-bottom: 20px
@@ -38,6 +42,10 @@
     %p
       %label{:for=>"user_password"} Password
       = password_field "user", "password", :class => 'textbox', :value => '', :maxlength => 40 
+    %p
+      = check_box_tag :remember_me, 1, false, :class => 'checkbox'
+      %label{:for=>"remember_me", :class => 'checkbox'}
+        %small Remember me
     %p.buttons
       %input.button{:type=>"submit", :value=>"Login"}/
   
