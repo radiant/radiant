@@ -121,6 +121,59 @@ describe User do
     @user.salt.should_not be_nil
     @user.password.should == @user.sha1('password')
   end
+
+  describe ".remember_me" do
+    before do
+      Radiant::Config.stub!(:[]).with('session_timeout').and_return(2.weeks)
+      @user.save
+      @user.remember_me
+      @user.reload
+    end
+
+    it "should remember user" do
+      @user.session_token.should_not be_nil
+      @user.session_expire.should be_close(2.weeks.from_now.utc, 1.minute) # grace time to run spec
+    end
+
+    it "should advance session expiry" do
+      @user.session_expire = 1.day.from_now
+      @user.save
+      @user.remember_me
+      @user.session_expire.should be_close(2.weeks.from_now.utc, 1.minute)
+    end
+  end
+
+  describe ".forget_me" do
+
+    before do
+      Radiant::Config.stub!(:[]).with('session_timeout').and_return(2.weeks)
+      @user.save
+      @user.remember_me
+    end
+
+    it "should forget user" do
+      @user.forget_me
+      @user.session_token.should be_nil
+      @user.session_expire.should be_nil
+    end
+  end
+
+  describe ".session_token?" do
+    it "should be true if token is unexpired" do
+      @user.session_expire = 2.weeks.from_now.utc
+      @user.session_token?.should be(true)
+    end
+
+    it "should be false if token is expired" do
+      @user.session_expire = 1.day.ago.utc
+      @user.session_token?.should_not be(true)
+    end
+
+    it "should be false if token is nil" do
+      @user.session_expire = nil
+      @user.session_token?.should_not be(true)
+    end
+  end
 end
 
 describe User, "class methods" do
