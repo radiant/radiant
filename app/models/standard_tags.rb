@@ -285,14 +285,11 @@ module StandardTags
   }
   tag 'if_content' do |tag|
     page = tag.locals.page
-    puts page.parts.to_json
     part_name = tag_part_name(tag)
     parts_arr = part_name.split(',')
     all_parts_present = true
     parts_arr.each do |name|
-      puts name
       name.strip!
-      puts page.part(name)
       if page.part(name).nil?
         all_parts_present = false
       end
