@@ -72,7 +72,7 @@ module LoginSystem
     end
 
     def login_from_cookie
-      if cookies[:session_token] && (user = User.find_by_session_token(cookies[:session_token])) && user.session_token?
+      if !cookies[:session_token].blank? && user = User.find_by_session_token(cookies[:session_token]) # don't find by empty value
         user.remember_me
         self.current_user = user
         set_session_cookie

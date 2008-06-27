@@ -70,7 +70,6 @@ describe StubController, :type => :controller do
       before do
         @user = users(:admin)
         User.should_receive(:find_by_session_token).and_return(@user)
-        @user.should_receive(:session_token?).and_return(true)
         @cookies = { :session_token => 12345 }
         controller.stub!(:cookies).and_return(@cookies)
       end

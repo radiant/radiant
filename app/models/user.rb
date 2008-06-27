@@ -46,19 +46,11 @@ class User < ActiveRecord::Base
   end
 
   def remember_me
-    self.session_expire = Radiant::Config['session_timeout'].to_i.from_now.utc
-    self.session_token  ||= sha1(session_expire)
-    save(false)
+    update_attribute(:session_token, sha1(Time.now + Radiant::Config['session_timeout'].to_i)) unless self.session_token?
   end
 
   def forget_me
-    self.session_expire = nil
-    self.session_token  = nil
-    save(false)
-  end
-
-  def session_token?
-    session_expire && Time.now.utc < session_expire
+    update_attribute(:session_token, nil)
   end
 
   private
