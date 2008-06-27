@@ -1,6 +1,8 @@
 == Change Log
 
 === Edge
+* Change order of extension paths to prefer project extensions over Radiant's.
+[John Muhl]
 * Switch default session store to cookies [Josh French]
 * Add remember-me function to login [Josh French]
 * Allow an inclusive list of parts in r:if_content and r:unless_content [Jim Gay]
