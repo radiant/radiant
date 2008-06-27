@@ -21,7 +21,7 @@ module Radiant
 
     def default_extension_paths
       env = ENV["RAILS_ENV"] || RAILS_ENV
-      paths = [RADIANT_ROOT + '/vendor/extensions', RAILS_ROOT + '/vendor/extensions'].uniq
+      paths = [RAILS_ROOT + '/vendor/extensions', RADIANT_ROOT + '/vendor/extensions'].uniq
       # There's no other way it will work, config/environments/test.rb loads too late
       # TODO: Should figure out how to include this extension path only for the tests that need it
       paths.unshift(RADIANT_ROOT + "/test/fixtures/extensions") if env == "test"
