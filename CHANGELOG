@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Update login page layout from prototype. [Sean Cribbs]
 * Change order of extension paths to prefer project extensions over Radiant's.
 [John Muhl]
 * Switch default session store to cookies [Josh French]
