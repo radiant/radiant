@@ -1,6 +1,8 @@
 == Change Log
 
 === Edge
+* Added inherit attr to r:if_content and r:unless_content to search for parts
+independently in the page tree. [Jim Gay]
 * Update login page layout from prototype. [Sean Cribbs]
 * Change order of extension paths to prefer project extensions over Radiant's.
 [John Muhl]
