@@ -249,6 +249,16 @@ describe "Standard Tags" do
   end
 
   describe "<r:if_content>" do
+    describe "with inherit attribute set to 'true'" do
+      it 'should render the contained block if the current or ancestor pages have the specified parts' do
+        page(:guests).should render('<r:if_content part="favors, extended" inherit="true">true</r:if_content>').as('true')
+      end
+      
+      it 'should not render the contained block if the current or ancestor pages do not have all of the specified parts' do
+        page(:guests).should render('<r:if_content part="favors, madeup" inherit="true">true</r:if_content>').as('')
+      end
+    end
+    
     it "without 'part' attribute should render the contained block if the 'body' part exists" do
       page.should render('<r:if_content>true</r:if_content>').as('true')
     end
@@ -271,6 +281,15 @@ describe "Standard Tags" do
   end
 
   describe "<r:unless_content>" do
+    describe "with inherit attribute set to 'true'" do
+      it 'should not render the contained block if the current or ancestor pages have the specified parts' do
+        page(:guests).should render('<r:unless_content part="favors, extended" inherit="true">true</r:unless_content>').as('')
+      end
+      
+      it 'should render the contained block if the current or ancestor pages do not have the specified parts' do
+        page(:guests).should render('<r:unless_content part="madeup, imaginary" inherit="true">true</r:unless_content>').as('true')
+      end
+    end
     it "without 'part' attribute should not render the contained block if the 'body' part exists" do
       page.should render('<r:unless_content>false</r:unless_content>').as('')
     end

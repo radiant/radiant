@@ -275,9 +275,10 @@ module StandardTags
   end
   
   desc %{ 
-    Renders the containing elements only if all of the listed parts exists on a page.
+    Renders the containing elements only if all of the listed parts exist on a page.
     By default the @part@ attribute is set to @body@, but you may list more than one
-    part by seprating them with a comma.
+    part by seprating them with a comma. Setting the optional @inherit@ to true will 
+    search ancestors independently for each part. By default @inherit@ is set to @false@.
     
     *Usage:*
     <pre><code><r:if_content [part="part_name, other_part"]>...</r:if_content></code></pre>
@@ -286,10 +287,18 @@ module StandardTags
     page = tag.locals.page
     part_name = tag_part_name(tag)
     parts_arr = part_name.split(',')
+    inherit_attr = tag.attr['inherit'] || 'false'
+    inherit = inherit_attr.downcase == 'true' ? true : false
     all_parts_present = true
+    part_page = page
     parts_arr.each do |name|
       name.strip!
-      all_parts_present = false if page.part(name).nil?
+      if inherit
+        while (part_page.part(name).nil? and (not part_page.parent.nil?)) do
+          part_page = part_page.parent
+        end
+      end
+      all_parts_present = false if part_page.part(name).nil?
     end
     tag.expand if all_parts_present
   end
@@ -305,10 +314,18 @@ module StandardTags
     page = tag.locals.page
     part_name = tag_part_name(tag)
     parts_arr = part_name.split(',')
+    inherit_attr = tag.attr['inherit'] || 'false'
+    inherit = inherit_attr.downcase == 'true' ? true : false
     all_parts_present = false
+    part_page = page
     parts_arr.each do |name|
       name.strip!
-      all_parts_present = true if !page.part(name).nil?
+      if inherit
+        while (part_page.part(name).nil? and (not part_page.parent.nil?)) do
+          part_page = part_page.parent
+        end
+      end
+      all_parts_present = true if !part_page.part(name).nil?
     end
     tag.expand unless all_parts_present
   end
