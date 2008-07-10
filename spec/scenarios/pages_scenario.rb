@@ -48,6 +48,7 @@ class PagesScenario < Scenario::Base
     create_page "Virtual", :class_name => "VirtualPage", :virtual => true
     create_page "Party" do
       create_page_part "favors"
+      create_page_part "games"
       create_page "Guests"
     end
   end
