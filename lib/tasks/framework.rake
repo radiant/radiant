@@ -31,16 +31,16 @@ unless File.directory? "#{RAILS_ROOT}/app"
       desc "Lock to latest Edge Radiant or a specific revision with REVISION=X (ex: REVISION=4021), a tag with TAG=Y (ex: TAG=rel_1-1-0), or a branch with BRANCH=Z (ex: BRANCH=mental)"
       task :edge do
         $verbose = false
-        `svn --version` rescue nil
+        `git --version` rescue nil
         unless !$?.nil? && $?.success?
-          $stderr.puts "ERROR: Must have subversion (svn) available in the PATH to lock this application to Edge Radiant"
+          $stderr.puts "ERROR: Must have git available in the PATH to lock this application to Edge Radiant"
           exit 1
         end
 
         rm_rf   "vendor/radiant"
-        mkdir_p "vendor/radiant"
+        # mkdir_p "vendor/radiant"
 
-        svn_root = "http://svn.radiantcms.org/radiant/"
+        git_root = "git://github.com/radiant/radiant.git"
 
         case
         when ENV['TAG']
@@ -60,7 +60,7 @@ unless File.directory? "#{RAILS_ROOT}/app"
           touch "vendor/radiant/REVISION_#{ENV['REVISION']}"
         end
       
-        system "svn export #{radiant_svn}/radiant vendor/radiant" + (ENV['REVISION'] ? " -r #{ENV['REVISION']}" : "") + " --force"
+        system "git clone #{git_root} vendor/radiant"
       end
     end
 
