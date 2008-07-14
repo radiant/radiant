@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Update radiant:freeze:edge task to use git and GitHub. [John Muhl]
 * Update login page layout from prototype. [Sean Cribbs]
 * Change order of extension paths to prefer project extensions over Radiant's.
 [John Muhl]
