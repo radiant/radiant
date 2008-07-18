@@ -46,6 +46,11 @@ class PagesScenario < Scenario::Base
       create_page_part "unless_dev", :content => "<r:unless_dev>not dev</r:unless_dev>"
     end
     create_page "Virtual", :class_name => "VirtualPage", :virtual => true
+    create_page "Party" do
+      create_page_part "favors"
+      create_page_part "games"
+      create_page "Guests"
+    end
   end
   
 end

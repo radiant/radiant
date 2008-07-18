@@ -1,6 +1,10 @@
 == Change Log
 
 === Edge
+* Added find attr to r:if_content and r:unless_content to expand based on
+finding 'any' or 'all' specified parts [Jim Gay]
+* Added inherit attr to r:if_content and r:unless_content to search for parts
+independently in the page tree. [Jim Gay]
 * Update radiant:freeze:edge task to use git and GitHub. [John Muhl]
 * Update login page layout from prototype. [Sean Cribbs]
 * Change order of extension paths to prefer project extensions over Radiant's.

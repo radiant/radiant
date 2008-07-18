@@ -275,42 +275,75 @@ module StandardTags
   end
   
   desc %{ 
-    Renders the containing elements only if all of the listed parts exists on a page.
+    Renders the containing elements if all of the listed parts exist on a page.
     By default the @part@ attribute is set to @body@, but you may list more than one
-    part by seprating them with a comma.
+    part by seprating them with a comma. Setting the optional @inherit@ to true will 
+    search ancestors independently for each part. By default @inherit@ is set to @false@.
+    
+    When listing more than one part, you may optionally set the @find@ attribute to @any@
+    so that it will render the containing elements if any of the listed parts are found.
+    By default the @find@ attribute is set to @all@.
     
     *Usage:*
-    <pre><code><r:if_content [part="part_name, other_part"]>...</r:if_content></code></pre>
+    <pre><code><r:if_content [part="part_name, other_part"] [inherit="true"] [find="any"]>...</r:if_content></code></pre>
   }
   tag 'if_content' do |tag|
     page = tag.locals.page
     part_name = tag_part_name(tag)
     parts_arr = part_name.split(',')
-    all_parts_present = true
+    inherit = boolean_attr_or_error(tag, 'inherit', 'false')
+    find = attr_or_error(tag, :attribute_name => 'find', :default => 'all', :values => 'any, all')
+    expandable = true
+    one_found = false
+    part_page = page
     parts_arr.each do |name|
       name.strip!
-      all_parts_present = false if page.part(name).nil?
+      if inherit
+        while (part_page.part(name).nil? and (not part_page.parent.nil?)) do
+          part_page = part_page.parent
+        end
+      end
+      expandable = false if part_page.part(name).nil?
+      one_found ||= true if !part_page.part(name).nil?
     end
-    tag.expand if all_parts_present
+    expandable = true if (find == 'any' and one_found)
+    tag.expand if expandable
   end
   
   desc %{
-    The opposite of the @if_content@ tag. It renders the contained elements if none of the 
-    specified parts exist. If at least one of the specified parts exists, it will render nothing.
+    The opposite of the @if_content@ tag. It renders the contained elements if all of the 
+    specified parts do not exist. Setting the optional @inherit@ to true will search 
+    ancestors independently for each part. By default @inherit@ is set to @false@.
+    
+    When listing more than one part, you may optionally set the @find@ attribute to @any@
+    so that it will not render the containing elements if any of the listed parts are found.
+    By default the @find@ attribute is set to @all@.
     
     *Usage:*
-    <pre><code><r:unless_content [part="part_name, other_part"]>...</r:unless_content></code></pre>
+    <pre><code><r:unless_content [part="part_name, other_part"] [inherit="true"] [find="any"]>...</r:unless_content></code></pre>
   }
   tag 'unless_content' do |tag|
     page = tag.locals.page
     part_name = tag_part_name(tag)
     parts_arr = part_name.split(',')
-    all_parts_present = false
+    inherit = boolean_attr_or_error(tag, 'inherit', true)
+    find = attr_or_error(tag, :attribute_name => 'find', :default => 'all', :values => 'any, all')
+    expandable, all_found = true, true
+    part_page = page
     parts_arr.each do |name|
       name.strip!
-      all_parts_present = true if !page.part(name).nil?
+      if inherit
+        while (part_page.part(name).nil? and (not part_page.parent.nil?)) do
+          part_page = part_page.parent
+        end
+      end
+      expandable = false if !part_page.part(name).nil?
+      all_found = false if part_page.part(name).nil?
     end
-    tag.expand unless all_parts_present
+    if all_found == false and find == 'all'
+      expandable = true
+    end
+    tag.expand if expandable
   end
   
   desc %{  
@@ -792,5 +825,20 @@ module StandardTags
     
     def page_found?(page)
       page && !(FileNotFoundPage === page)
+    end
+    
+    def boolean_attr_or_error(tag, attribute_name, default)
+      attribute = attr_or_error(tag, :attribute_name => attribute_name, :default => default.to_s, :values => 'true, false')
+      (attribute.to_s.downcase == 'true') ? true : false
+    end
+    
+    def attr_or_error(tag, options = {})
+      attribute_name = options[:attribute_name].to_s
+      default = options[:default]
+      values = options[:values].split(',').map!(&:strip)
+      
+      attribute = (tag.attr[attribute_name] || default).to_s
+      raise TagError.new(%{'#{attribute_name}' attribute of #{tag} tag must be one of: #{values.join(',')}}) unless values.include?(attribute)
+      return attribute
     end
 end
