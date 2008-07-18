@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Added extension installation scripts. [Sean Cribbs]
 * Added find attr to r:if_content and r:unless_content to expand based on
 finding 'any' or 'all' specified parts [Jim Gay]
 * Added inherit attr to r:if_content and r:unless_content to search for parts

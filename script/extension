@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + "/../config/boot"
+require 'radiant/extension/script'
+
+Radiant::Extension::Script.execute ARGV
