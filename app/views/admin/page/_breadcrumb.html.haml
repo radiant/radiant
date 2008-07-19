@@ -1,0 +1,5 @@
+- if page.slug == '/'
+  = link_to page.title, page_edit_url(page)
+- else
+  = link_to page.slug, page_edit_url(page)
+= '/'

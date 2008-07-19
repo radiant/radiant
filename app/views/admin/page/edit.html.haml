@@ -32,6 +32,11 @@
               = text_field "page", "title", :class => 'textbox', :maxlength => 255
           - form.edit_extended_metadata do
             #extended-metadata.row{meta_visible(:meta)}
+              %p.location
+                Location: 
+                - @page.ancestors.reverse.each do |page|
+                  = render :partial => 'breadcrumb', :locals => {:page => page}
+                = @page.slug
               %table.fieldset
                 = render :partial => "meta_row", :collection => @meta
                 = render_region :extended_metadata
