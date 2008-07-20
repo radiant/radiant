@@ -147,10 +147,37 @@ module Registry
   end
 
   class Tarball < Download
+    def filename
+      "#{self.name}.tar"
+    end
+    
     def unpack
-      packed  = filename =~ /gz/ ? 'z' : ''
-      output = `cd #{Dir.tmpdir}; tar xvf#{packed} #{filename}`
+      output = `cd #{Dir.tmpdir}; tar xvf #{filename}`
       self.path = File.join(Dir.tmpdir, output.split(/\n/).first.split('/').first)
+    end
+  end
+  
+  class Gzip < Tarball
+    def filename
+      @unpacked ? super : "#{self.name}.tar.gz"
+    end
+    
+    def unpack
+      system "cd #{Dir.tmpdir}; gunzip #{self.filename}"
+      @unpacked = true
+      super
+    end
+  end
+  
+  class Bzip2 < Tarball
+    def filename
+      @unpacked ? super : "#{self.name}.tar.bz2"
+    end
+    
+    def unpack
+      system "cd #{Dir.tmpdir}; bunzip2 #{self.filename}"
+      @unpacked = true
+      super
     end
   end
 

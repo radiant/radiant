@@ -300,23 +300,45 @@ end
 
 describe "Registry::Tarball" do
   before :each do
-    @extension = mock("Extension", :name => 'example', :download_url => 'http://localhost/example-1.0.0.tar.gz')
+    @extension = mock("Extension", :name => 'example', :download_url => 'http://localhost/example-1.0.0.tar')
     @tar = Registry::Tarball.new(@extension)
   end
 
-  it "should unpack the tarball with compression" do
-    @tar.should_receive(:`).with(/tar xvfz example-1.0.0.tar.gz/).and_return('example-1.0.0/example_extension.rb\n')
-    @tar.unpack
-    @tar.path.should =~ /example-1\.0\.0$/
-  end
-
   it "should unpack the tarball without compression" do
-    @tar.url = @tar.url.sub(/.gz$/, '')
-    @tar.should_receive(:`).with(/tar xvf example-1.0.0.tar/).and_return('example-1.0.0/example_extension.rb\n')
+    @tar.should_receive(:`).with(/tar xvf example.tar/).and_return('example-1.0.0/example_extension.rb\n')
     @tar.unpack
     @tar.path.should =~ /example-1\.0\.0$/
   end
 end
+
+describe "Registry::Gzip" do
+  before :each do
+    @extension = mock("Extension", :name => 'example', :download_url => 'http://localhost/example-1.0.0.tar.gz')
+    @gzip = Registry::Gzip.new(@extension)
+  end
+
+  it "should unpack the archive with compression" do
+    @gzip.should_receive(:system).with(/gunzip example.tar.gz/)
+    @gzip.should_receive(:`).with(/tar xvf example.tar/).and_return('example-1.0.0/example_extension.rb\n')
+    @gzip.unpack
+    @gzip.path.should =~ /example-1\.0\.0$/
+  end
+end
+
+describe "Registry::Bzip2" do
+  before :each do
+    @extension = mock("Extension", :name => 'example', :download_url => 'http://localhost/example-1.0.0.tar.bz2')
+    @gzip = Registry::Bzip2.new(@extension)
+  end
+
+  it "should unpack the archive with compression" do
+    @gzip.should_receive(:system).with(/bunzip2 example.tar.bz2/)
+    @gzip.should_receive(:`).with(/tar xvf example.tar/).and_return('example-1.0.0/example_extension.rb\n')
+    @gzip.unpack
+    @gzip.path.should =~ /example-1\.0\.0$/
+  end
+end
+
 
 describe "Registry::Zip" do
   before :each do
