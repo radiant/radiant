@@ -7,7 +7,7 @@ module Registry
     self.site = ENV['REGISTRY_URL'] || "http://ext.radiantcms.org/"
 
     def install
-      install_type.constantize.new(self).install
+      Registry.const_get(install_type).new(self).install
     end
 
     def uninstall
