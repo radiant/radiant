@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Add specific installation modes for gzip and bzip2 compression. [Sean Cribbs]
 * Added extension installation scripts. [Sean Cribbs]
 * Added find attr to r:if_content and r:unless_content to expand based on
 finding 'any' or 'all' specified parts [Jim Gay]

@@ -7,7 +7,7 @@ module Registry
     self.site = ENV['REGISTRY_URL'] || "http://ext.radiantcms.org/"
 
     def install
-      install_type.constantize.new(self).install
+      Registry.const_get(install_type).new(self).install
     end
 
     def uninstall
@@ -147,10 +147,37 @@ module Registry
   end
 
   class Tarball < Download
+    def filename
+      "#{self.name}.tar"
+    end
+    
     def unpack
-      packed  = filename =~ /gz/ ? 'z' : ''
-      output = `cd #{Dir.tmpdir}; tar xvf#{packed} #{filename}`
+      output = `cd #{Dir.tmpdir}; tar xvf #{filename}`
       self.path = File.join(Dir.tmpdir, output.split(/\n/).first.split('/').first)
+    end
+  end
+  
+  class Gzip < Tarball
+    def filename
+      @unpacked ? super : "#{self.name}.tar.gz"
+    end
+    
+    def unpack
+      system "cd #{Dir.tmpdir}; gunzip #{self.filename}"
+      @unpacked = true
+      super
+    end
+  end
+  
+  class Bzip2 < Tarball
+    def filename
+      @unpacked ? super : "#{self.name}.tar.bz2"
+    end
+    
+    def unpack
+      system "cd #{Dir.tmpdir}; bunzip2 #{self.filename}"
+      @unpacked = true
+      super
     end
   end
 
