@@ -357,11 +357,6 @@ h1 {
 #content .button {
   font-size: 150%;
 }
-#content .form-area p.location {
-	float: none;
-	color: #666;
-	font-size: 0.8em;
-}
 #content table.fieldset {
   border-bottom: 1px solid #DFD3C3;
   margin-bottom: .3em;
