@@ -1,7 +1,6 @@
 == Change Log
 
 === Edge
-* Added breadcrumbs for page ancestors editing while editing [Jim Gay]
 * Added extension installation scripts. [Sean Cribbs]
 * Added find attr to r:if_content and r:unless_content to expand based on
 finding 'any' or 'all' specified parts [Jim Gay]
