@@ -525,10 +525,22 @@ module StandardTags
     </div>
     </code></pre>
     
-    If the above snippet was called as a double tag, the opening @<r:snippet>@ would 
-    correspond to everything *before* @<r:yield/>@, while the closing @</r:snippet>@
-    corresponds to everything *after*. Calling the same snippet as a single tag would 
-    cause @<r:yield/>@ to output nothing.
+    If the above snippet was named "yielding", you could call it from any Page, 
+    Layout or Snippet as follows:
+    
+    <pre><code><r:snippet name="yielding">Content within</r:snippet></code></pre>
+    
+    Which would output the following:
+    
+    <pre><code>
+    <div id="outer">
+      <p>before</p>
+      Content within
+      <p>after</p>
+    </div>
+    </code></pre>
+    
+    When called in the context of a Page or a Layout, @<r:yield/>@ outputs nothing.
   }
   tag 'yield' do |tag|
     tag.locals.yield
