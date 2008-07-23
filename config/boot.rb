@@ -17,21 +17,20 @@ module Radiant
     end
 
     def pick_boot
-      case
-      when app?
-        AppBoot.new
-      when vendor?
-        VendorBoot.new
-      else
-        GemBoot.new
-      end
+      # case
+      # when app?
+      #   AppBoot.new
+      # when vendor?
+      #   VendorBoot.new
+      # else
+      #   GemBoot.new
+      # end
+      (vendor? ? VendorBoot : GemBoot).new
     end
 
     def vendor?
       File.exist?("#{RAILS_ROOT}/vendor/radiant")
     end
-    
-    alias :vendor_radiant? :vendor?
     
     def app?
       File.exist?("#{RAILS_ROOT}/lib/radiant.rb")
@@ -74,7 +73,7 @@ module Radiant
       #require "#{RAILS_ROOT}/vendor/rails/railties/lib/initializer"
       #Rails::Initializer.run(:install_gem_spec_stubs)
     end
-    
+        
     def load_error_message
       "Please verify that vendor/radiant contains a complete copy of the Radiant sources."
     end
@@ -85,7 +84,7 @@ module Radiant
       $LOAD_PATH.unshift "#{RAILS_ROOT}/lib" 
       super
     end
-    
+
     def load_error_message
       "Please verify that you have a complete copy of the Radiant sources."
     end
