@@ -389,6 +389,18 @@ module StandardTags
   end
   
   desc %{
+    Renders the contained elements unless the current contextual page is either the actual page or one of its parents.
+    
+    This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless the child element is or descends from the current page.
+    
+    *Usage:*
+    <pre><code><r:unless_ancestor_or_self>...</unless_ancestor_or_self></code></pre>
+  }  
+  tag "unless_ancestor_or_self" do |tag|
+    tag.expand unless (tag.globals.page.ancestors + [tag.globals.page]).include?(tag.locals.page)
+  end
+  
+  desc %{
     Renders the contained elements if the current contextual page is also the actual page.
     
     This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is the current page.
@@ -398,6 +410,18 @@ module StandardTags
   }
   tag "if_self" do |tag|
     tag.expand if tag.locals.page == tag.globals.page
+  end
+  
+  desc %{
+    Renders the contained elements unless the current contextual page is also the actual page.
+    
+    This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless the child element is the current page.
+    
+    *Usage:*
+    <pre><code><r:unless_self>...</unless_self></code></pre>
+  }
+  tag "unless_self" do |tag|
+    tag.expand unless tag.locals.page == tag.globals.page
   end
   
   desc %{
