@@ -17,7 +17,14 @@ module Radiant
     end
 
     def pick_boot
-      (vendor_radiant? ? VendorBoot : GemBoot).new
+      case
+      when app?
+        AppBoot.new
+      when vendor?
+        VendorBoot.new
+      else
+        GemBoot.new
+      end
     end
 
     def vendor?
@@ -66,6 +73,10 @@ module Radiant
       super
       #require "#{RAILS_ROOT}/vendor/rails/railties/lib/initializer"
       #Rails::Initializer.run(:install_gem_spec_stubs)
+    end
+    
+    def load_error_message
+      "Please verify that vendor/radiant contains a complete copy of the Radiant sources."
     end
   end
 
