@@ -774,11 +774,11 @@ describe "Standard Tags" do
   
   describe "<r:unless_ancestor_or_self>" do
     it "should render the tag's content when the current page is not an ancestor of tag.locals.page" do
-      page(:radius).should render(%{<r:find url="/first"><r:unless_ancestor_or_self>true</r:unless_ancestor_or_self></r:find>}).as('true')
+      page(:parent).should render(%{<r:find url="/radius"><r:unless_ancestor_or_self>true</r:unless_ancestor_or_self></r:find>}).as('true')
     end
 
     it "should not render the tag's content when current page is an ancestor of tag.locals.page" do
-      page(:parent).should render(%{<r:find url="/"><r:unless_ancestor_or_self>true</r:unless_ancestor_or_self></r:find>}).as('')
+      page(:radius).should render(%{<r:find url="/"><r:unless_ancestor_or_self>true</r:unless_ancestor_or_self></r:find>}).as('')
     end
   end
 
