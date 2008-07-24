@@ -152,9 +152,10 @@ class Page < ActiveRecord::Base
         found = child.find_by_url(url, live, clean)
         return found if found
       end
-      file_not_found_types = [FileNotFoundPage] + FileNotFoundPage.descendants
-      condition = (['class_name = ?'] * file_not_found_types.length).join(' or ')
-      file_not_found_names = file_not_found_types.map { |x| x.name }.uniq
+      file_not_found_types = ([FileNotFoundPage] + FileNotFoundPage.descendants)
+      file_not_found_names = file_not_found_types.collect { |x| x.name }
+      condition = (['class_name = ?'] * file_not_found_names.length).join(' or ')
+      condition = "status_id = #{Status[:published].id} and (#{condition})" if live
       children.find(:first, :conditions => [condition] + file_not_found_names)
     end
   end

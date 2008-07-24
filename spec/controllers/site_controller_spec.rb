@@ -91,7 +91,7 @@ end
 describe SiteController, "when custom 404 pages are defined" do
   scenario :file_not_found
   
-  it "should use the top-most 404 page by default" do
+  it "should use the top-most published 404 page by default" do
     get :show_page, :url => "/foo"
     response.should be_missing
     assigns[:page].should == pages(:file_not_found)
@@ -101,9 +101,22 @@ describe SiteController, "when custom 404 pages are defined" do
     assigns[:page].should == pages(:file_not_found)
   end
   
-  it "should use a custom 404 page defined under a parent page" do
+  it "should use the first published custom 404 page defined under a parent page" do
     get :show_page, :url => "/gallery/draft"
     response.should be_missing
     assigns[:page].should == pages(:no_picture)
+  end
+  
+  it "should not find hidden draft pages in live mode" do
+    get :show_page, :url => "/drafts/missing"
+    response.should be_missing
+    assigns[:page].should_not == pages(:lonely_draft_file_not_found)
+  end
+
+  it "should find hidden draft pages in dev mode" do
+    request.host = 'dev.mysite.com'
+    get :show_page, :url => "/drafts/missing"
+    response.should be_missing
+    assigns[:page].should == pages(:lonely_draft_file_not_found)
   end
 end
