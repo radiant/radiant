@@ -3,6 +3,14 @@
 
 RAILS_ROOT = "#{File.dirname(__FILE__)}/.." unless defined?(RAILS_ROOT)
 
+module Rails
+  class << self
+    def vendor_rails?
+      File.exist?("#{RAILS_ROOT}/vendor/rails")
+    end
+  end
+end
+
 module Radiant
   class << self
     def boot!
@@ -17,15 +25,14 @@ module Radiant
     end
 
     def pick_boot
-      # case
-      # when app?
-      #   AppBoot.new
-      # when vendor?
-      #   VendorBoot.new
-      # else
-      #   GemBoot.new
-      # end
-      (vendor? ? VendorBoot : GemBoot).new
+      case
+      when app?
+        AppBoot.new
+      when vendor?
+        VendorBoot.new
+      else
+        GemBoot.new
+      end
     end
 
     def vendor?
