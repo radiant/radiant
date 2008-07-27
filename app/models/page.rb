@@ -187,6 +187,7 @@ class Page < ActiveRecord::Base
     def load_subclasses
       ([RADIANT_ROOT] + Radiant::Extension.descendants.map(&:root)).each do |path|
         Dir["#{path}/app/models/*_page.rb"].each do |page|
+          require page
           $1.camelize.constantize if page =~ %r{/([^/]+)\.rb}
         end
       end
@@ -279,5 +280,3 @@ class Page < ActiveRecord::Base
       text
     end  
 end
-
-Page.load_subclasses
