@@ -1,6 +1,7 @@
 == Change Log
 
 === 0.6.8 Incise
+* Add <r:yield /> tag to support snippets that accept blocks. [Andrew Neil]
 * Fix bug with FileNotFoundPage subclasses and draft status. [cradle]
 * Update radiant:freeze:edge task to support BRANCH, TAG, and REVISION. [John 
 Muhl]
