@@ -1,6 +1,7 @@
 == Change Log
 
-=== Edge
+=== 0.6.8 Incise
+* Fix bug with FileNotFoundPage subclasses and draft status. [cradle]
 * Update radiant:freeze:edge task to support BRANCH, TAG, and REVISION. [John 
 Muhl]
 * Update to Haml 2.0.1. [Jim Gay]
