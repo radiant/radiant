@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Update to Haml 2.0.1. [Jim Gay]
 * Fix radiant:update:configs task to properly evaluate environment.rb
 [Sean Cribbs]
 * Fix page subclass loading issues. [Sean Cribbs]
