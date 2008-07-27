@@ -1,6 +1,8 @@
 == Change Log
 
 === Edge
+* Fix radiant:update:configs task to properly evaluate environment.rb
+[Sean Cribbs]
 * Fix page subclass loading issues. [Sean Cribbs]
 * Add <r:unless_ancestor_or_self> and <r:unless_self> tags. [Tim Gossett]
 * Add specific installation modes for gzip and bzip2 compression. [Sean Cribbs]

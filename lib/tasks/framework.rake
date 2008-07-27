@@ -101,18 +101,26 @@ unless File.directory? "#{RAILS_ROOT}/app"
 
       desc "Update config/boot.rb from your current radiant install"
       task :configs do
+        require 'erb'
         FileUtils.cp("#{File.dirname(__FILE__)}/../generators/instance/templates/instance_boot.rb", RAILS_ROOT + '/config/boot.rb')
         instance_env = "#{RAILS_ROOT}/config/environment.rb"
+        tmp_env = "#{RAILS_ROOT}/config/environment.tmp"
+        File.open(tmp_env, 'w') do |f| 
+          f.write ERB.new(File.read(instance_env)).result(lambda do
+             app_name = File.basename(File.expand_path(RAILS_ROOT))
+          end)
+        end
         gen_env = "#{File.dirname(__FILE__)}/../generators/instance/templates/instance_environment.rb"
         backup_env = "#{RAILS_ROOT}/config/environment.bak"
-        unless FileUtils.compare_file(instance_env, gen_env)
+        unless FileUtils.compare_file(instance_env, tmp_env)
           FileUtils.cp(instance_env, backup_env)
-          FileUtils.cp(gen_env, instance_env)
+          FileUtils.cp(tmp_env, instance_env)
           puts "** WARNING **
 config/environment.rb was changed in Radiant 0.6.5. Your original has been
 backed up to config/environment.bak and replaced with the packaged version.
 Please copy your customizations to the new file."
         end
+        FileUtils.rm(tmp_env)
       end
       
       desc "Update admin images from your current radiant install"
