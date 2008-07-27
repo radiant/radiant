@@ -55,16 +55,18 @@ document.observe('dom:loaded', function() {
     });
   });
 
-  when('page_status_id', function(select){
-    if($F('page_status_id') == '100')
-      $('publication-date').show().select('select').invoke('enable');
-
-    select.observe('change', function(){
-      if($F(this) == '100')
+  when('publication-date', function(pub_date){
+    if($('page_status_id')) {
+      if($F('page_status_id') == '100')
         $('publication-date').show().select('select').invoke('enable');
-      else
-        $('publication-date').hide().select('select').invoke('disable');
-    })
+
+      $('page_status_id').observe('change', function(){
+        if($F(this) == '100')
+          $('publication-date').show().select('select').invoke('enable');
+        else
+          $('publication-date').hide().select('select').invoke('disable');
+      })
+    }
   });
 
   when('notice', function(notice) {

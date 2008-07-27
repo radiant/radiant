@@ -63,10 +63,11 @@
                     %label{:for=>"page_status_id"}
                       Status
                     = select "page", "status_id", Status.find_all.map { |s| [s.name, s.id] }, {}
-                  %p#publication-date{:style => "display: none"}
-                    %label{:for=>"page_published_at"}
-                      Published At
-                    = datetime_select "page", "published_at", :disabled => true
+                  - if @config['page.edit.published_date?']
+                    %p#publication-date{:style => "display: none"}
+                      %label{:for=>"page_published_at"}
+                        Published At
+                      = datetime_select "page", "published_at", :disabled => true
                   = render_region :layout_row
                 %span.clear &nbsp;
               - parts_bottom.edit_timestamp do

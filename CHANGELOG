@@ -1,6 +1,8 @@
 == Change Log
 
 === 0.6.8 Incise
+* Hide page publish date selector unless page.edit.published_date? config is 
+set. [Sean Cribbs]
 * Add <r:yield /> tag to support snippets that accept blocks. [Andrew Neil]
 * Fix bug with FileNotFoundPage subclasses and draft status. [cradle]
 * Update radiant:freeze:edge task to support BRANCH, TAG, and REVISION. [John 
