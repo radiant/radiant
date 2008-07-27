@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Fix page subclass loading issues. [Sean Cribbs]
 * Add <r:unless_ancestor_or_self> and <r:unless_self> tags. [Tim Gossett]
 * Add specific installation modes for gzip and bzip2 compression. [Sean Cribbs]
 * Added extension installation scripts. [Sean Cribbs]

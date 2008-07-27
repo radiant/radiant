@@ -177,7 +177,7 @@ class Page < ActiveRecord::Base
           n.strip
         end
       end
-      @display_name = @display_name + " - not installed" if missing?
+      @display_name = @display_name + " - not installed" if missing? && @display_name !~ /not installed/
       @display_name
     end
     def display_name=(string)
@@ -185,8 +185,10 @@ class Page < ActiveRecord::Base
     end
     
     def load_subclasses
-      Dir["#{RADIANT_ROOT}/app/models/*_page.rb"].each do |page|
-        $1.camelize.constantize if page =~ %r{/([^/]+)\.rb}
+      ([RADIANT_ROOT] + Radiant::Extension.descendants.map(&:root)).each do |path|
+        Dir["#{path}/app/models/*_page.rb"].each do |page|
+          $1.camelize.constantize if page =~ %r{/([^/]+)\.rb}
+        end
       end
       unless Page.connection.tables.empty? # Haven't bootstrapped yet
         Page.connection.select_values("SELECT DISTINCT class_name FROM pages WHERE class_name <> '' AND class_name IS NOT NULL").each do |p|
