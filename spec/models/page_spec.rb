@@ -377,7 +377,15 @@ describe Page, "#find_by_url" do
   it 'should find the FileNotFoundPage when a page does not exist' do
     @page.find_by_url('/nothing-doing/').should == pages(:file_not_found)
   end
-  
+
+  it 'should find a draft FileNotFoundPage in dev mode' do
+    @page.find_by_url('/drafts/no-page-here', false).should == pages(:lonely_draft_file_not_found)
+  end
+
+  it 'should not find a draft FileNotFoundPage in live mode' do
+    @page.find_by_url('/drafts/no-page-here').should_not == pages(:lonely_draft_file_not_found)
+  end
+
   it 'should find a custom file not found page' do
     @page.find_by_url('/gallery/nothing-doing/').should == pages(:no_picture)
   end
