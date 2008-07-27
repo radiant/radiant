@@ -7,6 +7,10 @@ class SnippetsScenario < Scenario::Base
     create_snippet "radius", :content => "<r:title />"
     create_snippet "global_page_cascade", :content => "<r:children:each><r:page:title /> </r:children:each>"
     create_snippet "recursive", :content => "<r:children:each><r:snippet name='recursive' /></r:children:each><r:title />"
+    create_snippet "yielding", :content => "Before...<r:yield/>...and after"
+    create_snippet "div_wrap", :content => "<div><r:yield/></div>"
+    create_snippet "nested_yields", :content => '<snippet name="div_wrap">above <r:yield/> below</snippet>'
+    create_snippet "yielding_often", :content => '<r:yield/> is <r:yield/>er than <r:yield/>'
   end
   
   helpers do
