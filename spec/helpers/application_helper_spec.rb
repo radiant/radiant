@@ -70,15 +70,15 @@ describe ApplicationHelper do
   it "should generate links for the admin navigation" do
     helper.stub!(:current_user).and_return(users(:admin))
     helper.links_for_navigation.should =~ Regexp.new("/admin/pages")
-    helper.links_for_navigation.should =~ Regexp.new(separator)
+    helper.links_for_navigation.should =~ Regexp.new(helper.separator)
     helper.links_for_navigation.should =~ Regexp.new("/admin/snippets")
     helper.links_for_navigation.should =~ Regexp.new("/admin/layouts")
   end
   
   it "should hide admin links that should not be visible to the current user" do
-    stub!(:current_user).and_return(users(:existing))
+    helper.stub!(:current_user).and_return(users(:existing))
     helper.links_for_navigation.should =~ Regexp.new("/admin/pages")
-    helper.links_for_navigation.should =~ Regexp.new(separator)
+    helper.links_for_navigation.should =~ Regexp.new(helper.separator)
     helper.links_for_navigation.should =~ Regexp.new("/admin/snippets")
     helper.links_for_navigation.should_not =~ Regexp.new("/admin/layouts")
   end
@@ -92,7 +92,7 @@ describe ApplicationHelper do
     helper.stub!(:request).and_return(request)
     request.stub!(:request_uri).and_return("/foo/bar")
     helper.current_url?("/foo/bar/").should_not be_false
-    helper.urrent_url?("/foo//bar").should_not be_false
+    helper.current_url?("/foo//bar").should_not be_false
     helper.current_url?("/baz/bam").should_not be_true
     helper.current_url?(:controller => "admin/page", :action => "index").should_not be_true
   end

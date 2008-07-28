@@ -11,32 +11,32 @@ describe Admin::PageHelper do
 
   it "should have meta errors if the page has errors on the slug" do
     @errors.should_receive(:[]).with(:slug).and_return("Error")
-    meta_errors?.should be_true
+    helper.meta_errors?.should be_true
   end
 
   it "should have meta errors if the page has errors on the breadcrumb" do
     @errors.should_receive(:[]).with(:slug).and_return(nil)
     @errors.should_receive(:[]).with(:breadcrumb).and_return("Error")
-    meta_errors?.should be_true
+    helper.meta_errors?.should be_true
   end
 
   it "should render the tag reference" do
-    should_receive(:render).at_least(:once).and_return("Tag Reference")
-    tag_reference("Page").should =~ /Tag Reference/
+    helper.should_receive(:render).at_least(:once).and_return("Tag Reference")
+    helper.tag_reference("Page").should =~ /Tag Reference/
   end
 
   it "should render the filter reference" do
-    filter_reference("Textile").should == TextileFilter.description
-    filter_reference("").should == "There is no filter on the current page part."
+    helper.filter_reference("Textile").should == TextileFilter.description
+    helper.filter_reference("").should == "There is no filter on the current page part."
   end
 
   it "should have a default filter name" do
     @page.should_receive(:parts).and_return([])
-    default_filter_name.should == ""
+    helper.default_filter_name.should == ""
   end
 
   it "should find the homepage" do
-    homepage.should == pages(:home)
+    helper.homepage.should == pages(:home)
   end
   
   it "should render javascript for the page editing form" do
