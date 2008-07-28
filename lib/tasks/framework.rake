@@ -112,13 +112,13 @@ unless File.directory? "#{RAILS_ROOT}/app"
         FileUtils.cp("#{File.dirname(__FILE__)}/../generators/instance/templates/instance_boot.rb", RAILS_ROOT + '/config/boot.rb')
         instance_env = "#{RAILS_ROOT}/config/environment.rb"
         tmp_env = "#{RAILS_ROOT}/config/environment.tmp"
+        gen_env = "#{File.dirname(__FILE__)}/../generators/instance/templates/instance_environment.rb"
+        backup_env = "#{RAILS_ROOT}/config/environment.bak"
         File.open(tmp_env, 'w') do |f| 
-          f.write ERB.new(File.read(instance_env)).result(lambda do
+          f.write ERB.new(File.read(gen_env)).result(lambda do
              app_name = File.basename(File.expand_path(RAILS_ROOT))
           end)
         end
-        gen_env = "#{File.dirname(__FILE__)}/../generators/instance/templates/instance_environment.rb"
-        backup_env = "#{RAILS_ROOT}/config/environment.bak"
         unless FileUtils.compare_file(instance_env, tmp_env)
           FileUtils.cp(instance_env, backup_env)
           FileUtils.cp(tmp_env, instance_env)

@@ -1,5 +1,8 @@
 == Change Log
 
+=== Edge
+* Correct error in radiant:update:configs task. [Sean Cribbs]
+
 === 0.6.8 Incise
 * Hide page publish date selector unless page.edit.published_date? config is 
 set. [Sean Cribbs]
