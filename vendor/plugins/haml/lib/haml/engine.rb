@@ -45,11 +45,11 @@ module Haml
 
     # Creates a new instace of Haml::Engine that will compile the given
     # template string when <tt>render</tt> is called.
-    # See README.rdoc for available options.
+    # See the Haml module documentation for available options.
     #
     #--
     # When adding options, remember to add information about them
-    # to README.rdoc!
+    # to lib/haml.rb!
     #++
     #
     def initialize(template, options = {})
@@ -61,53 +61,44 @@ module Haml
         :autoclose => %w[meta img link br hr input area param col base],
         :preserve => %w[textarea pre],
 
-        :filters => {
-          'sass' => Haml::Filters::Sass,
-          'plain' => Haml::Filters::Plain,
-          'javascript' => Haml::Filters::Javascript,
-          'preserve' => Haml::Filters::Preserve,
-          'redcloth' => Haml::Filters::RedCloth,
-          'textile' => Haml::Filters::Textile,
-          'markdown' => Haml::Filters::Markdown },
         :filename => '(haml)',
         :line => 1,
         :ugly => false,
         :format => :xhtml,
         :escape_html => false
       }
-      @options[:filters].merge! options.delete(:filters) if options[:filters]
       @options.merge! options
 
       unless [:xhtml, :html4, :html5].include?(@options[:format])
         raise Haml::Error, "Invalid format #{@options[:format].inspect}"
       end
 
-      unless @options[:suppress_eval]
-        @options[:filters].merge!({
-          'erb' => Haml::Filters::ERB,
-          'ruby' => Haml::Filters::Ruby
-        })
-      end
-
-      if @options[:locals]
-        warn <<END
-DEPRECATION WARNING:
-The Haml :locals option is deprecated and will be removed in version 2.0.
-Use the locals option for Haml::Engine#render instead.
-END
-      end
-
-      @template = template.rstrip #String
+      @template = template.rstrip + "\n-#\n-#"
       @to_close_stack = []
       @output_tabs = 0
       @template_tabs = 0
       @index = 0
       @flat_spaces = -1
       @newlines = 0
+      @precompiled = ''
+      @merged_text = ''
+      @tab_change  = 0
+
+      if @template =~ /\A(\s*\n)*[ \t]+\S/
+        raise SyntaxError.new("Indenting at the beginning of the document is illegal.", ($1 || "").count("\n"))
+      end
+
+      if @options[:filters]
+        warn <<END
+DEPRECATION WARNING:
+The Haml :filters option is deprecated and will be removed in version 2.1.
+Filters are now automatically registered.
+END
+      end
 
       precompile
-    rescue Haml::Error
-      $!.backtrace.unshift "#{@options[:filename]}:#{@index + $!.line_offset + @options[:line] - 1}" if @index
+    rescue Haml::Error => e
+      e.backtrace.unshift "#{@options[:filename]}:#{(e.line ? e.line + 1 : @index) + @options[:line] - 1}" if @index
       raise
     end
 
@@ -147,7 +138,6 @@ END
     # but if you're relying on local variables defined in the context of scope,
     # they won't work.
     def render(scope = Object.new, locals = {}, &block)
-      locals = (@options[:locals] || {}).merge(locals)
       buffer = Haml::Buffer.new(scope.instance_variable_get('@haml_buffer'), options_for_buffer)
 
       if scope.is_a?(Binding) || scope.is_a?(Proc)

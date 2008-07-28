@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
-require File.dirname(__FILE__) + '/test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 require 'haml/template'
 require File.dirname(__FILE__) + '/mocks/article'
 
-module TestFilter
+module Haml::Filters::Test
   include Haml::Filters::Base
 
   def render(text)
@@ -11,15 +11,21 @@ module TestFilter
   end
 end
 
+module Haml::Helpers
+  def test_partial(name, locals = {})
+    Haml::Engine.new(File.read(File.join(TemplateTest::TEMPLATE_PATH, "_#{name}.haml"))).render(self, locals)
+  end
+end
+
 class TemplateTest < Test::Unit::TestCase
-  @@templates = %w{       very_basic        standard    helpers
+  TEMPLATE_PATH = File.join(File.dirname(__FILE__), "templates")
+  TEMPLATES = %w{         very_basic        standard    helpers
     whitespace_handling   original_engine   list        helpful
     silent_script         tag_parsing       just_stuff  partials
-    filters }
+    filters               nuke_outer_whitespace         nuke_inner_whitespace }
 
   def setup
-    Haml::Template.options = { :filters => { 'test'=>TestFilter } }
-    @base = ActionView::Base.new(File.dirname(__FILE__) + "/templates/", {'article' => Article.new, 'foo' => 'value one'})
+    @base = ActionView::Base.new(TEMPLATE_PATH, 'article' => Article.new, 'foo' => 'value one')
     @base.send(:evaluate_assigns)
 
     # This is used by form_for.
@@ -39,20 +45,16 @@ class TemplateTest < Test::Unit::TestCase
 
   def assert_renders_correctly(name, &render_method)
     render_method ||= proc { |name| @base.render(name) }
-    test = Proc.new do |rendered|
-      load_result(name).split("\n").zip(rendered.split("\n")).each_with_index do |pair, line|
-        message = "template: #{name}\nline:     #{line}"
-        assert_equal(pair.first, pair.last, message)
-      end
+
+    load_result(name).split("\n").zip(render_method[name].split("\n")).each_with_index do |pair, line|
+      message = "template: #{name}\nline:     #{line}"
+      assert_equal(pair.first, pair.last, message)
     end
-    begin
-      test.call(render_method[name])
-    rescue ActionView::TemplateError => e
-      if e.message =~ /Can't run [\w:]+ filter; required (one of|file) ((?:'\w+'(?: or )?)+)(, but none were found| not found)/
-        puts "\nCouldn't require #{$2}; skipping a test."
-      else
-        raise e
-      end
+  rescue ActionView::TemplateError => e
+    if e.message =~ /Can't run [\w:]+ filter; required (one of|file) ((?:'\w+'(?: or )?)+)(, but none were found| not found)/
+      puts "\nCouldn't require #{$2}; skipping a test."
+    else
+      raise e
     end
   end
 
@@ -60,30 +62,24 @@ class TemplateTest < Test::Unit::TestCase
     assert_equal('', render(''))
   end
 
-  def test_templates_should_render_correctly
-    @@templates.each do |template|
+  TEMPLATES.each do |template|
+    define_method "test_template_should_render_correctly [template: #{template}] " do
       assert_renders_correctly template
     end
   end
 
   def test_templates_should_render_correctly_with_render_proc
-    @@templates.each do |template|
-      assert_renders_correctly(template) do |name|
-        engine = Haml::Engine.new(File.read(File.dirname(__FILE__) + "/templates/#{name}.haml"), :filters => { 'test'=>TestFilter })
-        engine.render_proc(@base).call
-      end
+    assert_renders_correctly("standard") do |name|
+      engine = Haml::Engine.new(File.read(File.dirname(__FILE__) + "/templates/#{name}.haml"))
+      engine.render_proc(@base).call
     end
   end
-
+  
   def test_templates_should_render_correctly_with_def_method
-    @@templates.each do |template|
-      assert_renders_correctly(template) do |name|
-        method = "render_haml_" + name.gsub(/[^a-zA-Z0-9]/, '_')
-
-        engine = Haml::Engine.new(File.read(File.dirname(__FILE__) + "/templates/#{name}.haml"), :filters => { 'test'=>TestFilter })
-        engine.def_method(@base, method)
-        @base.send(method)
-      end
+    assert_renders_correctly("standard") do |name|
+      engine = Haml::Engine.new(File.read(File.dirname(__FILE__) + "/templates/#{name}.haml"))
+      engine.def_method(@base, "render_standard")
+      @base.render_standard
     end
   end
 
@@ -113,19 +109,6 @@ class TemplateTest < Test::Unit::TestCase
 
   def test_template_renders_should_eval
     assert_equal("2\n", render("= 1+1"))
-  end
-
-  def test_rhtml_still_renders
-    # Make sure it renders normally
-    res = @base.render("../rhtml/standard")
-    assert !(res.nil? || res.empty?)
-
-    # Register Haml stuff in @base...
-    @base.render("standard") 
-
-    # Does it still render?
-    res = @base.render("../rhtml/standard")
-    assert !(res.nil? || res.empty?)
   end
 
   def test_haml_options

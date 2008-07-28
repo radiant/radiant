@@ -6,6 +6,11 @@ module Haml
   # as well as the base module,
   # Haml::Filters::Base.
   module Filters
+    # Returns a hash of defined filters.
+    def self.defined
+      @defined ||= {}
+    end
+
     # The base module for Haml filters.
     # User-defined filters should be modules including this module.
     #
@@ -28,6 +33,7 @@ module Haml
     #
     module Base
       def self.included(base) # :nodoc:
+        Filters.defined[base.name.split("::").last.downcase] = base
         base.extend(base)
       end
 
@@ -64,11 +70,13 @@ module Haml
           if contains_interpolation?(text)
             return if options[:suppress_eval]
 
-            push_script("#{filter.inspect}.render(#{unescape_interpolation(text)})", false)
+            push_script(<<RUBY, false)
+find_and_preserve(#{filter.inspect}.render(#{unescape_interpolation(text)}))
+RUBY
             return
           end
 
-          rendered = filter.render(text)
+          rendered = Haml::Helpers::find_and_preserve(filter.render(text), precompiler.options[:preserve])
 
           if !options[:ugly]
             push_text(rendered.rstrip.gsub("\n", "\n#{'  ' * @output_tabs}"))
@@ -156,11 +164,28 @@ END
       end
     end
 
+    module Cdata
+      include Base
+
+      def render(text)
+        "<![CDATA[#{("\n" + text).rstrip.gsub("\n", "\n    ")}\n]]>"
+      end
+    end
+
+    module Escaped
+      include Base
+
+      def render(text)
+        Haml::Helpers.html_escape text
+      end
+    end
+
     module Ruby
       include Base
       lazy_require 'stringio'
 
       def compile(precompiler, text)
+        return if precompiler.options[:suppress_eval]
         precompiler.instance_eval do
           push_silent <<-END.gsub("\n", ';')
             _haml_old_stdout = $stdout
@@ -176,19 +201,8 @@ END
     module Preserve
       include Base
 
-      def compile(precompiler, text)
-        text = Haml::Helpers.preserve(text) + "\n"
-
-        precompiler.instance_eval do
-          if contains_interpolation?(text)
-            return if options[:suppress_eval]
-
-            push_silent("_hamlout.buffer << #{unescape_interpolation(text)};")
-            return
-          end
-
-          concat_merged_text(text)
-        end
+      def render(text)
+        Haml::Helpers.preserve text
       end
     end
 
@@ -206,6 +220,7 @@ END
       lazy_require 'erb'
 
       def compile(precompiler, text)
+        return if precompiler.options[:suppress_eval]
         src = ::ERB.new(text).src.sub(/^_erbout = '';/, "").gsub("\n", ';')
         precompiler.send(:push_silent, src)
       end

@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
-
-require 'test/unit'
-require File.dirname(__FILE__) + '/../../lib/sass'
+require File.dirname(__FILE__) + '/../test_helper'
 require 'sass/engine'
 
 class SassEngineTest < Test::Unit::TestCase
@@ -58,6 +56,8 @@ END
     "=foo\n  :color red\n.bar\n  +bang" => "Undefined mixin 'bang'.",
     ".bar\n  =foo\n    :color red\n" => "Mixins may only be defined at the root of a document.",
     "=foo\n  :color red\n.bar\n  +foo\n    :color red" => "Illegal nesting: Nothing may be nested beneath mixin directives.",
+    "    a\n  b: c" => ["Indenting at the beginning of the document is illegal.", 1],
+    " \n   \n\t\n  a\n  b: c" => ["Indenting at the beginning of the document is illegal.", 4],
 
     # Regression tests
     "a\n  b:\n    c\n    d" => ["Illegal nesting: Only attributes may be nested beneath attributes.", 3]
@@ -130,8 +130,8 @@ END
   end
 
   def test_default_function
-    assert_equal("foo {\n  bar: url(foo.png); }\n",
-                 render("foo\n  bar = url(foo.png)\n"));
+    assert_equal("foo {\n  bar: url(foo.png); }\n", render("foo\n  bar = url(foo.png)\n"));
+    assert_equal("foo {\n  bar: url(); }\n", render("foo\n  bar = url()\n"));
   end
 
   def test_basic_multiline_selector
@@ -253,6 +253,12 @@ END
   
   def test_mixins
     renders_correctly "mixins", { :style => :expanded }
+  end
+
+  def test_mixins_dont_interfere_with_sibling_combinator
+    assert_equal("foo + bar {\n  a: b; }\n", render("foo\n  + bar\n    a: b"))
+    assert_equal("foo + bar {\n  a: b; }\nfoo + baz {\n  c: d; }\n",
+                 render("foo\n  +\n    bar\n      a: b\n    baz\n      c: d"))
   end
 
   private

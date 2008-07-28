@@ -377,7 +377,15 @@ describe Page, "#find_by_url" do
   it 'should find the FileNotFoundPage when a page does not exist' do
     @page.find_by_url('/nothing-doing/').should == pages(:file_not_found)
   end
-  
+
+  it 'should find a draft FileNotFoundPage in dev mode' do
+    @page.find_by_url('/drafts/no-page-here', false).should == pages(:lonely_draft_file_not_found)
+  end
+
+  it 'should not find a draft FileNotFoundPage in live mode' do
+    @page.find_by_url('/drafts/no-page-here').should_not == pages(:lonely_draft_file_not_found)
+  end
+
   it 'should find a custom file not found page' do
     @page.find_by_url('/gallery/nothing-doing/').should == pages(:no_picture)
   end
@@ -464,22 +472,36 @@ describe Page, "loading subclasses before bootstrap" do
   end
 end
 
+describe Page, 'loading subclasses after bootstrap' do
+  it "should find subclasses in extensions" do
+    defined?(ArchivePage).should_not be_nil
+  end
+  
+  it "should not adjust the display name of subclasses found in extensions" do
+    ArchivePage.display_name.should_not match(/not installed/)
+  end
+end
+
 describe Page, "class which is applied to a page but not defined" do
   scenario :pages
 
   before :each do
-    eval(%Q{class ClassNotDefined < Page; def self.missing?; false end end}, TOPLEVEL_BINDING)    
-    create_page "Class Not Defined", :class_name => "ClassNotDefined"
-    Object.send(:remove_const, :ClassNotDefined)
+    eval(%Q{class ClassNotDefinedPage < Page; def self.missing?; false end end}, TOPLEVEL_BINDING)    
+    create_page "Class Not Defined", :class_name => "ClassNotDefinedPage"
+    Object.send(:remove_const, :ClassNotDefinedPage)
     Page.load_subclasses
   end
 
   it 'should be created dynamically as a new subclass of Page' do
-    Object.const_defined?("ClassNotDefined").should == true
+    Object.const_defined?("ClassNotDefinedPage").should == true
   end
 
   it 'should indicate that it wasn\'t defined' do
-    ClassNotDefined.missing?.should == true
+    ClassNotDefinedPage.missing?.should == true
+  end
+  
+  it "should adjust the display name to indicate that the page type is not installed" do
+    ClassNotDefinedPage.display_name.should match(/not installed/)
   end
 end
 

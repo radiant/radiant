@@ -1,6 +1,16 @@
 == Change Log
 
-=== Edge
+=== 0.6.8 Incise
+* Hide page publish date selector unless page.edit.published_date? config is 
+set. [Sean Cribbs]
+* Add <r:yield /> tag to support snippets that accept blocks. [Andrew Neil]
+* Fix bug with FileNotFoundPage subclasses and draft status. [cradle]
+* Update radiant:freeze:edge task to support BRANCH, TAG, and REVISION. [John 
+Muhl]
+* Update to Haml 2.0.1. [Jim Gay]
+* Fix radiant:update:configs task to properly evaluate environment.rb
+[Sean Cribbs]
+* Fix page subclass loading issues. [Sean Cribbs]
 * Add <r:unless_ancestor_or_self> and <r:unless_self> tags. [Tim Gossett]
 * Add specific installation modes for gzip and bzip2 compression. [Sean Cribbs]
 * Added extension installation scripts. [Sean Cribbs]

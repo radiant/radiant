@@ -31,30 +31,37 @@ unless File.directory? "#{RAILS_ROOT}/app"
       desc "Lock to latest Edge Radiant or a specific revision with REVISION=X (ex: REVISION=245484e), a tag with TAG=Y (ex: TAG=0.6.6), or a branch with BRANCH=Z (ex: BRANCH=mental)"
       task :edge do
         $verbose = false
-        `git --version` rescue nil
+        system "git --version" rescue nil
         unless !$?.nil? && $?.success?
           $stderr.puts "ERROR: Must have git available in the PATH to lock this application to Edge Radiant"
           exit 1
         end
 
-        rm_rf   "vendor/radiant"
-
         radiant_git = "git://github.com/radiant/radiant.git"
 
-        case
-        when ENV['TAG']
-          system "git clone #{radiant_git} vendor/radiant"
-          system "cd vendor/radiant; git checkout -b #{ENV['TAG']}"
-        when ENV['BRANCH']
-          system "git clone #{radiant_git} vendor/radiant"
-          system "cd vendor/radiant; git checkout --track -b #{ENV['BRANCH']} origin/#{ENV['BRANCH']}"
-        when ENV['REVISION']
-          system "git clone #{radiant_git} vendor/radiant"
-          system "cd vendor/radiant; git checkout -b REV_#{ENV['REVISION']} #{ENV['REVISION']}"
-
+        if File.exist?("vendor/radiant/.git/HEAD")
+          case
+          when ENV['TAG']
+            system "cd vendor/radiant; git pull origin master; git checkout -b #{ENV['TAG']}"
+          when ENV['BRANCH']
+            system "cd vendor/radiant; git pull origin master; git checkout --track -b #{ENV['BRANCH']} origin/#{ENV['BRANCH']}"
+          when ENV['REVISION']
+            system "cd vendor/radiant; git pull origin master; git checkout -b REV_#{ENV['REVISION']} #{ENV['REVISION']}"
+          else
+            system "cd vendor/radiant; git pull origin master"
+          end
         else
-          system "git clone #{radiant_git} vendor/radiant"
-
+          case
+          when ENV['TAG']
+            system "git clone #{radiant_git} vendor/radiant"
+            system "cd vendor/radiant; git checkout -b #{ENV['TAG']}"
+          when ENV['BRANCH']
+            system "git clone #{radiant_git} vendor/radiant"
+            system "cd vendor/radiant; git checkout --track -b #{ENV['BRANCH']} origin/#{ENV['BRANCH']}"
+          when ENV['REVISION']
+            system "git clone #{radiant_git} vendor/radiant"
+            system "cd vendor/radiant; git checkout -b REV_#{ENV['REVISION']} #{ENV['REVISION']}"
+          end
         end
       end
     end
@@ -101,18 +108,26 @@ unless File.directory? "#{RAILS_ROOT}/app"
 
       desc "Update config/boot.rb from your current radiant install"
       task :configs do
+        require 'erb'
         FileUtils.cp("#{File.dirname(__FILE__)}/../generators/instance/templates/instance_boot.rb", RAILS_ROOT + '/config/boot.rb')
         instance_env = "#{RAILS_ROOT}/config/environment.rb"
+        tmp_env = "#{RAILS_ROOT}/config/environment.tmp"
+        File.open(tmp_env, 'w') do |f| 
+          f.write ERB.new(File.read(instance_env)).result(lambda do
+             app_name = File.basename(File.expand_path(RAILS_ROOT))
+          end)
+        end
         gen_env = "#{File.dirname(__FILE__)}/../generators/instance/templates/instance_environment.rb"
         backup_env = "#{RAILS_ROOT}/config/environment.bak"
-        unless FileUtils.compare_file(instance_env, gen_env)
+        unless FileUtils.compare_file(instance_env, tmp_env)
           FileUtils.cp(instance_env, backup_env)
-          FileUtils.cp(gen_env, instance_env)
+          FileUtils.cp(tmp_env, instance_env)
           puts "** WARNING **
 config/environment.rb was changed in Radiant 0.6.5. Your original has been
 backed up to config/environment.bak and replaced with the packaged version.
 Please copy your customizations to the new file."
         end
+        FileUtils.rm(tmp_env)
       end
       
       desc "Update admin images from your current radiant install"

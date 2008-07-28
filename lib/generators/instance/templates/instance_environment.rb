@@ -39,7 +39,7 @@ Radiant::Initializer.run do |config|
   # no regular words or you'll be exposed to dictionary attacks.
   config.action_controller.session = {
     :session_key => '_radiant_session',
-    :secret      => <% require 'digest/sha1' -%>'<%= Digest::SHA1.hexdigest("--#{app_name}--#{Time.now.to_s}--#{rand(10000000)}--") %>'
+    :secret      => <% require 'digest/sha1' %>'<%= Digest::SHA1.hexdigest("--#{app_name}--#{Time.now.to_s}--#{rand(10000000)}--") %>'
   }
   
   # Use the database for sessions instead of the cookie-based default,
@@ -85,3 +85,5 @@ Radiant::Initializer.run do |config|
     ResponseCache.defaults[:logger]    = ActionController::Base.logger
   end
 end
+
+Page.load_subclasses
