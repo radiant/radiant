@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Fix typo in if_content description. [Jim Gay]
 * Correct error in radiant:update:configs task. [Sean Cribbs]
 
 === 0.6.8 Incise
