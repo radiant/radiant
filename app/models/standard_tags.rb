@@ -277,7 +277,7 @@ module StandardTags
   desc %{ 
     Renders the containing elements if all of the listed parts exist on a page.
     By default the @part@ attribute is set to @body@, but you may list more than one
-    part by seprating them with a comma. Setting the optional @inherit@ to true will 
+    part by separating them with a comma. Setting the optional @inherit@ to true will 
     search ancestors independently for each part. By default @inherit@ is set to @false@.
     
     When listing more than one part, you may optionally set the @find@ attribute to @any@
