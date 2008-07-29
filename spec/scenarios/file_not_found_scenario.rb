@@ -1,3 +1,4 @@
+require 'file_not_found_page'
 class CustomFileNotFoundPage < FileNotFoundPage
 end
 

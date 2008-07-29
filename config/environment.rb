@@ -85,5 +85,3 @@ Radiant::Initializer.run do |config|
     ResponseCache.defaults[:logger]    = ActionController::Base.logger
   end
 end
-
-Page.load_subclasses
