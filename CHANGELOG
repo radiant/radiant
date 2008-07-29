@@ -1,10 +1,15 @@
 == Change Log
 
+=== Edge
+* Fix strange Page subclass loading errors in development mode. [Sean Cribbs]
+* Fix typo in if_content description. [Jim Gay]
+* Correct error in radiant:update:configs task. [Sean Cribbs]
+
 === 0.6.8 Incise
 * Hide page publish date selector unless page.edit.published_date? config is 
 set. [Sean Cribbs]
 * Add <r:yield /> tag to support snippets that accept blocks. [Andrew Neil]
-* Fix bug with FileNotFoundPage subclasses and draft status. [cradle]
+* Fix bug with FileNotFoundPage subclasses and draft status. [Glenn Murray]
 * Update radiant:freeze:edge task to support BRANCH, TAG, and REVISION. [John 
 Muhl]
 * Update to Haml 2.0.1. [Jim Gay]

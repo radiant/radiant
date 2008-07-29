@@ -188,13 +188,16 @@ class Page < ActiveRecord::Base
     def load_subclasses
       ([RADIANT_ROOT] + Radiant::Extension.descendants.map(&:root)).each do |path|
         Dir["#{path}/app/models/*_page.rb"].each do |page|
-          require page
           $1.camelize.constantize if page =~ %r{/([^/]+)\.rb}
         end
       end
       unless Page.connection.tables.empty? # Haven't bootstrapped yet
         Page.connection.select_values("SELECT DISTINCT class_name FROM pages WHERE class_name <> '' AND class_name IS NOT NULL").each do |p|
-          eval(%Q{class #{p} < Page; def self.missing?; true end end}, TOPLEVEL_BINDING) unless Object.const_defined?(p)
+          begin
+            p.constantize
+          rescue NameError, LoadError
+            eval(%Q{class #{p} < Page; def self.missing?; true end end}, TOPLEVEL_BINDING)
+          end
         end
       end
     end

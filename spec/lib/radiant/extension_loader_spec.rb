@@ -151,6 +151,16 @@ describe Radiant::ExtensionLoader do
     @instance.activate_extensions
     extensions.all?(&:active?).should be_true
   end
+  
+  it "should (re)load Page subclasses activation" do
+    @initializer.should_receive(:initialize_default_admin_tabs)
+    @initializer.should_receive(:initialize_framework_views)
+    @admin.should_receive(:load_default_regions)
+    extensions = [BasicExtension, OverridingExtension]
+    @instance.extensions = extensions
+    Page.should_receive(:load_subclasses)
+    @instance.activate_extensions
+  end
 end
 
 

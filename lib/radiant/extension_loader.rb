@@ -92,6 +92,8 @@ module Radiant
       # Reset the admin UI regions
       initializer.admin.load_default_regions
       extensions.each &:activate
+      # Make sure we have our subclasses loaded!
+      Page.load_subclasses
     end
     alias :reactivate :activate_extensions
 
