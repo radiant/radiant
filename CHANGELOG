@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Correct bugs in radiant:freeze:edge task. [Sean Cribbs]
 * Fix strange Page subclass loading errors in development mode. [Sean Cribbs]
 * Fix typo in if_content description. [Jim Gay]
 * Correct error in radiant:update:configs task. [Sean Cribbs]
