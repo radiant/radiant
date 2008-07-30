@@ -1,6 +1,9 @@
 == Change Log
 
 === Edge
+* Correct authenticity token errors when using cookie session store [Sean 
+Cribbs]
+* Make script/extension executable. [Sean Cribbs]
 * Correct bugs in radiant:freeze:edge task. [Sean Cribbs]
 * Fix strange Page subclass loading errors in development mode. [Sean Cribbs]
 * Fix typo in if_content description. [Jim Gay]
