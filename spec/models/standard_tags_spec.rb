@@ -316,6 +316,10 @@ describe "Standard Tags" do
       it 'should render the contained block if the current or ancestor pages do not have the specified parts' do
         page(:guests).should render('<r:unless_content part="madeup, imaginary" inherit="true">true</r:unless_content>').as('true')
       end
+
+      it "should note render the contained block if the specified part does not exist but does exist on an ancestor" do
+        page.should render('<r:unless_content part="sidebar" inherit="true">false</r:unless_content>').as('')
+      end
     end
     it "without 'part' attribute should not render the contained block if the 'body' part exists" do
       page.should render('<r:unless_content>false</r:unless_content>').as('')
@@ -327,6 +331,10 @@ describe "Standard Tags" do
 
     it "should render the contained block if the specified part does not exist" do
       page.should render('<r:unless_content part="asdf">false</r:unless_content>').as('false')
+    end
+
+    it "should render the contained block if the specified part does not exist but does exist on an ancestor" do
+      page.should render('<r:unless_content part="sidebar">false</r:unless_content>').as('false')
     end
     
     describe "with more than one part given (separated by comma)" do
@@ -341,17 +349,17 @@ describe "Standard Tags" do
       
       describe "with the 'inherit' attribute set to 'true'" do
         it "should render the contained block if the current or ancestor pages have none of the specified parts" do
-          page.should render('<r:unless_content part="imaginary, madeup">true</r:unless_content>').as('true')
+          page.should render('<r:unless_content part="imaginary, madeup" inherit="true">true</r:unless_content>').as('true')
         end
         
         it "should not render the contained block if all of the specified parts are present on the current or ancestor pages" do
-          page(:party).should render('<r:unless_content part="favors, extended">true</r:unless_content>').as('')
+          page(:party).should render('<r:unless_content part="favors, extended" inherit="true">true</r:unless_content>').as('')
         end
       end
       
       describe "with the 'find' attribute set to 'all'" do
         it "should not render the contained block if all of the specified parts exist" do
-          page.should render('<r:unless_content part="body, sidebar" find="all">true</r:unless_content>').as('')
+          page(:home).should render('<r:unless_content part="body, sidebar" find="all">true</r:unless_content>').as('')
         end
 
         it "should render the contained block unless all of the specified parts exist" do
