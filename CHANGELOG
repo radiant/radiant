@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Correctly set default 'inherit' to false on <r:unless_content> [Mark A. Yoon]
 * Correct authenticity token errors when using cookie session store [Sean 
 Cribbs]
 * Make script/extension executable. [Sean Cribbs]
