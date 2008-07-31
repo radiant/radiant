@@ -320,13 +320,13 @@ module StandardTags
     By default the @find@ attribute is set to @all@.
     
     *Usage:*
-    <pre><code><r:unless_content [part="part_name, other_part"] [inherit="true"] [find="any"]>...</r:unless_content></code></pre>
+    <pre><code><r:unless_content [part="part_name, other_part"] [inherit="false"] [find="any"]>...</r:unless_content></code></pre>
   }
   tag 'unless_content' do |tag|
     page = tag.locals.page
     part_name = tag_part_name(tag)
     parts_arr = part_name.split(',')
-    inherit = boolean_attr_or_error(tag, 'inherit', true)
+    inherit = boolean_attr_or_error(tag, 'inherit', false)
     find = attr_or_error(tag, :attribute_name => 'find', :default => 'all', :values => 'any, all')
     expandable, all_found = true, true
     part_page = page

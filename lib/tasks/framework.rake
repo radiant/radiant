@@ -31,8 +31,7 @@ unless File.directory? "#{RAILS_ROOT}/app"
       desc "Lock to latest Edge Radiant or a specific revision with REVISION=X (ex: REVISION=245484e), a tag with TAG=Y (ex: TAG=0.6.6), or a branch with BRANCH=Z (ex: BRANCH=mental)"
       task :edge do
         $verbose = false
-        system "git --version" rescue nil
-        unless !$?.nil? && $?.success?
+        unless system "git --version"
           $stderr.puts "ERROR: Must have git available in the PATH to lock this application to Edge Radiant"
           exit 1
         end
@@ -40,28 +39,18 @@ unless File.directory? "#{RAILS_ROOT}/app"
         radiant_git = "git://github.com/radiant/radiant.git"
 
         if File.exist?("vendor/radiant/.git/HEAD")
-          case
-          when ENV['TAG']
-            system "cd vendor/radiant; git pull origin master; git checkout -b #{ENV['TAG']}"
-          when ENV['BRANCH']
-            system "cd vendor/radiant; git pull origin master; git checkout --track -b #{ENV['BRANCH']} origin/#{ENV['BRANCH']}"
-          when ENV['REVISION']
-            system "cd vendor/radiant; git pull origin master; git checkout -b REV_#{ENV['REVISION']} #{ENV['REVISION']}"
-          else
-            system "cd vendor/radiant; git pull origin master"
-          end
+          system "cd vendor/radiant; git checkout master; git pull origin master"
         else
-          case
-          when ENV['TAG']
-            system "git clone #{radiant_git} vendor/radiant"
-            system "cd vendor/radiant; git checkout -b #{ENV['TAG']}"
-          when ENV['BRANCH']
-            system "git clone #{radiant_git} vendor/radiant"
-            system "cd vendor/radiant; git checkout --track -b #{ENV['BRANCH']} origin/#{ENV['BRANCH']}"
-          when ENV['REVISION']
-            system "git clone #{radiant_git} vendor/radiant"
-            system "cd vendor/radiant; git checkout -b REV_#{ENV['REVISION']} #{ENV['REVISION']}"
-          end
+          system "git clone #{radiant_git} vendor/radiant"
+        end
+
+        case
+        when ENV['TAG']
+          system "cd vendor/radiant; git checkout -b v#{ENV['TAG']} #{ENV['TAG']}"
+        when ENV['BRANCH']
+          system "cd vendor/radiant; git checkout --track -b #{ENV['BRANCH']} origin/#{ENV['BRANCH']}"
+        when ENV['REVISION']
+          system "cd vendor/radiant; git checkout -b REV_#{ENV['REVISION']} #{ENV['REVISION']}"
         end
       end
     end
@@ -70,7 +59,7 @@ unless File.directory? "#{RAILS_ROOT}/app"
     task :unfreeze do
       rm_rf "vendor/radiant"
     end
-    
+
     desc "Update both configs, scripts and public/javascripts from Radiant"
     task :update => [ "update:scripts", "update:javascripts", "update:configs", "update:images", "update:stylesheets" ]
 
@@ -79,11 +68,11 @@ unless File.directory? "#{RAILS_ROOT}/app"
       task :scripts do
         local_base = "script"
         edge_base  = "#{File.dirname(__FILE__)}/../../scripts"
-        
+
         local = Dir["#{local_base}/**/*"].reject { |path| File.directory?(path) }
         edge  = Dir["#{edge_base}/**/*"].reject { |path| File.directory?(path) }
         edge  = edge.reject { |f| f =~ /(generate|plugin|destroy)$/ }
-        
+
         edge.each do |script|
           base_name = script[(edge_base.length+1)..-1]
           next if local.detect { |path| base_name == path[(local_base.length+1)..-1] }
@@ -114,7 +103,7 @@ unless File.directory? "#{RAILS_ROOT}/app"
         tmp_env = "#{RAILS_ROOT}/config/environment.tmp"
         gen_env = "#{File.dirname(__FILE__)}/../generators/instance/templates/instance_environment.rb"
         backup_env = "#{RAILS_ROOT}/config/environment.bak"
-        File.open(tmp_env, 'w') do |f| 
+        File.open(tmp_env, 'w') do |f|
           f.write ERB.new(File.read(gen_env)).result(lambda do
              app_name = File.basename(File.expand_path(RAILS_ROOT))
           end)
@@ -129,20 +118,20 @@ Please copy your customizations to the new file."
         end
         FileUtils.rm(tmp_env)
       end
-      
+
       desc "Update admin images from your current radiant install"
       task :images do
         project_dir = RAILS_ROOT + '/public/images/admin/'
         images = Dir["#{File.dirname(__FILE__)}/../../public/images/admin/*"]
         FileUtils.cp(images, project_dir)
       end
-      
+
       desc "Update admin stylesheets from your current radiant install"
       task :stylesheets do
         project_dir = RAILS_ROOT + '/public/stylesheets/admin/'
         stylesheets = Dir["#{File.dirname(__FILE__)}/../../public/stylesheets/admin/*.css"]
         FileUtils.cp(stylesheets, project_dir)
-      end      
+      end
     end
   end
 end
