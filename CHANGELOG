@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Make <r:random> accept dynamically generated options. [Jim Gay, Sean Cribbs]
 * Correctly set default 'inherit' to false on <r:unless_content> [Mark A. Yoon]
 * Correct authenticity token errors when using cookie session store [Sean 
 Cribbs]

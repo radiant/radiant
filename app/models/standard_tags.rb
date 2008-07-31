@@ -604,11 +604,11 @@ module StandardTags
     tag.expand
     options = tag.locals.random
     option = options[rand(options.size)]
-    option.call if option
+    option if option
   end
   tag 'random:option' do |tag|
     items = tag.locals.random
-    items << tag.block
+    items << tag.expand
   end
   
   desc %{  
