@@ -317,10 +317,11 @@ describe "Standard Tags" do
         page(:guests).should render('<r:unless_content part="madeup, imaginary" inherit="true">true</r:unless_content>').as('true')
       end
 
-      it "should note render the contained block if the specified part does not exist but does exist on an ancestor" do
+      it "should not render the contained block if the specified part does not exist but does exist on an ancestor" do
         page.should render('<r:unless_content part="sidebar" inherit="true">false</r:unless_content>').as('')
       end
     end
+    
     it "without 'part' attribute should not render the contained block if the 'body' part exists" do
       page.should render('<r:unless_content>false</r:unless_content>').as('')
     end
