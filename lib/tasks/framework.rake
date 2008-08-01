@@ -104,9 +104,8 @@ unless File.directory? "#{RAILS_ROOT}/app"
         gen_env = "#{File.dirname(__FILE__)}/../generators/instance/templates/instance_environment.rb"
         backup_env = "#{RAILS_ROOT}/config/environment.bak"
         File.open(tmp_env, 'w') do |f|
-          f.write ERB.new(File.read(gen_env)).result(lambda do
-             app_name = File.basename(File.expand_path(RAILS_ROOT))
-          end)
+          app_name = File.basename(File.expand_path(RAILS_ROOT))
+          f.write ERB.new(File.read(gen_env)).result(binding)
         end
         unless FileUtils.compare_file(instance_env, tmp_env)
           FileUtils.cp(instance_env, backup_env)
