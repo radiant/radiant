@@ -67,7 +67,7 @@ unless File.directory? "#{RAILS_ROOT}/app"
       desc "Add new scripts to the instance script/ directory"
       task :scripts do
         local_base = "script"
-        edge_base  = "#{File.dirname(__FILE__)}/../../scripts"
+        edge_base  = "#{File.dirname(__FILE__)}/../../script"
 
         local = Dir["#{local_base}/**/*"].reject { |path| File.directory?(path) }
         edge  = Dir["#{edge_base}/**/*"].reject { |path| File.directory?(path) }
