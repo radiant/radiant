@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Fixed the radiant:update:scripts to find the proper directory [Jim Gay]
 * Factor out dev? functionality in StandardTags, allowing other tags to access
 it. [Sean Cribbs]
 
