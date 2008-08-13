@@ -11,9 +11,7 @@ TESTING HAHAHAHA!
 <h1>Foo</h1>
 
 
-	<pre><code>This is preformatted!
-Look at that!
-Wowie-zowie!</code></pre>
+	<pre><code>This is preformatted!&#x000A;Look at that!&#x000A;Wowie-zowie!</code></pre>
 
 
 	<p><strong>boldilicious!</strong></p>
@@ -40,10 +38,8 @@ This
  \#{also not}
  \\
 <p>
-  <pre>
-This pre is pretty deeply&#x000A;      nested.&#x000A;   Does interpolation work?&#x000A;
-  This one is, too.&#x000A;Nested, that is.&#x000A;&#x000A;
-  </pre>
+  <pre>This pre is pretty deeply&#x000A;      nested.&#x000A;   Does interpolation work?
+    This one is, too.&#x000A;Nested, that is.&#x000A;</pre>
 </p>
 <ul>
 
@@ -71,6 +67,12 @@ This pre is pretty deeply&#x000A;      nested.&#x000A;   Does interpolation work
 
 </ul>
 <div class='res'>178</div>
+<p>
+  <p>I like preserved text:</p>
+  
+  
+  	<pre><code>Foo&#x000A;  Bar!&#x000A;Baz</code></pre>
+</p>
 <ul>
 <li>Foo</li>
 <li>Bar</li>
@@ -79,4 +81,6 @@ This pre is pretty deeply&#x000A;      nested.&#x000A;   Does interpolation work
 Text!
 Hello, World!
 How are you doing today?
-
+&lt;div class=&quot;foo&quot;&gt;
+  &lt;p&gt;I think &amp;mdash; or do I?&lt;/p&gt;
+&lt;/div&gt;

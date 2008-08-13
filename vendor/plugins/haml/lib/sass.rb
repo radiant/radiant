@@ -253,6 +253,22 @@ $LOAD_PATH << dir unless $LOAD_PATH.include?(dir)
 #     font-size: 30em;
 #     font-weight: bold; }
 #
+# === Rule Escaping
+#
+# In case, for whatever reason, you need to write a rule
+# that begins with a Sass-meaningful character,
+# you can escape it with a backslash (<tt>\</tt>).
+# For example:
+#
+#  #main
+#    \+div
+#      clear: both
+#
+# is compiled to:
+#
+#  #main +div {
+#    clear: both; }
+#
 # == Constants
 #
 # Sass has support for setting document-wide constants.
@@ -760,9 +776,16 @@ $LOAD_PATH << dir unless $LOAD_PATH.include?(dir)
 #
 # == Sass Options
 #
-# Options can be set by setting the hash <tt>Sass::Plugin.options</tt>
-# from <tt>environment.rb</tt> in Rails,
-# or by passing an options hash to Sass::Engine.
+# Options can be set by setting the <tt>Sass::Plugin.options</tt> hash
+# in <tt>environment.rb</tt> in Rails...
+#
+#   Sass::Plugin.options[:style] = :compact
+#
+# ...or by setting the <tt>Merb::Config[:sass]</tt> hash in <tt>init.rb</tt> in Merb...
+#
+#   Merb::Config[:sass][:style] = :compact
+# 
+# ...or by passing an options hash to Sass::Engine.new.
 # Available options are:
 #
 # [<tt>:style</tt>]             Sets the style of the CSS output.

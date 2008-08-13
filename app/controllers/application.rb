@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   
   filter_parameter_logging :password, :password_confirmation
   
-  protect_from_forgery :secret => "sweet-harmonious-biscuits"
+  protect_from_forgery
   
   before_filter :set_current_user
   before_filter :set_javascripts_and_stylesheets

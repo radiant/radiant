@@ -316,7 +316,12 @@ describe "Standard Tags" do
       it 'should render the contained block if the current or ancestor pages do not have the specified parts' do
         page(:guests).should render('<r:unless_content part="madeup, imaginary" inherit="true">true</r:unless_content>').as('true')
       end
+
+      it "should not render the contained block if the specified part does not exist but does exist on an ancestor" do
+        page.should render('<r:unless_content part="sidebar" inherit="true">false</r:unless_content>').as('')
+      end
     end
+    
     it "without 'part' attribute should not render the contained block if the 'body' part exists" do
       page.should render('<r:unless_content>false</r:unless_content>').as('')
     end
@@ -327,6 +332,10 @@ describe "Standard Tags" do
 
     it "should render the contained block if the specified part does not exist" do
       page.should render('<r:unless_content part="asdf">false</r:unless_content>').as('false')
+    end
+
+    it "should render the contained block if the specified part does not exist but does exist on an ancestor" do
+      page.should render('<r:unless_content part="sidebar">false</r:unless_content>').as('false')
     end
     
     describe "with more than one part given (separated by comma)" do
@@ -341,17 +350,17 @@ describe "Standard Tags" do
       
       describe "with the 'inherit' attribute set to 'true'" do
         it "should render the contained block if the current or ancestor pages have none of the specified parts" do
-          page.should render('<r:unless_content part="imaginary, madeup">true</r:unless_content>').as('true')
+          page.should render('<r:unless_content part="imaginary, madeup" inherit="true">true</r:unless_content>').as('true')
         end
         
         it "should not render the contained block if all of the specified parts are present on the current or ancestor pages" do
-          page(:party).should render('<r:unless_content part="favors, extended">true</r:unless_content>').as('')
+          page(:party).should render('<r:unless_content part="favors, extended" inherit="true">true</r:unless_content>').as('')
         end
       end
       
       describe "with the 'find' attribute set to 'all'" do
         it "should not render the contained block if all of the specified parts exist" do
-          page.should render('<r:unless_content part="body, sidebar" find="all">true</r:unless_content>').as('')
+          page(:home).should render('<r:unless_content part="body, sidebar" find="all">true</r:unless_content>').as('')
         end
 
         it "should render the contained block unless all of the specified parts exist" do
@@ -449,7 +458,7 @@ describe "Standard Tags" do
   end
 
   describe "<r:snippet>" do
-    it "should the contents of the specified snippet" do
+    it "should render the contents of the specified snippet" do
       page.should render('<r:snippet name="first" />').as('test')
     end
 
@@ -472,6 +481,39 @@ describe "Standard Tags" do
     it "should maintain the global page when the snippet renders recursively" do
       page(:child).should render('<r:snippet name="recursive" />').as("Great GrandchildGrandchildChild")
     end
+
+    it "should render the specified snippet when called as an empty double-tag" do
+      page.should render('<r:snippet name="first"></r:snippet>').as('test')
+    end
+
+    it "should capture contents of a double tag, substituting for <r:yield/> in snippet" do
+      page.should render('<r:snippet name="yielding">inner</r:snippet>').
+        as('Before...inner...and after')
+    end
+    
+    it "should do nothing with contents of double tag when snippet doesn't yield" do
+      page.should render('<r:snippet name="first">content disappears!</r:snippet>').
+        as('test')
+    end
+
+    it "should render nested yielding snippets" do
+      page.should render('<r:snippet name="div_wrap"><r:snippet name="yielding">Hello, World!</r:snippet></r:snippet>').
+      as('<div>Before...Hello, World!...and after</div>')
+    end
+    
+    it "should render double-tag snippets called from within a snippet" do
+      page.should render('<r:snippet name="nested_yields">the content</r:snippet>').
+        as('<snippet name="div_wrap">above the content below</snippet>')
+    end
+    
+    it "should render contents each time yield is called" do
+      page.should render('<r:snippet name="yielding_often">French</r:snippet>').
+        as('French is Frencher than French')
+    end
+  end
+
+  it "should do nothing when called from page body" do
+    page.should render('<r:yield/>').as("")
   end
 
   it '<r:random> should render a randomly selected contained <r:option>' do
@@ -479,8 +521,7 @@ describe "Standard Tags" do
   end
   
   it '<r:random> should render a randomly selected, dynamically set <r:option>' do
-    pending "Options should be able to be dynamically created for <r:random>"
-    page(:parent).should render("<r:random><r:children:each><r:option><r:title /></r:option></r:children:each></r:random>").matching(/^(Child|Child\ 2|Child\ 3)$/)
+    page(:parent).should render("<r:random:children:each:option:title />").matching(/^(Child|Child\ 2|Child\ 3)$/)
   end
 
   it '<r:comment> should render nothing it contains' do

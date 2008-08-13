@@ -342,6 +342,61 @@ $LOAD_PATH << dir unless $LOAD_PATH.include?(dir)
 #     </div>
 #   </div>
 #
+# ==== > and <
+#
+# <tt>></tt> and <tt><</tt> give you more control over the whitespace near a tag.
+# <tt>></tt> will remove all whitespace surrounding a tag,
+# while <tt><</tt> will remove all whitespace immediately within a tag.
+# You can think of them as alligators eating the whitespace:
+# <tt>></tt> faces out of the tag and eats the whitespace on the outside,
+# and <tt><</tt> faces into the tag and eats the whitespace on the inside.
+# They're placed at the end of a tag definition,
+# after class, id, and attribute declarations
+# but before <tt>/</tt> or <tt>=</tt>.
+# For example:
+#
+#   %blockquote<
+#     %div
+#       Foo!
+#
+# is compiled to:
+#
+#   <blockquote><div>
+#     Foo!
+#   </div></blockquote>
+#
+# And:
+#
+#   %img
+#   %img>
+#   %img
+#
+# is compiled to:
+#
+#   <img /><img /><img />
+#
+# And:
+#
+#  %p<= "Foo\nBar"
+#
+# is compiled to:
+#
+#  <p>Foo
+#  Bar</p>
+#
+# And finally:
+#
+#   %img
+#   %pre><
+#     foo
+#     bar
+#   %img
+#
+# is compiled to:
+#
+#   <img /><pre>foo
+#   bar</pre><img />
+#
 # ==== =
 #
 # <tt>=</tt> is placed at the end of a tag definition,
@@ -600,6 +655,9 @@ $LOAD_PATH << dir unless $LOAD_PATH.include?(dir)
 # [javascript] Surrounds the filtered text with <script> and CDATA tags.
 #              Useful for including inline Javascript.
 #
+# [escaped]    Works the same as plain, but HTML-escapes the text
+#              before placing it in the document.
+#
 # [ruby]       Parses the filtered text with the normal Ruby interpreter.
 #              All output sent to <tt>$stdout</tt>, like with +puts+,
 #              is output into the Haml document.
@@ -630,7 +688,7 @@ $LOAD_PATH << dir unless $LOAD_PATH.include?(dir)
 #              is installed
 #              (BlueCloth takes precedence if both are installed).
 #
-# You can also define your own filters (see Setting Options, below).
+# You can also define your own filters (see Haml::Filters).
 #
 # === Ruby evaluators
 #
@@ -856,9 +914,16 @@ $LOAD_PATH << dir unless $LOAD_PATH.include?(dir)
 #
 # === Haml Options
 #
-# Options can be set by setting the hash <tt>Haml::Template.options</tt>
-# from <tt>environment.rb</tt> in Rails,
-# or by passing an options hash to Haml::Engine.
+# Options can be set by setting the <tt>Haml::Template.options</tt> hash
+# in <tt>environment.rb</tt> in Rails...
+#
+#   Haml::Template.options[:output] = :html5
+#
+# ...or by setting the <tt>Merb::Config[:haml]</tt> hash in <tt>init.rb</tt> in Merb...
+#
+#   Merb::Config[:haml][:output] = :html5
+# 
+# ...or by passing an options hash to Haml::Engine.new.
 # Available options are:
 #
 # [<tt>:output</tt>]        Determines the output format. The default is :xhtml.
@@ -869,7 +934,8 @@ $LOAD_PATH << dir unless $LOAD_PATH.include?(dir)
 # [<tt>:escape_html</tt>]   Sets whether or not to escape HTML-sensitive characters in script.
 #                           If this is true, = behaves like &=;
 #                           otherwise, it behaves like !=.
-#                           <b>Note that this escapes tag attributes.</b>
+#                           Note that if this is set, != should be used for yielding to subtemplates
+#                           and rendering partials.
 #                           Defaults to false.
 #
 # [<tt>:suppress_eval</tt>] Whether or not attribute hashes and Ruby scripts
@@ -892,12 +958,6 @@ $LOAD_PATH << dir unless $LOAD_PATH.include?(dir)
 # [<tt>:line</tt>]          The line offset of the Haml template being parsed.
 #                           This is useful for inline templates,
 #                           similar to the last argument to Kernel#eval.
-#
-# [<tt>:filters</tt>]       A hash of filters that can be applied to Haml code.
-#                           The keys are the string names of the filters;
-#                           the values are references to the classes of the filters.
-#                           User-defined filters should always have lowercase keys,
-#                           and should have the interface described in Haml::Filters::Base.
 #
 # [<tt>:autoclose</tt>]     A list of tag names that should be automatically self-closed
 #                           if they have no content.
@@ -937,7 +997,7 @@ module Haml
 
     if File.exists?(scope('REVISION'))
       rev = File.read(scope('REVISION')).strip
-      rev = nil if rev !~ /a-f0-9+/
+      rev = nil if rev !~ /[a-f0-9]+/
     end
 
     if rev.nil? && File.exists?(scope('.git/HEAD'))

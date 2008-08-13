@@ -84,58 +84,70 @@ module Haml
 
     # Renders +text+ with the proper tabulation. This also deals with
     # making a possible one-line tag one line or not.
-    def push_text(text, tab_change = 0)
+    def push_text(text, dont_tab_up = false, tab_change = 0)
       if @tabulation > 0 && !@options[:ugly]
-        # Have to push every line in by the extra user set tabulation
-        text.gsub!(/^/m, '  ' * @tabulation)
+        # Have to push every line in by the extra user set tabulation.
+        # Don't push lines with just whitespace, though,
+        # because that screws up precompiled indentation.
+        text.gsub!(/^(?!\s+$)/m, tabs)
+        text.sub!(tabs, '') if dont_tab_up
       end
 
       @buffer << text
       @real_tabs += tab_change
+      @dont_tab_up_next_line = false
     end
 
     # Properly formats the output of a script that was run in the
     # instance_eval.
-    def push_script(result, preserve_script, close_tag = nil, preserve_tag = false, escape_html = false)
+    def push_script(result, preserve_script, in_tag = false, preserve_tag = false,
+                    escape_html = false, nuke_inner_whitespace = false)
       tabulation = @real_tabs
 
       if preserve_tag
         result = Haml::Helpers.preserve(result)
       elsif preserve_script
-        result = Haml::Helpers.find_and_preserve(result)
+        result = Haml::Helpers.find_and_preserve(result, options[:preserve])
       end
 
-      result = result.to_s
-      while result[-1] == ?\n
-        # String#chomp is slow
-        result = result[0...-1]
-      end
-
+      result = result.to_s.rstrip
       result = html_escape(result) if escape_html
 
-      if close_tag && (@options[:ugly] || !result.include?("\n") || preserve_tag)
-        @buffer << "#{result}</#{close_tag}>\n"
+      has_newline = result.include?("\n")
+      if in_tag && !nuke_inner_whitespace && (@options[:ugly] || !has_newline || preserve_tag)
+        @buffer << result
         @real_tabs -= 1
-      else
-        if close_tag
-          @buffer << "\n"
-        end
+        return
+      end
 
-        result = result.gsub(/^/m, tabs(tabulation)) unless @options[:ugly]
-        @buffer << "#{result}\n"
+      @buffer << "\n" if in_tag && !nuke_inner_whitespace
 
-        if close_tag
-          # We never get here if @options[:ugly] is true
-          @buffer << "#{tabs(tabulation-1)}</#{close_tag}>\n"
-          @real_tabs -= 1
-        end
+      # Precompiled tabulation may be wrong
+      if @tabulation > 0 && !in_tag
+        result = tabs + result
+      end
+
+      if has_newline && !@options[:ugly]
+        result = result.gsub "\n", "\n" + tabs(tabulation)
+
+        # Add tabulation if it wasn't precompiled
+        result = tabs(tabulation) + result if in_tag && !nuke_inner_whitespace
+      end
+      @buffer << "#{result}"
+      @buffer << "\n" unless nuke_inner_whitespace
+
+      if in_tag && !nuke_inner_whitespace
+        # We never get here if @options[:ugly] is true
+        @buffer << tabs(tabulation-1)
+        @real_tabs -= 1
       end
       nil
     end
 
     # Takes the various information about the opening tag for an
     # element, formats it, and adds it to the buffer.
-    def open_tag(name, self_closing, try_one_line, preserve_tag, escape_html, class_id, obj_ref, content, *attributes_hashes)
+    def open_tag(name, self_closing, try_one_line, preserve_tag, escape_html, class_id,
+                 nuke_outer_whitespace, nuke_inner_whitespace, obj_ref, content, *attributes_hashes)
       tabulation = @real_tabs
 
       attributes = class_id
@@ -146,25 +158,20 @@ module Haml
       self.class.merge_attrs(attributes, parse_object_ref(obj_ref)) if obj_ref
 
       if self_closing
-        str = " />\n"
-      elsif try_one_line || preserve_tag
-        str = ">"
+        str = " />" + (nuke_outer_whitespace ? "" : "\n")
       else
-        str = ">\n"
+        str = ">" + (try_one_line || preserve_tag || nuke_inner_whitespace ? "" : "\n")
       end
 
       attributes = Precompiler.build_attributes(html?, @options[:attr_wrapper], attributes)
-      @buffer << "#{@options[:ugly] ? '' : tabs(tabulation)}<#{name}#{attributes}#{str}"
+      @buffer << "#{nuke_outer_whitespace || @options[:ugly] ? '' : tabs(tabulation)}<#{name}#{attributes}#{str}"
 
       if content
-        if @options[:ugly] || !content.include?("\n")
-          @buffer << "#{content}</#{name}>\n"
-        else
-          @buffer << "\n#{tabs(@real_tabs+1)}#{content}\n#{tabs(@real_tabs)}</#{name}>\n"
-        end
-      elsif !self_closing
-        @real_tabs += 1
+        @buffer << "#{content}</#{name}>" << (nuke_outer_whitespace ? "" : "\n")
+        return
       end
+
+      @real_tabs += 1 unless self_closing || nuke_inner_whitespace
     end
 
     def self.merge_attrs(to, from)
@@ -191,8 +198,8 @@ module Haml
 
     @@tab_cache = {}
     # Gets <tt>count</tt> tabs. Mostly for internal use.
-    def tabs(count)
-      tabs = count + @tabulation
+    def tabs(count = 0)
+      tabs = [count + @tabulation, 0].max
       @@tab_cache[tabs] ||= '  ' * tabs
     end
 

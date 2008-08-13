@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require File.dirname(__FILE__) + '/test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 require 'haml/template'
 
 class HelperTest < Test::Unit::TestCase
@@ -105,7 +105,23 @@ class HelperTest < Test::Unit::TestCase
   end
 
   def test_haml_tag_non_autoclosed_tags_arent_closed
-    assert_equal("<p>\n</p>\n", render("- haml_tag :p"))
+    assert_equal("<p></p>\n", render("- haml_tag :p"))
+  end
+
+  def test_haml_tag_renders_text_on_a_single_line
+    assert_equal("<p>#{'a' * 100}</p>\n", render("- haml_tag :p, 'a' * 100"))
+  end
+
+  def test_haml_tag_raises_error_for_multiple_content
+    assert_raise(Haml::Error) { render("- haml_tag :p, 'foo' do\n  bar") }
+  end
+
+  def test_haml_tag_flags
+    assert_equal("<p />\n", render("- haml_tag :p, :/"))
+    assert_equal("<p>kumquat</p>\n", render("- haml_tag :p, :< do\n  kumquat"))
+
+    assert_raise(Haml::Error) { render("- haml_tag :p, 'foo', :/") }
+    assert_raise(Haml::Error) { render("- haml_tag :p, :/ do\n  foo") }
   end
 
   def test_is_haml
@@ -141,12 +157,12 @@ class HelperTest < Test::Unit::TestCase
   end
 
   def test_find_and_preserve_with_block
-    assert_equal("<pre>&#x000A;  Foo&#x000A;  Bar&#x000A;</pre>\nFoo\nBar\n",
+    assert_equal("<pre>Foo&#x000A;Bar</pre>\nFoo\nBar\n",
                  render("= find_and_preserve do\n  %pre\n    Foo\n    Bar\n  Foo\n  Bar"))
   end
 
   def test_preserve_with_block
-    assert_equal("<pre>&#x000A;  Foo&#x000A;  Bar&#x000A;</pre>&#x000A;Foo&#x000A;Bar&#x000A;\n",
+    assert_equal("<pre>Foo&#x000A;Bar</pre>&#x000A;Foo&#x000A;Bar\n",
                  render("= preserve do\n  %pre\n    Foo\n    Bar\n  Foo\n  Bar"))
   end
 

@@ -76,7 +76,7 @@ module Sass
         :style => :nested,
         :load_paths => ['.']
       }.merge! options
-      @template = template.split(/\n?\r|\r?\n/)
+      @template = template.split(/\r\n|\r|\n/)
       @lines = []
       @constants = {"important" => "!important"}
       @mixins = {}
@@ -134,7 +134,7 @@ module Sass
     # and computes the tabulation of the line.
     def split_lines
       @line = 0
-      old_tabs = 0
+      old_tabs = nil
       @template.each_with_index do |line, index|
         @line += 1
 
@@ -145,14 +145,16 @@ module Sass
         end
 
         if tabs # if line isn't blank
-          if tabs - old_tabs > 1
+          raise SyntaxError.new("Indenting at the beginning of the document is illegal.", @line) if old_tabs.nil? && tabs > 0
+
+          if old_tabs && tabs - old_tabs > 1
             raise SyntaxError.new("#{tabs * 2} spaces were used for indentation. Sass must be indented using two spaces.", @line)
           end
           @lines << [line.strip, tabs]
 
           old_tabs = tabs
         else
-          @lines << ['//', old_tabs]
+          @lines << ['//', old_tabs || 0]
         end
       end
 
@@ -287,7 +289,11 @@ END
       when MIXIN_DEFINITION_CHAR
         parse_mixin_definition(line)
       when MIXIN_INCLUDE_CHAR
-        parse_mixin_include(line)
+        if line[1].nil? || line[1] == ?\s
+          Tree::RuleNode.new(line, @options[:style])
+        else
+          parse_mixin_include(line)
+        end
       else
         if line =~ ATTRIBUTE_ALTERNATE_MATCHER
           parse_attribute(line, ATTRIBUTE_ALTERNATE)

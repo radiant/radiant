@@ -56,7 +56,6 @@ module Registry
     def uninstall
       migrate_down
       remove_extension_directory
-      cleanup_environment
     end
 
     def migrate_down
@@ -65,10 +64,6 @@ module Registry
 
     def remove_extension_directory
       FileUtils.rm_r(File.join(RAILS_ROOT, 'vendor', 'extensions', name))
-    end
-
-    def cleanup_environment
-      # Maybe in the future clear it out of the config.extensions array
     end
   end
 

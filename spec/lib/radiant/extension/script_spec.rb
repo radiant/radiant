@@ -162,15 +162,10 @@ describe "Registry::Uninstaller" do
     @uninstaller.remove_extension_directory
   end
 
-  it "should uninstall by migrating down, removing the directory and cleaning up environment" do
+  it "should uninstall by migrating down and removing the directory" do
     @uninstaller.should_receive(:migrate_down)
     @uninstaller.should_receive(:remove_extension_directory)
-    @uninstaller.should_receive(:cleanup_environment)
     @uninstaller.uninstall
-  end
-
-  it "should cleanup the environment" do
-    pending
   end
 end
 
