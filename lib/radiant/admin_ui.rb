@@ -78,7 +78,7 @@ module Radiant
     attr_accessor :tabs
 
     # Region sets
-    attr_accessor :page, :snippet, :layout, :user
+    attr_accessor :page, :snippet, :layout, :user, :extension
 
     def initialize
       @tabs = TabSet.new
@@ -90,6 +90,7 @@ module Radiant
       @snippet = load_default_snippet_regions
       @layout = load_default_layout_regions
       @user = load_default_user_regions
+      @extension = load_default_extension_regions
     end
 
     private
@@ -121,6 +122,11 @@ module Radiant
                               edit_roles edit_notes}
           edit.form_bottom.concat %w{edit_timestamp edit_buttons}
         end
+        user.index = RegionSet.new do |index|
+          index.thead.concat %w{title_header roles_header modify_header}
+          index.tbody.concat %w{title_cell roles_cell modify_cell}
+          index.bottom.concat %w{new_button}
+        end
       end
     end
 
@@ -131,6 +137,12 @@ module Radiant
           edit.form.concat %w{edit_title edit_content edit_filter edit_timestamp}
           edit.form_bottom.concat %w{edit_buttons}
         end
+        snippet.index = RegionSet.new do |index|
+          index.top.concat %w{help_text}
+          index.thead.concat %w{title_header modify_header}
+          index.tbody.concat %w{title_cell modify_cell}
+          index.bottom.concat %w{new_button}
+        end
       end
     end
 
@@ -140,6 +152,21 @@ module Radiant
           edit.main.concat %w{edit_header edit_form}
           edit.form.concat %w{edit_title edit_extended_metadata edit_content edit_timestamp}
           edit.form_bottom.concat %w{edit_buttons}
+        end
+        layout.index = RegionSet.new do |index|
+          index.top.concat %w{help_text}
+          index.thead.concat %w{title_header modify_header}
+          index.tbody.concat %w{title_cell modify_cell}
+          index.bottom.concat %w{new_button}
+        end
+      end
+    end
+    
+    def load_default_extension_regions
+      returning OpenStruct.new do |extension|
+        extension.index = RegionSet.new do |index|
+          index.thead.concat %w{title_header website_header version_header}
+          index.tbody.concat %w{title_cell website_cell version_cell}
         end
       end
     end
