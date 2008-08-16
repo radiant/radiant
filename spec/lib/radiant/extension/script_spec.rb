@@ -14,6 +14,19 @@ describe "Radiant::Extension::Script" do
     Radiant::Extension::Script::Install.should_receive(:new).with(['page_attachments'])
     Radiant::Extension::Script.execute ['install', 'page_attachments']
   end
+
+  it "should run the help command when no arguments are given" do
+    Radiant::Extension::Script::Help.should_receive(:new)
+    Radiant::Extension::Script.execute []
+  end
+
+  it "should run the help for a given command when it fails" do
+    error_message = "You must specify an extension to install."
+    Radiant::Extension::Script::Install.should_receive(:new).and_raise(ArgumentError.new(error_message))
+    Radiant::Extension::Script.should_receive(:puts).with(error_message)
+    Radiant::Extension::Script::Help.should_receive(:new).with(['install'])
+    Radiant::Extension::Script.execute ['install']
+  end
 end
 
 describe "Radiant::Extension::Script::Util" do
@@ -97,6 +110,59 @@ describe "Radiant::Extension::Script::Uninstall" do
 
   it "should fail if an extension name is not given" do
     lambda { Radiant::Extension::Script::Uninstall.new []}.should raise_error
+  end
+end
+
+describe "Radiant::Extension::Script::Info" do
+  before :each do
+    @extension = mock('Extension', :uninstall => true, :name => 'archive', :inspect => '')
+    Registry::Extension.stub!(:find).and_return([@extension])
+  end
+
+  it "should read the extension name from the command line" do
+    @info = Radiant::Extension::Script::Info.new ['archive']
+    @info.extension_name.should == 'archive'
+  end
+
+  it "should attempt to find the extension and display its info" do
+    @extension.should_receive(:inspect).and_return('')
+    @info = Radiant::Extension::Script::Info.new ['archive']
+  end
+
+  it "should fail if an extension name is not given" do
+    lambda { Radiant::Extension::Script::Info.new []}.should raise_error
+  end
+end
+
+describe "Radiant::Extension::Script::Help" do
+  it "should display the general help message when no arguments are given" do
+    $stdout.should_receive(:puts).with(%r{Usage:   script/extension command \[arguments\]})
+    Radiant::Extension::Script::Help.new
+  end
+
+  it "should display the general help message when the 'help' command is specified" do
+    $stdout.should_receive(:puts).with(%r{Usage:   script/extension command \[arguments\]})
+    Radiant::Extension::Script::Help.new ['help']
+  end
+
+  it "should display the general help message when an invalid command is given" do
+    $stdout.should_receive(:puts).with(%r{Usage:   script/extension command \[arguments\]})
+    Radiant::Extension::Script::Help.new ['foo']
+  end
+
+  it "should display the install help message" do
+    $stdout.should_receive(:puts).with(%r{Usage:    script/extension install extension_name})
+    Radiant::Extension::Script::Help.new ['install']
+  end
+
+  it "should display the uninstall help message" do
+    $stdout.should_receive(:puts).with(%r{Usage:    script/extension uninstall extension_name})
+    Radiant::Extension::Script::Help.new ['uninstall']
+  end
+
+  it "should display the info help message" do
+    $stdout.should_receive(:puts).with(%r{Usage:    script/extension info extension_name})
+    Radiant::Extension::Script::Help.new ['info']
   end
 end
 

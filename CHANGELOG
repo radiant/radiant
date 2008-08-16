@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Make script/extension more friendly, adding help and info commands. [Sean Cribbs]
 * Added more render regions to layout, snippet, user, and extension views. [Sean Cribbs]
 * Fixed the radiant:update:scripts to find the proper directory [Jim Gay]
 * Factor out dev? functionality in StandardTags, allowing other tags to access
