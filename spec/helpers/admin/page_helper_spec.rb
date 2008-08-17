@@ -7,6 +7,7 @@ describe Admin::PageHelper do
     @page = mock_model(Page)
     @errors = mock("errors")
     @page.stub!(:errors).and_return(@errors)
+    helper.instance_variable_set(:@page, @page)
   end
 
   it "should have meta errors if the page has errors on the slug" do
