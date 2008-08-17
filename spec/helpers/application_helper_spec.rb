@@ -5,6 +5,7 @@ describe ApplicationHelper do
 
   before :each do
     Radiant::Initializer.run :initialize_default_admin_tabs
+    helper.stub!(:request).and_return(ActionController::TestRequest.new)
   end
   
   it "should have the Radiant::Config" do
