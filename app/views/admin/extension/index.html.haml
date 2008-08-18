@@ -11,18 +11,30 @@
 
 %h1 Extensions
 
+= render_region :top
+
 %table#extensions.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0"}
   %thead
     %tr
-      %th.extension Extension
-      %th.website Website
-      %th.version Version
+      - render_region :thead do |thead|
+        - thead.title_header do
+          %th.extension Extension
+        - thead.website_header do
+          %th.website Website
+        - thead.version_header do
+          %th.version Version
   %tbody
     - @extensions.each do |extension|
       %tr.node.level-1
-        %td.extension
-          %h4= h extension.extension_name
-          %p= h extension.description
-        %td.website
-          = extension.url.nil? || extension.url.empty? ? "" : link_to("Website", extension.url, :target => "_blank")
-        %td.version= h extension.version
+        - render_region :tbody do |tbody|
+          - tbody.title_cell do
+            %td.extension
+              %h4= h extension.extension_name
+              %p= h extension.description
+          - tbody.website_cell do 
+            %td.website
+              = extension.url.nil? || extension.url.empty? ? "" : link_to("Website", extension.url, :target => "_blank")
+          - tbody.version_cell do
+            %td.version= h extension.version
+
+= render_region :bottom

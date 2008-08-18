@@ -52,6 +52,11 @@ describe Radiant::AdminUI do
     snippet.edit.form.should == %w{edit_title edit_content edit_filter
                                    edit_timestamp}
     snippet.edit.form_bottom.should == %w{edit_buttons}
+    snippet.index.should_not be_nil
+    snippet.index.top.should == %w{help_text}
+    snippet.index.thead.should == %w{title_header modify_header}
+    snippet.index.tbody.should == %w{title_cell modify_cell}
+    snippet.index.bottom.should == %w{new_button}
   end
 
   it "should load the default layout regions" do
@@ -61,6 +66,11 @@ describe Radiant::AdminUI do
     layout.edit.form.should == %w{edit_title edit_extended_metadata
                                   edit_content edit_timestamp}
     layout.edit.form_bottom.should == %w{edit_buttons}
+    layout.index.should_not be_nil
+    layout.index.top.should == %w{help_text}
+    layout.index.thead.should == %w{title_header modify_header}
+    layout.index.tbody.should == %w{title_cell modify_cell}
+    layout.index.bottom.should == %w{new_button}
   end
 
   it "should load the default user regions" do
@@ -70,6 +80,17 @@ describe Radiant::AdminUI do
     user.edit.form.should == %w{edit_name edit_email edit_username
                                 edit_password edit_roles edit_notes}
     user.edit.form_bottom.should == %w{edit_timestamp edit_buttons}
+    user.index.should_not be_nil
+    user.index.thead.should == %w{title_header roles_header modify_header}
+    user.index.tbody.should == %w{title_cell roles_cell modify_cell}
+    user.index.bottom.should == %w{new_button}
+  end
+  
+  it "should load the default extension regions" do
+    ext = @admin.extension
+    ext.index.should_not be_nil
+    ext.index.thead.should == %w{title_header website_header version_header}
+    ext.index.tbody.should == %w{title_cell website_cell version_cell}
   end
 end
 
