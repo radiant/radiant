@@ -13,6 +13,18 @@ module Registry
     def uninstall
       Uninstaller.new(self).uninstall
     end
+
+    def inspect
+%{
+Name:           #{name}
+Description:
+  #{description}
+Author:         #{author.first_name} #{author.last_name} <#{author.email}>
+Source code:    #{repository_url}
+Download:       #{download_url}
+Install type:   #{install_type}
+}.strip
+    end
   end
 
   class Action
@@ -145,30 +157,30 @@ module Registry
     def filename
       "#{self.name}.tar"
     end
-    
+
     def unpack
       output = `cd #{Dir.tmpdir}; tar xvf #{filename}`
       self.path = File.join(Dir.tmpdir, output.split(/\n/).first.split('/').first)
     end
   end
-  
+
   class Gzip < Tarball
     def filename
       @unpacked ? super : "#{self.name}.tar.gz"
     end
-    
+
     def unpack
       system "cd #{Dir.tmpdir}; gunzip #{self.filename}"
       @unpacked = true
       super
     end
   end
-  
+
   class Bzip2 < Tarball
     def filename
       @unpacked ? super : "#{self.name}.tar.bz2"
     end
-    
+
     def unpack
       system "cd #{Dir.tmpdir}; bunzip2 #{self.filename}"
       @unpacked = true
@@ -189,8 +201,13 @@ module Radiant
     module Script
       class << self
         def execute(args)
-          command = args.shift
-          const_get(command.camelize).new(args)
+          command = args.shift || 'help'
+          begin
+            const_get(command.camelize).new(args)
+          rescue ArgumentError => e
+            puts e.message
+            Help.new [command]
+          end
         end
       end
 
@@ -245,6 +262,61 @@ module Radiant
             puts "#{extension} is not installed."
           end
         end
+      end
+
+      class Info
+        include Util
+
+        def initialize(args=[])
+          raise ArgumentError, "You must specify an extension to get info on" if args.blank?
+          self.extension_name = to_extension_name(args.shift)
+          find_extension and puts extension.inspect
+        end
+      end
+
+      class Help
+        def initialize(args=[])
+          command = args.shift
+          command = 'help' unless self.class.instance_methods(false).include?(command)
+          send(command)
+        end
+
+        def help
+          $stdout.puts %{Usage:   script/extension command [arguments]
+
+  Available commands:
+      #{command_names}
+
+  For help on an individual command:
+      script/extension help command
+            }
+        end
+
+        def install
+          $stdout.puts %{Usage:    script/extension install extension_name
+
+  Installs an extension from information in the global registry.
+          }
+        end
+
+        def uninstall
+          $stdout.puts %{Usage:    script/extension uninstall extension_name
+
+  Removes a previously installed extension from the current project.
+            }
+        end
+
+        def info
+          $stdout.puts %{Usage:    script/extension info extension_name
+
+  Displays registry information about the extension.
+          }
+        end
+
+        private
+          def command_names
+            (Radiant::Extension::Script.constants - ['Util']).sort.map {|n| n.underscore }.join(", ")
+          end
       end
     end
   end
