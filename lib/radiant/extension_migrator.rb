@@ -29,7 +29,6 @@ module Radiant
             return # You're on the right version
         end
       end
-    
       migrate_without_extension_support
     end
     alias_method_chain :migrate, :extension_support
@@ -37,8 +36,12 @@ module Radiant
     def current_version
       @extension.meta.schema_version
     end
+    
+    def migrated
+      @extension.meta.schema_version.to_i > 0 ? (1..@extension.meta.schema_version) : []
+    end
   
-    def set_schema_version(version)
+    def record_version_state_after_migrating(version)
       @extension.meta.update_attributes(:schema_version => (down? ? version.to_i - 1 : version.to_i))
     end
   
