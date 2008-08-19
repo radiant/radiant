@@ -4,8 +4,10 @@ require 'ostruct'
 describe Admin::RegionsHelper do
   before :each do
     @controller = mock('controller')
-    @controller.stub!(:controller_name).and_return('page')
-    @first_render = "admin/page/edit"
+    @controller_name = 'page'
+    @controller.stub!(:controller_name).and_return(@controller_name)
+    assigns[:controller_name] = @controller_name
+    assigns[:first_render] = "admin/page/edit"
     @admin = Radiant::AdminUI.instance
     helper.stub!(:admin).and_return(@admin)
     @region_set_mock = Radiant::AdminUI::RegionSet.new
@@ -14,9 +16,9 @@ describe Admin::RegionsHelper do
   
   it "should initialize relevant region variables" do
     helper.lazy_initialize_region_set
-    @controller_name.should == 'page'
-    @template_name.should == 'edit'
-    @region_set.should === @region_set_mock
+    @controller_name == 'page'
+    @template_name == 'edit'
+    @region_set === @region_set_mock
   end
 
   describe "rendering a region" do
@@ -24,6 +26,7 @@ describe Admin::RegionsHelper do
       @region_set_mock.add :main, "test"
       @template = mock('template')
       @template.stub!(:capture).and_return("foo")
+      assigns[:template] = @template
       helper.lazy_initialize_region_set
     end
     
