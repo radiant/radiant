@@ -1,6 +1,8 @@
 == Change Log
 
 === Edge
+* Fixed migrations for Rails 2.1 [Josh French]
+* Fixed final specs [Jim Gay]
 * Fixed up some specs for new Rails/RSpec [Josh French]
 * Updated timezone management [Josh French]
 * Update to Rails 2.1 [Jim Gay]
