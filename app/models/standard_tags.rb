@@ -352,7 +352,7 @@ module StandardTags
     match is case sensitive. By default, @ignore_case@ is set to true.
 
     *Usage:*
-    <pre><code><r:if_url matches="regexp" [ignore_case="true|false"]>...</if_url></code></pre>
+    <pre><code><r:if_url matches="regexp" [ignore_case="true|false"]>...</r:if_url></code></pre>
   }
   tag 'if_url' do |tag|
     raise TagError.new("`if_url' tag must contain a `matches' attribute.") unless tag.attr.has_key?('matches')
@@ -366,7 +366,7 @@ module StandardTags
     The opposite of the @if_url@ tag.
 
     *Usage:*
-    <pre><code><r:unless_url matches="regexp" [ignore_case="true|false"]>...</unless_url></code></pre>
+    <pre><code><r:unless_url matches="regexp" [ignore_case="true|false"]>...</r:unless_url></code></pre>
   }
   tag 'unless_url' do |tag|
     raise TagError.new("`unless_url' tag must contain a `matches' attribute.") unless tag.attr.has_key?('matches')
@@ -382,7 +382,7 @@ module StandardTags
     This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is or descends from the current page.
 
     *Usage:*
-    <pre><code><r:if_ancestor_or_self>...</if_ancestor_or_self></code></pre>
+    <pre><code><r:if_ancestor_or_self>...</r:if_ancestor_or_self></code></pre>
   }
   tag "if_ancestor_or_self" do |tag|
     tag.expand if (tag.globals.page.ancestors + [tag.globals.page]).include?(tag.locals.page)
@@ -394,7 +394,7 @@ module StandardTags
     This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless the child element is or descends from the current page.
 
     *Usage:*
-    <pre><code><r:unless_ancestor_or_self>...</unless_ancestor_or_self></code></pre>
+    <pre><code><r:unless_ancestor_or_self>...</r:unless_ancestor_or_self></code></pre>
   }
   tag "unless_ancestor_or_self" do |tag|
     tag.expand unless (tag.globals.page.ancestors + [tag.globals.page]).include?(tag.locals.page)
@@ -406,7 +406,7 @@ module StandardTags
     This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is the current page.
 
     *Usage:*
-    <pre><code><r:if_self>...</if_self></code></pre>
+    <pre><code><r:if_self>...</r:if_self></code></pre>
   }
   tag "if_self" do |tag|
     tag.expand if tag.locals.page == tag.globals.page
@@ -418,7 +418,7 @@ module StandardTags
     This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless the child element is the current page.
 
     *Usage:*
-    <pre><code><r:unless_self>...</unless_self></code></pre>
+    <pre><code><r:unless_self>...</r:unless_self></code></pre>
   }
   tag "unless_self" do |tag|
     tag.expand unless tag.locals.page == tag.globals.page
