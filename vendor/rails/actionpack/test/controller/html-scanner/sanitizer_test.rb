@@ -1,5 +1,4 @@
-require File.dirname(__FILE__) + '/../../abstract_unit'
-require 'test/unit'
+require 'abstract_unit'
 
 class SanitizerTest < Test::Unit::TestCase
   def setup
@@ -203,6 +202,12 @@ class SanitizerTest < Test::Unit::TestCase
     assert_equal expected, sanitize_css(raw)
   end
 
+  def test_should_sanitize_with_trailing_space
+    raw = "display:block; "
+    expected = "display: block;"
+    assert_equal expected, sanitize_css(raw)
+  end
+
   def test_should_sanitize_xul_style_attributes
     raw = %(-moz-binding:url('http://ha.ckers.org/xssmoz.xml#xss'))
     assert_equal '', sanitize_css(raw)
@@ -235,15 +240,19 @@ class SanitizerTest < Test::Unit::TestCase
   end
 
   def test_should_sanitize_img_vbscript
-     assert_sanitized %(<img src='vbscript:msgbox("XSS")' />), '<img />'
+    assert_sanitized %(<img src='vbscript:msgbox("XSS")' />), '<img />'
   end
 
 protected
   def assert_sanitized(input, expected = nil)
     @sanitizer ||= HTML::WhiteListSanitizer.new
-    assert_equal expected || input, @sanitizer.sanitize(input)
+    if input
+      assert_dom_equal expected || input, @sanitizer.sanitize(input)
+    else
+      assert_nil @sanitizer.sanitize(input)
+    end
   end
-  
+
   def sanitize_css(input)
     (@sanitizer ||= HTML::WhiteListSanitizer.new).sanitize_css(input)
   end

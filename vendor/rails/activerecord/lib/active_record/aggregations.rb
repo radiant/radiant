@@ -92,30 +92,39 @@ module ActiveRecord
     #
     # == Writing value objects
     #
-    # Value objects are immutable and interchangeable objects that represent a given value, such as a +Money+ object representing
-    # $5. Two +Money+ objects both representing $5 should be equal (through methods such as == and <=> from +Comparable+ if ranking
-    # makes sense). This is unlike entity objects where equality is determined by identity. An entity class such as +Customer+ can
+    # Value objects are immutable and interchangeable objects that represent a given value, such as a Money object representing
+    # $5. Two Money objects both representing $5 should be equal (through methods such as <tt>==</tt> and <tt><=></tt> from Comparable if ranking
+    # makes sense). This is unlike entity objects where equality is determined by identity. An entity class such as Customer can
     # easily have two different objects that both have an address on Hyancintvej. Entity identity is determined by object or
-    # relational unique identifiers (such as primary keys). Normal <tt>ActiveRecord::Base</tt> classes are entity objects.
+    # relational unique identifiers (such as primary keys). Normal ActiveRecord::Base classes are entity objects.
     #
-    # It's also important to treat the value objects as immutable. Don't allow the +Money+ object to have its amount changed after
-    # creation. Create a new +Money+ object with the new value instead. This is exemplified by the <tt>Money#exchanged_to</tt> method that
+    # It's also important to treat the value objects as immutable. Don't allow the Money object to have its amount changed after
+    # creation. Create a new Money object with the new value instead. This is exemplified by the Money#exchanged_to method that
     # returns a new value object instead of changing its own values. Active Record won't persist value objects that have been
     # changed through means other than the writer method.
     #
     # The immutable requirement is enforced by Active Record by freezing any object assigned as a value object. Attempting to 
-    # change it afterwards will result in a <tt>TypeError</tt>.
+    # change it afterwards will result in a ActiveSupport::FrozenObjectError.
     # 
     # Read more about value objects on http://c2.com/cgi/wiki?ValueObject and on the dangers of not keeping value objects
     # immutable on http://c2.com/cgi/wiki?ValueObjectsShouldBeImmutable
+    #
+    # == Finding records by a value object
+    #
+    # Once a +composed_of+ relationship is specified for a model, records can be loaded from the database by specifying an instance
+    # of the value object in the conditions hash. The following example finds all customers with +balance_amount+ equal to 20 and
+    # +balance_currency+ equal to "USD":
+    #
+    #   Customer.find(:all, :conditions => {:balance => Money.new(20, "USD")})
+    #
     module ClassMethods
       # Adds reader and writer methods for manipulating a value object:
       # <tt>composed_of :address</tt> adds <tt>address</tt> and <tt>address=(new_address)</tt> methods.
       #
       # Options are:
       # * <tt>:class_name</tt>  - specify the class name of the association. Use it only if that name can't be inferred
-      #   from the part id. So <tt>composed_of :address</tt> will by default be linked to the +Address+ class, but
-      #   if the real class name is +CompanyAddress+, you'll have to specify it with this option.
+      #   from the part id. So <tt>composed_of :address</tt> will by default be linked to the Address class, but
+      #   if the real class name is CompanyAddress, you'll have to specify it with this option.
       # * <tt>:mapping</tt> - specifies a number of mapping arrays (attribute, parameter) that bind an attribute name
       #   to a constructor parameter on the value class.
       # * <tt>:allow_nil</tt> - specifies that the aggregate object will not be instantiated when all mapped
@@ -155,7 +164,7 @@ module ActiveRecord
               if (instance_variable_get("@#{name}").nil? || force_reload) && (!allow_nil || mapping.any? {|pair| !read_attribute(pair.first).nil? })
                 instance_variable_set("@#{name}", class_name.constantize.new(*mapping.collect {|pair| read_attribute(pair.first)}))
               end
-              return instance_variable_get("@#{name}")
+              instance_variable_get("@#{name}")
             end
           end
 
@@ -165,11 +174,11 @@ module ActiveRecord
           module_eval do
             define_method("#{name}=") do |part|
               if part.nil? && allow_nil
-                mapping.each { |pair| @attributes[pair.first] = nil }
+                mapping.each { |pair| self[pair.first] = nil }
                 instance_variable_set("@#{name}", nil)
               else
                 part = conversion.call(part) unless part.is_a?(class_name.constantize) || conversion.nil?
-                mapping.each { |pair| @attributes[pair.first] = part.send(pair.last) }
+                mapping.each { |pair| self[pair.first] = part.send(pair.last) }
                 instance_variable_set("@#{name}", part.freeze)
               end
             end

@@ -1,8 +1,7 @@
 # These tests exercise CGI::Session::ActiveRecordStore, so you're going to
 # need AR in a sibling directory to AP and have SQLite installed.
-require File.dirname(__FILE__) + '/../active_record_unit'
+require 'active_record_unit'
 require 'action_controller/session/active_record_store'
-
 
 module CommonActiveRecordStoreTests
   def test_basics
@@ -66,7 +65,7 @@ class ActiveRecordStoreTest < ActiveRecordTestCase
 
   def test_save_unloaded_session
     c = session_class.connection
-    bogus_class = c.quote(Base64.encode64("\004\010o:\vBlammo\000"))
+    bogus_class = c.quote(ActiveSupport::Base64.encode64("\004\010o:\vBlammo\000"))
     c.insert("INSERT INTO #{session_class.table_name} ('#{session_id_column}', 'data') VALUES ('abcdefghijklmnop', #{bogus_class})")
 
     sess = session_class.find_by_session_id('abcdefghijklmnop')

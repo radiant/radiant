@@ -26,7 +26,7 @@ module ActionController #:nodoc:
 
     DEFAULT_RESCUE_TEMPLATE = 'diagnostics'
     DEFAULT_RESCUE_TEMPLATES = {
-      'ActionController::MissingTemplate' => 'missing_template',
+      'ActionView::MissingTemplate'       => 'missing_template',
       'ActionController::RoutingError'    => 'routing_error',
       'ActionController::UnknownAction'   => 'unknown_action',
       'ActionView::TemplateError'         => 'template_error'
@@ -58,33 +58,35 @@ module ActionController #:nodoc:
       # Rescue exceptions raised in controller actions.
       #
       # <tt>rescue_from</tt> receives a series of exception classes or class
-      # names, and a trailing :with option with the name of a method or a Proc
-      # object to be called to handle them. Alternatively a block can be given.
+      # names, and a trailing <tt>:with</tt> option with the name of a method
+      # or a Proc object to be called to handle them. Alternatively a block can
+      # be given.
       #
       # Handlers that take one argument will be called with the exception, so
       # that the exception can be inspected when dealing with it.
       #
       # Handlers are inherited. They are searched from right to left, from
       # bottom to top, and up the hierarchy. The handler of the first class for
-      # which exception.is_a?(klass) holds true is the one invoked, if any.
+      # which <tt>exception.is_a?(klass)</tt> holds true is the one invoked, if
+      # any.
       #
-      # class ApplicationController < ActionController::Base
-      #   rescue_from User::NotAuthorized, :with => :deny_access # self defined exception
-      #   rescue_from ActiveRecord::RecordInvalid, :with => :show_errors
+      #   class ApplicationController < ActionController::Base
+      #     rescue_from User::NotAuthorized, :with => :deny_access # self defined exception
+      #     rescue_from ActiveRecord::RecordInvalid, :with => :show_errors
       #
-      #   rescue_from 'MyAppError::Base' do |exception|
-      #     render :xml => exception, :status => 500
+      #     rescue_from 'MyAppError::Base' do |exception|
+      #       render :xml => exception, :status => 500
+      #     end
+      #
+      #     protected
+      #       def deny_access
+      #         ...
+      #       end
+      #
+      #       def show_errors(exception)
+      #         exception.record.new_record? ? ...
+      #       end
       #   end
-      #
-      #   protected
-      #     def deny_access
-      #       ...
-      #     end
-      #
-      #     def show_errors(exception)
-      #       exception.record.new_record? ? ...
-      #     end
-      # end
       def rescue_from(*klasses, &block)
         options = klasses.extract_options!
         unless options.has_key?(:with)
@@ -153,7 +155,7 @@ module ActionController #:nodoc:
       # If the file doesn't exist, the body of the response will be left empty.
       def render_optional_error_file(status_code)
         status = interpret_status(status_code)
-        path = "#{RAILS_ROOT}/public/#{status[0,3]}.html"
+        path = "#{Rails.public_path}/#{status[0,3]}.html"
         if File.exist?(path)
           render :file => path, :status => status
         else
@@ -165,7 +167,7 @@ module ActionController #:nodoc:
       # method if you wish to redefine the meaning of a local request to
       # include remote IP addresses or other criteria.
       def local_request? #:doc:
-        request.remote_addr == LOCALHOST and request.remote_ip == LOCALHOST
+        request.remote_addr == LOCALHOST && request.remote_ip == LOCALHOST
       end
 
       # Render detailed diagnostics for unhandled exceptions rescued from
@@ -197,10 +199,8 @@ module ActionController #:nodoc:
     private
       def perform_action_with_rescue #:nodoc:
         perform_action_without_rescue
-      rescue Exception => exception  # errors from action performed
-        return if rescue_action_with_handler(exception)
-        
-        rescue_action(exception)
+      rescue Exception => exception
+        rescue_action_with_handler(exception) || rescue_action(exception)
       end
 
       def rescues_path(template_name)

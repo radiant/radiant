@@ -255,10 +255,10 @@ module ActionView
         link_to_function(name, remote_function(options), html_options || options.delete(:html))
       end
 
-      # Periodically calls the specified url (<tt>options[:url]</tt>) every 
+      # Periodically calls the specified url (<tt>options[:url]</tt>) every
       # <tt>options[:frequency]</tt> seconds (default is 10). Usually used to
-      # update a specified div (<tt>options[:update]</tt>) with the results 
-      # of the remote call. The options for specifying the target with :url 
+      # update a specified div (<tt>options[:update]</tt>) with the results
+      # of the remote call. The options for specifying the target with <tt>:url</tt>
       # and defining callbacks is the same as link_to_remote.
       # Examples:
       #  # Call get_averages and put its results in 'avg' every 10 seconds
@@ -291,11 +291,11 @@ module ActionView
       # though it's using JavaScript to serialize the form elements, the form
       # submission will work just like a regular submission as viewed by the
       # receiving side (all elements available in <tt>params</tt>). The options for 
-      # specifying the target with :url and defining callbacks is the same as
-      # link_to_remote.
+      # specifying the target with <tt>:url</tt> and defining callbacks is the same as
+      # +link_to_remote+.
       #
       # A "fall-through" target for browsers that doesn't do JavaScript can be
-      # specified with the :action/:method options on :html.
+      # specified with the <tt>:action</tt>/<tt>:method</tt> options on <tt>:html</tt>.
       #
       # Example:
       #   # Generates:
@@ -304,11 +304,11 @@ module ActionView
       #   form_remote_tag :html => { :action => 
       #     url_for(:controller => "some", :action => "place") }
       #
-      # The Hash passed to the :html key is equivalent to the options (2nd) 
+      # The Hash passed to the <tt>:html</tt> key is equivalent to the options (2nd)
       # argument in the FormTagHelper.form_tag method.
       #
       # By default the fall-through action is the same as the one specified in 
-      # the :url (and the default method is :post).
+      # the <tt>:url</tt> (and the default method is <tt>:post</tt>).
       #
       # form_remote_tag also takes a block, like form_tag:
       #   # Generates:
@@ -422,8 +422,8 @@ module ActionView
       end
       
       # Returns '<tt>eval(request.responseText)</tt>' which is the JavaScript function
-      # that form_remote_tag can call in :complete to evaluate a multiple
-      # update return document using update_element_function calls.
+      # that +form_remote_tag+ can call in <tt>:complete</tt> to evaluate a multiple
+      # update return document using +update_element_function+ calls.
       def evaluate_remote_response
         "eval(request.responseText)"
       end
@@ -458,7 +458,7 @@ module ActionView
 
         url_options = options[:url]
         url_options = url_options.merge(:escape => false) if url_options.is_a?(Hash)
-        function << "'#{url_for(url_options)}'"
+        function << "'#{escape_javascript(url_for(url_options))}'"
         function << ", #{javascript_options})"
 
         function = "#{options[:before]}; #{function}" if options[:before]
@@ -595,8 +595,8 @@ module ActionView
         # JavaScript sent with a Content-type of "text/javascript".
         #
         # Create new instances with PrototypeHelper#update_page or with 
-        # ActionController::Base#render, then call #insert_html, #replace_html, 
-        # #remove, #show, #hide, #visual_effect, or any other of the built-in 
+        # ActionController::Base#render, then call +insert_html+, +replace_html+, 
+        # +remove+, +show+, +hide+, +visual_effect+, or any other of the built-in 
         # methods on the yielded generator in any order you like to modify the 
         # content and appearance of the current page. 
         #
@@ -629,6 +629,27 @@ module ActionView
         #   # Controller action
         #   def poll
         #     render(:update) { |page| page.update_time }
+        #   end
+        #
+        # Calls to JavaScriptGenerator not matching a helper method below
+        # generate a proxy to the JavaScript Class named by the method called.
+        #
+        # Examples:
+        #
+        #   # Generates:
+        #   #     Foo.init();
+        #   update_page do |page|
+        #     page.foo.init
+        #   end
+        #
+        #   # Generates:
+        #   #     Event.observe('one', 'click', function () {
+        #   #       $('two').show();
+        #   #     });
+        #   update_page do |page|
+        #     page.event.observe('one', 'click') do |p|
+        #      p[:two].show
+        #     end
         #   end
         #
         # You can also use PrototypeHelper#update_page_tag instead of 
@@ -666,7 +687,7 @@ module ActionView
             end
           end
           
-          # Returns an object whose <tt>#to_json</tt> evaluates to +code+. Use this to pass a literal JavaScript 
+          # Returns an object whose <tt>to_json</tt> evaluates to +code+. Use this to pass a literal JavaScript 
           # expression as an argument to another JavaScriptGenerator method.
           def literal(code)
             ActiveSupport::JSON::Variable.new(code.to_s)
@@ -716,11 +737,11 @@ module ActionView
           #   # Insert the rendered 'navigation' partial just before the DOM
           #   # element with ID 'content'.
           #   # Generates: new Insertion.Before("content", "-- Contents of 'navigation' partial --");
-          #   insert_html :before, 'content', :partial => 'navigation'
+          #   page.insert_html :before, 'content', :partial => 'navigation'
           #
           #   # Add a list item to the bottom of the <ul> with ID 'list'.
           #   # Generates: new Insertion.Bottom("list", "<li>Last item</li>");
-          #   insert_html :bottom, 'list', '<li>Last item</li>'
+          #   page.insert_html :bottom, 'list', '<li>Last item</li>'
           #
           def insert_html(position, id, *options_for_render)
             insertion = position.to_s.camelize
@@ -735,7 +756,7 @@ module ActionView
           #   # Replace the HTML of the DOM element having ID 'person-45' with the
           #   # 'person' partial for the appropriate object.
           #   # Generates:  Element.update("person-45", "-- Contents of 'person' partial --");
-          #   replace_html 'person-45', :partial => 'person', :object => @person
+          #   page.replace_html 'person-45', :partial => 'person', :object => @person
           #
           def replace_html(id, *options_for_render)
             call 'Element.update', id, render(*options_for_render)
@@ -749,7 +770,7 @@ module ActionView
           #
           #   # Replace the DOM element having ID 'person-45' with the
           #   # 'person' partial for the appropriate object.
-          #   replace 'person-45', :partial => 'person', :object => @person
+          #   page.replace 'person-45', :partial => 'person', :object => @person
           #
           # This allows the same partial that is used for the +insert_html+ to
           # be also used for the input to +replace+ without resorting to
@@ -843,7 +864,8 @@ module ActionView
           #  # Generates: window.location.href = "/account/signup";
           #  page.redirect_to(:controller => 'account', :action => 'signup')
           def redirect_to(location)
-            assign 'window.location.href', @context.url_for(location)
+            url = location.is_a?(String) ? location : @context.url_for(location)
+            record "window.location.href = #{url.inspect}"
           end
           
           # Calls the JavaScript +function+, optionally with the given +arguments+.
@@ -854,12 +876,21 @@ module ActionView
           # 
           # Examples:
           #
-          #  # Generates: Element.replace(my_element, "My content to replace with.")
-          #  page.call 'Element.replace', 'my_element', "My content to replace with."
-          #
-          #  # Generates: alert('My message!')
-          #  page.call 'alert', 'My message!'
-          #
+          #   # Generates: Element.replace(my_element, "My content to replace with.")
+          #   page.call 'Element.replace', 'my_element', "My content to replace with."
+          #   
+          #   # Generates: alert('My message!')
+          #   page.call 'alert', 'My message!'
+          #   
+          #   # Generates:
+          #   #     my_method(function() {
+          #   #       $("one").show();
+          #   #       $("two").hide();
+          #   #    });
+          #   page.call(:my_method) do |p|
+          #      p[:one].show
+          #      p[:two].hide
+          #   end
           def call(function, *arguments, &block)
             record "#{function}(#{arguments_for_call(arguments, block)})"
           end
@@ -1019,7 +1050,7 @@ module ActionView
           js_options['parameters'] = options[:with]
         end
         
-        if protect_against_forgery?
+        if protect_against_forgery? && !options[:form]
           if js_options['parameters']
             js_options['parameters'] << " + '&"
           else
@@ -1037,7 +1068,7 @@ module ActionView
     
       def build_observer(klass, name, options = {})
         if options[:with] && (options[:with] !~ /[\{=(.]/)
-          options[:with] = "'#{options[:with]}=' + value"
+          options[:with] = "'#{options[:with]}=' + encodeURIComponent(value)"
         else
           options[:with] ||= 'value' unless options[:function]
         end
@@ -1065,7 +1096,8 @@ module ActionView
     end
 
     # Converts chained method calls on DOM proxy elements into JavaScript chains 
-    class JavaScriptProxy < BasicObject #:nodoc:
+    class JavaScriptProxy < ActiveSupport::BasicObject #:nodoc:
+
       def initialize(generator, root = nil)
         @generator = generator
         @generator << root if root
@@ -1141,7 +1173,7 @@ module ActionView
         super(generator)
       end
 
-      # The JSON Encoder calls this to check for the #to_json method
+      # The JSON Encoder calls this to check for the +to_json+ method
       # Since it's a blank slate object, I suppose it responds to anything.
       def respond_to?(method)
         true
@@ -1203,7 +1235,7 @@ module ActionView
         append_enumerable_function!("zip(#{arguments_for_call arguments}")
         if block
           function_chain[-1] += ", function(array) {"
-          yield ActiveSupport::JSON::Variable.new('array')
+          yield ::ActiveSupport::JSON::Variable.new('array')
           add_return_statement!
           @generator << '});'
         else

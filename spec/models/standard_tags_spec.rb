@@ -424,7 +424,7 @@ describe "Standard Tags" do
     it "should use the configured local timezone" do
       Radiant::Config["local.timezone"] = "Tokyo"
       format = "%H:%m"
-      expected = TimeZone["Tokyo"].adjust(page.published_at).strftime(format)
+      expected = page.published_at.in_time_zone(TimeZone['Tokyo']).strftime(format)
       page.should render(%Q(<r:date format="#{format}" />) ).as(expected)
     end
   end

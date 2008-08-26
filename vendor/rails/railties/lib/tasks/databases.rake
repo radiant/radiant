@@ -5,22 +5,18 @@ namespace :db do
       ActiveRecord::Base.configurations.each_value do |config|
         # Skip entries that don't have a database key, such as the first entry here:
         #
-        #  defaults: &defaults 
-        #    adapter: mysql 
+        #  defaults: &defaults
+        #    adapter: mysql
         #    username: root
-        #    password: 
+        #    password:
         #    host: localhost
-        #  
-        #  development: 
+        #
+        #  development:
         #    database: blog_development
         #    <<: *defaults
         next unless config['database']
         # Only connect to local databases
-        if %w( 127.0.0.1 localhost ).include?(config['host']) || config['host'].blank?
-          create_database(config)
-        else
-          p "This task only creates local databases. #{config['database']} is on a remote host."
-        end
+        local_database?(config) { create_database(config) }
       end
     end
   end
@@ -40,21 +36,29 @@ namespace :db do
         @charset   = ENV['CHARSET']   || 'utf8'
         @collation = ENV['COLLATION'] || 'utf8_general_ci'
         begin
-          ActiveRecord::Base.establish_connection(config.merge({'database' => nil}))
-          ActiveRecord::Base.connection.create_database(config['database'], {:charset => @charset, :collation => @collation})
+          ActiveRecord::Base.establish_connection(config.merge('database' => nil))
+          ActiveRecord::Base.connection.create_database(config['database'], :charset => (config['charset'] || @charset), :collation => (config['collation'] || @collation))
           ActiveRecord::Base.establish_connection(config)
         rescue
-          $stderr.puts "Couldn't create database for #{config.inspect}"
+          $stderr.puts "Couldn't create database for #{config.inspect}, charset: #{config['charset'] || @charset}, collation: #{config['collation'] || @collation} (if you set the charset manually, make sure you have a matching collation)"
         end
       when 'postgresql'
-        `createdb "#{config['database']}" -E utf8`
+        @encoding = config[:encoding] || ENV['CHARSET'] || 'utf8'
+        begin
+          ActiveRecord::Base.establish_connection(config.merge('database' => 'postgres', 'schema_search_path' => 'public'))
+          ActiveRecord::Base.connection.create_database(config['database'], config.merge('encoding' => @encoding))
+          ActiveRecord::Base.establish_connection(config)
+        rescue
+          $stderr.puts $!, *($!.backtrace)
+          $stderr.puts "Couldn't create database for #{config.inspect}"
+        end
       when 'sqlite'
         `sqlite "#{config['database']}"`
       when 'sqlite3'
         `sqlite3 "#{config['database']}"`
       end
     else
-      p "#{config['database']} already exists"
+      $stderr.puts "#{config['database']} already exists"
     end
   end
 
@@ -65,19 +69,29 @@ namespace :db do
         # Skip entries that don't have a database key
         next unless config['database']
         # Only connect to local databases
-        if config['host'] == 'localhost' || config['host'].blank?
-          drop_database(config)
-        else
-          p "This task only drops local databases. #{config['database']} is on a remote host."
-        end
+        local_database?(config) { drop_database(config) }
       end
     end
   end
 
   desc 'Drops the database for the current RAILS_ENV'
   task :drop => :environment do
-    drop_database(ActiveRecord::Base.configurations[RAILS_ENV || 'development'])
+    config = ActiveRecord::Base.configurations[RAILS_ENV || 'development']
+    begin
+      drop_database(config)
+    rescue Exception => e
+      puts "Couldn't drop #{config['database']} : #{e.inspect}"
+    end
   end
+
+  def local_database?(config, &block)
+    if %w( 127.0.0.1 localhost ).include?(config['host']) || config['host'].blank?
+      yield
+    else
+      puts "This task only modifies local databases. #{config['database']} is on a remote host."
+    end
+  end
+
 
   desc "Migrate the database through scripts in db/migrate. Target specific version with VERSION=x. Turn off output with VERBOSE=false."
   task :migrate => :environment do
@@ -92,13 +106,29 @@ namespace :db do
 
     desc 'Resets your database using your migrations for the current environment'
     task :reset => ["db:drop", "db:create", "db:migrate"]
+
+    desc 'Runs the "up" for a given migration VERSION.'
+    task :up => :environment do
+      version = ENV["VERSION"] ? ENV["VERSION"].to_i : nil
+      raise "VERSION is required" unless version
+      ActiveRecord::Migrator.run(:up, "db/migrate/", version)
+      Rake::Task["db:schema:dump"].invoke if ActiveRecord::Base.schema_format == :ruby
+    end
+
+    desc 'Runs the "down" for a given migration VERSION.'
+    task :down => :environment do
+      version = ENV["VERSION"] ? ENV["VERSION"].to_i : nil
+      raise "VERSION is required" unless version
+      ActiveRecord::Migrator.run(:down, "db/migrate/", version)
+      Rake::Task["db:schema:dump"].invoke if ActiveRecord::Base.schema_format == :ruby
+    end
   end
 
   desc 'Rolls the schema back to the previous version. Specify the number of steps with STEP=n'
   task :rollback => :environment do
     step = ENV['STEP'] ? ENV['STEP'].to_i : 1
-    version = ActiveRecord::Migrator.current_version - step
-    ActiveRecord::Migrator.migrate('db/migrate/', version)
+    ActiveRecord::Migrator.rollback('db/migrate/', step)
+    Rake::Task["db:schema:dump"].invoke if ActiveRecord::Base.schema_format == :ruby
   end
 
   desc 'Drops and recreates the database from db/schema.rb for the current environment.'
@@ -143,7 +173,7 @@ namespace :db do
         pending_migrations.each do |pending_migration|
           puts '  %4d %s' % [pending_migration.version, pending_migration.name]
         end
-        abort "Run `rake db:migrate` to update your database then try again."
+        abort %{Run "rake db:migrate" to update your database then try again.}
       end
     end
   end
@@ -157,21 +187,21 @@ namespace :db do
         Fixtures.create_fixtures('test/fixtures', File.basename(fixture_file, '.*'))
       end
     end
-    
+
     desc "Search for a fixture given a LABEL or ID."
     task :identify => :environment do
       require "active_record/fixtures"
 
       label, id = ENV["LABEL"], ENV["ID"]
       raise "LABEL or ID required" if label.blank? && id.blank?
-      
+
       puts %Q(The fixture ID for "#{label}" is #{Fixtures.identify(label)}.) if label
-      
+
       Dir["#{RAILS_ROOT}/test/fixtures/**/*.yml"].each do |file|
         if data = YAML::load(ERB.new(IO.read(file)).result)
           data.keys.each do |key|
             key_id = Fixtures.identify(key)
-            
+
             if key == label || key_id == id.to_i
               puts "#{file}: #{key} (#{key_id})"
             end
@@ -284,14 +314,9 @@ namespace :db do
         ActiveRecord::Base.establish_connection(:test)
         ActiveRecord::Base.connection.recreate_database(abcs["test"]["database"])
       when "postgresql"
-        ENV['PGHOST']     = abcs["test"]["host"] if abcs["test"]["host"]
-        ENV['PGPORT']     = abcs["test"]["port"].to_s if abcs["test"]["port"]
-        ENV['PGPASSWORD'] = abcs["test"]["password"].to_s if abcs["test"]["password"]
-        enc_option = "-E #{abcs["test"]["encoding"]}" if abcs["test"]["encoding"]
-
         ActiveRecord::Base.clear_active_connections!
-        `dropdb -U "#{abcs["test"]["username"]}" #{abcs["test"]["database"]}`
-        `createdb #{enc_option} -U "#{abcs["test"]["username"]}" #{abcs["test"]["database"]}`
+        drop_database(abcs['test'])
+        create_database(abcs['test'])
       when "sqlite","sqlite3"
         dbfile = abcs["test"]["database"] || abcs["test"]["dbfile"]
         File.delete(dbfile) if File.exist?(dbfile)
@@ -331,9 +356,7 @@ namespace :db do
 
     desc "Clear the sessions table"
     task :clear => :environment do
-      session_table = 'session'
-      session_table = Inflector.pluralize(session_table) if ActiveRecord::Base.pluralize_table_names
-      ActiveRecord::Base.connection.execute "DELETE FROM #{session_table}"
+      ActiveRecord::Base.connection.execute "DELETE FROM #{session_table_name}"
     end
   end
 end
@@ -343,9 +366,10 @@ def drop_database(config)
   when 'mysql'
     ActiveRecord::Base.connection.drop_database config['database']
   when /^sqlite/
-    FileUtils.rm_f(File.join(RAILS_ROOT, config['database']))
+    FileUtils.rm(File.join(RAILS_ROOT, config['database']))
   when 'postgresql'
-    `dropdb "#{config['database']}"`
+    ActiveRecord::Base.establish_connection(config.merge('database' => 'postgres', 'schema_search_path' => 'public'))
+    ActiveRecord::Base.connection.drop_database config['database']
   end
 end
 

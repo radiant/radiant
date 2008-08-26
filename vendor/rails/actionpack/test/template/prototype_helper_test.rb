@@ -1,4 +1,4 @@
-require "#{File.dirname(__FILE__)}/../abstract_unit"
+require 'abstract_unit'
 
 Bunny = Struct.new(:Bunny, :id)
 
@@ -24,24 +24,9 @@ end
 class Author::Nested < Author; end
 
 
-module BaseTest
-  def self.included(base)
-    base.send :attr_accessor, :template_format
-  end
+class PrototypeHelperBaseTest < ActionView::TestCase
+  attr_accessor :template_format
 
-  include ActionView::Helpers::JavaScriptHelper
-  include ActionView::Helpers::PrototypeHelper
-  include ActionView::Helpers::ScriptaculousHelper
-  
-  include ActionView::Helpers::UrlHelper
-  include ActionView::Helpers::TagHelper
-  include ActionView::Helpers::TextHelper
-  include ActionView::Helpers::FormTagHelper
-  include ActionView::Helpers::FormHelper
-  include ActionView::Helpers::CaptureHelper
-  include ActionView::Helpers::RecordIdentificationHelper
-  include ActionController::PolymorphicRoutes
-  
   def setup
     @template = nil
     @controller = Class.new do
@@ -59,25 +44,22 @@ module BaseTest
     end.new
   end
 
-protected
-  
-  def request_forgery_protection_token
-    nil
-  end
-  
-  def protect_against_forgery?
-    false
-  end
-  
-  def create_generator
-    block = Proc.new { |*args| yield *args if block_given? } 
-    JavaScriptGenerator.new self, &block
-  end
+  protected
+    def request_forgery_protection_token
+      nil
+    end
+
+    def protect_against_forgery?
+      false
+    end
+
+    def create_generator
+      block = Proc.new { |*args| yield *args if block_given? } 
+      JavaScriptGenerator.new self, &block
+    end
 end
 
-class PrototypeHelperTest < Test::Unit::TestCase
-  include BaseTest
-  
+class PrototypeHelperTest < PrototypeHelperBaseTest
   def setup
     @record = @author = Author.new
     @article = Article.new
@@ -102,6 +84,11 @@ class PrototypeHelperTest < Test::Unit::TestCase
       link_to_remote("Remote outauthor", { :url => { :action => "whatnot"  }, :html => { :class => "fine" } })
   end
   
+  def test_link_to_remote_url_quote_escaping
+    assert_dom_equal %(<a href="#" onclick="new Ajax.Request('http://www.example.com/whatnot\\\'s', {asynchronous:true, evalScripts:true}); return false;">Remote</a>),
+      link_to_remote("Remote", { :url => { :action => "whatnot's" } })
+  end
+
   def test_periodically_call_remote
     assert_dom_equal %(<script type="text/javascript">\n//<![CDATA[\nnew PeriodicalExecuter(function() {new Ajax.Updater('schremser_bier', 'http://www.example.com/mehr_bier', {asynchronous:true, evalScripts:true})}, 10)\n//]]>\n</script>),
       periodically_call_remote(:update => "schremser_bier", :url => { :action => "mehr_bier" })
@@ -230,9 +217,9 @@ class PrototypeHelperTest < Test::Unit::TestCase
   end
   
   def test_observe_field_using_with_option
-    expected = %(<script type=\"text/javascript\">\n//<![CDATA[\nnew Form.Element.Observer('glass', 300, function(element, value) {new Ajax.Request('http://www.example.com/check_value', {asynchronous:true, evalScripts:true, parameters:'id=' + value})})\n//]]>\n</script>)
+    expected = %(<script type=\"text/javascript\">\n//<![CDATA[\nnew Form.Element.Observer('glass', 300, function(element, value) {new Ajax.Request('http://www.example.com/check_value', {asynchronous:true, evalScripts:true, parameters:'id=' + encodeURIComponent(value)})})\n//]]>\n</script>)
     assert_dom_equal expected, observe_field("glass", :frequency => 5.minutes, :url => { :action => "check_value" }, :with => 'id')
-    assert_dom_equal expected, observe_field("glass", :frequency => 5.minutes, :url => { :action => "check_value" }, :with => "'id=' + value")
+    assert_dom_equal expected, observe_field("glass", :frequency => 5.minutes, :url => { :action => "check_value" }, :with => "'id=' + encodeURIComponent(value)")
   end
   
   def test_observe_field_using_json_in_with_option
@@ -294,9 +281,7 @@ class PrototypeHelperTest < Test::Unit::TestCase
     end
 end
 
-class JavaScriptGeneratorTest < Test::Unit::TestCase
-  include BaseTest
-  
+class JavaScriptGeneratorTest < PrototypeHelperBaseTest
   def setup
     super
     @generator = create_generator
@@ -358,6 +343,8 @@ class JavaScriptGeneratorTest < Test::Unit::TestCase
   def test_redirect_to
     assert_equal 'window.location.href = "http://www.example.com/welcome";',
       @generator.redirect_to(:action => 'welcome')
+    assert_equal 'window.location.href = "http://www.example.com/welcome?a=b&c=d";',
+      @generator.redirect_to("http://www.example.com/welcome?a=b&c=d")
   end
   
   def test_delay

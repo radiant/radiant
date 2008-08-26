@@ -1,12 +1,13 @@
 module ActiveSupport #:nodoc:
   module CoreExtensions #:nodoc:
     module Date #:nodoc:
-      # Getting dates in different convenient string representations and other objects
+      # Converting dates to formatted strings, times, and datetimes.
       module Conversions
         DATE_FORMATS = {
           :short        => "%e %b",
           :long         => "%B %e, %Y",
           :db           => "%Y-%m-%d",
+          :number       => "%Y%m%d",
           :long_ordinal => lambda { |date| date.strftime("%B #{date.day.ordinalize}, %Y") }, # => "April 25th, 2007"
           :rfc822       => "%e %b %Y"
         }
@@ -26,10 +27,9 @@ module ActiveSupport #:nodoc:
           end
         end
 
-        # Convert to a formatted string - see DATE_FORMATS for predefined formats.
-        # You can also add your own formats to the DATE_FORMATS constant and use them with this method.
+        # Convert to a formatted string. See DATE_FORMATS for predefined formats.
         #
-        # This method is also aliased as <tt>to_s</tt>.
+        # This method is aliased to <tt>to_s</tt>.
         #
         # ==== Examples:
         #   date = Date.new(2007, 11, 10)       # => Sat, 10 Nov 2007
@@ -41,6 +41,15 @@ module ActiveSupport #:nodoc:
         #   date.to_formatted_s(:long)          # => "November 10, 2007"
         #   date.to_formatted_s(:long_ordinal)  # => "November 10th, 2007"
         #   date.to_formatted_s(:rfc822)        # => "10 Nov 2007"
+        #
+        # == Adding your own time formats to to_formatted_s
+        # You can add your own formats to the Date::DATE_FORMATS hash.
+        # Use the format name as the hash key and either a strftime string
+        # or Proc instance that takes a date argument as the value.
+        #
+        #   # config/initializers/time_formats.rb
+        #   Date::DATE_FORMATS[:month_and_year] = "%B %Y"
+        #   Date::DATE_FORMATS[:short_ordinal] = lambda { |date| date.strftime("%B #{date.day.ordinalize}") }
         def to_formatted_s(format = :default)
           if formatter = DATE_FORMATS[format]
             if formatter.respond_to?(:call)

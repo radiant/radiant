@@ -2,6 +2,8 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 Spec::Runner.configuration.global_fixtures = :people
 
 describe ExplicitHelper, :type => :helper do
+  include ExplicitHelper
+  
   it "should not require naming the helper if describe is passed a type" do
     method_in_explicit_helper.should match(/text from a method/)
     helper.method_in_explicit_helper.should match(/text from a method/)
@@ -25,14 +27,40 @@ module Spec
         it "should have access to named routes" do
           rspec_on_rails_specs_url.should == "http://test.host/rspec_on_rails_specs"
           rspec_on_rails_specs_path.should == "/rspec_on_rails_specs"
+
+          helper.named_url.should == "http://test.host/rspec_on_rails_specs"
+          helper.named_path.should == "/rspec_on_rails_specs"
         end
 
         it "should fail if the helper method deson't exist" do
           lambda { non_existent_helper_method }.should raise_error(NameError)
           lambda { helper.non_existent_helper_method }.should raise_error(NameError)
         end
-      end
 
+        it "should have access to session" do
+          session[:foo] = 'bar'
+          session_foo.should == 'bar'
+          helper.session_foo.should == 'bar'
+        end
+        
+        it "should have access to params" do
+          params[:foo] = 'bar'
+          params_foo.should == 'bar'
+          helper.params_foo.should == 'bar'
+        end
+        
+        it "should have access to request" do
+          request.stub!(:thing).and_return('bar')
+          request_thing.should == 'bar'
+          helper.request_thing.should == 'bar'
+        end
+        
+        it "should have access to flash" do
+          flash[:thing] = 'camera'
+          flash_thing.should == 'camera'
+          helper.flash_thing.should == 'camera'
+        end
+      end
 
       describe HelperExampleGroup, "#eval_erb", :type => :helper do
         helper_name :explicit
@@ -87,10 +115,10 @@ module Spec
         helpers << ActionView::Helpers::PaginationHelper rescue nil       #removed for 2.0
         helpers << ActionView::Helpers::JavaScriptMacrosHelper rescue nil #removed for 2.0
         helpers.each do |helper_module|
-          # it "should include #{helper_module}" do
-          #   self.class.ancestors.should include(helper_module)
-          #   helper.class.ancestors.should include(helper_module)
-          # end
+          it "should include #{helper_module}" do
+            self.class.ancestors.should include(helper_module)
+            helper.class.ancestors.should include(helper_module)
+          end
         end
       end
       

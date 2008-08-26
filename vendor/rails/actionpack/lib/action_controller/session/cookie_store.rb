@@ -1,6 +1,5 @@
 require 'cgi'
 require 'cgi/session'
-require 'base64'        # to convert Marshal.dump to ASCII
 require 'openssl'       # to generate the HMAC message digest
 
 # This cookie-based session store is the Rails default. Sessions typically
@@ -15,27 +14,27 @@ require 'openssl'       # to generate the HMAC message digest
 # TamperedWithCookie is raised if the data integrity check fails.
 #
 # A message digest is included with the cookie to ensure data integrity:
-# a user cannot alter his user_id without knowing the secret key included in
+# a user cannot alter his +user_id+ without knowing the secret key included in
 # the hash. New apps are generated with a pregenerated secret in
 # config/environment.rb. Set your own for old apps you're upgrading.
 #
 # Session options:
-#   :secret   An application-wide key string or block returning a string
-#             called per generated digest. The block is called with the
-#             CGI::Session instance as an argument. It's important that the
-#             secret is not vulnerable to a dictionary attack. Therefore,
-#             you should choose a secret consisting of random numbers and
-#             letters and more than 30 characters.
 #
-#             Example:  :secret => '449fe2e7daee471bffae2fd8dc02313d'
-#                       :secret => Proc.new { User.current_user.secret_key }
+# * <tt>:secret</tt>: An application-wide key string or block returning a string
+#   called per generated digest. The block is called with the CGI::Session
+#   instance as an argument. It's important that the secret is not vulnerable to
+#   a dictionary attack. Therefore, you should choose a secret consisting of
+#   random numbers and letters and more than 30 characters. Examples:
 #
-#   :digest   The message digest algorithm used to verify session integrity
-#             defaults to 'SHA1' but may be any digest provided by OpenSSL,
-#             such as 'MD5', 'RIPEMD160', 'SHA256', etc.
+#     :secret => '449fe2e7daee471bffae2fd8dc02313d'
+#     :secret => Proc.new { User.current_user.secret_key }
+#
+# * <tt>:digest</tt>: The message digest algorithm used to verify session
+#   integrity defaults to 'SHA1' but may be any digest provided by OpenSSL,
+#   such as 'MD5', 'RIPEMD160', 'SHA256', etc.
 #
 # To generate a secret key for an existing application, run
-# `rake secret` and set the key in config/environment.rb
+# "rake secret" and set the key in config/environment.rb.
 #
 # Note that changing digest or secret invalidates all existing sessions!
 class CGI::Session::CookieStore
@@ -118,7 +117,7 @@ class CGI::Session::CookieStore
   def delete
     @data = nil
     clear_old_cookie_value
-    write_cookie('value' => '', 'expires' => 1.year.ago)
+    write_cookie('value' => nil, 'expires' => 1.year.ago)
   end
 
   # Generate the HMAC keyed message digest. Uses SHA1 by default.
@@ -130,19 +129,22 @@ class CGI::Session::CookieStore
   private
     # Marshal a session hash into safe cookie data. Include an integrity hash.
     def marshal(session)
-      data = Base64.encode64(Marshal.dump(session)).chop
-      CGI.escape "#{data}--#{generate_digest(data)}"
+      data = ActiveSupport::Base64.encode64(Marshal.dump(session)).chop
+      "#{data}--#{generate_digest(data)}"
     end
 
     # Unmarshal cookie data to a hash and verify its integrity.
     def unmarshal(cookie)
       if cookie
-        data, digest = CGI.unescape(cookie).split('--')
-        unless digest == generate_digest(data)
+        data, digest = cookie.split('--')
+
+        # Do two checks to transparently support old double-escaped data.
+        unless digest == generate_digest(data) || digest == generate_digest(data = CGI.unescape(data))
           delete
           raise TamperedWithCookie
         end
-        Marshal.load(Base64.decode64(data))
+
+        Marshal.load(ActiveSupport::Base64.decode64(data))
       end
     end
 

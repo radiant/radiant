@@ -1,6 +1,12 @@
 == Change Log
 
 === Edge
+* Fixed migrations for Rails 2.1 [Josh French]
+* Fixed final specs [Jim Gay]
+* Fixed up some specs for new Rails/RSpec [Josh French]
+* Updated timezone management [Josh French]
+* Update to Rails 2.1 [Jim Gay]
+* Update to RSpec 1.1.4 [Jim Gay]
 * Make script/extension more friendly, adding help and info commands. [Sean Cribbs]
 * Added more render regions to layout, snippet, user, and extension views. [Sean Cribbs]
 * Fixed the radiant:update:scripts to find the proper directory [Jim Gay]

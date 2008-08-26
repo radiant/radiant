@@ -1,12 +1,21 @@
 # Don't change this file!
 # Configure your app in config/environment.rb and config/environments/*.rb
 
-RAILS_ROOT = File.expand_path("#{File.dirname(__FILE__)}/..") unless defined?(RAILS_ROOT)
+RAILS_ROOT = "#{File.dirname(__FILE__)}/.." unless defined?(RAILS_ROOT)
+
+module Rails
+  class << self
+    def vendor_rails?
+      File.exist?("#{RAILS_ROOT}/vendor/rails")
+    end
+  end
+end
 
 module Radiant
   class << self
     def boot!
       unless booted?
+        preinitialize
         pick_boot.run
       end
     end
@@ -33,16 +42,23 @@ module Radiant
     def app?
       File.exist?("#{RAILS_ROOT}/lib/radiant.rb")
     end
+
+    def preinitialize
+      load(preinitializer_path) if File.exist?(preinitializer_path)
+    end
     
     def loaded_via_gem?
       pick_boot.is_a? GemBoot
+    end
+
+    def preinitializer_path
+      "#{RAILS_ROOT}/config/preinitializer.rb"
     end
   end
 
   class Boot
     def run
       load_initializer
-      Radiant::Initializer.run(:set_load_path)
     end
     
     def load_initializer
@@ -53,6 +69,7 @@ module Radiant
         $stderr.puts %(Radiant could not be initialized. #{load_error_message})
         exit 1
       end
+      Radiant::Initializer.run(:set_load_path)
     end
   end
 
@@ -60,8 +77,10 @@ module Radiant
     def load_initializer
       $LOAD_PATH.unshift "#{RAILS_ROOT}/vendor/radiant/lib" 
       super
+      #require "#{RAILS_ROOT}/vendor/rails/railties/lib/initializer"
+      #Rails::Initializer.run(:install_gem_spec_stubs)
     end
-    
+        
     def load_error_message
       "Please verify that vendor/radiant contains a complete copy of the Radiant sources."
     end
@@ -72,7 +91,7 @@ module Radiant
       $LOAD_PATH.unshift "#{RAILS_ROOT}/lib" 
       super
     end
-    
+
     def load_error_message
       "Please verify that you have a complete copy of the Radiant sources."
     end
@@ -82,11 +101,12 @@ module Radiant
     def load_initializer
       self.class.load_rubygems
       load_radiant_gem
+      # require 'initializer'
       super
     end
-
+      
     def load_error_message
-      "Please reinstall the Radiant gem with the command 'gem install radiant'."
+     "Please reinstall the Radiant gem with the command 'gem install radiant'."
     end
 
     def load_radiant_gem
@@ -96,7 +116,7 @@ module Radiant
         gem 'radiant'
       end
     rescue Gem::LoadError => load_error
-      $stderr.puts %(Missing the Radiant #{version} gem. Please `gem install -v=#{version} radiant`, update your RADIANT_GEM_VERSION setting in config/environment.rb for the Radiant version you do have installed, or comment out RADIANT_GEM_VERSION to use the latest version installed.)
+      $stderr.puts %(Missing the Radiant #{version} gem. Please `gem install -v=#{version} rails`, update your RADIANT_GEM_VERSION setting in config/environment.rb for the Rails version you do have installed, or comment out RADIANT_GEM_VERSION to use the latest version installed.)
       exit 1
     end
 
@@ -129,7 +149,7 @@ module Radiant
       end
 
       def parse_gem_version(text)
-        $1 if text =~ /^[^#]*RADIANT_GEM_VERSION\s*=\s*'([!~<>=]*\s*[\d.]+)'/
+        $1 if text =~ /^[^#]*RADIANT_GEM_VERSION\s*=\s*["']([!~<>=]*\s*[\d.]+)["']/
       end
 
       private

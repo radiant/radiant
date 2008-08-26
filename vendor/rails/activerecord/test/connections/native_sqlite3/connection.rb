@@ -1,12 +1,12 @@
 print "Using native SQLite3\n"
-require_dependency 'fixtures/course'
+require_dependency 'models/course'
 require 'logger'
 ActiveRecord::Base.logger = Logger.new("debug.log")
 
 class SqliteError < StandardError
 end
 
-BASE_DIR = File.expand_path(File.dirname(__FILE__) + '/../../fixtures')
+BASE_DIR = FIXTURES_ROOT
 sqlite_test_db  = "#{BASE_DIR}/fixture_database.sqlite3"
 sqlite_test_db2 = "#{BASE_DIR}/fixture_database_2.sqlite3"
 

@@ -1,6 +1,6 @@
-require "#{File.dirname(__FILE__)}/../abstract_unit"
-require "#{File.dirname(__FILE__)}/../fixtures/person"
-require "#{File.dirname(__FILE__)}/../fixtures/street_address"
+require 'abstract_unit'
+require 'fixtures/person'
+require 'fixtures/street_address'
 
 class CustomMethodsTest < Test::Unit::TestCase
   def setup
@@ -32,6 +32,9 @@ class CustomMethodsTest < Test::Unit::TestCase
       mock.put    "/people/1/addresses/sort.xml?by=name", {}, nil, 204
       mock.post   "/people/1/addresses/new/link.xml", {}, { :street => '12345 Street' }.to_xml(:root => 'address'), 201, 'Location' => '/people/1/addresses/2.xml'
     end
+
+    Person.user = nil
+    Person.password = nil
   end  
 
   def teardown

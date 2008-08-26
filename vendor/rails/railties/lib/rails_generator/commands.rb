@@ -69,19 +69,8 @@ module Rails
             not existing_migrations(file_name).empty?
           end
 
-          def current_migration_number
-            Dir.glob("#{RAILS_ROOT}/#{@migration_directory}/[0-9]*_*.rb").inject(0) do |max, file_path|
-              n = File.basename(file_path).split('_', 2).first.to_i
-              if n > max then n else max end
-            end
-          end
-
-          def next_migration_number
-            current_migration_number + 1
-          end
-
           def next_migration_string(padding = 3)
-            "%.#{padding}d" % next_migration_number
+            Time.now.utc.strftime("%Y%m%d%H%M%S")
           end
 
           def gsub_file(relative_destination, regexp, *args, &block)
@@ -165,28 +154,35 @@ HELP
         # Ruby or Rails.  In the future, expand to check other namespaces
         # such as the rest of the user's app.
         def class_collisions(*class_names)
+
+          # Initialize some check varibles
+          last_class = Object
+          current_class = nil
+          name = nil
+
           class_names.flatten.each do |class_name|
             # Convert to string to allow symbol arguments.
             class_name = class_name.to_s
 
             # Skip empty strings.
-            next if class_name.strip.empty?
+            class_name.strip.empty? ? next : current_class = class_name
 
             # Split the class from its module nesting.
             nesting = class_name.split('::')
             name = nesting.pop
 
             # Extract the last Module in the nesting.
-            last = nesting.inject(Object) { |last, nest|
-              break unless last.const_defined?(nest)
-              last.const_get(nest)
+            last = nesting.inject(last_class) { |last, nest|
+              break unless last_class.const_defined?(nest)
+              last_class = last_class.const_get(nest)
             }
 
-            # If the last Module exists, check whether the given
-            # class exists and raise a collision if so.
-            if last and last.const_defined?(name.camelize)
-              raise_class_collision(class_name)
-            end
+          end
+          # If the last Module exists, check whether the given
+          # class exists and raise a collision if so.
+
+          if last_class and last_class.const_defined?(name.camelize)
+            raise_class_collision(current_class)
           end
         end
 
@@ -197,7 +193,7 @@ HELP
         #   file 'config/empty.log', 'log/test.log', :chmod => 0664
         # :shebang sets the #!/usr/bin/ruby line for scripts
         #   file 'bin/generate.rb', 'script/generate', :chmod => 0755, :shebang => '/usr/bin/env ruby'
-        # :collision sets the collision option only for the destination file: 
+        # :collision sets the collision option only for the destination file:
         #   file 'settings/server.yml', 'config/server.yml', :collision => :skip
         #
         # Collisions are handled by checking whether the destination file
@@ -211,7 +207,7 @@ HELP
 
           # If source and destination are identical then we're done.
           if destination_exists and identical?(source, destination, &block)
-            return logger.identical(relative_destination) 
+            return logger.identical(relative_destination)
           end
 
           # Check for and resolve file collisions.
@@ -255,8 +251,9 @@ HELP
             FileUtils.chmod(file_options[:chmod], destination)
           end
 
-          # Optionally add file to subversion
+          # Optionally add file to subversion or git
           system("svn add #{destination}") if options[:svn]
+          system("git add -v #{relative_destination}") if options[:git]
         end
 
         # Checks if the source and the destination file are identical. If
@@ -303,33 +300,35 @@ HELP
         end
 
         # Create a directory including any missing parent directories.
-        # Always directories which exist.
+        # Always skips directories which exist.
         def directory(relative_path)
           path = destination_path(relative_path)
           if File.exist?(path)
             logger.exists relative_path
           else
             logger.create relative_path
-	    unless options[:pretend]
-	      FileUtils.mkdir_p(path)
-	      
-	      # Subversion doesn't do path adds, so we need to add
-	      # each directory individually.
-	      # So stack up the directory tree and add the paths to
-	      # subversion in order without recursion.
-	      if options[:svn]
-		stack=[relative_path]
-		until File.dirname(stack.last) == stack.last # dirname('.') == '.'
-		  stack.push File.dirname(stack.last)
-		end
-		stack.reverse_each do |rel_path|
-		  svn_path = destination_path(rel_path)
-		  system("svn add -N #{svn_path}") unless File.directory?(File.join(svn_path, '.svn'))
-		end
-	      end
-	    end
-	  end
-	end
+            unless options[:pretend]
+              FileUtils.mkdir_p(path)
+              # git doesn't require adding the paths, adding the files later will
+              # automatically do a path add.
+
+              # Subversion doesn't do path adds, so we need to add
+              # each directory individually.
+              # So stack up the directory tree and add the paths to
+              # subversion in order without recursion.
+              if options[:svn]
+                stack = [relative_path]
+                until File.dirname(stack.last) == stack.last # dirname('.') == '.'
+                  stack.push File.dirname(stack.last)
+                end
+                stack.reverse_each do |rel_path|
+                  svn_path = destination_path(rel_path)
+                  system("svn add -N #{svn_path}") unless File.directory?(File.join(svn_path, '.svn'))
+                end
+              end
+            end
+          end
+        end
 
         # Display a README.
         def readme(*relative_sources)
@@ -381,17 +380,19 @@ HELP
           # Thanks to Florian Gross (flgr).
           def raise_class_collision(class_name)
             message = <<end_message
-  The name '#{class_name}' is reserved by Ruby on Rails.
+  The name '#{class_name}' is either already used in your application or reserved by Ruby on Rails.
   Please choose an alternative and run this generator again.
 end_message
             if suggest = find_synonyms(class_name)
-              message << "\n  Suggestions:  \n\n"
-              message << suggest.join("\n")
+              if suggest.any?
+                message << "\n  Suggestions:  \n\n"
+                message << suggest.join("\n")
+              end
             end
             raise UsageError, message
           end
 
-          SYNONYM_LOOKUP_URI = "http://wordnet.princeton.edu/cgi-bin/webwn2.0?stage=2&word=%s&posnumber=1&searchtypenumber=2&senses=&showglosses=1"
+          SYNONYM_LOOKUP_URI = "http://wordnet.princeton.edu/perl/webwn?s=%s"
 
           # Look up synonyms on WordNet.  Thanks to Florian Gross (flgr).
           def find_synonyms(word)
@@ -399,8 +400,8 @@ end_message
             require 'timeout'
             timeout(5) do
               open(SYNONYM_LOOKUP_URI % word) do |stream|
-                data = stream.read.gsub("&nbsp;", " ").gsub("<BR>", "")
-                data.scan(/^Sense \d+\n.+?\n\n/m)
+                # Grab words linked to dictionary entries as possible synonyms
+                data = stream.read.gsub("&nbsp;", " ").scan(/<a href="webwn.*?">([\w ]*?)<\/a>/s).uniq
               end
             end
           rescue Exception
@@ -428,7 +429,20 @@ end_message
                 # If the directory is not in the status list, it
                 # has no modifications so we can simply remove it
                   system("svn rm #{destination}")
-                end  
+                end
+              elsif options[:git]
+                if options[:git][:new][relative_destination]
+                  # file has been added, but not committed
+                  system("git reset HEAD #{relative_destination}")
+                  FileUtils.rm(destination)
+                elsif options[:git][:modified][relative_destination]
+                  # file is committed and modified
+                  system("git rm -f #{relative_destination}")
+                else
+                  # If the directory is not in the status list, it
+                  # has no modifications so we can simply remove it
+                  system("git rm #{relative_destination}")
+                end
               else
                 FileUtils.rm(destination)
               end
@@ -465,6 +479,8 @@ end_message
                     # has no modifications so we can simply remove it
                       system("svn rm #{path}")
                     end
+                  # I don't think git needs to remove directories?..
+                  # or maybe they have special consideration...
                   else
                     FileUtils.rmdir(path)
                   end
@@ -537,7 +553,7 @@ end_message
         def readme(*args)
           logger.readme args.join(', ')
         end
-        
+
         def migration_template(relative_source, relative_destination, options = {})
           migration_directory relative_destination
           logger.migration_template file_name

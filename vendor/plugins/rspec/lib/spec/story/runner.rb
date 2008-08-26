@@ -10,16 +10,16 @@ module Spec
     module Runner
       class << self
         def run_options # :nodoc:
-          @run_options ||= ::Spec::Runner::OptionParser.parse(ARGV, $stderr, $stdout)
+          Spec::Runner.options
         end
         
         def story_runner # :nodoc:
           unless @story_runner
-            @story_runner = StoryRunner.new(scenario_runner, world_creator)
+            @story_runner = create_story_runner
             run_options.story_formatters.each do |formatter|
               register_listener(formatter)
             end
-            Runner.register_exit_hook
+            self.register_exit_hook
           end
           @story_runner
         end
@@ -30,6 +30,10 @@ module Spec
         
         def world_creator # :nodoc:
           @world_creator ||= World
+        end
+        
+        def create_story_runner
+          StoryRunner.new(scenario_runner, world_creator)
         end
         
         # Use this to register a customer output formatter.
@@ -43,7 +47,6 @@ module Spec
           at_exit do
             exit Runner.story_runner.run_stories unless $!
           end
-          
         end
         
         def dry_run

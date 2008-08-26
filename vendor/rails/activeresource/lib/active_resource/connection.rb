@@ -18,6 +18,14 @@ module ActiveResource
     end
   end
 
+  # Raised when a Timeout::Error occurs.
+  class TimeoutError < ConnectionError
+    def initialize(message)
+      @message = message
+    end
+    def to_s; @message ;end
+  end
+
   # 3xx Redirection
   class Redirection < ConnectionError # :nodoc:
     def to_s; response['Location'] ? "#{super} => #{response['Location']}" : super; end    
@@ -55,7 +63,7 @@ module ActiveResource
   # This class is used by ActiveResource::Base to interface with REST
   # services.
   class Connection
-    attr_reader :site
+    attr_reader :site, :user, :password, :timeout
     attr_accessor :format
 
     class << self
@@ -68,6 +76,7 @@ module ActiveResource
     # attribute to the URI for the remote resource service.
     def initialize(site, format = ActiveResource::Formats[:xml])
       raise ArgumentError, 'Missing site URI' unless site
+      @user = @password = nil
       self.site = site
       self.format = format
     end
@@ -75,6 +84,23 @@ module ActiveResource
     # Set URI for remote service.
     def site=(site)
       @site = site.is_a?(URI) ? site : URI.parse(site)
+      @user = URI.decode(@site.user) if @site.user
+      @password = URI.decode(@site.password) if @site.password
+    end
+
+    # Set user for remote service.
+    def user=(user)
+      @user = user
+    end
+
+    # Set password for remote service.
+    def password=(password)
+      @password = password
+    end
+
+    # Set the number of seconds after which HTTP requests to the remote service should time out.
+    def timeout=(timeout)
+      @timeout = timeout
     end
 
     # Execute a GET request.
@@ -101,6 +127,12 @@ module ActiveResource
       request(:post, path, body.to_s, build_request_headers(headers))
     end
 
+    # Execute a HEAD request.
+    # Used to obtain meta-information about resources, such as whether they exist and their size (via response headers).
+    def head(path, headers = {})
+      request(:head, path, build_request_headers(headers))
+    end
+
 
     private
       # Makes request to remote service.
@@ -108,8 +140,10 @@ module ActiveResource
         logger.info "#{method.to_s.upcase} #{site.scheme}://#{site.host}:#{site.port}#{path}" if logger
         result = nil
         time = Benchmark.realtime { result = http.send(method, path, *arguments) }
-        logger.info "--> #{result.code} #{result.message} (#{result.body ? result.body : 0}b %.2fs)" % time if logger
+        logger.info "--> #{result.code} #{result.message} (#{result.body ? result.body.length : 0}b %.2fs)" % time if logger
         handle_response(result)
+      rescue Timeout::Error => e
+        raise TimeoutError.new(e.message)
       end
 
       # Handles response and error codes from remote service.
@@ -148,21 +182,22 @@ module ActiveResource
         http             = Net::HTTP.new(@site.host, @site.port)
         http.use_ssl     = @site.is_a?(URI::HTTPS)
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE if http.use_ssl
+        http.read_timeout = @timeout if @timeout # If timeout is not set, the default Net::HTTP timeout (60s) is used.
         http
       end
 
       def default_header
         @default_header ||= { 'Content-Type' => format.mime_type }
       end
-      
+
       # Builds headers for request to remote service.
       def build_request_headers(headers)
         authorization_header.update(default_header).update(headers)
       end
-      
-      # Sets authorization header; authentication information is pulled from credentials provided with site URI.
+
+      # Sets authorization header
       def authorization_header
-        (@site.user || @site.password ? { 'Authorization' => 'Basic ' + ["#{@site.user}:#{ @site.password}"].pack('m').delete("\r\n") } : {})
+        (@user || @password ? { 'Authorization' => 'Basic ' + ["#{@user}:#{ @password}"].pack('m').delete("\r\n") } : {})
       end
 
       def logger #:nodoc:

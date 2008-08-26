@@ -45,7 +45,7 @@ module ActiveRecord
       end
 
       # Returns an array of AssociationReflection objects for all the associations in the class. If you only want to reflect on a
-      # certain association type, pass in the symbol (:has_many, :has_one, :belongs_to) for that as the first parameter. 
+      # certain association type, pass in the symbol (<tt>:has_many</tt>, <tt>:has_one</tt>, <tt>:belongs_to</tt>) for that as the first parameter.
       # Example:
       #
       #   Account.reflect_on_all_associations             # returns an array of all associations
@@ -76,34 +76,38 @@ module ActiveRecord
         @macro, @name, @options, @active_record = macro, name, options, active_record
       end
 
-      # Returns the name of the macro, so it would return :balance for "composed_of :balance, :class_name => 'Money'" or
-      # :clients for "has_many :clients".
+      # Returns the name of the macro.  For example, <tt>composed_of :balance, :class_name => 'Money'</tt> will return
+      # <tt>:balance</tt> or for <tt>has_many :clients</tt> it will return <tt>:clients</tt>.
       def name
         @name
       end
 
-      # Returns the type of the macro, so it would return :composed_of for
-      # "composed_of :balance, :class_name => 'Money'" or :has_many for "has_many :clients".
+      # Returns the macro type. For example, <tt>composed_of :balance, :class_name => 'Money'</tt> will return <tt>:composed_of</tt>
+      # or for <tt>has_many :clients</tt> will return <tt>:has_many</tt>.
       def macro
         @macro
       end
 
-      # Returns the hash of options used for the macro, so it would return { :class_name => "Money" } for
-      # "composed_of :balance, :class_name => 'Money'" or {} for "has_many :clients".
+      # Returns the hash of options used for the macro.  For example, it would return <tt>{ :class_name => "Money" }</tt> for
+      # <tt>composed_of :balance, :class_name => 'Money'</tt> or +{}+ for <tt>has_many :clients</tt>.
       def options
         @options
       end
 
-      # Returns the class for the macro, so "composed_of :balance, :class_name => 'Money'" returns the Money class and
-      # "has_many :clients" returns the Client class.
+      # Returns the class for the macro.  For example, <tt>composed_of :balance, :class_name => 'Money'</tt> returns the Money
+      # class and <tt>has_many :clients</tt> returns the Client class.
       def klass
         @klass ||= class_name.constantize
       end
 
+      # Returns the class name for the macro.  For example, <tt>composed_of :balance, :class_name => 'Money'</tt> returns <tt>'Money'</tt>
+      # and <tt>has_many :clients</tt> returns <tt>'Client'</tt>.
       def class_name
         @class_name ||= options[:class_name] || derive_class_name
       end
 
+      # Returns +true+ if +self+ and +other_aggregation+ have the same +name+ attribute, +active_record+ attribute,
+      # and +other_aggregation+ has an options hash assigned to it.
       def ==(other_aggregation)
         name == other_aggregation.name && other_aggregation.options && active_record == other_aggregation.active_record
       end
@@ -129,6 +133,10 @@ module ActiveRecord
         @table_name ||= klass.table_name
       end
 
+      def quoted_table_name
+        @quoted_table_name ||= klass.quoted_table_name
+      end
+
       def primary_key_name
         @primary_key_name ||= options[:foreign_key] || derive_primary_key_name
       end
@@ -145,22 +153,34 @@ module ActiveRecord
         end
       end
 
+      # Returns the AssociationReflection object specified in the <tt>:through</tt> option
+      # of a HasManyThrough or HasOneThrough association. Example:
+      #
+      #   class Post < ActiveRecord::Base
+      #     has_many :taggings
+      #     has_many :tags, :through => :taggings
+      #   end
+      #
+      #   tags_reflection = Post.reflect_on_association(:tags)
+      #   taggings_reflection = tags_reflection.through_reflection
+      #
       def through_reflection
         @through_reflection ||= options[:through] ? active_record.reflect_on_association(options[:through]) : false
       end
 
-      # Gets an array of possible :through source reflection names
+      # Gets an array of possible <tt>:through</tt> source reflection names:
       #
-      #   [singularized, pluralized]
+      #   [:singularized, :pluralized]
       #
       def source_reflection_names
         @source_reflection_names ||= (options[:source] ? [options[:source]] : [name.to_s.singularize, name]).collect { |n| n.to_sym }
       end
 
-      # Gets the source of the through reflection.  It checks both a singularized and pluralized form for :belongs_to or :has_many.
-      # (The :tags association on Tagging below)
+      # Gets the source of the through reflection.  It checks both a singularized and pluralized form for <tt>:belongs_to</tt> or <tt>:has_many</tt>.
+      # (The <tt>:tags</tt> association on Tagging below.)
       # 
-      #   class Post
+      #   class Post < ActiveRecord::Base
+      #     has_many :taggings
       #     has_many :tags, :through => :taggings
       #   end
       #

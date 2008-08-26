@@ -1,11 +1,25 @@
 require 'active_record/connection_adapters/abstract_adapter'
 
+begin
+  require_library_or_gem 'pg'
+rescue LoadError => e
+  begin
+    require_library_or_gem 'postgres'
+    class PGresult
+      alias_method :nfields, :num_fields unless self.method_defined?(:nfields)
+      alias_method :ntuples, :num_tuples unless self.method_defined?(:ntuples)
+      alias_method :ftype, :type unless self.method_defined?(:ftype)
+      alias_method :cmd_tuples, :cmdtuples unless self.method_defined?(:cmd_tuples)
+    end
+  rescue LoadError
+    raise e
+  end
+end
+
 module ActiveRecord
   class Base
     # Establishes a connection to the database that's used by all Active Record objects
     def self.postgresql_connection(config) # :nodoc:
-      require_library_or_gem 'postgres' unless self.class.const_defined?(:PGconn)
-
       config = config.symbolize_keys
       host     = config[:host]
       port     = config[:port] || 5432
@@ -214,15 +228,15 @@ module ActiveRecord
     #
     # Options:
     #
-    # * <tt>:host</tt> -- Defaults to localhost
-    # * <tt>:port</tt> -- Defaults to 5432
-    # * <tt>:username</tt> -- Defaults to nothing
-    # * <tt>:password</tt> -- Defaults to nothing
-    # * <tt>:database</tt> -- The name of the database. No default, must be provided.
-    # * <tt>:schema_search_path</tt> -- An optional schema search path for the connection given as a string of comma-separated schema names.  This is backward-compatible with the :schema_order option.
-    # * <tt>:encoding</tt> -- An optional client encoding that is used in a SET client_encoding TO <encoding> call on the connection.
-    # * <tt>:min_messages</tt> -- An optional client min messages that is used in a SET client_min_messages TO <min_messages> call on the connection.
-    # * <tt>:allow_concurrency</tt> -- If true, use async query methods so Ruby threads don't deadlock; otherwise, use blocking query methods.
+    # * <tt>:host</tt> - Defaults to "localhost".
+    # * <tt>:port</tt> - Defaults to 5432.
+    # * <tt>:username</tt> - Defaults to nothing.
+    # * <tt>:password</tt> - Defaults to nothing.
+    # * <tt>:database</tt> - The name of the database. No default, must be provided.
+    # * <tt>:schema_search_path</tt> - An optional schema search path for the connection given as a string of comma-separated schema names.  This is backward-compatible with the <tt>:schema_order</tt> option.
+    # * <tt>:encoding</tt> - An optional client encoding that is used in a <tt>SET client_encoding TO <encoding></tt> call on the connection.
+    # * <tt>:min_messages</tt> - An optional client min messages that is used in a <tt>SET client_min_messages TO <min_messages></tt> call on the connection.
+    # * <tt>:allow_concurrency</tt> - If true, use async query methods so Ruby threads don't deadlock; otherwise, use blocking query methods.
     class PostgreSQLAdapter < AbstractAdapter
       # Returns 'PostgreSQL' as adapter name for identification purposes.
       def adapter_name
@@ -300,7 +314,7 @@ module ActiveRecord
         # postgres-pr does not raise an exception when client_min_messages is set higher
         # than error and "SHOW standard_conforming_strings" fails, but returns an empty
         # PGresult instead.
-        has_support = execute('SHOW standard_conforming_strings')[0][0] rescue false
+        has_support = query('SHOW standard_conforming_strings')[0][0] rescue false
         self.client_min_messages = client_min_messages_old
         has_support
       end
@@ -369,11 +383,22 @@ module ActiveRecord
 
       # REFERENTIAL INTEGRITY ====================================
 
+      def supports_disable_referential_integrity?() #:nodoc:
+        version = query("SHOW server_version")[0][0].split('.')
+        (version[0].to_i >= 8 && version[1].to_i >= 1) ? true : false
+      rescue
+        return false
+      end
+
       def disable_referential_integrity(&block) #:nodoc:
-        execute(tables.collect { |name| "ALTER TABLE #{quote_table_name(name)} DISABLE TRIGGER ALL" }.join(";"))
+        if supports_disable_referential_integrity?() then
+          execute(tables.collect { |name| "ALTER TABLE #{quote_table_name(name)} DISABLE TRIGGER ALL" }.join(";"))
+        end
         yield
       ensure
-        execute(tables.collect { |name| "ALTER TABLE #{quote_table_name(name)} ENABLE TRIGGER ALL" }.join(";"))
+        if supports_disable_referential_integrity?() then
+          execute(tables.collect { |name| "ALTER TABLE #{quote_table_name(name)} ENABLE TRIGGER ALL" }.join(";"))
+        end
       end
 
       # DATABASE STATEMENTS ======================================
@@ -386,18 +411,32 @@ module ActiveRecord
 
       # Executes an INSERT query and returns the new record's ID
       def insert(sql, name = nil, pk = nil, id_value = nil, sequence_name = nil)
-        table = sql.split(" ", 4)[2]
-        super || last_insert_id(table, sequence_name || default_sequence_name(table, pk))
+        table = sql.split(" ", 4)[2].gsub('"', '')
+        super || pk && last_insert_id(table, sequence_name || default_sequence_name(table, pk))
       end
 
-      # Queries the database and returns the results in an Array or nil otherwise.
+      # create a 2D array representing the result set
+      def result_as_array(res) #:nodoc:
+        ary = []
+        for i in 0...res.ntuples do
+          ary << []
+          for j in 0...res.nfields do
+            ary[i] << res.getvalue(i,j)
+          end
+        end
+        return ary
+      end
+
+
+      # Queries the database and returns the results in an Array-like object
       def query(sql, name = nil) #:nodoc:
         log(sql, name) do
           if @async
-            @connection.async_query(sql)
+            res = @connection.async_exec(sql)
           else
-            @connection.query(sql)
+            res = @connection.exec(sql)
           end
+          return result_as_array(res)
         end
       end
 
@@ -415,7 +454,7 @@ module ActiveRecord
 
       # Executes an UPDATE query and returns the number of affected tuples.
       def update_sql(sql, name = nil)
-        super.cmdtuples
+        super.cmd_tuples
       end
 
       # Begins a transaction.
@@ -435,6 +474,50 @@ module ActiveRecord
 
       # SCHEMA STATEMENTS ========================================
 
+      def recreate_database(name) #:nodoc:
+        drop_database(name)
+        create_database(name)
+      end
+
+      # Create a new PostgreSQL database.  Options include <tt>:owner</tt>, <tt>:template</tt>,
+      # <tt>:encoding</tt>, <tt>:tablespace</tt>, and <tt>:connection_limit</tt> (note that MySQL uses
+      # <tt>:charset</tt> while PostgreSQL uses <tt>:encoding</tt>).
+      #
+      # Example:
+      #   create_database config[:database], config
+      #   create_database 'foo_development', :encoding => 'unicode'
+      def create_database(name, options = {})
+        options = options.reverse_merge(:encoding => "utf8")
+
+        option_string = options.symbolize_keys.sum do |key, value|
+          case key
+          when :owner
+            " OWNER = '#{value}'"
+          when :template
+            " TEMPLATE = #{value}"
+          when :encoding
+            " ENCODING = '#{value}'"
+          when :tablespace
+            " TABLESPACE = #{value}"
+          when :connection_limit
+            " CONNECTION LIMIT = #{value}"
+          else
+            ""
+          end
+        end
+
+        execute "CREATE DATABASE #{name}#{option_string}"
+      end
+
+      # Drops a PostgreSQL database
+      #
+      # Example:
+      #   drop_database 'matt_development'
+      def drop_database(name) #:nodoc:
+        execute "DROP DATABASE IF EXISTS #{name}"
+      end
+
+
       # Returns the list of all tables in the schema search path or a specified schema.
       def tables(name = nil)
         schemas = schema_search_path.split(/,/).map { |p| quote(p) }.join(',')
@@ -447,14 +530,16 @@ module ActiveRecord
 
       # Returns the list of all indexes for a table.
       def indexes(table_name, name = nil)
-        result = query(<<-SQL, name)
-          SELECT i.relname, d.indisunique, a.attname
-            FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+         schemas = schema_search_path.split(/,/).map { |p| quote(p) }.join(',')
+         result = query(<<-SQL, name)
+           SELECT distinct i.relname, d.indisunique, a.attname
+             FROM pg_class t, pg_class i, pg_index d, pg_attribute a
            WHERE i.relkind = 'i'
              AND d.indexrelid = i.oid
              AND d.indisprimary = 'f'
              AND t.oid = d.indrelid
              AND t.relname = '#{table_name}'
+             AND i.relnamespace IN (SELECT oid FROM pg_namespace WHERE nspname IN (#{schemas}) )
              AND a.attrelid = t.oid
              AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
                 OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
@@ -529,8 +614,10 @@ module ActiveRecord
         end
         if pk
           if sequence
+            quoted_sequence = quote_column_name(sequence)
+
             select_value <<-end_sql, 'Reset sequence'
-              SELECT setval('#{sequence}', (SELECT COALESCE(MAX(#{pk})+(SELECT increment_by FROM #{sequence}), (SELECT min_value FROM #{sequence})) FROM #{table}), false)
+              SELECT setval('#{quoted_sequence}', (SELECT COALESCE(MAX(#{quote_column_name pk})+(SELECT increment_by FROM #{quoted_sequence}), (SELECT min_value FROM #{quoted_sequence})) FROM #{quote_table_name(table)}), false)
             end_sql
           else
             @logger.warn "#{table} has primary key #{pk} with no default sequence" if @logger
@@ -564,7 +651,13 @@ module ActiveRecord
           # Support the 7.x and 8.0 nextval('foo'::text) as well as
           # the 8.1+ nextval('foo'::regclass).
           result = query(<<-end_sql, 'PK and custom sequence')[0]
-            SELECT attr.attname, split_part(def.adsrc, '''', 2)
+            SELECT attr.attname,
+              CASE
+                WHEN split_part(def.adsrc, '''', 2) ~ '.' THEN
+                  substr(split_part(def.adsrc, '''', 2),
+                         strpos(split_part(def.adsrc, '''', 2), '.')+1)
+                ELSE split_part(def.adsrc, '''', 2)
+              END
             FROM pg_class       t
             JOIN pg_attribute   attr ON (t.oid = attrelid)
             JOIN pg_attrdef     def  ON (adrelid = attrelid AND adnum = attnum)
@@ -574,6 +667,7 @@ module ActiveRecord
               AND def.adsrc ~* 'nextval'
           end_sql
         end
+
         # [primary_key, sequence]
         [result.first, result.last]
       rescue
@@ -585,13 +679,14 @@ module ActiveRecord
         execute "ALTER TABLE #{name} RENAME TO #{new_name}"
       end
 
-      # Adds a column to a table.
+      # Adds a new column to the named table.
+      # See TableDefinition#column for details of the options you can use.
       def add_column(table_name, column_name, type, options = {})
         default = options[:default]
         notnull = options[:null] == false
 
         # Add the column.
-        execute("ALTER TABLE #{table_name} ADD COLUMN #{quote_column_name(column_name)} #{type_to_sql(type, options[:limit])}")
+        execute("ALTER TABLE #{quote_table_name(table_name)} ADD COLUMN #{quote_column_name(column_name)} #{type_to_sql(type, options[:limit], options[:precision], options[:scale])}")
 
         change_column_default(table_name, column_name, default) if options_include_default?(options)
         change_column_null(table_name, column_name, false, default) if notnull
@@ -599,17 +694,23 @@ module ActiveRecord
 
       # Changes the column of a table.
       def change_column(table_name, column_name, type, options = {})
+        quoted_table_name = quote_table_name(table_name)
+
         begin
-          execute "ALTER TABLE #{table_name} ALTER COLUMN #{quote_column_name(column_name)} TYPE #{type_to_sql(type, options[:limit], options[:precision], options[:scale])}"
+          execute "ALTER TABLE #{quoted_table_name} ALTER COLUMN #{quote_column_name(column_name)} TYPE #{type_to_sql(type, options[:limit], options[:precision], options[:scale])}"
         rescue ActiveRecord::StatementInvalid
           # This is PostgreSQL 7.x, so we have to use a more arcane way of doing it.
-          begin_db_transaction
-          tmp_column_name = "#{column_name}_ar_tmp"
-          add_column(table_name, tmp_column_name, type, options)
-          execute "UPDATE #{table_name} SET #{quote_column_name(tmp_column_name)} = CAST(#{quote_column_name(column_name)} AS #{type_to_sql(type, options[:limit], options[:precision], options[:scale])})"
-          remove_column(table_name, column_name)
-          rename_column(table_name, tmp_column_name, column_name)
-          commit_db_transaction
+          begin
+            begin_db_transaction
+            tmp_column_name = "#{column_name}_ar_tmp"
+            add_column(table_name, tmp_column_name, type, options)
+            execute "UPDATE #{quoted_table_name} SET #{quote_column_name(tmp_column_name)} = CAST(#{quote_column_name(column_name)} AS #{type_to_sql(type, options[:limit], options[:precision], options[:scale])})"
+            remove_column(table_name, column_name)
+            rename_column(table_name, tmp_column_name, column_name)
+            commit_db_transaction
+          rescue
+            rollback_db_transaction
+          end
         end
 
         change_column_default(table_name, column_name, options[:default]) if options_include_default?(options)
@@ -618,19 +719,19 @@ module ActiveRecord
 
       # Changes the default value of a table column.
       def change_column_default(table_name, column_name, default)
-        execute "ALTER TABLE #{table_name} ALTER COLUMN #{quote_column_name(column_name)} SET DEFAULT #{quote(default)}"
+        execute "ALTER TABLE #{quote_table_name(table_name)} ALTER COLUMN #{quote_column_name(column_name)} SET DEFAULT #{quote(default)}"
       end
 
       def change_column_null(table_name, column_name, null, default = nil)
         unless null || default.nil?
-          execute("UPDATE #{table_name} SET #{quote_column_name(column_name)}=#{quote(default)} WHERE #{quote_column_name(column_name)} IS NULL")
+          execute("UPDATE #{quote_table_name(table_name)} SET #{quote_column_name(column_name)}=#{quote(default)} WHERE #{quote_column_name(column_name)} IS NULL")
         end
-        execute("ALTER TABLE #{table_name} ALTER #{quote_column_name(column_name)} #{null ? 'DROP' : 'SET'} NOT NULL")
+        execute("ALTER TABLE #{quote_table_name(table_name)} ALTER #{quote_column_name(column_name)} #{null ? 'DROP' : 'SET'} NOT NULL")
       end
 
       # Renames a column in a table.
       def rename_column(table_name, column_name, new_column_name)
-        execute "ALTER TABLE #{table_name} RENAME COLUMN #{quote_column_name(column_name)} TO #{quote_column_name(new_column_name)}"
+        execute "ALTER TABLE #{quote_table_name(table_name)} RENAME COLUMN #{quote_column_name(column_name)} TO #{quote_column_name(new_column_name)}"
       end
 
       # Drops an index from a table.
@@ -675,7 +776,7 @@ module ActiveRecord
       # Returns an ORDER BY clause for the passed order option.
       # 
       # PostgreSQL does not allow arbitrary ordering when using DISTINCT ON, so we work around this
-      # by wrapping the sql as a sub-select and ordering in that query.
+      # by wrapping the +sql+ string as a sub-select and ordering in that query.
       def add_order_by_for_association_limiting!(sql, options) #:nodoc:
         return sql if options[:order].blank?
         
@@ -780,10 +881,10 @@ module ActiveRecord
 
         def select_raw(sql, name = nil)
           res = execute(sql, name)
-          results = res.result
+          results = result_as_array(res)
           fields = []
           rows = []
-          if results.length > 0
+          if res.ntuples > 0
             fields = res.fields
             results.each do |row|
               hashed_row = {}
@@ -792,7 +893,7 @@ module ActiveRecord
                 # then strip them off. Indeed it would be prettier to do this in
                 # PostgreSQLColumn.string_to_decimal but would break form input
                 # fields that call value_before_type_cast.
-                if res.type(cell_index) == MONEY_COLUMN_TYPE_OID
+                if res.ftype(cell_index) == MONEY_COLUMN_TYPE_OID
                   # Because money output is formatted according to the locale, there are two
                   # cases to consider (note the decimal separators):
                   #  (1) $12,345,678.12        

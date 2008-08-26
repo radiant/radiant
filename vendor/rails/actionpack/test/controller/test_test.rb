@@ -1,12 +1,26 @@
-require "#{File.dirname(__FILE__)}/../abstract_unit"
-require "#{File.dirname(__FILE__)}/fake_controllers"
-require "action_controller/test_case"
+require 'abstract_unit'
+require 'controller/fake_controllers'
 
 class TestTest < Test::Unit::TestCase
   class TestController < ActionController::Base
+    def no_op
+      render :text => 'dummy'
+    end
+
     def set_flash
       flash["test"] = ">#{flash["test"]}<"
       render :text => 'ignore me'
+    end
+
+    def set_flash_now
+      flash.now["test_now"] = ">#{flash["test_now"]}<"
+      render :text => 'ignore me'
+    end
+
+    def set_session
+      session['string'] = 'A wonder'
+      session[:symbol] = 'it works'
+      render :text => 'Success'
     end
 
     def render_raw_post
@@ -134,6 +148,27 @@ XML
   def test_process_with_flash
     process :set_flash, nil, nil, { "test" => "value" }
     assert_equal '>value<', flash['test']
+  end
+
+  def test_process_with_flash_now
+    process :set_flash_now, nil, nil, { "test_now" => "value_now" }
+    assert_equal '>value_now<', flash['test_now']
+  end
+
+  def test_process_with_session
+    process :set_session
+    assert_equal 'A wonder', session['string'], "A value stored in the session should be available by string key"
+    assert_equal 'A wonder', session[:string], "Test session hash should allow indifferent access"
+    assert_equal 'it works', session['symbol'], "Test session hash should allow indifferent access"
+    assert_equal 'it works', session[:symbol], "Test session hash should allow indifferent access"
+  end
+
+  def test_process_with_session_arg
+    process :no_op, nil, { 'string' => 'value1', :symbol => 'value2' }
+    assert_equal 'value1', session['string']
+    assert_equal 'value1', session[:string]
+    assert_equal 'value2', session['symbol']
+    assert_equal 'value2', session[:symbol]
   end
 
   def test_process_with_request_uri_with_no_params
@@ -375,6 +410,13 @@ XML
     assert_routing 'content', :controller => 'content', :action => 'index'
   end
 
+  def test_assert_routing_with_method
+    with_routing do |set|
+    	set.draw { |map| map.resources(:content) }
+      assert_routing({ :method => 'post', :path => 'content' }, { :controller => 'content', :action => 'create' })
+    end
+  end
+
   def test_assert_routing_in_module
     assert_routing 'admin/user', :controller => 'admin/user', :action => 'index'
   end
@@ -469,16 +511,26 @@ XML
 
   FILES_DIR = File.dirname(__FILE__) + '/../fixtures/multipart'
 
+  if RUBY_VERSION < '1.9'
+    READ_BINARY = 'rb'
+    READ_PLAIN = 'r'
+  else
+    READ_BINARY = 'rb:binary'
+    READ_PLAIN = 'r:binary'
+  end
+
   def test_test_uploaded_file
     filename = 'mona_lisa.jpg'
     path = "#{FILES_DIR}/#{filename}"
     content_type = 'image/png'
+    expected = File.read(path)
+    expected.force_encoding(Encoding::BINARY) if expected.respond_to?(:force_encoding)
 
     file = ActionController::TestUploadedFile.new(path, content_type)
     assert_equal filename, file.original_filename
     assert_equal content_type, file.content_type
     assert_equal file.path, file.local_path
-    assert_equal File.read(path), file.read
+    assert_equal expected, file.read
   end
   
   def test_test_uploaded_file_with_binary
@@ -487,10 +539,10 @@ XML
     content_type = 'image/png'
     
     binary_uploaded_file = ActionController::TestUploadedFile.new(path, content_type, :binary)
-    assert_equal File.open(path, 'rb').read, binary_uploaded_file.read
+    assert_equal File.open(path, READ_BINARY).read, binary_uploaded_file.read
     
     plain_uploaded_file = ActionController::TestUploadedFile.new(path, content_type)
-    assert_equal File.open(path, 'r').read, plain_uploaded_file.read
+    assert_equal File.open(path, READ_PLAIN).read, plain_uploaded_file.read
   end
 
   def test_fixture_file_upload_with_binary
@@ -499,10 +551,10 @@ XML
     content_type = 'image/jpg'
     
     binary_file_upload = fixture_file_upload(path, content_type, :binary)
-    assert_equal File.open(path, 'rb').read, binary_file_upload.read
+    assert_equal File.open(path, READ_BINARY).read, binary_file_upload.read
     
     plain_file_upload = fixture_file_upload(path, content_type)
-    assert_equal File.open(path, 'r').read, plain_file_upload.read
+    assert_equal File.open(path, READ_PLAIN).read, plain_file_upload.read
   end
 
   def test_fixture_file_upload
@@ -616,8 +668,19 @@ end
 
 class CrazyNameTest < ActionController::TestCase
   tests ContentController
+
   def test_controller_class_can_be_set_manually_not_just_inferred
     assert_equal ContentController, self.class.controller_class
   end
 end
 
+class NamedRoutesControllerTest < ActionController::TestCase
+  tests ContentController
+  
+  def test_should_be_able_to_use_named_routes_before_a_request_is_done
+    with_routing do |set|
+      set.draw { |map| map.resources :contents }
+      assert_equal 'http://test.host/contents/new', new_content_url
+    end
+  end
+end

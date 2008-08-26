@@ -147,13 +147,11 @@ module ActiveSupport::Multibyte::Handlers #:nodoc:
       #
       #   s = "Müller"
       #   s.chars[2] = "e" # Replace character with offset 2
-      #   s
-      #   #=> "Müeler"
+      #   s # => "Müeler"
       #
       #   s = "Müller"
       #   s.chars[1, 2] = "ö" # Replace 2 characters at character offset 1
-      #   s
-      #   #=> "Möler"
+      #   s # => "Möler"
       def []=(str, *args)
         replace_by = args.pop
         # Indexed replace with regular expressions already works
@@ -183,10 +181,10 @@ module ActiveSupport::Multibyte::Handlers #:nodoc:
       # Example:
       #
       #   "¾ cup".chars.rjust(8).to_s
-      #   #=> "   ¾ cup"
+      #   # => "   ¾ cup"
       #
       #   "¾ cup".chars.rjust(8, " ").to_s # Use non-breaking whitespace
-      #   #=> "   ¾ cup"
+      #   # => "   ¾ cup"
       def rjust(str, integer, padstr=' ')
         justify(str, integer, :right, padstr)
       end
@@ -196,10 +194,10 @@ module ActiveSupport::Multibyte::Handlers #:nodoc:
       # Example:
       #
       #   "¾ cup".chars.rjust(8).to_s
-      #   #=> "¾ cup   "
+      #   # => "¾ cup   "
       #
       #   "¾ cup".chars.rjust(8, " ").to_s # Use non-breaking whitespace
-      #   #=> "¾ cup   "
+      #   # => "¾ cup   "
       def ljust(str, integer, padstr=' ')
         justify(str, integer, :left, padstr)
       end
@@ -209,10 +207,10 @@ module ActiveSupport::Multibyte::Handlers #:nodoc:
       # Example:
       #
       #   "¾ cup".chars.center(8).to_s
-      #   #=> " ¾ cup  "
+      #   # => " ¾ cup  "
       #
       #   "¾ cup".chars.center(8, " ").to_s # Use non-breaking whitespace
-      #   #=> " ¾ cup  "
+      #   # => " ¾ cup  "
       def center(str, integer, padstr=' ')
         justify(str, integer, :center, padstr)
       end
@@ -284,7 +282,9 @@ module ActiveSupport::Multibyte::Handlers #:nodoc:
       # passing strings to databases and validations.
       #
       # * <tt>str</tt> - The string to perform normalization on.
-      # * <tt>form</tt> - The form you want to normalize in. Should be one of the following: :c, :kc, :d or :kd.
+      # * <tt>form</tt> - The form you want to normalize in. Should be one of the following:
+      #   <tt>:c</tt>, <tt>:kc</tt>, <tt>:d</tt>, or <tt>:kd</tt>. Default is
+      #   ActiveSupport::Multibyte::DEFAULT_NORMALIZATION_FORM.
       def normalize(str, form=ActiveSupport::Multibyte::DEFAULT_NORMALIZATION_FORM)
         # See http://www.unicode.org/reports/tr15, Table 1
         codepoints = u_unpack(str)

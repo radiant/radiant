@@ -4,7 +4,8 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
-require 'rake/contrib/rubyforgepublisher'
+require 'rake/contrib/sshpublisher'
+
 require File.join(File.dirname(__FILE__), 'lib', 'active_resource', 'version')
 
 PKG_BUILD     = ENV['PKG_BUILD'] ? '.' + ENV['PKG_BUILD'] : ''
@@ -52,6 +53,7 @@ Rake::RDocTask.new { |rdoc|
 dist_dirs = [ "lib", "test", "examples", "dev-utils" ]
 
 spec = Gem::Specification.new do |s|
+  s.platform = Gem::Platform::RUBY
   s.name = PKG_NAME
   s.version = PKG_VERSION
   s.summary = "Think Active Record for web resources."
@@ -62,7 +64,7 @@ spec = Gem::Specification.new do |s|
     s.files = s.files + Dir.glob( "#{dir}/**/*" ).delete_if { |item| item.include?( "\.svn" ) }
   end
   
-  s.add_dependency('activesupport', '= 2.0.2' + PKG_BUILD)
+  s.add_dependency('activesupport', '= 2.1.0' + PKG_BUILD)
 
   s.require_path = 'lib'
   s.autorequire = 'active_resource'

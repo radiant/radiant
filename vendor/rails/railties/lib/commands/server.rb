@@ -14,7 +14,7 @@ rescue Exception
 end
 
 server = case ARGV.first
-  when "lighttpd", "mongrel", "webrick"
+  when "lighttpd", "mongrel", "new_mongrel", "webrick"
     ARGV.shift
   else
     if defined?(Mongrel)
@@ -31,7 +31,7 @@ case server
     puts "=> Booting WEBrick..."
   when "lighttpd"
     puts "=> Booting lighttpd (use 'script/server webrick' to force WEBrick)"
-  when "mongrel"
+  when "mongrel", "new_mongrel"
     puts "=> Booting Mongrel (use 'script/server webrick' to force WEBrick)"
 end
 

@@ -1,33 +1,36 @@
-require File.dirname(__FILE__) + '/../abstract_unit'
+require 'abstract_unit'
 
-class CustomHandler
+class CustomHandler < ActionView::TemplateHandler
   def initialize( view )
     @view = view
   end
 
-  def render( template, local_assigns )
-    [ template,
-      local_assigns,
+  def render( template )
+    [ template.source,
+      template.locals,
       @view ]
   end
 end
 
 class CustomHandlerTest < Test::Unit::TestCase
   def setup
-    ActionView::Base.register_template_handler "foo", CustomHandler
-    ActionView::Base.register_template_handler :foo2, CustomHandler
+    ActionView::Template.register_template_handler "foo", CustomHandler
+    ActionView::Template.register_template_handler :foo2, CustomHandler
     @view = ActionView::Base.new
   end
 
   def test_custom_render
-    result = @view.render_template( "foo", "hello <%= one %>", nil, :one => "two" )
+    template = ActionView::InlineTemplate.new(@view, "hello <%= one %>", { :one => "two" }, "foo")
+
+    result = @view.render_template(template)
     assert_equal(
       [ "hello <%= one %>", { :one => "two" }, @view ],
       result )
   end
 
   def test_custom_render2
-    result = @view.render_template( "foo2", "hello <%= one %>", nil, :one => "two" )
+    template = ActionView::InlineTemplate.new(@view, "hello <%= one %>", { :one => "two" }, "foo2")
+    result = @view.render_template(template)
     assert_equal(
       [ "hello <%= one %>", { :one => "two" }, @view ],
       result )
@@ -35,7 +38,8 @@ class CustomHandlerTest < Test::Unit::TestCase
 
   def test_unhandled_extension
     # uses the ERb handler by default if the extension isn't recognized
-    result = @view.render_template( "bar", "hello <%= one %>", nil, :one => "two" )
+    template = ActionView::InlineTemplate.new(@view, "hello <%= one %>", { :one => "two" }, "bar")
+    result = @view.render_template(template)
     assert_equal "hello two", result
   end
 end

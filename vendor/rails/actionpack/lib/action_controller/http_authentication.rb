@@ -1,5 +1,3 @@
-require 'base64'
-
 module ActionController
   module HttpAuthentication
     # Makes it dead easy to do HTTP Basic authentication.
@@ -72,7 +70,7 @@ module ActionController
     #  
     # On shared hosts, Apache sometimes doesn't pass authentication headers to
     # FCGI instances. If your environment matches this description and you cannot
-    # authenticate, try this rule in public/.htaccess (replace the plain one):
+    # authenticate, try this rule in your Apache setup:
     # 
     #   RewriteRule ^(.*)$ dispatch.fcgi [E=X-HTTP_AUTHORIZATION:%{HTTP:Authorization},QSA,L]
     module Basic
@@ -110,11 +108,11 @@ module ActionController
       end
     
       def decode_credentials(request)
-        Base64.decode64(authorization(request).split.last || '')
+        ActiveSupport::Base64.decode64(authorization(request).split.last || '')
       end
 
       def encode_credentials(user_name, password)
-        "Basic #{Base64.encode64("#{user_name}:#{password}")}"
+        "Basic #{ActiveSupport::Base64.encode64("#{user_name}:#{password}")}"
       end
 
       def authentication_request(controller, realm)

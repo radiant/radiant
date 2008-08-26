@@ -70,7 +70,7 @@ module ActiveRecord
     #
     # Options:
     #
-    # * <tt>:database</tt> -- Path to the database file.
+    # * <tt>:database</tt> - Path to the database file.
     class SQLiteAdapter < AbstractAdapter
       def adapter_name #:nodoc:
         'SQLite'
@@ -107,7 +107,7 @@ module ActiveRecord
           :decimal     => { :name => "decimal" },
           :datetime    => { :name => "datetime" },
           :timestamp   => { :name => "datetime" },
-          :time        => { :name => "datetime" },
+          :time        => { :name => "time" },
           :date        => { :name => "date" },
           :binary      => { :name => "blob" },
           :boolean     => { :name => "boolean" }
@@ -192,7 +192,7 @@ module ActiveRecord
       end
 
       def indexes(table_name, name = nil) #:nodoc:
-        execute("PRAGMA index_list(#{table_name})", name).map do |row|
+        execute("PRAGMA index_list(#{quote_table_name(table_name)})", name).map do |row|
           index = IndexDefinition.new(table_name, row['name'])
           index.unique = row['unique'] != '0'
           index.columns = execute("PRAGMA index_info('#{index.name}')").map { |col| col['name'] }
@@ -214,16 +214,23 @@ module ActiveRecord
       end
 
       def add_column(table_name, column_name, type, options = {}) #:nodoc:
+        if @connection.respond_to?(:transaction_active?) && @connection.transaction_active?
+          raise StatementInvalid, 'Cannot add columns to a SQLite database while inside a transaction'
+        end
+        
         super(table_name, column_name, type, options)
         # See last paragraph on http://www.sqlite.org/lang_altertable.html
         execute "VACUUM"
       end
 
-      def remove_column(table_name, column_name) #:nodoc:
-        alter_table(table_name) do |definition|
-          definition.columns.delete(definition[column_name])
+      def remove_column(table_name, *column_names) #:nodoc:
+        column_names.flatten.each do |column_name|
+          alter_table(table_name) do |definition|
+            definition.columns.delete(definition[column_name])
+          end
         end
       end
+      alias :remove_columns :remove_column
 
       def change_column_default(table_name, column_name, default) #:nodoc:
         alter_table(table_name) do |definition|
@@ -257,7 +264,7 @@ module ActiveRecord
             record = {}
             row.each_key do |key|
               if key.is_a?(String)
-                record[key.sub(/^\w+\./, '')] = row[key]
+                record[key.sub(/^"?\w+"?\./, '')] = row[key]
               end
             end
             record
@@ -265,7 +272,7 @@ module ActiveRecord
         end
 
         def table_structure(table_name)
-          returning structure = execute("PRAGMA table_info(#{table_name})") do
+          returning structure = execute("PRAGMA table_info(#{quote_table_name(table_name)})") do
             raise(ActiveRecord::StatementInvalid, "Could not find table '#{table_name}'") if structure.empty?
           end
         end
@@ -304,13 +311,13 @@ module ActiveRecord
             yield @definition if block_given?
           end
 
-          copy_table_indexes(from, to)
+          copy_table_indexes(from, to, options[:rename] || {})
           copy_table_contents(from, to,
             @definition.columns.map {|column| column.name},
             options[:rename] || {})
         end
 
-        def copy_table_indexes(from, to) #:nodoc:
+        def copy_table_indexes(from, to, rename = {}) #:nodoc:
           indexes(from).each do |index|
             name = index.name
             if to == "altered_#{from}"
@@ -319,10 +326,17 @@ module ActiveRecord
               name = name[5..-1]
             end
 
-            # index name can't be the same
-            opts = { :name => name.gsub(/_(#{from})_/, "_#{to}_") }
-            opts[:unique] = true if index.unique
-            add_index(to, index.columns, opts)
+            to_column_names = columns(to).map(&:name)
+            columns = index.columns.map {|c| rename[c] || c }.select do |column|
+              to_column_names.include?(column)
+            end
+
+            unless columns.empty?
+              # index name can't be the same
+              opts = { :name => name.gsub(/_(#{from})_/, "_#{to}_") }
+              opts[:unique] = true if index.unique
+              add_index(to, columns, opts)
+            end
           end
         end
 
@@ -333,8 +347,9 @@ module ActiveRecord
           columns = columns.find_all{|col| from_columns.include?(column_mappings[col])}
           quoted_columns = columns.map { |col| quote_column_name(col) } * ','
 
-          @connection.execute "SELECT * FROM #{from}" do |row|
-            sql = "INSERT INTO #{to} (#{quoted_columns}) VALUES ("
+          quoted_to = quote_table_name(to)
+          @connection.execute "SELECT * FROM #{quote_table_name(from)}" do |row|
+            sql = "INSERT INTO #{quoted_to} (#{quoted_columns}) VALUES ("
             sql << columns.map {|col| quote row[column_mappings[col]]} * ', '
             sql << ')'
             @connection.execute sql
