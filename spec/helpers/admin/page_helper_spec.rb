@@ -1,5 +1,9 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
+class MarkdownPlusFilter
+  # dummy filter class
+end
+
 describe Admin::PageHelper do
   scenario :users_and_pages
 
@@ -25,9 +29,16 @@ describe Admin::PageHelper do
     tag_reference("Page").should =~ /Tag Reference/
   end
 
-  it "should render the filter reference" do
-    filter_reference("Textile").should == TextileFilter.description
-    filter_reference("").should == "There is no filter on the current page part."
+  describe "#filter_reference" do
+    it "should render the filter reference" do
+      filter_reference("Textile").should == TextileFilter.description
+      filter_reference("").should == "There is no filter on the current page part."
+    end
+    
+    it "should render the filter reference for complex filter names" do
+      MarkdownPlusFilter.stub!(:description).and_return("Markdown rocks!")
+      filter_reference("Markdown Plus").should == "Markdown rocks!"
+    end
   end
 
   it "should have a default filter name" do

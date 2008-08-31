@@ -16,7 +16,7 @@ module Admin::PageHelper
   
   def filter_reference(filter_name)
     unless filter_name.blank?
-      filter_class = (filter_name + "Filter").constantize
+      filter_class = (filter_name.gsub(" ", "") + "Filter").constantize
       filter_class.description.blank? ? "There is no documentation on this filter." : filter_class.description
     else
       "There is no filter on the current page part."
