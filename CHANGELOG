@@ -1,6 +1,9 @@
 == Change Log
 
 === Edge
+* Add REXML expansion fix. [Sean Cribbs]
+* Fix filter_reference admin helper for filter names that have spaces in
+them. [Mislav Marohnić]
 * Make script/extension more friendly, adding help and info commands. [Sean Cribbs]
 * Added more render regions to layout, snippet, user, and extension views. [Sean Cribbs]
 * Fixed the radiant:update:scripts to find the proper directory [Jim Gay]
@@ -10,7 +13,7 @@ it. [Sean Cribbs]
 === 0.6.9 Etch
 * Make <r:random> accept dynamically generated options. [Jim Gay, Sean Cribbs]
 * Correctly set default 'inherit' to false on <r:unless_content> [Mark A. Yoon]
-* Correct authenticity token errors when using cookie session store [Sean 
+* Correct authenticity token errors when using cookie session store [Sean
 Cribbs]
 * Make script/extension executable. [Sean Cribbs]
 * Correct bugs in radiant:freeze:edge task. [Sean Cribbs]
@@ -19,11 +22,11 @@ Cribbs]
 * Correct error in radiant:update:configs task. [Sean Cribbs]
 
 === 0.6.8 Incise
-* Hide page publish date selector unless page.edit.published_date? config is 
+* Hide page publish date selector unless page.edit.published_date? config is
 set. [Sean Cribbs]
 * Add <r:yield /> tag to support snippets that accept blocks. [Andrew Neil]
 * Fix bug with FileNotFoundPage subclasses and draft status. [Glenn Murray]
-* Update radiant:freeze:edge task to support BRANCH, TAG, and REVISION. [John 
+* Update radiant:freeze:edge task to support BRANCH, TAG, and REVISION. [John
 Muhl]
 * Update to Haml 2.0.1. [Jim Gay]
 * Fix radiant:update:configs task to properly evaluate environment.rb

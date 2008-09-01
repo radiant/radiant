@@ -1,0 +1,1 @@
+require 'rexml-expansion-fix'
