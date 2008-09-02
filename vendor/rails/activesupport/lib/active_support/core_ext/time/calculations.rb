@@ -9,24 +9,31 @@ module ActiveSupport #:nodoc:
           base.class_eval do
             alias_method :plus_without_duration, :+
             alias_method :+, :plus_with_duration
+            
             alias_method :minus_without_duration, :-
             alias_method :-, :minus_with_duration
+            
+            alias_method :minus_without_coercion, :-
+            alias_method :-, :minus_with_coercion
+            
+            alias_method :compare_without_coercion, :<=>
+            alias_method :<=>, :compare_with_coercion
           end
         end
 
+        COMMON_YEAR_DAYS_IN_MONTH = [nil, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
         module ClassMethods
-          # Return the number of days in the given month. If a year is given,
-          # February will return the correct number of days for leap years.
-          # Otherwise, this method will always report February as having 28
-          # days.
-          def days_in_month(month, year=nil)
-            if month == 2
-              !year.nil? && (year % 4 == 0) && ((year % 100 != 0) || (year % 400 == 0)) ?  29 : 28
-            elsif month <= 7
-              month % 2 == 0 ? 30 : 31
-            else
-              month % 2 == 0 ? 31 : 30
-            end
+          # Overriding case equality method so that it returns true for ActiveSupport::TimeWithZone instances
+          def ===(other)
+            other.is_a?(::Time)
+          end
+          
+          # Return the number of days in the given month. 
+          # If no year is specified, it will use the current year. 
+          def days_in_month(month, year = now.year)
+            return 29 if month == 2 && ::Date.gregorian_leap?(year)
+            COMMON_YEAR_DAYS_IN_MONTH[month]
           end
 
           # Returns a new Time if requested year can be accommodated by Ruby's Time class
@@ -39,12 +46,12 @@ module ActiveSupport #:nodoc:
             ::DateTime.civil(year, month, day, hour, min, sec, offset)
           end
 
-          # wraps class method time_with_datetime_fallback with utc_or_local == :utc
+          # Wraps class method +time_with_datetime_fallback+ with +utc_or_local+ set to <tt>:utc</tt>.
           def utc_time(*args)
             time_with_datetime_fallback(:utc, *args)
           end
 
-          # wraps class method time_with_datetime_fallback with utc_or_local == :local
+          # Wraps class method +time_with_datetime_fallback+ with +utc_or_local+ set to <tt>:local</tt>.
           def local_time(*args)
             time_with_datetime_fallback(:local, *args)
           end
@@ -71,8 +78,10 @@ module ActiveSupport #:nodoc:
           )
         end
 
-        # Uses Date to provide precise Time calculations for years, months, and days.  The +options+ parameter takes a hash with
-        # any of these keys: :years, :months, :weeks, :days, :hours, :minutes, :seconds.
+        # Uses Date to provide precise Time calculations for years, months, and days.
+        # The +options+ parameter takes a hash with any of these keys: <tt>:years</tt>,
+        # <tt>:months</tt>, <tt>:weeks</tt>, <tt>:days</tt>, <tt>:hours</tt>,
+        # <tt>:minutes</tt>, <tt>:seconds</tt>.
         def advance(options)
           d = to_date.advance(options)
           time_advanced_by_date = change(:year => d.year, :month => d.month, :day => d.day)
@@ -81,18 +90,21 @@ module ActiveSupport #:nodoc:
         end
 
         # Returns a new Time representing the time a number of seconds ago, this is basically a wrapper around the Numeric extension
-        # Do not use this method in combination with x.months, use months_ago instead!
         def ago(seconds)
           self.since(-seconds)
         end
 
         # Returns a new Time representing the time a number of seconds since the instance time, this is basically a wrapper around
-        # the Numeric extension. Do not use this method in combination with x.months, use months_since instead!
+        # the Numeric extension.
         def since(seconds)
-          initial_dst = self.dst? ? 1 : 0
           f = seconds.since(self)
-          final_dst   = f.dst? ? 1 : 0
-          (seconds.abs >= 86400 && initial_dst != final_dst) ? f + (initial_dst - final_dst).hours : f
+          if ActiveSupport::Duration === seconds
+            f
+          else
+            initial_dst = self.dst? ? 1 : 0
+            final_dst   = f.dst? ? 1 : 0
+            (seconds.abs >= 86400 && initial_dst != final_dst) ? f + (initial_dst - final_dst).hours : f
+          end
         rescue
           self.to_datetime.since(seconds)          
         end
@@ -147,6 +159,13 @@ module ActiveSupport #:nodoc:
         alias :monday :beginning_of_week
         alias :at_beginning_of_week :beginning_of_week
 
+        # Returns a new Time representing the end of this week (Sunday, 23:59:59)
+        def end_of_week
+          days_to_sunday = self.wday!=0 ? 7-self.wday : 0
+          (self + days_to_sunday.days).end_of_day
+        end
+        alias :at_end_of_week :end_of_week
+
         # Returns a new Time representing the start of the given day in next week (default is Monday).
         def next_week(day = :monday)
           days_into_week = { :monday => 0, :tuesday => 1, :wednesday => 2, :thursday => 3, :friday => 4, :saturday => 5, :sunday => 6}
@@ -187,20 +206,32 @@ module ActiveSupport #:nodoc:
         end
         alias :at_beginning_of_quarter :beginning_of_quarter
 
+        # Returns a new Time representing the end of the quarter (last day of march, june, september, december, 23:59:59)
+        def end_of_quarter
+          change(:month => [3, 6, 9, 12].detect { |m| m >= self.month }).end_of_month
+        end
+        alias :at_end_of_quarter :end_of_quarter
+
         # Returns  a new Time representing the start of the year (1st of january, 0:00)
         def beginning_of_year
           change(:month => 1,:day => 1,:hour => 0, :min => 0, :sec => 0, :usec => 0)
         end
         alias :at_beginning_of_year :beginning_of_year
 
+        # Returns a new Time representing the end of the year (31st of december, 23:59:59)
+        def end_of_year
+          change(:month => 12,:day => 31,:hour => 23, :min => 59, :sec => 59)
+        end
+        alias :at_end_of_year :end_of_year
+
         # Convenience method which returns a new Time representing the time 1 day ago
         def yesterday
-          self.ago(1.day)
+          advance(:days => -1)
         end
 
         # Convenience method which returns a new Time representing the time 1 day since the instance time
         def tomorrow
-          self.since(1.day)
+          advance(:days => 1)
         end
 
         def plus_with_duration(other) #:nodoc:
@@ -216,6 +247,27 @@ module ActiveSupport #:nodoc:
             other.until(self)
           else
             minus_without_duration(other)
+          end
+        end
+        
+        # Time#- can also be used to determine the number of seconds between two Time instances.
+        # We're layering on additional behavior so that ActiveSupport::TimeWithZone instances
+        # are coerced into values that Time#- will recognize
+        def minus_with_coercion(other)
+          other = other.comparable_time if other.respond_to?(:comparable_time)
+          minus_without_coercion(other)
+        end
+        
+        # Layers additional behavior on Time#<=> so that DateTime and ActiveSupport::TimeWithZone instances
+        # can be chronologically compared with a Time
+        def compare_with_coercion(other)
+          # if other is an ActiveSupport::TimeWithZone, coerce a Time instance from it so we can do <=> comparision
+          other = other.comparable_time if other.respond_to?(:comparable_time)
+          if other.acts_like?(:date)
+            # other is a Date/DateTime, so coerce self #to_datetime and hand off to DateTime#<=>
+            to_datetime.compare_without_coercion(other)
+          else
+            compare_without_coercion(other)
           end
         end
       end

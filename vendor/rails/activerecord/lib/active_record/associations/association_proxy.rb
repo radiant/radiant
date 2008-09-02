@@ -1,11 +1,55 @@
 module ActiveRecord
   module Associations
+    # This is the root class of all association proxies:
+    #
+    #   AssociationProxy
+    #     BelongsToAssociation
+    #       HasOneAssociation
+    #     BelongsToPolymorphicAssociation
+    #     AssociationCollection
+    #       HasAndBelongsToManyAssociation
+    #       HasManyAssociation
+    #         HasManyThroughAssociation
+    #            HasOneThroughAssociation
+    #
+    # Association proxies in Active Record are middlemen between the object that
+    # holds the association, known as the <tt>@owner</tt>, and the actual associated
+    # object, known as the <tt>@target</tt>. The kind of association any proxy is
+    # about is available in <tt>@reflection</tt>. That's an instance of the class
+    # ActiveRecord::Reflection::AssociationReflection.
+    #
+    # For example, given
+    #
+    #   class Blog < ActiveRecord::Base
+    #     has_many :posts
+    #   end
+    #
+    #   blog = Blog.find(:first)
+    #
+    # the association proxy in <tt>blog.posts</tt> has the object in +blog+ as
+    # <tt>@owner</tt>, the collection of its posts as <tt>@target</tt>, and
+    # the <tt>@reflection</tt> object represents a <tt>:has_many</tt> macro.
+    #
+    # This class has most of the basic instance methods removed, and delegates
+    # unknown methods to <tt>@target</tt> via <tt>method_missing</tt>. As a
+    # corner case, it even removes the +class+ method and that's why you get
+    #
+    #   blog.posts.class # => Array
+    #
+    # though the object behind <tt>blog.posts</tt> is not an Array, but an
+    # ActiveRecord::Associations::HasManyAssociation.
+    #
+    # The <tt>@target</tt> object is not loaded until needed. For example,
+    #
+    #   blog.posts.count
+    #
+    # is computed directly through SQL and does not trigger by itself the
+    # instantiation of the actual post records.
     class AssociationProxy #:nodoc:
-      attr_reader :reflection
       alias_method :proxy_respond_to?, :respond_to?
       alias_method :proxy_extend, :extend
       delegate :to_param, :to => :proxy_target
-      instance_methods.each { |m| undef_method m unless m =~ /(^__|^nil\?$|^send$|proxy_)/ }
+      instance_methods.each { |m| undef_method m unless m =~ /(^__|^nil\?$|^send$|proxy_|^object_id$)/ }
 
       def initialize(owner, reflection)
         @owner, @reflection = owner, reflection
@@ -74,7 +118,7 @@ module ActiveRecord
       end
 
       def inspect
-        reload unless loaded?
+        load_target
         @target.inspect
       end
 
@@ -115,17 +159,36 @@ module ActiveRecord
             :offset  => @reflection.options[:offset],
             :joins   => @reflection.options[:joins],
             :include => @reflection.options[:include],
-            :select  => @reflection.options[:select]
+            :select  => @reflection.options[:select],
+            :readonly  => @reflection.options[:readonly]
           )
         end
 
+        def with_scope(*args, &block)
+          @reflection.klass.send :with_scope, *args, &block
+        end
+
       private
-        def method_missing(method, *args, &block)
+        def method_missing(method, *args)
           if load_target
-            @target.send(method, *args, &block)
+            if block_given?
+              @target.send(method, *args)  { |*block_args| yield(*block_args) }
+            else
+              @target.send(method, *args)
+            end
           end
         end
 
+        # Loads the target if needed and returns it.
+        #
+        # This method is abstract in the sense that it relies on +find_target+,
+        # which is expected to be provided by descendants.
+        #
+        # If the target is already loaded it is just returned. Thus, you can call
+        # +load_target+ unconditionally to get the target.
+        #
+        # ActiveRecord::RecordNotFound is rescued within the method, and it is
+        # not reraised. The proxy is reset and +nil+ is the return value.
         def load_target
           return nil unless defined?(@loaded)
 
@@ -147,7 +210,8 @@ module ActiveRecord
 
         def raise_on_type_mismatch(record)
           unless record.is_a?(@reflection.klass)
-            raise ActiveRecord::AssociationTypeMismatch, "#{@reflection.klass} expected, got #{record.class}"
+            message = "#{@reflection.class_name}(##{@reflection.klass.object_id}) expected, got #{record.class}(##{record.class.object_id})"
+            raise ActiveRecord::AssociationTypeMismatch, message
           end
         end
 

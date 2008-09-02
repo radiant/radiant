@@ -15,7 +15,7 @@ module ActionController
     # such as { 'RAILS_ENV' => 'production' }.
     attr_reader :env
 
-    # The true HTTP request method as a lowercase symbol, such as :get.
+    # The true HTTP request method as a lowercase symbol, such as <tt>:get</tt>.
     # UnknownHttpMethod is raised for invalid methods not listed in ACCEPTED_HTTP_METHODS.
     def request_method
       @request_method ||= begin
@@ -28,41 +28,43 @@ module ActionController
       end
     end
 
-    # The HTTP request method as a lowercase symbol, such as :get.
-    # Note, HEAD is returned as :get since the two are functionally
+    # The HTTP request method as a lowercase symbol, such as <tt>:get</tt>.
+    # Note, HEAD is returned as <tt>:get</tt> since the two are functionally
     # equivalent from the application's perspective.
     def method
       request_method == :head ? :get : request_method
     end
 
-    # Is this a GET (or HEAD) request?  Equivalent to request.method == :get
+    # Is this a GET (or HEAD) request?  Equivalent to <tt>request.method == :get</tt>.
     def get?
       method == :get
     end
 
-    # Is this a POST request?  Equivalent to request.method == :post
+    # Is this a POST request?  Equivalent to <tt>request.method == :post</tt>.
     def post?
       request_method == :post
     end
 
-    # Is this a PUT request?  Equivalent to request.method == :put
+    # Is this a PUT request?  Equivalent to <tt>request.method == :put</tt>.
     def put?
       request_method == :put
     end
 
-    # Is this a DELETE request?  Equivalent to request.method == :delete
+    # Is this a DELETE request?  Equivalent to <tt>request.method == :delete</tt>.
     def delete?
       request_method == :delete
     end
 
-    # Is this a HEAD request? request.method sees HEAD as :get, so check the
-    # HTTP method directly.
+    # Is this a HEAD request? <tt>request.method</tt> sees HEAD as <tt>:get</tt>,
+    # so check the HTTP method directly.
     def head?
       request_method == :head
     end
 
+    # Provides acccess to the request's HTTP headers, for example:
+    #  request.headers["Content-Type"] # => "text/plain"
     def headers
-      @env
+      @headers ||= ActionController::Http::Headers.new(@env)
     end
 
     def content_length
@@ -111,7 +113,7 @@ module ActionController
     #   end
     def format=(extension)
       parameters[:format] = extension.to_s
-      format
+      @format = Mime::Type.lookup_by_extension(parameters[:format])
     end
 
     # Returns true if the request's "X-Requested-With" header contains
@@ -122,26 +124,41 @@ module ActionController
     end
     alias xhr? :xml_http_request?
 
+    # Which IP addresses are "trusted proxies" that can be stripped from
+    # the right-hand-side of X-Forwarded-For
+    TRUSTED_PROXIES = /^127\.0\.0\.1$|^(10|172\.(1[6-9]|2[0-9]|30|31)|192\.168)\./i
+
     # Determine originating IP address.  REMOTE_ADDR is the standard
     # but will fail if the user is behind a proxy.  HTTP_CLIENT_IP and/or
-    # HTTP_X_FORWARDED_FOR are set by proxies so check for these before
-    # falling back to REMOTE_ADDR.  HTTP_X_FORWARDED_FOR may be a comma-
-    # delimited list in the case of multiple chained proxies; the first is
-    # the originating IP.
-    #
-    # Security note: do not use if IP spoofing is a concern for your
-    # application. Since remote_ip checks HTTP headers for addresses forwarded
-    # by proxies, the client may send any IP. remote_addr can't be spoofed but
-    # also doesn't work behind a proxy, since it's always the proxy's IP.
+    # HTTP_X_FORWARDED_FOR are set by proxies so check for these if
+    # REMOTE_ADDR is a proxy.  HTTP_X_FORWARDED_FOR may be a comma-
+    # delimited list in the case of multiple chained proxies; the last
+    # address which is not trusted is the originating IP.
+
     def remote_ip
-      return @env['HTTP_CLIENT_IP'] if @env.include? 'HTTP_CLIENT_IP'
+      if TRUSTED_PROXIES !~ @env['REMOTE_ADDR']
+        return @env['REMOTE_ADDR']
+      end
+
+      if @env.include? 'HTTP_CLIENT_IP'
+        if @env.include? 'HTTP_X_FORWARDED_FOR'
+          # We don't know which came from the proxy, and which from the user
+          raise ActionControllerError.new(<<EOM)
+IP spoofing attack?!
+HTTP_CLIENT_IP=#{@env['HTTP_CLIENT_IP'].inspect}
+HTTP_X_FORWARDED_FOR=#{@env['HTTP_X_FORWARDED_FOR'].inspect}
+EOM
+        end
+        return @env['HTTP_CLIENT_IP']
+      end
 
       if @env.include? 'HTTP_X_FORWARDED_FOR' then
-        remote_ips = @env['HTTP_X_FORWARDED_FOR'].split(',').reject do |ip|
-          ip.strip =~ /^unknown$|^(10|172\.(1[6-9]|2[0-9]|30|31)|192\.168)\./i
+        remote_ips = @env['HTTP_X_FORWARDED_FOR'].split(',')
+        while remote_ips.size > 1 && TRUSTED_PROXIES =~ remote_ips.last.strip
+          remote_ips.pop
         end
 
-        return remote_ips.first.strip unless remote_ips.empty?
+        return remote_ips.last.strip
       end
 
       @env['REMOTE_ADDR']
@@ -385,6 +402,14 @@ module ActionController
             body.blank? ? {} : Hash.from_xml(body).with_indifferent_access
           when :yaml
             YAML.load(body)
+          when :json
+            if body.blank?
+              {}
+            else
+              data = ActiveSupport::JSON.decode(body)
+              data = {:_json => data} unless data.is_a?(Hash)
+              data.with_indifferent_access
+            end
           else
             {}
         end
@@ -441,8 +466,8 @@ module ActionController
         parser.result
       end
 
-      def parse_multipart_form_parameters(body, boundary, content_length, env)
-        parse_request_parameters(read_multipart(body, boundary, content_length, env))
+      def parse_multipart_form_parameters(body, boundary, body_size, env)
+        parse_request_parameters(read_multipart(body, boundary, body_size, env))
       end
 
       def extract_multipart_boundary(content_type_with_parameters)
@@ -473,7 +498,7 @@ module ActionController
             when Array
               value.map { |v| get_typed_value(v) }
             else
-              if value.is_a?(UploadedFile)
+              if value.respond_to? :original_filename
                 # Uploaded file
                 if value.original_filename
                   value
@@ -490,23 +515,28 @@ module ActionController
           end
         end
 
-
         MULTIPART_BOUNDARY = %r|\Amultipart/form-data.*boundary=\"?([^\";,]+)\"?|n
 
         EOL = "\015\012"
 
-        def read_multipart(body, boundary, content_length, env)
+        def read_multipart(body, boundary, body_size, env)
           params = Hash.new([])
           boundary = "--" + boundary
-          quoted_boundary = Regexp.quote(boundary, "n")
+          quoted_boundary = Regexp.quote(boundary)
           buf = ""
           bufsize = 10 * 1024
           boundary_end=""
 
           # start multipart/form-data
           body.binmode if defined? body.binmode
+          case body
+          when File
+            body.set_encoding(Encoding::BINARY) if body.respond_to?(:set_encoding)
+          when StringIO
+            body.string.force_encoding(Encoding::BINARY) if body.string.respond_to?(:force_encoding)
+          end
           boundary_size = boundary.size + EOL.size
-          content_length -= boundary_size
+          body_size -= boundary_size
           status = body.read(boundary_size)
           if nil == status
             raise EOFError, "no content body"
@@ -517,7 +547,7 @@ module ActionController
           loop do
             head = nil
             content =
-              if 10240 < content_length
+              if 10240 < body_size
                 UploadedTempfile.new("CGI")
               else
                 UploadedStringIO.new
@@ -539,24 +569,24 @@ module ActionController
                 buf[0 ... (buf.size - (EOL + boundary + EOL).size)] = ""
               end
 
-              c = if bufsize < content_length
+              c = if bufsize < body_size
                     body.read(bufsize)
                   else
-                    body.read(content_length)
+                    body.read(body_size)
                   end
               if c.nil? || c.empty?
                 raise EOFError, "bad content body"
               end
               buf.concat(c)
-              content_length -= c.size
+              body_size -= c.size
             end
 
             buf = buf.sub(/\A((?:.|\n)*?)(?:[\r\n]{1,2})?#{quoted_boundary}([\r\n]{1,2}|--)/n) do
               content.print $1
               if "--" == $2
-                content_length = -1
+                body_size = -1
               end
-             boundary_end = $2.dup
+              boundary_end = $2.dup
               ""
             end
 
@@ -583,17 +613,16 @@ module ActionController
             else
               params[name] = [content]
             end
-            break if buf.size == 0
-            break if content_length == -1
+            break if body_size == -1
           end
           raise EOFError, "bad boundary end of body part" unless boundary_end=~/--/
 
-	  begin
+          begin
             body.rewind if body.respond_to?(:rewind)
-	  rescue Errno::ESPIPE
+          rescue Errno::ESPIPE
             # Handles exceptions raised by input streams that cannot be rewound
             # such as when using plain CGI under Apache
-	  end
+          end
 
           params
         end
@@ -672,6 +701,7 @@ module ActionController
             else
               top << {key => value}.with_indifferent_access
               push top.last
+              value = top[key]
             end
           else
             top << value
@@ -679,7 +709,8 @@ module ActionController
         elsif top.is_a? Hash
           key = CGI.unescape(key)
           parent << (@top = {}) if top.key?(key) && parent.is_a?(Array)
-          return top[key] ||= value
+          top[key] ||= value
+          return top[key]
         else
           raise ArgumentError, "Don't know what to do: top is #{top.inspect}"
         end
@@ -688,7 +719,7 @@ module ActionController
       end
 
       def type_conflict!(klass, value)
-        raise TypeError, "Conflicting types for parameter containers. Expected an instance of #{klass} but found an instance of #{value.class}. This can be caused by colliding Array and Hash parameters like qs[]=value&qs[key]=value."
+        raise TypeError, "Conflicting types for parameter containers. Expected an instance of #{klass} but found an instance of #{value.class}. This can be caused by colliding Array and Hash parameters like qs[]=value&qs[key]=value. (The parameters received were #{value.inspect}.)"
       end
   end
 

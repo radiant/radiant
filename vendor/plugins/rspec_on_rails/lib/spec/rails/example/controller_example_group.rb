@@ -72,11 +72,18 @@ module Spec
           #
           # See Spec::Rails::Example::ControllerExampleGroup for more information about
           # Integration and Isolation modes.
-          def integrate_views
-            @integrate_views = true
+          def integrate_views(integrate_views = true)
+            @integrate_views = integrate_views
           end
+          
           def integrate_views? # :nodoc:
             @integrate_views
+          end
+          
+          def inherited(klass) # :nodoc:
+            klass.controller_class_name = controller_class_name
+            klass.integrate_views(integrate_views?)
+            super
           end
 
           # You MUST provide a controller_name within the context of
@@ -189,7 +196,8 @@ module Spec
                 end
                 (class << @template; self; end).class_eval do
                   define_method :render_file do |*args|
-                    @first_render ||= args[0]
+                    @first_render ||= args[0] # rails up 2.1.0
+                    @_first_render ||= args[0] # rails edge > 2.1.0
                   end
                 end
               end
@@ -205,43 +213,29 @@ module Spec
             end
           end
           
-          private
-            def matching_message_expectation_exists(options)
-              expect_render_mock_proxy.send(:__mock_proxy).send(:find_matching_expectation, :render, options)
-            end
-          
-            def matching_stub_exists(options)
-              expect_render_mock_proxy.send(:__mock_proxy).send(:find_matching_method_stub, :render, options)
-            end
-          
-          public
-          if self.respond_to?(:should_receive) && self.respond_to?(:stub!)
-            self.send :alias_method, :orig_should_receive, :should_receive
-            self.send :alias_method, :orig_stub!, :stub!
-            def raise_with_disable_message(old_method, new_method)
-              raise %Q|
-        controller.#{old_method}(:render) has been disabled because it
-        can often produce unexpected results. Instead, you should
-        use the following (before the action):
+          def raise_with_disable_message(old_method, new_method)
+            raise %Q|
+      controller.#{old_method}(:render) has been disabled because it
+      can often produce unexpected results. Instead, you should
+      use the following (before the action):
 
-        controller.#{new_method}(*args)
+      controller.#{new_method}(*args)
 
-        See the rdoc for #{new_method} for more information.
-              |
+      See the rdoc for #{new_method} for more information.
+            |
+          end
+          def should_receive(*args)
+            if args[0] == :render
+              raise_with_disable_message("should_receive", "expect_render")
+            else
+              super
             end
-            def should_receive(*args)
-              if args[0] == :render
-                raise_with_disable_message("should_receive", "expect_render")
-              else
-                orig_should_receive(*args)
-              end
-            end
-            def stub!(*args)
-              if args[0] == :render
-                raise_with_disable_message("stub!", "stub_render")
-              else
-                orig_stub!(*args)
-              end
+          end
+          def stub!(*args)
+            if args[0] == :render
+              raise_with_disable_message("stub!", "stub_render")
+            else
+              super
             end
           end
 
@@ -260,6 +254,15 @@ module Spec
           def integrate_views?
             @integrate_views
           end
+
+          def matching_message_expectation_exists(options)
+            expect_render_mock_proxy.send(:__mock_proxy).send(:find_matching_expectation, :render, options)
+          end
+        
+          def matching_stub_exists(options)
+            expect_render_mock_proxy.send(:__mock_proxy).send(:find_matching_method_stub, :render, options)
+          end
+        
         end
 
         Spec::Example::ExampleGroupFactory.register(:controller, self)

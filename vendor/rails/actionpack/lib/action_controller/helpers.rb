@@ -20,7 +20,7 @@ module ActionController #:nodoc:
     end
 
     # The Rails framework provides a large number of helpers for working with +assets+, +dates+, +forms+, 
-    # +numbers+ and +ActiveRecord+ objects, to name a few. These helpers are available to all templates
+    # +numbers+ and Active Record objects, to name a few. These helpers are available to all templates
     # by default.
     #
     # In addition to using the standard template helpers provided in the Rails framework, creating custom helpers to
@@ -32,7 +32,7 @@ module ActionController #:nodoc:
     # controller which inherits from it.
     #
     # ==== Examples
-    # The +to_s+ method from the +Time+ class can be wrapped in a helper method to display a custom message if 
+    # The +to_s+ method from the Time class can be wrapped in a helper method to display a custom message if 
     # the Time object is blank:
     #
     #   module FormattedTimeHelper
@@ -41,7 +41,7 @@ module ActionController #:nodoc:
     #     end
     #   end
     #
-    # +FormattedTimeHelper+ can now be included in a controller, using the +helper+ class method:
+    # FormattedTimeHelper can now be included in a controller, using the +helper+ class method:
     #
     #   class EventsController < ActionController::Base
     #     helper FormattedTimeHelper
@@ -74,22 +74,22 @@ module ActionController #:nodoc:
 
       # The +helper+ class method can take a series of helper module names, a block, or both.
       #
-      # * <tt>*args</tt>: One or more +Modules+, +Strings+ or +Symbols+, or the special symbol <tt>:all</tt>.
+      # * <tt>*args</tt>: One or more modules, strings or symbols, or the special symbol <tt>:all</tt>.
       # * <tt>&block</tt>: A block defining helper methods.
       # 
       # ==== Examples
-      # When the argument is a +String+ or +Symbol+, the method will provide the "_helper" suffix, require the file 
+      # When the argument is a string or symbol, the method will provide the "_helper" suffix, require the file 
       # and include the module in the template class.  The second form illustrates how to include custom helpers 
       # when working with namespaced controllers, or other cases where the file containing the helper definition is not
       # in one of Rails' standard load paths:
       #   helper :foo             # => requires 'foo_helper' and includes FooHelper
       #   helper 'resources/foo'  # => requires 'resources/foo_helper' and includes Resources::FooHelper
       #
-      # When the argument is a +Module+, it will be included directly in the template class.
+      # When the argument is a module it will be included directly in the template class.
       #   helper FooHelper # => includes FooHelper
       #
       # When the argument is the symbol <tt>:all</tt>, the controller will include all helpers from 
-      # <tt>app/helpers/**/*.rb</tt> under +RAILS_ROOT+.
+      # <tt>app/helpers/**/*.rb</tt> under RAILS_ROOT.
       #   helper :all
       #
       # Additionally, the +helper+ class method can receive and evaluate a block, making the methods defined available 
@@ -143,11 +143,19 @@ module ActionController #:nodoc:
       # Declare a controller method as a helper. For example, the following
       # makes the +current_user+ controller method available to the view:
       #   class ApplicationController < ActionController::Base
-      #     helper_method :current_user
+      #     helper_method :current_user, :logged_in?
+      #
       #     def current_user
-      #       @current_user ||= User.find(session[:user])
+      #       @current_user ||= User.find_by_id(session[:user])
       #     end
+      #
+      #      def logged_in?
+      #        current_user != nil
+      #      end
       #   end
+      #
+      # In a view:
+      #  <% if logged_in? -%>Welcome, <%= current_user.name %><% end -%>
       def helper_method(*methods)
         methods.flatten.each do |method|
           master_helper_module.module_eval <<-end_eval
@@ -167,6 +175,15 @@ module ActionController #:nodoc:
         attrs.flatten.each { |attr| helper_method(attr, "#{attr}=") }
       end
 
+      # Provides a proxy to access helpers methods from outside the view.
+      def helpers
+        unless @helper_proxy
+          @helper_proxy = ActionView::Base.new
+          @helper_proxy.extend master_helper_module
+        else
+          @helper_proxy
+        end
+      end
 
       private
         def default_helper_module!

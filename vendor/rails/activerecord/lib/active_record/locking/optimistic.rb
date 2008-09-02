@@ -66,17 +66,20 @@ module ActiveRecord
           return result
         end
 
-        def update_with_lock #:nodoc:
-          return update_without_lock unless locking_enabled?
+        def update_with_lock(attribute_names = @attributes.keys) #:nodoc:
+          return update_without_lock(attribute_names) unless locking_enabled?
 
           lock_col = self.class.locking_column
           previous_value = send(lock_col).to_i
           send(lock_col + '=', previous_value + 1)
 
+          attribute_names += [lock_col]
+          attribute_names.uniq!
+
           begin
             affected_rows = connection.update(<<-end_sql, "#{self.class.name} Update with optimistic locking")
-              UPDATE #{self.class.table_name}
-              SET #{quoted_comma_pair_list(connection, attributes_with_quotes(false, false))}
+              UPDATE #{self.class.quoted_table_name}
+              SET #{quoted_comma_pair_list(connection, attributes_with_quotes(false, false, attribute_names))}
               WHERE #{self.class.primary_key} = #{quote_value(id)}
               AND #{self.class.quoted_locking_column} = #{quote_value(previous_value)}
             end_sql
@@ -104,20 +107,20 @@ module ActiveRecord
         end
 
         # Is optimistic locking enabled for this table? Returns true if the
-        # #lock_optimistically flag is set to true (which it is, by default)
-        # and the table includes the #locking_column column (defaults to
-        # lock_version).
+        # +lock_optimistically+ flag is set to true (which it is, by default)
+        # and the table includes the +locking_column+ column (defaults to
+        # +lock_version+).
         def locking_enabled?
           lock_optimistically && columns_hash[locking_column]
         end
 
-        # Set the column to use for optimistic locking. Defaults to lock_version.
+        # Set the column to use for optimistic locking. Defaults to +lock_version+.
         def set_locking_column(value = nil, &block)
           define_attr_method :locking_column, value, &block
           value
         end
 
-        # The version column used for optimistic locking. Defaults to lock_version.
+        # The version column used for optimistic locking. Defaults to +lock_version+.
         def locking_column
           reset_locking_column
         end
@@ -127,12 +130,12 @@ module ActiveRecord
           connection.quote_column_name(locking_column)
         end
 
-        # Reset the column used for optimistic locking back to the lock_version default.
+        # Reset the column used for optimistic locking back to the +lock_version+ default.
         def reset_locking_column
           set_locking_column DEFAULT_LOCKING_COLUMN
         end
 
-        # make sure the lock version column gets updated when counters are
+        # Make sure the lock version column gets updated when counters are
         # updated.
         def update_counters_with_lock(id, counters)
           counters = counters.merge(locking_column => 1) if locking_enabled?

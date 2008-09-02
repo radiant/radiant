@@ -13,7 +13,7 @@ describe ApplicationController do
   end
 
   it 'should set the current user for the UserActionObserver' do
-    ApplicationController.filter_chain.find {|f| f.filter == :set_current_user}.should_not be_nil
+    ApplicationController.filter_chain.find(:set_current_user).should_not be_nil
     UserActionObserver.current_user = nil
     controller.should_receive(:current_user).and_return(users(:admin))
     controller.send :set_current_user
@@ -21,7 +21,7 @@ describe ApplicationController do
   end
 
   it 'should initialize the javascript and stylesheets arrays' do
-    ApplicationController.filter_chain.find {|f| f.filter == :set_javascripts_and_stylesheets}.should_not be_nil
+    ApplicationController.filter_chain.find(:set_javascripts_and_stylesheets).should_not be_nil
     controller.send :set_javascripts_and_stylesheets
     controller.send(:instance_variable_get, :@javascripts).should_not be_nil
     controller.send(:instance_variable_get, :@javascripts).should be_instance_of(Array)

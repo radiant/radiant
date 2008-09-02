@@ -13,7 +13,7 @@ module ActiveRecord
         counter_cache_name = @reflection.counter_cache_column
 
         if record.nil?
-          if counter_cache_name && @owner[counter_cache_name] && !@owner.new_record?
+          if counter_cache_name && !@owner.new_record?
             @reflection.klass.decrement_counter(counter_cache_name, @owner[@reflection.primary_key_name]) if @owner[@reflection.primary_key_name]
           end
 
@@ -42,9 +42,11 @@ module ActiveRecord
       private
         def find_target
           @reflection.klass.find(
-            @owner[@reflection.primary_key_name], 
+            @owner[@reflection.primary_key_name],
+            :select     => @reflection.options[:select],
             :conditions => conditions,
-            :include    => @reflection.options[:include]
+            :include    => @reflection.options[:include],
+            :readonly   => @reflection.options[:readonly]
           )
         end
 

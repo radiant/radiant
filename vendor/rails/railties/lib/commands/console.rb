@@ -16,17 +16,17 @@ libs << " -r console_sandbox" if options[:sandbox]
 libs << " -r console_with_helpers"
 
 ENV['RAILS_ENV'] = case ARGV.first
-  when "p": "production"
-  when "d": "development"
-  when "t": "test"
+  when "p"; "production"
+  when "d"; "development"
+  when "t"; "test"
   else
     ARGV.first || ENV['RAILS_ENV'] || 'development'
 end
 
 if options[:sandbox]
-  puts "Loading #{ENV['RAILS_ENV']} environment in sandbox (Rails #{Rails::VERSION::STRING})"
+  puts "Loading #{ENV['RAILS_ENV']} environment in sandbox (Rails #{Rails.version})"
   puts "Any modifications you make will be rolled back on exit"
 else
-  puts "Loading #{ENV['RAILS_ENV']} environment (Rails #{Rails::VERSION::STRING})"
+  puts "Loading #{ENV['RAILS_ENV']} environment (Rails #{Rails.version})"
 end
 exec "#{options[:irb]} #{libs} --simple-prompt"

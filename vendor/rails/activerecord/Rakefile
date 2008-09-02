@@ -4,8 +4,10 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
-require 'rake/contrib/rubyforgepublisher'
+require 'rake/contrib/sshpublisher'
+
 require File.join(File.dirname(__FILE__), 'lib', 'active_record', 'version')
+require File.expand_path(File.dirname(__FILE__)) + "/test/config"
 
 PKG_BUILD     = ENV['PKG_BUILD'] ? '.' + ENV['PKG_BUILD'] : ''
 PKG_NAME      = 'activerecord'
@@ -16,6 +18,8 @@ RELEASE_NAME  = "REL #{PKG_VERSION}"
 
 RUBY_FORGE_PROJECT = "activerecord"
 RUBY_FORGE_USER    = "webster132"
+
+MYSQL_DB_USER = 'rails'
 
 PKG_FILES = FileList[
     "lib/**/*", "test/**/*", "examples/**/*", "doc/**/*", "[A-Z]*", "install.rb", "Rakefile"
@@ -32,7 +36,7 @@ for adapter in %w( mysql postgresql sqlite sqlite3 firebird db2 oracle sybase op
   Rake::TestTask.new("test_#{adapter}") { |t|
     t.libs << "test" << "test/connections/native_#{adapter}"
     adapter_short = adapter == 'db2' ? adapter : adapter[/^[a-z]+/]
-    t.pattern = "test/**/*_test{,_#{adapter_short}}.rb"
+    t.test_files=Dir.glob( "test/cases/**/*_test{,_#{adapter_short}}.rb" ).sort
     t.verbose = true
   }
 
@@ -41,21 +45,17 @@ for adapter in %w( mysql postgresql sqlite sqlite3 firebird db2 oracle sybase op
   end
 end
 
-SCHEMA_PATH = File.join(File.dirname(__FILE__), *%w(test fixtures db_definitions))
-
 namespace :mysql do
   desc 'Build the MySQL test databases'
   task :build_databases do
-    %x( mysqladmin  create activerecord_unittest )
-    %x( mysqladmin  create activerecord_unittest2 )
-    %x( mysql -e "grant all on activerecord_unittest.* to rails@localhost" )
-    %x( mysql -e "grant all on activerecord_unittest2.* to rails@localhost" )
+    %x( mysqladmin --user=#{MYSQL_DB_USER} create activerecord_unittest )
+    %x( mysqladmin --user=#{MYSQL_DB_USER} create activerecord_unittest2 )
   end
 
   desc 'Drop the MySQL test databases'
   task :drop_databases do
-    %x( mysqladmin -f drop activerecord_unittest )
-    %x( mysqladmin -f drop activerecord_unittest2 )
+    %x( mysqladmin --user=#{MYSQL_DB_USER} -f drop activerecord_unittest )
+    %x( mysqladmin --user=#{MYSQL_DB_USER} -f drop activerecord_unittest2 )
   end
 
   desc 'Rebuild the MySQL test databases'
@@ -70,16 +70,14 @@ task :rebuild_mysql_databases => 'mysql:rebuild_databases'
 namespace :postgresql do
   desc 'Build the PostgreSQL test databases'
   task :build_databases do
-    %x( createdb -U postgres activerecord_unittest )
-    %x( createdb -U postgres activerecord_unittest2 )
-    %x( psql activerecord_unittest -f #{File.join(SCHEMA_PATH, 'postgresql.sql')} postgres )
-    %x( psql activerecord_unittest2 -f #{File.join(SCHEMA_PATH, 'postgresql2.sql')}  postgres )
+    %x( createdb activerecord_unittest )
+    %x( createdb activerecord_unittest2 )
   end
 
   desc 'Drop the PostgreSQL test databases'
   task :drop_databases do
-    %x( dropdb -U postgres activerecord_unittest )
-    %x( dropdb -U postgres activerecord_unittest2 )
+    %x( dropdb activerecord_unittest )
+    %x( dropdb activerecord_unittest2 )
   end
 
   desc 'Rebuild the PostgreSQL test databases'
@@ -118,8 +116,8 @@ namespace :frontbase do
         DISCONNECT ALL;
       )
     end
-    create_activerecord_unittest  = build_frontbase_database['activerecord_unittest',  File.join(SCHEMA_PATH, 'frontbase.sql')]
-    create_activerecord_unittest2 = build_frontbase_database['activerecord_unittest2', File.join(SCHEMA_PATH, 'frontbase2.sql')]
+    create_activerecord_unittest  = build_frontbase_database['activerecord_unittest',  File.join(SCHEMA_ROOT, 'frontbase.sql')]
+    create_activerecord_unittest2 = build_frontbase_database['activerecord_unittest2', File.join(SCHEMA_ROOT, 'frontbase2.sql')]
     execute_frontbase_sql = Proc.new do |sql|
       system(<<-SHELL)
       /Library/FrontBase/bin/sql92 <<-SQL
@@ -162,6 +160,7 @@ end
 dist_dirs = [ "lib", "test", "examples" ]
 
 spec = Gem::Specification.new do |s|
+  s.platform = Gem::Platform::RUBY
   s.name = PKG_NAME
   s.version = PKG_VERSION
   s.summary = "Implements the ActiveRecord pattern for ORM."
@@ -172,12 +171,12 @@ spec = Gem::Specification.new do |s|
     s.files = s.files + Dir.glob( "#{dir}/**/*" ).delete_if { |item| item.include?( "\.svn" ) }
   end
 
-  s.add_dependency('activesupport', '= 2.0.2' + PKG_BUILD)
+  s.add_dependency('activesupport', '= 2.1.0' + PKG_BUILD)
 
-  s.files.delete "test/fixtures/fixture_database.sqlite"
-  s.files.delete "test/fixtures/fixture_database_2.sqlite"
-  s.files.delete "test/fixtures/fixture_database.sqlite3"
-  s.files.delete "test/fixtures/fixture_database_2.sqlite3"
+  s.files.delete FIXTURES_ROOT + "/fixture_database.sqlite"
+  s.files.delete FIXTURES_ROOT + "/fixture_database_2.sqlite"
+  s.files.delete FIXTURES_ROOT + "/fixture_database.sqlite3"
+  s.files.delete FIXTURES_ROOT + "/fixture_database_2.sqlite3"
   s.require_path = 'lib'
   s.autorequire = 'active_record'
 
@@ -238,6 +237,7 @@ end
 desc "Publish the release files to RubyForge."
 task :release => [ :package ] do
   require 'rubyforge'
+  require 'rake/contrib/rubyforgepublisher'
 
   packages = %w( gem tgz zip ).collect{ |ext| "pkg/#{PKG_NAME}-#{PKG_VERSION}.#{ext}" }
 

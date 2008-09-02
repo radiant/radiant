@@ -16,9 +16,11 @@ module ActionController #:nodoc:
     end
 
     module ClassMethods
-      # Set the session store to be used for keeping the session data between requests. By default, sessions are stored
-      # in browser cookies (:cookie_store), but you can also specify one of the other included stores
-      # (:active_record_store, :p_store, drb_store, :mem_cache_store, or :memory_store) or your own custom class.
+      # Set the session store to be used for keeping the session data between requests.
+      # By default, sessions are stored in browser cookies (<tt>:cookie_store</tt>),
+      # but you can also specify one of the other included stores (<tt>:active_record_store</tt>,
+      # <tt>:p_store</tt>, <tt>:drb_store</tt>, <tt>:mem_cache_store</tt>, or
+      # <tt>:memory_store</tt>) or your own custom class.
       def session_store=(store)
         ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS[:database_manager] =
           store.is_a?(Symbol) ? CGI::Session.const_get(store == :drb_store ? "DRbStore" : store.to_s.camelize) : store
@@ -67,11 +69,16 @@ module ActionController #:nodoc:
       #   session :off, 
       #     :if => Proc.new { |req| !(req.format.html? || req.format.js?) }
       #
+      #   # turn the session back on, useful when it was turned off in the
+      #   # application controller, and you need it on in another controller
+      #   session :on
+      #
       # All session options described for ActionController::Base.process_cgi
       # are valid arguments.
       def session(*args)
         options = args.extract_options!
 
+        options[:disabled] = false if args.delete(:on)
         options[:disabled] = true if !args.empty?
         options[:only] = [*options[:only]].map { |o| o.to_s } if options[:only]
         options[:except] = [*options[:except]].map { |o| o.to_s } if options[:except]

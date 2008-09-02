@@ -37,12 +37,18 @@ module Spec
           
           it "should create spans for params" do
             @reporter.step_succeeded('given', 'a $coloured $animal', 'brown', 'dog')
-            @out.string.should == "                <li class=\"passed\">Given a <span class=\"param\">brown</span> <span class=\"param\">dog</span></li>\n"
+            @reporter.scenario_ended
+            @reporter.story_ended('story_title', 'narrative')
+
+            @out.string.should include("                <li class=\"passed\">Given a <span class=\"param\">brown</span> <span class=\"param\">dog</span></li>\n")
           end
           
           it 'should create spanes for params in regexp steps' do
             @reporter.step_succeeded :given, /a (pink|blue) (.*)/, 'brown', 'dog'
-            @out.string.should == "                <li class=\"passed\">Given a <span class=\"param\">brown</span> <span class=\"param\">dog</span></li>\n"
+            @reporter.scenario_ended
+            @reporter.story_ended('story_title', 'narrative')
+            
+            @out.string.should include("                <li class=\"passed\">Given a <span class=\"param\">brown</span> <span class=\"param\">dog</span></li>\n")
           end
 
           it "should create a ul for collected_steps" do
@@ -54,6 +60,74 @@ module Spec
       </ul>
 EOF
           end
+          
+          it 'should document additional givens using And' do
+            # when
+            @reporter.step_succeeded :given, 'step 1'
+            @reporter.step_succeeded :given, 'step 2'
+            @reporter.scenario_ended
+            @reporter.story_ended '', ''
+
+            # then
+            @out.string.should include("Given step 1")
+            @out.string.should include("And step 2")
+          end
+
+          it 'should document additional events using And' do
+            # when
+            @reporter.step_succeeded :when, 'step 1'
+            @reporter.step_succeeded :when, 'step 2'
+            @reporter.scenario_ended
+            @reporter.story_ended '', ''
+
+            # then
+            @out.string.should include("When step 1")
+            @out.string.should include("And step 2")
+          end
+
+          it 'should document additional outcomes using And' do
+            # when
+            @reporter.step_succeeded :then, 'step 1'
+            @reporter.step_succeeded :then, 'step 2'
+            @reporter.scenario_ended
+            @reporter.story_ended '', ''
+
+            # then
+            @out.string.should include("Then step 1")
+            @out.string.should include("And step 2")
+          end
+
+          it 'should document a GivenScenario followed by a Given using And' do
+            # when
+            @reporter.step_succeeded :'given scenario', 'a scenario'
+            @reporter.step_succeeded :given, 'a context'
+            @reporter.scenario_ended
+            @reporter.story_ended '', ''
+
+            # then
+            @out.string.should include("Given scenario a scenario")
+            @out.string.should include("And a context")
+          end
+          
+          it "should create a failed story if one of its scenarios fails" do
+              @reporter.story_started('story_title', 'narrative')
+              @reporter.scenario_started('story_title', 'succeeded_scenario_name')
+              @reporter.step_failed('then', 'failed_step', 'en', 'to')
+              @reporter.scenario_failed('story_title', 'failed_scenario_name', NameError.new('sup'))
+              @reporter.story_ended('story_title', 'narrative')
+            
+              @out.string.should include("      <dl class=\"story failed\">\n        <dt>Story: story_title</dt>\n")
+          end
+          
+          it "should create a failed scenario if one of its steps fails" do
+            @reporter.scenario_started('story_title', 'failed_scenario_name')
+            @reporter.step_failed('then', 'failed_step', 'en', 'to')
+            @reporter.scenario_failed('story_title', 'failed_scenario_name', NameError.new('sup'))
+            @reporter.story_ended('story_title', 'narrative')
+          
+            @out.string.should include("<dl class=\"failed\">\n              <dt>Scenario: failed_scenario_name</dt>\n")
+          end
+          
         end
       end
     end

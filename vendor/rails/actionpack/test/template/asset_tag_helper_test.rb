@@ -1,9 +1,7 @@
-require "#{File.dirname(__FILE__)}/../abstract_unit"
+require 'abstract_unit'
 
-class AssetTagHelperTest < Test::Unit::TestCase
-  include ActionView::Helpers::TagHelper
-  include ActionView::Helpers::UrlHelper
-  include ActionView::Helpers::AssetTagHelper
+class AssetTagHelperTest < ActionView::TestCase
+  tests ActionView::Helpers::AssetTagHelper
 
   def setup
     silence_warnings do
@@ -34,6 +32,8 @@ class AssetTagHelperTest < Test::Unit::TestCase
     @request = Class.new do
       def relative_url_root() "" end
       def protocol() 'http://' end
+      def ssl?() false end
+      def host_with_port() 'localhost' end
     end.new
 
     @controller.request = @request
@@ -46,7 +46,7 @@ class AssetTagHelperTest < Test::Unit::TestCase
   def teardown
     ActionController::Base.perform_caching = false
     ActionController::Base.asset_host = nil
-    ENV["RAILS_ASSET_ID"] = nil
+    ENV.delete('RAILS_ASSET_ID')
   end
 
   AutoDiscoveryToTag = {
@@ -82,7 +82,7 @@ class AssetTagHelperTest < Test::Unit::TestCase
     %(javascript_include_tag("xmlhr", :lang => "vbscript")) => %(<script lang="vbscript" src="/javascripts/xmlhr.js" type="text/javascript"></script>),
     %(javascript_include_tag("common.javascript", "/elsewhere/cools")) => %(<script src="/javascripts/common.javascript" type="text/javascript"></script>\n<script src="/elsewhere/cools.js" type="text/javascript"></script>),
     %(javascript_include_tag(:defaults)) => %(<script src="/javascripts/prototype.js" type="text/javascript"></script>\n<script src="/javascripts/effects.js" type="text/javascript"></script>\n<script src="/javascripts/dragdrop.js" type="text/javascript"></script>\n<script src="/javascripts/controls.js" type="text/javascript"></script>\n<script src="/javascripts/application.js" type="text/javascript"></script>),
-    %(javascript_include_tag(:all)) => %(<script src="/javascripts/application.js" type="text/javascript"></script>\n<script src="/javascripts/bank.js" type="text/javascript"></script>\n<script src="/javascripts/robber.js" type="text/javascript"></script>),
+    %(javascript_include_tag(:all)) => %(<script src="/javascripts/prototype.js" type="text/javascript"></script>\n<script src="/javascripts/effects.js" type="text/javascript"></script>\n<script src="/javascripts/dragdrop.js" type="text/javascript"></script>\n<script src="/javascripts/controls.js" type="text/javascript"></script>\n<script src="/javascripts/application.js" type="text/javascript"></script>\n<script src="/javascripts/bank.js" type="text/javascript"></script>\n<script src="/javascripts/robber.js" type="text/javascript"></script>\n<script src="/javascripts/version.1.0.js" type="text/javascript"></script>),
     %(javascript_include_tag(:defaults, "test")) => %(<script src="/javascripts/prototype.js" type="text/javascript"></script>\n<script src="/javascripts/effects.js" type="text/javascript"></script>\n<script src="/javascripts/dragdrop.js" type="text/javascript"></script>\n<script src="/javascripts/controls.js" type="text/javascript"></script>\n<script src="/javascripts/test.js" type="text/javascript"></script>\n<script src="/javascripts/application.js" type="text/javascript"></script>),
     %(javascript_include_tag("test", :defaults)) => %(<script src="/javascripts/test.js" type="text/javascript"></script>\n<script src="/javascripts/prototype.js" type="text/javascript"></script>\n<script src="/javascripts/effects.js" type="text/javascript"></script>\n<script src="/javascripts/dragdrop.js" type="text/javascript"></script>\n<script src="/javascripts/controls.js" type="text/javascript"></script>\n<script src="/javascripts/application.js" type="text/javascript"></script>)
   }
@@ -107,8 +107,8 @@ class AssetTagHelperTest < Test::Unit::TestCase
     %(stylesheet_link_tag("/dir/file")) => %(<link href="/dir/file.css" media="screen" rel="stylesheet" type="text/css" />),
     %(stylesheet_link_tag("dir/file")) => %(<link href="/stylesheets/dir/file.css" media="screen" rel="stylesheet" type="text/css" />),
     %(stylesheet_link_tag("style", :media => "all")) => %(<link href="/stylesheets/style.css" media="all" rel="stylesheet" type="text/css" />),
-    %(stylesheet_link_tag(:all)) => %(<link href="/stylesheets/bank.css" media="screen" rel="stylesheet" type="text/css" />\n<link href="/stylesheets/robber.css" media="screen" rel="stylesheet" type="text/css" />),
-    %(stylesheet_link_tag(:all, :media => "all")) => %(<link href="/stylesheets/bank.css" media="all" rel="stylesheet" type="text/css" />\n<link href="/stylesheets/robber.css" media="all" rel="stylesheet" type="text/css" />),
+    %(stylesheet_link_tag(:all)) => %(<link href="/stylesheets/bank.css" media="screen" rel="stylesheet" type="text/css" />\n<link href="/stylesheets/robber.css" media="screen" rel="stylesheet" type="text/css" />\n<link href="/stylesheets/version.1.0.css" media="screen" rel="stylesheet" type="text/css" />),
+    %(stylesheet_link_tag(:all, :media => "all")) => %(<link href="/stylesheets/bank.css" media="all" rel="stylesheet" type="text/css" />\n<link href="/stylesheets/robber.css" media="all" rel="stylesheet" type="text/css" />\n<link href="/stylesheets/version.1.0.css" media="all" rel="stylesheet" type="text/css" />),
     %(stylesheet_link_tag("random.styles", "/css/stylish")) => %(<link href="/stylesheets/random.styles" media="screen" rel="stylesheet" type="text/css" />\n<link href="/css/stylish.css" media="screen" rel="stylesheet" type="text/css" />),
     %(stylesheet_link_tag("http://www.example.com/styles/style")) => %(<link href="http://www.example.com/styles/style.css" media="screen" rel="stylesheet" type="text/css" />)
   }
@@ -129,6 +129,7 @@ class AssetTagHelperTest < Test::Unit::TestCase
 
   ImageLinkToTag = {
     %(image_tag("xml.png")) => %(<img alt="Xml" src="/images/xml.png" />),
+    %(image_tag("..jpg")) => %(<img alt="" src="/images/..jpg" />),
     %(image_tag("rss.gif", :alt => "rss syndication")) => %(<img alt="rss syndication" src="/images/rss.gif" />),
     %(image_tag("gold.png", :size => "45x70")) => %(<img alt="Gold" height="70" src="/images/gold.png" width="45" />),
     %(image_tag("gold.png", "size" => "45x70")) => %(<img alt="Gold" height="70" src="/images/gold.png" width="45" />),
@@ -172,6 +173,22 @@ class AssetTagHelperTest < Test::Unit::TestCase
     assert_dom_equal  %(<script src="/javascripts/prototype.js" type="text/javascript"></script>\n<script src="/javascripts/effects.js" type="text/javascript"></script>\n<script src="/javascripts/dragdrop.js" type="text/javascript"></script>\n<script src="/javascripts/controls.js" type="text/javascript"></script>\n<script src="/javascripts/slider.js" type="text/javascript"></script>\n<script src="/javascripts/lib1.js" type="text/javascript"></script>\n<script src="/elsewhere/blub/lib2.js" type="text/javascript"></script>\n<script src="/javascripts/application.js" type="text/javascript"></script>), javascript_include_tag(:defaults)
   end
   
+  def test_custom_javascript_expansions
+    ActionView::Helpers::AssetTagHelper::register_javascript_expansion :monkey => ["head", "body", "tail"]
+    assert_dom_equal  %(<script src="/javascripts/first.js" type="text/javascript"></script>\n<script src="/javascripts/head.js" type="text/javascript"></script>\n<script src="/javascripts/body.js" type="text/javascript"></script>\n<script src="/javascripts/tail.js" type="text/javascript"></script>\n<script src="/javascripts/last.js" type="text/javascript"></script>), javascript_include_tag('first', :monkey, 'last')
+  end
+
+  def test_custom_javascript_expansions_and_defaults_puts_application_js_at_the_end
+    ENV["RAILS_ASSET_ID"] = ""
+    ActionView::Helpers::AssetTagHelper::register_javascript_expansion :monkey => ["head", "body", "tail"]
+    assert_dom_equal  %(<script src="/javascripts/first.js" type="text/javascript"></script>\n<script src="/javascripts/prototype.js" type="text/javascript"></script>\n<script src="/javascripts/effects.js" type="text/javascript"></script>\n<script src="/javascripts/dragdrop.js" type="text/javascript"></script>\n<script src="/javascripts/controls.js" type="text/javascript"></script>\n<script src="/javascripts/head.js" type="text/javascript"></script>\n<script src="/javascripts/body.js" type="text/javascript"></script>\n<script src="/javascripts/tail.js" type="text/javascript"></script>\n<script src="/javascripts/last.js" type="text/javascript"></script>\n<script src="/javascripts/application.js" type="text/javascript"></script>), javascript_include_tag('first', :defaults, :monkey, 'last')
+  end
+
+  def test_custom_javascript_expansions_with_undefined_symbol
+    ActionView::Helpers::AssetTagHelper::register_javascript_expansion :monkey => nil
+    assert_raise(ArgumentError) { javascript_include_tag('first', :monkey, 'last') }
+  end
+
   def test_stylesheet_path
     StylePathToTag.each { |method, tag| assert_dom_equal(tag, eval(method)) }
   end
@@ -183,6 +200,16 @@ class AssetTagHelperTest < Test::Unit::TestCase
   def test_stylesheet_link_tag
     ENV["RAILS_ASSET_ID"] = ""
     StyleLinkToTag.each { |method, tag| assert_dom_equal(tag, eval(method)) }
+  end
+
+  def test_custom_stylesheet_expansions
+    ActionView::Helpers::AssetTagHelper::register_stylesheet_expansion :monkey => ["head", "body", "tail"]
+    assert_dom_equal  %(<link href="/stylesheets/first.css" media="screen" rel="stylesheet" type="text/css" />\n<link href="/stylesheets/head.css" media="screen" rel="stylesheet" type="text/css" />\n<link href="/stylesheets/body.css" media="screen" rel="stylesheet" type="text/css" />\n<link href="/stylesheets/tail.css" media="screen" rel="stylesheet" type="text/css" />\n<link href="/stylesheets/last.css" media="screen" rel="stylesheet" type="text/css" />), stylesheet_link_tag('first', :monkey, 'last')
+  end
+
+  def test_custom_stylesheet_expansions_with_undefined_symbol
+    ActionView::Helpers::AssetTagHelper::register_stylesheet_expansion :monkey => nil
+    assert_raise(ArgumentError) { stylesheet_link_tag('first', :monkey, 'last') }
   end
 
   def test_image_path
@@ -225,7 +252,7 @@ class AssetTagHelperTest < Test::Unit::TestCase
 
   def test_caching_javascript_include_tag_when_caching_on
     ENV["RAILS_ASSET_ID"] = ""
-    ActionController::Base.asset_host = 'http://a%d.example.com'
+    ActionController::Base.asset_host = 'http://a0.example.com'
     ActionController::Base.perform_caching = true
     
     assert_dom_equal(
@@ -236,19 +263,19 @@ class AssetTagHelperTest < Test::Unit::TestCase
     assert File.exist?(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'all.js'))
     
     assert_dom_equal(
-      %(<script src="http://a2.example.com/javascripts/money.js" type="text/javascript"></script>),
+      %(<script src="http://a0.example.com/javascripts/money.js" type="text/javascript"></script>),
       javascript_include_tag(:all, :cache => "money")
     )
 
     assert File.exist?(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'money.js'))
 
   ensure
-    File.delete(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'all.js'))
-    File.delete(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'money.js'))
+    FileUtils.rm_f(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'all.js'))
+    FileUtils.rm_f(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'money.js'))
   end
 
   def test_caching_javascript_include_tag_when_caching_on_with_proc_asset_host
-    ENV["RAILS_ASSET_ID"] = ""
+    ENV['RAILS_ASSET_ID'] = ''
     ActionController::Base.asset_host = Proc.new { |source| "http://a#{source.length}.example.com" }
     ActionController::Base.perform_caching = true
 
@@ -261,7 +288,44 @@ class AssetTagHelperTest < Test::Unit::TestCase
     assert File.exist?(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'scripts.js'))
 
   ensure
-    File.delete(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'scripts.js'))
+    FileUtils.rm_f(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'scripts.js'))
+  end
+
+  def test_caching_javascript_include_tag_when_caching_on_with_2_argument_proc_asset_host
+    ENV['RAILS_ASSET_ID'] = ''
+    ActionController::Base.asset_host = Proc.new { |source, request|
+      if request.ssl?
+        "#{request.protocol}#{request.host_with_port}"
+      else
+        "#{request.protocol}assets#{source.length}.example.com"
+      end
+    }
+    ActionController::Base.perform_caching = true
+
+    assert_equal '/javascripts/vanilla.js'.length, 23
+    assert_dom_equal(
+      %(<script src="http://assets23.example.com/javascripts/vanilla.js" type="text/javascript"></script>),
+      javascript_include_tag(:all, :cache => 'vanilla')
+    )
+
+    assert File.exist?(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'vanilla.js'))
+
+    class << @controller.request
+      def protocol() 'https://' end
+      def ssl?() true end
+    end
+
+    assert_equal '/javascripts/secure.js'.length, 22
+    assert_dom_equal(
+      %(<script src="https://localhost/javascripts/secure.js" type="text/javascript"></script>),
+      javascript_include_tag(:all, :cache => 'secure')
+    )
+
+    assert File.exist?(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'secure.js'))
+
+  ensure
+    FileUtils.rm_f(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'vanilla.js'))
+    FileUtils.rm_f(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'secure.js'))
   end
 
   def test_caching_javascript_include_tag_when_caching_on_and_using_subdirectory
@@ -276,22 +340,43 @@ class AssetTagHelperTest < Test::Unit::TestCase
 
     assert File.exist?(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'cache', 'money.js'))
   ensure
-    File.delete(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'cache', 'money.js'))
+    FileUtils.rm_f(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'cache', 'money.js'))
   end
   
+  def test_caching_javascript_include_tag_with_all_puts_defaults_at_the_start_of_the_file
+    ENV["RAILS_ASSET_ID"] = ""
+    ActionController::Base.asset_host = 'http://a0.example.com'
+    ActionController::Base.perform_caching = true
+
+    assert_dom_equal(
+      %(<script src="http://a0.example.com/javascripts/combined.js" type="text/javascript"></script>),
+      javascript_include_tag(:all, :cache => "combined")
+    )
+
+    assert File.exist?(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'combined.js'))
+
+    assert_equal(
+      %(// prototype js\n\n// effects js\n\n// dragdrop js\n\n// controls js\n\n// application js\n\n// bank js\n\n// robber js\n\n// version.1.0 js),
+      IO.read(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'combined.js'))
+    )
+
+  ensure
+    FileUtils.rm_f(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'combined.js'))
+  end
+
   def test_caching_javascript_include_tag_when_caching_off
     ENV["RAILS_ASSET_ID"] = ""
     ActionController::Base.perform_caching = false
     
     assert_dom_equal(
-      %(<script src="/javascripts/application.js" type="text/javascript"></script>\n<script src="/javascripts/bank.js" type="text/javascript"></script>\n<script src="/javascripts/robber.js" type="text/javascript"></script>),
+      %(<script src="/javascripts/prototype.js" type="text/javascript"></script>\n<script src="/javascripts/effects.js" type="text/javascript"></script>\n<script src="/javascripts/dragdrop.js" type="text/javascript"></script>\n<script src="/javascripts/controls.js" type="text/javascript"></script>\n<script src="/javascripts/application.js" type="text/javascript"></script>\n<script src="/javascripts/bank.js" type="text/javascript"></script>\n<script src="/javascripts/robber.js" type="text/javascript"></script>\n<script src="/javascripts/version.1.0.js" type="text/javascript"></script>),
       javascript_include_tag(:all, :cache => true)
     )
 
     assert !File.exist?(File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, 'all.js'))
     
     assert_dom_equal(
-      %(<script src="/javascripts/application.js" type="text/javascript"></script>\n<script src="/javascripts/bank.js" type="text/javascript"></script>\n<script src="/javascripts/robber.js" type="text/javascript"></script>),
+      %(<script src="/javascripts/prototype.js" type="text/javascript"></script>\n<script src="/javascripts/effects.js" type="text/javascript"></script>\n<script src="/javascripts/dragdrop.js" type="text/javascript"></script>\n<script src="/javascripts/controls.js" type="text/javascript"></script>\n<script src="/javascripts/application.js" type="text/javascript"></script>\n<script src="/javascripts/bank.js" type="text/javascript"></script>\n<script src="/javascripts/robber.js" type="text/javascript"></script>\n<script src="/javascripts/version.1.0.js" type="text/javascript"></script>),
       javascript_include_tag(:all, :cache => "money")
     )
 
@@ -300,25 +385,25 @@ class AssetTagHelperTest < Test::Unit::TestCase
 
   def test_caching_stylesheet_link_tag_when_caching_on
     ENV["RAILS_ASSET_ID"] = ""
-    ActionController::Base.asset_host = 'http://a%d.example.com'
+    ActionController::Base.asset_host = 'http://a0.example.com'
     ActionController::Base.perform_caching = true
     
     assert_dom_equal(
-      %(<link href="http://a3.example.com/stylesheets/all.css" media="screen" rel="stylesheet" type="text/css" />),
+      %(<link href="http://a0.example.com/stylesheets/all.css" media="screen" rel="stylesheet" type="text/css" />),
       stylesheet_link_tag(:all, :cache => true)
     )
 
     assert File.exist?(File.join(ActionView::Helpers::AssetTagHelper::STYLESHEETS_DIR, 'all.css'))
 
     assert_dom_equal(
-      %(<link href="http://a3.example.com/stylesheets/money.css" media="screen" rel="stylesheet" type="text/css" />),
+      %(<link href="http://a0.example.com/stylesheets/money.css" media="screen" rel="stylesheet" type="text/css" />),
       stylesheet_link_tag(:all, :cache => "money")
     )
 
     assert File.exist?(File.join(ActionView::Helpers::AssetTagHelper::STYLESHEETS_DIR, 'money.css'))
   ensure
-    File.delete(File.join(ActionView::Helpers::AssetTagHelper::STYLESHEETS_DIR, 'all.css'))
-    File.delete(File.join(ActionView::Helpers::AssetTagHelper::STYLESHEETS_DIR, 'money.css'))
+    FileUtils.rm_f(File.join(ActionView::Helpers::AssetTagHelper::STYLESHEETS_DIR, 'all.css'))
+    FileUtils.rm_f(File.join(ActionView::Helpers::AssetTagHelper::STYLESHEETS_DIR, 'money.css'))
   end
 
   def test_caching_stylesheet_link_tag_when_caching_on_with_proc_asset_host
@@ -335,7 +420,7 @@ class AssetTagHelperTest < Test::Unit::TestCase
     assert File.exist?(File.join(ActionView::Helpers::AssetTagHelper::STYLESHEETS_DIR, 'styles.css'))
 
   ensure
-    File.delete(File.join(ActionView::Helpers::AssetTagHelper::STYLESHEETS_DIR, 'styles.css'))
+    FileUtils.rm_f(File.join(ActionView::Helpers::AssetTagHelper::STYLESHEETS_DIR, 'styles.css'))
   end
 
   def test_caching_stylesheet_include_tag_when_caching_off
@@ -343,14 +428,14 @@ class AssetTagHelperTest < Test::Unit::TestCase
     ActionController::Base.perform_caching = false
     
     assert_dom_equal(
-      %(<link href="/stylesheets/bank.css" media="screen" rel="stylesheet" type="text/css" />\n<link href="/stylesheets/robber.css" media="screen" rel="stylesheet" type="text/css" />),
+      %(<link href="/stylesheets/bank.css" media="screen" rel="stylesheet" type="text/css" />\n<link href="/stylesheets/robber.css" media="screen" rel="stylesheet" type="text/css" />\n<link href="/stylesheets/version.1.0.css" media="screen" rel="stylesheet" type="text/css" />),
       stylesheet_link_tag(:all, :cache => true)
     )
 
     assert !File.exist?(File.join(ActionView::Helpers::AssetTagHelper::STYLESHEETS_DIR, 'all.css'))
     
     assert_dom_equal(
-      %(<link href="/stylesheets/bank.css" media="screen" rel="stylesheet" type="text/css" />\n<link href="/stylesheets/robber.css" media="screen" rel="stylesheet" type="text/css" />),
+      %(<link href="/stylesheets/bank.css" media="screen" rel="stylesheet" type="text/css" />\n<link href="/stylesheets/robber.css" media="screen" rel="stylesheet" type="text/css" />\n<link href="/stylesheets/version.1.0.css" media="screen" rel="stylesheet" type="text/css" />),
       stylesheet_link_tag(:all, :cache => "money")
     )
 
@@ -358,10 +443,8 @@ class AssetTagHelperTest < Test::Unit::TestCase
   end
 end
 
-class AssetTagHelperNonVhostTest < Test::Unit::TestCase
-  include ActionView::Helpers::TagHelper
-  include ActionView::Helpers::UrlHelper
-  include ActionView::Helpers::AssetTagHelper
+class AssetTagHelperNonVhostTest < ActionView::TestCase
+  tests ActionView::Helpers::AssetTagHelper
 
   def setup
     @controller = Class.new do
@@ -392,6 +475,8 @@ class AssetTagHelperNonVhostTest < Test::Unit::TestCase
     assert_dom_equal(%(/collaboration/hieraki/javascripts/xmlhr.js), javascript_path("xmlhr"))
     assert_dom_equal(%(/collaboration/hieraki/stylesheets/style.css), stylesheet_path("style"))
     assert_dom_equal(%(/collaboration/hieraki/images/xml.png), image_path("xml.png"))
+    assert_dom_equal(%(<img alt="Mouse" onmouseover="this.src='/collaboration/hieraki/images/mouse_over.png'" onmouseout="this.src='/collaboration/hieraki/images/mouse.png'" src="/collaboration/hieraki/images/mouse.png" />), image_tag("mouse.png", :mouseover => "/images/mouse_over.png"))
+    assert_dom_equal(%(<img alt="Mouse2" onmouseover="this.src='/collaboration/hieraki/images/mouse_over2.png'" onmouseout="this.src='/collaboration/hieraki/images/mouse2.png'" src="/collaboration/hieraki/images/mouse2.png" />), image_tag("mouse2.png", :mouseover => image_path("mouse_over2.png")))
   end
   
   def test_should_ignore_relative_root_path_on_complete_url
@@ -404,6 +489,8 @@ class AssetTagHelperNonVhostTest < Test::Unit::TestCase
     assert_dom_equal(%(http://assets.example.com/collaboration/hieraki/javascripts/xmlhr.js), javascript_path("xmlhr"))
     assert_dom_equal(%(http://assets.example.com/collaboration/hieraki/stylesheets/style.css), stylesheet_path("style"))
     assert_dom_equal(%(http://assets.example.com/collaboration/hieraki/images/xml.png), image_path("xml.png"))
+    assert_dom_equal(%(<img alt="Mouse" onmouseover="this.src='http://assets.example.com/collaboration/hieraki/images/mouse_over.png'" onmouseout="this.src='http://assets.example.com/collaboration/hieraki/images/mouse.png'" src="http://assets.example.com/collaboration/hieraki/images/mouse.png" />), image_tag("mouse.png", :mouseover => "/images/mouse_over.png"))
+    assert_dom_equal(%(<img alt="Mouse2" onmouseover="this.src='http://assets.example.com/collaboration/hieraki/images/mouse_over2.png'" onmouseout="this.src='http://assets.example.com/collaboration/hieraki/images/mouse2.png'" src="http://assets.example.com/collaboration/hieraki/images/mouse2.png" />), image_tag("mouse2.png", :mouseover => image_path("mouse_over2.png")))
   ensure
     ActionController::Base.asset_host = ""
   end

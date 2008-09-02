@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../abstract_unit'
+require 'abstract_unit'
 
 class WorkshopsController < ActionController::Base
 end
@@ -65,6 +65,14 @@ class RedirectController < ActionController::Base
     redirect_to :action => "hello_world"
   end
 
+  def redirect_to_url
+    redirect_to "http://www.rubyonrails.org/"
+  end
+
+  def redirect_to_url_with_unescaped_query_string
+    redirect_to "http://dev.rubyonrails.org/query?status=new"
+  end
+
   def redirect_to_back
     redirect_to :back
   end
@@ -75,6 +83,10 @@ class RedirectController < ActionController::Base
 
   def redirect_to_new_record
     redirect_to Workshop.new(5, true)
+  end
+
+  def redirect_to_nil
+    redirect_to nil
   end
 
   def rescue_errors(e) raise e end
@@ -189,6 +201,18 @@ class RedirectTest < Test::Unit::TestCase
     assert_equal "world", assigns["hello"]
   end
 
+  def test_redirect_to_url
+    get :redirect_to_url
+    assert_response :redirect
+    assert_redirected_to "http://www.rubyonrails.org/"
+  end
+
+  def test_redirect_to_url_with_unescaped_query_string
+    get :redirect_to_url_with_unescaped_query_string
+    assert_response :redirect
+    assert_redirected_to "http://dev.rubyonrails.org/query?status=new"
+  end
+
   def test_redirect_to_back
     @request.env["HTTP_REFERER"] = "http://www.example.com/coming/from"
     get :redirect_to_back
@@ -215,6 +239,13 @@ class RedirectTest < Test::Unit::TestCase
     get :redirect_to_new_record
     assert_equal "http://test.host/workshops", redirect_to_url
   end
+
+  def test_redirect_to_nil
+    assert_raises(ActionController::ActionControllerError) do
+      get :redirect_to_nil
+    end
+  end
+
 end
 
 module ModuleTest

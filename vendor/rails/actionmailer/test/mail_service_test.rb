@@ -1,4 +1,5 @@
-require "#{File.dirname(__FILE__)}/abstract_unit"
+# encoding: utf-8
+require 'abstract_unit'
 
 class FunkyPathMailer < ActionMailer::Base
   self.template_root = "#{File.dirname(__FILE__)}/fixtures/path.with.dots"
@@ -36,6 +37,15 @@ class TestMailer < ActionMailer::Base
     sent_on    Time.local(2004, 12, 12)
     cc         "nobody@loudthinking.com"
     bcc        "root@loudthinking.com"
+    body       "Nothing to see here."
+  end
+
+  def different_reply_to(recipient)
+    recipients recipient
+    subject    "testing reply_to"
+    from       "system@loudthinking.com"
+    sent_on    Time.local(2008, 5, 23)
+    reply_to   "atraver@gmail.com"
     body       "Nothing to see here."
   end
 
@@ -444,6 +454,31 @@ class ActionMailerTest < Test::Unit::TestCase
     assert_equal expected.encoded, ActionMailer::Base.deliveries.first.encoded
   end
 
+  def test_reply_to
+    expected = new_mail
+
+    expected.to       = @recipient
+    expected.subject  = "testing reply_to"
+    expected.body     = "Nothing to see here."
+    expected.from     = "system@loudthinking.com"
+    expected.reply_to = "atraver@gmail.com"
+    expected.date     = Time.local 2008, 5, 23
+
+    created = nil
+    assert_nothing_raised do
+      created = TestMailer.create_different_reply_to @recipient
+    end
+    assert_not_nil created
+    assert_equal expected.encoded, created.encoded
+
+    assert_nothing_raised do
+      TestMailer.deliver_different_reply_to @recipient
+    end
+
+    assert_not_nil ActionMailer::Base.deliveries.first
+    assert_equal expected.encoded, ActionMailer::Base.deliveries.first.encoded
+  end
+
   def test_iso_charset
     expected = new_mail( "iso-8859-1" )
     expected.to      = @recipient
@@ -534,7 +569,8 @@ class ActionMailerTest < Test::Unit::TestCase
   def test_delivery_logs_sent_mail
     mail = TestMailer.create_signed_up(@recipient)
     logger = mock()
-    logger.expects(:info).with("Sent mail:\n #{mail.encoded}")
+    logger.expects(:info).with("Sent mail to #{@recipient}")
+    logger.expects(:debug).with("\n#{mail.encoded}")
     TestMailer.logger = logger
     TestMailer.deliver_signed_up(@recipient)
   end
@@ -766,23 +802,23 @@ EOF
 
   def test_implicitly_multipart_messages
     mail = TestMailer.create_implicitly_multipart_example(@recipient)
-    assert_equal 6, mail.parts.length
+    assert_equal 3, mail.parts.length
     assert_equal "1.0", mail.mime_version
     assert_equal "multipart/alternative", mail.content_type
     assert_equal "text/yaml", mail.parts[0].content_type
     assert_equal "utf-8", mail.parts[0].sub_header("content-type", "charset")
-    assert_equal "text/plain", mail.parts[2].content_type
+    assert_equal "text/plain", mail.parts[1].content_type
+    assert_equal "utf-8", mail.parts[1].sub_header("content-type", "charset")
+    assert_equal "text/html", mail.parts[2].content_type
     assert_equal "utf-8", mail.parts[2].sub_header("content-type", "charset")
-    assert_equal "text/html", mail.parts[4].content_type
-    assert_equal "utf-8", mail.parts[4].sub_header("content-type", "charset")
   end
 
   def test_implicitly_multipart_messages_with_custom_order
     mail = TestMailer.create_implicitly_multipart_example(@recipient, nil, ["text/yaml", "text/plain"])
-    assert_equal 6, mail.parts.length
+    assert_equal 3, mail.parts.length
     assert_equal "text/html", mail.parts[0].content_type
-    assert_equal "text/plain", mail.parts[2].content_type
-    assert_equal "text/yaml", mail.parts[4].content_type
+    assert_equal "text/plain", mail.parts[1].content_type
+    assert_equal "text/yaml", mail.parts[2].content_type
   end
 
   def test_implicitly_multipart_messages_with_charset
@@ -838,7 +874,11 @@ EOF
     fixture = File.read(File.dirname(__FILE__) + "/fixtures/raw_email8")
     mail = TMail::Mail.parse(fixture)
     attachment = mail.attachments.last
-    assert_equal "01QuienTeDijat.Pitbull.mp3", attachment.original_filename
+
+    expected = "01 Quien Te Dij\212at. Pitbull.mp3"
+    expected.force_encoding(Encoding::ASCII_8BIT) if expected.respond_to?(:force_encoding)
+
+    assert_equal expected, attachment.original_filename
   end
 
   def test_wrong_mail_header

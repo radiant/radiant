@@ -1,4 +1,4 @@
-require "#{File.dirname(__FILE__)}/../abstract_unit"
+require 'abstract_unit'
 
 silence_warnings do
   Post = Struct.new(:title, :author_name, :body, :secret, :written_on, :cost)
@@ -6,11 +6,12 @@ silence_warnings do
     alias_method :title_before_type_cast, :title unless respond_to?(:title_before_type_cast)
     alias_method :body_before_type_cast, :body unless respond_to?(:body_before_type_cast)
     alias_method :author_name_before_type_cast, :author_name unless respond_to?(:author_name_before_type_cast)
-    
+    alias_method :secret?, :secret 
+
     def new_record=(boolean)
       @new_record = boolean
     end
-    
+
     def new_record?
       @new_record
     end
@@ -30,26 +31,19 @@ end
 class Comment::Nested < Comment; end
 
 
-class FormHelperTest < Test::Unit::TestCase
-  include ActionView::Helpers::FormHelper
-  include ActionView::Helpers::FormTagHelper
-  include ActionView::Helpers::UrlHelper
-  include ActionView::Helpers::TagHelper
-  include ActionView::Helpers::TextHelper
-  include ActionView::Helpers::ActiveRecordHelper
-  include ActionView::Helpers::RecordIdentificationHelper
-  include ActionController::PolymorphicRoutes
+class FormHelperTest < ActionView::TestCase
+  tests ActionView::Helpers::FormHelper
 
   def setup
     @post = Post.new
     @comment = Comment.new
-    def @post.errors() 
-      Class.new{ 
-        def on(field); "can't be empty" if field == "author_name"; end 
-        def empty?() false end 
+    def @post.errors()
+      Class.new{
+        def on(field); "can't be empty" if field == "author_name"; end
+        def empty?() false end
         def count() 1 end
-        def full_messages() [ "Author name can't be empty" ] end  
-      }.new 
+        def full_messages() [ "Author name can't be empty" ] end
+      }.new
     end
     def @post.id; 123; end
     def @post.id_before_type_cast; 123; end
@@ -78,10 +72,20 @@ class FormHelperTest < Test::Unit::TestCase
       '<label class="title_label" for="post_title">Title</label>',
       label("post", "title", nil, :class => 'title_label')
     )
+    assert_dom_equal('<label for="post_secret">Secret?</label>', label("post", "secret?"))
   end
-  
+
   def test_label_with_symbols
     assert_dom_equal('<label for="post_title">Title</label>', label(:post, :title))
+    assert_dom_equal('<label for="post_secret">Secret?</label>', label(:post, :secret?))
+  end
+
+  def test_label_with_for_attribute_as_symbol
+    assert_dom_equal('<label for="my_for">Title</label>', label(:post, :title, nil, :for => "my_for"))
+  end
+
+  def test_label_with_for_attribute_as_string
+    assert_dom_equal('<label for="my_for">Title</label>', label(:post, :title, nil, "for" => "my_for"))
   end
 
   def test_text_field
@@ -100,6 +104,14 @@ class FormHelperTest < Test::Unit::TestCase
     @post.title = "<b>Hello World</b>"
     assert_dom_equal(
       '<input id="post_title" name="post[title]" size="30" type="text" value="&lt;b&gt;Hello World&lt;/b&gt;" />', text_field("post", "title")
+    )
+  end
+
+  def test_text_field_with_html_entities
+    @post.title = "The HTML Entity for & is &amp;"
+    assert_dom_equal(
+      '<input id="post_title" name="post[title]" size="30" type="text" value="The HTML Entity for &amp; is &amp;amp;" />',
+      text_field("post", "title")
     )
   end
 
@@ -131,6 +143,8 @@ class FormHelperTest < Test::Unit::TestCase
   def test_hidden_field
     assert_dom_equal '<input id="post_title" name="post[title]" type="hidden" value="Hello World" />',
       hidden_field("post", "title")
+      assert_dom_equal '<input id="post_secret" name="post[secret]" type="hidden" value="1" />',
+        hidden_field("post", "secret?")
   end
 
   def test_hidden_field_with_escapes
@@ -163,6 +177,21 @@ class FormHelperTest < Test::Unit::TestCase
       '<input checked="checked" id="post_secret" name="post[secret]" type="checkbox" value="1" /><input name="post[secret]" type="hidden" value="0" />',
       check_box("post", "secret")
     )
+    assert_dom_equal(
+      '<input checked="checked" id="post_secret" name="post[secret]" type="checkbox" value="1" /><input name="post[secret]" type="hidden" value="0" />',
+      check_box("post", "secret?")
+    )
+
+    @post.secret = ['0']
+    assert_dom_equal(
+      '<input id="post_secret" name="post[secret]" type="checkbox" value="1" /><input name="post[secret]" type="hidden" value="0" />',
+      check_box("post", "secret")
+    )
+    @post.secret = ['1']
+    assert_dom_equal(
+      '<input checked="checked" id="post_secret" name="post[secret]" type="checkbox" value="1" /><input name="post[secret]" type="hidden" value="0" />',
+      check_box("post", "secret")
+    )
   end
 
   def test_check_box_with_explicit_checked_and_unchecked_values
@@ -186,6 +215,9 @@ class FormHelperTest < Test::Unit::TestCase
     )
     assert_dom_equal('<input id="post_title_goodbye_world" name="post[title]" type="radio" value="Goodbye World" />',
       radio_button("post", "title", "Goodbye World")
+    )
+    assert_dom_equal('<input id="item_subobject_title_inside_world" name="item[subobject][title]" type="radio" value="inside world"/>',
+      radio_button("item[subobject]", "title", "inside world")
     )
   end
 
@@ -220,6 +252,14 @@ class FormHelperTest < Test::Unit::TestCase
     assert_dom_equal(
       '<textarea cols="40" id="post_body" name="post[body]" rows="20">Testing alternate values.</textarea>',
       text_area("post", "body", :value => 'Testing alternate values.')
+    )
+  end
+
+  def test_text_area_with_html_entities
+    @post.body        = "The HTML Entity for & is &amp;"
+    assert_dom_equal(
+      '<textarea cols="40" id="post_body" name="post[body]" rows="20">The HTML Entity for &amp; is &amp;amp;</textarea>',
+      text_area("post", "body")
     )
   end
 
@@ -307,7 +347,7 @@ class FormHelperTest < Test::Unit::TestCase
       _erbout.concat f.submit('Create post')
     end
 
-    expected = 
+    expected =
       "<form action='http://www.example.com' id='create-post' method='post'>" +
       "<label for='post_title'>Title</label>" +
       "<input name='post[title]' size='30' type='text' id='post_title' value='Hello World' />" +
@@ -329,7 +369,7 @@ class FormHelperTest < Test::Unit::TestCase
       _erbout.concat f.check_box(:secret)
     end
 
-    expected = 
+    expected =
       "<form action='http://www.example.com' id='create-post' method='post'>" +
       "<div style='margin:0;padding:0'><input name='_method' type='hidden' value='put' /></div>" +
       "<input name='post[title]' size='30' type='text' id='post_title' value='Hello World' />" +
@@ -350,7 +390,7 @@ class FormHelperTest < Test::Unit::TestCase
       _erbout.concat f.check_box(:secret)
     end
 
-    expected = 
+    expected =
       "<form action='http://www.example.com' id='create-post' method='post'>" +
       "<input name='post[title]' size='30' type='text' id='post_title' value='Hello World' />" +
       "<textarea name='post[body]' id='post_body' rows='20' cols='40'>Back to the hill and over it again!</textarea>" +
@@ -363,21 +403,41 @@ class FormHelperTest < Test::Unit::TestCase
 
   def test_form_for_with_index
     _erbout = ''
-    
+
     form_for("post[]", @post) do |f|
       _erbout.concat f.label(:title)
       _erbout.concat f.text_field(:title)
       _erbout.concat f.text_area(:body)
       _erbout.concat f.check_box(:secret)
     end
-    
-    expected = 
+
+    expected =
       "<form action='http://www.example.com' method='post'>" +
       "<label for=\"post_123_title\">Title</label>" +
       "<input name='post[123][title]' size='30' type='text' id='post_123_title' value='Hello World' />" +
       "<textarea name='post[123][body]' id='post_123_body' rows='20' cols='40'>Back to the hill and over it again!</textarea>" +
       "<input name='post[123][secret]' checked='checked' type='checkbox' id='post_123_secret' value='1' />" +
       "<input name='post[123][secret]' type='hidden' value='0' />" +
+      "</form>"
+
+    assert_dom_equal expected, _erbout
+  end
+
+  def test_form_for_with_nil_index_option_override
+    _erbout = ''
+
+    form_for("post[]", @post, :index => nil) do |f|
+      _erbout.concat f.text_field(:title)
+      _erbout.concat f.text_area(:body)
+      _erbout.concat f.check_box(:secret)
+    end
+
+    expected =
+      "<form action='http://www.example.com' method='post'>" +
+      "<input name='post[][title]' size='30' type='text' id='post__title' value='Hello World' />" +
+      "<textarea name='post[][body]' id='post__body' rows='20' cols='40'>Back to the hill and over it again!</textarea>" +
+      "<input name='post[][secret]' checked='checked' type='checkbox' id='post__secret' value='1' />" +
+      "<input name='post[][secret]' type='hidden' value='0' />" +
       "</form>"
 
     assert_dom_equal expected, _erbout
@@ -407,11 +467,65 @@ class FormHelperTest < Test::Unit::TestCase
       _erbout.concat f.check_box(:secret)
     end
 
-    expected = 
+    expected =
       "<input name='post[title]' size='30' type='text' id='post_title' value='Hello World' />" +
       "<textarea name='post[body]' id='post_body' rows='20' cols='40'>Back to the hill and over it again!</textarea>" +
       "<input name='post[secret]' checked='checked' type='checkbox' id='post_secret' value='1' />" +
       "<input name='post[secret]' type='hidden' value='0' />"
+
+    assert_dom_equal expected, _erbout
+  end
+
+  def test_fields_for_with_index
+    _erbout = ''
+
+    fields_for("post[]", @post) do |f|
+      _erbout.concat f.text_field(:title)
+      _erbout.concat f.text_area(:body)
+      _erbout.concat f.check_box(:secret)
+    end
+
+    expected =
+      "<input name='post[123][title]' size='30' type='text' id='post_123_title' value='Hello World' />" +
+      "<textarea name='post[123][body]' id='post_123_body' rows='20' cols='40'>Back to the hill and over it again!</textarea>" +
+      "<input name='post[123][secret]' checked='checked' type='checkbox' id='post_123_secret' value='1' />" +
+      "<input name='post[123][secret]' type='hidden' value='0' />"
+
+    assert_dom_equal expected, _erbout
+  end
+
+  def test_fields_for_with_nil_index_option_override
+    _erbout = ''
+
+    fields_for("post[]", @post, :index => nil) do |f|
+      _erbout.concat f.text_field(:title)
+      _erbout.concat f.text_area(:body)
+      _erbout.concat f.check_box(:secret)
+    end
+
+    expected =
+      "<input name='post[][title]' size='30' type='text' id='post__title' value='Hello World' />" +
+      "<textarea name='post[][body]' id='post__body' rows='20' cols='40'>Back to the hill and over it again!</textarea>" +
+      "<input name='post[][secret]' checked='checked' type='checkbox' id='post__secret' value='1' />" +
+      "<input name='post[][secret]' type='hidden' value='0' />"
+
+    assert_dom_equal expected, _erbout
+  end
+
+  def test_fields_for_with_index_option_override
+    _erbout = ''
+
+    fields_for("post[]", @post, :index => "abc") do |f|
+      _erbout.concat f.text_field(:title)
+      _erbout.concat f.text_area(:body)
+      _erbout.concat f.check_box(:secret)
+    end
+
+    expected =
+      "<input name='post[abc][title]' size='30' type='text' id='post_abc_title' value='Hello World' />" +
+      "<textarea name='post[abc][body]' id='post_abc_body' rows='20' cols='40'>Back to the hill and over it again!</textarea>" +
+      "<input name='post[abc][secret]' checked='checked' type='checkbox' id='post_abc_secret' value='1' />" +
+      "<input name='post[abc][secret]' type='hidden' value='0' />"
 
     assert_dom_equal expected, _erbout
   end
@@ -424,7 +538,7 @@ class FormHelperTest < Test::Unit::TestCase
       _erbout.concat f.check_box(:secret)
     end
 
-    expected = 
+    expected =
       "<input name='post[title]' size='30' type='text' id='post_title' value='Hello World' />" +
       "<textarea name='post[body]' id='post_body' rows='20' cols='40'>Back to the hill and over it again!</textarea>" +
       "<input name='post[secret]' checked='checked' type='checkbox' id='post_secret' value='1' />" +
@@ -441,7 +555,7 @@ class FormHelperTest < Test::Unit::TestCase
       _erbout.concat f.check_box(:secret)
     end
 
-    expected = 
+    expected =
       "<input name='post[title]' size='30' type='text' id='post_title' value='Hello World' />" +
       "<textarea name='post[body]' id='post_body' rows='20' cols='40'>Back to the hill and over it again!</textarea>" +
       "<input name='post[secret]' checked='checked' type='checkbox' id='post_secret' value='1' />" +
@@ -462,6 +576,18 @@ class FormHelperTest < Test::Unit::TestCase
       _erbout
   end
 
+  def test_fields_for_object_with_bracketed_name_and_index
+    _erbout = ''
+    fields_for("author[post]", @post, :index => 1) do |f|
+      _erbout.concat f.label(:title)
+      _erbout.concat f.text_field(:title)
+    end
+
+    assert_dom_equal "<label for=\"author_post_1_title\">Title</label>" +
+      "<input name='author[post][1][title]' size='30' type='text' id='author_post_1_title' value='Hello World' />",
+      _erbout
+  end
+
   def test_form_builder_does_not_have_form_for_method
     assert ! ActionView::Helpers::FormBuilder.instance_methods.include?('form_for')
   end
@@ -478,7 +604,7 @@ class FormHelperTest < Test::Unit::TestCase
       end
     end
 
-    expected = 
+    expected =
       "<form action='http://www.example.com' id='create-post' method='post'>" +
       "<input name='post[title]' size='30' type='text' id='post_title' value='Hello World' />" +
       "<textarea name='post[body]' id='post_body' rows='20' cols='40'>Back to the hill and over it again!</textarea>" +
@@ -501,7 +627,7 @@ class FormHelperTest < Test::Unit::TestCase
       end
     end
 
-    expected = 
+    expected =
       "<form action='http://www.example.com' id='create-post' method='post'>" +
       "<input name='post[title]' size='30' type='text' id='post_title' value='Hello World' />" +
       "<textarea name='post[body]' id='post_body' rows='20' cols='40'>Back to the hill and over it again!</textarea>" +
@@ -531,7 +657,7 @@ class FormHelperTest < Test::Unit::TestCase
       _erbout.concat f.check_box(:secret)
     end
 
-    expected = 
+    expected =
       "<form action='http://www.example.com' method='post'>" +
       "<label for='title'>Title:</label> <input name='post[title]' size='30' type='text' id='post_title' value='Hello World' /><br/>" +
       "<label for='body'>Body:</label> <textarea name='post[body]' id='post_body' rows='20' cols='40'>Back to the hill and over it again!</textarea><br/>" +
@@ -553,7 +679,7 @@ class FormHelperTest < Test::Unit::TestCase
       _erbout.concat f.check_box(:secret)
     end
 
-    expected = 
+    expected =
       "<form action='http://www.example.com' method='post'>" +
       "<label for='title'>Title:</label> <input name='post[title]' size='30' type='text' id='post_title' value='Hello World' /><br/>" +
       "<label for='body'>Body:</label> <textarea name='post[body]' id='post_body' rows='20' cols='40'>Back to the hill and over it again!</textarea><br/>" +
@@ -567,39 +693,39 @@ class FormHelperTest < Test::Unit::TestCase
   end
 
   def test_default_form_builder_with_active_record_helpers
-     
-    _erbout = '' 
+
+    _erbout = ''
     form_for(:post, @post) do |f|
        _erbout.concat f.error_message_on('author_name')
        _erbout.concat f.error_messages
-    end    
-    
-    expected = %(<form action='http://www.example.com' method='post'>) + 
-               %(<div class='formError'>can't be empty</div>) + 
+    end
+
+    expected = %(<form action='http://www.example.com' method='post'>) +
+               %(<div class='formError'>can't be empty</div>) +
                %(<div class="errorExplanation" id="errorExplanation"><h2>1 error prohibited this post from being saved</h2><p>There were problems with the following fields:</p><ul><li>Author name can't be empty</li></ul></div>) +
                %(</form>)
-    
+
     assert_dom_equal expected, _erbout
 
   end
-  
+
   def test_default_form_builder_no_instance_variable
     post = @post
     @post = nil
-    
-    _erbout = '' 
+
+    _erbout = ''
     form_for(:post, post) do |f|
        _erbout.concat f.error_message_on('author_name')
        _erbout.concat f.error_messages
-    end    
-    
-    expected = %(<form action='http://www.example.com' method='post'>) + 
-               %(<div class='formError'>can't be empty</div>) + 
+    end
+
+    expected = %(<form action='http://www.example.com' method='post'>) +
+               %(<div class='formError'>can't be empty</div>) +
                %(<div class="errorExplanation" id="errorExplanation"><h2>1 error prohibited this post from being saved</h2><p>There were problems with the following fields:</p><ul><li>Author name can't be empty</li></ul></div>) +
                %(</form>)
-    
+
     assert_dom_equal expected, _erbout
-    
+
   end
 
   # Perhaps this test should be moved to prototype helper tests.
@@ -613,7 +739,7 @@ class FormHelperTest < Test::Unit::TestCase
        _erbout.concat f.check_box(:secret)
      end
 
-     expected = 
+     expected =
        %(<form action="http://www.example.com" onsubmit="new Ajax.Request('http://www.example.com', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;" method="post">) +
        "<label for='title'>Title:</label> <input name='post[title]' size='30' type='text' id='post_title' value='Hello World' /><br/>" +
        "<label for='body'>Body:</label> <textarea name='post[body]' id='post_body' rows='20' cols='40'>Back to the hill and over it again!</textarea><br/>" +
@@ -623,31 +749,31 @@ class FormHelperTest < Test::Unit::TestCase
 
      assert_dom_equal expected, _erbout
   end
-   
+
   def test_fields_for_with_labelled_builder
     _erbout = ''
-    
+
     fields_for(:post, @post, :builder => LabelledFormBuilder) do |f|
       _erbout.concat f.text_field(:title)
       _erbout.concat f.text_area(:body)
       _erbout.concat f.check_box(:secret)
     end
-    
-    expected = 
+
+    expected =
       "<label for='title'>Title:</label> <input name='post[title]' size='30' type='text' id='post_title' value='Hello World' /><br/>" +
       "<label for='body'>Body:</label> <textarea name='post[body]' id='post_body' rows='20' cols='40'>Back to the hill and over it again!</textarea><br/>" +
       "<label for='secret'>Secret:</label> <input name='post[secret]' checked='checked' type='checkbox' id='post_secret' value='1' />" +
       "<input name='post[secret]' type='hidden' value='0' /><br/>"
-    
+
     assert_dom_equal expected, _erbout
   end
 
   def test_form_for_with_html_options_adds_options_to_form_tag
     _erbout = ''
-    
+
     form_for(:post, @post, :html => {:id => 'some_form', :class => 'some_class'}) do |f| end
     expected = "<form action=\"http://www.example.com\" class=\"some_class\" id=\"some_form\" method=\"post\"></form>"
-    
+
     assert_dom_equal expected, _erbout
   end
 
@@ -723,16 +849,16 @@ class FormHelperTest < Test::Unit::TestCase
     @comment.save
     _erbout = ''
     form_for([:admin, @post, @comment]) {}
-  
+
     expected = %(<form action="#{admin_comment_path(@post, @comment)}" class="edit_comment" id="edit_comment_1" method="post"><div style="margin:0;padding:0"><input name="_method" type="hidden" value="put" /></div></form>)
     assert_dom_equal expected, _erbout
   end
-  
+
   def test_form_for_with_new_object_and_namespace_in_list
     @post.new_record = false
     _erbout = ''
     form_for([:admin, @post, @comment]) {}
-  
+
     expected = %(<form action="#{admin_comments_path(@post)}" class="new_comment" id="new_comment" method="post"></form>)
     assert_dom_equal expected, _erbout
   end
@@ -749,10 +875,10 @@ class FormHelperTest < Test::Unit::TestCase
   def test_remote_form_for_with_html_options_adds_options_to_form_tag
     self.extend ActionView::Helpers::PrototypeHelper
     _erbout = ''
-    
+
     remote_form_for(:post, @post, :html => {:id => 'some_form', :class => 'some_class'}) do |f| end
     expected = "<form action=\"http://www.example.com\" class=\"some_class\" id=\"some_form\" method=\"post\" onsubmit=\"new Ajax.Request('http://www.example.com', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;\"></form>"
-    
+
     assert_dom_equal expected, _erbout
   end
 
@@ -767,21 +893,21 @@ class FormHelperTest < Test::Unit::TestCase
       "/posts/#{post.id}/comments/#{comment.id}"
     end
     alias_method :post_comment_path, :comment_path
-    
+
     def admin_comments_path(post)
       "/admin/posts/#{post.id}/comments"
     end
     alias_method :admin_post_comments_path, :admin_comments_path
-    
+
     def admin_comment_path(post, comment)
       "/admin/posts/#{post.id}/comments/#{comment.id}"
     end
     alias_method :admin_post_comment_path, :admin_comment_path
-    
+
     def posts_path
       "/posts"
-    end 
-    
+    end
+
     def post_path(post)
       "/posts/#{post.id}"
     end

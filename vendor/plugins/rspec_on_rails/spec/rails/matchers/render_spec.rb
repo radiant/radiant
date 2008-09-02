@@ -7,7 +7,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
     if mode == 'integration'
       integrate_views
     end
-    
+
     it "should match a simple path" do
       post 'some_action'
       response.should render_template('some_action')
@@ -51,35 +51,35 @@ require File.dirname(__FILE__) + '/../../spec_helper'
       post 'some_action'
       lambda do
         response.should render_template('non_existent_template')
-      end.should fail_with("expected \"non_existent_template\", got \"render_spec/some_action\"")
+      end.should fail_with(/expected \"non_existent_template\", got \"render_spec\/some_action(.rhtml)?\"/)
     end
 
     it "should fail without full path when template is associated with a different controller" do
       post 'action_which_renders_template_from_other_controller'
       lambda do
         response.should render_template('action_with_template')
-      end.should fail_with(%Q|expected "action_with_template", got "controller_spec/action_with_template"|)
+      end.should fail_with(/expected \"action_with_template\", got \"controller_spec\/action_with_template(.rhtml)?\"/)
     end
 
     it "should fail with incorrect full path when template is associated with a different controller" do
       post 'action_which_renders_template_from_other_controller'
       lambda do
         response.should render_template('render_spec/action_with_template')
-      end.should fail_with(%Q|expected "render_spec/action_with_template", got "controller_spec/action_with_template"|)
+      end.should fail_with(/expected \"render_spec\/action_with_template\", got \"controller_spec\/action_with_template(\.rhtml)?\"/)
     end
 
     it "should fail on the wrong extension (given rhtml)" do
       get 'some_action'
       lambda {
         response.should render_template('render_spec/some_action.rjs')
-      }.should fail_with("expected \"render_spec/some_action.rjs\", got \"render_spec/some_action\"")
+      }.should fail_with(/expected \"render_spec\/some_action\.rjs\", got \"render_spec\/some_action(\.rhtml)?\"/)
     end
 
     it "should fail when TEXT is rendered" do
       post 'text_action'
       lambda do
         response.should render_template('some_action')
-      end.should fail_with("expected \"some_action\", got nil")
+      end.should fail_with(/expected \"some_action\", got (nil|\"\")/)
     end
   end
   

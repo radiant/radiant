@@ -17,7 +17,9 @@ module Spec
     
       def method_missing(sym, *args, &block)
         @collection_name = sym
-        @plural_collection_name = Inflector.pluralize(sym.to_s) if Object.const_defined?(:Inflector)
+        if inflector = (defined?(ActiveSupport::Inflector) ? ActiveSupport::Inflector : (defined?(Inflector) ? Inflector : nil))
+          @plural_collection_name = inflector.pluralize(sym.to_s)
+        end
         @args = args
         @block = block
         self
@@ -25,13 +27,13 @@ module Spec
     
       def matches?(collection_owner)
         if collection_owner.respond_to?(@collection_name)
-          collection = collection_owner.send(@collection_name, *@args, &@block)
+          collection = collection_owner.__send__(@collection_name, *@args, &@block)
         elsif (@plural_collection_name && collection_owner.respond_to?(@plural_collection_name))
-          collection = collection_owner.send(@plural_collection_name, *@args, &@block)
+          collection = collection_owner.__send__(@plural_collection_name, *@args, &@block)
         elsif (collection_owner.respond_to?(:length) || collection_owner.respond_to?(:size))
           collection = collection_owner
         else
-          collection_owner.send(@collection_name, *@args, &@block)
+          collection_owner.__send__(@collection_name, *@args, &@block)
         end
         @actual = collection.size if collection.respond_to?(:size)
         @actual = collection.length if collection.respond_to?(:length)

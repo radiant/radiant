@@ -5,7 +5,7 @@ require 'controller_spec_controller'
   describe "A controller example running in #{mode} mode", :type => :controller do
     controller_name :controller_spec
     integrate_views if mode == 'integration'
-  
+    
     it "should provide controller.session as session" do
       get 'action_with_template'
       session.should equal(controller.session)
@@ -58,7 +58,6 @@ require 'controller_spec_controller'
       controller.expect_render(:update).and_yield(template)
       template.should_receive(:replace).with(:bottom, "replace_me", :partial => "non_existent_partial")
       get 'action_with_render_update'
-      puts response.body
     end
     
     it "should allow a path relative to RAILS_ROOT/app/views/ when specifying a partial" do
@@ -86,6 +85,41 @@ require 'controller_spec_controller'
       lambda do
         get 'action_which_gets_session', :expected => "session value"
       end.should_not raise_error
+    end
+    
+    describe "setting cookies in the request" do
+    
+      it "should support a String key" do
+        cookies['cookie_key'] = 'cookie value'
+        get 'action_which_gets_cookie', :expected => "cookie value"
+      end
+
+      it "should support a Symbol key" do
+        cookies[:cookie_key] = 'cookie value'
+        get 'action_which_gets_cookie', :expected => "cookie value"
+      end
+      
+      if Rails::VERSION::STRING >= "2.0.0"
+        it "should support a Hash value" do
+          cookies[:cookie_key] = {'value' => 'cookie value', 'path' => '/not/default'}
+          get 'action_which_gets_cookie', :expected => {'value' => 'cookie value', 'path' => '/not/default'}
+        end
+      end
+      
+    end
+  
+    describe "reading cookies from the response" do
+  
+      it "should support a Symbol key" do
+        get 'action_which_sets_cookie', :value => "cookie value"
+        cookies[:cookie_key].value.should == ["cookie value"]
+      end
+
+      it "should support a String key" do
+        get 'action_which_sets_cookie', :value => "cookie value"
+        cookies['cookie_key'].value.should == ["cookie value"]
+      end
+    
     end
 
     it "should support custom routes" do
@@ -121,6 +155,7 @@ require 'controller_spec_controller'
     end
 
     it "should complain when calling stub!(:render) on the controller" do
+      controller.extend Spec::Mocks::Methods
       lambda {
         controller.stub!(:render)
       }.should raise_error(RuntimeError, /stub!\(:render\) has been disabled/)
@@ -131,6 +166,12 @@ require 'controller_spec_controller'
       lambda {
         controller.rspec_verify
       }.should raise_error(Exception, /expected :anything_besides_render/)
+    end
+    
+    it "should not run a skipped before_filter" do
+      lambda {
+        get 'action_with_skipped_before_filter'
+      }.should_not raise_error
     end
   end
 
@@ -172,9 +213,33 @@ require 'controller_spec_controller'
   
 end
 
+['integration', 'isolation'].each do |mode|
+  describe "A controller example running in #{mode} mode", :type => :controller do
+    controller_name :controller_inheriting_from_application_controller
+    integrate_views if mode == 'integration'
+    
+    it "should only have a before filter inherited from ApplicationController run once..." do
+      controller.should_receive(:i_should_only_be_run_once).once
+      get :action_with_inherited_before_filter
+    end
+  end
+end
+
+
 describe ControllerSpecController, :type => :controller do
   it "should not require naming the controller if describe is passed a type" do
   end  
+end
+
+describe "A controller spec with controller_name set", :type => :controller do
+  controller_name :controller_spec
+  
+  describe "nested" do
+    it "should inherit the controller name" do
+      get 'action_with_template'
+      response.should be_success
+    end
+  end
 end
 
 module Spec

@@ -34,7 +34,7 @@ class ScaffoldGenerator < Rails::Generator::NamedBase
       m.class_collisions(controller_class_path, "#{controller_class_name}Controller", "#{controller_class_name}Helper")
       m.class_collisions(class_path, "#{class_name}")
 
-      # Controller, helper, views, and test directories.
+      # Controller, helper, views, test and stylesheets directories.
       m.directory(File.join('app/models', class_path))
       m.directory(File.join('app/controllers', controller_class_path))
       m.directory(File.join('app/helpers', controller_class_path))
@@ -42,6 +42,7 @@ class ScaffoldGenerator < Rails::Generator::NamedBase
       m.directory(File.join('app/views/layouts', controller_class_path))
       m.directory(File.join('test/functional', controller_class_path))
       m.directory(File.join('test/unit', class_path))
+      m.directory(File.join('public/stylesheets', class_path))
 
       for action in scaffold_views
         m.template(
@@ -54,8 +55,6 @@ class ScaffoldGenerator < Rails::Generator::NamedBase
       m.template('layout.html.erb', File.join('app/views/layouts', controller_class_path, "#{controller_file_name}.html.erb"))
       m.template('style.css', 'public/stylesheets/scaffold.css')
 
-      m.dependency 'model', [name] + @args, :collision => :skip
-
       m.template(
         'controller.rb', File.join('app/controllers', controller_class_path, "#{controller_file_name}_controller.rb")
       )
@@ -64,6 +63,8 @@ class ScaffoldGenerator < Rails::Generator::NamedBase
       m.template('helper.rb',          File.join('app/helpers',     controller_class_path, "#{controller_file_name}_helper.rb"))
 
       m.route_resources controller_file_name
+
+      m.dependency 'model', [name] + @args, :collision => :skip
     end
   end
 

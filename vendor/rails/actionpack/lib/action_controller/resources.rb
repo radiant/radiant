@@ -44,13 +44,14 @@ module ActionController
   module Resources
     class Resource #:nodoc:
       attr_reader :collection_methods, :member_methods, :new_methods
-      attr_reader :path_prefix, :name_prefix
+      attr_reader :path_prefix, :name_prefix, :path_segment
       attr_reader :plural, :singular
       attr_reader :options
 
       def initialize(entities, options)
         @plural   ||= entities
         @singular ||= options[:singular] || plural.to_s.singularize
+        @path_segment = options.delete(:as) || @plural
 
         @options = options
 
@@ -75,11 +76,13 @@ module ActionController
       end
 
       def path
-        @path ||= "#{path_prefix}/#{plural}"
+        @path ||= "#{path_prefix}/#{path_segment}"
       end
 
       def new_path
-        @new_path ||= "#{path}/new"
+        new_action = self.options[:path_names][:new] if self.options[:path_names]
+        new_action ||= Base.resources_path_names[:new]
+        @new_path ||= "#{path}/#{new_action}"
       end
 
       def member_path
@@ -188,7 +191,7 @@ module ActionController
     #     end
     #   end
     #
-    # Along with the routes themselves, #resources generates named routes for use in
+    # Along with the routes themselves, +resources+ generates named routes for use in
     # controllers and views. <tt>map.resources :messages</tt> produces the following named routes and helpers:
     #
     #   Named Route   Helpers
@@ -205,7 +208,7 @@ module ActionController
     #   edit_message  edit_message_url(id), hash_for_edit_message_url(id),
     #                 edit_message_path(id), hash_for_edit_message_path(id)
     #
-    # You can use these helpers instead of #url_for or methods that take #url_for parameters. For example:
+    # You can use these helpers instead of +url_for+ or methods that take +url_for+ parameters. For example:
     #
     #   redirect_to :controller => 'messages', :action => 'index'
     #   # and
@@ -226,17 +229,53 @@ module ActionController
     #
     #   <% form_for :message, @message, :url => message_path(@message), :html => {:method => :put} do |f| %>
     #
-    # The #resources method accepts the following options to customize the resulting routes:
-    # * <tt>:collection</tt> - add named routes for other actions that operate on the collection.
+    # or
+    #
+    #   <% form_for @message do |f| %>
+    #
+    # which takes into account whether <tt>@message</tt> is a new record or not and generates the
+    # path and method accordingly.
+    #
+    # The +resources+ method accepts the following options to customize the resulting routes:
+    # * <tt>:collection</tt> - Add named routes for other actions that operate on the collection.
     #   Takes a hash of <tt>#{action} => #{method}</tt>, where method is <tt>:get</tt>/<tt>:post</tt>/<tt>:put</tt>/<tt>:delete</tt>
-    #   or <tt>:any</tt> if the method does not matter.  These routes map to a URL like /messages/rss, with a route of rss_messages_url.
-    # * <tt>:member</tt> - same as :collection, but for actions that operate on a specific member.
-    # * <tt>:new</tt> - same as :collection, but for actions that operate on the new resource action.
-    # * <tt>:controller</tt> - specify the controller name for the routes.
-    # * <tt>:singular</tt> - specify the singular name used in the member routes.
-    # * <tt>:requirements</tt> - set custom routing parameter requirements.
-    # * <tt>:conditions</tt> - specify custom routing recognition conditions.  Resources sets the :method value for the method-specific routes.
-    # * <tt>:path_prefix</tt> - set a prefix to the routes with required route variables.
+    #   or <tt>:any</tt> if the method does not matter.  These routes map to a URL like /messages/rss, with a route of +rss_messages_url+.
+    # * <tt>:member</tt> - Same as <tt>:collection</tt>, but for actions that operate on a specific member.
+    # * <tt>:new</tt> - Same as <tt>:collection</tt>, but for actions that operate on the new resource action.
+    # * <tt>:controller</tt> - Specify the controller name for the routes.
+    # * <tt>:singular</tt> - Specify the singular name used in the member routes.
+    # * <tt>:requirements</tt> - Set custom routing parameter requirements.
+    # * <tt>:conditions</tt> - Specify custom routing recognition conditions.  Resources sets the <tt>:method</tt> value for the method-specific routes.
+    # * <tt>:as</tt> - Specify a different resource name to use in the URL path. For example:
+    #     # products_path == '/productos'
+    #     map.resources :products, :as => 'productos' do |product|
+    #       # product_reviews_path(product) == '/productos/1234/comentarios'
+    #       product.resources :product_reviews, :as => 'comentarios'
+    #     end
+    #
+    # * <tt>:has_one</tt> - Specify nested resources, this is a shorthand for mapping singleton resources beneath the current.
+    # * <tt>:has_many</tt> - Same has <tt>:has_one</tt>, but for plural resources.
+    #
+    #   You may directly specify the routing association with +has_one+ and +has_many+ like:
+    #
+    #     map.resources :notes, :has_one => :author, :has_many => [:comments, :attachments]
+    #
+    #   This is the same as:
+    #
+    #     map.resources :notes do |notes|
+    #       notes.resource  :author
+    #       notes.resources :comments
+    #       notes.resources :attachments
+    #     end
+    #
+    # * <tt>:path_names</tt> - Specify different names for the 'new' and 'edit' actions. For example:
+    #     # new_products_path == '/productos/nuevo'
+    #     map.resources :products, :as => 'productos', :path_names => { :new => 'nuevo', :edit => 'editar' }
+    #
+    #   You can also set default action names from an environment, like this:
+    #     config.action_controller.resources_path_names = { :new => 'nuevo', :edit => 'editar' }
+    #
+    # * <tt>:path_prefix</tt> - Set a prefix to the routes with required route variables.
     #
     #   Weblog comments usually belong to a post, so you might use resources like:
     #
@@ -249,7 +288,7 @@ module ActionController
     #       article.resources :comments
     #     end
     #
-    #   The comment resources work the same, but must now include a value for :article_id.
+    #   The comment resources work the same, but must now include a value for <tt>:article_id</tt>.
     #
     #     article_comments_url(@article)
     #     article_comment_url(@article, @comment)
@@ -257,13 +296,13 @@ module ActionController
     #     article_comments_url(:article_id => @article)
     #     article_comment_url(:article_id => @article, :id => @comment)
     #
-    # * <tt>:name_prefix</tt> - define a prefix for all generated routes, usually ending in an underscore.
+    # * <tt>:name_prefix</tt> - Define a prefix for all generated routes, usually ending in an underscore.
     #   Use this if you have named routes that may clash.
     #
     #     map.resources :tags, :path_prefix => '/books/:book_id', :name_prefix => 'book_'
     #     map.resources :tags, :path_prefix => '/toys/:toy_id',   :name_prefix => 'toy_'
     #
-    # You may also use :name_prefix to override the generic named routes in a nested resource:
+    # You may also use <tt>:name_prefix</tt> to override the generic named routes in a nested resource:
     # 
     #   map.resources :articles do |article|
     #     article.resources :comments, :name_prefix => nil
@@ -304,7 +343,7 @@ module ActionController
     #   # --> GET /categories/7/messages/1
     #   #     has named route "category_message"
     #
-    # The #resources method sets HTTP method restrictions on the routes it generates. For example, making an
+    # The +resources+ method sets HTTP method restrictions on the routes it generates. For example, making an
     # HTTP POST on <tt>new_message_url</tt> will raise a RoutingError exception. The default route in
     # <tt>config/routes.rb</tt> overrides this and allows invalid HTTP methods for resource routes.
     def resources(*entities, &block)
@@ -325,7 +364,7 @@ module ActionController
     #
     # See map.resources for general conventions.  These are the main differences:
     # * A singular name is given to map.resource.  The default controller name is still taken from the plural name.
-    # * To specify a custom plural name, use the :plural option.  There is no :singular option.
+    # * To specify a custom plural name, use the <tt>:plural</tt> option.  There is no <tt>:singular</tt> option.
     # * No default index route is created for the singleton resource controller.
     # * When nesting singleton resources, only the singular name is used as the path prefix (example: 'account/messages/1')
     #
@@ -367,7 +406,7 @@ module ActionController
     #     end
     #   end
     #
-    # Along with the routes themselves, #resource generates named routes for
+    # Along with the routes themselves, +resource+ generates named routes for
     # use in controllers and views. <tt>map.resource :account</tt> produces
     # these named routes and helpers:
     #
@@ -485,8 +524,12 @@ module ActionController
         resource.member_methods.each do |method, actions|
           actions.each do |action|
             action_options = action_options_for(action, resource, method)
-            map.named_route("#{action}_#{resource.name_prefix}#{resource.singular}", "#{resource.member_path}#{resource.action_separator}#{action}", action_options)
-            map.named_route("formatted_#{action}_#{resource.name_prefix}#{resource.singular}", "#{resource.member_path}#{resource.action_separator}#{action}.:format",action_options)
+
+            action_path = resource.options[:path_names][action] if resource.options[:path_names].is_a?(Hash)
+            action_path ||= Base.resources_path_names[action] || action
+
+            map.named_route("#{action}_#{resource.name_prefix}#{resource.singular}", "#{resource.member_path}#{resource.action_separator}#{action_path}", action_options)
+            map.named_route("formatted_#{action}_#{resource.name_prefix}#{resource.singular}", "#{resource.member_path}#{resource.action_separator}#{action_path}.:format",action_options)
           end
         end
 

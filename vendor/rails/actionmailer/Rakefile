@@ -4,7 +4,7 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
-require 'rake/contrib/rubyforgepublisher'
+require 'rake/contrib/sshpublisher'
 require File.join(File.dirname(__FILE__), 'lib', 'action_mailer', 'version')
 
 PKG_BUILD     = ENV['PKG_BUILD'] ? '.' + ENV['PKG_BUILD'] : ''
@@ -55,7 +55,7 @@ spec = Gem::Specification.new do |s|
   s.rubyforge_project = "actionmailer"
   s.homepage = "http://www.rubyonrails.org"
 
-  s.add_dependency('actionpack', '= 2.0.2' + PKG_BUILD)
+  s.add_dependency('actionpack', '= 2.1.0' + PKG_BUILD)
 
   s.has_rdoc = true
   s.requirements << 'none'
@@ -87,6 +87,7 @@ end
 desc "Publish the release files to RubyForge."
 task :release => [ :package ] do
   require 'rubyforge'
+  require 'rake/contrib/rubyforgepublisher'
 
   packages = %w( gem tgz zip ).collect{ |ext| "pkg/#{PKG_NAME}-#{PKG_VERSION}.#{ext}" }
 

@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../abstract_unit'
+require 'abstract_unit'
 
 # The view_paths array must be set on Base and not LayoutTest so that LayoutTest's inherited
 # method has access to the view_paths array when looking for a layout to automatically assign.
@@ -31,16 +31,16 @@ end
 class MultipleExtensions < LayoutTest
 end
 
-class MabView
+class MabView < ActionView::TemplateHandler
   def initialize(view)
   end
   
-  def render(text, locals = {})
-    text
+  def render(template)
+    template.source
   end
 end
 
-ActionView::Base::register_template_handler :mab, MabView
+ActionView::Template::register_template_handler :mab, MabView
 
 class LayoutAutoDiscoveryTest < Test::Unit::TestCase
   def setup
@@ -67,6 +67,7 @@ class LayoutAutoDiscoveryTest < Test::Unit::TestCase
     get :hello
     assert_equal 'layouts/third_party_template_library', @controller.active_layout
     assert_equal 'layouts/third_party_template_library', @response.layout
+    assert_response :success
     assert_equal 'Mab', @response.body
   end
   
@@ -215,7 +216,7 @@ class LayoutExceptionRaised < Test::Unit::TestCase
     @controller = SetsNonExistentLayoutFile.new
     get :hello
     @response.template.class.module_eval { attr_accessor :exception }
-    assert_equal ActionController::MissingTemplate, @response.template.exception.class
+    assert_equal ActionView::MissingTemplate, @response.template.exception.class
   end
 end
 
@@ -237,3 +238,22 @@ class LayoutStatusIsRenderedTest < Test::Unit::TestCase
     assert_response 401
   end
 end
+
+class LayoutSymlinkedTest < LayoutTest
+  layout "symlinked/symlinked_layout"
+end
+
+class LayoutSymlinkedIsRenderedTest < Test::Unit::TestCase
+  def setup
+    @request    = ActionController::TestRequest.new
+    @response   = ActionController::TestResponse.new
+  end
+
+  def test_symlinked_layout_is_rendered
+    @controller = LayoutSymlinkedTest.new
+    get :hello
+    assert_response 200
+    assert_equal "layouts/symlinked/symlinked_layout", @response.layout
+  end
+end
+    
