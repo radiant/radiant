@@ -191,7 +191,7 @@ class Page < ActiveRecord::Base
           $1.camelize.constantize if page =~ %r{/([^/]+)\.rb}
         end
       end
-      unless Page.connection.tables.empty? # Haven't bootstrapped yet
+      if ActiveRecord::Base.connection.tables.include?('pages') # Haven't bootstrapped yet
         Page.connection.select_values("SELECT DISTINCT class_name FROM pages WHERE class_name <> '' AND class_name IS NOT NULL").each do |p|
           begin
             p.constantize
