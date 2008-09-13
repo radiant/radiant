@@ -1,6 +1,8 @@
 == Change Log
 
 === Edge
+* Allow load_subclasses to work when multiple apps are on the same database. 
+[Jim Gay]
 * Add REXML expansion fix. [Sean Cribbs]
 * Fix filter_reference admin helper for filter names that have spaces in
 them. [Mislav Marohnić]
