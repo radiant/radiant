@@ -116,6 +116,11 @@ module Radiant
 
     def load_default_user_regions
       returning OpenStruct.new do |user|
+        user.preferences = RegionSet.new do |preferences|
+          preferences.main.concat %w{edit_header edit_form}
+          preferences.form.concat %w{edit_password edit_email}
+          preferences.form_bottom.concat %w{edit_buttons}
+        end
         user.edit = RegionSet.new do |edit|
           edit.main.concat %w{edit_header edit_form}
           edit.form.concat %w{edit_name edit_email edit_username edit_password
