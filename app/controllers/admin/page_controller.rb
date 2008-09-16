@@ -22,7 +22,6 @@ class Admin::PageController < Admin::AbstractModelController
 
   def edit
     @page = Page.find(params[:id])
-    @old_page_url = @page.url
     handle_new_or_edit_post
   end
 
