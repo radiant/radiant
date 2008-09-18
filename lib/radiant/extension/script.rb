@@ -289,6 +289,12 @@ module Radiant
 
   For help on an individual command:
       script/extension help command
+      
+  You may install extensions from another registry by setting the REGISTRY_URL
+  By default the REGISTRY_URL is set to http://ext.radiantcms.org
+  
+  Code for the registry application may be found at:
+  http://github.com/radiant/radiant-extension-registry/
             }
         end
 
