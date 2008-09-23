@@ -9,6 +9,7 @@ module StandardTags
     Causes the tags referring to a page's attributes to refer to the current page.
 
     *Usage:*
+    
     <pre><code><r:page>...</r:page></code></pre>
   }
   tag 'page' do |tag|
@@ -36,6 +37,7 @@ module StandardTags
     Gives access to a page's children.
 
     *Usage:*
+    
     <pre><code><r:children>...</r:children></code></pre>
   }
   tag 'children' do |tag|
@@ -55,6 +57,7 @@ module StandardTags
     the first child. Takes the same ordering options as @<r:children:each>@.
 
     *Usage:*
+    
     <pre><code><r:children:first>...</r:children:first></code></pre>
   }
   tag 'children:first' do |tag|
@@ -71,6 +74,7 @@ module StandardTags
     the last child. Takes the same ordering options as @<r:children:each>@.
 
     *Usage:*
+    
     <pre><code><r:children:last>...</r:children:last></code></pre>
   }
   tag 'children:last' do |tag|
@@ -87,6 +91,7 @@ module StandardTags
     are mapped to the current child page.
 
     *Usage:*
+    
     <pre><code><r:children:each [offset="number"] [limit="number"] [by="attribute"] [order="asc|desc"]
      [status="draft|reviewed|published|hidden|all"]>
      ...
@@ -112,6 +117,7 @@ module StandardTags
     current child.
 
     *Usage:*
+    
     <pre><code><r:children:each>
       <r:child>...</r:child>
     </r:children:each>
@@ -135,6 +141,7 @@ module StandardTags
     separated list.
 
     *Usage:*
+    
     <pre><code><r:children:each>
       <r:header [name="header_name"] [restart="name1[;name2;...]"]>
         ...
@@ -162,6 +169,7 @@ module StandardTags
     Page attribute tags inside this tag refer to the parent of the current page.
 
     *Usage:*
+    
     <pre><code><r:parent>...</r:parent></code></pre>
   }
   tag "parent" do |tag|
@@ -175,6 +183,7 @@ module StandardTags
     is not the root page.
 
     *Usage:*
+    
     <pre><code><r:if_parent>...</r:if_parent></code></pre>
   }
   tag "if_parent" do |tag|
@@ -187,6 +196,7 @@ module StandardTags
     is the root page.
 
     *Usage:*
+    
     <pre><code><r:unless_parent>...</r:unless_parent></code></pre>
   }
   tag "unless_parent" do |tag|
@@ -201,6 +211,7 @@ module StandardTags
     non-virtual pages regardless of status.
 
     *Usage:*
+    
     <pre><code><r:if_children [status="published"]>...</r:if_children></code></pre>
   }
   tag "if_children" do |tag|
@@ -215,6 +226,7 @@ module StandardTags
     regardless of status.
 
     *Usage:*
+    
     <pre><code><r:unless_children [status="published"]>...</r:unless_children></code></pre>
   }
   tag "unless_children" do |tag|
@@ -228,6 +240,7 @@ module StandardTags
     multiple cycles; the default is @cycle@.
 
     *Usage:*
+    
     <pre><code><r:cycle values="first, second, third" [reset="true|false"] [name="cycle"] /></code></pre>
   }
   tag 'cycle' do |tag|
@@ -251,6 +264,7 @@ module StandardTags
     is set to true.
 
     *Usage:*
+    
     <pre><code><r:content [part="part_name"] [inherit="true|false"] [contextual="true|false"] /></code></pre>
   }
   tag 'content' do |tag|
@@ -285,6 +299,7 @@ module StandardTags
     By default the @find@ attribute is set to @all@.
 
     *Usage:*
+    
     <pre><code><r:if_content [part="part_name, other_part"] [inherit="true"] [find="any"]>...</r:if_content></code></pre>
   }
   tag 'if_content' do |tag|
@@ -320,6 +335,7 @@ module StandardTags
     By default the @find@ attribute is set to @all@.
 
     *Usage:*
+    
     <pre><code><r:unless_content [part="part_name, other_part"] [inherit="false"] [find="any"]>...</r:unless_content></code></pre>
   }
   tag 'unless_content' do |tag|
@@ -352,6 +368,7 @@ module StandardTags
     match is case sensitive. By default, @ignore_case@ is set to true.
 
     *Usage:*
+    
     <pre><code><r:if_url matches="regexp" [ignore_case="true|false"]>...</r:if_url></code></pre>
   }
   tag 'if_url' do |tag|
@@ -366,6 +383,7 @@ module StandardTags
     The opposite of the @if_url@ tag.
 
     *Usage:*
+    
     <pre><code><r:unless_url matches="regexp" [ignore_case="true|false"]>...</r:unless_url></code></pre>
   }
   tag 'unless_url' do |tag|
@@ -382,6 +400,7 @@ module StandardTags
     This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is or descends from the current page.
 
     *Usage:*
+    
     <pre><code><r:if_ancestor_or_self>...</r:if_ancestor_or_self></code></pre>
   }
   tag "if_ancestor_or_self" do |tag|
@@ -394,6 +413,7 @@ module StandardTags
     This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless the child element is or descends from the current page.
 
     *Usage:*
+    
     <pre><code><r:unless_ancestor_or_self>...</r:unless_ancestor_or_self></code></pre>
   }
   tag "unless_ancestor_or_self" do |tag|
@@ -406,6 +426,7 @@ module StandardTags
     This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is the current page.
 
     *Usage:*
+    
     <pre><code><r:if_self>...</r:if_self></code></pre>
   }
   tag "if_self" do |tag|
@@ -418,6 +439,7 @@ module StandardTags
     This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless the child element is the current page.
 
     *Usage:*
+
     <pre><code><r:unless_self>...</r:unless_self></code></pre>
   }
   tag "unless_self" do |tag|
@@ -442,6 +464,7 @@ module StandardTags
     current date/time, regardless of the  page.
 
     *Usage:*
+
     <pre><code><r:date [format="%A, %B %d, %Y"] [for="published_at"]/></code></pre>
   }
   tag 'date' do |tag|
@@ -473,8 +496,11 @@ module StandardTags
     the @href@ attribute of the HTML @a@ tag--effectively making an HTML anchor.
 
     *Usage:*
+
     <pre><code><r:link [anchor="name"] [other attributes...] /></code></pre>
+    
     or
+    
     <pre><code><r:link [anchor="name"] [other attributes...]>link text here</r:link></code></pre>
   }
   tag 'link' do |tag|
@@ -493,6 +519,7 @@ module StandardTags
     breadcrumbs in plain text, without any links (useful when generating title tag).
 
     *Usage:*
+
     <pre><code><r:breadcrumbs [separator="separator_string"] [nolinks="true"] /></code></pre>
   }
   tag 'breadcrumbs' do |tag|
@@ -515,12 +542,14 @@ module StandardTags
     Renders the snippet specified in the @name@ attribute within the context of a page.
 
     *Usage:*
+
     <pre><code><r:snippet name="snippet_name" /></code></pre>
 
     When used as a double tag, the part in between both tags may be used within the
     snippet itself, being substituted in place of @<r:yield/>@.
 
     *Usage:*
+
     <pre><code><r:snippet name="snippet_name">Lorem ipsum dolor...</r:snippet></code></pre>
   }
   tag 'snippet' do |tag|
@@ -541,6 +570,7 @@ module StandardTags
     the snippet is called as a double tag.
 
     *Usage (within a snippet):*
+    
     <pre><code>
     <div id="outer">
       <p>before</p>
@@ -575,6 +605,7 @@ module StandardTags
     @url@s may be relative or absolute paths.
 
     *Usage:*
+
     <pre><code><r:find url="value_to_find">...</r:find></code></pre>
   }
   tag 'find' do |tag|
@@ -592,6 +623,7 @@ module StandardTags
     Randomly renders one of the options specified by the @option@ tags.
 
     *Usage:*
+
     <pre><code><r:random>
       <r:option>...</r:option>
       <r:option>...</r:option>
@@ -615,6 +647,7 @@ module StandardTags
     Nothing inside a set of comment tags is rendered.
 
     *Usage:*
+
     <pre><code><r:comment>...</r:comment></code></pre>
   }
   tag 'comment' do |tag|
@@ -624,6 +657,7 @@ module StandardTags
     Escapes angle brackets, etc. for rendering in an HTML document.
 
     *Usage:*
+
     <pre><code><r:escape_html>...</r:escape_html></code></pre>
   }
   tag "escape_html" do |tag|
@@ -634,6 +668,7 @@ module StandardTags
     Outputs the published date using the format mandated by RFC 1123. (Ideal for RSS feeds.)
 
     *Usage:*
+
     <pre><code><r:rfc1123_date /></code></pre>
   }
   tag "rfc1123_date" do |tag|
@@ -656,6 +691,7 @@ module StandardTags
     The @between@ tag specifies what should be inserted in between each of the links.
 
     *Usage:*
+
     <pre><code><r:navigation urls="[Title: url | Title: url | ...]">
       <r:normal><a href="<r:url />"><r:title /></a></r:normal>
       <r:here><strong><r:title /></strong></r:here>
@@ -709,6 +745,7 @@ module StandardTags
     Renders the containing elements only if Radiant in is development mode.
 
     *Usage:*
+
     <pre><code><r:if_dev>...</r:if_dev></code></pre>
   }
   tag 'if_dev' do |tag|
@@ -719,6 +756,7 @@ module StandardTags
     The opposite of the @if_dev@ tag.
 
     *Usage:*
+
     <pre><code><r:unless_dev>...</r:unless_dev></code></pre>
   }
   tag 'unless_dev' do |tag|
@@ -730,6 +768,7 @@ module StandardTags
     will cause the status to be all lowercase.
 
     *Usage:*
+
     <pre><code><r:status [downcase='true'] /></code></pre>
   }
   tag 'status' do |tag|
