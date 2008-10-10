@@ -317,8 +317,9 @@ describe "Registry::Git" do
   end
   
   it "should initialize and update submodules" do
-    @git.should_receive(:system).with("cd #{Dir.tmpdir}; #{@git.checkout_command}").ordered
-    @git.should_receive(:system).with(/git submodule init && git submodule update/).ordered
+    Dir.stub!(:tmpdir).and_return('/tmp')
+    @git.should_receive(:system).with("cd /tmp; git clone http://localhost/ example").ordered
+    @git.should_receive(:system).with("cd /tmp/example; git submodule init && git submodule update").ordered
     @git.checkout
   end
 end
