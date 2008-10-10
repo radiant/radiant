@@ -128,6 +128,11 @@ Install type:   #{install_type}
     def checkout_command
       "git clone #{url} #{name}"
     end
+    
+    def checkout
+      super
+      system "cd #{self.path}; git submodule init && git submodule update"
+    end
   end
 
   class Subversion < Checkout
