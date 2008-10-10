@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Make Git extension install method recognize submodules. [Sean Cribbs]
 * Fix malformed Textile in standard tag descriptions. [Jason Garber]
 * Update script/extension help output. [Jim Gay]
 * Allow load_subclasses to work when multiple apps are on the same database. 
