@@ -2,6 +2,7 @@
 
 === Edge
 
+* Added reference to sample database configuration files to INSTALL. [Keith Bennett]
 * Added ZenTest development dependency to README. [Thomas Ingram]
 * Remove REXML expansion fix, included in Rails 2.1.1 [Sean Cribbs]
 * Upgrade to 2.1.1 [Sean Cribbs]
