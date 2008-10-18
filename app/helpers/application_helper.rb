@@ -43,7 +43,7 @@ module ApplicationHelper
     elsif plural
       plural
     else
-      Inflector.pluralize(singular)
+      ActiveSupport::Inflector.pluralize(singular)
     end
   end
   
