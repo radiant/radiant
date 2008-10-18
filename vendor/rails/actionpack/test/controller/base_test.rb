@@ -7,6 +7,7 @@ module Submodule
   end
   class ContainedNonEmptyController < ActionController::Base
     def public_action
+      render :nothing => true
     end
     
     hide_action :hidden_action
@@ -105,6 +106,18 @@ end
 
 
 class PerformActionTest < Test::Unit::TestCase
+  class MockLogger
+    attr_reader :logged
+
+    def initialize
+      @logged = []
+    end
+
+    def method_missing(method, *args)
+      @logged << args.first
+    end
+  end
+
   def use_controller(controller_class)
     @controller = controller_class.new
 
@@ -142,6 +155,13 @@ class PerformActionTest < Test::Unit::TestCase
     get :another_hidden_action
     assert_response 404
   end
+
+  def test_namespaced_action_should_log_module_name
+    use_controller Submodule::ContainedNonEmptyController
+    @controller.logger = MockLogger.new
+    get :public_action
+    assert_match /Processing\sSubmodule::ContainedNonEmptyController#public_action/, @controller.logger.logged[1]
+  end
 end
 
 class DefaultUrlOptionsTest < Test::Unit::TestCase
@@ -166,6 +186,22 @@ class DefaultUrlOptionsTest < Test::Unit::TestCase
     assert_equal 'http://www.override.com/default_url_options?bacon=chunky', @controller.send(:default_url_options_url)
   ensure
     ActionController::Routing::Routes.load!
+  end
+end
+
+class EmptyUrlOptionsTest < Test::Unit::TestCase
+  def setup
+    @controller = NonEmptyController.new
+
+    @request    = ActionController::TestRequest.new
+    @response   = ActionController::TestResponse.new
+
+    @request.host = 'www.example.com'
+  end
+
+  def test_ensure_url_for_works_as_expected_when_called_with_no_options_if_default_url_options_is_not_set
+    get :public_action
+    assert_equal "http://www.example.com/non_empty/public_action", @controller.url_for
   end
 end
 

@@ -190,6 +190,12 @@ class FormTagHelperTest < ActionView::TestCase
     assert_dom_equal expected, actual
   end
 
+  def test_label_tag_with_symbol
+    actual = label_tag :title
+    expected = %(<label for="title">Title</label>)
+    assert_dom_equal expected, actual
+  end
+
   def test_label_tag_with_text
     actual = label_tag "title", "My Title"
     expected = %(<label for="title">My Title</label>)
@@ -219,6 +225,13 @@ class FormTagHelperTest < ActionView::TestCase
     assert_dom_equal(
       %(<input name='commit' type='submit' value='Save' onclick="this.setAttribute('originalValue', this.value);this.disabled=true;this.value='Saving...';alert('hello!');result = (this.form.onsubmit ? (this.form.onsubmit() ? this.form.submit() : false) : this.form.submit());if (result == false) { this.value = this.getAttribute('originalValue'); this.disabled = false };return result;" />),
       submit_tag("Save", :disable_with => "Saving...", :onclick => "alert('hello!')")
+    )
+  end
+
+  def test_submit_tag_with_no_onclick_options
+    assert_dom_equal(
+      %(<input name='commit' type='submit' value='Save' onclick="this.setAttribute('originalValue', this.value);this.disabled=true;this.value='Saving...';result = (this.form.onsubmit ? (this.form.onsubmit() ? this.form.submit() : false) : this.form.submit());if (result == false) { this.value = this.getAttribute('originalValue'); this.disabled = false };return result;" />),
+      submit_tag("Save", :disable_with => "Saving...")
     )
   end
 

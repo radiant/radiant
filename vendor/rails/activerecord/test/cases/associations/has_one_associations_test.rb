@@ -72,6 +72,16 @@ class HasOneAssociationsTest < ActiveRecord::TestCase
     assert_raises(ActiveRecord::RecordNotFound) { Account.find(old_account_id) }
   end
 
+  def test_natural_assignment_to_already_associated_record
+    company = companies(:first_firm)
+    account = accounts(:signals37)
+    assert_equal company.account, account
+    company.account = account
+    company.reload
+    account.reload
+    assert_equal company.account, account
+  end
+
   def test_assignment_without_replacement
     apple = Firm.create("name" => "Apple")
     citibank = Account.create("credit_limit" => 10)
@@ -273,6 +283,18 @@ class HasOneAssociationsTest < ActiveRecord::TestCase
     assert !firm.valid?
     assert !firm.save
     assert_equal "is invalid", firm.errors.on("account")
+  end
+
+
+  def test_save_succeeds_for_invalid_has_one_with_validate_false
+    firm = Firm.find(:first)
+    assert firm.valid?
+
+    firm.unvalidated_account = Account.new
+
+    assert !firm.unvalidated_account.valid?
+    assert firm.valid?
+    assert firm.save
   end
 
   def test_assignment_before_either_saved

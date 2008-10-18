@@ -14,7 +14,7 @@ require 'models/reader'
 class HasManyAssociationsTest < ActiveRecord::TestCase
   fixtures :accounts, :categories, :companies, :developers, :projects,
            :developers_projects, :topics, :authors, :comments, :author_addresses,
-           :people, :posts
+           :people, :posts, :readers
 
   def setup
     Client.destroyed_client_ids.clear
@@ -37,15 +37,21 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
   end
 
   def test_counting_with_single_conditions
-    assert_equal 2, Firm.find(:first).plain_clients.count(:conditions => '1=1')
+    assert_equal 1, Firm.find(:first).plain_clients.count(:conditions => ['name=?', "Microsoft"])
   end
 
   def test_counting_with_single_hash
-    assert_equal 2, Firm.find(:first).plain_clients.count(:conditions => '1=1')
+    assert_equal 1, Firm.find(:first).plain_clients.count(:conditions => {:name => "Microsoft"})
   end
 
   def test_counting_with_column_name_and_hash
-    assert_equal 2, Firm.find(:first).plain_clients.count(:all, :conditions => '1=1')
+    assert_equal 2, Firm.find(:first).plain_clients.count(:name)
+  end
+
+  def test_counting_with_association_limit
+    firm = companies(:first_firm)
+    assert_equal firm.limited_clients.length, firm.limited_clients.size
+    assert_equal firm.limited_clients.length, firm.limited_clients.count
   end
 
   def test_finding
@@ -342,6 +348,34 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     assert new_firm.new_record?
   end
 
+  def test_invalid_adding_with_validate_false
+    firm = Firm.find(:first)
+    client = Client.new
+    firm.unvalidated_clients_of_firm << client
+
+    assert firm.valid?
+    assert !client.valid?
+    assert firm.save
+    assert client.new_record?
+  end
+
+  def test_valid_adding_with_validate_false
+    no_of_clients = Client.count
+
+    firm = Firm.find(:first)
+    client = Client.new("name" => "Apple")
+
+    assert firm.valid?
+    assert client.valid?
+    assert client.new_record?
+
+    firm.unvalidated_clients_of_firm << client
+
+    assert firm.save
+    assert !client.new_record?
+    assert_equal no_of_clients+1, Client.count
+  end
+
   def test_build
     company = companies(:first_firm)
     new_client = assert_no_queries { company.clients_of_firm.build("name" => "Another Client") }
@@ -354,6 +388,25 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     assert_queries(2) { assert company.save }
     assert !new_client.new_record?
     assert_equal 2, company.clients_of_firm(true).size
+  end
+
+  def test_collection_size_after_building
+    company = companies(:first_firm)  # company already has one client
+    company.clients_of_firm.build("name" => "Another Client")
+    company.clients_of_firm.build("name" => "Yet Another Client")
+    assert_equal 3, company.clients_of_firm.size
+  end
+
+  def test_collection_size_twice_for_regressions
+    post = posts(:thinking)
+    assert_equal 0, post.readers.size
+    # This test needs a post that has no readers, we assert it to ensure it holds,
+    # but need to reload the post because the very call to #size hides the bug.
+    post.reload
+    post.readers.build
+    size1 = post.readers.size
+    size2 = post.readers.size
+    assert_equal size1, size2
   end
 
   def test_build_many
@@ -384,6 +437,37 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     end
 
     assert_equal 2, first_topic.replies.to_ary.size
+  end
+
+  def test_build_via_block
+    company = companies(:first_firm)
+    new_client = assert_no_queries { company.clients_of_firm.build {|client| client.name = "Another Client" } }
+    assert !company.clients_of_firm.loaded?
+
+    assert_equal "Another Client", new_client.name
+    assert new_client.new_record?
+    assert_equal new_client, company.clients_of_firm.last
+    company.name += '-changed'
+    assert_queries(2) { assert company.save }
+    assert !new_client.new_record?
+    assert_equal 2, company.clients_of_firm(true).size
+  end
+
+  def test_build_many_via_block
+    company = companies(:first_firm)
+    new_clients = assert_no_queries do
+      company.clients_of_firm.build([{"name" => "Another Client"}, {"name" => "Another Client II"}]) do |client|
+        client.name = "changed"
+      end
+    end
+
+    assert_equal 2, new_clients.size
+    assert_equal "changed", new_clients.first.name
+    assert_equal "changed", new_clients.last.name
+
+    company.name += '-changed'
+    assert_queries(3) { assert company.save }
+    assert_equal 3, company.clients_of_firm(true).size
   end
 
   def test_create_without_loading_association
@@ -927,6 +1011,24 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     end
 
     assert firm.clients.loaded?
+  end
+
+  def test_joins_with_namespaced_model_should_use_correct_type
+    old = ActiveRecord::Base.store_full_sti_class
+    ActiveRecord::Base.store_full_sti_class = true
+
+    firm = Namespaced::Firm.create({ :name => 'Some Company' })
+    firm.clients.create({ :name => 'Some Client' })
+
+    stats = Namespaced::Firm.find(firm.id, {
+      :select => "#{Namespaced::Firm.table_name}.id, COUNT(#{Namespaced::Client.table_name}.id) AS num_clients",
+      :joins  => :clients,
+      :group  => "#{Namespaced::Firm.table_name}.id"
+    })
+    assert_equal 1, stats.num_clients.to_i
+
+  ensure
+    ActiveRecord::Base.store_full_sti_class = old
   end
 
 end

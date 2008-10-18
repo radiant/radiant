@@ -88,6 +88,10 @@ module ActionController
   #
   #   map.connect ':controller/:action/:id', :action => 'show', :defaults => { :page => 'Dashboard' }
   #
+  # Note: The default routes, as provided by the Rails generator, make all actions in every
+  # controller accessible via GET requests. You should consider removing them or commenting
+  # them out if you're using named routes and resources.
+  #
   # == Named routes
   #
   # Routes can be named with the syntax <tt>map.name_of_route options</tt>,
@@ -369,7 +373,7 @@ module ActionController
 
     Routes = RouteSet.new
 
-    ::Inflector.module_eval do
+    ActiveSupport::Inflector.module_eval do
 	  # Ensures that routes are reloaded when Rails inflections are updated.
       def inflections_with_route_reloading(&block)
         returning(inflections_without_route_reloading(&block)) {

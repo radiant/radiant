@@ -1,6 +1,6 @@
 module ActiveRecord
   module Calculations #:nodoc:
-    CALCULATIONS_OPTIONS = [:conditions, :joins, :order, :select, :group, :having, :distinct, :limit, :offset, :include]
+    CALCULATIONS_OPTIONS = [:conditions, :joins, :order, :select, :group, :having, :distinct, :limit, :offset, :include, :from]
     def self.included(base)
       base.extend(ClassMethods)
     end
@@ -27,6 +27,8 @@ module ActiveRecord
       # * <tt>:select</tt>: By default, this is * as in SELECT * FROM, but can be changed if you, for example, want to do a join but not
       #   include the joined columns.
       # * <tt>:distinct</tt>: Set this to true to make this a distinct calculation, such as SELECT COUNT(DISTINCT posts.id) ...
+      # * <tt>:from</tt> - By default, this is the table name of the class, but can be changed to an alternate table name (or even the name
+      #   of a database view).
       #
       # Examples for counting all:
       #   Person.count         # returns the total count of all people
@@ -71,7 +73,7 @@ module ActiveRecord
       #
       #   Person.sum('age')
       def sum(column_name, options = {})
-        calculate(:sum, column_name, options) || 0
+        calculate(:sum, column_name, options)
       end
 
       # This calculates aggregate values in the given column.  Methods for count, sum, average, minimum, and maximum have been added as shortcuts.
@@ -178,13 +180,23 @@ module ActiveRecord
           sql = "SELECT COUNT(*) AS #{aggregate_alias}" if use_workaround
 
           sql << ", #{options[:group_field]} AS #{options[:group_alias]}" if options[:group]
-          sql << " FROM (SELECT #{distinct}#{column_name}" if use_workaround
-          sql << " FROM #{connection.quote_table_name(table_name)} "
+          if options[:from]
+            sql << " FROM #{options[:from]} "
+          else
+            sql << " FROM (SELECT #{distinct}#{column_name}" if use_workaround
+            sql << " FROM #{connection.quote_table_name(table_name)} "
+          end
+
+          joins = ""
+          add_joins!(joins, options, scope)
+
           if merged_includes.any?
-            join_dependency = ActiveRecord::Associations::ClassMethods::JoinDependency.new(self, merged_includes, options[:joins])
+            join_dependency = ActiveRecord::Associations::ClassMethods::JoinDependency.new(self, merged_includes, joins)
             sql << join_dependency.join_associations.collect{|join| join.association_join }.join
           end
-          add_joins!(sql, options, scope)
+
+          sql << joins unless joins.blank?
+
           add_conditions!(sql, options[:conditions], scope)
           add_limited_ids_condition!(sql, options, join_dependency) if join_dependency && !using_limitable_reflections?(join_dependency.reflections) && ((scope && scope[:limit]) || options[:limit])
 
@@ -205,7 +217,7 @@ module ActiveRecord
 
           sql << " ORDER BY #{options[:order]} "       if options[:order]
           add_limit!(sql, options, scope)
-          sql << ')' if use_workaround
+          sql << ') AS #{aggregate_alias}_subquery' if use_workaround
           sql
         end
 
@@ -266,6 +278,7 @@ module ActiveRecord
           operation = operation.to_s.downcase
           case operation
             when 'count' then value.to_i
+            when 'sum'   then value =~ /\./ ? value.to_f : value.to_i
             when 'avg'   then value && value.to_f
             else column ? column.type_cast(value) : value
           end

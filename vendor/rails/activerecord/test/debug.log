@@ -1,0 +1,358 @@
+# Logfile created on Wed Apr 30 00:19:12 -0500 2008 by /
+Unable to load post, underlying cause no such file to load -- post.rb 
+
+ ./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_without_new_constant_marking'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:342:in `new_constants_in'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:202:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:94:in `require_or_load'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:60:in `depend_on'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:442:in `require_dependency'
+./cases/../../lib/active_record/fixtures.rb:854:in `try_to_load_dependency'
+./cases/../../lib/active_record/fixtures.rb:869:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:866:in `each'
+./cases/../../lib/active_record/fixtures.rb:866:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:849:in `fixtures'
+cases/named_scope_test.rb:9
+Unable to load author, underlying cause no such file to load -- author.rb 
+
+ ./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_without_new_constant_marking'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:342:in `new_constants_in'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:202:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:94:in `require_or_load'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:60:in `depend_on'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:442:in `require_dependency'
+./cases/../../lib/active_record/fixtures.rb:854:in `try_to_load_dependency'
+./cases/../../lib/active_record/fixtures.rb:869:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:866:in `each'
+./cases/../../lib/active_record/fixtures.rb:866:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:849:in `fixtures'
+cases/named_scope_test.rb:9
+Unable to load topic, underlying cause no such file to load -- topic.rb 
+
+ ./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_without_new_constant_marking'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:342:in `new_constants_in'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:202:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:94:in `require_or_load'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:60:in `depend_on'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:442:in `require_dependency'
+./cases/../../lib/active_record/fixtures.rb:854:in `try_to_load_dependency'
+./cases/../../lib/active_record/fixtures.rb:869:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:866:in `each'
+./cases/../../lib/active_record/fixtures.rb:866:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:849:in `fixtures'
+cases/named_scope_test.rb:9
+  [4;36;1mTopic Load (0.001909)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.001633)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.001143)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.001296)[0m   [0mSELECT * FROM "topics" WHERE (content LIKE '%Have%') [0m
+  [4;36;1mTopic Load (0.000764)[0m   [0;1mSELECT * FROM "topics" WHERE (content LIKE '%Have%') [0m
+  [4;35;1mTopic Load (0.000731)[0m   [0mSELECT * FROM "topics" WHERE (content LIKE '%Have%') [0m
+  [4;36;1mTopic Load (0.001061)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.000981)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.000870)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.000915)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mAuthor Load (0.000274)[0m   [0;1mSELECT * FROM "authors" WHERE ("authors"."id" = 1) [0m
+  [4;35;1mPost Load (0.000496)[0m   [0mSELECT * FROM "posts" WHERE (body LIKE '%a%') [0m
+  [4;36;1mPost Load (0.001247)[0m   [0;1mSELECT * FROM "posts" WHERE ("posts".author_id = 1) [0m
+  [4;35;1mPost Load (0.001080)[0m   [0mSELECT * FROM "posts" WHERE (body LIKE '%a%') [0m
+  [4;36;1mPost Load (0.000536)[0m   [0;1mSELECT * FROM "posts" WHERE (body LIKE '%a%') [0m
+  [4;35;1mPost Load (0.000406)[0m   [0mSELECT * FROM "posts" WHERE ("posts".author_id = 1) AND (body LIKE '%a%') [0m
+  [4;36;1mAuthor Load (0.000252)[0m   [0;1mSELECT * FROM "authors" WHERE ("authors"."id" = 1) [0m
+  [4;35;1mComment Load (0.000797)[0m   [0mSELECT * FROM "comments" WHERE (comments.body LIKE '%e%') [0m
+  [4;36;1mPost Load (0.000699)[0m   [0;1mSELECT * FROM "posts" WHERE ("posts".author_id = 1) [0m
+  [4;35;1mComment Load (0.000772)[0m   [0mSELECT * FROM "comments" WHERE (comments.body LIKE '%e%') [0m
+  [4;36;1mComment Load (0.000879)[0m   [0;1mSELECT "comments".* FROM "comments" INNER JOIN posts ON comments.post_id = posts.id WHERE (("posts".author_id = 1)) [0m
+  [4;35;1mComment Load (0.000840)[0m   [0mSELECT * FROM "comments" WHERE (comments.body LIKE '%e%') [0m
+  [4;36;1mComment Load (0.000837)[0m   [0;1mSELECT "comments".* FROM "comments" INNER JOIN posts ON comments.post_id = posts.id WHERE (("posts".author_id = 1)) AND (comments.body LIKE '%e%') [0m
+  [4;35;1mTopic Load (0.000850)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.001908)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.001432)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.000777)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.000772)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.000318)[0m   [0;1mSELECT * FROM "topics" LIMIT 1[0m
+  [4;35;1mTopic Load (0.000765)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.000772)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.000772)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.000361)[0m   [0;1mSELECT * FROM "topics" WHERE ("topics"."id" = 3) [0m
+  [4;35;1mTopic Load (0.000511)[0m   [0mSELECT * FROM "topics" WHERE (written_on < '2005-07-15 09:28:00') [0m
+  [4;36;1mTopic Load (0.000320)[0m   [0;1mSELECT * FROM "topics" WHERE ("topics"."id" = 2) [0m
+  [4;35;1mTopic Load (0.000462)[0m   [0mSELECT * FROM "topics" WHERE (written_on < '2004-07-15 09:28:00') [0m
+  [4;36;1mTopic Load (0.000516)[0m   [0;1mSELECT * FROM "topics" WHERE (written_on < '2005-07-15 09:28:00') [0m
+  [4;35;1mTopic Load (0.000343)[0m   [0mSELECT * FROM "topics" WHERE (written_on < '2004-07-15 09:28:00') [0m
+  [4;36;1mTopic Load (0.000821)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Create (0.000381)[0m   [0mINSERT INTO "topics" ("title", "author_name", "type", "approved", "bonus_time", "replies_count", "author_email_address", "written_on", "content", "last_read", "parent_id") VALUES(NULL, NULL, NULL, 't', NULL, 0, 'test@test.com', '2008-04-30 00:19:13', NULL, NULL, NULL)[0m
+  [4;36;1mTopic Load (0.001058)[0m   [0;1mSELECT * FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;35;1mTopic Load (0.000950)[0m   [0mSELECT * FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;36;1mTopic Load (0.000643)[0m   [0;1mSELECT * FROM "topics" WHERE (replies_count > 0) [0m
+  [4;35;1mTopic Load (0.000608)[0m   [0mSELECT * FROM "topics" WHERE (replies_count > 0) [0m
+  [4;36;1mTopic Load (0.000552)[0m   [0;1mSELECT * FROM "topics" WHERE ((replies_count > 0) AND ("topics"."approved" = 't')) [0m
+  [4;35;1mTopic Load (0.000920)[0m   [0mSELECT * FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;36;1mTopic Load (0.000812)[0m   [0;1mSELECT * FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;35;1mTopic Load (0.000806)[0m   [0mSELECT * FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;36;1mSQL (0.000204)[0m   [0;1mSELECT count(*) AS count_all FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;35;1mSQL (0.000176)[0m   [0mSELECT count(*) AS count_all FROM "topics" WHERE ("topics"."approved" = 't') [0m
+Unable to load post, underlying cause no such file to load -- post.rb 
+
+ ./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_without_new_constant_marking'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:342:in `new_constants_in'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:202:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:94:in `require_or_load'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:60:in `depend_on'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:442:in `require_dependency'
+./cases/../../lib/active_record/fixtures.rb:854:in `try_to_load_dependency'
+./cases/../../lib/active_record/fixtures.rb:869:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:866:in `each'
+./cases/../../lib/active_record/fixtures.rb:866:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:849:in `fixtures'
+cases/named_scope_test.rb:11
+Unable to load author, underlying cause no such file to load -- author.rb 
+
+ ./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_without_new_constant_marking'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:342:in `new_constants_in'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:202:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:94:in `require_or_load'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:60:in `depend_on'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:442:in `require_dependency'
+./cases/../../lib/active_record/fixtures.rb:854:in `try_to_load_dependency'
+./cases/../../lib/active_record/fixtures.rb:869:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:866:in `each'
+./cases/../../lib/active_record/fixtures.rb:866:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:849:in `fixtures'
+cases/named_scope_test.rb:11
+Unable to load topic, underlying cause no such file to load -- topic.rb 
+
+ ./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_without_new_constant_marking'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:342:in `new_constants_in'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:202:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:94:in `require_or_load'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:60:in `depend_on'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:442:in `require_dependency'
+./cases/../../lib/active_record/fixtures.rb:854:in `try_to_load_dependency'
+./cases/../../lib/active_record/fixtures.rb:869:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:866:in `each'
+./cases/../../lib/active_record/fixtures.rb:866:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:849:in `fixtures'
+cases/named_scope_test.rb:11
+  [4;36;1mTopic Load (0.001976)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.001593)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.001164)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.000571)[0m   [0mSELECT * FROM "topics" LIMIT 1[0m
+  [4;36;1mTopic Load (0.000448)[0m   [0;1mSELECT * FROM "topics" LIMIT 1[0m
+  [4;35;1mSQL (0.000197)[0m   [0mSELECT count(*) AS count_all FROM "topics" [0m
+  [4;36;1mSQL (0.000184)[0m   [0;1mSELECT count(*) AS count_all FROM "topics" [0m
+  [4;35;1mSQL (0.000201)[0m   [0mSELECT avg("topics".replies_count) AS avg_replies_count FROM "topics" [0m
+  [4;36;1mSQL (0.000199)[0m   [0;1mSELECT avg("topics".replies_count) AS avg_replies_count FROM "topics" [0m
+Unable to load post, underlying cause no such file to load -- post.rb 
+
+ ./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_without_new_constant_marking'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:342:in `new_constants_in'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:202:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:94:in `require_or_load'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:60:in `depend_on'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:442:in `require_dependency'
+./cases/../../lib/active_record/fixtures.rb:854:in `try_to_load_dependency'
+./cases/../../lib/active_record/fixtures.rb:869:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:866:in `each'
+./cases/../../lib/active_record/fixtures.rb:866:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:849:in `fixtures'
+cases/named_scope_test.rb:12
+Unable to load author, underlying cause no such file to load -- author.rb 
+
+ ./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_without_new_constant_marking'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:342:in `new_constants_in'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:202:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:94:in `require_or_load'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:60:in `depend_on'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:442:in `require_dependency'
+./cases/../../lib/active_record/fixtures.rb:854:in `try_to_load_dependency'
+./cases/../../lib/active_record/fixtures.rb:869:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:866:in `each'
+./cases/../../lib/active_record/fixtures.rb:866:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:849:in `fixtures'
+cases/named_scope_test.rb:12
+Unable to load topic, underlying cause no such file to load -- topic.rb 
+
+ ./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_without_new_constant_marking'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:342:in `new_constants_in'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:202:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:94:in `require_or_load'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:60:in `depend_on'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:442:in `require_dependency'
+./cases/../../lib/active_record/fixtures.rb:854:in `try_to_load_dependency'
+./cases/../../lib/active_record/fixtures.rb:869:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:866:in `each'
+./cases/../../lib/active_record/fixtures.rb:866:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:849:in `fixtures'
+cases/named_scope_test.rb:12
+  [4;36;1mTopic Load (0.002000)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.001548)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.001159)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.000799)[0m   [0mSELECT * FROM "topics" WHERE (content LIKE '%Have%') [0m
+  [4;36;1mTopic Load (0.000629)[0m   [0;1mSELECT * FROM "topics" WHERE (content LIKE '%Have%') [0m
+  [4;35;1mTopic Load (0.000636)[0m   [0mSELECT * FROM "topics" WHERE (content LIKE '%Have%') [0m
+  [4;36;1mTopic Load (0.001059)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.000874)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.000807)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.000331)[0m   [0mSELECT * FROM "topics" LIMIT 1[0m
+  [4;36;1mTopic Load (0.000317)[0m   [0;1mSELECT * FROM "topics" LIMIT 1[0m
+  [4;35;1mSQL (0.000145)[0m   [0mSELECT count(*) AS count_all FROM "topics" [0m
+  [4;36;1mSQL (0.000313)[0m   [0;1mSELECT count(*) AS count_all FROM "topics" [0m
+  [4;35;1mSQL (0.000342)[0m   [0mSELECT avg("topics".replies_count) AS avg_replies_count FROM "topics" [0m
+  [4;36;1mSQL (0.000337)[0m   [0;1mSELECT avg("topics".replies_count) AS avg_replies_count FROM "topics" [0m
+  [4;35;1mTopic Load (0.001830)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mAuthor Load (0.000249)[0m   [0;1mSELECT * FROM "authors" WHERE ("authors"."id" = 1) [0m
+  [4;35;1mPost Load (0.000518)[0m   [0mSELECT * FROM "posts" WHERE (body LIKE '%a%') [0m
+  [4;36;1mPost Load (0.000703)[0m   [0;1mSELECT * FROM "posts" WHERE ("posts".author_id = 1) [0m
+  [4;35;1mPost Load (0.000496)[0m   [0mSELECT * FROM "posts" WHERE (body LIKE '%a%') [0m
+  [4;36;1mPost Load (0.000500)[0m   [0;1mSELECT * FROM "posts" WHERE (body LIKE '%a%') [0m
+  [4;35;1mPost Load (0.000391)[0m   [0mSELECT * FROM "posts" WHERE ("posts".author_id = 1) AND (body LIKE '%a%') [0m
+  [4;36;1mAuthor Load (0.000250)[0m   [0;1mSELECT * FROM "authors" WHERE ("authors"."id" = 1) [0m
+  [4;35;1mComment Load (0.000786)[0m   [0mSELECT * FROM "comments" WHERE (comments.body LIKE '%e%') [0m
+  [4;36;1mPost Load (0.000697)[0m   [0;1mSELECT * FROM "posts" WHERE ("posts".author_id = 1) [0m
+  [4;35;1mComment Load (0.000778)[0m   [0mSELECT * FROM "comments" WHERE (comments.body LIKE '%e%') [0m
+  [4;36;1mComment Load (0.000907)[0m   [0;1mSELECT "comments".* FROM "comments" INNER JOIN posts ON comments.post_id = posts.id WHERE (("posts".author_id = 1)) [0m
+  [4;35;1mComment Load (0.000854)[0m   [0mSELECT * FROM "comments" WHERE (comments.body LIKE '%e%') [0m
+  [4;36;1mComment Load (0.000825)[0m   [0;1mSELECT "comments".* FROM "comments" INNER JOIN posts ON comments.post_id = posts.id WHERE (("posts".author_id = 1)) AND (comments.body LIKE '%e%') [0m
+  [4;35;1mTopic Load (0.000825)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.000783)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.000781)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.000779)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.000796)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.000334)[0m   [0;1mSELECT * FROM "topics" LIMIT 1[0m
+  [4;35;1mTopic Load (0.000765)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.000769)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.000784)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.000441)[0m   [0;1mSELECT * FROM "topics" WHERE ("topics"."id" = 3) [0m
+  [4;35;1mTopic Load (0.000496)[0m   [0mSELECT * FROM "topics" WHERE (written_on < '2005-07-15 09:28:00') [0m
+  [4;36;1mTopic Load (0.000318)[0m   [0;1mSELECT * FROM "topics" WHERE ("topics"."id" = 2) [0m
+  [4;35;1mTopic Load (0.000326)[0m   [0mSELECT * FROM "topics" WHERE (written_on < '2004-07-15 09:28:00') [0m
+  [4;36;1mTopic Load (0.001103)[0m   [0;1mSELECT * FROM "topics" WHERE (written_on < '2005-07-15 09:28:00') [0m
+  [4;35;1mTopic Load (0.000733)[0m   [0mSELECT * FROM "topics" WHERE (written_on < '2004-07-15 09:28:00') [0m
+  [4;36;1mTopic Load (0.000815)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Create (0.000400)[0m   [0mINSERT INTO "topics" ("title", "author_name", "type", "approved", "bonus_time", "replies_count", "author_email_address", "written_on", "content", "last_read", "parent_id") VALUES(NULL, NULL, NULL, 't', NULL, 0, 'test@test.com', '2008-04-30 00:24:07', NULL, NULL, NULL)[0m
+  [4;36;1mTopic Load (0.000920)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.001632)[0m   [0mSELECT * FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;36;1mTopic Load (0.001510)[0m   [0;1mSELECT * FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;35;1mTopic Load (0.000761)[0m   [0mSELECT * FROM "topics" WHERE (replies_count > 0) [0m
+  [4;36;1mTopic Load (0.000738)[0m   [0;1mSELECT * FROM "topics" WHERE (replies_count > 0) [0m
+  [4;35;1mTopic Load (0.000509)[0m   [0mSELECT * FROM "topics" WHERE ((replies_count > 0) AND ("topics"."approved" = 't')) [0m
+  [4;36;1mTopic Load (0.001035)[0m   [0;1mSELECT * FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;35;1mTopic Load (0.000940)[0m   [0mSELECT * FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;36;1mTopic Load (0.000898)[0m   [0;1mSELECT * FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;35;1mSQL (0.000214)[0m   [0mSELECT count(*) AS count_all FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;36;1mSQL (0.000200)[0m   [0;1mSELECT count(*) AS count_all FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;35;1mReply Load (0.000704)[0m   [0mSELECT * FROM "topics" WHERE ( ("topics"."type" = 'Reply' OR "topics"."type" = 'SillyReply' ) ) [0m
+  [4;36;1mReply Load (0.000613)[0m   [0;1mSELECT * FROM "topics" WHERE ( ("topics"."type" = 'Reply' OR "topics"."type" = 'SillyReply' ) ) [0m
+Unable to load post, underlying cause no such file to load -- post.rb 
+
+ ./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_without_new_constant_marking'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:342:in `new_constants_in'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:202:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:94:in `require_or_load'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:60:in `depend_on'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:442:in `require_dependency'
+./cases/../../lib/active_record/fixtures.rb:854:in `try_to_load_dependency'
+./cases/../../lib/active_record/fixtures.rb:869:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:866:in `each'
+./cases/../../lib/active_record/fixtures.rb:866:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:849:in `fixtures'
+cases/named_scope_test.rb:9
+Unable to load author, underlying cause no such file to load -- author.rb 
+
+ ./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_without_new_constant_marking'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:342:in `new_constants_in'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:202:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:94:in `require_or_load'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:60:in `depend_on'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:442:in `require_dependency'
+./cases/../../lib/active_record/fixtures.rb:854:in `try_to_load_dependency'
+./cases/../../lib/active_record/fixtures.rb:869:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:866:in `each'
+./cases/../../lib/active_record/fixtures.rb:866:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:849:in `fixtures'
+cases/named_scope_test.rb:9
+Unable to load topic, underlying cause no such file to load -- topic.rb 
+
+ ./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_without_new_constant_marking'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:203:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:342:in `new_constants_in'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:202:in `load_file'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:94:in `require_or_load'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:60:in `depend_on'
+./cases/../../lib/../../activesupport/lib/active_support/dependencies.rb:442:in `require_dependency'
+./cases/../../lib/active_record/fixtures.rb:854:in `try_to_load_dependency'
+./cases/../../lib/active_record/fixtures.rb:869:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:866:in `each'
+./cases/../../lib/active_record/fixtures.rb:866:in `require_fixture_classes'
+./cases/../../lib/active_record/fixtures.rb:849:in `fixtures'
+cases/named_scope_test.rb:9
+  [4;36;1mTopic Load (0.001968)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.001587)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.001227)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.000737)[0m   [0mSELECT * FROM "topics" WHERE (content LIKE '%Have%') [0m
+  [4;36;1mTopic Load (0.000648)[0m   [0;1mSELECT * FROM "topics" WHERE (content LIKE '%Have%') [0m
+  [4;35;1mTopic Load (0.000668)[0m   [0mSELECT * FROM "topics" WHERE (content LIKE '%Have%') [0m
+  [4;36;1mTopic Load (0.001049)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.000886)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.000795)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.000600)[0m   [0mSELECT * FROM "topics" LIMIT 1[0m
+  [4;36;1mTopic Load (0.000330)[0m   [0;1mSELECT * FROM "topics" LIMIT 1[0m
+  [4;35;1mSQL (0.000160)[0m   [0mSELECT count(*) AS count_all FROM "topics" [0m
+  [4;36;1mSQL (0.000155)[0m   [0;1mSELECT count(*) AS count_all FROM "topics" [0m
+  [4;35;1mSQL (0.000175)[0m   [0mSELECT avg("topics".replies_count) AS avg_replies_count FROM "topics" [0m
+  [4;36;1mSQL (0.000345)[0m   [0;1mSELECT avg("topics".replies_count) AS avg_replies_count FROM "topics" [0m
+  [4;35;1mTopic Load (0.000858)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mAuthor Load (0.000273)[0m   [0;1mSELECT * FROM "authors" WHERE ("authors"."id" = 1) [0m
+  [4;35;1mPost Load (0.000498)[0m   [0mSELECT * FROM "posts" WHERE (body LIKE '%a%') [0m
+  [4;36;1mPost Load (0.000720)[0m   [0;1mSELECT * FROM "posts" WHERE ("posts".author_id = 1) [0m
+  [4;35;1mPost Load (0.000482)[0m   [0mSELECT * FROM "posts" WHERE (body LIKE '%a%') [0m
+  [4;36;1mPost Load (0.000482)[0m   [0;1mSELECT * FROM "posts" WHERE (body LIKE '%a%') [0m
+  [4;35;1mPost Load (0.000391)[0m   [0mSELECT * FROM "posts" WHERE ("posts".author_id = 1) AND (body LIKE '%a%') [0m
+  [4;36;1mAuthor Load (0.000245)[0m   [0;1mSELECT * FROM "authors" WHERE ("authors"."id" = 1) [0m
+  [4;35;1mComment Load (0.000789)[0m   [0mSELECT * FROM "comments" WHERE (comments.body LIKE '%e%') [0m
+  [4;36;1mPost Load (0.000692)[0m   [0;1mSELECT * FROM "posts" WHERE ("posts".author_id = 1) [0m
+  [4;35;1mComment Load (0.000767)[0m   [0mSELECT * FROM "comments" WHERE (comments.body LIKE '%e%') [0m
+  [4;36;1mComment Load (0.000879)[0m   [0;1mSELECT "comments".* FROM "comments" INNER JOIN posts ON comments.post_id = posts.id WHERE (("posts".author_id = 1)) [0m
+  [4;35;1mComment Load (0.000803)[0m   [0mSELECT * FROM "comments" WHERE (comments.body LIKE '%e%') [0m
+  [4;36;1mComment Load (0.000822)[0m   [0;1mSELECT "comments".* FROM "comments" INNER JOIN posts ON comments.post_id = posts.id WHERE (("posts".author_id = 1)) AND (comments.body LIKE '%e%') [0m
+  [4;35;1mTopic Load (0.000823)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.000792)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.000794)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.000813)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.000769)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.000316)[0m   [0;1mSELECT * FROM "topics" LIMIT 1[0m
+  [4;35;1mTopic Load (0.000777)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.000800)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.000795)[0m   [0mSELECT * FROM "topics" [0m
+  [4;36;1mTopic Load (0.000391)[0m   [0;1mSELECT * FROM "topics" WHERE ("topics"."id" = 3) [0m
+  [4;35;1mTopic Load (0.000499)[0m   [0mSELECT * FROM "topics" WHERE (written_on < '2005-07-15 09:28:00') [0m
+  [4;36;1mTopic Load (0.000320)[0m   [0;1mSELECT * FROM "topics" WHERE ("topics"."id" = 2) [0m
+  [4;35;1mTopic Load (0.000326)[0m   [0mSELECT * FROM "topics" WHERE (written_on < '2004-07-15 09:28:00') [0m
+  [4;36;1mTopic Load (0.000491)[0m   [0;1mSELECT * FROM "topics" WHERE (written_on < '2005-07-15 09:28:00') [0m
+  [4;35;1mTopic Load (0.000325)[0m   [0mSELECT * FROM "topics" WHERE (written_on < '2004-07-15 09:28:00') [0m
+  [4;36;1mTopic Load (0.000821)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Create (0.000383)[0m   [0mINSERT INTO "topics" ("title", "author_name", "type", "approved", "bonus_time", "replies_count", "author_email_address", "written_on", "content", "last_read", "parent_id") VALUES(NULL, NULL, NULL, 't', NULL, 0, 'test@test.com', '2008-04-30 00:24:48', NULL, NULL, NULL)[0m
+  [4;36;1mTopic Load (0.000944)[0m   [0;1mSELECT * FROM "topics" [0m
+  [4;35;1mTopic Load (0.001618)[0m   [0mSELECT * FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;36;1mTopic Load (0.001445)[0m   [0;1mSELECT * FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;35;1mTopic Load (0.000720)[0m   [0mSELECT * FROM "topics" WHERE (replies_count > 0) [0m
+  [4;36;1mTopic Load (0.000707)[0m   [0;1mSELECT * FROM "topics" WHERE (replies_count > 0) [0m
+  [4;35;1mTopic Load (0.000494)[0m   [0mSELECT * FROM "topics" WHERE ((replies_count > 0) AND ("topics"."approved" = 't')) [0m
+  [4;36;1mTopic Load (0.000863)[0m   [0;1mSELECT * FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;35;1mTopic Load (0.000855)[0m   [0mSELECT * FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;36;1mTopic Load (0.000867)[0m   [0;1mSELECT * FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;35;1mSQL (0.000208)[0m   [0mSELECT count(*) AS count_all FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;36;1mSQL (0.000195)[0m   [0;1mSELECT count(*) AS count_all FROM "topics" WHERE ("topics"."approved" = 't') [0m
+  [4;35;1mReply Load (0.000574)[0m   [0mSELECT * FROM "topics" WHERE ( ("topics"."type" = 'Reply' OR "topics"."type" = 'SillyReply' ) ) [0m
+  [4;36;1mReply Load (0.000504)[0m   [0;1mSELECT * FROM "topics" WHERE ( ("topics"."type" = 'Reply' OR "topics"."type" = 'SillyReply' ) ) [0m

@@ -6,7 +6,7 @@ require 'models/post'
 require 'models/category'
 
 class MethodScopingTest < ActiveRecord::TestCase
-  fixtures :developers, :projects, :comments, :posts
+  fixtures :developers, :projects, :comments, :posts, :developers_projects
 
   def test_set_conditions
     Developer.with_scope(:find => { :conditions => 'just a test...' }) do
@@ -85,6 +85,16 @@ class MethodScopingTest < ActiveRecord::TestCase
     assert scoped_developers.include?(developers(:david))
     assert !scoped_developers.include?(developers(:jamis))
     assert_equal 1, scoped_developers.size
+  end
+
+  def test_scoped_find_joins
+    scoped_developers = Developer.with_scope(:find => { :joins => 'JOIN developers_projects ON id = developer_id' } ) do
+      Developer.find(:all, :conditions => 'developers_projects.project_id = 2')
+    end
+    assert scoped_developers.include?(developers(:david))
+    assert !scoped_developers.include?(developers(:jamis))
+    assert_equal 1, scoped_developers.size
+    assert_equal developers(:david).attributes, scoped_developers.first.attributes
   end
 
   def test_scoped_count_include

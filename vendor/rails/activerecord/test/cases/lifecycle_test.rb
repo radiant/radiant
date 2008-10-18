@@ -2,6 +2,7 @@ require "cases/helper"
 require 'models/topic'
 require 'models/developer'
 require 'models/reply'
+require 'models/minimalistic'
 
 class Topic; def after_find() end end
 class Developer; def after_find() end end
@@ -44,6 +45,14 @@ class TopicObserver < ActiveRecord::Observer
   end
 end
 
+class MinimalisticObserver < ActiveRecord::Observer
+  attr_reader :minimalistic
+
+  def after_find(minimalistic)
+    @minimalistic = minimalistic
+  end
+end
+
 class MultiObserver < ActiveRecord::Observer
   attr_reader :record
 
@@ -65,7 +74,7 @@ class MultiObserver < ActiveRecord::Observer
 end
 
 class LifecycleTest < ActiveRecord::TestCase
-  fixtures :topics, :developers
+  fixtures :topics, :developers, :minimalistics
 
   def test_before_destroy
     original_count = Topic.count
@@ -132,6 +141,50 @@ class LifecycleTest < ActiveRecord::TestCase
 
     developer = klass.find(1)
     assert_equal developer.name, multi_observer.record.name
+  end
+
+  def test_after_find_can_be_observed_when_its_not_defined_on_the_model
+    observer = MinimalisticObserver.instance
+    assert_equal Minimalistic, MinimalisticObserver.observed_class
+
+    minimalistic = Minimalistic.find(1)
+    assert_equal minimalistic, observer.minimalistic
+  end
+
+  def test_after_find_can_be_observed_when_its_defined_on_the_model
+    observer = TopicObserver.instance
+    assert_equal Topic, TopicObserver.observed_class
+
+    topic = Topic.find(1)
+    assert_equal topic, observer.topic
+  end
+
+  def test_after_find_is_not_created_if_its_not_used
+    # use a fresh class so an observer can't have defined an
+    # after_find on it
+    model_class = Class.new(ActiveRecord::Base)
+    observer_class = Class.new(ActiveRecord::Observer)
+    observer_class.observe(model_class)
+
+    observer = observer_class.instance
+
+    assert !model_class.method_defined?(:after_find)
+  end
+
+  def test_after_find_is_not_clobbered_if_it_already_exists
+    # use a fresh observer class so we can instantiate it (Observer is
+    # a Singleton)
+    model_class = Class.new(ActiveRecord::Base) do
+      def after_find; end
+    end
+    original_method = model_class.instance_method(:after_find)
+    observer_class = Class.new(ActiveRecord::Observer) do
+      def after_find; end
+    end
+    observer_class.observe(model_class)
+
+    observer = observer_class.instance
+    assert_equal original_method, model_class.instance_method(:after_find)
   end
 
   def test_invalid_observer

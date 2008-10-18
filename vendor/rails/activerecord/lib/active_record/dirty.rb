@@ -123,7 +123,10 @@ module ActiveRecord
         attr = attr.to_s
 
         # The attribute already has an unsaved change.
-        unless changed_attributes.include?(attr)
+        if changed_attributes.include?(attr)
+          old = changed_attributes[attr]
+          changed_attributes.delete(attr) unless field_changed?(attr, old, value)
+        else
           old = clone_attribute_value(:read_attribute, attr)
           changed_attributes[attr] = old if field_changed?(attr, old, value)
         end
@@ -134,7 +137,9 @@ module ActiveRecord
 
       def update_with_dirty
         if partial_updates?
-          update_without_dirty(changed)
+          # Serialized attributes should always be written in case they've been
+          # changed in place.
+          update_without_dirty(changed | self.class.serialized_attributes.keys)
         else
           update_without_dirty
         end
@@ -142,9 +147,11 @@ module ActiveRecord
 
       def field_changed?(attr, old, value)
         if column = column_for_attribute(attr)
-          if column.type == :integer && column.null && old.nil?
+          if column.type == :integer && column.null && (old.nil? || old == 0)
             # For nullable integer columns, NULL gets stored in database for blank (i.e. '') values.
             # Hence we don't record it as a change if the value changes from nil to ''.
+            # If an old value of 0 is set to '' we want this to get changed to nil as otherwise it'll
+            # be typecast back to 0 (''.to_i => 0)
             value = nil if value.blank?
           else
             value = column.type_cast(value)

@@ -2,6 +2,7 @@ require 'cases/helper'
 require 'models/topic'    # For booleans
 require 'models/pirate'   # For timestamps
 require 'models/parrot'
+require 'models/person'   # For optimistic locking
 
 class Pirate # Just reopening it, not defining it
   attr_accessor :detected_changes_in_after_update # Boolean for if changes are detected
@@ -52,6 +53,33 @@ class DirtyTest < ActiveRecord::TestCase
       assert !pirate.parrot_id_changed?
       assert_nil pirate.parrot_id_change
     end
+  end
+
+  def test_zero_to_blank_marked_as_changed
+    pirate = Pirate.new
+    pirate.catchphrase = "Yarrrr, me hearties"
+    pirate.parrot_id = 1
+    pirate.save
+
+    # check the change from 1 to ''
+    pirate = Pirate.find_by_catchphrase("Yarrrr, me hearties")
+    pirate.parrot_id = ''
+    assert pirate.parrot_id_changed?
+    assert_equal([1, nil], pirate.parrot_id_change)
+    pirate.save
+
+    # check the change from nil to 0
+    pirate = Pirate.find_by_catchphrase("Yarrrr, me hearties")
+    pirate.parrot_id = 0
+    assert pirate.parrot_id_changed?
+    assert_equal([nil, 0], pirate.parrot_id_change)
+    pirate.save
+
+    # check the change from 0 to ''
+    pirate = Pirate.find_by_catchphrase("Yarrrr, me hearties")
+    pirate.parrot_id = ''
+    assert pirate.parrot_id_changed?
+    assert_equal([0, nil], pirate.parrot_id_change)
   end
 
   def test_object_should_be_changed_if_any_attribute_is_changed
@@ -125,6 +153,24 @@ class DirtyTest < ActiveRecord::TestCase
     end
   end
 
+  def test_partial_update_with_optimistic_locking
+    person = Person.new(:first_name => 'foo')
+    old_lock_version = 1
+
+    with_partial_updates Person, false do
+      assert_queries(2) { 2.times { person.save! } }
+      Person.update_all({ :first_name => 'baz' }, :id => person.id)
+    end
+
+    with_partial_updates Person, true do
+      assert_queries(0) { 2.times { person.save! } }
+      assert_equal old_lock_version, person.reload.lock_version
+
+      assert_queries(1) { person.first_name = 'bar'; person.save! }
+      assert_not_equal old_lock_version, person.reload.lock_version
+    end
+  end
+
   def test_changed_attributes_should_be_preserved_if_save_failure
     pirate = Pirate.new
     pirate.parrot_id = 1
@@ -143,6 +189,54 @@ class DirtyTest < ActiveRecord::TestCase
     assert pirate.changed?
     pirate.reload
     assert !pirate.changed?
+  end
+
+  def test_reverted_changes_are_not_dirty
+    phrase = "shiver me timbers"
+    pirate = Pirate.create!(:catchphrase => phrase)
+    pirate.catchphrase = "*hic*"
+    assert pirate.changed?
+    pirate.catchphrase = phrase
+    assert !pirate.changed?
+  end
+
+  def test_reverted_changes_are_not_dirty_after_multiple_changes
+    phrase = "shiver me timbers"
+    pirate = Pirate.create!(:catchphrase => phrase)
+    10.times do |i|
+      pirate.catchphrase = "*hic*" * i
+      assert pirate.changed?
+    end
+    assert pirate.changed?
+    pirate.catchphrase = phrase
+    assert !pirate.changed?
+  end
+
+
+  def test_reverted_changes_are_not_dirty_going_from_nil_to_value_and_back
+    pirate = Pirate.create!(:catchphrase => "Yar!")
+
+    pirate.parrot_id = 1
+    assert pirate.changed?
+    assert pirate.parrot_id_changed?
+    assert !pirate.catchphrase_changed?
+
+    pirate.parrot_id = nil
+    assert !pirate.changed?
+    assert !pirate.parrot_id_changed?
+    assert !pirate.catchphrase_changed?
+  end
+
+  def test_save_should_store_serialized_attributes_even_with_partial_updates
+    with_partial_updates(Topic) do
+      topic = Topic.create!(:content => {:a => "a"})
+      topic.content[:b] = "b"
+      #assert topic.changed? # Known bug, will fail
+      topic.save!
+      assert_equal "b", topic.content[:b]
+      topic.reload
+      assert_equal "b", topic.content[:b]
+    end
   end
 
   private

@@ -92,7 +92,7 @@ module ActiveSupport
             class_eval(<<-EOS, __FILE__, __LINE__)
               def #{target}_with_deprecation#{punctuation}(*args, &block)
                 ::ActiveSupport::Deprecation.warn(self.class.deprecated_method_warning(:#{method_name}, #{options[method_name].inspect}), caller)
-                #{target}_without_deprecation#{punctuation}(*args, &block)
+                send(:#{target}_without_deprecation#{punctuation}, *args, &block)
               end
             EOS
           end
@@ -109,7 +109,7 @@ module ActiveSupport
       end
 
       def deprecation_horizon
-        '2.0'
+        '2.2'
       end
     end
 
@@ -144,15 +144,9 @@ module ActiveSupport
         end
     end
 
-    # Stand-in for <tt>@request</tt>, <tt>@attributes</tt>, <tt>@params</tt>, etc.
-    # which emits deprecation warnings on any method call (except +inspect+).
-    class DeprecatedInstanceVariableProxy #:nodoc:
+    class DeprecationProxy #:nodoc:
       silence_warnings do
         instance_methods.each { |m| undef_method m unless m =~ /^__/ }
-      end
-
-      def initialize(instance, method, var = "@#{method}")
-        @instance, @method, @var = instance, method, var
       end
 
       # Don't give a deprecation warning on inspect since test/unit and error
@@ -166,7 +160,16 @@ module ActiveSupport
           warn caller, called, args
           target.__send__(called, *args, &block)
         end
+    end
 
+    # Stand-in for <tt>@request</tt>, <tt>@attributes</tt>, <tt>@params</tt>, etc.
+    # which emits deprecation warnings on any method call (except +inspect+).
+    class DeprecatedInstanceVariableProxy < DeprecationProxy #:nodoc:
+      def initialize(instance, method, var = "@#{method}")
+        @instance, @method, @var = instance, method, var
+      end
+
+      private
         def target
           @instance.__send__(@method)
         end
@@ -176,6 +179,21 @@ module ActiveSupport
         end
     end
 
+    class DeprecatedConstantProxy < DeprecationProxy #:nodoc:
+      def initialize(old_const, new_const)
+        @old_const = old_const
+        @new_const = new_const
+      end
+
+      private
+        def target
+          @new_const.to_s.constantize
+        end
+
+        def warn(callstack, called, args)
+          ActiveSupport::Deprecation.warn("#{@old_const} is deprecated! Use #{@new_const} instead.", callstack)
+        end
+    end
   end
 end
 

@@ -331,15 +331,26 @@ module ActiveRecord
       end
 
       def assume_migrated_upto_version(version)
+        version = version.to_i
         sm_table = quote_table_name(ActiveRecord::Migrator.schema_migrations_table_name)
+
         migrated = select_values("SELECT version FROM #{sm_table}").map(&:to_i)
         versions = Dir['db/migrate/[0-9]*_*.rb'].map do |filename|
           filename.split('/').last.split('_').first.to_i
         end
 
-        execute "INSERT INTO #{sm_table} (version) VALUES ('#{version}')" unless migrated.include?(version.to_i)
-        (versions - migrated).select { |v| v < version.to_i }.each do |v|
-          execute "INSERT INTO #{sm_table} (version) VALUES ('#{v}')"
+        unless migrated.include?(version)
+          execute "INSERT INTO #{sm_table} (version) VALUES ('#{version}')"
+        end
+
+        inserted = Set.new
+        (versions - migrated).each do |v|
+          if inserted.include?(v)
+            raise "Duplicate migration #{v}. Please renumber your migrations to resolve the conflict."
+          elsif v < version
+            execute "INSERT INTO #{sm_table} (version) VALUES ('#{v}')"
+            inserted << v
+          end
         end
       end
 
@@ -372,13 +383,9 @@ module ActiveRecord
 
       def add_column_options!(sql, options) #:nodoc:
         sql << " DEFAULT #{quote(options[:default], options[:column])}" if options_include_default?(options)
-        # must explcitly check for :null to allow change_column to work on migrations
-        if options.has_key? :null
-          if options[:null] == false
-            sql << " NOT NULL"
-          else
-            sql << " NULL"
-          end
+        # must explicitly check for :null to allow change_column to work on migrations
+        if options[:null] == false
+          sql << " NOT NULL"
         end
       end
 

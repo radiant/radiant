@@ -14,11 +14,14 @@ require 'models/job'
 require 'models/subscriber'
 require 'models/subscription'
 require 'models/book'
+require 'models/developer'
+require 'models/project'
 
 class EagerAssociationTest < ActiveRecord::TestCase
   fixtures :posts, :comments, :authors, :categories, :categories_posts,
             :companies, :accounts, :tags, :taggings, :people, :readers,
-            :owners, :pets, :author_favorites, :jobs, :references, :subscribers, :subscriptions, :books
+            :owners, :pets, :author_favorites, :jobs, :references, :subscribers, :subscriptions, :books,
+            :developers, :projects, :developers_projects
 
   def test_loading_with_one_association
     posts = Post.find(:all, :include => :comments)
@@ -31,6 +34,12 @@ class EagerAssociationTest < ActiveRecord::TestCase
     assert post.comments.include?(comments(:greetings))
 
     posts = Post.find(:all, :include => :last_comment)
+    post = posts.find { |p| p.id == 1 }
+    assert_equal Post.find(1).last_comment, post.last_comment
+  end
+
+  def test_loading_with_one_association_with_non_preload
+    posts = Post.find(:all, :include => :last_comment, :order => 'comments.id DESC')
     post = posts.find { |p| p.id == 1 }
     assert_equal Post.find(1).last_comment, post.last_comment
   end
@@ -556,6 +565,13 @@ class EagerAssociationTest < ActiveRecord::TestCase
     assert_nothing_raised { Post.find(:all, :include => 'comments') }
   end
 
+  def test_eager_with_floating_point_numbers
+    assert_queries(2) do
+      # Before changes, the floating point numbers will be interpreted as table names and will cause this to run in one query
+      Comment.find :all, :conditions => "123.456 = 123.456", :include => :post
+    end
+  end
+
   def test_preconfigured_includes_with_belongs_to
     author = posts(:welcome).author_with_posts
     assert_no_queries {assert_equal 5, author.posts.size}
@@ -608,5 +624,13 @@ class EagerAssociationTest < ActiveRecord::TestCase
     assert_queries(2) do #should not do 1 query per subclass
       Comment.find :all, :include => :post
     end
+  end
+
+  def test_conditions_on_join_table_with_include_and_limit
+    assert_equal 3, Developer.find(:all, :include => 'projects', :conditions => 'developers_projects.access_level = 1', :limit => 5).size
+  end
+
+  def test_order_on_join_table_with_include_and_limit
+    assert_equal 5, Developer.find(:all, :include => 'projects', :order => 'developers_projects.joined_on DESC', :limit => 5).size
   end
 end

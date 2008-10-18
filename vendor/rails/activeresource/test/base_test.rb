@@ -1,5 +1,6 @@
 require 'abstract_unit'
 require "fixtures/person"
+require "fixtures/customer"
 require "fixtures/street_address"
 require "fixtures/beast"
 
@@ -14,6 +15,37 @@ class BaseTest < Test::Unit::TestCase
     @people = [{ :id => 1, :name => 'Matz' }, { :id => 2, :name => 'David' }].to_xml(:root => 'people')
     @people_david = [{ :id => 2, :name => 'David' }].to_xml(:root => 'people')
     @addresses = [{ :id => 1, :street => '12345 Street' }].to_xml(:root => 'addresses')
+
+    # - deep nested resource -
+    # - Luis (Customer)
+    #   - JK (Customer::Friend)
+    #     - Mateo (Customer::Friend::Brother)
+    #       - Edith (Customer::Friend::Brother::Child)
+    #       - Martha (Customer::Friend::Brother::Child)
+    #     - Felipe (Customer::Friend::Brother)
+    #       - Bryan (Customer::Friend::Brother::Child)
+    #       - Luke (Customer::Friend::Brother::Child)
+    #   - Eduardo (Customer::Friend)
+    #     - Sebas (Customer::Friend::Brother)
+    #       - Andres (Customer::Friend::Brother::Child)
+    #       - Jorge (Customer::Friend::Brother::Child)
+    #     - Elsa (Customer::Friend::Brother)
+    #       - Natacha (Customer::Friend::Brother::Child)
+    #     - Milena (Customer::Friend::Brother)
+    #
+    @luis = {:id => 1, :name => 'Luis',
+              :friends => [{:name => 'JK',
+                            :brothers => [{:name => 'Mateo',
+                                           :children => [{:name => 'Edith'},{:name => 'Martha'}]},
+                                          {:name => 'Felipe',
+                                           :children => [{:name => 'Bryan'},{:name => 'Luke'}]}]},
+                           {:name => 'Eduardo',
+                            :brothers => [{:name => 'Sebas',
+                                           :children => [{:name => 'Andres'},{:name => 'Jorge'}]},
+                                          {:name => 'Elsa',
+                                           :children => [{:name => 'Natacha'}]},
+                                          {:name => 'Milena',
+                                           :children => []}]}]}.to_xml(:root => 'customer')
 
     ActiveResource::HttpMock.respond_to do |mock|
       mock.get    "/people/1.xml",                {}, @matz
@@ -46,6 +78,8 @@ class BaseTest < Test::Unit::TestCase
       mock.head   "/people/1/addresses/2.xml",    {}, nil, 404
       mock.head   "/people/2/addresses/1.xml",    {}, nil, 404
       mock.head   "/people/Greg/addresses/1.xml", {}, nil, 200
+      # customer
+      mock.get    "/customers/1.xml",             {}, @luis
     end
 
     Person.user = nil
@@ -450,7 +484,16 @@ class BaseTest < Test::Unit::TestCase
       assert_equal "the_prefixthe_param_value", person_class.prefix(:the_param => "the_param_value")
     end
   end
-  
+
+  def test_set_prefix_twice_should_clear_params
+    SetterTrap.rollback_sets(Person) do |person_class|
+      person_class.prefix = "the_prefix/:the_param1"
+      assert_equal Set.new([:the_param1]), person_class.prefix_parameters
+      person_class.prefix = "the_prefix/:the_param2"
+      assert_equal Set.new([:the_param2]), person_class.prefix_parameters
+    end
+  end
+
   def test_set_prefix_with_default_value
     SetterTrap.rollback_sets(Person) do |person_class|
       person_class.set_prefix
@@ -776,7 +819,7 @@ class BaseTest < Test::Unit::TestCase
   
   def test_to_xml
     matz = Person.find(1)
-    xml = matz.to_xml
+    xml = matz.encode
     assert xml.starts_with?('<?xml version="1.0" encoding="UTF-8"?>')
     assert xml.include?('<name>Matz</name>')
     assert xml.include?('<id type="integer">1</id>')
@@ -787,5 +830,19 @@ class BaseTest < Test::Unit::TestCase
     assert_nil new_person.to_param
     matz = Person.find(1)
     assert_equal '1', matz.to_param
+  end
+
+  def test_parse_deep_nested_resources
+    luis = Customer.find(1)
+    assert_kind_of Customer, luis
+    luis.friends.each do |friend|
+      assert_kind_of Customer::Friend, friend
+      friend.brothers.each do |brother|
+        assert_kind_of Customer::Friend::Brother, brother
+        brother.children.each do |child|
+          assert_kind_of Customer::Friend::Brother::Child, child
+        end
+      end
+    end
   end
 end

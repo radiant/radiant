@@ -531,6 +531,11 @@ XML
     assert_equal content_type, file.content_type
     assert_equal file.path, file.local_path
     assert_equal expected, file.read
+
+    new_content_type = "new content_type"
+    file.content_type = new_content_type
+    assert_equal new_content_type, file.content_type
+
   end
   
   def test_test_uploaded_file_with_binary
@@ -571,7 +576,9 @@ XML
       get :redirect_to_same_controller
       assert_response :redirect
       assert_redirected_to :controller => 'test_test/test', :action => 'test_uri', :id => 5
-      assert_nothing_raised { follow_redirect }
+      assert_deprecated 'follow_redirect' do
+        assert_nothing_raised { follow_redirect }
+      end
     end
   end
 
@@ -580,7 +587,9 @@ XML
       get :redirect_to_different_controller
       assert_response :redirect
       assert_redirected_to :controller => 'fail', :id => 5
-      assert_raise(RuntimeError) { follow_redirect }
+      assert_raise(RuntimeError) do
+        assert_deprecated { follow_redirect }
+      end
     end
   end
 

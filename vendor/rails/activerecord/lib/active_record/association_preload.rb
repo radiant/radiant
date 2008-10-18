@@ -51,9 +51,7 @@ module ActiveRecord
       
       def add_preloaded_record_to_collection(parent_records, reflection_name, associated_record)
         parent_records.each do |parent_record|
-          association_proxy = parent_record.send(reflection_name)
-          association_proxy.loaded
-          association_proxy.target = associated_record
+          parent_record.send("set_#{reflection_name}_target", associated_record)
         end
       end
 
@@ -103,17 +101,17 @@ module ActiveRecord
         associated_records = reflection.klass.find(:all, :conditions => [conditions, ids],
         :include => options[:include],
         :joins => "INNER JOIN #{connection.quote_table_name options[:join_table]} as t0 ON #{reflection.klass.quoted_table_name}.#{reflection.klass.primary_key} = t0.#{reflection.association_foreign_key}",
-        :select => "#{options[:select] || table_name+'.*'}, t0.#{reflection.primary_key_name} as _parent_record_id",
+        :select => "#{options[:select] || table_name+'.*'}, t0.#{reflection.primary_key_name} as the_parent_record_id",
         :order => options[:order])
 
-        set_association_collection_records(id_to_record_map, reflection.name, associated_records, '_parent_record_id')
+        set_association_collection_records(id_to_record_map, reflection.name, associated_records, 'the_parent_record_id')
       end
 
       def preload_has_one_association(records, reflection, preload_options={})
         id_to_record_map, ids = construct_id_map(records)        
         options = reflection.options
+        records.each {|record| record.send("set_#{reflection.name}_target", nil)}
         if options[:through]
-          records.each {|record| record.send(reflection.name) && record.send(reflection.name).loaded}
           through_records = preload_through_records(records, reflection, options[:through])
           through_reflection = reflections[options[:through]]
           through_primary_key = through_reflection.primary_key_name
@@ -126,8 +124,6 @@ module ActiveRecord
             end
           end
         else
-          records.each {|record| record.send("set_#{reflection.name}_target", nil)}
-
           set_association_single_records(id_to_record_map, reflection.name, find_associated_records(ids, reflection, preload_options), reflection.primary_key_name)
         end
       end
@@ -188,7 +184,6 @@ module ActiveRecord
         through_records
       end
 
-      # FIXME: quoting
       def preload_belongs_to_association(records, reflection, preload_options={})
         options = reflection.options
         primary_key_name = reflection.primary_key_name
@@ -227,9 +222,19 @@ module ActiveRecord
 
           table_name = klass.quoted_table_name
           primary_key = klass.primary_key
-          conditions = "#{table_name}.#{primary_key} IN (?)"
+          conditions = "#{table_name}.#{connection.quote_column_name(primary_key)} IN (?)"
           conditions << append_conditions(options, preload_options)
-          associated_records = klass.find(:all, :conditions => [conditions, id_map.keys.uniq],
+          column_type = klass.columns.detect{|c| c.name == primary_key}.type
+          ids = id_map.keys.uniq.map do |id|
+            if column_type == :integer
+              id.to_i
+            elsif column_type == :float
+              id.to_f
+            else
+              id
+            end
+          end
+          associated_records = klass.find(:all, :conditions => [conditions, ids],
                                           :include => options[:include],
                                           :select => options[:select],
                                           :joins => options[:joins],
@@ -243,7 +248,7 @@ module ActiveRecord
         table_name = reflection.klass.quoted_table_name
 
         if interface = reflection.options[:as]
-          conditions = "#{reflection.klass.quoted_table_name}.#{connection.quote_column_name "#{interface}_id"} IN (?) and #{reflection.klass.quoted_table_name}.#{connection.quote_column_name "#{interface}_type"} = '#{self.base_class.name.demodulize}'"
+          conditions = "#{reflection.klass.quoted_table_name}.#{connection.quote_column_name "#{interface}_id"} IN (?) and #{reflection.klass.quoted_table_name}.#{connection.quote_column_name "#{interface}_type"} = '#{self.base_class.sti_name}'"
         else
           foreign_key = reflection.primary_key_name
           conditions = "#{reflection.klass.quoted_table_name}.#{foreign_key} IN (?)"

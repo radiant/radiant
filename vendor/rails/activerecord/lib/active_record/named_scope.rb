@@ -82,6 +82,7 @@ module ActiveRecord
       #   expected_options = { :conditions => { :colored => 'red' } }
       #   assert_equal expected_options, Shirt.colored('red').proxy_options
       def named_scope(name, options = {}, &block)
+        name = name.to_sym
         scopes[name] = lambda do |parent_scope, *args|
           Scope.new(parent_scope, case options
             when Hash
@@ -102,7 +103,7 @@ module ActiveRecord
       attr_reader :proxy_scope, :proxy_options
 
       [].methods.each do |m|
-        unless m =~ /(^__|^nil\?|^send|^object_id$|class|extend|find|count|sum|average|maximum|minimum|paginate|first|last|empty?)/
+        unless m =~ /(^__|^nil\?|^send|^object_id$|class|extend|^find$|count|sum|average|maximum|minimum|paginate|first|last|empty\?|respond_to\?)/
           delegate m, :to => :proxy_found
         end
       end
@@ -137,6 +138,10 @@ module ActiveRecord
 
       def empty?
         @found ? @found.empty? : count.zero?
+      end
+
+      def respond_to?(method, include_private = false)
+        super || @proxy_scope.respond_to?(method, include_private)
       end
 
       protected

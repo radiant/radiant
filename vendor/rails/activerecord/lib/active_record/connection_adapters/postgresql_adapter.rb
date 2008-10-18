@@ -23,8 +23,8 @@ module ActiveRecord
       config = config.symbolize_keys
       host     = config[:host]
       port     = config[:port] || 5432
-      username = config[:username].to_s
-      password = config[:password].to_s
+      username = config[:username].to_s if config[:username]
+      password = config[:password].to_s if config[:password]
 
       if config.has_key?(:database)
         database = config[:database]
@@ -47,6 +47,14 @@ module ActiveRecord
       end
 
       private
+        def extract_limit(sql_type)
+          case sql_type
+          when /^bigint/i;    8
+          when /^smallint/i;  2
+          else super
+          end
+        end
+
         # Extracts the scale from PostgreSQL-specific data types.
         def extract_scale(sql_type)
           # Money type has a fixed scale of 2.
@@ -174,8 +182,8 @@ module ActiveRecord
         def self.extract_value_from_default(default)
           case default
             # Numeric types
-            when /\A-?\d+(\.\d*)?\z/
-              default
+            when /\A\(?(-?\d+(\.\d*)?\)?)\z/
+              $1
             # Character types
             when /\A'(.*)'::(?:character varying|bpchar|text)\z/m
               $1
@@ -319,6 +327,10 @@ module ActiveRecord
         has_support
       end
 
+      def supports_insert_with_returning?
+        postgresql_version >= 80200
+      end
+
       # Returns the configured supported identifier length supported by PostgreSQL,
       # or report the default of 63 on PostgreSQL 7.x.
       def table_alias_length
@@ -360,7 +372,7 @@ module ActiveRecord
           # There are some incorrectly compiled postgres drivers out there
           # that don't define PGconn.escape.
           self.class.instance_eval do
-            undef_method(:quote_string)
+            remove_method(:quote_string)
           end
         end
         quote_string(s)
@@ -411,8 +423,34 @@ module ActiveRecord
 
       # Executes an INSERT query and returns the new record's ID
       def insert(sql, name = nil, pk = nil, id_value = nil, sequence_name = nil)
+        # Extract the table from the insert sql. Yuck.
         table = sql.split(" ", 4)[2].gsub('"', '')
-        super || pk && last_insert_id(table, sequence_name || default_sequence_name(table, pk))
+
+        # Try an insert with 'returning id' if available (PG >= 8.2)
+        if supports_insert_with_returning?
+          pk, sequence_name = *pk_and_sequence_for(table) unless pk
+          if pk
+            id = select_value("#{sql} RETURNING #{quote_column_name(pk)}")
+            clear_query_cache
+            return id
+          end
+        end
+
+        # Otherwise, insert then grab last_insert_id.
+        if insert_id = super
+          insert_id
+        else
+          # If neither pk nor sequence name is given, look them up.
+          unless pk || sequence_name
+            pk, sequence_name = *pk_and_sequence_for(table)
+          end
+
+          # If a pk is given, fallback to default sequence name.
+          # Don't fetch last insert id for a table without a pk.
+          if pk && sequence_name ||= default_sequence_name(table, pk)
+            last_insert_id(table, sequence_name)
+          end
+        end
       end
 
       # create a 2D array representing the result set
@@ -492,13 +530,13 @@ module ActiveRecord
         option_string = options.symbolize_keys.sum do |key, value|
           case key
           when :owner
-            " OWNER = '#{value}'"
+            " OWNER = \"#{value}\""
           when :template
-            " TEMPLATE = #{value}"
+            " TEMPLATE = \"#{value}\""
           when :encoding
             " ENCODING = '#{value}'"
           when :tablespace
-            " TABLESPACE = #{value}"
+            " TABLESPACE = \"#{value}\""
           when :connection_limit
             " CONNECTION LIMIT = #{value}"
           else
@@ -506,7 +544,7 @@ module ActiveRecord
           end
         end
 
-        execute "CREATE DATABASE #{name}#{option_string}"
+        execute "CREATE DATABASE #{quote_table_name(name)}#{option_string}"
       end
 
       # Drops a PostgreSQL database
@@ -514,7 +552,15 @@ module ActiveRecord
       # Example:
       #   drop_database 'matt_development'
       def drop_database(name) #:nodoc:
-        execute "DROP DATABASE IF EXISTS #{name}"
+        if postgresql_version >= 80200
+          execute "DROP DATABASE IF EXISTS #{quote_table_name(name)}"
+        else
+          begin
+            execute "DROP DATABASE #{quote_table_name(name)}"
+          rescue ActiveRecord::StatementInvalid
+            @logger.warn "#{name} database doesn't exist." if @logger
+          end
+        end
       end
 
 
@@ -676,7 +722,7 @@ module ActiveRecord
 
       # Renames a table.
       def rename_table(name, new_name)
-        execute "ALTER TABLE #{name} RENAME TO #{new_name}"
+        execute "ALTER TABLE #{quote_table_name(name)} RENAME TO #{quote_table_name(new_name)}"
       end
 
       # Adds a new column to the named table.
@@ -698,7 +744,8 @@ module ActiveRecord
 
         begin
           execute "ALTER TABLE #{quoted_table_name} ALTER COLUMN #{quote_column_name(column_name)} TYPE #{type_to_sql(type, options[:limit], options[:precision], options[:scale])}"
-        rescue ActiveRecord::StatementInvalid
+        rescue ActiveRecord::StatementInvalid => e
+          raise e if postgresql_version > 80000
           # This is PostgreSQL 7.x, so we have to use a more arcane way of doing it.
           begin
             begin_db_transaction
@@ -743,15 +790,14 @@ module ActiveRecord
       def type_to_sql(type, limit = nil, precision = nil, scale = nil)
         return super unless type.to_s == 'integer'
 
-        if limit.nil? || limit == 4
-          'integer'
-        elsif limit < 4
-          'smallint'
-        else
-          'bigint'
+        case limit
+          when 1..2;      'smallint'
+          when 3..4, nil; 'integer'
+          when 5..8;      'bigint'
+          else raise(ActiveRecordError, "No integer type has byte size #{limit}. Use a numeric with precision 0 instead.")
         end
       end
-      
+
       # Returns a SELECT DISTINCT clause for a given set of columns and a given ORDER BY clause.
       #
       # PostgreSQL requires the ORDER BY columns in the select list for distinct queries, and

@@ -356,6 +356,9 @@ module ActiveResource
         # Replace :placeholders with '#{embedded options[:lookups]}'
         prefix_call = value.gsub(/:\w+/) { |key| "\#{options[#{key}]}" }
 
+        # Clear prefix parameters in case they have been cached
+        @prefix_parameters = nil
+
         # Redefine the new methods.
         code = <<-end_code
           def prefix_source() "#{value}" end
@@ -538,7 +541,7 @@ module ActiveResource
           prefix_options, query_options = split_options(options[:params])
           path = element_path(id, prefix_options, query_options)
           response = connection.head(path, headers)
-          response.code == 200
+          response.code.to_i == 200
         end
         # id && !find_single(id, options).nil?
       rescue ActiveResource::ResourceNotFound
@@ -840,8 +843,13 @@ module ActiveResource
     #
     #   my_group.to_xml(:skip_instruct => true)
     #   # => <subsidiary_group> [...] </subsidiary_group>
-    def to_xml(options={})
-      attributes.to_xml({:root => self.class.element_name}.merge(options))
+    def encode(options={})
+      case self.class.format
+        when ActiveResource::Formats[:xml]
+          self.class.format.encode(attributes, {:root => self.class.element_name}.merge(options))
+        else
+          self.class.format.encode(attributes, options)
+      end
     end
 
     # A method to reload the attributes of this object from the remote web service.
@@ -926,14 +934,14 @@ module ActiveResource
 
       # Update the resource on the remote service.
       def update
-        returning connection.put(element_path(prefix_options), to_xml, self.class.headers) do |response|
+        returning connection.put(element_path(prefix_options), encode, self.class.headers) do |response|
           load_attributes_from_response(response)
         end
       end
 
       # Create (i.e., save to the remote service) the new resource.
       def create
-        returning connection.post(collection_path, to_xml, self.class.headers) do |response|
+        returning connection.post(collection_path, encode, self.class.headers) do |response|
           self.id = id_from_response(response)
           load_attributes_from_response(response)
         end
@@ -988,7 +996,11 @@ module ActiveResource
           self.class.const_get(resource_name)
         end
       rescue NameError
-        resource = self.class.const_set(resource_name, Class.new(ActiveResource::Base))
+        if self.class.const_defined?(resource_name)
+          resource = self.class.const_get(resource_name)
+        else
+          resource = self.class.const_set(resource_name, Class.new(ActiveResource::Base))
+        end
         resource.prefix = self.class.prefix
         resource.site   = self.class.site
         resource
