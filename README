@@ -35,6 +35,10 @@ configure and run it the way you would a normal Rails application.
 See the INSTALL file for more details.
 
 
+== Development Requirements
+
+ * gem install ZenTest
+
 == Support
 
 The best place to get support is on the mailing list:
