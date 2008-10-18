@@ -70,7 +70,7 @@ Radiant::Initializer.run do |config|
   
   config.after_initialize do
     # Add new inflection rules using the following format:
-    Inflector.inflections do |inflect|
+    ActiveSupport::Inflector.inflections do |inflect|
       inflect.uncountable 'config'
       inflect.uncountable 'meta'
     end
