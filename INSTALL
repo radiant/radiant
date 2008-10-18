@@ -9,7 +9,7 @@ install Radiant:
    the "development" and "test" databases if you are developing extensions
    or running tests.
 
-2. Edit config/database.yml to taste.
+2. Edit config/database.yml to taste.  There are example files available for various databases in the config directory.
 
 3. Run the database bootstrap rake task:
    
