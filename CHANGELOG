@@ -2,6 +2,7 @@
 
 === Edge
 
+* Upgrade to 2.1.1 [Sean Cribbs]
 * Fixed migrations for Rails 2.1 [Josh French]
 * Fixed final specs [Jim Gay]
 * Fixed up some specs for new Rails/RSpec [Josh French]
