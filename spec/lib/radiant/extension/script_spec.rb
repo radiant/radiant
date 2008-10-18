@@ -315,6 +315,13 @@ describe "Registry::Git" do
   it "should use git to clone the repository" do
     @git.checkout_command.should == 'git clone http://localhost/ example'
   end
+  
+  it "should initialize and update submodules" do
+    Dir.stub!(:tmpdir).and_return('/tmp')
+    @git.should_receive(:system).with("cd /tmp; git clone http://localhost/ example").ordered
+    @git.should_receive(:system).with("cd /tmp/example; git submodule init && git submodule update").ordered
+    @git.checkout
+  end
 end
 
 describe "Registry::Subversion" do

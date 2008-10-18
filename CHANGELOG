@@ -1,12 +1,18 @@
 == Change Log
 
 === Edge
+
 * Fixed migrations for Rails 2.1 [Josh French]
 * Fixed final specs [Jim Gay]
 * Fixed up some specs for new Rails/RSpec [Josh French]
 * Updated timezone management [Josh French]
 * Update to Rails 2.1 [Jim Gay]
 * Update to RSpec 1.1.4 [Jim Gay]
+* Make Git extension install method recognize submodules. [Sean Cribbs]
+* Fix malformed Textile in standard tag descriptions. [Jason Garber]
+* Update script/extension help output. [Jim Gay]
+* Allow load_subclasses to work when multiple apps are on the same database. 
+[Jim Gay]
 * Add REXML expansion fix. [Sean Cribbs]
 * Fix filter_reference admin helper for filter names that have spaces in
 them. [Mislav Marohnić]

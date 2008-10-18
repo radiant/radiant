@@ -128,6 +128,11 @@ Install type:   #{install_type}
     def checkout_command
       "git clone #{url} #{name}"
     end
+    
+    def checkout
+      super
+      system "cd #{self.path}; git submodule init && git submodule update"
+    end
   end
 
   class Subversion < Checkout
@@ -289,6 +294,12 @@ module Radiant
 
   For help on an individual command:
       script/extension help command
+      
+  You may install extensions from another registry by setting the REGISTRY_URL
+  By default the REGISTRY_URL is set to http://ext.radiantcms.org
+  
+  Code for the registry application may be found at:
+  http://github.com/radiant/radiant-extension-registry/
             }
         end
 
