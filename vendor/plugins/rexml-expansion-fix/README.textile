@@ -1,9 +1,0 @@
-h1. REXML Expansion Fix
-
-The version of rexml which ships with ruby at present will not restrict the total number of entity expanstions when processing inline attributes.  This can allow specially crafted documents to consume enormous amounts of CPU.  To prevent this from happening this fix causes processing to abort processing after a certain number of expansions have taken place. The limit defaults to 10000 but you can change it as follows:
-
- REXML::Document.entity_expansion_limit= 50
-
-The example xml in example.xml can be used to verify that your application is safe.
-
-

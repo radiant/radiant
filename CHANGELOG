@@ -2,6 +2,7 @@
 
 === Edge
 
+* Remove REXML expansion fix, included in Rails 2.1.1 [Sean Cribbs]
 * Upgrade to 2.1.1 [Sean Cribbs]
 * Fixed migrations for Rails 2.1 [Josh French]
 * Fixed final specs [Jim Gay]
