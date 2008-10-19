@@ -6,7 +6,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
       integrate_views
     end
     controller_name :redirect_spec
-  
+    
     it "redirected to another action" do
       get 'action_with_redirect_to_somewhere'
       response.should redirect_to(:action => 'somewhere')

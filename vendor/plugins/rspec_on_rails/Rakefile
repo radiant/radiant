@@ -15,9 +15,11 @@ Hoe.new('rspec-rails', Spec::Rails::VERSION::STRING) do |p|
   p.description = "Behaviour Driven Development for Ruby on Rails."
   p.rubyforge_name = 'rspec'
   p.developer('RSpec Development Team', 'rspec-devel@rubyforge.org')
+  p.extra_deps = [["rspec","1.1.8"]]
+  p.remote_rdoc_dir = "rspec-rails/#{Spec::Rails::VERSION::STRING}"
 end
 
-['audit','test','test_deps','default','publish_docs','post_blog', 'release'].each do |task|
+['audit','test','test_deps','default','post_blog', 'release'].each do |task|
   Rake.application.instance_variable_get('@tasks').delete(task)
 end
 

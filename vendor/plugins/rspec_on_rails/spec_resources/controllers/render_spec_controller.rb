@@ -23,4 +23,8 @@ class RenderSpecController < ApplicationController
   def action_that_renders_nothing
     render :nothing => true
   end
+  
+  def action_with_alternate_layout
+    render :layout => 'simple'
+  end
 end

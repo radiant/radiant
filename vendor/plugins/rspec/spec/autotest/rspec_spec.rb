@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + "/../autotest_helper"
+require File.dirname(__FILE__) + "/autotest_helper"
 
 class Autotest
   
@@ -70,8 +70,12 @@ HERE
         @to_test = @files_to_test.keys.flatten.join ' '
       end
     
-      it "should make the apropriate test command" do
+      it "should make the appropriate test command" do
         @rspec_autotest.make_test_cmd(@files_to_test).should == "#{@ruby} -S #{@to_test} #{@options}"
+      end
+
+      it "should return a blank command for no files" do
+        @rspec_autotest.make_test_cmd({}).should == ''
       end
     end
   
@@ -92,7 +96,11 @@ HERE
         @rspec_autotest.should map_specs([@spec_file]).to(@spec_file)
       end
     
-      it "should only find the file if the file is being tracked (in @file)"  do
+      it "should ignore files in spec dir that aren't specs" do
+        @rspec_autotest.should map_specs([]).to("spec/spec_helper.rb")
+      end
+    
+      it "should ignore untracked files (in @file)"  do
         @rspec_autotest.should map_specs([]).to("lib/untracked_file")
       end
     end

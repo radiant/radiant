@@ -28,6 +28,14 @@ module Spec
       def rspec_reset #:nodoc:
         __mock_proxy.reset
       end
+      
+      def as_null_object
+        __mock_proxy.as_null_object
+      end
+      
+      def null_object?
+        __mock_proxy.null_object?
+      end
 
     private
 
@@ -35,7 +43,7 @@ module Spec
         if Mock === self
           @mock_proxy ||= Proxy.new(self, @name, @options)
         else
-          @mock_proxy ||= Proxy.new(self, self.class.name)
+          @mock_proxy ||= Proxy.new(self)
         end
       end
     end

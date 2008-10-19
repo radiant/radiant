@@ -44,7 +44,11 @@ class ApplicationController < ActionController::Base
     end
   
     def set_javascripts_and_stylesheets
-      @stylesheets = %w(admin/main)
-      @javascripts = %w(prototype string effects admin/tabcontrol admin/ruledtable admin/admin)
+      @stylesheets ||= []
+      @stylesheets << %w(admin/main)
+      @stylesheets.flatten!
+      @javascripts ||= []
+      @javascripts << %w(prototype string effects admin/tabcontrol admin/ruledtable admin/admin)
+      @javascripts.flatten!
     end
 end

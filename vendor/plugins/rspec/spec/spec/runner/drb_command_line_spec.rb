@@ -3,8 +3,6 @@ require File.dirname(__FILE__) + '/../../spec_helper.rb'
 module Spec
   module Runner
     describe DrbCommandLine, "without running local server" do
-      include SandboxedOptions
-      
       unless Config::CONFIG['ruby_install_name'] == 'jruby'
         it "should print error when there is no running local server" do
           err = StringIO.new
@@ -51,7 +49,7 @@ module Spec
 
         it "should run against local server" do
           out = run_spec_via_druby(['--version'])
-          out.should =~ /rspec version \d+\.\d+\.\d+.*/n
+          out.should =~ /rspec \d+\.\d+\.\d+.*/n
         end
 
         it "should output green colorized text when running with --colour option" do

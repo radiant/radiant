@@ -84,6 +84,9 @@ describe Radiant::AdminUI do
     user.index.thead.should == %w{title_header roles_header modify_header}
     user.index.tbody.should == %w{title_cell roles_cell modify_cell}
     user.index.bottom.should == %w{new_button}
+    user.preferences.main.should == %w{edit_header edit_form}
+    user.preferences.form.should == %w{edit_password edit_email}
+    user.preferences.form_bottom.should == %w{edit_buttons}
   end
   
   it "should load the default extension regions" do

@@ -1,5 +1,6 @@
 dir = File.dirname(__FILE__)
 require 'spec/rails/matchers/assert_select'
+require 'spec/rails/matchers/change'
 require 'spec/rails/matchers/have_text'
 require 'spec/rails/matchers/include_text'
 require 'spec/rails/matchers/redirect_to'

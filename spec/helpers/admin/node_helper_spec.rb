@@ -13,7 +13,7 @@ describe Admin::NodeHelper do
   it "should render a sitemap node" do
     helper.should_receive(:render).with(:partial => "node", :locals => {:level => 0, :simple => false, :page => @page}).and_return(@current_node)
     helper.render_node(@page)
-    assigns[:current_node] == @page
+    helper.assigns[:current_node] == @page
   end
 
   it "should show all nodes when on the remove action" do

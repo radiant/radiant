@@ -4,7 +4,7 @@ Autotest.add_hook :initialize do |at|
   at.clear_mappings
   # watch out: Ruby bug (1.8.6):
   # %r(/) != /\//
-  at.add_mapping(%r%^spec/.*\.rb$%) { |filename, _| 
+  at.add_mapping(%r%^spec/.*_spec.rb$%) { |filename, _| 
     filename 
   }
   at.add_mapping(%r%^lib/(.*)\.rb$%) { |_, m| 
@@ -36,6 +36,7 @@ class Autotest::Rspec < Autotest
   end
 
   def make_test_cmd(files_to_test)
+    return '' if files_to_test.empty?
     return "#{ruby} -S #{files_to_test.keys.flatten.join(' ')} #{add_options_if_present}"
   end
   
