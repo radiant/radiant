@@ -2,6 +2,8 @@
 
 === Edge
 
+* Added regions to user-preferences screen. [Jim Gay]
+* Apply Rails redirect sanitization patch. [Sean Cribbs]
 * Updated to Rspec and Rspec-Rails 1.1.8 [Jim Gay]
 * Added development dependency to INSTALL [Matt Henry]
 * Added reference to sample database configuration files to INSTALL. [Keith Bennett]
