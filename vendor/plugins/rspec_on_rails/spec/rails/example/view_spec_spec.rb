@@ -208,6 +208,14 @@ describe "A view", :type => :view do
   it "should have access to flash data" do
     response.should have_tag("div#flash", "flash")
   end
+
+  it "should have a controller param" do
+    response.should have_tag("div#controller", "view_spec")
+  end
+  
+  it "should have an action param" do
+    response.should have_tag("div#action", "accessor")
+  end
 end
 
 describe "A view with a form_tag", :type => :view do

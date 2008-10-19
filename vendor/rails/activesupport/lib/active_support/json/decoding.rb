@@ -31,7 +31,7 @@ module ActiveSupport
                 if json[pos..scanner.pos-2] =~ DATE_REGEX
                   # found a date, track the exact positions of the quotes so we can remove them later.
                   # oh, and increment them for each current mark, each one is an extra padded space that bumps
-                  # the position in the final yaml output
+                  # the position in the final YAML output
                   total_marks = marks.size
                   times << pos+total_marks << scanner.pos+total_marks
                 end
@@ -45,11 +45,14 @@ module ActiveSupport
           if marks.empty?
             json.gsub(/\\\//, '/')
           else
-            # FIXME: multiple slow enumerations
-            output = ([0] + marks.map(&:succ)).
-                      zip(marks + [json.length]).
-                      map { |left, right| json[left..right] }.
-                      join(" ")
+            left_pos  = [-1].push(*marks)
+            right_pos = marks << json.length
+            output    = []
+            left_pos.each_with_index do |left, i|
+              output << json[left.succ..right_pos[i]]
+            end
+            output = output * " "
+            
             times.each { |i| output[i-1] = ' ' }
             output.gsub!(/\\\//, '/')
             output

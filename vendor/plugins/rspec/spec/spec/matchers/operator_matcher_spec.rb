@@ -10,12 +10,17 @@ describe "should ==" do
     subject.should == "apple"
   end
   
+  it "should return true on success" do
+    subject = "apple"
+    (subject.should == "apple").should be_true
+  end
+  
   it "should fail when target.==(actual) returns false" do
     subject = "apple"
     Spec::Expectations.should_receive(:fail_with).with(%[expected: "orange",\n     got: "apple" (using ==)], "orange", "apple")
     subject.should == "orange"
   end
-
+  
 end
 
 describe "should_not ==" do
@@ -26,12 +31,17 @@ describe "should_not ==" do
     subject.should_not == "apple"
   end
   
+  it "should return true on success" do
+    subject = "apple"
+    (subject.should_not == "orange").should be_true
+  end
+
   it "should fail when target.==(actual) returns false" do
     subject = "apple"
     Spec::Expectations.should_receive(:fail_with).with(%[expected not: == "apple",\n         got:    "apple"], "apple", "apple")
     subject.should_not == "apple"
   end
-
+  
 end
 
 describe "should ===" do
@@ -156,3 +166,26 @@ describe "should <=" do
 
 end
 
+describe Spec::Matchers::PositiveOperatorMatcher do
+
+  it "should work when the target has implemented #send" do
+    o = Object.new
+    def o.send(*args); raise "DOH! Library developers shouldn't use #send!" end
+    lambda {
+      o.should == o
+    }.should_not raise_error
+  end
+
+end
+
+describe Spec::Matchers::NegativeOperatorMatcher do
+
+  it "should work when the target has implemented #send" do
+    o = Object.new
+    def o.send(*args); raise "DOH! Library developers shouldn't use #send!" end
+    lambda {
+      o.should_not == :foo
+    }.should_not raise_error
+  end
+
+end

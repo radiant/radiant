@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../abstract_unit'
+require 'abstract_unit'
 
 class RespondToController < ActionController::Base
   layout :set_layout
@@ -105,6 +105,13 @@ class RespondToController < ActionController::Base
     respond_to do |type|
       type.html { render :text => "HTML" }
       type.any(:js, :xml) { render :text => "Either JS or XML" }
+    end
+  end
+  
+  def handle_any_any
+    respond_to do |type|
+      type.html { render :text => 'HTML' }
+      type.any { render :text => 'Whatever you ask for, I got it' }
     end
   end
 
@@ -335,6 +342,35 @@ class MimeControllerTest < Test::Unit::TestCase
     assert_equal 'Either JS or XML', @response.body
   end
 
+  def test_handle_any_any
+    @request.env["HTTP_ACCEPT"] = "*/*"
+    get :handle_any_any
+    assert_equal 'HTML', @response.body
+  end
+  
+  def test_handle_any_any_parameter_format
+    get :handle_any_any, {:format=>'html'}
+    assert_equal 'HTML', @response.body
+  end
+  
+  def test_handle_any_any_explicit_html
+    @request.env["HTTP_ACCEPT"] = "text/html"
+    get :handle_any_any
+    assert_equal 'HTML', @response.body
+  end
+
+  def test_handle_any_any_javascript
+    @request.env["HTTP_ACCEPT"] = "text/javascript"
+    get :handle_any_any
+    assert_equal 'Whatever you ask for, I got it', @response.body
+  end
+  
+  def test_handle_any_any_xml
+    @request.env["HTTP_ACCEPT"] = "text/xml"
+    get :handle_any_any
+    assert_equal 'Whatever you ask for, I got it', @response.body
+  end
+
   def test_rjs_type_skips_layout
     @request.env["HTTP_ACCEPT"] = "text/javascript"
     get :all_types_with_layout
@@ -432,16 +468,12 @@ class MimeControllerTest < Test::Unit::TestCase
     assert_equal '<html><div id="html_missing">Hello future from Firefox!</div></html>', @response.body 
 
     @request.env["HTTP_ACCEPT"] = "text/iphone"
-    assert_raises(ActionController::MissingTemplate) { get :iphone_with_html_response_type_without_layout }
+    assert_raises(ActionView::MissingTemplate) { get :iphone_with_html_response_type_without_layout }
   end 
 end
 
 class AbstractPostController < ActionController::Base
-  class << self
-    def view_paths
-      [ File.dirname(__FILE__) + "/../fixtures/post_test/" ]
-    end
-  end
+  self.view_paths = File.dirname(__FILE__) + "/../fixtures/post_test/"
 end
 
 # For testing layouts which are set automatically

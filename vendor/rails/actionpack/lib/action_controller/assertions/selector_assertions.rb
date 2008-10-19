@@ -12,20 +12,20 @@ module ActionController
       NO_STRIP = %w{pre script style textarea}
     end
 
-    # Adds the #assert_select method for use in Rails functional
+    # Adds the +assert_select+ method for use in Rails functional
     # test cases, which can be used to make assertions on the response HTML of a controller
-    # action. You can also call #assert_select within another #assert_select to
+    # action. You can also call +assert_select+ within another +assert_select+ to
     # make assertions on elements selected by the enclosing assertion.
     #
-    # Use #css_select to select elements without making an assertions, either
+    # Use +css_select+ to select elements without making an assertions, either
     # from the response HTML or elements selected by the enclosing assertion.
     # 
     # In addition to HTML responses, you can make the following assertions:
-    # * #assert_select_rjs    -- Assertions on HTML content of RJS update and
+    # * +assert_select_rjs+ - Assertions on HTML content of RJS update and
     #     insertion operations.
-    # * #assert_select_encoded  -- Assertions on HTML encoded inside XML,
+    # * +assert_select_encoded+ - Assertions on HTML encoded inside XML,
     #     for example for dealing with feed item descriptions.
-    # * #assert_select_email    -- Assertions on the HTML body of an e-mail.
+    # * +assert_select_email+ - Assertions on the HTML body of an e-mail.
     #
     # Also see HTML::Selector to learn how to use selectors.
     module SelectorAssertions
@@ -44,8 +44,8 @@ module ActionController
       # base element and any of its children. Returns an empty array if no
       # match is found.
       #
-      # The selector may be a CSS selector expression (+String+), an expression
-      # with substitution values (+Array+) or an HTML::Selector object.
+      # The selector may be a CSS selector expression (String), an expression
+      # with substitution values (Array) or an HTML::Selector object.
       #
       # ==== Examples
       #   # Selects all div tags
@@ -114,8 +114,8 @@ module ActionController
       # starting from (and including) that element and all its children in
       # depth-first order.
       #
-      # If no element if specified, calling #assert_select will select from the
-      # response HTML. Calling #assert_select inside an #assert_select block will
+      # If no element if specified, calling +assert_select+ will select from the
+      # response HTML. Calling #assert_select inside an +assert_select+ block will
       # run the assertion for each element selected by the enclosing assertion.
       #
       # ==== Example
@@ -130,33 +130,33 @@ module ActionController
       #     assert_select "li"
       #   end
       #
-      # The selector may be a CSS selector expression (+String+), an expression
+      # The selector may be a CSS selector expression (String), an expression
       # with substitution values, or an HTML::Selector object.
       #
       # === Equality Tests
       #
       # The equality test may be one of the following:
-      # * <tt>true</tt> -- Assertion is true if at least one element selected.
-      # * <tt>false</tt> -- Assertion is true if no element selected.
-      # * <tt>String/Regexp</tt> -- Assertion is true if the text value of at least
+      # * <tt>true</tt> - Assertion is true if at least one element selected.
+      # * <tt>false</tt> - Assertion is true if no element selected.
+      # * <tt>String/Regexp</tt> - Assertion is true if the text value of at least
       #   one element matches the string or regular expression.
-      # * <tt>Integer</tt> -- Assertion is true if exactly that number of
+      # * <tt>Integer</tt> - Assertion is true if exactly that number of
       #   elements are selected.
-      # * <tt>Range</tt> -- Assertion is true if the number of selected
+      # * <tt>Range</tt> - Assertion is true if the number of selected
       #   elements fit the range.
       # If no equality test specified, the assertion is true if at least one
       # element selected.
       #
       # To perform more than one equality tests, use a hash with the following keys:
-      # * <tt>:text</tt> -- Narrow the selection to elements that have this text
+      # * <tt>:text</tt> - Narrow the selection to elements that have this text
       #   value (string or regexp).
-      # * <tt>:html</tt> -- Narrow the selection to elements that have this HTML
+      # * <tt>:html</tt> - Narrow the selection to elements that have this HTML
       #   content (string or regexp).
-      # * <tt>:count</tt> -- Assertion is true if the number of selected elements
+      # * <tt>:count</tt> - Assertion is true if the number of selected elements
       #   is equal to this value.
-      # * <tt>:minimum</tt> -- Assertion is true if the number of selected
+      # * <tt>:minimum</tt> - Assertion is true if the number of selected
       #   elements is at least this value.
-      # * <tt>:maximum</tt> -- Assertion is true if the number of selected
+      # * <tt>:maximum</tt> - Assertion is true if the number of selected
       #   elements is at most this value.
       #
       # If the method is called with a block, once all equality tests are
@@ -263,12 +263,15 @@ module ActionController
         if match_with = equals[:text]
           matches.delete_if do |match|
             text = ""
+            text.force_encoding(match_with.encoding) if text.respond_to?(:force_encoding)
             stack = match.children.reverse
             while node = stack.pop
               if node.tag?
                 stack.concat node.children.reverse
               else
-                text << node.content
+                content = node.content
+                content.force_encoding(match_with.encoding) if content.respond_to?(:force_encoding)
+                text << content
               end
             end
             text.strip! unless NO_STRIP.include?(match.name)
@@ -353,16 +356,16 @@ module ActionController
       #
       # === Using blocks
       #
-      # Without a block, #assert_select_rjs merely asserts that the response
+      # Without a block, +assert_select_rjs+ merely asserts that the response
       # contains one or more RJS statements that replace or update content.
       #
-      # With a block, #assert_select_rjs also selects all elements used in
+      # With a block, +assert_select_rjs+ also selects all elements used in
       # these statements and passes them to the block. Nested assertions are
       # supported.
       #
-      # Calling #assert_select_rjs with no arguments and using nested asserts
+      # Calling +assert_select_rjs+ with no arguments and using nested asserts
       # asserts that the HTML content is returned by one or more RJS statements.
-      # Using #assert_select directly makes the same assertion on the content,
+      # Using +assert_select+ directly makes the same assertion on the content,
       # but without distinguishing whether the content is returned in an HTML
       # or JavaScript.
       #
@@ -395,47 +398,31 @@ module ActionController
       #   # The same, but shorter.
       #   assert_select "ol>li", 4
       def assert_select_rjs(*args, &block)
-        rjs_type = nil
-        arg      = args.shift
+        rjs_type = args.first.is_a?(Symbol) ? args.shift : nil
+        id       = args.first.is_a?(String) ? args.shift : nil
 
         # If the first argument is a symbol, it's the type of RJS statement we're looking
         # for (update, replace, insertion, etc). Otherwise, we're looking for just about
         # any RJS statement.
-        if arg.is_a?(Symbol)
-          rjs_type = arg
-
+        if rjs_type
           if rjs_type == :insert
-            arg = args.shift
-            insertion = "insert_#{arg}".to_sym
-            raise ArgumentError, "Unknown RJS insertion type #{arg}" unless RJS_STATEMENTS[insertion]
+            position  = args.shift
+            insertion = "insert_#{position}".to_sym
+            raise ArgumentError, "Unknown RJS insertion type #{position}" unless RJS_STATEMENTS[insertion]
             statement = "(#{RJS_STATEMENTS[insertion]})"
           else
             raise ArgumentError, "Unknown RJS statement type #{rjs_type}" unless RJS_STATEMENTS[rjs_type]
             statement = "(#{RJS_STATEMENTS[rjs_type]})"
           end
-          arg = args.shift
         else
           statement = "#{RJS_STATEMENTS[:any]}"
         end
 
         # Next argument we're looking for is the element identifier. If missing, we pick
-        # any element.
-        if arg.is_a?(String)
-          id = Regexp.quote(arg)
-          arg = args.shift
-        else
-          id = "[^\"]*"
-        end
-
-        pattern =
-          case rjs_type
-            when :chained_replace, :chained_replace_html
-              Regexp.new("\\$\\(\"#{id}\"\\)#{statement}\\(#{RJS_PATTERN_HTML}\\)", Regexp::MULTILINE)
-            when :remove, :show, :hide, :toggle
-              Regexp.new("#{statement}\\(\"#{id}\"\\)")
-            else
-              Regexp.new("#{statement}\\(\"#{id}\", #{RJS_PATTERN_HTML}\\)", Regexp::MULTILINE)
-          end
+        # any element, otherwise we replace it in the statement.
+        pattern = Regexp.new(
+          id ? statement.gsub(RJS_ANY_ID, "\"#{id}\"") : statement
+        )
 
         # Duplicate the body since the next step involves destroying it.
         matches = nil
@@ -444,7 +431,7 @@ module ActionController
             matches = @response.body.match(pattern)
           else
             @response.body.gsub(pattern) do |match|
-              html = unescape_rjs($2)
+              html = unescape_rjs(match)
               matches ||= []
               matches.concat HTML::Document.new(html).root.children.select { |n| n.tag? }
               ""
@@ -574,31 +561,27 @@ module ActionController
 
       protected
         unless const_defined?(:RJS_STATEMENTS)
-          RJS_STATEMENTS = {
-            :replace              => /Element\.replace/,
-            :replace_html         => /Element\.update/,
-            :chained_replace      => /\.replace/,
-            :chained_replace_html => /\.update/,
-            :remove               => /Element\.remove/,
-            :show                 => /Element\.show/,
-            :hide                 => /Element\.hide/,
-            :toggle                 => /Element\.toggle/
+          RJS_PATTERN_HTML  = "\"((\\\\\"|[^\"])*)\""
+          RJS_ANY_ID        = "\"([^\"])*\""
+          RJS_STATEMENTS    = {
+            :chained_replace      => "\\$\\(#{RJS_ANY_ID}\\)\\.replace\\(#{RJS_PATTERN_HTML}\\)",
+            :chained_replace_html => "\\$\\(#{RJS_ANY_ID}\\)\\.update\\(#{RJS_PATTERN_HTML}\\)",
+            :replace_html         => "Element\\.update\\(#{RJS_ANY_ID}, #{RJS_PATTERN_HTML}\\)",
+            :replace              => "Element\\.replace\\(#{RJS_ANY_ID}, #{RJS_PATTERN_HTML}\\)"
           }
-          RJS_INSERTIONS = [:top, :bottom, :before, :after]
-          RJS_INSERTIONS.each do |insertion|
-            RJS_STATEMENTS["insert_#{insertion}".to_sym] = Regexp.new(Regexp.quote("new Insertion.#{insertion.to_s.camelize}"))
+          [:remove, :show, :hide, :toggle].each do |action|
+            RJS_STATEMENTS[action] = "Element\\.#{action}\\(#{RJS_ANY_ID}\\)"
           end
+          RJS_INSERTIONS = ["top", "bottom", "before", "after"]
+          RJS_INSERTIONS.each do |insertion|
+            RJS_STATEMENTS["insert_#{insertion}".to_sym] = "Element.insert\\(#{RJS_ANY_ID}, \\{ #{insertion}: #{RJS_PATTERN_HTML} \\}\\)"
+          end
+          RJS_STATEMENTS[:insert_html] = "Element.insert\\(#{RJS_ANY_ID}, \\{ (#{RJS_INSERTIONS.join('|')}): #{RJS_PATTERN_HTML} \\}\\)"
           RJS_STATEMENTS[:any] = Regexp.new("(#{RJS_STATEMENTS.values.join('|')})")
-          RJS_STATEMENTS[:insert_html] = Regexp.new(RJS_INSERTIONS.collect do |insertion|
-            Regexp.quote("new Insertion.#{insertion.to_s.camelize}")
-          end.join('|'))
-          RJS_PATTERN_HTML = /"((\\"|[^"])*)"/
-          RJS_PATTERN_EVERYTHING = Regexp.new("#{RJS_STATEMENTS[:any]}\\(\"([^\"]*)\", #{RJS_PATTERN_HTML}\\)",
-                                              Regexp::MULTILINE)
           RJS_PATTERN_UNICODE_ESCAPED_CHAR = /\\u([0-9a-zA-Z]{4})/
         end
 
-        # #assert_select and #css_select call this to obtain the content in the HTML
+        # +assert_select+ and +css_select+ call this to obtain the content in the HTML
         # page, or from all the RJS statements, depending on the type of response.
         def response_from_page_or_rjs()
           content_type = @response.content_type
@@ -608,8 +591,8 @@ module ActionController
             root = HTML::Node.new(nil)
 
             while true
-              next if body.sub!(RJS_PATTERN_EVERYTHING) do |match|
-                html = unescape_rjs($3)
+              next if body.sub!(RJS_STATEMENTS[:any]) do |match|
+                html = unescape_rjs(match)
                 matches = HTML::Document.new(html).root.children.select { |n| n.tag? }
                 root.children.concat matches
                 ""

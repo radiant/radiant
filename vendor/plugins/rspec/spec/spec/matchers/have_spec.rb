@@ -47,11 +47,40 @@ describe "should have(n).items" do
   end
 end
 
+describe 'should have(1).item when ActiveSupport::Inflector is defined' do
+  include HaveSpecHelper
+  
+  before(:each) do
+    unless defined?(ActiveSupport::Inflector)
+      @active_support_was_not_defined
+      module ActiveSupport
+        class Inflector
+          def self.pluralize(string)
+            string.to_s + 's'
+          end
+        end
+      end
+    end
+  end
+  
+  it 'should pluralize the collection name' do
+    owner = create_collection_owner_with(1)
+    owner.should have(1).item
+  end
+  
+  after(:each) do
+    if @active_support_was_not_defined
+      Object.send :remove_const, :ActiveSupport
+    end
+  end
+end
+
 describe 'should have(1).item when Inflector is defined' do
   include HaveSpecHelper
   
-  before do
-    unless Object.const_defined?(:Inflector)
+  before(:each) do
+    unless defined?(Inflector)
+      @inflector_was_not_defined
       class Inflector
         def self.pluralize(string)
           string.to_s + 's'
@@ -63,6 +92,12 @@ describe 'should have(1).item when Inflector is defined' do
   it 'should pluralize the collection name' do
     owner = create_collection_owner_with(1)
     owner.should have(1).item
+  end
+
+  after(:each) do
+    if @inflector_was_not_defined
+      Object.send :remove_const, :Inflector
+    end
   end
 end
 
@@ -288,4 +323,33 @@ describe "have(n).things on an object which is not a collection nor contains one
   it "should fail" do
     lambda { Object.new.should have(2).things }.should raise_error(NoMethodError, /undefined method `things' for #<Object:/)
   end
+end
+
+describe Spec::Matchers::Have, "for a collection owner that implements #send" do
+  include HaveSpecHelper
+
+  before(:each) do
+    @collection = Object.new
+    def @collection.floozles; [1,2] end
+    def @collection.send(*args); raise "DOH! Library developers shouldn't use #send!" end
+  end
+  
+  it "should work in the straightforward case" do
+    lambda {
+      @collection.should have(2).floozles
+    }.should_not raise_error
+  end
+
+  it "should work when doing automatic pluralization" do
+    lambda {
+      @collection.should have_at_least(1).floozle
+    }.should_not raise_error
+  end
+
+  it "should blow up when the owner doesn't respond to that method" do
+    lambda {
+      @collection.should have(99).problems
+    }.should raise_error(NoMethodError, /problems/)
+  end
+  
 end

@@ -27,7 +27,7 @@ module Spec
           /\/lib\/ruby\//,
           /bin\/spec:/,
           /bin\/rcov:/,
-          /lib\/rspec_on_rails/,
+          /lib\/rspec-rails/,
           /vendor\/rails/,
           # TextMate's Ruby and RSpec plugins
           /Ruby\.tmbundle\/Support\/tmruby.rb:/,
@@ -40,15 +40,14 @@ module Spec
       
       def tweak_backtrace(error)
         return if error.backtrace.nil?
-        error.backtrace.collect! do |line|
-          clean_up_double_slashes(line)
-          IGNORE_PATTERNS.each do |ignore|
-            if line =~ ignore
-              line = nil
-              break
+        error.backtrace.collect! do |message|
+          clean_up_double_slashes(message)
+          kept_lines = message.split("\n").select do |line|
+            IGNORE_PATTERNS.each do |ignore|
+              break if line =~ ignore
             end
           end
-          line
+          kept_lines.empty?? nil : kept_lines.join("\n")
         end
         error.backtrace.compact!
       end

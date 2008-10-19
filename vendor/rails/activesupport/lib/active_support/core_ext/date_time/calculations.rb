@@ -7,6 +7,11 @@ module ActiveSupport #:nodoc:
       module Calculations
         def self.included(base) #:nodoc:
           base.extend ClassMethods
+          
+          base.class_eval do
+            alias_method :compare_without_coercion, :<=>
+            alias_method :<=>, :compare_with_coercion
+          end
         end
 
         module ClassMethods
@@ -37,8 +42,10 @@ module ActiveSupport #:nodoc:
           )
         end
 
-        # Uses Date to provide precise Time calculations for years, months, and days.  The +options+ parameter takes a hash with
-        # any of these keys: :years, :months, :weeks, :days, :hours, :minutes, :seconds.
+        # Uses Date to provide precise Time calculations for years, months, and days.
+        # The +options+ parameter takes a hash with any of these keys: <tt>:years</tt>,
+        # <tt>:months</tt>, <tt>:weeks</tt>, <tt>:days</tt>, <tt>:hours</tt>,
+        # <tt>:minutes</tt>, <tt>:seconds</tt>.
         def advance(options)
           d = to_date.advance(options)
           datetime_advanced_by_date = change(:year => d.year, :month => d.month, :day => d.day)
@@ -70,6 +77,34 @@ module ActiveSupport #:nodoc:
         # Returns a new DateTime representing the end of the day (23:59:59)
         def end_of_day
           change(:hour => 23, :min => 59, :sec => 59)
+        end
+        
+        # Adjusts DateTime to UTC by adding its offset value; offset is set to 0
+        #
+        # Example:
+        #
+        #   DateTime.civil(2005, 2, 21, 10, 11, 12, Rational(-6, 24))       # => Mon, 21 Feb 2005 10:11:12 -0600
+        #   DateTime.civil(2005, 2, 21, 10, 11, 12, Rational(-6, 24)).utc   # => Mon, 21 Feb 2005 16:11:12 +0000
+        def utc
+          new_offset(0)
+        end
+        alias_method :getutc, :utc
+        
+        # Returns true if offset == 0
+        def utc?
+          offset == 0
+        end
+        
+        # Returns the offset value in seconds
+        def utc_offset
+          (offset * 86400).to_i
+        end
+        
+        # Layers additional behavior on DateTime#<=> so that Time and ActiveSupport::TimeWithZone instances can be compared with a DateTime
+        def compare_with_coercion(other)
+          other = other.comparable_time if other.respond_to?(:comparable_time)
+          other = other.to_datetime unless other.acts_like?(:date)
+          compare_without_coercion(other)
         end
       end
     end

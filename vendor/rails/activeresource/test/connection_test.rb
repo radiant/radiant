@@ -1,5 +1,4 @@
-require "#{File.dirname(__FILE__)}/abstract_unit"
-require 'base64'
+require 'abstract_unit'
 
 class ConnectionTest < Test::Unit::TestCase
   ResponseCodeStub = Struct.new(:code)
@@ -28,6 +27,7 @@ class ConnectionTest < Test::Unit::TestCase
       mock.delete "/people/2.xml", @header, nil, 200
       mock.post   "/people.xml",   {}, nil, 201, 'Location' => '/people/5.xml'
       mock.post   "/members.xml",  {}, @header, 201, 'Location' => '/people/6.xml'
+      mock.head   "/people/1.xml", {}, nil, 200
     end
   end
 
@@ -101,9 +101,20 @@ class ConnectionTest < Test::Unit::TestCase
     assert_equal site, @conn.site
   end
 
+  def test_timeout_accessor
+    @conn.timeout = 5
+    assert_equal 5, @conn.timeout
+  end
+
   def test_get
     matz = @conn.get("/people/1.xml")
     assert_equal "Matz", matz["name"]
+  end
+
+  def test_head
+    response = @conn.head("/people/1.xml")
+    assert response.body.blank?
+    assert_equal 200, response.code
   end
 
   def test_get_with_header
@@ -155,6 +166,15 @@ class ConnectionTest < Test::Unit::TestCase
   def test_delete_with_header
     response = @conn.delete("/people/2.xml", @header)
     assert_equal 200, response.code
+  end
+
+  uses_mocha('test_timeout') do
+    def test_timeout
+      @http = mock('new Net::HTTP')
+      @conn.expects(:http).returns(@http)
+      @http.expects(:get).raises(Timeout::Error, 'execution expired')
+      assert_raises(ActiveResource::TimeoutError) { @conn.get('/people_timeout.xml') }
+    end
   end
 
   protected

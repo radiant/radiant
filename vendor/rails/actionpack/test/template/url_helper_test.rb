@@ -1,11 +1,9 @@
-require "#{File.dirname(__FILE__)}/../abstract_unit"
+require 'abstract_unit'
 
 RequestMock = Struct.new("Request", :request_uri, :protocol, :host_with_port, :env)
 
-class UrlHelperTest < Test::Unit::TestCase
-  include ActionView::Helpers::AssetTagHelper
-  include ActionView::Helpers::UrlHelper
-  include ActionView::Helpers::TagHelper
+class UrlHelperTest < ActionView::TestCase
+  tests ActionView::Helpers::UrlHelper
 
   def setup
     @controller = Class.new do
@@ -286,6 +284,7 @@ class UrlHelperTest < Test::Unit::TestCase
     assert_dom_equal "<a href=\"&#109;&#97;&#105;&#108;&#116;&#111;&#58;%6d%65@%64%6f%6d%61%69%6e.%63%6f%6d\">My email</a>", mail_to("me@domain.com", "My email", :encode => "hex", :replace_at => "(at)")
     assert_dom_equal "<a href=\"&#109;&#97;&#105;&#108;&#116;&#111;&#58;%6d%65@%64%6f%6d%61%69%6e.%63%6f%6d\">&#109;&#101;&#40;&#97;&#116;&#41;&#100;&#111;&#109;&#97;&#105;&#110;&#40;&#100;&#111;&#116;&#41;&#99;&#111;&#109;</a>", mail_to("me@domain.com", nil, :encode => "hex", :replace_at => "(at)", :replace_dot => "(dot)")
     assert_dom_equal "<script type=\"text/javascript\">eval(unescape('%64%6f%63%75%6d%65%6e%74%2e%77%72%69%74%65%28%27%3c%61%20%68%72%65%66%3d%22%6d%61%69%6c%74%6f%3a%6d%65%40%64%6f%6d%61%69%6e%2e%63%6f%6d%22%3e%4d%79%20%65%6d%61%69%6c%3c%2f%61%3e%27%29%3b'))</script>", mail_to("me@domain.com", "My email", :encode => "javascript", :replace_at => "(at)", :replace_dot => "(dot)")
+    assert_dom_equal "<script type=\"text/javascript\">eval(unescape('%64%6f%63%75%6d%65%6e%74%2e%77%72%69%74%65%28%27%3c%61%20%68%72%65%66%3d%22%6d%61%69%6c%74%6f%3a%6d%65%40%64%6f%6d%61%69%6e%2e%63%6f%6d%22%3e%6d%65%28%61%74%29%64%6f%6d%61%69%6e%28%64%6f%74%29%63%6f%6d%3c%2f%61%3e%27%29%3b'))</script>", mail_to("me@domain.com", nil, :encode => "javascript", :replace_at => "(at)", :replace_dot => "(dot)")
   end
   
   def protect_against_forgery?
@@ -293,7 +292,7 @@ class UrlHelperTest < Test::Unit::TestCase
   end
 end
 
-class UrlHelperWithControllerTest < Test::Unit::TestCase
+class UrlHelperWithControllerTest < ActionView::TestCase
   class UrlHelperController < ActionController::Base
     self.view_paths = [ "#{File.dirname(__FILE__)}/../fixtures/" ]
 
@@ -307,10 +306,14 @@ class UrlHelperWithControllerTest < Test::Unit::TestCase
       render :inline => "<%= show_named_route_#{params[:kind]} %>"
     end
 
+    def nil_url_for
+      render :inline => '<%= url_for(nil) %>'
+    end
+
     def rescue_action(e) raise e end
   end
 
-  include ActionView::Helpers::UrlHelper
+  tests ActionView::Helpers::UrlHelper
 
   def setup
     @request    = ActionController::TestRequest.new
@@ -323,7 +326,7 @@ class UrlHelperWithControllerTest < Test::Unit::TestCase
     assert_equal '/url_helper_with_controller/show_url_for', @response.body
   end
 
-  def test_named_route_shows_host_and_path
+  def test_named_route_url_shows_host_and_path
     with_url_helper_routing do
       get :show_named_route, :kind => 'url'
       assert_equal 'http://test.host/url_helper_with_controller/show_named_route', @response.body
@@ -337,6 +340,11 @@ class UrlHelperWithControllerTest < Test::Unit::TestCase
     end
   end
 
+  def test_url_for_nil_returns_current_path
+    get :nil_url_for
+    assert_equal '/url_helper_with_controller/nil_url_for', @response.body
+  end
+
   protected
     def with_url_helper_routing
       with_routing do |set|
@@ -348,7 +356,7 @@ class UrlHelperWithControllerTest < Test::Unit::TestCase
     end
 end
 
-class LinkToUnlessCurrentWithControllerTest < Test::Unit::TestCase
+class LinkToUnlessCurrentWithControllerTest < ActionView::TestCase
   class TasksController < ActionController::Base
     self.view_paths = ["#{File.dirname(__FILE__)}/../fixtures/"]
 
@@ -372,7 +380,7 @@ class LinkToUnlessCurrentWithControllerTest < Test::Unit::TestCase
       end
   end
 
-  include ActionView::Helpers::UrlHelper
+  tests ActionView::Helpers::UrlHelper
 
   def setup
     @request    = ActionController::TestRequest.new
@@ -440,7 +448,7 @@ class Session
   end
 end
 
-class PolymorphicControllerTest < Test::Unit::TestCase
+class PolymorphicControllerTest < ActionView::TestCase
   class WorkshopsController < ActionController::Base
     self.view_paths = ["#{File.dirname(__FILE__)}/../fixtures/"]
 
@@ -479,7 +487,7 @@ class PolymorphicControllerTest < Test::Unit::TestCase
     def rescue_action(e) raise e end
   end
 
-  include ActionView::Helpers::UrlHelper
+  tests ActionView::Helpers::UrlHelper
 
   def setup
     @request    = ActionController::TestRequest.new

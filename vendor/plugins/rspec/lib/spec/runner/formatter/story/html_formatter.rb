@@ -8,6 +8,15 @@ module Spec
         class HtmlFormatter < BaseTextFormatter
           include ERB::Util
           
+          def initialize(options, where)
+            super
+            @previous_type = nil
+            @scenario_text = ""
+            @story_text = ""
+            @scenario_failed = false
+            @story_failed = false
+          end
+          
           def run_started(count)
             @output.puts <<-EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -49,8 +58,8 @@ EOF
           end
           
           def story_started(title, narrative)
-            @output.puts <<-EOF
-      <dl class="story passed">
+            @story_failed = false
+            @story_text = <<-EOF 
         <dt>Story: #{h title}</dt>
         <dd>
           <p>
@@ -59,27 +68,49 @@ EOF
 EOF
           end
 
-          def story_ended(title, narrative)
-            @output.puts <<-EOF
+          def story_ended(title, narrative)     
+            if @story_failed
+              @output.puts <<-EOF
+      <dl class="story failed">
+EOF
+            else
+              @output.puts <<-EOF
+      <dl class="story passed">
+EOF
+            end
+              @output.puts <<-EOF
+#{@story_text}
         </dd>
       </dl>
 EOF
           end
-
+     
           def scenario_started(story_title, scenario_name)
-            @output.puts <<-EOF
-          <dl class="passed">
-            <dt>Scenario: #{h scenario_name}</dt>
-            <dd>
-              <ul class="steps">
+            @previous_type = nil
+            @scenario_failed = false
+            @scenario_text = <<-EOF
+              <dt>Scenario: #{h scenario_name}</dt>
+              <dd>
+                <ul class="steps">
 EOF
           end
 
           def scenario_ended
-            @output.puts <<-EOF
-              </ul>
-            </dd>
-          </dl>
+            if @scenario_failed
+              @story_text += <<-EOF
+            <dl class="failed">
+EOF
+            else
+              @story_text += <<-EOF
+            <dl class="passed">
+EOF
+            end
+            
+            @story_text += <<-EOF
+#{@scenario_text}
+                </ul>
+              </dd>
+            </dl>
 EOF
           end
           
@@ -95,6 +126,8 @@ EOF
           end
 
           def scenario_failed(story_title, scenario_name, err)
+            @scenario_failed = true
+            @story_failed = true
             scenario_ended
           end
 
@@ -117,9 +150,22 @@ EOF
             spans = args.map { |arg| "<span class=\"param\">#{arg}</span>" }
             desc_string = description.step_name
             arg_regexp = description.arg_regexp           
+            inner = if(type == @previous_type)
+              "And "
+            else
+              "#{type.to_s.capitalize} "
+            end
             i = -1
-            inner = type.to_s.capitalize + ' ' + desc_string.gsub(arg_regexp) { |param| spans[i+=1] }
-            @output.puts "                <li class=\"#{klass}\">#{inner}</li>"
+            inner += desc_string.gsub(arg_regexp) { |param| spans[i+=1] }
+            
+            @scenario_text += "                  <li class=\"#{klass}\">#{inner}</li>\n"
+            
+            if type == :'given scenario'
+              @previous_type = :given
+            else
+              @previous_type = type
+            end
+            
           end
         end
       end

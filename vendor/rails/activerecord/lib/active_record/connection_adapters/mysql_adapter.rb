@@ -50,10 +50,7 @@ module ActiveRecord
         rescue LoadError => cannot_require_mysql
           # Use the bundled Ruby/MySQL driver if no driver is already in place
           begin
-            ActiveRecord::Base.logger.info(
-              "WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. " +
-              "Please install the C-based MySQL library instead (gem install mysql)."
-            ) if ActiveRecord::Base.logger
+            ActiveSupport::Deprecation.warn "You're using the Ruby-based MySQL library that ships with Rails. This library will be REMOVED FROM RAILS 2.2. Please switch to the offical mysql gem: `gem install mysql`", caller
 
             require 'active_record/vendor/mysql'
           rescue LoadError
@@ -94,7 +91,7 @@ module ActiveRecord
       def extract_default(default)
         if type == :binary || type == :text
           if default.blank?
-            default
+            nil
           else
             raise ArgumentError, "#{type} columns cannot have a default value: #{default.inspect}"
           end
@@ -110,6 +107,29 @@ module ActiveRecord
           return :boolean if MysqlAdapter.emulate_booleans && field_type.downcase.index("tinyint(1)")
           return :string  if field_type =~ /enum/i
           super
+        end
+
+        def extract_limit(sql_type)
+          case sql_type
+          when /blob|text/i
+            case sql_type
+            when /tiny/i
+              255
+            when /medium/i
+              16777215
+            when /long/i
+              2147483647 # mysql only allows 2^31-1, not 2^32-1, somewhat inconsistently with the tiny/medium/normal cases
+            else
+              super # we could return 65535 here, but we leave it undecorated by default
+            end
+          when /^bigint/i;    8
+          when /^int/i;       4
+          when /^mediumint/i; 3
+          when /^smallint/i;  2
+          when /^tinyint/i;   1
+          else
+            super
+          end
         end
 
         # MySQL misreports NOT NULL column default when none is given.
@@ -129,19 +149,19 @@ module ActiveRecord
     #
     # Options:
     #
-    # * <tt>:host</tt> -- Defaults to localhost
-    # * <tt>:port</tt> -- Defaults to 3306
-    # * <tt>:socket</tt> -- Defaults to /tmp/mysql.sock
-    # * <tt>:username</tt> -- Defaults to root
-    # * <tt>:password</tt> -- Defaults to nothing
-    # * <tt>:database</tt> -- The name of the database. No default, must be provided.
-    # * <tt>:encoding</tt> -- (Optional) Sets the client encoding by executing "SET NAMES <encoding>" after connection
-    # * <tt>:sslkey</tt> -- Necessary to use MySQL with an SSL connection
-    # * <tt>:sslcert</tt> -- Necessary to use MySQL with an SSL connection
-    # * <tt>:sslcapath</tt> -- Necessary to use MySQL with an SSL connection
-    # * <tt>:sslcipher</tt> -- Necessary to use MySQL with an SSL connection
+    # * <tt>:host</tt> - Defaults to "localhost".
+    # * <tt>:port</tt> - Defaults to 3306.
+    # * <tt>:socket</tt> - Defaults to "/tmp/mysql.sock".
+    # * <tt>:username</tt> - Defaults to "root"
+    # * <tt>:password</tt> - Defaults to nothing.
+    # * <tt>:database</tt> - The name of the database. No default, must be provided.
+    # * <tt>:encoding</tt> - (Optional) Sets the client encoding by executing "SET NAMES <encoding>" after connection.
+    # * <tt>:sslkey</tt> - Necessary to use MySQL with an SSL connection.
+    # * <tt>:sslcert</tt> - Necessary to use MySQL with an SSL connection.
+    # * <tt>:sslcapath</tt> - Necessary to use MySQL with an SSL connection.
+    # * <tt>:sslcipher</tt> - Necessary to use MySQL with an SSL connection.
     #
-    # By default, the MysqlAdapter will consider all columns of type tinyint(1)
+    # By default, the MysqlAdapter will consider all columns of type <tt>tinyint(1)</tt>
     # as boolean. If you wish to disable this emulation (which was the default
     # behavior in versions 0.13.1 and earlier) you can add the following line
     # to your environment.rb file:
@@ -155,13 +175,14 @@ module ActiveRecord
         "Server shutdown in progress",
         "Broken pipe",
         "Lost connection to MySQL server during query",
-        "MySQL server has gone away"
-      ]
+        "MySQL server has gone away" ]
+
+      QUOTED_TRUE, QUOTED_FALSE = '1', '0'
 
       def initialize(connection, logger, connection_options, config)
         super(connection, logger)
         @connection_options, @config = connection_options, config
-
+        @quoted_column_names, @quoted_table_names = {}, {}
         connect
       end
 
@@ -175,10 +196,10 @@ module ActiveRecord
 
       def native_database_types #:nodoc:
         {
-          :primary_key => "int(11) DEFAULT NULL auto_increment PRIMARY KEY",
+          :primary_key => "int(11) DEFAULT NULL auto_increment PRIMARY KEY".freeze,
           :string      => { :name => "varchar", :limit => 255 },
           :text        => { :name => "text" },
-          :integer     => { :name => "int", :limit => 11 },
+          :integer     => { :name => "int", :limit => 4 },
           :float       => { :name => "float" },
           :decimal     => { :name => "decimal" },
           :datetime    => { :name => "datetime" },
@@ -205,11 +226,11 @@ module ActiveRecord
       end
 
       def quote_column_name(name) #:nodoc:
-        "`#{name}`"
+        @quoted_column_names[name] ||= "`#{name}`"
       end
 
       def quote_table_name(name) #:nodoc:
-        quote_column_name(name).gsub('.', '`.`')
+        @quoted_table_names[name] ||= quote_column_name(name).gsub('.', '`.`')
       end
 
       def quote_string(string) #:nodoc:
@@ -217,11 +238,11 @@ module ActiveRecord
       end
 
       def quoted_true
-        "1"
+        QUOTED_TRUE
       end
 
       def quoted_false
-        "0"
+        QUOTED_FALSE
       end
 
       # REFERENTIAL INTEGRITY ====================================
@@ -318,10 +339,11 @@ module ActiveRecord
 
       def add_limit_offset!(sql, options) #:nodoc:
         if limit = options[:limit]
+          limit = sanitize_limit(limit)
           unless offset = options[:offset]
             sql << " LIMIT #{limit}"
           else
-            sql << " LIMIT #{offset}, #{limit}"
+            sql << " LIMIT #{offset.to_i}, #{limit}"
           end
         end
       end
@@ -347,7 +369,7 @@ module ActiveRecord
         create_database(name)
       end
 
-      # Create a new MySQL database with optional :charset and :collation.
+      # Create a new MySQL database with optional <tt>:charset</tt> and <tt>:collation</tt>.
       # Charset defaults to utf8.
       #
       # Example:
@@ -421,18 +443,29 @@ module ActiveRecord
       end
 
       def change_column_default(table_name, column_name, default) #:nodoc:
-        current_type = select_one("SHOW COLUMNS FROM #{quote_table_name(table_name)} LIKE '#{column_name}'")["Type"]
+        column = column_for(table_name, column_name)
+        change_column table_name, column_name, column.sql_type, :default => default
+      end
 
-        execute("ALTER TABLE #{quote_table_name(table_name)} CHANGE #{quote_column_name(column_name)} #{quote_column_name(column_name)} #{current_type} DEFAULT #{quote(default)}")
+      def change_column_null(table_name, column_name, null, default = nil)
+        column = column_for(table_name, column_name)
+
+        unless null || default.nil?
+          execute("UPDATE #{quote_table_name(table_name)} SET #{quote_column_name(column_name)}=#{quote(default)} WHERE #{quote_column_name(column_name)} IS NULL")
+        end
+
+        change_column table_name, column_name, column.sql_type, :null => null
       end
 
       def change_column(table_name, column_name, type, options = {}) #:nodoc:
+        column = column_for(table_name, column_name)
+
         unless options_include_default?(options)
-          if column = columns(table_name).find { |c| c.name == column_name.to_s }
-            options[:default] = column.default
-          else
-            raise "No such column: #{table_name}.#{column_name}"
-          end
+          options[:default] = column.default
+        end
+
+        unless options.has_key?(:null)
+          options[:null] = column.null
         end
 
         change_column_sql = "ALTER TABLE #{quote_table_name(table_name)} CHANGE #{quote_column_name(column_name)} #{quote_column_name(column_name)} #{type_to_sql(type, options[:limit], options[:precision], options[:scale])}"
@@ -441,8 +474,31 @@ module ActiveRecord
       end
 
       def rename_column(table_name, column_name, new_column_name) #:nodoc:
+        options = {}
+        if column = columns(table_name).find { |c| c.name == column_name.to_s }
+          options[:default] = column.default
+          options[:null] = column.null
+        else
+          raise ActiveRecordError, "No such column: #{table_name}.#{column_name}"
+        end
         current_type = select_one("SHOW COLUMNS FROM #{quote_table_name(table_name)} LIKE '#{column_name}'")["Type"]
-        execute "ALTER TABLE #{quote_table_name(table_name)} CHANGE #{quote_column_name(column_name)} #{quote_column_name(new_column_name)} #{current_type}"
+        rename_column_sql = "ALTER TABLE #{quote_table_name(table_name)} CHANGE #{quote_column_name(column_name)} #{quote_column_name(new_column_name)} #{current_type}"
+        add_column_options!(rename_column_sql, options)
+        execute(rename_column_sql)
+      end
+
+      # Maps logical Rails types to MySQL-specific data types.
+      def type_to_sql(type, limit = nil, precision = nil, scale = nil)
+        return super unless type.to_s == 'integer'
+
+        case limit
+        when 1; 'tinyint'
+        when 2; 'smallint'
+        when 3; 'mediumint'
+        when nil, 4, 11; 'int(11)'  # compatibility with MySQL default
+        when 5..8; 'bigint'
+        else raise(ActiveRecordError, "No integer type has byte size #{limit}")
+        end
       end
 
 
@@ -490,6 +546,13 @@ module ActiveRecord
 
         def version
           @version ||= @connection.server_info.scan(/^(\d+)\.(\d+)\.(\d+)/).flatten.map { |v| v.to_i }
+        end
+
+        def column_for(table_name, column_name)
+          unless column = columns(table_name).find { |c| c.name == column_name.to_s }
+            raise "No such column: #{table_name}.#{column_name}"
+          end
+          column
         end
     end
   end

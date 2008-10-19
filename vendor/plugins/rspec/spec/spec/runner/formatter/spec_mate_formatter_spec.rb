@@ -6,6 +6,7 @@ module Spec
   module Runner
     module Formatter
       describe TextMateFormatter do
+        include SandboxedOptions
         attr_reader :root, :suffix, :expected_file
         before do
           @root = File.expand_path(File.dirname(__FILE__) + '/../../../..')
@@ -33,7 +34,7 @@ module Spec
             err = StringIO.new
             out = StringIO.new
             options = ::Spec::Runner::OptionParser.parse(args, err, out)
-            Spec::Runner::CommandLine.run(options)
+            run_with(options)
 
             yield(out.string)
           end          
@@ -50,10 +51,10 @@ module Spec
         #       Spec::Runner::CommandLine.run(
         #         ::Spec::Runner::OptionParser.parse(args, err, out)
         #       )
-        #
+        # 
         #       seconds = /\d+\.\d+ seconds/
         #       html = out.string.gsub seconds, 'x seconds'
-        #
+        # 
         #       File.open(expected_file, 'w') {|io| io.write(html)}
         #     end
         #   end

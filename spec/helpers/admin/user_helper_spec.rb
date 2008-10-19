@@ -4,8 +4,8 @@ describe Admin::UserHelper do
   scenario :users
   
   it "should render a string containing the user's roles" do
-    roles(users(:admin)).should == "Administrator"
-    roles(users(:developer)).should == "Developer"
-    roles(users(:existing)).should == ''
+    helper.roles(users(:admin)).should == "Administrator"
+    helper.roles(users(:developer)).should == "Developer"
+    helper.roles(users(:existing)).should == ''
   end
 end

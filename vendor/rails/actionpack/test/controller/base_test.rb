@@ -1,5 +1,4 @@
-require File.dirname(__FILE__) + '/../abstract_unit'
-require 'test/unit'
+require 'abstract_unit'
 require 'pp' # require 'pp' early to prevent hidden_methods from not picking up the pretty-print methods until too late
 
 # Provide some controller to run the tests on.
@@ -8,6 +7,7 @@ module Submodule
   end
   class ContainedNonEmptyController < ActionController::Base
     def public_action
+      render :nothing => true
     end
     
     hide_action :hidden_action
@@ -49,6 +49,15 @@ protected
   
 end
 
+class DefaultUrlOptionsController < ActionController::Base
+  def default_url_options_action
+  end
+
+  def default_url_options(options = nil)
+    { :host => 'www.override.com', :action => 'new', :bacon => 'chunky' }
+  end
+end
+
 class ControllerClassTests < Test::Unit::TestCase
   def test_controller_path
     assert_equal 'empty', EmptyController.controller_path
@@ -87,13 +96,28 @@ class ControllerInstanceTests < Test::Unit::TestCase
     # Mocha adds some public instance methods to Object that would be
     # considered actions, so explicitly hide_action them.
     def hide_mocha_methods_from_controller(controller)
-      mocha_methods = [:expects, :metaclass, :mocha, :mocha_inspect, :reset_mocha, :stubba_object, :stubba_method, :stubs, :verify, :__metaclass__, :__is_a__]
+      mocha_methods = [
+        :expects, :mocha, :mocha_inspect, :reset_mocha, :stubba_object,
+        :stubba_method, :stubs, :verify, :__metaclass__, :__is_a__, :to_matcher,
+      ]
       controller.class.send!(:hide_action, *mocha_methods)
     end
 end
 
 
 class PerformActionTest < Test::Unit::TestCase
+  class MockLogger
+    attr_reader :logged
+
+    def initialize
+      @logged = []
+    end
+
+    def method_missing(method, *args)
+      @logged << args.first
+    end
+  end
+
   def use_controller(controller_class)
     @controller = controller_class.new
 
@@ -130,5 +154,66 @@ class PerformActionTest < Test::Unit::TestCase
     
     get :another_hidden_action
     assert_response 404
+  end
+
+  def test_namespaced_action_should_log_module_name
+    use_controller Submodule::ContainedNonEmptyController
+    @controller.logger = MockLogger.new
+    get :public_action
+    assert_match /Processing\sSubmodule::ContainedNonEmptyController#public_action/, @controller.logger.logged[1]
+  end
+end
+
+class DefaultUrlOptionsTest < Test::Unit::TestCase
+  def setup
+    @controller = DefaultUrlOptionsController.new
+
+    @request    = ActionController::TestRequest.new
+    @response   = ActionController::TestResponse.new
+
+    @request.host = 'www.example.com'
+  end
+
+  def test_default_url_options_are_used_if_set
+    ActionController::Routing::Routes.draw do |map|
+      map.default_url_options 'default_url_options', :controller => 'default_url_options'
+      map.connect ':controller/:action/:id'
+    end
+
+    get :default_url_options_action # Make a dummy request so that the controller is initialized properly.
+
+    assert_equal 'http://www.override.com/default_url_options/new?bacon=chunky', @controller.url_for(:controller => 'default_url_options')
+    assert_equal 'http://www.override.com/default_url_options?bacon=chunky', @controller.send(:default_url_options_url)
+  ensure
+    ActionController::Routing::Routes.load!
+  end
+end
+
+class EmptyUrlOptionsTest < Test::Unit::TestCase
+  def setup
+    @controller = NonEmptyController.new
+
+    @request    = ActionController::TestRequest.new
+    @response   = ActionController::TestResponse.new
+
+    @request.host = 'www.example.com'
+  end
+
+  def test_ensure_url_for_works_as_expected_when_called_with_no_options_if_default_url_options_is_not_set
+    get :public_action
+    assert_equal "http://www.example.com/non_empty/public_action", @controller.url_for
+  end
+end
+
+class EnsureNamedRoutesWorksTicket22BugTest < Test::Unit::TestCase
+  def test_named_routes_still_work
+    ActionController::Routing::Routes.draw do |map|
+      map.resources :things
+    end
+    EmptyController.send :include, ActionController::UrlWriter
+
+    assert_equal '/things', EmptyController.new.send(:things_path)
+  ensure
+    ActionController::Routing::Routes.load!
   end
 end

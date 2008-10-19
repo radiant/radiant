@@ -24,9 +24,8 @@ module Rails
       File.exist?("#{RAILS_ROOT}/vendor/rails")
     end
 
-    # FIXME : Ruby 1.9
     def preinitialize
-      load(preinitializer_path) if File.exists?(preinitializer_path)
+      load(preinitializer_path) if File.exist?(preinitializer_path)
     end
 
     def preinitializer_path
@@ -44,6 +43,7 @@ module Rails
   class VendorBoot < Boot
     def load_initializer
       require "#{RAILS_ROOT}/vendor/rails/railties/lib/initializer"
+      Rails::Initializer.run(:install_gem_spec_stubs)
     end
   end
 
@@ -82,14 +82,14 @@ module Rails
 
       def load_rubygems
         require 'rubygems'
-
-        unless rubygems_version >= '0.9.4'
-          $stderr.puts %(Rails requires RubyGems >= 0.9.4 (you have #{rubygems_version}). Please `gem update --system` and try again.)
+        min_version = '1.1.1'
+        unless rubygems_version >= min_version
+          $stderr.puts %Q(Rails requires RubyGems >= #{min_version} (you have #{rubygems_version}). Please `gem update --system` and try again.)
           exit 1
         end
 
       rescue LoadError
-        $stderr.puts %(Rails requires RubyGems >= 0.9.4. Please install RubyGems and try again: http://rubygems.rubyforge.org)
+        $stderr.puts %Q(Rails requires RubyGems >= #{min_version}. Please install RubyGems and try again: http://rubygems.rubyforge.org)
         exit 1
       end
 

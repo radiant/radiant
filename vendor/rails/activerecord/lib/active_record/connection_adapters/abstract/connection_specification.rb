@@ -71,7 +71,7 @@ module ActiveRecord
       # also be used to "borrow" the connection to do database work unrelated
       # to any of the specific Active Records.
       def connection
-        if @active_connection_name && (conn = active_connections[@active_connection_name])
+        if defined?(@active_connection_name) && (conn = active_connections[@active_connection_name])
           conn
         else
           # retrieve_connection sets the cache key.
@@ -175,7 +175,7 @@ module ActiveRecord
     end
 
     # Establishes the connection to the database. Accepts a hash as input where
-    # the :adapter key must be specified with the name of a database adapter (in lower-case)
+    # the <tt>:adapter</tt> key must be specified with the name of a database adapter (in lower-case)
     # example for regular databases (MySQL, Postgresql, etc):
     #
     #   ActiveRecord::Base.establish_connection(
@@ -193,7 +193,8 @@ module ActiveRecord
     #     :database  => "path/to/dbfile"
     #   )
     #
-    # Also accepts keys as strings (for parsing from yaml for example):
+    # Also accepts keys as strings (for parsing from YAML for example):
+    #
     #   ActiveRecord::Base.establish_connection(
     #     "adapter" => "sqlite",
     #     "database"  => "path/to/dbfile"

@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../abstract_unit'
+require 'abstract_unit'
 
 class ResourcesController < ActionController::Base
   def index() render :nothing => true end
@@ -28,18 +28,16 @@ module Backoffice
 end
 
 class ResourcesTest < Test::Unit::TestCase
-  
-  
   # The assertions in these tests are incompatible with the hash method
   # optimisation.  This could indicate user level problems
   def setup
     ActionController::Base.optimise_named_routes = false
   end
-  
-  def tear_down
+
+  def teardown
     ActionController::Base.optimise_named_routes = true
   end
-  
+
   def test_should_arrange_actions
     resource = ActionController::Resources::Resource.new(:messages,
       :collection => { :rss => :get, :reorder => :post, :csv => :post },
@@ -74,6 +72,12 @@ class ResourcesTest < Test::Unit::TestCase
     with_restful_routing :messages do
       assert_simply_restful_for :messages
     end
+  end
+
+  def test_override_paths_for_default_restful_actions
+    resource = ActionController::Resources::Resource.new(:messages,
+      :path_names => {:new => 'nuevo', :edit => 'editar'})
+    assert_equal resource.new_path, "#{resource.path}/nuevo"
   end
 
   def test_multiple_default_restful_routes
@@ -153,14 +157,14 @@ class ResourcesTest < Test::Unit::TestCase
 
   def test_with_collection_actions_and_name_prefix
     actions = { 'a' => :get, 'b' => :put, 'c' => :post, 'd' => :delete }
-  
+
     with_restful_routing :messages, :path_prefix => '/threads/:thread_id', :name_prefix => "thread_", :collection => actions do
       assert_restful_routes_for :messages, :path_prefix => 'threads/1/', :name_prefix => 'thread_', :options => { :thread_id => '1' } do |options|
         actions.each do |action, method|
           assert_recognizes(options.merge(:action => action), :path => "/threads/1/messages/#{action}", :method => method)
         end
       end
-  
+
       assert_restful_named_routes_for :messages, :path_prefix => 'threads/1/', :name_prefix => 'thread_', :options => { :thread_id => '1' } do |options|
         actions.keys.each do |action|
           assert_named_route "/threads/1/messages/#{action}", "#{action}_thread_messages_path", :action => action
@@ -171,14 +175,14 @@ class ResourcesTest < Test::Unit::TestCase
 
   def test_with_collection_action_and_name_prefix_and_formatted
     actions = { 'a' => :get, 'b' => :put, 'c' => :post, 'd' => :delete }
-  
+
     with_restful_routing :messages, :path_prefix => '/threads/:thread_id', :name_prefix => "thread_", :collection => actions do
       assert_restful_routes_for :messages, :path_prefix => 'threads/1/', :name_prefix => 'thread_', :options => { :thread_id => '1' } do |options|
         actions.each do |action, method|
           assert_recognizes(options.merge(:action => action, :format => 'xml'), :path => "/threads/1/messages/#{action}.xml", :method => method)
         end
       end
-  
+
       assert_restful_named_routes_for :messages, :path_prefix => 'threads/1/', :name_prefix => 'thread_', :options => { :thread_id => '1' } do |options|
         actions.keys.each do |action|
           assert_named_route "/threads/1/messages/#{action}.xml", "formatted_#{action}_thread_messages_path", :action => action, :format => 'xml'
@@ -201,6 +205,45 @@ class ResourcesTest < Test::Unit::TestCase
         end
       end
     end
+  end
+
+  def test_member_when_override_paths_for_default_restful_actions_with
+    [:put, :post].each do |method|
+      with_restful_routing :messages, :member => { :mark => method }, :path_names => {:new => 'nuevo'} do
+        mark_options = {:action => 'mark', :id => '1', :controller => "messages"}
+        mark_path    = "/messages/1/mark"
+
+        assert_restful_routes_for :messages, :path_names => {:new => 'nuevo'} do |options|
+          assert_recognizes(options.merge(mark_options), :path => mark_path, :method => method)
+        end
+
+        assert_restful_named_routes_for :messages, :path_names => {:new => 'nuevo'} do |options|
+          assert_named_route mark_path, :mark_message_path, mark_options
+        end
+      end
+    end
+  end
+
+  def test_member_when_changed_default_restful_actions_and_path_names_not_specified
+    default_path_names = ActionController::Base.resources_path_names
+    ActionController::Base.resources_path_names = {:new => 'nuevo', :edit => 'editar'}
+
+    with_restful_routing :messages do
+      new_options = { :action => 'new', :controller => 'messages' }
+      new_path = "/messages/nuevo"
+      edit_options = { :action => 'edit', :id => '1', :controller => 'messages' }
+      edit_path = "/messages/1/editar"
+
+      assert_restful_routes_for :messages do |options|
+        assert_recognizes(options.merge(new_options), :path => new_path, :method => :get)
+      end
+
+      assert_restful_routes_for :messages do |options|
+        assert_recognizes(options.merge(edit_options), :path => edit_path, :method => :get)
+      end
+    end
+  ensure
+    ActionController::Base.resources_path_names = default_path_names
   end
 
   def test_with_two_member_actions_with_same_method
@@ -234,7 +277,7 @@ class ResourcesTest < Test::Unit::TestCase
       end
     end
   end
-  
+
   def test_with_new_action_with_name_prefix
     with_restful_routing :messages, :new => { :preview => :post }, :path_prefix => '/threads/:thread_id', :name_prefix => 'thread_' do
       preview_options = {:action => 'preview', :thread_id => '1'}
@@ -248,7 +291,7 @@ class ResourcesTest < Test::Unit::TestCase
       end
     end
   end
-  
+
   def test_with_formatted_new_action_with_name_prefix
     with_restful_routing :messages, :new => { :preview => :post }, :path_prefix => '/threads/:thread_id', :name_prefix => 'thread_' do
       preview_options = {:action => 'preview', :thread_id => '1', :format => 'xml'}
@@ -262,7 +305,7 @@ class ResourcesTest < Test::Unit::TestCase
       end
     end
   end
-  
+
   def test_override_new_method
     with_restful_routing :messages do
       assert_restful_routes_for :messages do |options|
@@ -479,9 +522,9 @@ class ResourcesTest < Test::Unit::TestCase
         map.resources :messages, :collection => {:search => :get}, :new => {:preview => :any}, :name_prefix => 'thread_', :path_prefix => '/threads/:thread_id'
         map.resource :account, :member => {:login => :get}, :new => {:preview => :any}, :name_prefix => 'admin_', :path_prefix => '/admin'
       end
-      
+
       action_separator = ActionController::Base.resource_action_separator
-      
+
       assert_simply_restful_for :messages, :name_prefix => 'thread_', :path_prefix => 'threads/1/', :options => { :thread_id => '1' }
       assert_named_route "/threads/1/messages#{action_separator}search", "search_thread_messages_path", {}
       assert_named_route "/threads/1/messages/new", "new_thread_message_path", {}
@@ -578,7 +621,7 @@ class ResourcesTest < Test::Unit::TestCase
       assert_simply_restful_for :products, :controller => "backoffice/products"
     end
   end
-  
+
   def test_nested_resources_using_namespace
     with_routing do |set|
       set.draw do |map|
@@ -606,6 +649,35 @@ class ResourcesTest < Test::Unit::TestCase
       end
 
       assert_simply_restful_for :images, :controller => "backoffice/admin/images", :name_prefix => 'backoffice_admin_product_', :path_prefix => 'backoffice/admin/products/1/', :options => {:product_id => '1'}
+    end
+  end
+
+  def test_with_path_segment
+    with_restful_routing :messages, :as => 'reviews' do
+      assert_simply_restful_for :messages, :as => 'reviews'
+    end
+  end
+
+  def test_multiple_with_path_segment_and_controller
+    with_routing do |set|
+      set.draw do |map|
+        map.resources :products do |products|
+          products.resources :product_reviews, :as => 'reviews', :controller => 'messages'
+        end
+        map.resources :tutors do |tutors|
+          tutors.resources :tutor_reviews, :as => 'reviews', :controller => 'comments'
+        end
+      end
+
+      assert_simply_restful_for :product_reviews, :controller=>'messages', :as => 'reviews', :name_prefix => 'product_', :path_prefix => 'products/1/', :options => {:product_id => '1'}
+      assert_simply_restful_for :tutor_reviews,:controller=>'comments', :as => 'reviews', :name_prefix => 'tutor_', :path_prefix => 'tutors/1/', :options => {:tutor_id => '1'}
+    end
+  end
+
+  def test_with_path_segment_path_prefix_requirements
+    expected_options = {:controller => 'messages', :action => 'show', :thread_id => '1.1.1', :id => '1'}
+    with_restful_routing :messages, :as => 'comments',:path_prefix => '/thread/:thread_id', :requirements => { :thread_id => /[0-9]\.[0-9]\.[0-9]/ } do
+      assert_recognizes(expected_options, :path => 'thread/1.1.1/comments/1', :method => :get)
     end
   end
 
@@ -639,11 +711,18 @@ class ResourcesTest < Test::Unit::TestCase
       options[:options] ||= {}
       options[:options][:controller] = options[:controller] || controller_name.to_s
 
-      collection_path            = "/#{options[:path_prefix]}#{controller_name}"
+      new_action    = ActionController::Base.resources_path_names[:new] || "new"
+      edit_action   = ActionController::Base.resources_path_names[:edit] || "edit"
+      if options[:path_names]
+        new_action  = options[:path_names][:new] if options[:path_names][:new]
+        edit_action = options[:path_names][:edit] if options[:path_names][:edit]
+      end
+
+      collection_path            = "/#{options[:path_prefix]}#{options[:as] || controller_name}"
       member_path                = "#{collection_path}/1"
-      new_path                   = "#{collection_path}/new"
-      edit_member_path           = "#{member_path}/edit"
-      formatted_edit_member_path = "#{member_path}/edit.xml"
+      new_path                   = "#{collection_path}/#{new_action}"
+      edit_member_path           = "#{member_path}/#{edit_action}"
+      formatted_edit_member_path = "#{member_path}/#{edit_action}.xml"
 
       with_options(options[:options]) do |controller|
         controller.assert_routing collection_path,            :action => 'index'
@@ -692,27 +771,34 @@ class ResourcesTest < Test::Unit::TestCase
       get :index, options[:options]
       options[:options].delete :action
 
-      full_prefix = "/#{options[:path_prefix]}#{controller_name}"
+      full_prefix = "/#{options[:path_prefix]}#{options[:as] || controller_name}"
       name_prefix = options[:name_prefix]
-      
+
+      new_action  = "new"
+      edit_action = "edit"
+      if options[:path_names]
+        new_action  = options[:path_names][:new]  || "new"
+        edit_action = options[:path_names][:edit] || "edit"
+      end
+
       assert_named_route "#{full_prefix}",            "#{name_prefix}#{controller_name}_path",              options[:options]
       assert_named_route "#{full_prefix}.xml",        "formatted_#{name_prefix}#{controller_name}_path",    options[:options].merge(            :format => 'xml')
       assert_named_route "#{full_prefix}/1",          "#{name_prefix}#{singular_name}_path",                options[:options].merge(:id => '1')
       assert_named_route "#{full_prefix}/1.xml",      "formatted_#{name_prefix}#{singular_name}_path",      options[:options].merge(:id => '1', :format => 'xml')
 
-      assert_named_route "#{full_prefix}/new",        "new_#{name_prefix}#{singular_name}_path",            options[:options]
-      assert_named_route "#{full_prefix}/new.xml",    "formatted_new_#{name_prefix}#{singular_name}_path",  options[:options].merge(            :format => 'xml')
-      assert_named_route "#{full_prefix}/1/edit",     "edit_#{name_prefix}#{singular_name}_path",           options[:options].merge(:id => '1')
-      assert_named_route "#{full_prefix}/1/edit.xml", "formatted_edit_#{name_prefix}#{singular_name}_path", options[:options].merge(:id => '1', :format => 'xml')
+      assert_named_route "#{full_prefix}/#{new_action}",        "new_#{name_prefix}#{singular_name}_path",            options[:options]
+      assert_named_route "#{full_prefix}/#{new_action}.xml",    "formatted_new_#{name_prefix}#{singular_name}_path",  options[:options].merge(            :format => 'xml')
+      assert_named_route "#{full_prefix}/1/#{edit_action}",     "edit_#{name_prefix}#{singular_name}_path",           options[:options].merge(:id => '1')
+      assert_named_route "#{full_prefix}/1/#{edit_action}.xml", "formatted_edit_#{name_prefix}#{singular_name}_path", options[:options].merge(:id => '1', :format => 'xml')
 
       yield options[:options] if block_given?
     end
-    
+
     def assert_singleton_routes_for(singleton_name, options = {})
       options[:options] ||= {}
       options[:options][:controller] = options[:controller] || singleton_name.to_s.pluralize
 
-      full_path           = "/#{options[:path_prefix]}#{singleton_name}"
+      full_path           = "/#{options[:path_prefix]}#{options[:as] || singleton_name}"
       new_path            = "#{full_path}/new"
       edit_path           = "#{full_path}/edit"
       formatted_edit_path = "#{full_path}/edit.xml"
@@ -751,7 +837,7 @@ class ResourcesTest < Test::Unit::TestCase
       get :show, options[:options]
       options[:options].delete :action
 
-      full_path = "/#{options[:path_prefix]}#{singleton_name}"
+      full_path = "/#{options[:path_prefix]}#{options[:as] || singleton_name}"
       name_prefix = options[:name_prefix]
 
       assert_named_route "#{full_path}",          "#{name_prefix}#{singleton_name}_path",                options[:options]
@@ -767,7 +853,7 @@ class ResourcesTest < Test::Unit::TestCase
       actual =  @controller.send(route, options) rescue $!.class.name
       assert_equal expected, actual, "Error on route: #{route}(#{options.inspect})"
     end
-    
+
     def assert_resource_methods(expected, resource, action_method, method)
       assert_equal expected.length, resource.send("#{action_method}_methods")[method].size, "#{resource.send("#{action_method}_methods")[method].inspect}"
       expected.each do |action|

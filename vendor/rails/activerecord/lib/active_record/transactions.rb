@@ -15,7 +15,7 @@ module ActiveRecord
       end
     end
 
-    # Transactions are protective blocks where SQL statements are only permanent if they can all succeed as one atomic action. 
+    # Transactions are protective blocks where SQL statements are only permanent if they can all succeed as one atomic action.
     # The classic example is a transfer between two accounts where you can only have a deposit if the withdrawal succeeded and
     # vice versa. Transactions enforce the integrity of the database and guard the data against program errors or database break-downs.
     # So basically you should use transaction blocks whenever you have a number of statements that must be executed together or
@@ -28,11 +28,11 @@ module ActiveRecord
     #
     # This example will only take money from David and give to Mary if neither +withdrawal+ nor +deposit+ raises an exception.
     # Exceptions will force a ROLLBACK that returns the database to the state before the transaction was begun. Be aware, though,
-    # that the objects by default will _not_ have their instance data returned to their pre-transactional state.
+    # that the objects will _not_ have their instance data returned to their pre-transactional state.
     #
-    # == Different ActiveRecord classes in a single transaction
+    # == Different Active Record classes in a single transaction
     #
-    # Though the transaction class method is called on some ActiveRecord class,
+    # Though the transaction class method is called on some Active Record class,
     # the objects within the transaction block need not all be instances of
     # that class.
     # In this example a <tt>Balance</tt> record is transactionally saved even
@@ -73,14 +73,12 @@ module ActiveRecord
     # trigger a ROLLBACK when raised, but not be re-raised by the transaction block.
     module ClassMethods
       def transaction(&block)
-        previous_handler = trap('TERM') { raise TransactionError, "Transaction aborted" }
         increment_open_transactions
 
         begin
           connection.transaction(Thread.current['start_db_transaction'], &block)
         ensure
           decrement_open_transactions
-          trap('TERM', previous_handler)
         end
       end
 
@@ -116,7 +114,7 @@ module ActiveRecord
     def rollback_active_record_state!
       id_present = has_attribute?(self.class.primary_key)
       previous_id = id
-      previous_new_record = @new_record
+      previous_new_record = new_record?
       yield
     rescue Exception
       @new_record = previous_new_record
@@ -125,7 +123,7 @@ module ActiveRecord
       else
         @attributes.delete(self.class.primary_key)
         @attributes_cache.delete(self.class.primary_key)
-      end  
+      end
       raise
     end
   end

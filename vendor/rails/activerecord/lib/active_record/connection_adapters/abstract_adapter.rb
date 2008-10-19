@@ -30,6 +30,7 @@ module ActiveRecord
         @connection, @logger = connection, logger
         @runtime = 0
         @last_verification = 0
+        @query_cache_enabled = false
       end
 
       # Returns the human-readable name of the adapter.  Use mixed case - one
@@ -65,14 +66,14 @@ module ActiveRecord
 
       # QUOTING ==================================================
 
-      # Override to return the quoted table name if the database needs it
+      # Override to return the quoted table name. Defaults to column quoting.
       def quote_table_name(name)
-        name
+        quote_column_name(name)
       end
 
       # REFERENTIAL INTEGRITY ====================================
 
-      # Override to turn off referential integrity while executing +&block+
+      # Override to turn off referential integrity while executing <tt>&block</tt>.
       def disable_referential_integrity(&block)
         yield
       end
@@ -100,7 +101,7 @@ module ActiveRecord
         false
       end
 
-      # Lazily verify this connection, calling +active?+ only if it hasn't
+      # Lazily verify this connection, calling <tt>active?</tt> only if it hasn't
       # been called for +timeout+ seconds.
       def verify!(timeout)
         now = Time.now.to_i
@@ -127,15 +128,11 @@ module ActiveRecord
       protected
         def log(sql, name)
           if block_given?
-            if @logger and @logger.debug?
-              result = nil
-              seconds = Benchmark.realtime { result = yield }
-              @runtime += seconds
-              log_info(sql, name, seconds)
-              result
-            else
-              yield
-            end
+            result = nil
+            seconds = Benchmark.realtime { result = yield }
+            @runtime += seconds
+            log_info(sql, name, seconds)
+            result
           else
             log_info(sql, name, 0)
             nil

@@ -1,6 +1,18 @@
 == Change Log
 
 === Edge
+
+* Added development dependency to INSTALL [Matt Henry]
+* Added reference to sample database configuration files to INSTALL. [Keith Bennett]
+* Added ZenTest development dependency to README. [Thomas Ingram]
+* Remove REXML expansion fix, included in Rails 2.1.1 [Sean Cribbs]
+* Upgrade to 2.1.1 [Sean Cribbs]
+* Fixed migrations for Rails 2.1 [Josh French]
+* Fixed final specs [Jim Gay]
+* Fixed up some specs for new Rails/RSpec [Josh French]
+* Updated timezone management [Josh French]
+* Update to Rails 2.1 [Jim Gay]
+* Update to RSpec 1.1.4 [Jim Gay]
 * Make Git extension install method recognize submodules. [Sean Cribbs]
 * Fix malformed Textile in standard tag descriptions. [Jason Garber]
 * Update script/extension help output. [Jim Gay]

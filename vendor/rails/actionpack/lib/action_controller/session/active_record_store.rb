@@ -1,7 +1,6 @@
 require 'cgi'
 require 'cgi/session'
 require 'digest/md5'
-require 'base64'
 
 class CGI
   class Session
@@ -14,7 +13,7 @@ class CGI
 
 
     # A session store backed by an Active Record class.  A default class is
-    # provided, but any object duck-typing to an Active Record +Session+ class
+    # provided, but any object duck-typing to an Active Record Session class
     # with text +session_id+ and +data+ attributes is sufficient.
     #
     # The default assumes a +sessions+ tables with columns:
@@ -27,13 +26,13 @@ class CGI
     # ActionController::SessionOverflowError will be raised.
     #
     # You may configure the table name, primary key, and data column.
-    # For example, at the end of config/environment.rb:
+    # For example, at the end of <tt>config/environment.rb</tt>:
     #   CGI::Session::ActiveRecordStore::Session.table_name = 'legacy_session_table'
     #   CGI::Session::ActiveRecordStore::Session.primary_key = 'session_id'
     #   CGI::Session::ActiveRecordStore::Session.data_column_name = 'legacy_session_data'
-    # Note that setting the primary key to the session_id frees you from
-    # having a separate id column if you don't want it.  However, you must
-    # set session.model.id = session.session_id by hand!  A before_filter
+    # Note that setting the primary key to the +session_id+ frees you from
+    # having a separate +id+ column if you don't want it.  However, you must
+    # set <tt>session.model.id = session.session_id</tt> by hand!  A before filter
     # on ApplicationController is a good place.
     #
     # Since the default class is a simple Active Record, you get timestamps
@@ -43,7 +42,7 @@ class CGI
     # You may provide your own session class implementation, whether a
     # feature-packed Active Record or a bare-metal high-performance SQL
     # store, by setting
-    #   +CGI::Session::ActiveRecordStore.session_class = MySessionClass+
+    #   CGI::Session::ActiveRecordStore.session_class = MySessionClass
     # You must implement these methods:
     #   self.find_by_session_id(session_id)
     #   initialize(hash_of_session_id_and_data)
@@ -80,8 +79,8 @@ class CGI
             find_by_session_id(session_id)
           end
 
-          def marshal(data)   Base64.encode64(Marshal.dump(data)) if data end
-          def unmarshal(data) Marshal.load(Base64.decode64(data)) if data end
+          def marshal(data)   ActiveSupport::Base64.encode64(Marshal.dump(data)) if data end
+          def unmarshal(data) Marshal.load(ActiveSupport::Base64.decode64(data)) if data end
 
           def create_table!
             connection.execute <<-end_sql
@@ -155,8 +154,13 @@ class CGI
       # The database connection, table name, and session id and data columns
       # are configurable class attributes.  Marshaling and unmarshaling
       # are implemented as class methods that you may override.  By default,
-      # marshaling data is +Base64.encode64(Marshal.dump(data))+ and
-      # unmarshaling data is +Marshal.load(Base64.decode64(data))+.
+      # marshaling data is
+      #
+      #   ActiveSupport::Base64.encode64(Marshal.dump(data))
+      #
+      # and unmarshaling data is
+      #
+      #   Marshal.load(ActiveSupport::Base64.decode64(data))
       #
       # This marshaling behavior is intended to store the widest range of
       # binary session data in a +text+ column.  For higher performance,
@@ -190,8 +194,8 @@ class CGI
             end
           end
 
-          def marshal(data)   Base64.encode64(Marshal.dump(data)) if data end
-          def unmarshal(data) Marshal.load(Base64.decode64(data)) if data end
+          def marshal(data)   ActiveSupport::Base64.encode64(Marshal.dump(data)) if data end
+          def unmarshal(data) Marshal.load(ActiveSupport::Base64.decode64(data)) if data end
 
           def create_table!
             @@connection.execute <<-end_sql

@@ -25,14 +25,26 @@ module Spec
           end
         end        
 
-        if ::Dispatcher.respond_to?(:cleanup_application)
-          ::Dispatcher.cleanup_application
+        if ActionController.const_defined?(:Dispatcher)
+          dispatcher = ::ActionController::Dispatcher.new($stdout)
+          dispatcher.cleanup_application
         elsif ::Dispatcher.respond_to?(:reset_application!)
           ::Dispatcher.reset_application!
+        else
+          raise "Application reloading failed"
         end
+        if Object.const_defined?(:Fixtures) && Fixtures.respond_to?(:reset_cache)
+          Fixtures.reset_cache
+        end
+        
         ::Dependencies.mechanism = :load
         require_dependency('application.rb') unless Object.const_defined?(:ApplicationController)
         load File.dirname(__FILE__) + '/../spec/spec_helper.rb'
+
+        if in_memory_database?
+          load "#{RAILS_ROOT}/db/schema.rb" # use db agnostic schema by default
+          ActiveRecord::Migrator.up('db/migrate') # use migrations
+        end
 
         ::Spec::Runner::CommandLine.run(
           ::Spec::Runner::OptionParser.parse(
@@ -41,6 +53,12 @@ module Spec
             $stdout
           )
         )
+      end
+
+      def in_memory_database?
+        ENV["RAILS_ENV"] == "test" and
+        ::ActiveRecord::Base.connection.class.to_s == "ActiveRecord::ConnectionAdapters::SQLite3Adapter" and
+        ::Rails::Configuration.new.database_configuration['test']['database'] == ':memory:'
       end
     end
   end

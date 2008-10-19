@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 require File.dirname(__FILE__) + '/ar_classes'
 
-describe "mock_model", :type => :view do
+describe "mock_model" do
   before(:each) do
     @model = mock_model(SubMockableModel)
   end
@@ -22,6 +22,18 @@ describe "mock_model", :type => :view do
   end
   it "should not say it instance_of? if it isn't, even if it's ancestor is" do
     @model.instance_of?(MockableModel).should be(false)
+  end
+end
+
+describe "mock_model with stubbed id", :type => :view do
+  before(:each) do
+    @model = mock_model(MockableModel, :id => 1)
+  end
+  it "should be named using the stubbed id value" do
+    @model.instance_variable_get(:@name).should == "MockableModel_1"
+  end
+  it "should return string of id value for to_param" do
+    @model.to_param.should == "1"
   end
 end
 

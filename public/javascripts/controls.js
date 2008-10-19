@@ -1,6 +1,4 @@
-// script.aculo.us controls.js v1.8.0, Tue Nov 06 15:01:40 +0300 2007
-
-// Copyright (c) 2005-2007 Thomas Fuchs (http://script.aculo.us, http://mir.aculo.us)
+// Copyright (c) 2005-2008 Thomas Fuchs (http://script.aculo.us, http://mir.aculo.us)
 //           (c) 2005-2007 Ivan Krstic (http://blogs.law.harvard.edu/ivan)
 //           (c) 2005-2007 Jon Tirsen (http://www.tirsen.com)
 // Contributors:
@@ -88,7 +86,7 @@ Autocompleter.Base = Class.create({
     Element.hide(this.update);
 
     Event.observe(this.element, 'blur', this.onBlur.bindAsEventListener(this));
-    Event.observe(this.element, 'keypress', this.onKeyPress.bindAsEventListener(this));
+    Event.observe(this.element, 'keydown', this.onKeyPress.bindAsEventListener(this));
   },
 
   show: function() {
@@ -144,12 +142,12 @@ Autocompleter.Base = Class.create({
        case Event.KEY_UP:
          this.markPrevious();
          this.render();
-         if(Prototype.Browser.WebKit) Event.stop(event);
+         Event.stop(event);
          return;
        case Event.KEY_DOWN:
          this.markNext();
          this.render();
-         if(Prototype.Browser.WebKit) Event.stop(event);
+         Event.stop(event);
          return;
       }
      else 

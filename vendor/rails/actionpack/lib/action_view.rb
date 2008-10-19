@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2004-2007 David Heinemeier Hansson
+# Copyright (c) 2004-2008 David Heinemeier Hansson
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -22,9 +22,15 @@
 #++
 
 require 'action_view/template_handler'
+require 'action_view/template_handlers/compilable'
 require 'action_view/template_handlers/builder'
 require 'action_view/template_handlers/erb'
 require 'action_view/template_handlers/rjs'
+
+require 'action_view/template_finder'
+require 'action_view/template'
+require 'action_view/partial_template'
+require 'action_view/inline_template'
 
 require 'action_view/base'
 require 'action_view/partials'
@@ -32,6 +38,8 @@ require 'action_view/template_error'
 
 ActionView::Base.class_eval do
   include ActionView::Partials
-end
 
-ActionView::Base.load_helpers
+  ActionView::Base.helper_modules.each do |helper_module|
+    include helper_module
+  end
+end

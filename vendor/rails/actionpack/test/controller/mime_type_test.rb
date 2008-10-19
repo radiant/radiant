@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../abstract_unit'
+require 'abstract_unit'
 
 class MimeTypeTest < Test::Unit::TestCase
   Mime::Type.register "image/png", :png
@@ -28,6 +28,13 @@ class MimeTypeTest < Test::Unit::TestCase
     expect = [Mime::HTML, Mime::XML, "image/*", Mime::TEXT, Mime::ALL]
     assert_equal expect, Mime::Type.parse(accept).collect { |c| c.to_s }
   end
+
+  # Accept header send with user HTTP_USER_AGENT: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; InfoPath.1)
+  def test_parse_crappy_broken_acceptlines2
+    accept = "image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/x-shockwave-flash, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword,  , pronto/1.00.00, sslvpn/1.00.00.00, */*"
+    expect = ['image/gif', 'image/x-xbitmap', 'image/jpeg','image/pjpeg', 'application/x-shockwave-flash', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/msword', 'pronto/1.00.00', 'sslvpn/1.00.00.00', Mime::ALL  ]
+    assert_equal expect, Mime::Type.parse(accept).collect { |c| c.to_s }
+  end
   
   def test_custom_type
     Mime::Type.register("image/gif", :gif)
@@ -39,17 +46,39 @@ class MimeTypeTest < Test::Unit::TestCase
     Mime.module_eval { remove_const :GIF if const_defined?(:GIF) }
   end
   
+  def test_type_should_be_equal_to_symbol
+    assert_equal Mime::HTML, 'application/xhtml+xml'
+    assert_equal Mime::HTML, :html
+  end
+
   def test_type_convenience_methods
-    types = [:html, :xml, :png, :pdf, :yaml, :url_encoded_form]
+    # Don't test Mime::ALL, since it Mime::ALL#html? == true
+    types = Mime::SET.to_a.map(&:to_sym).uniq - [:all]
+
+    # Remove custom Mime::Type instances set in other tests, like Mime::GIF and Mime::IPHONE
+    types.delete_if { |type| !Mime.const_defined?(type.to_s.upcase) }
+
     types.each do |type|
       mime = Mime.const_get(type.to_s.upcase)
-      assert mime.send("#{type}?"), "Mime::#{type.to_s.upcase} is not #{type}?"
-      (types - [type]).each { |t| assert !mime.send("#{t}?"), "Mime::#{t.to_s.upcase} is #{t}?" }
+      assert mime.send("#{type}?"), "#{mime.inspect} is not #{type}?"
+      (types - [type]).each { |other_type| assert !mime.send("#{other_type}?"), "#{mime.inspect} is #{other_type}?" }
     end
   end
-  
+
   def test_mime_all_is_html
     assert Mime::ALL.all?,  "Mime::ALL is not all?"
     assert Mime::ALL.html?, "Mime::ALL is not html?"
+  end
+
+  def test_verifiable_mime_types
+    unverified_types = Mime::Type.unverifiable_types
+    all_types = Mime::SET.to_a.map(&:to_sym)
+    all_types.uniq!
+    # Remove custom Mime::Type instances set in other tests, like Mime::GIF and Mime::IPHONE
+    all_types.delete_if { |type| !Mime.const_defined?(type.to_s.upcase) }
+
+    unverified, verified = all_types.partition { |type| Mime::Type.unverifiable_types.include? type }
+    assert verified.all?   { |type|  Mime.const_get(type.to_s.upcase).verify_request? }, "Not all Mime Types are verified: #{verified.inspect}"
+    assert unverified.all? { |type| !Mime.const_get(type.to_s.upcase).verify_request? }, "Some Mime Types are verified: #{unverified.inspect}"
   end
 end
