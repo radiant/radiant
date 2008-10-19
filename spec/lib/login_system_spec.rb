@@ -57,6 +57,7 @@ describe StubController, :type => :controller do
   describe ".login_from_cookie" do
 
     before do
+      Time.zone = 'UTC'
       Radiant::Config.stub!(:[]).with('session_timeout').and_return(2.weeks)
     end
 
@@ -95,7 +96,7 @@ describe StubController, :type => :controller do
         @cookies.should_receive(:[]=) do |name,content|
           name.should eql(:session_token)
           content[:value].should eql(@user.session_token)
-          content[:expires].should be_close(2.weeks.from_now.utc, 1.minute) # sometimes specs are slow
+          content[:expires].should be_close((Time.zone.now + 2.weeks).utc, 1.minute) # sometimes specs are slow
         end
       end
 
