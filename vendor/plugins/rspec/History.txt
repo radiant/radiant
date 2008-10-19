@@ -1,4 +1,47 @@
-=== In Development (git clone git://github.com/dchelimsky/rspec.git)
+=== Maintenance
+
+* 1 major enhancement
+
+	* Add extend to configuration (thanks to advice from Chad Fowler)
+
+* 3 minor enhancements
+
+  * mingw indicates windows too (thanks to Luis Lavena for the tip)
+	* improved output for partial mock expecation failures
+	* it_should_behave_like now accepts n names of shared groups
+
+* 5 bug fixes
+
+  * spec command with no arguments prints help
+  * fixed typo in help. Fixes #73.
+  * fixed bug where should_receive..and_yield after similar stub added the args_to_yield to the stub's original args_to_yield (Pat Maddox)
+  * fixed bug where rspec-autotest (autospec) was loading non-spec files in spec directory. Fixes #559.
+	* fixed bug where should_not_receive was reporting twice
+  
+
+=== Version 1.1.8 / 2008-10-03
+
+* 2 bug fixes
+
+  * restore colorized output in linux and windows w/ autotest (Tim Pope). Fixes #413.
+  * autospec no longer hangs on windows. Fixes #554.
+
+=== Version 1.1.7 / 2008-10-02
+
+* no changes since 1.1.6, but releasing rspec-1.1.7 to align versions with rspec-rails-1.1.7
+
+=== Version 1.1.6 / 2008-10-02
+
+* 2 bug fixes
+
+  * fixed bug where negative message expectations following stubs resulted in false (negative) positives (Mathias Meyer). Closes #548.
+  * fixed bug where Not Yet Implemented examples report incorrect caller (Scott Taylor). Closes #547.
+
+* 1 minor enhancement
+
+  * removed deprecated mock argument constraint symbols
+
+=== Version 1.1.5 / 2008-09-28
 
 IMPORTANT: use the new 'autospec' command instead of 'autotest'. We changed
 the way autotest discovers rspec so the autotest executable won't
@@ -8,6 +51,11 @@ mechanism.
 
 ALSO IMPORTANT: $rspec_options is gone. If you were using this for anything
 (like your own runners), use Spec::Runner.options instead.
+
+ADDITIONALLY IMPORTANT: If you have any custom formatters, you'll need to
+modify #example_pending to accept three arguments instead of just two. See the
+rdoc for Spec::Runner::Formatter::BaseFormatter#example_pending for more
+information.
 
 * Consider MinGW as valid RUBY_PLATFORM for --colour option. (patch from Luis Lavena). Closes #406.
 * Added additional characters to be escaped in step strings (patch from Jake Cahoon). Closes #417.
@@ -26,6 +74,23 @@ ALSO IMPORTANT: $rspec_options is gone. If you were using this for anything
 * use hoe for build/release
 * bye, bye translator
 * autotest/rspec uses ruby command instead of spec command (no need for spec command unless loading directories)
+* Avoid 'invalid option -O' in autotest (patch from Jonathan del Strother). Closes #486.
+* Fix: Unimplemented step with new line throws error (patch from Ben Mabey). Closes #494.
+* Only use color codes on tty; override for autospec (patch from Tim Pope). Closes #413.
+* Warn when setting mock expectations on nil (patch from Ben Mabey). Closes #521.
+* Support argument constraints as values in the hash_including contstraint. Thanks to Pirkka Hartikainen for failing code examples and the fix. Buttons up #501.
+* mock(:null_object=>true) plays nice with HTML (patch from Gerrit Kaiser)
+* Consider MinGW as valid RUBY_PLATFORM for --colour option. (patch from Luis Lavena). Closes #406.
+* Add 2nd arg to respond_to? to align w/ core Ruby rdoc: http://www.ruby-doc.org/core/classes/Object.html#M000604
+* quiet backtrace tweaker filters individual lines out of multiline (ala Rails) error messages (Pat Maddox)
+* added ability to stub multiple methods in one stub! call (Pat Maddox)
+* story progress bar formatter and more colourful summaries from the plain text story formatter (Joseph Wilk)
+* Avoid ruby invocation errors when autotesting (Jonathan del Strother)
+* added mock('foo').as_null_object
+* add file and line number to pending_example for formatters (Scott Taylor)
+* return last stubbed value for mock expectation with no explicit return (Pat Maddox)
+* Fixed bug when should_receive(:foo).any_number_of_times is called after similar stub (Pat Maddox)
+* Warning messages now issued when expectations are set on nil (Ben Mabey)
 
 === Version 1.1.4
 

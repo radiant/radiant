@@ -51,29 +51,30 @@ describe "stub_model" do
     second.id.should == (first.id + 1)
   end
   
-end
-
-describe "stub_model as association" do
-  before(:each) do
-    @real = AssociatedModel.create!
-    @stub_model = stub_model(MockableModel)
-    @real.mockable_model = @stub_model
-  end
-  
-  it "should pass associated_model == mock" do
-      @stub_model.should == @real.mockable_model
-  end
-
-  it "should pass mock == associated_model" do
-      @real.mockable_model.should == @stub_model
-  end
-end
-
-describe "stub_model with a block" do
-  it "should yield the model" do
-    model = stub_model(MockableModel) do |block_arg|
-      @block_arg = block_arg
+  describe "as association" do
+    before(:each) do
+      @real = AssociatedModel.create!
+      @stub_model = stub_model(MockableModel)
+      @real.mockable_model = @stub_model
     end
-    model.should be(@block_arg)
+
+    it "should pass associated_model == mock" do
+        @stub_model.should == @real.mockable_model
+    end
+
+    it "should pass mock == associated_model" do
+        @real.mockable_model.should == @stub_model
+    end
+  end
+
+  describe "with a block" do
+    it "should yield the model" do
+      model = stub_model(MockableModel) do |block_arg|
+        @block_arg = block_arg
+      end
+      model.should be(@block_arg)
+    end
   end
 end
+
+

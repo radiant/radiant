@@ -5,11 +5,6 @@ module Spec
       extend ModuleReopeningFix
       include ModuleInclusionWarnings
       
-
-      PENDING_EXAMPLE_BLOCK = lambda {
-        raise Spec::Example::ExamplePendingError.new("Not Yet Implemented")
-      }
-
       def execute(options, instance_variables)
         options.reporter.example_started(self)
         set_instance_variables_from_hash(instance_variables)
@@ -65,6 +60,10 @@ module Spec
       def description
         @_defined_description || ::Spec::Matchers.generated_description || "NO NAME"
       end
+      
+      def options
+        @_options
+      end
 
       def __full_description
         "#{self.class.description} #{self.description}"
@@ -80,7 +79,7 @@ module Spec
       end
 
       def eval_block
-        return instance_eval(&(@_implementation || PENDING_EXAMPLE_BLOCK))
+        instance_eval(&@_implementation)
       end
 
       def implementation_backtrace

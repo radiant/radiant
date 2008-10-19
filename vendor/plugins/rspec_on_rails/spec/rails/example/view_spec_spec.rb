@@ -82,14 +82,14 @@ describe "A template that includes a partial", :type => :view do
     response.should have_tag('div', "This is text from a method in the ApplicationHelper")
   end
   
-  it "should pass expect_render with the right partial" do
-    template.expect_render(:partial => 'partial')
+  it "should pass should_receive(:render) with the right partial" do
+    template.should_receive(:render).with(:partial => 'partial')
     render!
     template.verify_rendered
   end
   
-  it "should fail expect_render with the wrong partial" do
-    template.expect_render(:partial => 'non_existent')
+  it "should fail should_receive(:render) with the wrong partial" do
+    template.should_receive(:render).with(:partial => 'non_existent')
     render!
     begin
       template.verify_rendered
@@ -99,14 +99,14 @@ describe "A template that includes a partial", :type => :view do
     end
   end
   
-  it "should pass expect_render when a partial is expected twice and happens twice" do
-    template.expect_render(:partial => 'partial_used_twice').twice
+  it "should pass should_receive(:render) when a partial is expected twice and happens twice" do
+    template.should_receive(:render).with(:partial => 'partial_used_twice').twice
     render!
     template.verify_rendered
   end
   
-  it "should pass expect_render when a partial is expected once and happens twice" do
-    template.expect_render(:partial => 'partial_used_twice')
+  it "should pass should_receive(:render) when a partial is expected once and happens twice" do
+    template.should_receive(:render).with(:partial => 'partial_used_twice')
     render!
     begin
       template.verify_rendered
@@ -116,17 +116,17 @@ describe "A template that includes a partial", :type => :view do
     end
   end
   
-  it "should fail expect_render with the right partial but wrong options" do
-    template.expect_render(:partial => 'partial', :locals => {:thing => Object.new})
+  it "should fail should_receive(:render) with the right partial but wrong options" do
+    template.should_receive(:render).with(:partial => 'partial', :locals => {:thing => Object.new})
     render!
     lambda {template.verify_rendered}.should raise_error(Spec::Mocks::MockExpectationError)
   end
 end
 
 describe "A partial that includes a partial", :type => :view do
-  it "should support expect_render with nested partial" do
+  it "should support should_receive(:render) with nested partial" do
     obj = Object.new
-    template.expect_render(:partial => 'partial', :object => obj)
+    template.should_receive(:render).with(:partial => 'partial', :object => obj)
     render :partial => "view_spec/partial_with_sub_partial", :locals => { :partial => obj }
   end
 end
@@ -141,7 +141,7 @@ describe "A view that includes a partial using :collection and :spacer_template"
   end
 
   it "should render the partial" do
-    template.expect_render(:partial => 'partial',
+    template.should_receive(:render).with(:partial => 'partial',
                :collection => ['Alice', 'Bob'],
                :spacer_template => 'spacer')
     render "view_spec/template_with_partial_using_collection"
@@ -149,36 +149,18 @@ describe "A view that includes a partial using :collection and :spacer_template"
 
 end
 
-describe "A view that includes a partial using an array as partial_path", :type => :view do
-  before(:each) do
-    module ActionView::Partials
-      def render_template_with_partial_with_array_support(partial_path, local_assigns = nil, deprecated_local_assigns = nil)
-        if partial_path.is_a?(Array)
-          "Array Partial"
-        else
-          render_partial_without_array_support(partial_path, local_assigns, deprecated_local_assigns)
-        end
-      end
-
-      alias :render_partial_without_array_support :render_partial
-      alias :render_partial :render_template_with_partial_with_array_support
+if Rails::VERSION::MAJOR >= 2
+  describe "A view that includes a partial using an array as partial_path", :type => :view do
+    before(:each) do
+      renderable_object = Object.new
+      renderable_object.stub!(:name).and_return("Renderable Object")
+      assigns[:array] = [renderable_object]
     end
 
-    @array = ['Alice', 'Bob']
-    assigns[:array] = @array
-  end
-
-  after(:each) do
-    module ActionView::Partials
-      alias :render_template_with_partial_with_array_support :render_partial
-      alias :render_partial :render_partial_without_array_support
-      undef render_template_with_partial_with_array_support
+    it "should render the array passed through to render_partial without modification" do
+      render "view_spec/template_with_partial_with_array" 
+      response.body.should match(/^Renderable Object$/)
     end
-  end
-
-  it "should render have the array passed through to render_partial without modification" do
-    render "view_spec/template_with_partial_with_array" 
-    response.body.should match(/^Array Partial$/)
   end
 end
 
@@ -239,10 +221,31 @@ describe "An instantiated ViewExampleGroupController", :type => :view do
   end
 end
 
+describe "a block helper", :type => :view do
+  it "should not yield when not told to in the example" do
+    template.should_receive(:if_allowed)
+    render "view_spec/block_helper"
+    response.should_not have_tag("div","block helper was rendered")
+  end
+
+  it "should yield when told to in the example" do
+    template.should_receive(:if_allowed).and_yield
+    render "view_spec/block_helper"
+    response.should have_tag("div","block helper was rendered")
+  end
+end
+
 describe "render :inline => ...", :type => :view do
   it "should render ERB right in the spec" do
     render :inline => %|<%= text_field_tag('field_name', 'Value') %>|
     response.should have_tag("input[type=?][name=?][value=?]","text","field_name","Value")
+  end
+end
+
+describe "render 'view_spec/foo/show.rhtml'", :type => :view do
+  it "should derive action name using the first part of the template name" do
+    render 'view_spec/foo/show.rhtml'
+    request.path_parameters[:action].should == 'show'
   end
 end
 
@@ -267,6 +270,18 @@ module Spec
           group.run_after_each(example)
         end
       end
+    end
+  end
+end
+
+describe "bug http://rspec.lighthouseapp.com/projects/5645/tickets/510", :type => :view do
+  describe "a view example with should_not_receive" do
+    it "should render the view" do
+      obj = mock('model')
+      obj.should_receive(:render_partial?).and_return false
+      assigns[:obj] = obj
+      template.should_not_receive(:render).with(:partial => 'some_partial')
+      render "view_spec/should_not_receive"
     end
   end
 end

@@ -12,7 +12,12 @@ require File.expand_path("#{dir}/../spec_resources/helpers/more_explicit_helper"
 require File.expand_path("#{dir}/../spec_resources/helpers/view_spec_helper")
 require File.expand_path("#{dir}/../spec_resources/helpers/plugin_application_helper")
 
-ActionController::Routing.controller_paths << File.expand_path("#{dir}/../spec_resources/controllers")
+extra_controller_paths = File.expand_path("#{dir}/../spec_resources/controllers")
+
+unless ActionController::Routing.controller_paths.include?(extra_controller_paths)
+  ActionController::Routing.instance_eval {@possible_controllers = nil}
+  ActionController::Routing.controller_paths << extra_controller_paths
+end
 
 module Spec
   module Rails
@@ -37,6 +42,12 @@ class Proc
     lambda { self.call }.should_not raise_error
   end
 end
+
+Spec::Runner.configure do |config|
+  config.before(:each, :type => :controller) do
+  end
+end
+
 
 ActionController::Routing::Routes.draw do |map|
   map.resources :rspec_on_rails_specs

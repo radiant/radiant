@@ -62,7 +62,6 @@ class ControllerSpecController < ActionController::Base
   end
 
   def action_setting_the_assigns_hash
-    assigns['direct_assigns_key'] = :direct_assigns_key_value
     @indirect_assigns_key = :indirect_assigns_key_value
   end
   
@@ -84,6 +83,11 @@ class ControllerSpecController < ActionController::Base
   end
   
   def action_with_skipped_before_filter
+    render :text => ""
+  end
+  
+  def action_that_assigns_false_to_a_variable
+    @a_variable = false
     render :text => ""
   end
 end

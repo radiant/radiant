@@ -34,11 +34,11 @@ module Spec
                                                           "an example name directly, causing RSpec to run just the example",
                                                           "matching that name"],
         :specification => ["-s", "--specification [NAME]", "DEPRECATED - use -e instead", "(This will be removed when autotest works with -e)"],
-        :line => ["-l", "--line LINE_NUMBER", Integer, "Execute behaviout or specification at given line.",
+        :line => ["-l", "--line LINE_NUMBER", Integer, "Execute behaviour or specification at given line.",
                                                        "(does not work for dynamically generated specs)"],
         :format => ["-f", "--format FORMAT[:WHERE]","Specifies what format to use for output. Specify WHERE to tell",
                                                     "the formatter where to write the output. All built-in formats",
-                                                    "expect WHERE to be a file name, and will write to STDOUT if it's",
+                                                    "expect WHERE to be a file name, and will write to $stdout if it's",
                                                     "not specified. The --format option may be specified several times",
                                                     "if you want several outputs",
                                                     " ",
@@ -54,6 +54,7 @@ module Spec
                                                     "Builtin formats for stories: ",
                                                     "plain|p              : Plain Text",
                                                     "html|h               : A nice HTML report",
+                                                    "progress|r           : Text progress",
                                                     " ",
                                                     "FORMAT can also be the name of a custom formatter class",
                                                     "(in which case you should also specify --require to load it)"],
@@ -93,30 +94,30 @@ module Spec
 
         self.banner = "Usage: spec (FILE|DIRECTORY|GLOB)+ [options]"
         self.separator ""
-        on(*OPTIONS[:pattern]) {|pattern| @options.filename_pattern = pattern}
-        on(*OPTIONS[:diff]) {|diff| @options.parse_diff(diff)}
-        on(*OPTIONS[:colour]) {@options.colour = true}
-        on(*OPTIONS[:example]) {|example| @options.parse_example(example)}
-        on(*OPTIONS[:specification]) {|example| @options.parse_example(example)}
-        on(*OPTIONS[:line]) {|line_number| @options.line_number = line_number.to_i}
-        on(*OPTIONS[:format]) {|format| @options.parse_format(format)}
-        on(*OPTIONS[:require]) {|requires| invoke_requires(requires)}
-        on(*OPTIONS[:backtrace]) {@options.backtrace_tweaker = NoisyBacktraceTweaker.new}
-        on(*OPTIONS[:loadby]) {|loadby| @options.loadby = loadby}
-        on(*OPTIONS[:reverse]) {@options.reverse = true}
-        on(*OPTIONS[:timeout]) {|timeout| @options.timeout = timeout.to_f}
-        on(*OPTIONS[:heckle]) {|heckle| @options.load_heckle_runner(heckle)}
-        on(*OPTIONS[:dry_run]) {@options.dry_run = true}
-        on(*OPTIONS[:options_file]) {|options_file| parse_options_file(options_file)}
+        on(*OPTIONS[:pattern])          {|pattern| @options.filename_pattern = pattern}
+        on(*OPTIONS[:diff])             {|diff| @options.parse_diff(diff)}
+        on(*OPTIONS[:colour])           {@options.colour = true}
+        on(*OPTIONS[:example])          {|example| @options.parse_example(example)}
+        on(*OPTIONS[:specification])    {|example| @options.parse_example(example)}
+        on(*OPTIONS[:line])             {|line_number| @options.line_number = line_number.to_i}
+        on(*OPTIONS[:format])           {|format| @options.parse_format(format)}
+        on(*OPTIONS[:require])          {|requires| invoke_requires(requires)}
+        on(*OPTIONS[:backtrace])        {@options.backtrace_tweaker = NoisyBacktraceTweaker.new}
+        on(*OPTIONS[:loadby])           {|loadby| @options.loadby = loadby}
+        on(*OPTIONS[:reverse])          {@options.reverse = true}
+        on(*OPTIONS[:timeout])          {|timeout| @options.timeout = timeout.to_f}
+        on(*OPTIONS[:heckle])           {|heckle| @options.load_heckle_runner(heckle)}
+        on(*OPTIONS[:dry_run])          {@options.dry_run = true}
+        on(*OPTIONS[:options_file])     {|options_file| parse_options_file(options_file)}
         on(*OPTIONS[:generate_options]) {|options_file|}
-        on(*OPTIONS[:runner]) {|runner|  @options.user_input_for_runner = runner}
-        on(*OPTIONS[:drb]) {}
-        on(*OPTIONS[:version]) {parse_version}
-        on_tail(*OPTIONS[:help]) {parse_help}
+        on(*OPTIONS[:runner])           {|runner|  @options.user_input_for_runner = runner}
+        on(*OPTIONS[:drb])              {}
+        on(*OPTIONS[:version])          {parse_version}
+        on_tail(*OPTIONS[:help])        {parse_help}
       end
 
       def order!(argv, &blk)
-        @argv = argv
+        @argv = (argv.empty? && Spec.spec_command?) ? ['--help'] : argv 
         @options.argv = @argv.dup
         return if parse_generate_options
         return if parse_drb
@@ -128,7 +129,7 @@ module Spec
 
         @options
       end
-
+      
       protected
       def invoke_requires(requires)
         requires.split(",").each do |file|
