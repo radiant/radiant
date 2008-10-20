@@ -45,10 +45,8 @@ class ApplicationController < ActionController::Base
   
     def set_javascripts_and_stylesheets
       @stylesheets ||= []
-      @stylesheets << %w(admin/main)
-      @stylesheets.flatten!
+      @stylesheets.concat %w(admin/main)
       @javascripts ||= []
-      @javascripts << %w(prototype string effects admin/tabcontrol admin/ruledtable admin/admin)
-      @javascripts.flatten!
+      @javascripts.concat %w(prototype string effects admin/tabcontrol admin/ruledtable admin/admin)
     end
 end
