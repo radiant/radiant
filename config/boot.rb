@@ -77,8 +77,6 @@ module Radiant
     def load_initializer
       $LOAD_PATH.unshift "#{RAILS_ROOT}/vendor/radiant/lib" 
       super
-      #require "#{RAILS_ROOT}/vendor/rails/railties/lib/initializer"
-      #Rails::Initializer.run(:install_gem_spec_stubs)
     end
         
     def load_error_message
@@ -101,7 +99,6 @@ module Radiant
     def load_initializer
       self.class.load_rubygems
       load_radiant_gem
-      # require 'initializer'
       super
     end
       

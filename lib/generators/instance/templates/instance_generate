@@ -8,6 +8,8 @@ class Rails::Generator::Base
   def self.use_application_sources!
     reset_sources
     sources << Rails::Generator::PathSource.new(:builtin, "#{RADIANT_ROOT}/lib/generators")
+    plugins_path = File.expand_path(File.join(RAILS_ROOT, %w(vendor plugins)))
+    sources << Rails::Generator::PathSource.new(:"plugins (vendor/plugins)", "#{plugins_path}/*/**/{,rails_}generators")
   end
 end
 
