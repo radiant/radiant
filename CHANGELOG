@@ -2,6 +2,9 @@
 
 === Edge
 
+* Correct db:schema:dump error when in instance mode. [Pat Allan, Sean Cribbs]
+* Simplify set_javascripts_and_stylesheets. [Sean Cribbs]
+* Cleanup boot.rb and allow generators from user-installed plugins. [Sean Cribbs]
 * Added regions to user-preferences screen. [Jim Gay]
 * Apply Rails redirect sanitization patch. [Sean Cribbs]
 * Updated to Rspec and Rspec-Rails 1.1.8 [Jim Gay]

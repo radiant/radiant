@@ -14,7 +14,6 @@ unless File.directory? "#{RAILS_ROOT}/app"
         line.gsub!(/t\.pattern = (["'])/, 't.pattern = \1' + RADIANT_ROOT + '/')
       when /databases\.rake$/
         line.gsub!(/migrate\((["'])/, 'migrate(\1' + RADIANT_ROOT + '/')
-        line.sub!("db/schema.rb", "#{RAILS_ROOT}/db/schema.rb")
       when /rspec\.rake$/
         line.gsub!('RAILS_ROOT', 'RADIANT_ROOT') unless line =~ /:noop/
         line.gsub!(/FileList\[(["'])/, "FileList[\\1#{RADIANT_ROOT}/")
@@ -23,4 +22,4 @@ unless File.directory? "#{RAILS_ROOT}/app"
     end
     eval(lines.join("\n"), binding, rake)
   end
-end         
+end
