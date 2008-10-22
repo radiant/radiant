@@ -867,7 +867,7 @@ module StandardTags
       end
       options[:order] = order_string
 
-      status = (attr[:status] || 'published').downcase
+      status = (attr[:status] || ( dev?(tag.globals.page.request) ? 'all' : 'published')).downcase
       unless status == 'all'
         stat = Status[status]
         unless stat.nil?

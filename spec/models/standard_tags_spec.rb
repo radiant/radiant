@@ -55,12 +55,16 @@ describe "Standard Tags" do
       page(:assorted).should render(page_children_each_tags).as('a b c d e f g h i j ')
     end
 
-    it 'should not list virtual pages' do
+    it 'should not list draft pages' do
       page.should render('<r:children:each by="title"><r:slug /> </r:children:each>').as('a b c d e f g h i j ')
     end
     
-    it 'should include virtual pages with status="all"' do
+    it 'should include draft pages with status="all"' do
       page.should render('<r:children:each status="all" by="slug"><r:slug /> </r:children:each>').as('a b c d draft e f g h i j ')
+    end
+
+    it "should include draft pages by default on the dev host" do
+      page.should render('<r:children:each by="slug"><r:slug /> </r:children:each>').as('a b c d draft e f g h i j ').on('dev.site.com')
     end
 
     it 'should error with invalid "limit" attribute' do
