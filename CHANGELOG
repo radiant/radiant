@@ -2,6 +2,7 @@
 
 === Edge
 
+* New page parts should have the default filter_id. [Joe Van Dyk]
 * Show draft children by default on dev host. [Sean Cribbs]
 * Correct db:schema:dump error when in instance mode. [Pat Allan, Sean Cribbs]
 * Simplify set_javascripts_and_stylesheets. [Sean Cribbs]

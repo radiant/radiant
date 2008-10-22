@@ -6,6 +6,18 @@ describe PagePart do
   before :all do
     @part = @model = PagePart.new(PagePartTestHelper::VALID_PAGE_PART_PARAMS)
   end
+
+  it "should take the filter from the default filter" do
+    Radiant::Config['defaults.page.filter'] = "Textile"
+    part = PagePart.new :name => 'new-part'
+    part.filter_id.should == "Textile"
+  end
+
+  it "shouldn't override existing page_parts filters with the default filter" do
+    Radiant::Config['defaults.page.filter'] = "Textile"
+    part = PagePart.find(:first, :conditions => "filter_id != 'Textile'") # Find first page part that doesn't have the default filter
+    part.filter_id.should_not == "Textile"  # Filter shouldn't be the default one, obviously.
+  end
   
   it 'should validate length of' do
     {

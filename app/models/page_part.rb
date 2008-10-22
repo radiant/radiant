@@ -13,5 +13,9 @@ class PagePart < ActiveRecord::Base
   validates_numericality_of :id, :page_id, :allow_nil => true, :only_integer => true, :message => 'must be a number'
   
   object_id_attr :filter, TextFilter
-  
+
+  def after_initialize
+    self.filter_id ||= Radiant::Config['defaults.page.filter']
+  end
+
 end
