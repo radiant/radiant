@@ -6,8 +6,7 @@ class Admin::ResourceController < ApplicationController
   after_filter :clear_model_cache, :only => [:create, :update, :destroy]
   
   def self.model_class(model_class = nil)
-    @model_class = model_class.to_s.singularize.camelize.constantize unless model_class.nil?
-    @model_class
+    @model_class ||= (model_class || self.controller_name).to_s.singularize.camelize.constantize
   end
 
   def initialize

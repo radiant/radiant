@@ -29,6 +29,10 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   # Layouts Routes
+  map.namespace :admin, :member => { :remove => :get } do |admin|
+    admin.resources :layouts
+  end
+
   map.with_options(:controller => 'admin/layout') do |layout|
     layout.layout_index    'admin/layouts',                      :action => 'index'
     layout.layout_edit     'admin/layouts/edit/:id',             :action => 'edit'

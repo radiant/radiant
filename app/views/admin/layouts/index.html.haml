@@ -23,12 +23,12 @@
           - tbody.title_cell do
             %td.layout
               = image('layout', :alt => 'layout-icon')
-              = link_to layout.name, layout_edit_url(:id => layout)
+              = link_to layout.name, admin_edit_layout_url(layout)
           - tbody.modify_cell do
             %td.remove
-              = link_to image('remove', :alt => 'Remove Layout'), layout_remove_url(:id => layout)
+              = link_to image('remove', :alt => 'Remove Layout'), remove_admin_layout_url(layout)
 
 - render_region :bottom do |bottom|
   - bottom.new_button do
     %p
-      = link_to image('new-layout', :alt => "New Layout"), layout_new_url
+      = link_to image('new-layout', :alt => "New Layout"), new_admin_layout_url
