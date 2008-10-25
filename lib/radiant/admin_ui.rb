@@ -78,9 +78,9 @@ module Radiant
     attr_accessor :tabs
 
     # Region sets
-    [:page, :snippet, :layout, :user, :extension].each do |controller|
+    %w{page snippet layout user extension}.each do |controller|
       attr_accessor controller
-      alias_method controller.pluralize, controller
+      alias_method "#{controller}s", controller
     end
 
     def initialize
