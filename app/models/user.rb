@@ -34,7 +34,11 @@ class User < ActiveRecord::Base
   
   def self.authenticate(login, password)
     user = find_by_login(login)
-    user if user && user.password == user.sha1(password)
+    user if user && user.authenticated?(password)
+  end
+  
+  def authenticated?(password)
+    self.password == sha1(password)
   end
   
   def after_initialize
