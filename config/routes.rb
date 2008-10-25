@@ -40,18 +40,6 @@ ActionController::Routing::Routes.draw do |map|
     page.clear_cache       'admin/pages/cache/clear',            :action => 'clear_cache'    
   end
 
-  map.with_options(:controller => 'admin/layout') do |layout|
-    layout.layout_index    'admin/layouts',                      :action => 'index'
-    layout.layout_edit     'admin/layouts/edit/:id',             :action => 'edit'
-    layout.layout_new      'admin/layouts/new',                  :action => 'new'
-    layout.layout_remove   'admin/layouts/remove/:id',           :action => 'remove'  
-  end  
-                        
-  # Users Routes
-  map.with_options(:controller => 'admin/user') do |user|
-    user.user_preferences  'admin/preferences',                  :action => 'preferences'
-  end
-  
   # Site URLs
   map.with_options(:controller => 'site') do |site|
     site.homepage          '',                                   :action => 'show_page', :url => '/'
