@@ -7,6 +7,10 @@ ActionController::Routing::Routes.draw do |map|
     admin.resources :users
   end
 
+  map.namespace :admin do |admin|
+    admin.resources :extensions
+  end
+
   # Admin Routes
   map.with_options(:controller => 'admin/welcome') do |welcome|
     welcome.admin          'admin',                              :action => 'index'
@@ -44,17 +48,7 @@ ActionController::Routing::Routes.draw do |map|
                         
   # Users Routes
   map.with_options(:controller => 'admin/user') do |user|
-    user.user_index        'admin/users',                        :action => 'index'
-    user.user_edit         'admin/users/edit/:id',               :action => 'edit'
-    user.user_new          'admin/users/new',                    :action => 'new'
-    user.user_remove       'admin/users/remove/:id',             :action => 'remove'
     user.user_preferences  'admin/preferences',                  :action => 'preferences'
-  end
-  
-  # Extension Routes
-  map.with_options(:controller => 'admin/extension') do |extension|
-    extension.extension_index  'admin/extensions',                :action => 'index'
-    extension.extension_update 'admin/extensions/update',         :action => 'update'
   end
   
   # Site URLs

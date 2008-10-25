@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
-describe Admin::ExtensionController do
+describe Admin::ExtensionsController do
   scenario :users
   
   before :each do

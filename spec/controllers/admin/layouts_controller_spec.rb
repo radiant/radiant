@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
-describe Admin::LayoutController do
+describe Admin::LayoutsController do
   scenario :users, :pages_with_layouts
 
   before :each do
