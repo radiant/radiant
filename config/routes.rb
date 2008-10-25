@@ -1,5 +1,12 @@
 ActionController::Routing::Routes.draw do |map|
 
+  # Admin RESTful Routes
+  map.namespace :admin, :member => { :remove => :get } do |admin|
+    admin.resources :layouts
+    admin.resources :snippets
+    admin.resources :users
+  end
+
   # Admin Routes
   map.with_options(:controller => 'admin/welcome') do |welcome|
     welcome.admin          'admin',                              :action => 'index'
@@ -26,12 +33,6 @@ ActionController::Routing::Routes.draw do |map|
     page.tag_reference     'admin/ui/pages/tag_reference',       :action => 'tag_reference'
     page.filter_reference  'admin/ui/pages/filter_reference',    :action => 'filter_reference'
     page.clear_cache       'admin/pages/cache/clear',            :action => 'clear_cache'    
-  end
-
-  # Layouts Routes
-  map.namespace :admin, :member => { :remove => :get } do |admin|
-    admin.resources :layouts
-    admin.resources :snippets
   end
 
   map.with_options(:controller => 'admin/layout') do |layout|

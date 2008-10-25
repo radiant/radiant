@@ -1,4 +1,4 @@
-module Admin::UserHelper
+module Admin::UsersHelper
   def roles(user)
     roles = []
     roles << 'Administrator' if user.admin?

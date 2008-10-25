@@ -1,5 +1,7 @@
 - render_region :main do |main|
   - main.edit_header do
     %h1 Edit Layout
-  = render :partial => 'form', :locals => { :main => main, :layout => @layout }
+  - main.edit_form do
+    = render :partial => 'form'
+    
   

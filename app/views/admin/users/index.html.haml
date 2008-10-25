@@ -18,7 +18,7 @@
         - render_region :tbody do |tbody|
           - tbody.title_cell do
             %td.user
-              = link_to user.name, user_edit_url(:id => user)
+              = link_to user.name, edit_admin_user_url(user)
               %small.login= h user.login
           - tbody.roles_cell do
             %td.roles= roles(user)
@@ -27,9 +27,9 @@
               - if user == current_user
                 = image('remove-disabled', :alt => 'Remove')
               - else
-                = link_to(image('remove', :alt => 'Remove User'), user_remove_url(:id => user)) 
+                = link_to(image('remove', :alt => 'Remove User'), remove_admin_user_url(user)) 
 
 - render_region :bottom do |bottom|
   - bottom.new_button do
     %p
-      = link_to image('new-user', :alt => 'New User'), user_new_url, :title => "New User"
+      = link_to image('new-user', :alt => 'New User'), new_admin_user_url, :title => "New User"

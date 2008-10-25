@@ -14,22 +14,12 @@ class Admin::ResourceController < ApplicationController
     @cache = ResponseCache.instance
   end
 
-  def index
-    default_display_responses
+  [:index, :show, :new, :edit, :remove].each do |action|
+    define_method action do
+      default_display_responses
+    end
   end
 
-  def show
-    default_display_responses
-  end
-
-  def new
-    default_display_responses
-  end
-
-  def edit
-    default_display_responses
-  end
-  
   def create
     model.update_attributes!(params[model_symbol])
     default_modify_responses
