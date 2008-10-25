@@ -9,11 +9,11 @@ describe 'User preferences' do
   
   it 'should editable by owner' do
     navigate_to '/admin/preferences'
-    submit_form :user => {:password => 'me new one', :password_confirmation => 'me new one', :email => 'mine@nomail.net'}
+    submit_form :user => {:password => 'me new one', :password_confirmation => 'me new one', :email => 'mine@example.com'}
     response.body.should have_tag('#notice')
     response.should be_showing('/admin/pages')
     
-    current_user.reload.email.should == 'mine@nomail.net'
+    current_user.reload.email.should == 'mine@example.com'
     current_user.should be_authenticated('me new one')
   end
 end

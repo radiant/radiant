@@ -13,6 +13,13 @@ unless defined? SPEC_ROOT
   require 'spec'
   require 'spec/rails'
   require 'scenarios'
+  require 'spec/integration'
+  
+  module Kernel
+    def rputs(*args)
+      puts *["<pre>", args.collect {|a| CGI.escapeHTML(a.inspect)}, "</pre>"]
+    end
+  end
   
   class Test::Unit::TestCase
     class << self

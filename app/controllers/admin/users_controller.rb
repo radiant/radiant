@@ -4,12 +4,12 @@ class Admin::UsersController < Admin::ResourceController
     :denied_url => { :controller => 'page', :action => 'index' },
     :denied_message => 'You must have administrative privileges to perform this action.'
 
-  def remove
+  before_filter :ensure_deletable, :only => [:remove, :destroy]
+  
+  def ensure_deletable
     if current_user.id.to_s == params[:id].to_s
       announce_cannot_delete_self
       redirect_to admin_users_url
-    else
-      super
     end
   end
   

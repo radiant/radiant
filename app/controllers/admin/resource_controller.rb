@@ -97,7 +97,7 @@ class Admin::ResourceController < ApplicationController
       respond_to do |format|
         format.html do
           announce_validation_errors
-          render :action => template_name, :status => :unprocessible_entity
+          render :action => template_name
         end
         format.xml { render :xml => self.model_class.errors, :status => :unprocessible_entity }
       end
