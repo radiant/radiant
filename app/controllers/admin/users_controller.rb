@@ -12,31 +12,10 @@ class Admin::UsersController < Admin::ResourceController
       super
     end
   end
-
-  #   def preferences
-  #     @user = current_user
-  #     if valid_params?
-  #       handle_new_or_edit_post(
-  #         :redirect_to => page_index_url,
-  #         :saved_message => 'Your preferences have been saved.'
-  #       )
-  #     else
-  #       announce_bad_data
-  #     end
-  #   end
   
   private
   
     def announce_cannot_delete_self
       flash[:error] = 'You cannot delete yourself.'
-    end
-  
-    def announce_bad_data
-      flash[:error] = 'Bad form data.'
-    end
-    
-    def valid_params?
-      hash = (params[:user] || {}).symbolize_keys
-      (hash.keys - [:password, :password_confirmation, :email]).size == 0
-    end
+    end  
 end

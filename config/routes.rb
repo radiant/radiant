@@ -8,6 +8,7 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   map.namespace :admin do |admin|
+    admin.resource :preferences
     admin.resources :extensions
   end
 
