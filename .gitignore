@@ -5,3 +5,4 @@ pkg
 tmp/*
 .DS_Store
 .svn
+TAGS
