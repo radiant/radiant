@@ -31,6 +31,7 @@ ActionController::Routing::Routes.draw do |map|
   # Layouts Routes
   map.namespace :admin, :member => { :remove => :get } do |admin|
     admin.resources :layouts
+    admin.resources :snippets
   end
 
   map.with_options(:controller => 'admin/layout') do |layout|
@@ -39,14 +40,6 @@ ActionController::Routing::Routes.draw do |map|
     layout.layout_new      'admin/layouts/new',                  :action => 'new'
     layout.layout_remove   'admin/layouts/remove/:id',           :action => 'remove'  
   end  
-                       
-  # Snippets Routes
-  map.with_options(:controller => 'admin/snippet') do |snippet|
-    snippet.snippet_index  'admin/snippets',                     :action => 'index'
-    snippet.snippet_edit   'admin/snippets/edit/:id',            :action => 'edit'
-    snippet.snippet_new    'admin/snippets/new',                 :action => 'new'
-    snippet.snippet_remove 'admin/snippets/remove/:id',          :action => 'remove'
-  end
                         
   # Users Routes
   map.with_options(:controller => 'admin/user') do |user|

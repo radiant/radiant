@@ -1,5 +1,5 @@
 module LoginSystem
-  def self.append_features(base)
+  def self.included(base)
     base.class_eval %{
       before_filter :authenticate
       
@@ -31,6 +31,14 @@ module LoginSystem
     def authenticate
       action = params['action'].to_s.intern
       login_from_cookie
+      
+      if !current_user && params[:format] == 'xml'
+        authenticate_or_request_with_http_basic do |user_name, password| 
+          self.current_user = User.authenticate(user_name, password)
+        end
+        return false if self.current_user.nil?
+      end
+      
       if no_login_required? or (current_user and user_has_access_to_action?(action))
         true
       else

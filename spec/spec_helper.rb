@@ -59,6 +59,10 @@ unless defined? SPEC_ROOT
         def current_user
           controller.send :current_user
         end
+        
+        def encode_credentials(email_password)
+          ActionController::HttpAuthentication::Basic.encode_credentials(*email_password)
+        end
       end
     end
   end

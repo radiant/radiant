@@ -18,3 +18,26 @@ describe 'Snippets' do
     end.should change(Snippet, :count).by(1)
   end
 end
+
+describe 'Snippet as resource' do
+  scenario :users
+  
+  before do
+    @snippet = Snippet.create!(:name => 'Snippet', :content => 'Content')
+  end
+  
+  it 'should require authentication' do
+    get "/admin/snippets/#{@snippet.id}.xml"
+    response.headers.keys.should include('WWW-Authenticate')
+  end
+  
+  it 'should reject invalid creds' do
+    get "/admin/snippets/#{@snippet.id}.xml", nil, :authorization => encode_credentials(%w(admin badpassword))
+    response.headers.keys.should include('WWW-Authenticate')
+  end
+  
+  it 'should be obtainable by users' do
+    get "/admin/snippets/#{@snippet.id}.xml", nil, :authorization => encode_credentials(%w(admin password))
+    response.body.should match(/xml/)
+  end
+end

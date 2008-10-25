@@ -14,4 +14,10 @@ describe 'User permissions' do
     submit_form :user => {:login => 'developer', :password => 'password'}
     response.should be_showing('/admin/pages')
   end
+  
+  it 'should allow users to login' do
+    navigate_to '/admin/login'
+    submit_form :user => {:login => 'existing', :password => 'password'}
+    response.should be_showing('/admin/pages')
+  end
 end
