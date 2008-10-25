@@ -2,6 +2,10 @@ ActionController::Routing::Routes.draw do |map|
 
   # Admin RESTful Routes
   map.namespace :admin, :member => { :remove => :get } do |admin|
+    admin.resources :pages do |pages|
+      pages.resources :children, :controller => "admin/pages"
+      pages.resources :page_parts
+    end
     admin.resources :layouts
     admin.resources :snippets
     admin.resources :users
@@ -19,25 +23,11 @@ ActionController::Routing::Routes.draw do |map|
     welcome.login          'admin/login',                        :action => 'login'
     welcome.logout         'admin/logout',                       :action => 'logout'
   end
-  
+
   # Export Routes
   map.with_options(:controller => 'admin/export') do |export|
     export.export          'admin/export',                             :action => 'yaml'
     export.export_yaml     'admin/export/yaml',                        :action => 'yaml'
-  end
-
-  # Page Routes
-  map.with_options(:controller => 'admin/page') do |page|
-    page.page_index        'admin/pages',                        :action => 'index'
-    page.page_edit         'admin/pages/edit/:id',               :action => 'edit'
-    page.page_new          'admin/pages/:parent_id/child/new',   :action => 'new'
-    page.homepage_new      'admin/pages/new/homepage',           :action => 'new',        :slug => '/', :breadcrumb => 'Home'
-    page.page_remove       'admin/pages/remove/:id',             :action => 'remove'
-    page.page_add_part     'admin/ui/pages/part/add',            :action => 'add_part'
-    page.page_children     'admin/ui/pages/children/:id/:level', :action => 'children',   :level => '1'
-    page.tag_reference     'admin/ui/pages/tag_reference',       :action => 'tag_reference'
-    page.filter_reference  'admin/ui/pages/filter_reference',    :action => 'filter_reference'
-    page.clear_cache       'admin/pages/cache/clear',            :action => 'clear_cache'    
   end
 
   # Site URLs
@@ -49,5 +39,5 @@ ActionController::Routing::Routes.draw do |map|
     # Everything else
     site.connect           '*url',                               :action => 'show_page'
   end
-  
+
 end

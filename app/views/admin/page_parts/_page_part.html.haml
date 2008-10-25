@@ -1,0 +1,16 @@
+.page{:id => "page-#{index}"}
+  .part{:id => "part-#{index}"}
+    - fields_for "page[page_parts][]", part do |p|
+      = p.hidden_field :name, :id => "part_#{index}_name"
+      %p
+        %label{:for => "part_#{index}_filter_id"} Filter
+        = p.select :filter_id, [['<none>', '']] + TextFilter.descendants.map { |s| s.filter_name }.sort, :id => "part_#{index}_filter_id"
+        %span#reference-links
+          Reference:
+          %span{:id => "filter-reference-link-#{index}"}
+            = link_to_function "Filter", "load_filter_reference(#{index});"
+          %span{:id => "tag-reference-link-#{index}"}
+            = link_to_function 'Available Tags', "load_tag_reference(#{index});"
+        = render_region :part_controls, :locals => {:p => p}
+      %div
+        ~ p.text_area :content, :class => "textarea", :style => "width: 100%", :id => "part_#{index}_content"

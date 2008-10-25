@@ -1,0 +1,8 @@
+- render_region :main do |main|
+  - main.edit_header do
+    %h1 New Page
+  - main.edit_form do
+    = render :partial => "form"
+  - main.edit_popups do
+    = render :partial => "popups"
+= render :partial => "edit_styles"

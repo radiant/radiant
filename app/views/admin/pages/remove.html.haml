@@ -1,6 +1,6 @@
-- pages = pluralize(@page.children.count + 1, 'Page') 
+- pages = pluralize(@page.children.count + 1, 'Page')
 %h1
-  Remove 
+  Remove
   = pages
 
 %p
@@ -13,8 +13,8 @@
   %tbody
     = render_node @page, :simple => true
 
-- form_tag do
+- form_for [:admin, @page], :method => :delete do
   %p.buttons
     %input.button{:type=>"submit", :value=>"Delete Pages"}/
     or
-    = link_to 'Cancel', page_index_url
+    = link_to 'Cancel', admin_pages_url

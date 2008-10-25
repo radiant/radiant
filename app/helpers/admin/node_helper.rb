@@ -30,7 +30,7 @@ module Admin::NodeHelper
     show_all? || expanded_rows.include?(@current_node.id)
   end
 
-  def padding_left(level)
+  def padding_left
     (level * 22) + 4
   end
 
