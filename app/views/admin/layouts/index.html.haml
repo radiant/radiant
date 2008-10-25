@@ -23,7 +23,7 @@
           - tbody.title_cell do
             %td.layout
               = image('layout', :alt => 'layout-icon')
-              = link_to layout.name, admin_edit_layout_url(layout)
+              = link_to layout.name, edit_admin_layout_url(layout)
           - tbody.modify_cell do
             %td.remove
               = link_to image('remove', :alt => 'Remove Layout'), remove_admin_layout_url(layout)

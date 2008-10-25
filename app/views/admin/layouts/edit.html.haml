@@ -1,8 +1,5 @@
 - render_region :main do |main|
   - main.edit_header do
-    - if @layout.new_record?
-      %h1 New Layout
-    - else
-      %h1 Edit Layout
-  = render :partial => 'form', :locals => { :layout => @layout }
+    %h1 Edit Layout
+  = render :partial => 'form', :locals => { :main => main, :layout => @layout }
   

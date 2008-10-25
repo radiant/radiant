@@ -9,7 +9,7 @@
         = image('layout', :alt => 'layout-icon')
         = h @layout.name
 
-- form_tag do
+- form_for [:admin, @layout], :html => { :method => 'delete' } do
   %p.buttons
     %input.button{:type=>"submit", :value=>"Delete Layout"}/
     or
