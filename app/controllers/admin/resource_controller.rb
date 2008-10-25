@@ -3,11 +3,9 @@ class Admin::ResourceController < ApplicationController
   helper_method :model, :models, :model_symbol, :plural_model_symbol, :model_class, :model_name, :plural_model_name
   before_filter :load_models, :only => :index
   before_filter :load_model, :only => [:new, :create, :edit, :update, :remove, :destroy]
-  around_filter :default_display_responses, :only => [:index, :show, :new, :edit]
-  around_filter :default_modify_responses :only => [:create, :update, :destroy]
   
   def self.model_class(model_class = nil)
-    @model_class = model_class.to_s.camelize.constantize unless model_class.nil?
+    @model_class = model_class.to_s.singularize.camelize.constantize unless model_class.nil?
     @model_class
   end
 
@@ -15,17 +13,36 @@ class Admin::ResourceController < ApplicationController
     super
     @cache = ResponseCache.instance
   end
+
+  def index
+    default_display_responses
+  end
+
+  def show
+    default_display_responses
+  end
+
+  def new
+    default_display_responses
+  end
+
+  def edit
+    default_display_responses
+  end
   
   def create
     model.update_attributes!(params[model_symbol])
+    default_modify_responses
   end
 
   def update
     model.update_attributes!(params[model_symbol])
+    default_modify_responses
   end
   
   def destroy
     model.destroy
+    default_modify_responses
   end
   
   protected
@@ -53,20 +70,19 @@ class Admin::ResourceController < ApplicationController
     end
     
     def default_display_responses
-      yield
       respond_to do |format|
         format.html
-        case action_name
-        when 'index'
-          format.xml { render :xml => models }
-        else
-          format.xml { render :xml => model }
+        format.xml do
+          if action_name == 'index'
+            render :xml => models
+          else
+            render :xml => model
+          end
         end
       end
     end
     
     def default_modify_responses
-      yield
       respond_to do |format|
         format.html do
           if action_name == 'destroy'
