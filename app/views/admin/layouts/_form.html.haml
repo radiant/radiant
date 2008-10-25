@@ -26,7 +26,7 @@
           ~ f.text_area 'content', :size => '40x20', :style => 'width: 100%', :class => "textarea"
       - form.edit_timestamp do
         = updated_stamp @layout
-   = javascript_tag "$('layout_name').activate()"
+  = javascript_tag "$('layout_name').activate()"
   - render_region :form_bottom do |form_bottom|
     - form_bottom.edit_buttons do
       %p.buttons
