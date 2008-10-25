@@ -6,3 +6,5 @@ tmp/*
 .DS_Store
 .svn
 TAGS
+public/tmp
+

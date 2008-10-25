@@ -19,6 +19,7 @@ describe Radiant::AdminUI do
   it "should have collections of Region Sets for every controller" do
     %w{page snippet layout user}.each do |collection|
       @admin.should respond_to(collection)
+      @admin.should respond_to(collection.pluralize)
       @admin.send(collection).should_not be_nil
       @admin.send(collection).should be_kind_of(OpenStruct)
     end
