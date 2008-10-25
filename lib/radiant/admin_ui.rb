@@ -78,7 +78,10 @@ module Radiant
     attr_accessor :tabs
 
     # Region sets
-    attr_accessor :page, :snippet, :layout, :user, :extension
+    [:page, :snippet, :layout, :user, :extension].each do |controller|
+      attr_accessor controller
+      alias_method controller.pluralize, controller
+    end
 
     def initialize
       @tabs = TabSet.new
