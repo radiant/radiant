@@ -40,4 +40,9 @@ describe 'Snippet as resource' do
     get "/admin/snippets/#{@snippet.id}.xml", nil, :authorization => encode_credentials(%w(admin password))
     response.body.should match(/xml/)
   end
+  
+  it 'should be obtainable as list' do
+    get "/admin/snippets.xml", nil, :authorization => encode_credentials(%w(admin password))
+    response.body.should match(/snippets/)
+  end
 end
