@@ -113,7 +113,7 @@ module Radiant
           index.node.concat %w{title_column status_column add_child_column remove_column}
         end
         page.remove = page.children = page.index
-        page._part = page.edit
+        page.new = page._part = page.edit
       end
     end
 
@@ -135,6 +135,7 @@ module Radiant
           index.tbody.concat %w{title_cell roles_cell modify_cell}
           index.bottom.concat %w{new_button}
         end
+        user.new = user.edit
       end
     end
 
@@ -151,6 +152,7 @@ module Radiant
           index.tbody.concat %w{title_cell modify_cell}
           index.bottom.concat %w{new_button}
         end
+        snippet.new = snippet.edit
       end
     end
 
@@ -167,6 +169,7 @@ module Radiant
           index.tbody.concat %w{title_cell modify_cell}
           index.bottom.concat %w{new_button}
         end
+        layout.new = layout.edit
       end
     end
     
