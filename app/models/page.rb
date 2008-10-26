@@ -56,6 +56,7 @@ class Page < ActiveRecord::Base
     if collection.all? {|item| item.is_a? PagePart }
       self.parts_without_pending = collection
     else
+      self.updated_at_will_change!
       @page_parts = collection.map { |item| PagePart.new(item) }
     end
   end

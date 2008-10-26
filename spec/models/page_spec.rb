@@ -178,6 +178,13 @@ describe Page do
     @page.parts.first.content.should == 'Hello, world!'
   end
 
+  it "should dirty the page object when only changing parts" do
+    lambda do
+      @page.parts = [PagePart.new(:name => 'body', :content => 'Hello, world!')] 
+      @page.changed.should_not be_empty
+    end
+  end
+
   it "should discard pending parts on reload" do
     @page.parts = [{:name => 'body', :content => 'Hello, world!'}]
     @page.parts(true).first.content.should_not == 'Hello, world!'
@@ -192,11 +199,11 @@ describe Page do
 
   it 'should set published_at when published' do
     @page = Page.new(page_params(:status_id => '1', :published_at => nil))
-    assert_nil @page.published_at
+    @page.published_at.should be_nil
 
     @page.status_id = Status[:published].id
     @page.save
-    assert_not_nil @page.published_at
+    @page.published_at.should_not be_nil
     @page.published_at.day.should == Time.now.day
   end
 
@@ -289,9 +296,9 @@ describe Page do
   end
 
   it 'should support optimistic locking' do
-    p1, p2 = pages(:first), Page.find(page_id(:first))
-    p1.save!
-    lambda { p2.save! }.should raise_error(ActiveRecord::StaleObjectError)
+    p1, p2 = Page.find(page_id(:first)), Page.find(page_id(:first))
+    p1.update_attributes!(:breadcrumb => "foo")
+    lambda { p2.update_attributes!(:breadcrumb => "blah") }.should raise_error(ActiveRecord::StaleObjectError)
   end
 end
 
