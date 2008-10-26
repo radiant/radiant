@@ -1,5 +1,5 @@
-class Admin::PagesController < Admin::AbstractModelController
-  before_filter :initialize_meta_rows_and_buttons, :only => [:new, :edit]
+class Admin::PagesController < Admin::ResourceController
+  before_filter :initialize_meta_rows_and_buttons, :only => [:new, :edit, :create, :update]
 
   def index
     @homepage = Page.find_by_parent_id(nil)
@@ -8,14 +8,14 @@ class Admin::PagesController < Admin::AbstractModelController
       format.js do
         @level = params[:level].to_i
         response.headers['Content-Type'] = 'text/html;charset=utf-8'
-        render :template => 'children.html.haml', :layout => false 
+        render :template => 'children.html.haml', :layout => false
       end
       format.xml { render :xml => models }
     end
   end
 
   def new
-    self.model = Page.new_with_defaults(config)
+    self.model = model_class.new_with_defaults(config)
     super
   end
 
@@ -30,7 +30,6 @@ class Admin::PagesController < Admin::AbstractModelController
   end
 
   private
-  
     def model_class
       if params[:page_id]
         Page.find(params[:page_id]).children
@@ -58,29 +57,5 @@ class Admin::PagesController < Admin::AbstractModelController
       @meta << {:field => "breadcrumb", :type => "text_field", :args => [{:class => 'textbox', :maxlength => 160}]}
       @meta << {:field => "description", :type => "text_field", :args => [{:class => 'textbox', :maxlength => 200}]}
       @meta << {:field => "keywords", :type => "text_field", :args => [{:class => 'textbox', :maxlength => 200}]}
-    end
-
-    def save
-      parts = @page.parts
-      parts_to_update = {}
-      (params[:part]||{}).each {|k,v| parts_to_update[v[:name]] = v }
-
-      parts_to_remove = []
-      @page.parts.each do |part|
-        if(attrs = parts_to_update.delete(part.name))
-          part.attributes = part.attributes.merge(attrs)
-        else
-          parts_to_remove << part
-        end
-      end
-      parts_to_update.values.each do |attrs|
-        @page.parts.build(attrs)
-      end
-      if result = @page.save
-        new_parts = @page.parts - parts_to_remove
-        new_parts.each { |part| part.save }
-        @page.parts = new_parts
-      end
-      result
     end
 end

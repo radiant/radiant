@@ -2,10 +2,10 @@
   #add-part-popup.popup{:style => "display: none"}
     #busy.busy{:style => "display: none"}= image 'spinner.gif'
     %h3 Add Part
-    - form_remote_tag(:url => page_add_part_url, :update => "pages", :position => :bottom, :loading => 'part_loading()', :complete => 'part_added()', :condition => 'valid_part_name()') do
+    - remote_form_for([:admin, PagePart.new], :update => "pages", :position => :bottom, :loading => 'part_loading()', :complete => 'part_added()', :condition => 'valid_part_name()') do |f|
       %div
-        = hidden_field_tag 'index', @index, :id => 'part-index-field'
-        = text_field_tag "part[name]", "", :id => 'part-name-field', :maxlength => 100
+        = hidden_field_tag 'index', @page.parts.count + 1, :id => 'part-index-field'
+        = f.text_field :name, :id => 'part-name-field', :maxlength => 100
         = submit_tag "Add Part", :id => 'add-part-button'
       %p
         = link_to_function 'Close', "$(this).up('.popup').hide()", :class => 'close-link'

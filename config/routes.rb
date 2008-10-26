@@ -3,8 +3,7 @@ ActionController::Routing::Routes.draw do |map|
   # Admin RESTful Routes
   map.namespace :admin, :member => { :remove => :get } do |admin|
     admin.resources :pages do |pages|
-      pages.resources :children, :controller => "admin/pages"
-      pages.resources :page_parts
+      pages.resources :children, :controller => "pages"
     end
     admin.resources :layouts
     admin.resources :snippets
@@ -14,6 +13,8 @@ ActionController::Routing::Routes.draw do |map|
   map.namespace :admin do |admin|
     admin.resource :preferences
     admin.resources :extensions
+    admin.resources :page_parts
+    admin.resources :references
   end
 
   # Admin Routes
@@ -32,7 +33,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # Site URLs
   map.with_options(:controller => 'site') do |site|
-    site.homepage          '',                                   :action => 'show_page', :url => '/'
+    site.root                                                    :action => 'show_page', :url => '/'
     site.not_found         'error/404',                          :action => 'not_found'
     site.error             'error/500',                          :action => 'error'
 

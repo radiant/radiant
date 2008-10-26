@@ -1,5 +1,6 @@
 class Admin::PagePartsController < Admin::ResourceController
-  def new
+  def create
+    self.model.attributes = params[model_symbol]
     @controller_name = 'page'
     @action_name = 'edit'
     render :partial => "page_part", :object => model,

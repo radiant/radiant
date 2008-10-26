@@ -1,6 +1,6 @@
 .page{:id => "page-#{index}"}
   .part{:id => "part-#{index}"}
-    - fields_for "page[page_parts][]", part do |p|
+    - fields_for "page[page_parts][]", page_part do |p|
       = p.hidden_field :name, :id => "part_#{index}_name"
       %p
         %label{:for => "part_#{index}_filter_id"} Filter

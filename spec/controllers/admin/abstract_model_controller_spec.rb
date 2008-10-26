@@ -1,5 +1,5 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
-require 'admin/layout_controller'
+#require 'admin/layout_controller'
 
 class TestModelController < Admin::AbstractModelController
   model_class Layout

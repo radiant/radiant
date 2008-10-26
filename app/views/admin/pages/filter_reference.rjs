@@ -1,5 +1,0 @@
-page.replace_html 'filter-reference', filter_reference(@filter_name)
-page.replace_html 'filter-type', @display_name
-page << "center($('filter-reference-popup'));"
-page.assign 'last_filter', @filter_name
-page.show 'filter-reference-popup'
