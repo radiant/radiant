@@ -17,6 +17,7 @@ module Radiant
       self.extension_paths = default_extension_paths
       self.extensions = [ :all ]
       super
+      self.active_record.partial_updates = false # Necessary for specs and sanity
     end
 
     def default_extension_paths
