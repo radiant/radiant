@@ -14,6 +14,9 @@ module StringExtensions
   def to_slug
     self.strip.downcase.gsub(/[^-a-z0-9~\s\.:;+=_]/, '').gsub(/[\s\.:;=+]+/, '-')
   end
+  
+  alias_method :slugify, :to_slug
+  alias_method :slugerize, :to_slug
 end
 
 String.send :include, StringExtensions
