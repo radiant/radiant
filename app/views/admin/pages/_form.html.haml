@@ -25,8 +25,7 @@
               = link_to_function image('plus', :alt => 'plus'), 'toggle_add_part_popup()', :title => 'Add Tab'
               = link_to_function image('minus', :alt => 'minus'), 'if(confirm(\'Delete the current tab?\')) { tabControl.removeTab(tabControl.selected) }', :title => 'Remove Tab'
           #pages.pages
-            - @page.parts.each_with_index do |part, index|
-              = render :partial => 'admin/page_parts/page_part', :object => part, :locals => { :index => index }
+            = render :partial => 'admin/page_parts/page_part', :collection => @page.parts
         - render_region :parts_bottom do |parts_bottom|
           - parts_bottom.edit_layout_and_type do
             .row

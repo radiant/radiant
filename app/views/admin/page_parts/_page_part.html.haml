@@ -1,16 +1,16 @@
-.page{:id => "page-#{index}"}
-  .part{:id => "part-#{index}"}
-    - fields_for "page[parts][]", part do |p|
-      = p.hidden_field :name, :id => "part_#{index}_name"
+.page{:id => "page-#{page_part.name.to_slug}"}
+  .part{:id => "part-#{page_part.name.to_slug}"}
+    - fields_for "page[parts][]", page_part do |p|
+      = p.hidden_field :name, :id => "part_#{page_part.name.to_slug}_name"
       %p
-        %label{:for => "part_#{index}_filter_id"} Filter
-        = p.select :filter_id, [['<none>', '']] + TextFilter.descendants.map { |s| s.filter_name }.sort, :id => "part_#{index}_filter_id"
+        %label{:for => "part_#{page_part.name.to_slug}_filter_id"} Filter
+        = p.select :filter_id, [['<none>', '']] + TextFilter.descendants.map { |s| s.filter_name }.sort, :id => "part_#{page_part.name.to_slug}_filter_id"
         %span#reference-links
           Reference:
-          %span{:id => "filter-reference-link-#{index}"}
-            = link_to_function "Filter", "load_filter_reference(#{index});"
-          %span{:id => "tag-reference-link-#{index}"}
-            = link_to_function 'Available Tags', "load_tag_reference(#{index});"
+          %span{:id => "filter-reference-link-#{page_part.name.to_slug}"}
+            = link_to_function "Filter", "load_filter_reference(#{page_part.name.to_slug});"
+          %span{:id => "tag-reference-link-#{page_part.name.to_slug}"}
+            = link_to_function 'Available Tags', "load_tag_reference(#{page_part.name.to_slug});"
         = render_region :part_controls, :locals => {:p => p}
       %div
-        ~ p.text_area :content, :class => "textarea", :style => "width: 100%", :id => "part_#{index}_content"
+        ~ p.text_area :content, :class => "textarea", :style => "width: 100%", :id => "part_#{page_part.name.to_slug}_content"
