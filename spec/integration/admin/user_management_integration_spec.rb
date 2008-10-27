@@ -1,23 +1,25 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
-
+require 'ruby-debug'
 describe 'Managing users' do
   scenario :users
   
   describe 'as non-admin' do
+    before { login :existing }
+    
     it 'should not allow listing' do
-      login :existing
       navigate_to '/admin/users'
       response.should be_showing('/admin/pages')
       response.should have_tag('#error')
     end
     
-    {:new => :get, :edit => :get, :create => :post, :update => :put, :destroy => :delete}.each do |action, verb|
-      it "should not be allowed to #{action}" do
+    {:new => ['/admin/users/new', :get], :edit => ['/admin/users/1/edit', :get],
+       :create => ['/admin/users', :post], :update => ['/admin/users/1', :put], 
+       :destroy => ['/admin/users/1', :delete]}.each do |action, where|
+      it "should not be allowed to #{where[1].to_s.upcase} to #{action}" do
         login :existing
-        params = {}
-        params[:id] = '1' if verb != :get
-        send verb, params
-        response.should redirect_to('/admin/welcome')
+        navigate_to *where
+        response.should be_showing('/admin/pages')
+        response.should have_tag('#error')
       end
     end
   end
