@@ -13,7 +13,11 @@ module Admin::ReferencesHelper
     filter_name = params[:filter_name]
     unless filter_name.blank?
       filter_class = (filter_name.gsub(" ", "") + "Filter").constantize
-      filter_class.description.blank? ? "There is no documentation on this filter." : filter_class.description
+      if filter_class.description.blank? 
+        "There is no documentation on this filter." 
+      else
+        filter_class.description
+      end
     else
       "There is no filter on the current page part."
     end
