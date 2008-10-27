@@ -1,3 +1,4 @@
+require 'ruby-debug'
 class Admin::ResourceController < ApplicationController
   attr_accessor :cache
   helper_method :model, :models, :model_symbol, :plural_model_symbol, :model_class, :model_name, :plural_model_name

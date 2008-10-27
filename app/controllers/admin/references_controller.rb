@@ -1,5 +1,7 @@
 class Admin::ReferencesController < ApplicationController
   def show
-    render :action => params[:id]
+    respond_to do |format|
+      format.any { render :action => params[:id] }
+    end
   end
 end

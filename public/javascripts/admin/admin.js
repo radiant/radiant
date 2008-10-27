@@ -48,13 +48,15 @@ document.observe('dom:loaded', function() {
         });
       }
     });
+  });
 
-    popup.down('p a.close').observe('click', function(e) {
+  when($$('.popup p a.close'), function(links){
+    links.invoke('observe', 'click', function(e) {
       e.findElement('.popup').hide();
       e.stop();
     });
   });
-
+  
   when('publication-date', function(pub_date){
     if($('page_status_id')) {
       if($F('page_status_id') == '100')

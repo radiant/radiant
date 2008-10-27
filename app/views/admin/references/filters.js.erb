@@ -1,5 +1,5 @@
 $('filter-reference').update(<%= filter_reference.to_json %>);
-$('filter-type').update(<%= @display_name.to_json %>);
+$('filter-type').update(<%= _display_name.to_json %>);
 center($('filter-reference-popup'));
-window.last_filter = <%= @filter_name.to_json %>;
+last_filter = <%= params[:filter_name].to_json %>;
 $('filter-reference-popup').show();
