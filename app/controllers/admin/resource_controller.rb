@@ -60,56 +60,72 @@ class Admin::ResourceController < ApplicationController
     end
     
     def default_display_responses
-      respond_to do |format|
-        format.html
-        format.xml do
-          if action_name == 'index'
-            render :xml => models
-          else
-            render :xml => model
+      if format =~ /xml|json/
+        respond_to do |format|
+          format.xml do
+            if action_name == 'index'
+              render :xml => models
+            else
+              render :xml => model
+            end
+          end
+          format.json do
+            if action_name == 'index'
+              render :json => models
+            else
+              render :json => model
+            end
           end
         end
       end
     end
     
     def default_modify_responses
-      respond_to do |format|
-        format.html do
-          if action_name == 'destroy'
-            announce_removed
-          else
-            announce_saved
+      if action_name == 'destroy'
+        announce_removed
+      else
+        announce_saved
+      end
+      if format =~ /xml|json/
+        respond_to do |format|
+          case action_name
+          when 'create'
+            format.xml { render :xml => self.model, :status => :created, :location => url_for(:format => :xml, :id => self.model) }
+            format.json { render :json => self.model, :status => :created, :location => url_for(:format => :json, :id => self.model) }
+          when 'update'
+            format.xml { head :ok }
+            format.json { head :ok }
+          when 'destroy'
+            format.xml { head :deleted }
+            format.json { head :deleted }
           end
-          redirect_to continue_url(params)
         end
-        case action_name
-        when 'create'
-          format.xml { render :xml => self.model, :status => :created, :location => url_for(:format => :xml, :id => self.model) }
-        when 'update'
-          format.xml { head :ok }
-        when 'destroy'
-          format.xml { head :deleted }
-        end
+      else
+        redirect_to continue_url(params)
       end
     end
     
     def responses_for_invalid
-      respond_to do |format|
-        format.html do
-          announce_validation_errors
-          render :action => template_name
+      announce_validation_errors
+      if format =~ /xml|json/
+        respond_to do |format|
+          format.xml { render :xml => self.model_class.errors, :status => :unprocessible_entity }
+          format.json { render :json => self.model_class.errors, :status => :unprocessible_entity }
         end
-        format.xml { render :xml => self.model_class.errors, :status => :unprocessible_entity }
+      else
+        render :action => template_name
       end
     end
     
     def responses_for_stale
-      respond_to do |format|
-        format.html do 
-          announce_update_conflict
-          render :action => template_name, :status => :conflict
+      announce_update_conflict
+      if format =~ /xml|json/
+        respond_to do |format|
+          format.xml { head :conflict }
+          format.json { head :conflict }
         end
-        format.xml { head :conflict }
+      else
+        render :action => template_name
       end
     end
     
@@ -162,7 +178,7 @@ class Admin::ResourceController < ApplicationController
     end
 
     def continue_url(options)
-      options[:redirect_to] || (params[:continue] ? {:id => model.id} : {:action => "index"})
+      options[:redirect_to] || (params[:continue] ? {:action => template_name, :id => model.id} : {:action => "index"})
     end
 
     def announce_saved(message = nil)
@@ -183,5 +199,9 @@ class Admin::ResourceController < ApplicationController
 
     def clear_model_cache
       cache.clear
+    end
+    
+    def format
+      params[:format] || 'html'
     end
 end

@@ -19,10 +19,10 @@
           - tbody.title_cell do
             %td.snippet
               = image('snippet', :alt => 'snippet-icon')
-              %span= link_to snippet.name, snippet_edit_url(:id => snippet)
+              %span= link_to snippet.name, edit_admin_snippet_url(snippet)
           - tbody.modify_cell do
             %td.remove
-              = link_to image('remove', :alt => 'Remove Snippet'), snippet_remove_url(:id => snippet)
+              = link_to image('remove', :alt => 'Remove Snippet'), remove_admin_snippet_url(snippet)
 
 - render_region :bottom do |bottom|
   - bottom.new_button do
