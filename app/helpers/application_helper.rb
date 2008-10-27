@@ -145,6 +145,10 @@ module ApplicationHelper
     Radiant::AdminUI.instance
   end
   
+  def filter_options_for_select(selected=nil)
+    options_for_select([['<none>', '']] + TextFilter.descendants.map { |s| s.filter_name }.sort, selected)
+  end
+  
   private
   
     def append_image_extension(name)

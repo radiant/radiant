@@ -4,6 +4,8 @@ describe 'Pages' do
   scenario :users
   
   before do
+    Radiant::Config['defaults.page.parts'] = 'body'
+    Page.delete_all
     login :admin
   end
   
@@ -12,14 +14,13 @@ describe 'Pages' do
   end
   
   it 'should be able to create the home page' do
-    navigate_to '/admin/pages/new/homepage'
-    submit_form 'new_page', :continue => 'Save and Continue', :page => {:title => 'My Site', :parts => [{:name => 'body', :content => 'Under Construction'}], :status_id => Status[:published]}
+    navigate_to '/admin/pages/new'
+    submit_form 'new_page', :continue => 'Save and Continue', :page => {:title => 'My Site', :slug => '/', :breadcrumb => 'My Site', :parts => [{:name => 'body', :content => 'Under Construction'}], :status_id => Status[:published].id}
     response.should_not have_tag('#error')
-    response.body.should have_text('Under Construction')
-    response.body.should have_text('My Site')
+    response.should have_text(/Under\sConstruction/)
+    response.should have_text(/My Site/)
     
     navigate_to '/'
-    response.body.should have_text('Under Construction')
-    response.body.should have_text('My Site')
+    response.should have_text(/Under Construction/)
   end
 end

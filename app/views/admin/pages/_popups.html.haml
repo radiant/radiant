@@ -4,7 +4,6 @@
     %h3 Add Part
     - remote_form_for([:admin, PagePart.new], :update => "pages", :position => :bottom, :loading => 'part_loading()', :complete => 'part_added()', :condition => 'valid_part_name()') do |f|
       %div
-        = hidden_field_tag 'index', @page.parts.count + 1, :id => 'part-index-field'
         = f.text_field :name, :id => 'part-name-field', :maxlength => 100
         = submit_tag "Add Part", :id => 'add-part-button'
       %p

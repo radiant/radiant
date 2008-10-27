@@ -179,7 +179,7 @@ class Admin::ResourceController < ApplicationController
     end
 
     def continue_url(options)
-      options[:redirect_to] || (params[:continue] ? {:action => template_name, :id => model.id} : {:action => "index"})
+      options[:redirect_to] || (params[:continue] ? {:action => 'edit', :id => model.id} : {:action => "index"})
     end
 
     def announce_saved(message = nil)

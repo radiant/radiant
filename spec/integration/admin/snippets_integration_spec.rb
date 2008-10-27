@@ -17,6 +17,14 @@ describe 'Snippets' do
       submit_form :snippet => {:name => 'Mine', :content => 'Me Snippet'}
     end.should change(Snippet, :count).by(1)
   end
+
+  it "should redisplay the edit screen on 'Save & Continue Editing'" do
+    navigate_to '/admin/snippets/new'
+    submit_form :snippet => {:name => 'Mine', :content => 'Me Snippet'}, :continue => "Save and Continue"
+    response.should have_tag('form')
+    response.should have_tag('#notice')
+    response.should have_text(/Me Snippet/)
+  end
 end
 
 describe 'Snippet as resource' do
