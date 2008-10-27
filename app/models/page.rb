@@ -177,6 +177,10 @@ class Page < ActiveRecord::Base
     end
   end
   
+  def to_xml(options={}, &block)
+    super(options.reverse_merge(:include => :parts), &block)
+  end
+  
   class << self
     def find_by_url(url, live = true)
       root = find_by_parent_id(nil)
