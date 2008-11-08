@@ -91,7 +91,7 @@ table {
 }
 #navigation strong a, #navigation strong a:visited {
   background-color: white;
-  color: inherit;
+  color: black;
 }
 #navigation .separator {
   display: none;
