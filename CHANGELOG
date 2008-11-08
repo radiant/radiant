@@ -2,6 +2,8 @@
 
 === Edge
 
+* Correct CSS validation errors. [John Muhl]
+* Add String#to_slug. [Andrew O'Brien]
 * New page parts should have the default filter_id. [Joe Van Dyk]
 * Show draft children by default on dev host. [Sean Cribbs]
 * Correct db:schema:dump error when in instance mode. [Pat Allan, Sean Cribbs]
