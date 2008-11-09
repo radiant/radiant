@@ -1,6 +1,4 @@
-require 'ruby-debug'
 class Admin::ResourceController < ApplicationController
-  attr_accessor :cache
   helper_method :model, :models, :model_symbol, :plural_model_symbol, :model_class, :model_name, :plural_model_name
   before_filter :load_models, :only => :index
   before_filter :load_model, :only => [:new, :create, :edit, :update, :remove, :destroy]
@@ -10,29 +8,52 @@ class Admin::ResourceController < ApplicationController
     @model_class ||= (model_class || self.controller_name).to_s.singularize.camelize.constantize
   end
 
-  def initialize
-    super
-    @cache = ResponseCache.instance
+  # responses do |r|
+  #   r.plural.publish[:xml,:json] {|f| render f => models }
+  # 
+  #   r.singular.publish[:xml,:json] {|f| render f => model }
+  # 
+  #   r.invalid.publish[:xml, :json] {|f| render f => model.errors, :status => :unprocessible_entity }
+  #   r.invalid.default { render :action => template_name }
+  # 
+  #   r.stale.publish[:xml, :json] { head :conflict }
+  #   r.stale.default { render :action => template_name }
+  # 
+  #   r.create.publish[:xml, :json] {|f| render f => model, :status => :created, :location => url_for(:format => f, :id => model)}
+  #   r.create.default { redirect_to continue_url(params) }
+  # 
+  #   r.update.publish[:xml, :json] { head :ok }
+  #   r.update.default { redirect_to continue_url(params) }
+  # 
+  #   r.destroy.publish[:xml, :json] { head :deleted }
+  #   r.destroy.default { redirect_to continue_url(params) }
+  # end
+
+  def index
+    # response_for :plural
+    default_plural_display_responses
   end
 
-  [:index, :show, :new, :edit, :remove].each do |action|
+  [:show, :new, :edit, :remove].each do |action|
     define_method action do
-      default_display_responses
+      # response_for :singular
+      default_singular_display_responses
     end
   end
 
-  def create
-    model.update_attributes!(params[model_symbol])
-    default_modify_responses
-  end
-
-  def update
-    model.update_attributes!(params[model_symbol])
-    default_modify_responses
+  [:create, :update] do |action|
+    define_method action do
+      model.update_attributes!(params[model_symbol])
+      announce_saved
+      # response_for action
+      default_modify_responses
+    end
   end
   
   def destroy
     model.destroy
+    announce_removed
+    # response_for :destroy
     default_modify_responses
   end
   
@@ -41,8 +62,10 @@ class Admin::ResourceController < ApplicationController
     def rescue_action(exception)
       case exception
       when ActiveRecord::RecordInvalid
+        # response_for :invalid
         responses_for_invalid
       when ActiveRecord::StaleObjectError
+        # response_for :stale
         responses_for_stale
       else
         super
@@ -60,73 +83,54 @@ class Admin::ResourceController < ApplicationController
       end
     end
     
-    def default_display_responses
-      if format =~ /xml|json/
-        respond_to do |format|
-          format.xml do
-            if action_name == 'index'
-              render :xml => models
-            else
-              render :xml => model
-            end
-          end
-          format.json do
-            if action_name == 'index'
-              render :json => models
-            else
-              render :json => model
-            end
-          end
-        end
+    def default_plural_display_responses
+      respond_to do |format|
+        format.xml { render :xml => models }
+        format.json { render :json => models }
+        format.any
+      end
+    end
+    
+    def default_singular_display_responses
+      respond_to do |format|
+        format.xml { render :xml => model }
+        format.json { render :json => model }
+        format.any
       end
     end
     
     def default_modify_responses
-      if action_name == 'destroy'
-        announce_removed
-      else
-        announce_saved
-      end
-      if format =~ /xml|json/
-        respond_to do |format|
-          case action_name
-          when 'create'
-            format.xml { render :xml => self.model, :status => :created, :location => url_for(:format => :xml, :id => self.model) }
-            format.json { render :json => self.model, :status => :created, :location => url_for(:format => :json, :id => self.model) }
-          when 'update'
-            format.xml { head :ok }
-            format.json { head :ok }
-          when 'destroy'
-            format.xml { head :deleted }
-            format.json { head :deleted }
-          end
+      respond_to do |format|
+        case action_name
+        when 'create'
+          format.xml { render :xml => self.model, :status => :created, :location => url_for(:format => :xml, :id => self.model) }
+          format.json { render :json => self.model, :status => :created, :location => url_for(:format => :json, :id => self.model) }
+        when 'update'
+          format.xml { head :ok }
+          format.json { head :ok }
+        when 'destroy'
+          format.xml { head :deleted }
+          format.json { head :deleted }
         end
-      else
-        redirect_to continue_url(params)
+        format.any { redirect_to continue_url(params) }
       end
     end
     
     def responses_for_invalid
       announce_validation_errors
-      if format =~ /xml|json/
-        respond_to do |format|
-          format.xml { render :xml => self.model_class.errors, :status => :unprocessible_entity }
-          format.json { render :json => self.model_class.errors, :status => :unprocessible_entity }
-        end
-      else
-        render :action => template_name
+      respond_to do |format|
+        format.xml { render :xml => self.model.errors, :status => :unprocessible_entity }
+        format.json { render :json => self.model.errors, :status => :unprocessible_entity }
+        format.any { render :action => template_name }
       end
     end
     
     def responses_for_stale
       announce_update_conflict
-      if format =~ /xml|json/
-        respond_to do |format|
-          format.xml { head :conflict }
-          format.json { head :conflict }
-        end
-      else
-        render :action => template_name
+      respond_to do |format|
+        format.xml { head :conflict }
+        format.json { head :conflict }
+        format.any { render :action => template_name }
       end
     end
     
