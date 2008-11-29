@@ -6,7 +6,9 @@ class NoCachePage < Page
   end
 end
 
-class CustomFileNotFoundPage < FileNotFoundPage
+unless defined?(CustomFileNotFoundPage)
+  class CustomFileNotFoundPage < FileNotFoundPage
+  end
 end
 
 class TestPage < Page

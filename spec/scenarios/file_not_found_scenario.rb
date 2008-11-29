@@ -1,5 +1,8 @@
 require 'file_not_found_page'
-class CustomFileNotFoundPage < FileNotFoundPage
+
+unless defined?(CustomFileNotFoundPage)
+  class CustomFileNotFoundPage < FileNotFoundPage
+  end
 end
 
 class FileNotFoundScenario < Scenario::Base

@@ -1,12 +1,5 @@
 #!/usr/bin/env ruby
-ENV['RAILS_ENV'] = 'test'
-require File.dirname(__FILE__) + "/../config/environment"
-
-# Make it include the default option file
-unless ARGV.include?("-o")
-  ARGV.unshift "#{RADIANT_ROOT}/spec/spec.opts"
-  ARGV.unshift "-o"
-end
-
+$LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__) + "/../vendor/plugins/rspec/lib"))
+require 'rubygems'
 require 'spec'
-exit ::Spec::Runner::CommandLine.run(::Spec::Runner::OptionParser.parse(ARGV, $stderr, $stdout))
+exit ::Spec::Runner::CommandLine.run(::Spec::Runner::OptionParser.parse(ARGV, STDERR, STDOUT))

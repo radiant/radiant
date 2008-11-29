@@ -9,23 +9,23 @@ class Admin::ResourceController < ApplicationController
   end
 
   # responses do |r|
-  #   r.plural.publish[:xml,:json] {|f| render f => models }
+  #   r.plural.publish(:xml, :json) { render format_symbol => models }
   # 
-  #   r.singular.publish[:xml,:json] {|f| render f => model }
+  #   r.singular.publish(:xml, :json) { render format_symbol => model }
   # 
-  #   r.invalid.publish[:xml, :json] {|f| render f => model.errors, :status => :unprocessible_entity }
+  #   r.invalid.publish(:xml, :json) { render format_symbol => model.errors, :status => :unprocessible_entity }
   #   r.invalid.default { render :action => template_name }
   # 
-  #   r.stale.publish[:xml, :json] { head :conflict }
+  #   r.stale.publish(:xml, :json) { head :conflict }
   #   r.stale.default { render :action => template_name }
   # 
-  #   r.create.publish[:xml, :json] {|f| render f => model, :status => :created, :location => url_for(:format => f, :id => model)}
+  #   r.create.publish(:xml, :json) { render format_symbol => model, :status => :created, :location => url_for(:format => f, :id => model)}
   #   r.create.default { redirect_to continue_url(params) }
   # 
-  #   r.update.publish[:xml, :json] { head :ok }
+  #   r.update.publish(:xml, :json) { head :ok }
   #   r.update.default { redirect_to continue_url(params) }
   # 
-  #   r.destroy.publish[:xml, :json] { head :deleted }
+  #   r.destroy.publish(:xml, :json) { head :deleted }
   #   r.destroy.default { redirect_to continue_url(params) }
   # end
 
@@ -41,7 +41,7 @@ class Admin::ResourceController < ApplicationController
     end
   end
 
-  [:create, :update] do |action|
+  [:create, :update].each do |action|
     define_method action do
       model.update_attributes!(params[model_symbol])
       announce_saved
