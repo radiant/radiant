@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Add generator specs and more generators. [Brian Landau]
 * Add initial integration specs. [Adam Williams, Mark Imbriaco]
 * Refactor admin controllers and views toward RESTful principles. 
 [Sean Cribbs, Clinton Nixon, Rick DeNatale]
