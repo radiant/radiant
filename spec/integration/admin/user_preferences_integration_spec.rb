@@ -8,7 +8,7 @@ describe 'User preferences' do
   end
   
   it 'should editable by owner' do
-    navigate_to '/admin/preferences'
+    navigate_to '/admin/preferences/edit'
     submit_form :user => {:password => 'me new one', :password_confirmation => 'me new one', :email => 'mine@example.com'}
     response.body.should have_tag('#notice')
     response.should be_showing('/admin/pages')

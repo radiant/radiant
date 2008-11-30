@@ -26,11 +26,11 @@
               %td.field
                 = f.text_field "email", :class => 'textbox', :maxlength => 255
               %td.help Optional.
-        - render_region :form_bottom do |form_bottom|
-          - form_bottom.edit_buttons do
-            %p.buttons
-              = save_model_button @user
-              or
-              = link_to 'Cancel', admin_url
+      - render_region :form_bottom do |form_bottom|
+        - form_bottom.edit_buttons do
+          %p.buttons
+            = save_model_button @user
+            or
+            = link_to 'Cancel', admin_url
 
     = javascript_tag "$('user_password').activate();"
