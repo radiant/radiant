@@ -4,8 +4,6 @@ describe Admin::UsersController do
   scenario :users
   test_helper :logging
   
-  integrate_views
-  
   it "should be a ResourceController" do
     controller.should be_kind_of(Admin::ResourceController)
   end
@@ -21,7 +19,7 @@ describe Admin::UsersController do
     actions.each do |action|
       it "should require login to access the #{action} action" do
         logout
-        lambda { send(method, action).should require_login }
+        lambda { send(method, action, :id => user_id(:existing)).should require_login }
       end
 
       it "should allow you to access to #{action} action if you are an admin" do

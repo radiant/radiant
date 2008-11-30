@@ -18,7 +18,7 @@ class Admin::PreferencesController < ApplicationController
     if valid_params?
       if @user.update_attributes(params[:user])
         flash[:notice] = 'Your preferences have been updated.'
-        redirect_to page_index_url
+        redirect_to admin_pages_path
       else
         flash[:error] = 'There was an error updating your preferences.'
         render :action => 'edit'

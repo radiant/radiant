@@ -6,7 +6,7 @@ describe Admin::WelcomeController do
   it "should redirect to page tree on get to /admin/welcome" do
     get :index
     response.should be_redirect
-    response.should redirect_to(page_index_url)
+    response.should redirect_to(admin_pages_path)
   end
   
   it "should render the login screen on get to /admin/login" do

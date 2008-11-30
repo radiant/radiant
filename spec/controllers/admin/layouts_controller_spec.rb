@@ -29,29 +29,28 @@ describe Admin::LayoutsController do
         lambda { 
           send(method, action, :id => layout_id(:main)) 
         }.should restrict_access(:allow => [users(:developer)], 
-                                 :url => '/admin/page')
+                                 :url => '/admin/pages')
       end
 
       it "should allow access to admins for the #{action} action" do
         lambda { 
           send(method, action, :id => layout_id(:main)) 
         }.should restrict_access(:allow => [users(:developer)], 
-                                 :url => '/admin/page')
+                                 :url => '/admin/pages')
       end
       
       it "should deny non-developers and non-admins for the #{action} action" do
         lambda { 
-          send(method, action) 
+          send(method, action, :id => layout_id(:main)) 
         }.should restrict_access(:deny => [users(:non_admin), users(:existing)],
-                                 :url => '/admin/page')
+                                 :url => '/admin/pages')
       end
     end
   end
 
-  it "should clear the cache of associated pages when saved" do
-    ResponseCache.instance.should_receive(:expire_response).with(pages(:utf8).url)
+  it "should clear the page cache when saved" do
+    ResponseCache.instance.should_receive(:clear)
     put :update, :id => layout_id(:utf8), :layout => {:content_type => "application/xhtml+xml;charset=utf8"}
-    response.should be_redirect
   end
 
 end

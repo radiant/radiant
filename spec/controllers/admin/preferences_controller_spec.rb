@@ -4,11 +4,9 @@ describe Admin::PreferencesController do
   scenario :users
   test_helper :logging
   
-  integrate_views
-
   it "should allow you to view your preferences" do
     user = login_as(:non_admin)
-    get :edit, :user => { :email => 'updated@email.com' }
+    get :edit
     response.should be_success
     assigned_user = assigns(:user)
     assigned_user.should == user
@@ -20,7 +18,7 @@ describe Admin::PreferencesController do
     login_as :non_admin
     put :update, :user => { :password => '', :password_confirmation => '', :email => 'updated@gmail.com' }
     user = users(:non_admin)
-    response.should redirect_to(page_index_url)
+    response.should redirect_to(admin_pages_path)
     flash[:notice].should match(/preferences.*?updated/i)
     user.email.should == 'updated@gmail.com'
   end
@@ -41,7 +39,4 @@ describe Admin::PreferencesController do
     rails_log.should_not match(/"password"=>"funtimes"/)
     rails_log.should_not match(/"password_confirmation"=>"funtimes"/)
   end
-
-
-
 end

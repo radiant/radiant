@@ -23,7 +23,7 @@ describe Admin::SnippetsController do
     actions.each do |action|
       it "should require login to access the #{action} action" do
         logout
-        lambda { send(method, action) }.should require_login
+        lambda { send(method, action, :id => snippet_id(:first)) }.should require_login
       end
 
       it "should allow access to developers for the #{action} action" do
@@ -42,7 +42,7 @@ describe Admin::SnippetsController do
       
       it "should allow non-developers and non-admins for the #{action} action" do
         lambda { 
-          send(method, action) 
+          send(method, action, :id => snippet_id(:first)) 
         }.should restrict_access(:allow => [users(:non_admin), users(:existing)],
                                  :url => '/admin/pages')
       end
