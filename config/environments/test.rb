@@ -31,6 +31,6 @@ config.action_controller.allow_forgery_protection    = false
 # ActionMailer::Base.deliveries array.
 config.action_mailer.delivery_method = :test
 
-# Make sure Rspec is in the load path
-config.load_paths << "#{RADIANT_ROOT}/vendor/plugins/rspec/lib"
-config.load_paths << "#{RADIANT_ROOT}/vendor/plugins/rspec_on_rails/lib"
+# Make sure Rspec is required.
+config.gem 'rspec'
+config.gem 'rspec-rails'
