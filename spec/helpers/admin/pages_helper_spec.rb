@@ -4,7 +4,7 @@ class MarkdownPlusFilter
   # dummy filter class
 end
 
-describe Admin::PageHelper do
+describe Admin::PagesHelper do
   scenario :users_and_pages
 
   before :each do
@@ -27,18 +27,24 @@ describe Admin::PageHelper do
 
   it "should render the tag reference" do
     helper.should_receive(:render).at_least(:once).and_return("Tag Reference")
-    helper.tag_reference("Page").should =~ /Tag Reference/
+    helper.tag_reference.should =~ /Tag Reference/
   end
 
-  describe "#filter_reference" do
+  describe "filter_reference" do
+    it "should determine the filter reference from the first part on the current page" do
+      helper.instance_variable_set :@page, pages(:home)
+      helper.filter.should be_kind_of(TextFilter)
+    end
+    
     it "should render the filter reference" do
-      helper.filter_reference("Textile").should == TextileFilter.description
-      helper.filter_reference("").should == "There is no filter on the current page part."
+      helper.stub!(:filter).and_return(TextileFilter)
+      helper.filter_reference.should == TextileFilter.description
     end
     
     it "should render the filter reference for complex filter names" do
       MarkdownPlusFilter.stub!(:description).and_return("Markdown rocks!")
-      helper.filter_reference("Markdown Plus").should == "Markdown rocks!"
+      helper.stub!(:filter).and_return(MarkdownPlusFilter)
+      helper.filter_reference.should == "Markdown rocks!"
     end
   end
 
@@ -52,6 +58,6 @@ describe Admin::PageHelper do
   end
   
   it "should render javascript for the page editing form" do
-    self.should respond_to(:page_edit_javascripts)
+    helper.should respond_to(:page_edit_javascripts)
   end
 end

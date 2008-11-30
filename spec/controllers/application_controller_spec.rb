@@ -12,6 +12,10 @@ describe ApplicationController do
     controller.config.should == Radiant::Config
   end
 
+  it "should initialze the cache" do
+    controller.cache.should == ResponseCache.instance
+  end
+
   it 'should set the current user for the UserActionObserver' do
     ApplicationController.filter_chain.find(:set_current_user).should_not be_nil
     UserActionObserver.current_user = nil
