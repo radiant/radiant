@@ -17,7 +17,7 @@ task :stats => "spec:statsetup"
 
 desc 'Run all specs in spec directory (excluding plugin & generator specs)'
 task :spec => spec_prereq do
-  errors = %w(spec:models spec:controllers spec:views spec:helpers spec:lib spec:generators).collect do |task|
+  errors = %w(spec:integration spec:models spec:controllers spec:views spec:helpers spec:lib spec:generators).collect do |task|
     begin
       puts %{\nRunning #{task.gsub('spec:', '').titlecase} Spec Task}
       Rake::Task[task].invoke
@@ -111,6 +111,7 @@ namespace :spec do
     ::STATS_DIRECTORIES << %w(Controller\ specs spec/controllers) if File.exist?('spec/controllers')
     ::STATS_DIRECTORIES << %w(Helper\ specs spec/helpers) if File.exist?('spec/helpers')
     ::STATS_DIRECTORIES << %w(Library\ specs spec/lib) if File.exist?('spec/lib')
+    ::STATS_DIRECTORIES << %w(Integration\ specs spec/integration) if File.exist?('spec/integration')
     ::STATS_DIRECTORIES << %w(Generator\ specs spec/generators) if File.exist?('spec/generators')
     ::CodeStatistics::TEST_TYPES << "Model specs" if File.exist?('spec/models')
     ::CodeStatistics::TEST_TYPES << "View specs" if File.exist?('spec/views')
