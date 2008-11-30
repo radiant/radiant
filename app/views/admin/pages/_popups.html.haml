@@ -15,16 +15,16 @@
       %input#search-tag-reference{ :type => "text" }/
     %h3
       Available Tags for
-      %span#page-type
-    #tag-reference
+      %span#page-type= @page.class.display_name
+    #tag-reference= tag_reference
     %p
       = link_to 'Close', '#', :class => 'close'
 
   #filter-reference-popup.popup{ :style => "display:none;" }
     %h3
-      %span#filter-type
+      %span#filter-type= filter.filter_name
       Reference
-    #filter-reference
+    #filter-reference= filter_reference
     %p
       = link_to 'Close', "#", :class => 'close'
   = render_region :popups

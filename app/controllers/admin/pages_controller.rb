@@ -7,8 +7,9 @@ class Admin::PagesController < Admin::ResourceController
       format.html
       format.js do
         @level = params[:level].to_i
+        @template_name = 'index'
         response.headers['Content-Type'] = 'text/html;charset=utf-8'
-        render :template => 'children.html.haml', :layout => false
+        render :action => 'children.html.haml', :layout => false
       end
       format.xml { render :xml => models }
     end
@@ -17,16 +18,6 @@ class Admin::PagesController < Admin::ResourceController
   def new
     self.model = model_class.new_with_defaults(config)
     super
-  end
-
-  def tag_reference
-    @class_name = params[:class_name]
-    @display_name = @class_name.constantize.display_name
-  end
-
-  def filter_reference
-    @filter_name = params[:filter_name]
-    @display_name = (@filter_name + "Filter").constantize.filter_name rescue "&lt;none&gt;"
   end
 
   private

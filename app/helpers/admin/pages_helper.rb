@@ -1,6 +1,15 @@
 module Admin::PagesHelper
   include Admin::NodeHelper
-
+  include Admin::ReferencesHelper
+  
+  def class_of_page
+    @page.class
+  end
+  
+  def filter
+    @page.parts.first.filter
+  end
+  
   def meta_errors?
     !!(@page.errors[:slug] or @page.errors[:breadcrumb])
   end
@@ -45,7 +54,6 @@ module Admin::PagesHelper
       }
       return false;
     }
-    
     CODE
   end
 end
