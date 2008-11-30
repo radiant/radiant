@@ -17,6 +17,14 @@ describe 'Snippets' do
       submit_form :snippet => {:name => 'Mine', :content => 'Me Snippet'}
     end.should change(Snippet, :count).by(1)
   end
+  
+  it "should display form errors" do
+    navigate_to '/admin/snippets/new'
+    lambda do
+      submit_form :snippet => {:content => 'Me snippet'}
+    end.should_not change(Snippet, :count)
+    response.should have_tag("#error")
+  end
 
   it "should redisplay the edit screen on 'Save & Continue Editing'" do
     navigate_to '/admin/snippets/new'
