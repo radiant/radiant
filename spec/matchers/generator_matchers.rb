@@ -74,7 +74,7 @@ module Spec
           end
           
           dir.should have_generated_file("#{path}.rb") do |body|
-            body.should match /class #{class_name}#{parent.nil? ? '':" < #{parent}"}\n((\n|\s*.*\n)*)end/
+            body.should match(/class #{class_name}#{parent.nil? ? '':" < #{parent}"}\n((\n|\s*.*\n)*)end/)
             yield $1 if block_given?
           end
         end
@@ -93,7 +93,7 @@ module Spec
           end
           
           dir.should have_generated_file("#{path}.rb") do |body|
-            body.should match /module #{module_name}#{parent.nil? ? '':" < #{parent}"}\n((\n|\s*.*\n)*)end/
+            body.should match(/module #{module_name}#{parent.nil? ? '':" < #{parent}"}\n((\n|\s*.*\n)*)end/)
             yield $1 if block_given?
           end
         end
@@ -113,7 +113,7 @@ module Spec
           
           dir.should have_generated_file("#{path}_spec.rb") do |body|
             if class_name
-              body.should match /describe #{class_name} do\n((\s*.*\n)+)\nend/
+              body.should match(/describe #{class_name} do\n((\s*.*\n)+)\nend/)
               yield $1 if block_given?
             else
               yield body if block_given?
@@ -155,7 +155,7 @@ module Spec
       def have_generated_view_specs_for(name, *actions)
         simple_matcher "directory should contain generated view specs" do |dir, matcher|
           actions.each do |action|
-            dir.should have_generated_spec "spec/views/#{name.to_s.underscore}/#{action.to_s.underscore}_view", false do |body|
+            dir.should have_generated_spec("spec/views/#{name.to_s.underscore}/#{action.to_s.underscore}_view", false) do |body|
               yield body if block_given?
             end
           end
@@ -185,7 +185,7 @@ module Spec
           root_path = File.expand_path(File.join(RADIANT_ROOT, dir))
           file = Dir.glob("#{root_path}/db/migrate/*_#{name.to_s.underscore}.rb").first
           file = file.match(/db\/migrate\/[0-9]+_\w+/).to_s
-          dir.should have_generated_class file, parent do |body|
+          dir.should have_generated_class(file, parent) do |body|
             yield body if block_given?
           end
         end
@@ -220,7 +220,7 @@ module Spec
       def have_methods(*methods)
         simple_matcher "file body contains generated method definition" do |body, matcher|
           methods.each do |name|
-            body.should match /^  def #{name}(\(.+\))?\n((\n|   .*\n)*)  end/
+            body.should match(/^  def #{name}(\(.+\))?\n((\n|   .*\n)*)  end/)
             yield(name, $2) if block_given?
           end
         end
@@ -228,7 +228,7 @@ module Spec
       
       def have_generated_column(name, type)
         simple_matcher "migration defines column" do |body, matcher|
-          body.should match /t\.#{type.to_s} :#{name.to_s}/
+          body.should match(/t\.#{type.to_s} :#{name.to_s}/)
         end
       end
       
