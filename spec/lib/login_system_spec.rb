@@ -15,6 +15,15 @@ class StubController < ActionController::Base
 end
 
 describe NoLoginRequiredController = StubController.subclass('NoLoginRequiredController') { no_login_required }, :type => :controller do
+  test_helper :routing
+  before :each do
+    setup_custom_routes
+  end
+  
+  after :each do
+    teardown_custom_routes
+  end
+  
   it "should not require authentication" do
     get :index
     response.should be_success
@@ -22,6 +31,15 @@ describe NoLoginRequiredController = StubController.subclass('NoLoginRequiredCon
 end
 
 describe LoginRequiredController = StubController.subclass('LoginRequiredController') { }, :type => :controller do
+  test_helper :routing
+  before :each do
+    setup_custom_routes
+  end
+  
+  after :each do
+    teardown_custom_routes
+  end
+  
   scenario :users
 
   it "should authenticate with user in session" do
@@ -43,6 +61,15 @@ describe LoginRequiredController = StubController.subclass('LoginRequiredControl
 end
 
 describe StubController, :type => :controller do
+  test_helper :routing
+  before :each do
+    setup_custom_routes
+  end
+  
+  after :each do
+    teardown_custom_routes
+  end
+  
   it "should add self to controllers_where_no_login_required" do
     StubController.controllers_where_no_login_required.should include(NoLoginRequiredController)
   end
@@ -105,6 +132,14 @@ describe StubController, :type => :controller do
 end
 
 describe NoLoginRequiredChildController = NoLoginRequiredController.subclass('NoLoginRequiredChildController') { }, :type => :controller do
+  test_helper :routing
+  before :each do
+    setup_custom_routes
+  end
+  
+  after :each do
+    teardown_custom_routes
+  end
   it "should inherit no_login_required" do
     StubController.controllers_where_no_login_required.should include(NoLoginRequiredChildController)
   end
@@ -113,12 +148,28 @@ end
 describe LoginRequiredGrandChildController = NoLoginRequiredChildController.subclass('LoginRequiredGrandChildController') {
     login_required
   }, :type => :controller do
+    test_helper :routing
+    before :each do
+      setup_custom_routes
+    end
+
+    after :each do
+      teardown_custom_routes
+    end
     it "should override parent with login_required" do
       StubController.controllers_where_no_login_required.should_not include(LoginRequiredGrandChildController)
     end
 end
 
 describe LoginRequiredGreatGrandChildController = LoginRequiredGrandChildController.subclass('LoginRequiredGreatGrandChildController') { }, :type => :controller do
+  test_helper :routing
+  before :each do
+    setup_custom_routes
+  end
+  
+  after :each do
+    teardown_custom_routes
+  end
   it "should inherit login_required" do
     StubController.controllers_where_no_login_required.should_not include(LoginRequiredGreatGrandChildController)
   end
@@ -127,10 +178,18 @@ end
 describe LoginRequiredController.subclass('OnlyAllowAccessToWhenController') {
   only_allow_access_to :edit, :new, 
                        :when => [:admin, :developer], 
-                       :denied_url => { :action => :test }, 
+                       :denied_url => '/login_required', 
                        :denied_message => 'Fun.'
   }, :type => :controller do
   scenario :users
+  test_helper :routing
+  before :each do
+    setup_custom_routes
+  end
+  
+  after :each do
+    teardown_custom_routes
+  end
   
   it "should only allow access when user in roles" do
     login_as :admin
@@ -141,7 +200,7 @@ describe LoginRequiredController.subclass('OnlyAllowAccessToWhenController') {
   it "should not allow access when user not in roles" do
     login_as :non_admin
     get :edit
-    response.should redirect_to(:action => :test)
+    response.should redirect_to('/login_required')
     flash[:error].should eql('Fun.')
   end
   
@@ -155,15 +214,23 @@ end
 describe LoginRequiredController.subclass('OnlyAllowAccessToWhenDefaultsController') {
     only_allow_access_to :edit, 
                          :when => :admin, 
-                         :denied_url => { :action => :test }, 
+                         :denied_url => '/login_required', 
                          :denied_message => 'Fun.'
   }, :type => :controller do
   scenario :users
+  test_helper :routing
+  before :each do
+    setup_custom_routes
+  end
+  
+  after :each do
+    teardown_custom_routes
+  end
   
   it "should not allow access when user not in default roles" do
     login_as :non_admin
     get :edit
-    response.should redirect_to(:action => :test)
+    response.should redirect_to('/login_required')
     flash[:error].should eql('Fun.')
   end
 end
@@ -172,10 +239,18 @@ describe LoginRequiredController.subclass('OnlyAllowAccessToIfController') {
     attr_writer :condition
     define_method(:condition?, proc { @condition ||= false })
     only_allow_access_to :edit, :if => :condition?, 
-                         :denied_url => { :action => :test }, 
+                         :denied_url => '/login_required', 
                          :denied_message => 'Fun.'
   }, :type => :controller do
   scenario :users
+  test_helper :routing
+  before :each do
+    setup_custom_routes
+  end
+  
+  after :each do
+    teardown_custom_routes
+  end
   
   it "should allow access if condition is true" do
     controller.condition = true
@@ -188,7 +263,7 @@ describe LoginRequiredController.subclass('OnlyAllowAccessToIfController') {
     controller.condition = false
     login_as :existing
     get :edit
-    response.should redirect_to(:action => :test)
+    response.should redirect_to('/login_required')
   end
 
 end
