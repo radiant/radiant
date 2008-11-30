@@ -16,10 +16,10 @@ class Admin::ResourceController < ApplicationController
     r.singular.publish(:xml, :json) { render format_symbol => model }
 
     r.invalid.publish(:xml, :json) { render format_symbol => model.errors, :status => :unprocessible_entity }
-    r.invalid.default { render :action => template_name }
+    r.invalid.default {  announce_validation_errors; render :action => template_name }
 
     r.stale.publish(:xml, :json) { head :conflict }
-    r.stale.default { render :action => template_name }
+    r.stale.default { announce_update_conflict; render :action => template_name }
 
     r.create.publish(:xml, :json) { render format_symbol => model, :status => :created, :location => url_for(:format => format_symbol, :id => model) }
     r.create.default { redirect_to continue_url(params) }

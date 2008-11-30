@@ -20,4 +20,5 @@ describe 'User permissions' do
     submit_form :user => {:login => 'existing', :password => 'password'}
     response.should be_showing('/admin/pages')
   end
+  
 end

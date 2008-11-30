@@ -47,7 +47,7 @@ describe 'Managing users' do
     it 'should display form errors' do
       navigate_to '/admin/users/new'
       lambda do
-        submit_form :user => valid_user_attributes.merge(:login => '')
+        submit_form :user => valid_user_attributes.merge(:login => nil)
       end.should_not change(User, :count)
       response.should have_tag('#error')
     end
