@@ -1,7 +1,7 @@
 require 'rails_generator/base'
-require 'rails_generator/generators/components/model/model_generator'
+require 'rails_generator/generators/components/mailer/mailer_generator'
 
-class ExtensionModelGenerator < ModelGenerator
+class ExtensionMailerGenerator < MailerGenerator
   
   attr_accessor :extension_name
   default_options :with_test_unit => false
@@ -25,26 +25,26 @@ class ExtensionModelGenerator < ModelGenerator
       # Check for class naming collisions.
       m.class_collisions class_path, class_name
 
-      # Model, spec, and fixture directories.
+      # Mailer, view, test, and fixture directories.
       m.directory File.join('app/models', class_path)
-      m.directory File.join('spec/models', class_path)
-      # m.directory File.join('spec/fixtures', class_path)
+      m.directory File.join('app/views', file_path)
 
-      # Model class, spec and fixtures.
-      m.template 'model:model.rb',      File.join('app/models', class_path, "#{file_name}.rb")
-      # m.template 'model:fixtures.yml',  File.join('spec/fixtures', class_path, "#{table_name}.yml")
-      m.template 'model_spec.rb',       File.join('spec/models', class_path, "#{file_name}_spec.rb")
+      # Mailer class and unit test.
+      m.template "mailer:mailer.rb",    File.join('app/models', class_path, "#{file_name}.rb")
 
-      unless options[:skip_migration]
-        m.migration_template 'model:migration.rb', 'db/migrate', :assigns => {
-          :migration_name => "Create#{class_name.pluralize.gsub(/::/, '')}"
-        }, :migration_file_name => "create_#{file_path.gsub(/\//, '_').pluralize}"
+      # View template and fixture for each action.
+      actions.each do |action|
+        relative_path = File.join(file_path, action)
+        view_path     = File.join('app/views', "#{relative_path}.erb")
+
+        m.template "mailer:view.erb", view_path,
+                   :assigns => { :action => action, :path => view_path }
       end
     end
   end
   
   def banner
-    "Usage: #{$0} extension_model ExtensionName ModelName [field:type, field:type]"
+    "Usage: #{$0} #{spec.name} ExtensionName #{spec.name.camelize}Name [options]"
   end
   
   def extension_path

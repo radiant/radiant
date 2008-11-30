@@ -4,6 +4,7 @@ require 'rails_generator/generators/components/controller/controller_generator'
 class ExtensionControllerGenerator < ControllerGenerator
   
   attr_accessor :extension_name
+  default_options :with_test_unit => false
   
   def initialize(runtime_args, runtime_options = {})
     runtime_args = runtime_args.dup
@@ -50,8 +51,8 @@ class ExtensionControllerGenerator < ControllerGenerator
         m.template 'view_spec.rb',
           File.join('spec/views', class_path, file_name, "#{action}_view_spec.rb"),
           :assigns => { :action => action, :model => file_name }
-        path = File.join('app/views', class_path, file_name, "#{action}.rhtml")
-        m.template 'controller:view.rhtml',
+        path = File.join('app/views', class_path, file_name, "#{action}.html.erb")
+        m.template 'controller:view.html.erb',
           path,
           :assigns => { :action => action, :path => path }
       end
@@ -71,6 +72,13 @@ class ExtensionControllerGenerator < ControllerGenerator
   end
   
   def extension_uses_rspec?
-    File.exists?(File.join(destination_root, 'spec'))
+    File.exists?(File.join(destination_root, 'spec')) && !options[:with_test_unit]
+  end
+  
+  def add_options!(opt)
+    opt.separator ''
+    opt.separator 'Options:'
+    opt.on("--with-test-unit", 
+           "Use Test::Unit tests instead sof RSpec.") { |v| options[:with_test_unit] = v }
   end
 end
