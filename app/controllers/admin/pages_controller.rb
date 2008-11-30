@@ -17,7 +17,7 @@ class Admin::PagesController < Admin::ResourceController
 
   def new
     self.model = model_class.new_with_defaults(config)
-    super
+    response_for :singular
   end
 
   private
