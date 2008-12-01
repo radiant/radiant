@@ -70,10 +70,6 @@ describe StubController, :type => :controller do
     teardown_custom_routes
   end
   
-  it "should add self to controllers_where_no_login_required" do
-    StubController.controllers_where_no_login_required.should include(NoLoginRequiredController)
-  end
-
   describe ".authenticate" do
     it "should attempt to login from cookie" do
       controller.should_receive(:login_from_cookie)
@@ -141,7 +137,8 @@ describe NoLoginRequiredChildController = NoLoginRequiredController.subclass('No
     teardown_custom_routes
   end
   it "should inherit no_login_required" do
-    StubController.controllers_where_no_login_required.should include(NoLoginRequiredChildController)
+    # StubController.controllers_where_no_login_required.should include(NoLoginRequiredChildController)
+    controller.class.should_not be_login_required
   end
 end
 
@@ -157,7 +154,7 @@ describe LoginRequiredGrandChildController = NoLoginRequiredChildController.subc
       teardown_custom_routes
     end
     it "should override parent with login_required" do
-      StubController.controllers_where_no_login_required.should_not include(LoginRequiredGrandChildController)
+      controller.class.should be_login_required
     end
 end
 
@@ -171,7 +168,7 @@ describe LoginRequiredGreatGrandChildController = LoginRequiredGrandChildControl
     teardown_custom_routes
   end
   it "should inherit login_required" do
-    StubController.controllers_where_no_login_required.should_not include(LoginRequiredGreatGrandChildController)
+    controller.class.should be_login_required
   end
 end
 
