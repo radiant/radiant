@@ -1,6 +1,10 @@
 == Change Log
 
 === Edge
+* Added notice to install RSpec if a certain database error occurs.
+[Sytse Sijbrandij]
+* Refactor LoginSystem to use filter-skipping instead of controller
+tracking. [Sean Cribbs]
 * Add generator specs and more generators. [Brian Landau]
 * Add initial integration specs. [Adam Williams, Mark Imbriaco]
 * Refactor admin controllers and views toward RESTful principles. 
