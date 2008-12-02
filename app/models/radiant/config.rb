@@ -54,14 +54,14 @@ module Radiant
     end
     
     def value=(param)
-      write_attribute :value, param.to_s
+      self[:value] = param.to_s
     end
     
     def value
       if key.ends_with? "?"
-        read_attribute(:value) == "true"
+        self[:value] == "true"
       else
-        read_attribute(:value)
+        self[:value]
       end
     end
   end

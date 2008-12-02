@@ -265,7 +265,7 @@ class Page < ActiveRecord::Base
     end
   
     def update_published_at
-      write_attribute(:published_at, Time.now) if published? and !published_at
+      self[:published_at] = Time.now if published? and !published_at
       true
     end
     
