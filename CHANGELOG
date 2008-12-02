@@ -1,7 +1,17 @@
 == Change Log
 
 === Edge
-
+* Added notice to install RSpec if a certain database error occurs.
+[Sytse Sijbrandij]
+* Refactor LoginSystem to use filter-skipping instead of controller
+tracking. [Sean Cribbs]
+* Add generator specs and more generators. [Brian Landau]
+* Add initial integration specs. [Adam Williams, Mark Imbriaco]
+* Refactor admin controllers and views toward RESTful principles. 
+[Sean Cribbs, Clinton Nixon, Rick DeNatale]
+* Remove RSpec from packaged libraries. [Sean Cribbs]
+* Correct CSS validation errors. [John Muhl]
+* Add String#to_slug. [Andrew O'Brien]
 * New page parts should have the default filter_id. [Joe Van Dyk]
 * Show draft children by default on dev host. [Sean Cribbs]
 * Correct db:schema:dump error when in instance mode. [Pat Allan, Sean Cribbs]

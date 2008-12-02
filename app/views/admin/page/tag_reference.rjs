@@ -1,5 +1,0 @@
-page.replace_html 'tag-reference', tag_reference(@class_name)
-page.replace_html 'page-type', @display_name
-page << "center($('tag-reference-popup'));"
-page.assign 'last_type', @class_name
-page.show 'tag-reference-popup'

@@ -48,13 +48,15 @@ document.observe('dom:loaded', function() {
         });
       }
     });
+  });
 
-    popup.down('p a.close').observe('click', function(e) {
+  when($$('.popup p a.close'), function(links){
+    links.invoke('observe', 'click', function(e) {
       e.findElement('.popup').hide();
       e.stop();
     });
   });
-
+  
   when('publication-date', function(pub_date){
     if($('page_status_id')) {
       if($F('page_status_id') == '100')
@@ -96,23 +98,19 @@ function when(obj, fn) {
 }
 
 function part_added() {
-  var partNameField = $('part-name-field');
-  var partIndexField = $('part-index-field');
-  var index = parseInt(partIndexField.value || 0) + 1;
-  var tab = 'tab-' + index;
-  var caption = partNameField.value;
-  var page = 'page-' + index;
-  tabControl.addTab(tab, caption, page);
-  Element.hide('add-part-popup');
-  Element.hide('busy');
-  partNameField.value = '';
-  partIndexField.value = (index + 1).toString();
-  $('add-part-button').disabled = false;
-  Field.focus(partNameField);
+  var partName = $F('part-name-field');
+  var tab = 'tab-' + partName.toSlug();
+  var page = 'page-' + partName.toSlug();
+  tabControl.addTab(tab, partName, page);
+  $('add-part-popup').hide();
+  $('busy').hide();
+  $('part-name-field').value = '';
+  $('add-part-button').enable();
+  $(page).down('textarea').focus();
   tabControl.select(tab);
 }
 function part_loading() {
-  $('add-part-button').disabled = true;
+  $('add-part-button').disable();
   $('busy').appear();
 }
 function valid_part_name() {

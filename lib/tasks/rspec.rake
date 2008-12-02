@@ -15,27 +15,39 @@ end
 task :default => :spec
 task :stats => "spec:statsetup"
 
-desc "Run all specs in spec directory (excluding plugin specs)"
-Spec::Rake::SpecTask.new(:spec => spec_prereq) do |t|
-  t.spec_opts = ['--options', "\"#{RAILS_ROOT}/spec/spec.opts\""]
-  t.spec_files = FileList['spec/**/*_spec.rb']
+desc 'Run all specs in spec directory (excluding plugin & generator specs)'
+task :spec => spec_prereq do
+  errors = %w(spec:integration spec:models spec:controllers spec:views spec:helpers spec:lib spec:generators).collect do |task|
+    begin
+      puts %{\nRunning #{task.gsub('spec:', '').titlecase} Spec Task}
+      Rake::Task[task].invoke
+      nil
+    rescue => e
+      task
+    end
+  end.compact
+  abort "Errors running #{errors.to_sentence}!" if errors.any?
 end
 
 namespace :spec do
-  desc "Run all specs in spec directory with RCov (excluding plugin specs)"
+  desc "Run all specs in spec directory with RCov (excluding plugin & generator specs)"
   Spec::Rake::SpecTask.new(:rcov) do |t|
     t.spec_opts = ['--options', "\"#{RAILS_ROOT}/spec/spec.opts\""]
-    t.spec_files = FileList['spec/**/*_spec.rb']
+    t.spec_files = FileList.new('spec/**/*_spec.rb') do |fl|
+      fl.exclude(/generator/)
+    end
     t.rcov = true
     t.rcov_opts = lambda do
       IO.readlines("#{RAILS_ROOT}/spec/rcov.opts").map {|l| l.chomp.split " "}.flatten
     end
   end
   
-  desc "Print Specdoc for all specs (excluding plugin specs)"
+  desc "Print Specdoc for all specs (excluding plugin & generator specs)"
   Spec::Rake::SpecTask.new(:doc) do |t|
     t.spec_opts = ["--format", "specdoc", "--dry-run"]
-    t.spec_files = FileList['spec/**/*_spec.rb']
+    t.spec_files = FileList.new('spec/**/*_spec.rb') do |fl|
+      fl.exclude(/generator/)
+    end
   end
 
   desc "Print Specdoc for all plugin specs"
@@ -44,11 +56,36 @@ namespace :spec do
     t.spec_files = FileList['vendor/plugins/**/spec/**/*_spec.rb'].exclude('vendor/plugins/rspec/*')
   end
 
-  [:models, :controllers, :views, :helpers, :lib].each do |sub|
+  [:models, :controllers, :views, :helpers, :lib, :integration].each do |sub|
     desc "Run the specs under spec/#{sub}"
     Spec::Rake::SpecTask.new(sub => spec_prereq) do |t|
       t.spec_opts = ['--options', "\"#{RAILS_ROOT}/spec/spec.opts\""]
       t.spec_files = FileList["spec/#{sub}/**/*_spec.rb"]
+    end
+  end
+  
+  desc 'Run all specs in spec/generators directory'
+  task :generators => spec_prereq do
+    errors = ['spec:generators:extension_controller', 'spec:generators:extension_mailer', 
+              'spec:generators:extension_migration', 'spec:generators:extension_model',
+              'spec:generators:extension'].collect do |task|
+      begin
+        Rake::Task[task].invoke
+        nil
+      rescue => e
+        task
+      end
+    end.compact
+    abort "Errors running #{errors.to_sentence}!" if errors.any?
+  end
+  
+  namespace :generators do
+    [:extension_controller, :extension_mailer, :extension_migration, :extension_model, :extension].each do |generator|
+      desc "Run the spec at spec/geneartors/#{generator}_generator_spec.rb"
+      Spec::Rake::SpecTask.new(generator => spec_prereq) do |t|
+        t.spec_opts = ['--options', "\"#{RAILS_ROOT}/spec/spec.opts\""]
+        t.spec_files = [File.join(RAILS_ROOT, "spec/generators/#{generator}_generator_spec.rb")]
+      end
     end
   end
   
@@ -74,11 +111,14 @@ namespace :spec do
     ::STATS_DIRECTORIES << %w(Controller\ specs spec/controllers) if File.exist?('spec/controllers')
     ::STATS_DIRECTORIES << %w(Helper\ specs spec/helpers) if File.exist?('spec/helpers')
     ::STATS_DIRECTORIES << %w(Library\ specs spec/lib) if File.exist?('spec/lib')
+    ::STATS_DIRECTORIES << %w(Integration\ specs spec/integration) if File.exist?('spec/integration')
+    ::STATS_DIRECTORIES << %w(Generator\ specs spec/generators) if File.exist?('spec/generators')
     ::CodeStatistics::TEST_TYPES << "Model specs" if File.exist?('spec/models')
     ::CodeStatistics::TEST_TYPES << "View specs" if File.exist?('spec/views')
     ::CodeStatistics::TEST_TYPES << "Controller specs" if File.exist?('spec/controllers')
     ::CodeStatistics::TEST_TYPES << "Helper specs" if File.exist?('spec/helpers')
     ::CodeStatistics::TEST_TYPES << "Library specs" if File.exist?('spec/lib')
+    ::CodeStatistics::TEST_TYPES << "Generator specs" if File.exist?('spec/generators')
     ::STATS_DIRECTORIES.delete_if {|a| a[0] =~ /test/}
   end
 

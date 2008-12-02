@@ -1,4 +1,6 @@
 body {
+  background-color: white;
+  color: black;
   font-size: 95%;
   font-family: "Lucida Grande", "Bitstream Vera Sans", Helvetica, Verdana, Arial, sans-serif;
   margin: 0;
@@ -43,6 +45,7 @@ table {
   padding-bottom: 20px;
 }
 #header a, #header a:visited {
+  background-color: inherit;
   color: white;
   text-decoration: none;
 }
@@ -88,6 +91,7 @@ table {
 }
 #navigation strong a, #navigation strong a:visited {
   background-color: white;
+  color: black;
 }
 #navigation .separator {
   display: none;
@@ -123,6 +127,7 @@ table {
   top: 20px;
 }
 #site-links a, #site-links a:visited {
+  background-color: inherit;
   color: white;
 }
 #site-links a:hover, #site-links a:visited:hover {
@@ -136,6 +141,7 @@ table {
 /* messages */
 
 #notice, #error {
+  background-color: inherit;
   color: white;
   margin-top: 25px;
   margin-left: 20px;
@@ -184,15 +190,19 @@ h1 {
   width: 8em;
 }
 #content table.index td.status {
+  background-color: inherit;
   color: #9eb3bf;
 }
 #content table.index td.status.draft-status {
+  background-color: inherit;
   color: #c00;
 }
 #content table.index td.status.published-status {
+  background-color: inherit;
   color: black;
 }
 #content table.index td.status.hidden-stats {
+  background-color: inherit;
   color: #0c0;
 }
 #content table.index .add-child {
@@ -365,6 +375,7 @@ h1 {
 #content table.fieldset td, #content table.fieldset th {
   background-color: white;
   border-top: 1px solid #DFD3C3;
+  color: inherit;
   padding: 6px;
 }
 #content table.fieldset th.label {
@@ -446,7 +457,6 @@ h1 {
   padding-top: 7px;
   padding-bottom: 4px;
   text-decoration: none;
-  text-transform: titlecase;
   outline: none;
   -moz-outline: none;
 }
@@ -465,6 +475,7 @@ h1 {
 }
 #content #pages {
   background: white;
+  color: inherit;
   width: 100%;
   clear: both;
 }
@@ -490,6 +501,7 @@ h1 {
 #popups .popup {
   background-color: white;
   border: 5px solid silver;
+  color: inherit;
   padding: 2em;
   padding-top: 1em;
   padding-bottom: .5em;

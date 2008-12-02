@@ -1,0 +1,17 @@
+Description:
+    Stubs out a new mailer and its views for the given extension.
+    Pass the mailer name, either CamelCased or under_scored, 
+    and an optional list of emails as arguments.
+
+    This generates a mailer class in app/models, view templates in
+    app/views/mailer_name, a unit test in test/unit, and fixtures in
+    test/fixtures.
+
+Example:
+    `./script/generate extension_mailer MyExt Notifications signup forgot_password invoice`
+
+    creates a Notifications mailer class, views, test, and fixtures:
+        Mailer:     vendor/my_ext/app/models/notifications.rb
+        Views:      vendor/my_ext/app/views/notifications/signup.erb [...]
+        Test:       vendor/my_ext/test/unit/test/unit/notifications_test.rb
+        Fixtures:   vendor/my_ext/test/fixtures/notifications/signup [...]

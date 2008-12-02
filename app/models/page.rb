@@ -6,6 +6,7 @@ class Page < ActiveRecord::Base
   
   # Callbacks
   before_save :update_published_at, :update_virtual
+  after_save :save_page_parts
   
   # Associations
   acts_as_tree :order => 'virtual DESC, title ASC'
@@ -44,6 +45,22 @@ class Page < ActiveRecord::Base
     end
   end
   alias_method_chain :layout, :inheritance
+  
+  def parts_with_pending(reload = false)
+    @page_parts = nil if reload
+    @page_parts || parts_without_pending(reload)
+  end
+  alias_method_chain :parts, :pending
+  
+  def parts_with_pending=(collection)
+    if collection.all? {|item| item.is_a? PagePart }
+      self.parts_without_pending = collection
+    else
+      self.updated_at_will_change!
+      @page_parts = collection.map { |item| PagePart.new(item) }
+    end
+  end
+  alias_method_chain :parts=, :pending
   
   def description
     self["description"]
@@ -158,6 +175,10 @@ class Page < ActiveRecord::Base
       condition = "status_id = #{Status[:published].id} and (#{condition})" if live
       children.find(:first, :conditions => [condition] + file_not_found_names)
     end
+  end
+  
+  def to_xml(options={}, &block)
+    super(options.reverse_merge(:include => :parts), &block)
   end
   
   class << self
@@ -282,5 +303,14 @@ class Page < ActiveRecord::Base
       text = parse(text)
       text = object.filter.filter(text) if object.respond_to? :filter_id
       text
-    end  
+    end
+    
+    def save_page_parts
+      if @page_parts
+        self.parts_without_pending.clear
+        @page_parts.each {|p| self.parts_without_pending << p }
+      end
+      @page_parts = nil
+      true
+    end
 end

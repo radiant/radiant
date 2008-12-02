@@ -4,13 +4,6 @@ class SiteController < ApplicationController
   
   no_login_required
   
-  attr_accessor :config, :cache
-  
-  def initialize
-    @config = Radiant::Config
-    @cache = ResponseCache.instance
-  end
-  
   def show_page
     response.headers.delete('Cache-Control')
     

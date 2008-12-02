@@ -95,7 +95,7 @@ describe ApplicationHelper do
     helper.current_url?("/foo/bar/").should_not be_false
     helper.current_url?("/foo//bar").should_not be_false
     helper.current_url?("/baz/bam").should_not be_true
-    helper.current_url?(:controller => "admin/page", :action => "index").should_not be_true
+    helper.current_url?(:controller => "admin/pages", :action => "index").should_not be_true
   end
   
   it "should clean a url" do

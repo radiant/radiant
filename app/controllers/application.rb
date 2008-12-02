@@ -10,11 +10,12 @@ class ApplicationController < ActionController::Base
   before_filter :set_current_user
   before_filter :set_javascripts_and_stylesheets
   
-  attr_accessor :config
+  attr_accessor :config, :cache
   
   def initialize
     super
     @config = Radiant::Config
+    @cache = ResponseCache.instance
   end
   
   # helpers to include additional assets from actions or views

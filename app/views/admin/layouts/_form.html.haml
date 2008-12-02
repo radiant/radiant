@@ -1,0 +1,36 @@
+- form_for [:admin, @layout] do |f|
+  .form-area
+    = render_region :form_top
+    = hidden_field 'layout', 'lock_version'
+    - render_region :form do |form|
+      - form.edit_title do
+        %p.title
+          = f.label :name
+          = f.text_field 'name', :maxlength => 100, :class => "textbox"
+      - form.edit_extended_metadata do
+        #extended-metadata.row{meta_visible(:meta)}
+          %table.fieldset{:cellpadding=>"0", :cellspacing=>"0", :border=>"0"}
+            %tr
+              %th.label
+                = f.label :content_type, "Context&#8209;Type"
+              %td.field
+                = f.text_field 'content_type', :maxlength => 40, :class => "textbox"
+            = render_region :extended_metadata
+        %p.more-or-less
+          %small
+            %a#more-extended-metadata{meta_visible(:meta_more), :href => "#", :onclick=>toggle_javascript_for('extended-metadata')} More
+            %a#less-extended-metadata{meta_visible(:meta_less), :href => "#", :onclick=>toggle_javascript_for('extended-metadata')} Less
+      - form.edit_content do
+        %p.content
+          = f.label :layout_content, "Body"
+          ~ f.text_area 'content', :size => '40x20', :style => 'width: 100%', :class => "textarea"
+      - form.edit_timestamp do
+        = updated_stamp @layout
+  = javascript_tag "$('layout_name').activate()"
+  - render_region :form_bottom do |form_bottom|
+    - form_bottom.edit_buttons do
+      %p.buttons
+        = save_model_button @layout
+        = save_model_and_continue_editing_button @layout
+        or
+        = link_to "Cancel", admin_layouts_url

@@ -1,0 +1,20 @@
+- pages = pluralize(@page.children.count + 1, 'Page')
+%h1
+  Remove
+  = pages
+
+%p
+  Are you sure you want to
+  %strong.warning permanently remove
+  the following
+  = pages.downcase + "?"
+
+%table.index#site-map{:cellpadding=>0, :cellspacing=>0, :border=>0}
+  %tbody
+    = render_node @page, :simple => true
+
+- form_for [:admin, @page.becomes(Page)], :html => {:method => :delete} do
+  %p.buttons
+    %input.button{:type=>"submit", :value=>"Delete Pages"}/
+    or
+    = link_to 'Cancel', admin_pages_url

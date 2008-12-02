@@ -1,0 +1,74 @@
+- form_for [:admin, @user] do |f|
+  = hidden_field 'user', 'lock_version'
+  = render_region :form_top
+  %table.fieldset{:cellpadding=>0, :cellspacing=>0, :border=>0}
+    - render_region :form do |form|
+      - form.edit_name do
+        %tr
+          %th.label
+            = f.label :name
+          %td.field
+            = f.text_field "name", :class => 'textbox', :maxlength => 100 
+          %td.help Required.
+      - form.edit_email do
+        %tr
+          %th.label
+            = f.label :email, "E-mail", :class => 'optional'
+          %td.field
+            = f.text_field "email", :class => 'textbox', :maxlength => 255
+          %td.help
+            Optional. Please use a valid e-mail address.
+      - form.edit_username do
+        %tr
+          %th.label
+            = f.label :login, 'Username'
+          %td.field
+            = f.text_field "login", :class => 'textbox', :maxlength => 40 
+          %td.help
+            At least 3 characters. Must be unique.
+      - form.edit_password do
+        %tr
+          %th.label
+            = f.label :password
+          %td.field
+            = f.password_field "password", :class => 'textbox', :value => '', :maxlength => 40
+          %td.help{:rowspan=>2}
+            At least 5 characters.
+            - unless @user.new_record?
+              Leave password blank for it to remain unchanged.
+        %tr
+          %th.label
+            = f.label :password_confirmation, "Confirm Password"
+          %td.field
+            = f.password_field "password_confirmation", :class => 'textbox', :value => '', :maxlength => 40
+      - form.edit_roles do
+        %tr
+          %th.label
+            %label{:for=>"user_admin"} Roles
+          %td.field
+            %span.checkbox
+              = f.check_box "admin"
+              = f.label :admin, "Administrator"
+            %span.checkbox
+              = f.check_box "developer"
+              = f.label :developer
+          %td.help
+            Roles restrict user privileges and turn parts of the administrative interface on or off.
+      - form.edit_notes do
+        %tr
+          %th.label
+            = f.label :notes, "Notes", :class => 'optional'
+          %td.field
+            ~ f.text_area "notes", :size => '40x4', :class => "textarea" 
+          %td.help
+            Optional.
+  - render_region :form_bottom do |form_bottom|
+    - form_bottom.edit_timestamp do
+      = updated_stamp @user  
+    - form_bottom.edit_buttons do
+      %p.buttons
+        = save_model_button(@user)
+        = save_model_and_continue_editing_button(@user)
+        or 
+        = link_to "Cancel", admin_users_path
+          

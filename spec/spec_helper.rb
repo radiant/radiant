@@ -13,6 +13,13 @@ unless defined? SPEC_ROOT
   require 'spec'
   require 'spec/rails'
   require 'scenarios'
+  require 'spec/integration'
+  
+  module Kernel
+    def rputs(*args)
+      puts *["<pre>", args.collect {|a| CGI.escapeHTML(a.inspect)}, "</pre>"]
+    end
+  end
   
   class Test::Unit::TestCase
     class << self
@@ -44,7 +51,32 @@ unless defined? SPEC_ROOT
   
   Scenario.load_paths.unshift "#{RADIANT_ROOT}/spec/scenarios"
   
+  module Spec
+    module Application
+      module IntegrationExampleExtensions
+        def login(user)
+          if user.nil?
+            get logout_path
+          else
+            user = users(user) if user.kind_of?(Symbol)
+            submit_to login_path, :user => {:login => user.login, :password => "password"}
+          end
+        end
+        
+        def current_user
+          controller.send :current_user
+        end
+        
+        def encode_credentials(email_password)
+          ActionController::HttpAuthentication::Basic.encode_credentials(*email_password)
+        end
+      end
+    end
+  end
+  
   Spec::Runner.configure do |config|
+    config.include Spec::Application::IntegrationExampleExtensions, :type => :integration
+    
     config.use_transactional_fixtures = true
     config.use_instantiated_fixtures  = false
     config.fixture_path = RAILS_ROOT + '/spec/fixtures/'

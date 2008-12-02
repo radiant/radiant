@@ -4,6 +4,7 @@ require 'rails_generator/generators/components/model/model_generator'
 class ExtensionModelGenerator < ModelGenerator
   
   attr_accessor :extension_name
+  default_options :with_test_unit => false
   
   def initialize(runtime_args, runtime_options = {})
     runtime_args = runtime_args.dup
@@ -55,6 +56,13 @@ class ExtensionModelGenerator < ModelGenerator
   end
   
   def extension_uses_rspec?
-    File.exists?(File.join(destination_root, 'spec'))
+    File.exists?(File.join(destination_root, 'spec')) && !options[:with_test_unit]
+  end
+  
+  def add_options!(opt)
+    opt.separator ''
+    opt.separator 'Options:'
+    opt.on("--with-test-unit", 
+           "Use Test::Unit tests instead sof RSpec.") { |v| options[:with_test_unit] = v }
   end
 end

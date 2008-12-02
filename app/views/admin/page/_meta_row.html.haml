@@ -1,6 +1,0 @@
-%tr
-  %th.label
-    %label{:for => "page_#{meta_row[:field]}"}
-      = meta_row[:label] || meta_row[:field].humanize
-  %td.field
-    = send(meta_row[:type], 'page', meta_row[:field], *meta_row[:args])

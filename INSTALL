@@ -17,6 +17,8 @@ install Radiant:
    
    (If you would like bootstrap your development database run `rake
    development db:bootstrap`.)
+   
+   If you get the error "no such file to load -- spec/rake/spectask" please install Rspec (gem i rspec).
 
 4. Start it like a normal Rails application. To test execute:
    

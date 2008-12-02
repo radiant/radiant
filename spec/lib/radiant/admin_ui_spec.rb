@@ -19,6 +19,7 @@ describe Radiant::AdminUI do
   it "should have collections of Region Sets for every controller" do
     %w{page snippet layout user}.each do |collection|
       @admin.should respond_to(collection)
+      @admin.should respond_to(collection.pluralize)
       @admin.send(collection).should_not be_nil
       @admin.send(collection).should be_kind_of(OpenStruct)
     end
@@ -43,6 +44,7 @@ describe Radiant::AdminUI do
     page.remove.should === page.index
     page.children.should === page.index
     page._part.should === page.edit
+    page.new.should === page.edit
   end
 
   it "should load the default snippet regions" do
@@ -57,6 +59,8 @@ describe Radiant::AdminUI do
     snippet.index.thead.should == %w{title_header modify_header}
     snippet.index.tbody.should == %w{title_cell modify_cell}
     snippet.index.bottom.should == %w{new_button}
+
+    snippet.new.should == snippet.edit
   end
 
   it "should load the default layout regions" do
@@ -71,6 +75,8 @@ describe Radiant::AdminUI do
     layout.index.thead.should == %w{title_header modify_header}
     layout.index.tbody.should == %w{title_cell modify_cell}
     layout.index.bottom.should == %w{new_button}
+    
+    layout.new.should == layout.edit
   end
 
   it "should load the default user regions" do
@@ -87,6 +93,8 @@ describe Radiant::AdminUI do
     user.preferences.main.should == %w{edit_header edit_form}
     user.preferences.form.should == %w{edit_password edit_email}
     user.preferences.form_bottom.should == %w{edit_buttons}
+    
+    user.new.should == user.edit
   end
   
   it "should load the default extension regions" do

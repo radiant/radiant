@@ -1,0 +1,61 @@
+- form_for([:admin, @page.becomes(Page)], :html => {:multipart => true}) do |f|
+  = f.hidden_field :lock_version
+  = f.hidden_field :parent_id
+  = render_region :form_top
+  .form-area
+    - render_region :form do |form|
+      - form.edit_title do
+        %p.title
+          %label{:for=>"page_title"}
+            Page Title
+          = f.text_field :title, :class => 'textbox', :maxlength => 255
+      - form.edit_extended_metadata do
+        #extended-metadata.row{meta_visible(:meta)}
+          %table.fieldset
+            = render :partial => "meta_row", :collection => @meta, :locals => {:f => f}
+            = render_region :extended_metadata, :locals => {:f => f}
+        %p.more-or-less
+          %small
+            %a#more-extended-metadata{meta_visible(:meta_more), :href => "#", :onclick=>toggle_javascript_for('extended-metadata')} More
+            %a#less-extended-metadata{meta_visible(:meta_less), :href => "#", :onclick=>toggle_javascript_for('extended-metadata')} Less
+      - form.edit_page_parts do
+        #tab-control
+          #tabs.tabs
+            #tab-toolbar
+              = link_to_function image('plus', :alt => 'plus'), 'toggle_add_part_popup()', :title => 'Add Tab'
+              = link_to_function image('minus', :alt => 'minus'), 'if(confirm(\'Delete the current tab?\')) { tabControl.removeTab(tabControl.selected) }', :title => 'Remove Tab'
+          #pages.pages
+            = render :partial => 'admin/page_parts/page_part', :collection => @page.parts
+        - render_region :parts_bottom do |parts_bottom|
+          - parts_bottom.edit_layout_and_type do
+            .row
+              %p
+                %label{:for=>"page_layout_id"}
+                  Layout
+                = f.select :layout_id, [['<inherit>', '']] + Layout.find(:all).map { |s| [s.name, s.id] }
+              %p
+                %label{:for=>"page_class_name"}
+                  Page Type
+                = f.select :class_name, [['<normal>', 'Page']] + Page.descendants.map { |p| [p.display_name, p.name] }.sort_by { |p| p.first }
+              %p
+                %label{:for=>"page_status_id"}
+                  Status
+                = f.select :status_id, Status.find_all.map { |s| [s.name, s.id] }, {}
+              - if @config['page.edit.published_date?']
+                %p#publication-date{:style => "display: none"}
+                  %label{:for=>"page_published_at"}
+                    Published At
+                  = f.datetime_select :published_at, :disabled => true
+              = render_region :layout_row, :locals => {:f => f}
+            %span.clear &nbsp;
+          - parts_bottom.edit_timestamp do
+            = updated_stamp @page
+  - render_region :form_bottom do |form_bottom|
+    - form_bottom.edit_buttons do
+      - @buttons_partials.each do |partial|
+        = render :partial => partial, :locals => {:f => f}
+      %p.buttons
+        = save_model_button(@page)
+        = save_model_and_continue_editing_button(@page)
+        or
+        = link_to 'Cancel', admin_pages_url

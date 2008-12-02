@@ -40,15 +40,15 @@
         %p#site-links
           - if logged_in?
             - if admin?
-              = nav_link_to 'Users', user_index_url
+              = nav_link_to 'Users', admin_users_path
               %span.separator=" | "
-              = nav_link_to 'Extensions', extension_index_url
+              = nav_link_to 'Extensions', admin_extensions_path
             - else
-              = nav_link_to 'Preferences', user_preferences_url
+              = nav_link_to 'Preferences', admin_preferences_url
             %span.separator=" | "
             = nav_link_to 'Log Out', logout_url
             %span.separator=" | "
-            = link_to image('view-site.gif', :alt => "View Site", :title => ''), homepage_url
+            = link_to image('view-site.gif', :alt => "View Site", :title => ''), root_url
       - if @content_for_popups
         #popups
           = yield :popups

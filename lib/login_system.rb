@@ -1,9 +1,9 @@
 module LoginSystem
-  def self.append_features(base)
+  def self.included(base)
     base.class_eval %{
       before_filter :authenticate
       
-      @@controllers_where_no_login_required = []
+      cattr_reader :controller_permissions
       @@controller_permissions = Hash.new { |h, k| h[k] = Hash.new { |h, k| h[k] = Hash.new } }
       helper_method :current_user
     }
@@ -31,7 +31,15 @@ module LoginSystem
     def authenticate
       action = params['action'].to_s.intern
       login_from_cookie
-      if no_login_required? or (current_user and user_has_access_to_action?(action))
+      
+      if !current_user && params[:format] == 'xml'
+        authenticate_or_request_with_http_basic do |user_name, password| 
+          self.current_user = User.authenticate(user_name, password)
+        end
+        return false if self.current_user.nil?
+      end
+      
+      if current_user and user_has_access_to_action?(action)
         true
       else
         if current_user
@@ -44,11 +52,6 @@ module LoginSystem
         end
         false
       end
-    end
-  
-    def no_login_required?
-      controllers = self.class.controllers_where_no_login_required
-      controllers.include?(self.class)
     end
   
     def user_has_role?(role)
@@ -85,23 +88,15 @@ module LoginSystem
   
   module ClassMethods
     def no_login_required
-      controllers_where_no_login_required << self
-      class << self
-        def inherited(subclass)
-          super(subclass)
-          controllers_where_no_login_required << subclass
-        end
-      end
+      skip_before_filter :authenticate
+    end
+    
+    def login_required?
+      filter_chain.any? {|f| f.method == :authenticate }
     end
     
     def login_required
-      controllers_where_no_login_required.delete self
-      class << self
-        def inherited(subclass)
-          super(subclass)
-          controllers_where_no_login_required.delete subclass
-        end
-      end
+      before_filter :authenticate
     end
     
     def only_allow_access_to(*args)
@@ -112,14 +107,6 @@ module LoginSystem
       actions.each do |action|
         controller_permissions[self][action] = options
       end
-    end
-    
-    def controller_permissions
-      self.class_eval %{ @@controller_permissions }
-    end
-    
-    def controllers_where_no_login_required
-      self.class_eval %{ @@controllers_where_no_login_required }
     end
   end
 end

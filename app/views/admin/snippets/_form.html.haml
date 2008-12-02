@@ -1,0 +1,29 @@
+- form_for [:admin, @snippet] do |f|
+  = f.hidden_field :lock_version
+  = render_region :form_top
+  .form-area
+    - render_region :form do |form|
+      - form.edit_title do
+        %p.title
+          %label{:for=>"snippet_name"} Name
+          = f.text_field :name, :class => 'textbox', :maxlength => 100
+      - form.edit_content do
+        %p.content
+          %label{:for=>"snippet_content"} Body
+          ~ f.text_area :content, :class => "textarea", :style => "width: 100%"
+      - form.edit_filter do
+        %p
+          %label{:for=>"snippet_filter"} Filter
+          = f.select :filter_id, [['none', '']] + TextFilter.descendants.map { |f| f.filter_name }.sort, :id => 'snippet_filter'
+      - form.edit_timestamp do
+        = updated_stamp @snippet
+
+  = javascript_tag "$('snippet_name').activate()"
+
+  - render_region :form_bottom do |form_bottom|
+    - form_bottom.edit_buttons do
+      %p.buttons
+        = save_model_button(@snippet)
+        = save_model_and_continue_editing_button(@snippet)
+        or
+        = link_to 'Cancel', admin_snippets_url
