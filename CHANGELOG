@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Add some database indexes. [Yevgeny Smirnoff]
 * Added notice to install RSpec if a certain database error occurs.
 [Sytse Sijbrandij]
 * Refactor LoginSystem to use filter-skipping instead of controller
