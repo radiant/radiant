@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 21) do
+ActiveRecord::Schema.define(:version => 20081203140407) do
 
   create_table "config", :force => true do |t|
     t.string "key",   :limit => 40, :default => "", :null => false
@@ -42,6 +42,8 @@ ActiveRecord::Schema.define(:version => 21) do
     t.integer "page_id"
   end
 
+  add_index "page_parts", ["page_id", "name"], :name => "parts_by_page"
+
   create_table "pages", :force => true do |t|
     t.string   "title"
     t.string   "slug",          :limit => 100
@@ -60,6 +62,11 @@ ActiveRecord::Schema.define(:version => 21) do
     t.string   "description"
     t.string   "keywords"
   end
+
+  add_index "pages", ["class_name"], :name => "pages_class_name"
+  add_index "pages", ["parent_id"], :name => "pages_parent_id"
+  add_index "pages", ["slug", "parent_id"], :name => "pages_child_slug"
+  add_index "pages", ["virtual", "status_id"], :name => "pages_published"
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id"
