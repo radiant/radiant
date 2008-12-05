@@ -17,6 +17,15 @@ module Radiant::Taggable
         end
         new_base.tag_descriptions.merge! self.tag_descriptions
       end
+      
+      protected
+        def params
+          @params ||= request.parameters unless request.nil?
+        end
+
+        def request_uri
+          @request_url ||= request.request_uri unless request.nil?
+        end
     end
   end
   

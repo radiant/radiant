@@ -119,6 +119,34 @@ describe Radiant::Taggable, "when included in a module with defined tags" do
 
 end
 
+describe Radiant::Taggable, "when included in a module with defined tags which is included in the Page model" do
+  scenario :users_and_pages, :file_not_found, :snippets
+  
+  module CustomTags
+    include Radiant::Taggable
+    
+    tag "param_value" do |tag|
+      params[:sample_param]
+    end
+  end
+  
+  Page.send :include, CustomTags
+  
+  it 'should render a param value used in a tag' do
+    page(:home)
+    page.should render('<r:param_value />').as('data')
+  end
+  
+  private
+    def page(symbol = nil)
+      if symbol.nil?
+        @page ||= pages(:assorted)
+      else
+        @page = pages(symbol)
+      end
+    end
+end
+
 describe Radiant::Taggable::Util do
   it "should normalize leading whitespace" do
         markup = %{  
