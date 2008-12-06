@@ -1,6 +1,8 @@
 == Change Log
 
 === Edge
+* Make request parameters available to tags. [Brian Landau]
+* Add URL method helpers to tags. [Brian Landau]
 * Add some database indexes. [Yevgeny Smirnoff]
 * Added notice to install RSpec if a certain database error occurs.
 [Sytse Sijbrandij]
