@@ -64,6 +64,10 @@ namespace 'radiant' do
     pkg.need_tar = true
   end
 
+  task :gemspec do
+    File.open('radiant.gemspec', 'w') {|f| f.write spec.to_ruby }
+  end
+
   namespace :gem do
     desc "Uninstall Gem"
     task :uninstall do
