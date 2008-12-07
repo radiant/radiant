@@ -1,5 +1,3 @@
-require 'rubypants/rubypants'
-
 class SmartyPantsFilter < TextFilter
   filter_name "SmartyPants"
   description_file File.dirname(__FILE__) + "/../smartypants.html"   
