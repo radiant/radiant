@@ -4,8 +4,8 @@ unless defined? Radiant::Version
   module Radiant
     module Version
       Major = '0'
-      Minor = '6'
-      Tiny  = '9'
+      Minor = '7'
+      Tiny  = '0'
 
       class << self
         def to_s

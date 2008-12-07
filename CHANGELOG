@@ -1,6 +1,6 @@
 == Change Log
 
-=== Edge
+=== 0.7.0-RC1
 * Add support for newer Textile and Markdown libraries, with fallbacks
 on packaged libraries. [Sean Cribbs, Jason Garber]
 * Make request parameters available to tags. [Brian Landau]
