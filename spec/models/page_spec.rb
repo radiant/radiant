@@ -373,15 +373,15 @@ describe Page, "rendering" do
   end
 
   it 'should render a snippet' do
-    assert_snippet_renders :first, 'test'
+    @page.render_snippet(snippets(:first)).should == 'test'
   end
 
   it 'should render a snippet with a filter' do
-    assert_snippet_renders :markdown, '<p><strong>markdown</strong></p>'
+    @page.render_snippet(snippets(:markdown)).should match(%r{<p><strong>markdown</strong></p>})
   end
 
   it 'should render a snippet with a tag' do
-    assert_snippet_renders :radius, 'Home'
+    @page.render_snippet(snippets(:radius)).should == 'Home'
   end
 
   it 'should render custom pages with tags' do

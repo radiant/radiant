@@ -7,8 +7,25 @@ module Radiant::Taggable
     base.module_eval do
       def self.included(new_base)
         super
+        new_base.class_eval do
+          include ActionController::UrlWriter
+        end
+        class << new_base
+          def default_url_options
+            {:controller => "site", :action => "show_page", :only_path => true}
+          end
+        end
         new_base.tag_descriptions.merge! self.tag_descriptions
       end
+      
+      protected
+        def params
+          @params ||= request.parameters unless request.nil?
+        end
+
+        def request_uri
+          @request_url ||= request.request_uri unless request.nil?
+        end
     end
   end
   

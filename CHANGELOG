@@ -1,6 +1,11 @@
 == Change Log
 
-=== Edge
+=== 0.7.0-RC1
+* Add support for newer Textile and Markdown libraries, with fallbacks
+on packaged libraries. [Sean Cribbs, Jason Garber]
+* Make request parameters available to tags. [Brian Landau]
+* Add URL method helpers to tags. [Brian Landau]
+* Add some database indexes. [Yevgeny Smirnoff]
 * Added notice to install RSpec if a certain database error occurs.
 [Sytse Sijbrandij]
 * Refactor LoginSystem to use filter-skipping instead of controller

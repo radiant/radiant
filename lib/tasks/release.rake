@@ -28,7 +28,9 @@ namespace 'radiant' do
     s.platform = Gem::Platform::RUBY
     s.bindir = 'bin'
     s.executables = (Dir['bin/*'] + Dir['scripts/*']).map { |file| File.basename(file) } 
-    s.add_dependency 'rake', '>= 0.7.1'
+    s.add_dependency 'rake', '>= 0.8.3'
+    s.add_dependency 'rspec', '>= 1.1.11'
+    s.add_dependency 'rspec-rails', '>= 1.1.11'
     s.autorequire = 'radiant'
     s.has_rdoc = true
     s.rdoc_options << '--title' << RDOC_TITLE << '--line-numbers' << '--main' << 'README'
@@ -60,6 +62,10 @@ namespace 'radiant' do
   Rake::GemPackageTask.new(spec) do |pkg|
     pkg.need_zip = true
     pkg.need_tar = true
+  end
+
+  task :gemspec do
+    File.open('radiant.gemspec', 'w') {|f| f.write spec.to_ruby }
   end
 
   namespace :gem do

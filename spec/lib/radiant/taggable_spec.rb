@@ -68,6 +68,10 @@ describe Radiant::Taggable, "when included in a module with defined tags" do
     tag "hello" do |tag|
       "Hello, #{ tag.attr['name'] || 'world' }!"
     end
+    
+    tag "page_index_path" do |tag|
+      admin_pages_path
+    end
   end
 
   class TestObject
@@ -88,12 +92,12 @@ describe Radiant::Taggable, "when included in a module with defined tags" do
 
   it "should have a collection of defined tags" do
     MyTags.should respond_to(:tags)
-    MyTags.tags.should == ['hello', 'test']
+    MyTags.tags.should == ['hello', 'page_index_path', 'test']
   end
   
   it "should add tags to an included class" do
     TestObject.should respond_to(:tags)
-    TestObject.tags.should == ['hello', 'test']
+    TestObject.tags.should == ['hello', 'page_index_path', 'test']
   end
   
   it "should merge tag descriptions with an included class" do
@@ -108,7 +112,39 @@ describe Radiant::Taggable, "when included in a module with defined tags" do
   it "should render a defined tag on an instance of an included class with a given tag binding" do
     @object.render_tag(:hello, @tag_binding).should == "Hello, John!"
   end
+  
+  it "should render a url helper called in a tag definition" do
+    @object.render_tag(:page_index_path, {}).should == "/admin/pages"
+  end
 
+end
+
+describe Radiant::Taggable, "when included in a module with defined tags which is included in the Page model" do
+  scenario :users_and_pages, :file_not_found, :snippets
+  
+  module CustomTags
+    include Radiant::Taggable
+    
+    tag "param_value" do |tag|
+      params[:sample_param]
+    end
+  end
+  
+  Page.send :include, CustomTags
+  
+  it 'should render a param value used in a tag' do
+    page(:home)
+    page.should render('<r:param_value />').as('data')
+  end
+  
+  private
+    def page(symbol = nil)
+      if symbol.nil?
+        @page ||= pages(:assorted)
+      else
+        @page = pages(symbol)
+      end
+    end
 end
 
 describe Radiant::Taggable::Util do

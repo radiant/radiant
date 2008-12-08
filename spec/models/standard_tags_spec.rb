@@ -475,7 +475,7 @@ describe "Standard Tags" do
     end
 
     it "should filter the snippet with its assigned filter" do
-      page.should render('<r:page><r:snippet name="markdown" /></r:page>').as('<p><strong>markdown</strong></p>')
+      page.should render('<r:page><r:snippet name="markdown" /></r:page>').matching(%r{<p><strong>markdown</strong></p>})
     end
 
     it "should maintain the global page inside the snippet" do
