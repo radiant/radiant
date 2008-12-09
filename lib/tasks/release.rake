@@ -21,6 +21,8 @@ namespace 'radiant' do
   spec = Gem::Specification.new do |s|
     s.name = PKG_NAME
     s.version = PKG_VERSION
+    s.author = "Radiant CMS dev team"
+    s.email = "radiant@radiantcms.org"
     s.summary = 'A no-fluff content management system designed for small teams.'
     s.description = "Radiant is a simple and powerful publishing system designed for small teams.\nIt is built with Rails and is similar to Textpattern or MovableType, but is\na general purpose content managment system--not merely a blogging engine."
     s.homepage = 'http://radiantcms.org'
@@ -31,7 +33,7 @@ namespace 'radiant' do
     s.add_dependency 'rake', '>= 0.8.3'
     s.add_dependency 'rspec', '>= 1.1.11'
     s.add_dependency 'rspec-rails', '>= 1.1.11'
-    s.autorequire = 'radiant'
+    # s.autorequire = 'radiant'
     s.has_rdoc = true
     s.rdoc_options << '--title' << RDOC_TITLE << '--line-numbers' << '--main' << 'README'
     rdoc_excludes = Dir["**"].reject { |f| !File.directory? f }
