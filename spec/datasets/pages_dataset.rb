@@ -4,7 +4,7 @@ class VirtualPage < Page
   end
 end
 
-class PagesScenario < Scenario::Base
+class PagesDataset < Dataset::Base
   uses :home_page
   
   def load

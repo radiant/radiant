@@ -18,7 +18,7 @@ end
 # model and the LayoutController views.
 #
 describe Admin::AbstractModelController, :type => :controller do
-  scenario :layouts, :users
+  dataset :layouts, :users
   test_helper :caching, :routing
 
   before :each do

@@ -1,4 +1,4 @@
-class SnippetsScenario < Scenario::Base
+class SnippetsDataset < Dataset::Base
   
   def load
     create_snippet "first", :content => "test"

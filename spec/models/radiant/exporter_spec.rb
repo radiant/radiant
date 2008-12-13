@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
 describe Radiant::Exporter do
-  scenario :pages_with_layouts, :users_and_pages, :snippets
+  dataset :pages_with_layouts, :users_and_pages, :snippets
 
   before :each do
     @exporter = Radiant::Exporter

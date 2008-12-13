@@ -15,7 +15,7 @@ describe MarkdownFilter do
 end
 
 describe "<r:markdown>" do
-  scenario :pages
+  dataset :pages
   it "should filter its contents with Markdown" do
     pages(:home).should render("<r:markdown>* item </r:markdown>").as("<ul>\n<li>item </li>\n</ul>")
   end

@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe 'Pages' do
-  scenario :users
+  dataset :users
   
   before do
     Radiant::Config['defaults.page.parts'] = 'body'
@@ -27,7 +27,7 @@ describe 'Pages' do
 end
 
 describe "Pages as resource" do
-  scenario :pages, :users
+  dataset :pages, :users
   
   it "should require authentication" do
     get "/admin/pages.xml"

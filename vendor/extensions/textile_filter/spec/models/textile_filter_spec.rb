@@ -11,7 +11,7 @@ describe TextileFilter do
 end
 
 describe "<r:textile>" do
-  scenario :pages
+  dataset :pages
 
   it "should filter its contents with Textile" do
     pages(:home).should render("<r:textile>h1. Test</r:textile>").as("<h1>Test</h1>")

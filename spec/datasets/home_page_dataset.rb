@@ -1,4 +1,4 @@
-class HomePageScenario < Scenario::Base
+class HomePageDataset < Dataset::Base
   
   def load
     create_page "Home", :slug => "/", :parent_id => nil, 

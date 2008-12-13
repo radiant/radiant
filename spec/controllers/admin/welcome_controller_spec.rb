@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
 describe Admin::WelcomeController do
-  scenario :users
+  dataset :users
   
   it "should redirect to page tree on get to /admin/welcome" do
     get :index

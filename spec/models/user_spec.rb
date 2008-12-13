@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe User, "validations" do
-  scenario :users
+  dataset :users
   test_helper :validations
   
   before :each do
@@ -77,7 +77,7 @@ describe User, "validations" do
 end
 
 describe User do
-  scenario :users
+  dataset :users
   
   before :each do
     @user = User.new(user_params)
@@ -152,7 +152,7 @@ describe User do
 end
 
 describe User, "class methods" do
-  scenario :users
+  dataset :users
   
   it 'should authenticate with correct username and password' do
     expected = users(:existing)

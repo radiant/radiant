@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe ArchiveMonthIndexPage do
-  scenario :archive
+  dataset :archive
   
   before :each do
     @page = pages(:month_index)

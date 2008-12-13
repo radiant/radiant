@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
 describe Admin::SnippetsController do
-  scenario :users, :snippets
+  dataset :users, :snippets
 
   before :each do
     ActionController::Routing::Routes.reload

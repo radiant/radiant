@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe SiteController, "routes page requests" do
-  scenario :pages
+  dataset :pages
                                    
   before(:each) do     
     # don't bork results with stale cache items
@@ -89,7 +89,7 @@ describe SiteController, "routes page requests" do
 end
 
 describe SiteController, "when custom 404 pages are defined" do
-  scenario :file_not_found
+  dataset :file_not_found
   
   it "should use the top-most published 404 page by default" do
     get :show_page, :url => "/foo"

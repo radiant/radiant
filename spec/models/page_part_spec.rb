@@ -44,7 +44,7 @@ describe PagePart do
 end
 
 describe PagePart, 'filter' do
-  scenario :markup_pages
+  dataset :markup_pages
   
   specify 'getting and setting' do
     @part = page_parts(:textile_body)

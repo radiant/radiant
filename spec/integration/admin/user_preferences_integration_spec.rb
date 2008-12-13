@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe 'User preferences' do
-  scenario :users
+  dataset :users
   
   before do
     login :existing

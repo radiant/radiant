@@ -1,4 +1,4 @@
-class ArchiveScenario < Scenario::Base
+class ArchiveDataset < Dataset::Base
   uses :home_page
   
   def load

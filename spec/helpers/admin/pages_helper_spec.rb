@@ -5,7 +5,7 @@ class MarkdownPlusFilter
 end
 
 describe Admin::PagesHelper do
-  scenario :users_and_pages
+  dataset :users_and_pages
 
   before :each do
     @page = mock_model(Page)
