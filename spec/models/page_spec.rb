@@ -398,7 +398,7 @@ describe Page, "#find_by_url" do
   end
 
   it 'should allow you to find the home page' do
-    @page.find_by_url('/') .should == @page
+    @page.find_by_url('/').should == @page
   end
 
   it 'should allow you to find deeply nested pages' do
@@ -431,6 +431,11 @@ describe Page, "#find_by_url" do
 
   it 'should find draft pages in dev mode' do
     @page.find_by_url('/draft/', false).should == pages(:draft)
+  end
+  
+  it "should use the top-most published 404 page by default" do
+    @page.find_by_url('/foo').should == pages(:file_not_found)
+    @page.find_by_url('/foo/bar').should == pages(:file_not_found)
   end
 end
 

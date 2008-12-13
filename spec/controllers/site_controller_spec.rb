@@ -2,12 +2,12 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe SiteController, "routes page requests" do
   dataset :pages
-                                   
-  before(:each) do     
+
+  before(:each) do
     # don't bork results with stale cache items
     controller.cache.clear
   end
-  
+
   it "should find and render home page" do
     get :show_page, :url => ''
     response.should be_success
@@ -82,41 +82,8 @@ describe SiteController, "routes page requests" do
     get :show_page, :url => '/'
     response.headers.keys.should_not include("Cache-Control")
   end
-  
+
   it "should not require login" do
     lambda { get :show_page, :url => '/' }.should_not require_login
-  end
-end
-
-describe SiteController, "when custom 404 pages are defined" do
-  dataset :file_not_found
-  
-  it "should use the top-most published 404 page by default" do
-    get :show_page, :url => "/foo"
-    response.should be_missing
-    assigns[:page].should == pages(:file_not_found)
-    
-    get :show_page, :url => "/foo/bar"
-    response.should be_missing
-    assigns[:page].should == pages(:file_not_found)
-  end
-  
-  it "should use the first published custom 404 page defined under a parent page" do
-    get :show_page, :url => "/gallery/draft"
-    response.should be_missing
-    assigns[:page].should == pages(:no_picture)
-  end
-  
-  it "should not find hidden draft pages in live mode" do
-    get :show_page, :url => "/drafts/missing"
-    response.should be_missing
-    assigns[:page].should_not == pages(:lonely_draft_file_not_found)
-  end
-
-  it "should find hidden draft pages in dev mode" do
-    request.host = 'dev.mysite.com'
-    get :show_page, :url => "/drafts/missing"
-    response.should be_missing
-    assigns[:page].should == pages(:lonely_draft_file_not_found)
   end
 end

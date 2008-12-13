@@ -6,8 +6,8 @@ class NoCachePage < Page
   end
 end
 
-unless defined?(CustomFileNotFoundPage)
-  class CustomFileNotFoundPage < FileNotFoundPage
+unless defined?(::CustomFileNotFoundPage)
+  class ::CustomFileNotFoundPage < FileNotFoundPage
   end
 end
 

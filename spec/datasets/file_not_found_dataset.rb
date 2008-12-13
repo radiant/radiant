@@ -1,7 +1,7 @@
 require 'file_not_found_page'
 
-unless defined?(CustomFileNotFoundPage)
-  class CustomFileNotFoundPage < FileNotFoundPage
+unless defined?(::CustomFileNotFoundPage)
+  class ::CustomFileNotFoundPage < FileNotFoundPage
   end
 end
 
