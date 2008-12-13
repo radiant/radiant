@@ -2,6 +2,8 @@
 
 === Edge
 
+* Converted extension migrations to use schema_migrations table instead 
+of extension_meta. [Nathaniel Talbott, Sean Cribbs, Rick DeNatale]
 * Replaced scenarios with dataset. [Nathaniel Talbott, Adam Williams, Rick DeNatale]
 * Fix RSpec git submodules. [Nathaniel Talbott, Clinton Nixon]
 * Generate and fix gemspec for GitHub. [Sean Cribbs]
