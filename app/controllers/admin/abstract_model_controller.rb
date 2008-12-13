@@ -1,6 +1,10 @@
 class Admin::AbstractModelController < ApplicationController
   attr_accessor :cache
   
+  def self.inherited(subclass)
+    ActiveSupport::Deprecation.warn("'Admin::AbstractModelController' has been deprecated.  Please update '#{subclass.name}' to use Admin::ResourceController.")
+  end
+  
   def self.model_class(model_class = nil)
     @model_class = model_class.to_s.camelize.constantize unless model_class.nil?
     @model_class
