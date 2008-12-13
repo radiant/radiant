@@ -120,7 +120,7 @@ describe Radiant::Taggable, "when included in a module with defined tags" do
 end
 
 describe Radiant::Taggable, "when included in a module with defined tags which is included in the Page model" do
-  scenario :users_and_pages, :file_not_found, :snippets
+  dataset :users_and_pages, :file_not_found, :snippets
   
   module CustomTags
     include Radiant::Taggable

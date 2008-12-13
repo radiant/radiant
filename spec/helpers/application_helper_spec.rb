@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + "/../spec_helper"
 
 describe ApplicationHelper do
-  scenario :users
+  dataset :users
 
   before :each do
     Radiant::Initializer.run :initialize_default_admin_tabs

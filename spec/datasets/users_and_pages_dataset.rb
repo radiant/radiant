@@ -1,4 +1,4 @@
-class UsersAndPagesScenario < Scenario::Base
+class UsersAndPagesDataset < Dataset::Base
   uses :pages, :users
   
   def load

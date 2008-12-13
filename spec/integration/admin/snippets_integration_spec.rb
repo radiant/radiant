@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe 'Snippets' do
-  scenario :users, :snippets
+  dataset :users, :snippets
   
   before do
     login :admin
@@ -36,7 +36,7 @@ describe 'Snippets' do
 end
 
 describe 'Snippet as resource' do
-  scenario :users
+  dataset :users
   
   before do
     @snippet = Snippet.create!(:name => 'Snippet', :content => 'Content')

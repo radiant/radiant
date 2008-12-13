@@ -40,7 +40,7 @@ describe LoginRequiredController = StubController.subclass('LoginRequiredControl
     teardown_custom_routes
   end
   
-  scenario :users
+  dataset :users
 
   it "should authenticate with user in session" do
     login_as :existing
@@ -90,7 +90,7 @@ describe StubController, :type => :controller do
     end
 
     describe "with session_token" do
-      scenario :users
+      dataset :users
 
       before do
         @user = users(:admin)
@@ -178,7 +178,7 @@ describe LoginRequiredController.subclass('OnlyAllowAccessToWhenController') {
                        :denied_url => '/login_required', 
                        :denied_message => 'Fun.'
   }, :type => :controller do
-  scenario :users
+  dataset :users
   test_helper :routing
   before :each do
     setup_custom_routes
@@ -214,7 +214,7 @@ describe LoginRequiredController.subclass('OnlyAllowAccessToWhenDefaultsControll
                          :denied_url => '/login_required', 
                          :denied_message => 'Fun.'
   }, :type => :controller do
-  scenario :users
+  dataset :users
   test_helper :routing
   before :each do
     setup_custom_routes
@@ -239,7 +239,7 @@ describe LoginRequiredController.subclass('OnlyAllowAccessToIfController') {
                          :denied_url => '/login_required', 
                          :denied_message => 'Fun.'
   }, :type => :controller do
-  scenario :users
+  dataset :users
   test_helper :routing
   before :each do
     setup_custom_routes

@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Snippet do
-  scenario :snippets
+  dataset :snippets
   test_helper :validations
   
   before :each do

@@ -5,7 +5,7 @@ unless defined?(CustomFileNotFoundPage)
   end
 end
 
-class FileNotFoundScenario < Scenario::Base
+class FileNotFoundDataset < Dataset::Base
   uses :home_page
   
   def load

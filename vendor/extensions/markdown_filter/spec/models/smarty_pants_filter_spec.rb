@@ -12,7 +12,7 @@ describe SmartyPantsFilter do
 end
 
 describe "<r:smarty_pants>" do
-  scenario :pages
+  dataset :pages
   it "should filter its contents with SmartyPants" do
     pages(:home).should render('<r:smarty_pants>"A revolutionary quotation."</r:smarty_pants>').as("&#8220;A revolutionary quotation.&#8221;")
   end

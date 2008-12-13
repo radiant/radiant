@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe FileNotFoundPage do
-  scenario :file_not_found
+  dataset :file_not_found
   test_helper :render
   
   before(:each) do

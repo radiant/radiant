@@ -1,4 +1,4 @@
-class UsersScenario < Scenario::Base
+class UsersDataset < Dataset::Base
   
   def load
     create_user "Existing"

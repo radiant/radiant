@@ -1,4 +1,4 @@
-class MarkupPagesScenario < Scenario::Base
+class MarkupPagesDataset < Dataset::Base
   uses :home_page
   
   def load

@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 # http://blog.davidchelimsky.net/articles/2007/06/03/oxymoron-testing-behaviour-of-abstractions
 describe ApplicationController do
-  scenario :users
+  dataset :users
 
   it 'should include LoginSystem' do
     ApplicationController.included_modules.should include(LoginSystem)

@@ -175,7 +175,7 @@ describe Radiant::AdminUI::TabSet do
 end
 
 describe Radiant::AdminUI::Tab do
-  scenario :users
+  dataset :users
 
   before :each do
     @tab = Radiant::AdminUI::Tab.new "Test", "/test"

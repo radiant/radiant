@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Standard Tags" do
-  scenario :users_and_pages, :file_not_found, :snippets
+  dataset :users_and_pages, :file_not_found, :snippets
 
   it '<r:page> should allow access to the current page' do
     page(:home)

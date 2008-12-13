@@ -1,4 +1,4 @@
-class PagesWithLayoutsScenario < Scenario::Base
+class PagesWithLayoutsDataset < Dataset::Base
   uses :pages, :layouts
   
   def load

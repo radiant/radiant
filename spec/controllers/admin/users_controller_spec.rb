@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
 describe Admin::UsersController do
-  scenario :users
+  dataset :users
   test_helper :logging
   
   it "should be a ResourceController" do

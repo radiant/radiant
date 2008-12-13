@@ -1,4 +1,4 @@
-class LayoutsScenario < Scenario::Base
+class LayoutsDataset < Dataset::Base
 
   def load
     create_layout "Main", :content => <<-CONTENT

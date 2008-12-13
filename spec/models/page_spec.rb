@@ -21,7 +21,7 @@ class PageSpecTestPage < Page
 end
 
 describe Page, 'validations' do
-  scenario :pages
+  dataset :pages
   test_helper :validations
 
   before :each do
@@ -103,7 +103,7 @@ describe Page, "behaviors" do
 end
 
 describe Page, "layout" do
-  scenario :pages_with_layouts
+  dataset :pages_with_layouts
 
   it 'should be accessible' do
     @page = pages(:first)
@@ -119,7 +119,7 @@ describe Page, "layout" do
 end
 
 describe Page do
-  scenario :pages
+  dataset :pages
 
   before :each do
     @page = pages(:first)
@@ -303,7 +303,7 @@ describe Page do
 end
 
 describe Page, "before save filter" do
-  scenario :home_page
+  dataset :home_page
 
   before :each do
     Page.create(page_params(:title =>"Month Index", :class_name => "ArchiveMonthIndexPage"))
@@ -340,7 +340,7 @@ describe Page, "before save filter" do
 end
 
 describe Page, "rendering" do
-  scenario :pages, :markup_pages, :snippets, :layouts
+  dataset :pages, :markup_pages, :snippets, :layouts
   test_helper :render
 
   before :each do
@@ -391,7 +391,7 @@ describe Page, "rendering" do
 end
 
 describe Page, "#find_by_url" do
-  scenario :pages, :file_not_found
+  dataset :pages, :file_not_found
 
   before :each do
     @page = pages(:home)
@@ -518,7 +518,7 @@ describe Page, 'loading subclasses after bootstrap' do
 end
 
 describe Page, "class which is applied to a page but not defined" do
-  scenario :pages
+  dataset :pages
 
   before :each do
     eval(%Q{class ClassNotDefinedPage < Page; def self.missing?; false end end}, TOPLEVEL_BINDING)
@@ -541,7 +541,7 @@ describe Page, "class which is applied to a page but not defined" do
 end
 
 describe Page, "class find_by_url" do
-  scenario :pages, :file_not_found
+  dataset :pages, :file_not_found
 
   it 'should find the home page' do
     Page.find_by_url('/').should == pages(:home)
@@ -564,7 +564,7 @@ describe Page, "class find_by_url" do
 end
 
 describe Page, "processing" do
-  scenario :pages_with_layouts
+  dataset :pages_with_layouts
 
   before :all do
     @request = ActionController::TestRequest.new :url => '/page/'
