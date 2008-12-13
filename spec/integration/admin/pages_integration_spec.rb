@@ -15,6 +15,7 @@ describe 'Pages' do
   it 'should be able to create the home page' do
     Page.delete_all # Need to create a homepage
     navigate_to '/admin/pages/new'
+    response.should have_tag('#page_slug[value=?]','/')
     submit_form 'new_page', :continue => 'Save and Continue', :page => {:title => 'My Site', :slug => '/', :breadcrumb => 'My Site', :parts => [{:name => 'body', :content => 'Under Construction'}], :status_id => Status[:published].id}
     response.should_not have_tag('#error')
     response.should have_text(/Under\sConstruction/)

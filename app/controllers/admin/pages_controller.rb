@@ -17,6 +17,9 @@ class Admin::PagesController < Admin::ResourceController
 
   def new
     self.model = model_class.new_with_defaults(config)
+    if params[:page_id].blank?
+      self.model.slug = '/'
+    end
     response_for :singular
   end
 
