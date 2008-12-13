@@ -1,21 +1,30 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe 'Pages' do
+describe 'Page management' do
   dataset :users
+  
+  def have_slug(expected)
+    satisfy do |response|
+      response.should have_tag('#page_slug') do |tags|
+        tags.size.should == 1
+        tags.first['value'].should == (expected.blank? ? nil : expected)
+      end
+      true
+    end
+  end
   
   before do
     Radiant::Config['defaults.page.parts'] = 'body'
     login :admin
   end
   
-  it 'should be able to go to pages tab' do
+  it 'should list pages' do
     click_on :link => '/admin/pages'
   end
   
-  it 'should be able to create the home page' do
-    Page.delete_all # Need to create a homepage
+  it 'should allow the user to create the homepage' do
     navigate_to '/admin/pages/new'
-    response.should have_tag('#page_slug[value=?]','/')
+    response.should have_slug('/')
     submit_form 'new_page', :continue => 'Save and Continue', :page => {:title => 'My Site', :slug => '/', :breadcrumb => 'My Site', :parts => [{:name => 'body', :content => 'Under Construction'}], :status_id => Status[:published].id}
     response.should_not have_tag('#error')
     response.should have_text(/Under\sConstruction/)
@@ -25,20 +34,24 @@ describe 'Pages' do
     response.should have_text(/Under Construction/)
   end
   
-  describe 'Delete' do
-  
+  describe 'with homepage' do
     dataset :home_page
     
-    it 'should allow the user to delete the home page (no children)' do 
-      id = page_id(:home)
-      navigate_to '/admin/pages/#{id}/remove'
-      response.should have_text(/permanently remove/)
-      response.should have_text(//)
+    it 'should allow the user to create child pages' do
+      navigate_to "/admin/pages/#{page_id(:home)}/children/new"
+      response.should have_slug('')
+      
+      lambda do
+        submit_form 'new_page', :continue => 'Save and Continue', :page => {
+          :title => 'My Child', :status_id => Status[:published].id,
+          :slug => 'my-child', :breadcrumb => 'My Child',
+          :parts => [{:name => 'body', :content => 'Under Construction'}]
+        }
+      end.should change(Page, :count).by(1)
+      
+      navigate_to '/my-child'
+      response.should have_text(/Under Construction/)
     end
-  
-    it 'should allow the user to delete a child of the home page' do     
-    end
-  
   end
 
 end
