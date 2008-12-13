@@ -1,5 +1,10 @@
 == Change Log
 
+=== Edge
+
+* Fix RSpec git submodules. [Nathaniel Talbott, Clinton Nixon]
+* Generate and fix gemspec for GitHub. [Sean Cribbs]
+
 === 0.7.0-RC1
 * Add support for newer Textile and Markdown libraries, with fallbacks
 on packaged libraries. [Sean Cribbs, Jason Garber]
