@@ -2,6 +2,7 @@
 
 === Edge
 
+* Replaced scenarios with dataset. [Nathaniel Talbott, Adam Williams, Rick DeNatale]
 * Fix RSpec git submodules. [Nathaniel Talbott, Clinton Nixon]
 * Generate and fix gemspec for GitHub. [Sean Cribbs]
 
