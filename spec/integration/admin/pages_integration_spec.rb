@@ -52,6 +52,16 @@ describe 'Page management' do
       navigate_to '/my-child'
       response.should have_text(/Under Construction/)
     end
+    
+    it 'should show errors creating pages' do
+      navigate_to "/admin/pages/#{page_id(:home)}/children/new"
+      lambda do
+        submit_form 'new_page', :continue => 'Save and Continue', :page => {}
+      end.should_not change(Page, :count)
+      response.should render_form_errors(
+        :page => {:title => /required/, :slug => /required/, :breadcrumb => /required/}
+      )
+    end
   end
 end
 

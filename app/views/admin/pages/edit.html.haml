@@ -2,7 +2,8 @@
   - main.edit_header do
     %h1 Edit Page
   - main.edit_form do
-    = render :partial => "form"
+    - form_for @page, :url => admin_page_path(@page), :html => {:method => :put, :multipart => true} do |fields|
+      = render :partial => "fields", :object => fields
   - main.edit_popups do
     = render :partial => "popups"
 = render :partial => "edit_styles"
