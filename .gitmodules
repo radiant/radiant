@@ -4,9 +4,3 @@
 [submodule "vendor/plugins/vizres"]
 	path = vendor/plugins/vizres
 	url = git://github.com/pelargir/vizres.git
-[submodule "vendor/plugins/rspec"]
-	path = vendor/plugins/rspec
-	url = git://github.com/dchelimsky/rspec.git
-[submodule "vendor/plugins/rspec_on_rails"]
-	path = vendor/plugins/rspec_on_rails
-	url = git://github.com/dchelimsky/rspec-rails.git
