@@ -24,6 +24,23 @@ describe 'Pages' do
     navigate_to '/'
     response.should have_text(/Under Construction/)
   end
+  
+  describe 'Delete' do
+  
+    dataset :home_page
+    
+    it 'should allow the user to delete the home page (no children)' do 
+      id = page_id(:home)
+      navigate_to '/admin/pages/#{id}/remove'
+      response.should have_text(/permanently remove/)
+      response.should have_text(//)
+    end
+  
+    it 'should allow the user to delete a child of the home page' do     
+    end
+  
+  end
+
 end
 
 describe "Pages as resource" do
