@@ -1,12 +1,19 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe PagePart do
-  test_helper :page_parts, :validations
+  dataset :home_page
   
-  before :all do
-    @part = @model = PagePart.new(PagePartTestHelper::VALID_PAGE_PART_PARAMS)
+  test_helper :validations
+  
+  before do
+    @original_filter = Radiant::Config['defaults.page.filter']
+    @part = @model = PagePart.new(page_part_params)
   end
 
+  after do
+    Radiant::Config['defaults.page.filter'] = @original_filter
+  end
+  
   it "should take the filter from the default filter" do
     Radiant::Config['defaults.page.filter'] = "Textile"
     part = PagePart.new :name => 'new-part'
@@ -14,9 +21,10 @@ describe PagePart do
   end
 
   it "shouldn't override existing page_parts filters with the default filter" do
+    part = PagePart.find(:first, :conditions => {:filter_id => nil})
     Radiant::Config['defaults.page.filter'] = "Textile"
-    part = PagePart.find(:first, :conditions => "filter_id != 'Textile'") # Find first page part that doesn't have the default filter
-    part.filter_id.should_not == "Textile"  # Filter shouldn't be the default one, obviously.
+    part.reload
+    part.filter_id.should_not == "Textile"
   end
   
   it 'should validate length of' do

@@ -15,7 +15,7 @@ class PagePart < ActiveRecord::Base
   object_id_attr :filter, TextFilter
 
   def after_initialize
-    self.filter_id ||= Radiant::Config['defaults.page.filter']
+    self.filter_id ||= Radiant::Config['defaults.page.filter'] if new_record?
   end
 
 end

@@ -2,7 +2,6 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe Admin::PagesController do
   dataset :users, :pages
-  test_helper :pages, :page_parts, :caching
 
   before :each do
     login_as :existing

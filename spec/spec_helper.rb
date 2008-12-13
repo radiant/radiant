@@ -54,6 +54,14 @@ unless defined? SPEC_ROOT
   
   module Spec
     module Application
+      module ExampleExtensions
+        def rails_log
+          log = IO.read(RAILS_ROOT + '/log/test.log')
+          log.should_not be_nil
+          log 
+        end
+      end
+      
       module IntegrationExampleExtensions
         def login(user)
           if user.nil?
@@ -76,6 +84,7 @@ unless defined? SPEC_ROOT
   end
   
   Spec::Runner.configure do |config|
+    config.include Spec::Application::ExampleExtensions
     config.include Spec::Application::IntegrationExampleExtensions, :type => :integration
     
     config.use_transactional_fixtures = true

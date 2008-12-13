@@ -2,7 +2,6 @@ require File.dirname(__FILE__) + "/../../spec_helper"
 
 describe Admin::UsersController do
   dataset :users
-  test_helper :logging
   
   it "should be a ResourceController" do
     controller.should be_kind_of(Admin::ResourceController)
