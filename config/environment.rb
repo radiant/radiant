@@ -77,7 +77,6 @@ Radiant::Initializer.run do |config|
     # Add new inflection rules using the following format:
     ActiveSupport::Inflector.inflections do |inflect|
       inflect.uncountable 'config'
-      inflect.uncountable 'meta'
     end
 
     # Auto-require text filters

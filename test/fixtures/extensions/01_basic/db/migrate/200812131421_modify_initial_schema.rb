@@ -4,5 +4,7 @@ class ModifyInitialSchema < ActiveRecord::Migration
     end
   end
   
-  def self.down; end
+  def self.down
+    drop_table "places"
+  end
 end

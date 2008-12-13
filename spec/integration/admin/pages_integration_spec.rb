@@ -62,6 +62,14 @@ describe 'Page management' do
         :page => {:title => /required/, :slug => /required/, :breadcrumb => /required/}
       )
     end
+    
+    it 'should allow the user to delete the home page' do
+      id = page_id(:home)
+      navigate_to "/admin/pages/#{id}/remove"
+      response.should have_text(/permanently remove/)
+      submit_form 'form.edit_page' 
+      response.should be_showing('/admin/pages')
+    end
   end
 end
 
