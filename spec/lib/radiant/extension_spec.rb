@@ -21,7 +21,11 @@ describe Radiant::Extension do
   
   it "should have a migrator" do
     BasicExtension.instance.should respond_to(:migrator)
-    BasicExtension.migrator.should be_instance_of(Radiant::ExtensionMigrator)
+    BasicExtension.migrator.superclass.should == Radiant::ExtensionMigrator
+  end
+  
+  it "should have a migrations path" do
+    BasicExtension.migrations_path.should == "#{RADIANT_ROOT}/test/fixtures/extensions/01_basic/db/migrate"
   end
   
   it "should set the extension_name in subclasses" do

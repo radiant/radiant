@@ -15,16 +15,20 @@ module Radiant
       @active
     end
     
+    def migrations_path
+      File.join(self.root, 'db', 'migrate')
+    end
+    
     def migrator
-      ExtensionMigrator.new(self)
+      unless @migrator
+        extension = self
+        @migrator = Class.new(ExtensionMigrator){ self.extension = extension }
+      end
+      @migrator
     end
 
     def admin
       AdminUI.instance
-    end
-
-    def meta
-      self.class.meta
     end
 
     class << self
@@ -52,14 +56,9 @@ module Radiant
         subclass.extension_name = subclass.name.to_name('Extension')
       end
 
-      def meta
-        Radiant::ExtensionMeta.find_or_create_by_name(extension_name)
-      end
-
       def route_definitions
         @route_definitions ||= []
       end
-
     end
   end
 end

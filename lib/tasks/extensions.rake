@@ -14,7 +14,7 @@ namespace :db do
       require 'highline/import'
       if agree("This task will destroy any data stored by extensions in the database. Are you sure you want to \ncontinue? [yn] ")
         require 'radiant/extension_migrator'
-        Radiant::Extension.descendants.map(&:migrator).each {|m| m.migrate(0) }
+        Radiant::Extension.descendants.each {|ext| ext.migrator.migrate(0) }
         Rake::Task['db:migrate:extensions'].invoke
       end
     end
@@ -65,28 +65,6 @@ namespace :spec do
           end
         end
       end
-    end
-  end
-end
-
-namespace :radiant do
-  namespace :extensions do
-    desc "Runs update asset task for all extensions"
-    task :update_all => :environment do
-      extension_names = Radiant::ExtensionLoader.instance.extensions.map { |f| f.to_s.underscore.sub(/_extension$/, '') }
-      extension_update_tasks = extension_names.map { |n| "radiant:extensions:#{n}:update" }.select { |t| Rake::Task.task_defined?(t) }
-      extension_update_tasks.each {|t| Rake::Task[t].invoke }
-    end
-  end
-end
-
-namespace :radiant do
-  namespace :extensions do
-    desc "Runs update asset task for all extensions"
-    task :update_all => :environment do
-      extension_names = Radiant::ExtensionLoader.instance.extensions.map { |f| f.to_s.underscore.sub(/_extension$/, '') }
-      extension_update_tasks = extension_names.map { |n| "radiant:extensions:#{n}:update" }.select { |t| Rake::Task.task_defined?(t) }
-      extension_update_tasks.each {|t| Rake::Task[t].invoke }
     end
   end
 end
