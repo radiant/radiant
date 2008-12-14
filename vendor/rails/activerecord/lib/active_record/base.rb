@@ -2085,7 +2085,7 @@ module ActiveRecord #:nodoc:
         end
 
         def quote_bound_value(value) #:nodoc:
-          if value.respond_to?(:map) && !value.is_a?(String)
+          if value.respond_to?(:map) && !value.is_a?(String) && !value.is_a?(ActiveSupport::Multibyte::Chars)
             if value.respond_to?(:empty?) && value.empty?
               connection.quote(nil)
             else
@@ -2632,7 +2632,7 @@ module ActiveRecord #:nodoc:
       end
 
       def instantiate_time_object(name, values)
-        if self.class.time_zone_aware_attributes && !self.class.skip_time_zone_conversion_for_attributes.include?(name.to_sym)
+        if self.class.send(:create_time_zone_conversion_attribute?, name, column_for_attribute(name))
           Time.zone.local(*values)
         else
           Time.time_with_datetime_fallback(@@default_timezone, *values)

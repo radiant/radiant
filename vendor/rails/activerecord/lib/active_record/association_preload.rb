@@ -95,8 +95,8 @@ module ActiveRecord
         records.each {|record| record.send(reflection.name).loaded}
         options = reflection.options
 
-        conditions = "t0.#{reflection.primary_key_name}  IN (?)"
-        conditions << append_conditions(options, preload_options)
+        conditions = "t0.#{reflection.primary_key_name} #{in_or_equals_for_ids(ids)}"
+        conditions << append_conditions(reflection, preload_options)
 
         associated_records = reflection.klass.find(:all, :conditions => [conditions, ids],
         :include => options[:include],
@@ -222,8 +222,6 @@ module ActiveRecord
 
           table_name = klass.quoted_table_name
           primary_key = klass.primary_key
-          conditions = "#{table_name}.#{connection.quote_column_name(primary_key)} IN (?)"
-          conditions << append_conditions(options, preload_options)
           column_type = klass.columns.detect{|c| c.name == primary_key}.type
           ids = id_map.keys.uniq.map do |id|
             if column_type == :integer
@@ -234,6 +232,8 @@ module ActiveRecord
               id
             end
           end
+          conditions = "#{table_name}.#{connection.quote_column_name(primary_key)} #{in_or_equals_for_ids(ids)}"
+          conditions << append_conditions(reflection, preload_options)
           associated_records = klass.find(:all, :conditions => [conditions, ids],
                                           :include => options[:include],
                                           :select => options[:select],
@@ -248,13 +248,13 @@ module ActiveRecord
         table_name = reflection.klass.quoted_table_name
 
         if interface = reflection.options[:as]
-          conditions = "#{reflection.klass.quoted_table_name}.#{connection.quote_column_name "#{interface}_id"} IN (?) and #{reflection.klass.quoted_table_name}.#{connection.quote_column_name "#{interface}_type"} = '#{self.base_class.sti_name}'"
+          conditions = "#{reflection.klass.quoted_table_name}.#{connection.quote_column_name "#{interface}_id"} #{in_or_equals_for_ids(ids)} and #{reflection.klass.quoted_table_name}.#{connection.quote_column_name "#{interface}_type"} = '#{self.base_class.sti_name}'"
         else
           foreign_key = reflection.primary_key_name
-          conditions = "#{reflection.klass.quoted_table_name}.#{foreign_key} IN (?)"
+          conditions = "#{reflection.klass.quoted_table_name}.#{foreign_key} #{in_or_equals_for_ids(ids)}"
         end
 
-        conditions << append_conditions(options, preload_options)
+        conditions << append_conditions(reflection, preload_options)
 
         reflection.klass.find(:all,
                               :select => (preload_options[:select] || options[:select] || "#{table_name}.*"),
@@ -270,13 +270,16 @@ module ActiveRecord
         instance_eval("%@#{sql.gsub('@', '\@')}@")
       end
 
-      def append_conditions(options, preload_options)
+      def append_conditions(reflection, preload_options)
         sql = ""
-        sql << " AND (#{interpolate_sql_for_preload(sanitize_sql(options[:conditions]))})" if options[:conditions]
+        sql << " AND (#{interpolate_sql_for_preload(reflection.sanitized_conditions)})" if reflection.sanitized_conditions
         sql << " AND (#{sanitize_sql preload_options[:conditions]})" if preload_options[:conditions]
         sql
       end
 
+      def in_or_equals_for_ids(ids)
+        ids.size > 1 ? "IN (?)" : "= ?"
+      end
     end
   end
 end

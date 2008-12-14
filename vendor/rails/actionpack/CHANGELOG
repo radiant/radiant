@@ -1,3 +1,10 @@
+*2.1.2 (October 23rd, 2008)*
+
+* Sanitize the URLs passed to redirect_to to prevent a potential response splitting attack [koz]
+
+* Fixed FormTagHelper#submit_tag with :disable_with option wouldn't submit the button's value when was clicked #633 [Jose Fernandez]
+
+
 *2.1.1 (September 4th, 2008)*
 
 * All 2xx requests are considered successful [Josh Peek]
