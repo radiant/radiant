@@ -36,17 +36,21 @@ class Admin::ResourceController < ApplicationController
   end
 
   [:show, :new, :edit, :remove].each do |action|
-    define_method action do
-      response_for :singular
-    end
+    class_eval %{
+      def #{action}
+        response_for :singular
+      end
+    }, __FILE__, __LINE__
   end
 
   [:create, :update].each do |action|
-    define_method action do
-      model.update_attributes!(params[model_symbol])
-      announce_saved
-      response_for action
-    end
+    class_eval %{
+      def #{action}
+        model.update_attributes!(params[model_symbol])
+        announce_saved
+        response_for :#{action}
+      end
+    }, __FILE__, __LINE__
   end
 
   def destroy
