@@ -23,6 +23,18 @@ describe Radiant::ExtensionMigrator do
     BasicExtension.migrator.get_all_versions.should == []
   end
   
+  it 'should migrate extensions with unusual names' do
+    ActiveRecord::Migration.suppress_messages do
+      SpecialNameExtension.migrator.migrate
+    end
+    SpecialNameExtension.migrator.get_all_versions.should == [1]
+    lambda { Person.find(:all) }.should_not raise_error
+    ActiveRecord::Migration.suppress_messages do
+      SpecialNameExtension.migrator.migrate(0)
+    end
+    SpecialNameExtension.migrator.get_all_versions.should == []
+  end
+
   it "should record existing extension migrations in the schema_migrations table" do
     ActiveRecord::Base.connection.insert("INSERT INTO extension_meta (name, schema_version) VALUES ('Upgrading', 2)")
     ActiveRecord::Migration.suppress_messages do

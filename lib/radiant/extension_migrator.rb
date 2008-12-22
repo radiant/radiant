@@ -26,11 +26,23 @@ module Radiant
     end
     
     private
+      def quote(s)
+        ActiveRecord::Base.connection.quote(s)
+      end
+      
+      def extension_name
+        self.class.extension.extension_name
+      end
+      
+      def version_string(version)
+        "#{extension_name}-#{version}"
+      end
+      
       def initialize_extension_schema_migrations
-        current_version = ActiveRecord::Base.connection.select_value("SELECT schema_version FROM extension_meta WHERE name = '#{self.class.extension.extension_name}'")
+        current_version = ActiveRecord::Base.connection.select_value("SELECT schema_version FROM extension_meta WHERE name = #{quote(extension_name)}")
         if current_version
           assume_migrated_upto_version(current_version.to_i) 
-          ActiveRecord::Base.connection.delete("DELETE FROM extension_meta WHERE name = '#{self.class.extension.extension_name}'")
+          ActiveRecord::Base.connection.delete("DELETE FROM extension_meta WHERE name = #{quote(extension_name)}")
         end
       end
       
@@ -44,7 +56,7 @@ module Radiant
         end
 
         unless migrated.include?(version)
-          ActiveRecord::Base.connection.execute "INSERT INTO #{sm_table} (version) VALUES ('#{self.class.extension.extension_name}-#{version}')"
+          ActiveRecord::Base.connection.execute "INSERT INTO #{sm_table} (version) VALUES (#{quote(version_string(version))})"
         end
 
         inserted = Set.new
@@ -52,7 +64,7 @@ module Radiant
           if inserted.include?(v)
             raise "Duplicate migration #{v}. Please renumber your migrations to resolve the conflict."
           elsif v < version
-            ActiveRecord::Base.connection.execute "INSERT INTO #{sm_table} (version) VALUES ('#{self.class.extension.extension_name}-#{v}')"
+            ActiveRecord::Base.connection.execute "INSERT INTO #{sm_table} (version) VALUES (#{quote(version_string(v))})"
             inserted << v
           end
         end
@@ -64,10 +76,10 @@ module Radiant
         @migrated_versions ||= []
         if down?
           @migrated_versions.delete(version.to_i)
-          ActiveRecord::Base.connection.update("DELETE FROM #{sm_table} WHERE version = '#{self.class.extension.extension_name}-#{version}'")
+          ActiveRecord::Base.connection.update("DELETE FROM #{sm_table} WHERE version = #{quote(version_string(version))}")
         else
           @migrated_versions.push(version.to_i).sort!
-          ActiveRecord::Base.connection.insert("INSERT INTO #{sm_table} (version) VALUES ('#{self.class.extension.extension_name}-#{version}')")
+          ActiveRecord::Base.connection.insert("INSERT INTO #{sm_table} (version) VALUES (#{quote(version_string(version))})")
         end
       end
   end
