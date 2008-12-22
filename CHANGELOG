@@ -2,6 +2,7 @@
 
 === Edge
 
+* Correct missing @@configuration variable in initializer. [John Muhl]
 * Handle SQL special characters in extension names in migrations. 
 [Erik Ostrom]
 * Converted extension migrations to use schema_migrations table instead 

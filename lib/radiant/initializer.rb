@@ -86,6 +86,7 @@ module Radiant
 
   class Initializer < Rails::Initializer
     def self.run(command = :process, configuration = Configuration.new)
+      Rails.configuration = configuration
       super
     end
 
