@@ -45,7 +45,7 @@ namespace 'radiant' do
     files.exclude '**/._*'
     files.exclude '**/*.rej'
     files.exclude '.git*'
-    files.exclude 'cache/'
+    files.exclude /^cache/
     files.exclude 'config/database.yml'
     files.exclude 'config/locomotive.yml'
     files.exclude 'config/lighttpd.conf'
@@ -57,7 +57,7 @@ namespace 'radiant' do
     files.include 'log/.keep'
     files.exclude /^pkg/
     files.include 'public/.htaccess'
-    files.exclude 'tmp/'
+    files.exclude /^tmp/
     s.files = files.to_a
   end
 
