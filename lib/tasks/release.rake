@@ -57,7 +57,7 @@ namespace 'radiant' do
     files.include 'log/.keep'
     files.exclude /^pkg/
     files.include 'public/.htaccess'
-    files.exclude /^tmp/
+    files.exclude /\btmp\b/
     s.files = files.to_a
   end
 
