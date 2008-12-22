@@ -25,14 +25,14 @@ describe Radiant::ExtensionMigrator do
   
   it 'should migrate extensions with unusual names' do
     ActiveRecord::Migration.suppress_messages do
-      SpecialNameExtension.migrator.migrate
+      SpecialCharactersExtension.migrator.migrate
     end
-    SpecialNameExtension.migrator.get_all_versions.should == [1]
+    SpecialCharactersExtension.migrator.get_all_versions.should == [1]
     lambda { Person.find(:all) }.should_not raise_error
     ActiveRecord::Migration.suppress_messages do
-      SpecialNameExtension.migrator.migrate(0)
+      SpecialCharactersExtension.migrator.migrate(0)
     end
-    SpecialNameExtension.migrator.get_all_versions.should == []
+    SpecialCharactersExtension.migrator.get_all_versions.should == []
   end
 
   it "should record existing extension migrations in the schema_migrations table" do
