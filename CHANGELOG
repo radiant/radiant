@@ -2,6 +2,7 @@
 
 === Edge
 
+* Correct assume_migrated_upto_version behavior in instance mode. [Sean Cribbs]
 * Correct missing @@configuration variable in initializer. [John Muhl]
 * Handle SQL special characters in extension names in migrations. 
 [Erik Ostrom]
