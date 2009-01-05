@@ -23,13 +23,12 @@ module ApplicationHelper
     !current_user.nil?
   end
   
-  def save_model_button(model)
-    label = if model.new_record?
-      "Create #{model.class.name}"
-    else
-      'Save Changes'
-    end
-    submit_tag label, :class => 'button'
+  def save_model_button(model, options = {})
+    options[:label] ||= model.new_record? ?
+      "Create #{model.class.name}" : "Save Changes"
+    options[:class] ||= "button"
+
+    submit_tag options.delete(:label), options
   end
   
   def save_model_and_continue_editing_button(model)

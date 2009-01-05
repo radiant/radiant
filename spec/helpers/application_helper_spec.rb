@@ -54,6 +54,19 @@ describe ApplicationHelper do
     helper.save_model_button(model)
   end
   
+  it "should create a button with custom options" do
+    model = mock_model(Page)
+    model.should_receive(:new_record?).and_return(false)
+    helper.should_receive(:submit_tag).with("Save Changes", :class => 'custom')
+    helper.save_model_button(model, :class => 'custom')
+  end
+  
+  it "should create a button with a custom label" do
+    model = mock_model(Page)
+    helper.should_receive(:submit_tag).with("Create PAGE", :class => 'button')
+    helper.save_model_button(model, :label => "Create PAGE")
+  end
+  
   it "should create a save and continue button" do
     model = mock_model(Page)
     helper.save_model_and_continue_editing_button(model).should =~ /name="continue"/
