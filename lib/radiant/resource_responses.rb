@@ -7,10 +7,9 @@ module Radiant
     end
     
     def responses
-      self.responses = Collector.new unless read_inheritable_attribute(:responses)
-      returning read_inheritable_attribute(:responses) do |r|
-        yield r if block_given?
-      end
+      r = (self.responses = read_inheritable_attribute(:responses) || Collector.new)
+      yield r if block_given?
+      r
     end
     
     module InstanceMethods
@@ -48,14 +47,29 @@ module Radiant
         super
         @table = Hash.new {|h,k| h[k] = Response.new }
       end
+      
+      def initialize_copy(orig)
+        super
+        @table.keys.each do |key|
+          @table[key] = orig.send(key).dup
+        end
+      end
     end
     
     class Response
-      attr_reader :publish_formats, :publish_block, :blocks
+      attr_reader :publish_formats, :publish_block, :blocks, :block_order
       def initialize
         @publish_formats = []
         @blocks = {}
         @block_order = []
+      end
+      
+      def initialize_copy(orig)
+        @publish_formats = orig.publish_formats.dup
+        @blocks = orig.blocks.dup
+        @block_order = orig.block_order.dup
+        @publish_block = orig.publish_block.dup if orig.publish_block
+        @default = orig.default.dup if orig.default
       end
       
       def default(&block)

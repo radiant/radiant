@@ -26,6 +26,11 @@ describe "Radiant::ResourceResponses" do
     it "should add a wrap instance method" do
       @klass.new.should respond_to(:wrap)
     end
+    
+    it "should duplicate on inheritance" do
+      @subclass = Class.new(@klass)
+      @subclass.responses.should_not equal(@klass.responses)
+    end
   end
   
   describe "responding to configured formats" do
@@ -101,6 +106,16 @@ describe Radiant::ResourceResponses::Collector do
   it "should provide a Response object as the default property" do
     @collector.plural.should be_kind_of(Radiant::ResourceResponses::Response)
   end
+  
+  it "should be duplicable" do
+    @collector.should be_duplicable
+  end
+  
+  it "should duplicate its elements when duplicating" do
+    @collector.plural.html
+    @duplicate = @collector.dup
+    @collector.plural.should_not equal(@duplicate.plural)
+  end
 end
 
 describe Radiant::ResourceResponses::Response do
@@ -108,6 +123,18 @@ describe Radiant::ResourceResponses::Response do
     @response = Radiant::ResourceResponses::Response.new
   end
   
+  it "should duplicate its elements when duplicating" do
+    @response.default { render :text => "foo" }
+    @response.html
+    @response.publish(:xml) { render }
+    @duplicate = @response.dup
+    @response.blocks.should_not equal(@duplicate.blocks)
+    @response.default.should_not equal(@duplicate.default)
+    @response.publish_block.should_not equal(@duplicate.publish_block)
+    @response.publish_formats.should_not equal(@duplicate.publish_formats)
+    @response.block_order.should_not equal(@duplicate.block_order)
+  end
+
   it "should accept a default response block" do
     @block = lambda { render :text => 'foo' }
     @response.default(&@block)
