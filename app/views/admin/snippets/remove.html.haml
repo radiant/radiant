@@ -12,7 +12,7 @@
         = image('snippet', :alt => "snippet-icon")
         %span.title= @snippet.name
 
-- form_tag do
+- form_for [:admin, @snippet], :html => {:method => :delete} do
   %p.buttons
     %input.button{:type=>"submit", :value=>"Delete Snippet"}/
     or
