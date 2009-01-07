@@ -68,7 +68,7 @@ describe Admin::PagesController do
     end
     
     it "should render the appropriate children when branch of the site map is expanded via AJAX" do
-      xml_http_request :get, :index, :id => page_id(:home), :level => '1'
+      xml_http_request :get, :index, :page_id => page_id(:home), :level => '1'
       response.should be_success
       assigns(:level).should == 1
       response.body.should_not have_text('<head>')
