@@ -2,6 +2,12 @@
 
 === Edge
 
+* Add some inline documentation to resource controller. [Sean Cribbs]
+* Fix some form problems on pages. [Sean Cribbs]
+* Fix form on snippets/remove. [Sean Cribbs]
+* Make sure resourceful responses deeply clone on inheritance. [Sean Cribbs]
+* Fix broken Ajax children callback. [Sean Cribbs]
+* Fix broken URL in snippets/remove. [Sean Cribbs]
 * Correct assume_migrated_upto_version behavior in instance mode. [Sean Cribbs]
 * Correct missing @@configuration variable in initializer. [John Muhl]
 * Handle SQL special characters in extension names in migrations. 

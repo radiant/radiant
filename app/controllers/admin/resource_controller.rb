@@ -1,7 +1,7 @@
 class Admin::ResourceController < ApplicationController
   extend Radiant::ResourceResponses
   
-  helper_method :model, :models, :model_symbol, :plural_model_symbol, :model_class, :model_name, :plural_model_name
+  helper_method :model, :current_object, :models, :current_objects, :model_symbol, :plural_model_symbol, :model_class, :model_name, :plural_model_name
   before_filter :load_models, :only => :index
   before_filter :load_model, :only => [:new, :create, :edit, :update, :remove, :destroy]
   after_filter :clear_model_cache, :only => [:create, :update, :destroy]
@@ -11,6 +11,12 @@ class Admin::ResourceController < ApplicationController
   end
 
   responses do |r|
+    # Equivalent respond_to block for :plural responses:
+    # respond_to do |wants|
+    #   wants.xml { render :xml => models }
+    #   wants.json { render :json => models }
+    #   wants.any
+    # end
     r.plural.publish(:xml, :json) { render format_symbol => models }
 
     r.singular.publish(:xml, :json) { render format_symbol => model }
@@ -37,19 +43,19 @@ class Admin::ResourceController < ApplicationController
 
   [:show, :new, :edit, :remove].each do |action|
     class_eval %{
-      def #{action}
-        response_for :singular
-      end
+      def #{action}                # def show
+        response_for :singular     #   response_for :singular
+      end                          # end
     }, __FILE__, __LINE__
   end
 
   [:create, :update].each do |action|
     class_eval %{
-      def #{action}
-        model.update_attributes!(params[model_symbol])
-        announce_saved
-        response_for :#{action}
-      end
+      def #{action}                                       # def create
+        model.update_attributes!(params[model_symbol])    #   model.update_attributes!(params[model_symbol])
+        announce_saved                                    #   announce_saved
+        response_for :#{action}                           #   response_for :create
+      end                                                 # end
     }, __FILE__, __LINE__
   end
 
@@ -90,6 +96,7 @@ class Admin::ResourceController < ApplicationController
     def model
       instance_variable_get("@#{model_symbol}") || load_model
     end
+    alias :current_object :model
     def model=(object)
       instance_variable_set("@#{model_symbol}", object)
     end
@@ -104,6 +111,7 @@ class Admin::ResourceController < ApplicationController
     def models
       instance_variable_get("@#{plural_model_symbol}") || load_models
     end
+    alias :current_objects :models
     def models=(objects)
       instance_variable_set("@#{plural_model_symbol}", objects)
     end
@@ -140,7 +148,7 @@ class Admin::ResourceController < ApplicationController
     end
 
     def announce_validation_errors
-      flash[:error] = "Validation errors occurred while processing this form. Please take a moment to review the form and correct any input errors before continuing."
+      flash.now[:error] = "Validation errors occurred while processing this form. Please take a moment to review the form and correct any input errors before continuing."
     end
 
     def announce_removed
@@ -148,7 +156,7 @@ class Admin::ResourceController < ApplicationController
     end
 
     def announce_update_conflict
-      flash[:error] = "#{humanized_model_name} has been modified since it was last loaded. Changes cannot be saved without potentially losing data."
+      flash.now[:error] = "#{humanized_model_name} has been modified since it was last loaded. Changes cannot be saved without potentially losing data."
     end
 
     def clear_model_cache
