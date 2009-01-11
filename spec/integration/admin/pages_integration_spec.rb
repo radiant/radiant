@@ -71,6 +71,21 @@ describe 'Page management' do
       response.should be_showing('/admin/pages')
     end
   end
+  
+  describe "with existing pages" do
+    dataset :pages
+    it "should allow the user to change the page type" do
+      id = page_id(:virtual)
+      navigate_to "/admin/pages/#{id}/edit"
+      submit_form 'edit_page', :continue => 'Save and Continue', 
+        :page => {
+          :class_name => '', :title => 'Virtual', :slug => 'virtual',
+          :breadcrumb => 'Virtual', :parts => [{:name => 'body', :content => 'Virtual body.'}]
+          }
+      response.should be_showing("/admin/pages/#{id}/edit")
+      response.should have_tag('option[value=""][selected]', '&lt;normal&gt;')
+    end
+  end
 end
 
 describe "Pages as resource" do

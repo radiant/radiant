@@ -35,7 +35,7 @@
             %p
               %label{:for=>"page_class_name"}
                 Page Type
-              = fields.select :class_name, [['<normal>', 'Page']] + Page.descendants.map { |p| [p.display_name, p.name] }.sort_by { |p| p.first }
+              = fields.select :class_name, [['<normal>', '']] + Page.descendants.map { |p| [p.display_name, p.name] }.sort_by { |p| p.first }
             %p
               %label{:for=>"page_status_id"}
                 Status
