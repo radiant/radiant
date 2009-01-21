@@ -512,6 +512,18 @@ describe Page, "loading subclasses before bootstrap" do
   end
 end
 
+describe Page, "loading subclasses when upgrading from 0.5.x where class_name column is not present" do
+  before :each do
+    column_names = Page.column_names - ["class_name"]
+    Page.should_receive(:column_names).and_return(column_names)
+  end
+  
+  it "should not attempt to search for missing subclasses" do
+    Page.connection.should_not_receive(:select_values).with("SELECT DISTINCT class_name FROM pages WHERE class_name <> '' AND class_name IS NOT NULL")
+    Page.load_subclasses
+  end
+end
+
 describe Page, 'loading subclasses after bootstrap' do
   it "should find subclasses in extensions" do
     defined?(ArchivePage).should_not be_nil

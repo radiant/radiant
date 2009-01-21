@@ -2,6 +2,9 @@
 
 === Edge
 
+* Fix upgrade issue from 0.5.x where class_name is expected to be present.
+[Sean Cribbs]
+* Remove unneeded patch. [Sean Cribbs]
 * Add some inline documentation to resource controller. [Sean Cribbs]
 * Fix some form problems on pages. [Sean Cribbs]
 * Fix form on snippets/remove. [Sean Cribbs]
