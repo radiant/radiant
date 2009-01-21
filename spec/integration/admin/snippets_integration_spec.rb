@@ -33,6 +33,15 @@ describe 'Snippets' do
     response.should have_tag('#notice')
     response.should have_text(/Me Snippet/)
   end
+  
+  it "should allow you to delete a snippet" do
+    object = snippets(:first)
+    navigate_to "/admin/snippets/#{object.id}/remove"
+    submit_form
+    response.should be_showing('/admin/snippets')
+    response.should have_tag('#notice')
+    response.should_not display_object(object)
+  end
 end
 
 describe 'Snippet as resource' do
