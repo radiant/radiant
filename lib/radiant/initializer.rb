@@ -4,6 +4,7 @@ $LOAD_PATH.unshift "#{RADIANT_ROOT}/vendor/rails/railties/lib"
 require 'initializer'
 require 'radiant/admin_ui'
 require 'radiant/extension_loader'
+require 'radiant/compat'
 
 module Radiant
 
