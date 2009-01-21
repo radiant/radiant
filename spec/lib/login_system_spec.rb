@@ -14,6 +14,30 @@ class StubController < ActionController::Base
   end
 end
 
+class NoLoginRequiredController < StubController;  no_login_required; end
+class LoginRequiredController < StubController; end
+class NoLoginRequiredChildController < NoLoginRequiredController; end
+class LoginRequiredGrandChildController < NoLoginRequiredChildController; login_required; end
+class PrivilegedUsersOnlyController < LoginRequiredController
+  only_allow_access_to :edit, :new, 
+                       :when => [:admin, :developer], 
+                       :denied_url => '/login_required', 
+                       :denied_message => 'Fun.'
+end
+class AdminOnlyController < LoginRequiredController
+    only_allow_access_to :edit, 
+                         :when => :admin, 
+                         :denied_url => '/login_required', 
+                         :denied_message => 'Fun.'
+end
+class ConditionalAccessController < LoginRequiredController
+    attr_writer :condition
+    define_method(:condition?, proc { @condition ||= false })
+    only_allow_access_to :edit, :if => :condition?, 
+                         :denied_url => '/login_required', 
+                         :denied_message => 'Fun.'
+end
+
 describe 'Login System:', :type => :controller do
   dataset :users
   
@@ -27,14 +51,14 @@ describe 'Login System:', :type => :controller do
     ActionController::Routing::Routes.reload
   end
 
-  describe NoLoginRequiredController = StubController.subclass('NoLoginRequiredController') { no_login_required } do
+  describe NoLoginRequiredController do
     it "should not require authentication" do
       get :index
       response.should be_success
     end
   end
 
-  describe LoginRequiredController = StubController.subclass('LoginRequiredController') { }, :type => :controller do
+  describe LoginRequiredController do
     it "should authenticate with user in session" do
       login_as :existing
       get :index
@@ -109,33 +133,25 @@ describe 'Login System:', :type => :controller do
     end
   end
 
-  describe NoLoginRequiredChildController = NoLoginRequiredController.subclass('NoLoginRequiredChildController') { } do
+  describe NoLoginRequiredChildController do
     it "should inherit no_login_required" do
-      # StubController.controllers_where_no_login_required.should include(NoLoginRequiredChildController)
       controller.class.should_not be_login_required
     end
   end
 
-  describe LoginRequiredGrandChildController = NoLoginRequiredChildController.subclass('LoginRequiredGrandChildController') {
-      login_required
-    } do
+  describe LoginRequiredGrandChildController do
       it "should override parent with login_required" do
         controller.class.should be_login_required
       end
   end
 
-  describe LoginRequiredGreatGrandChildController = LoginRequiredGrandChildController.subclass('LoginRequiredGreatGrandChildController') { } do
+  describe LoginRequiredGreatGrandChildController = Class.new(LoginRequiredGrandChildController) { } do
     it "should inherit login_required" do
       controller.class.should be_login_required
     end
   end
 
-  describe LoginRequiredController.subclass('OnlyAllowAccessToWhenController') {
-    only_allow_access_to :edit, :new, 
-                         :when => [:admin, :developer], 
-                         :denied_url => '/login_required', 
-                         :denied_message => 'Fun.'
-    } do
+  describe PrivilegedUsersOnlyController do
     it "should only allow access when user in roles" do
       login_as :admin
       get :edit
@@ -156,12 +172,7 @@ describe 'Login System:', :type => :controller do
     end
   end
 
-  describe LoginRequiredController.subclass('OnlyAllowAccessToWhenDefaultsController') {
-      only_allow_access_to :edit, 
-                           :when => :admin, 
-                           :denied_url => '/login_required', 
-                           :denied_message => 'Fun.'
-    } do
+  describe AdminOnlyController do
     it "should not allow access when user not in default roles" do
       login_as :non_admin
       get :edit
@@ -170,13 +181,7 @@ describe 'Login System:', :type => :controller do
     end
   end
 
-  describe LoginRequiredController.subclass('OnlyAllowAccessToIfController') {
-      attr_writer :condition
-      define_method(:condition?, proc { @condition ||= false })
-      only_allow_access_to :edit, :if => :condition?, 
-                           :denied_url => '/login_required', 
-                           :denied_message => 'Fun.'
-    } do
+  describe ConditionalAccessController do
 
     it "should allow access if condition is true" do
       controller.condition = true

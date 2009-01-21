@@ -2,6 +2,7 @@
 
 === Edge
 
+* Improve rspec-1.1.12 compatibility. [Sean Cribbs]
 * Add Ruby 1.8.7 compatibility patch. [Sean Cribbs]
 * Fix upgrade issue from 0.5.x where class_name is expected to be present.
 [Sean Cribbs]

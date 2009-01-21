@@ -52,8 +52,10 @@ describe "Radiant::Extension::Script::Util" do
 
   it "should determine whether an extension is installed" do
     # Bad coupling, but will work by default
-    self.extension_name = 'archive'
-    self.should be_installed
+    @script = mock('script action')
+    @script.extend Radiant::Extension::Script::Util
+    @script.extension_name = 'archive'
+    @script.should be_installed
   end
 
   it "should load all extensions from the web service" do
