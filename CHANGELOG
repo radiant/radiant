@@ -1,5 +1,8 @@
 == Change Log
 
+=== Edge
+* Update dataset, spec_integration, and vizres plugins. [Sean Cribbs]
+
 === 0.7.0-RC2
 * Make specs and bootstrap work in instance mode. [Sean Cribbs]
 * Override spec:integration task and rescope some spec task options to 
