@@ -61,7 +61,7 @@ namespace :spec do
     desc "Run the specs under spec/#{sub}"
     Spec::Rake::SpecTask.new(sub => spec_prereq) do |t|
       t.spec_opts = ['--options', "\"#{RADIANT_ROOT}/spec/spec.opts\""]
-      t.spec_files = FileList["spec/#{sub}/**/*_spec.rb"]
+      t.spec_files = FileList["#{RADIANT_ROOT}/spec/#{sub}/**/*_spec.rb"]
     end
   end
   

@@ -1,5 +1,5 @@
 # Undefined unneeded tasks in instance mode
-unless File.directory? "#{RAILS_ROOT}/app"
+unless Radiant.app?
   def undefine_task(*names)
     app = Rake.application
     tasks = app.instance_variable_get('@tasks')

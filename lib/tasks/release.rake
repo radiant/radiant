@@ -58,6 +58,7 @@ namespace 'radiant' do
     files.exclude /^pkg/
     files.include 'public/.htaccess'
     files.exclude /\btmp\b/
+    files.exclude 'radiant.gemspec'
     s.files = files.to_a
   end
 

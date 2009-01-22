@@ -24,7 +24,8 @@ unless defined? SPEC_ROOT
   class Test::Unit::TestCase
     include Dataset
     datasets_directory "#{RADIANT_ROOT}/spec/datasets"
-
+    Dataset::ClassMethods.datasets_database_dump_path = File.expand_path(RAILS_ROOT + '/tmp/dataset')
+    
     class << self
       # Class method for test helpers
       def test_helper(*names)
