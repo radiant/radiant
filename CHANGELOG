@@ -1,6 +1,6 @@
 == Change Log
 
-=== Edge
+=== 0.7.0-RC2
 * Make specs and bootstrap work in instance mode. [Sean Cribbs]
 * Override spec:integration task and rescope some spec task options to 
 RADIANT_ROOT. [Sean Cribbs]
