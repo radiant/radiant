@@ -1,11 +1,14 @@
 == Change Log
 
 === Edge
+* Update Admin::ResourceController to overcome respond_to weaknesses by
+choosing HTML format by default. [Sean Cribbs]
+* Add an IE-specific integration spec. [Jeroen Janssen]
 * Update dataset, spec_integration, and vizres plugins. [Sean Cribbs]
 
 === 0.7.0-RC2
 * Make specs and bootstrap work in instance mode. [Sean Cribbs]
-* Override spec:integration task and rescope some spec task options to 
+* Override spec:integration task and rescope some spec task options to
 RADIANT_ROOT. [Sean Cribbs]
 * Improve rspec-1.1.12 compatibility. [Sean Cribbs]
 * Add Ruby 1.8.7 compatibility patch. [Sean Cribbs]
@@ -20,9 +23,9 @@ RADIANT_ROOT. [Sean Cribbs]
 * Fix broken URL in snippets/remove. [Sean Cribbs]
 * Correct assume_migrated_upto_version behavior in instance mode. [Sean Cribbs]
 * Correct missing @@configuration variable in initializer. [John Muhl]
-* Handle SQL special characters in extension names in migrations. 
+* Handle SQL special characters in extension names in migrations.
 [Erik Ostrom]
-* Converted extension migrations to use schema_migrations table instead 
+* Converted extension migrations to use schema_migrations table instead
 of extension_meta. [Nathaniel Talbott, Sean Cribbs, Rick DeNatale]
 * Replaced scenarios with dataset. [Nathaniel Talbott, Adam Williams, Rick DeNatale]
 * Fix RSpec git submodules. [Nathaniel Talbott, Clinton Nixon]
@@ -40,7 +43,7 @@ on packaged libraries. [Sean Cribbs, Jason Garber]
 tracking. [Sean Cribbs]
 * Add generator specs and more generators. [Brian Landau]
 * Add initial integration specs. [Adam Williams, Mark Imbriaco]
-* Refactor admin controllers and views toward RESTful principles. 
+* Refactor admin controllers and views toward RESTful principles.
 [Sean Cribbs, Clinton Nixon, Rick DeNatale]
 * Remove RSpec from packaged libraries. [Sean Cribbs]
 * Correct CSS validation errors. [John Muhl]
@@ -67,7 +70,7 @@ tracking. [Sean Cribbs]
 * Make Git extension install method recognize submodules. [Sean Cribbs]
 * Fix malformed Textile in standard tag descriptions. [Jason Garber]
 * Update script/extension help output. [Jim Gay]
-* Allow load_subclasses to work when multiple apps are on the same database. 
+* Allow load_subclasses to work when multiple apps are on the same database.
 [Jim Gay]
 * Add REXML expansion fix. [Sean Cribbs]
 * Fix filter_reference admin helper for filter names that have spaces in
