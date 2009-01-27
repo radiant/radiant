@@ -173,6 +173,7 @@ class Admin::ResourceController < ApplicationController
     end
     
     # Assist with user agents that cause improper content-negotiation
+    warn "Remove default HTML format, Accept header no longer used. (#{__FILE__}: #{__LINE__})" if Rails.version !~ /^2\.1/
     def populate_format
       params[:format] ||= 'html' unless request.xhr?
     end
