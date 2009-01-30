@@ -36,7 +36,17 @@ module Radiant
     private
 
       def library_directories
-        Dir["#{RADIANT_ROOT}/vendor/*/lib"]
+        libs = %W{ 
+          #{RADIANT_ROOT}/vendor/radius/lib
+          #{RADIANT_ROOT}/vendor/highline/lib
+        }
+        begin
+          require 'redcloth'
+        rescue LoadError
+          # If the gem is not available, use the packaged version
+          libs << "#{RADIANT_ROOT}/vendor/redcloth/lib"
+        end
+        libs
       end
 
       def framework_root_path
