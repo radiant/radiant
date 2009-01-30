@@ -163,6 +163,17 @@ describe ResponseCache do
     cached.headers['Content-Type'].should == 'text/plain'
     result.should be_kind_of(TestResponse) 
   end
+
+  it 'send using x_accel_redirect header' do
+    @cache.use_x_accel_redirect = true
+    result = @cache.cache_response('test', response('content', 'Content-Type' => 'text/plain'))
+    cached = @cache.update_response('test', response, ActionController::TestRequest)
+    cached.body.should == ''
+    cached.headers['X-Accel-Redirect'].should == "#{@dir}/test.data"
+    cached.headers['Content-Type'].should == 'text/plain'
+    result.should be_kind_of(TestResponse) 
+  end
+
   
   it 'send cached page with last modified' do
     last_modified = Time.now.httpdate

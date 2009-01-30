@@ -7,11 +7,12 @@ class ResponseCache
     :default_extension => '.yml',
     :perform_caching => true,
     :logger => ActionController::Base.logger,
-    :use_x_sendfile => false
+    :use_x_sendfile => false,
+    :use_x_accel_redirect => false
   }
   cattr_accessor :defaults
   
-  attr_accessor :directory, :expire_time, :default_extension, :perform_caching, :logger, :use_x_sendfile
+  attr_accessor :directory, :expire_time, :default_extension, :perform_caching, :logger, :use_x_sendfile, :use_x_accel_redirect
   alias :page_cache_directory :directory
   alias :page_cache_extension :default_extension
   private :benchmark, :silence, :page_cache_directory,
@@ -29,12 +30,13 @@ class ResponseCache
   # 
   def initialize(options = {})
     options = options.symbolize_keys.reverse_merge(defaults)
-    self.directory         = options[:directory]
-    self.expire_time       = options[:expire_time]
-    self.default_extension = options[:default_extension]
-    self.perform_caching   = options[:perform_caching]
-    self.logger            = options[:logger]
-    self.use_x_sendfile    = options[:use_x_sendfile]
+    self.directory            = options[:directory]
+    self.expire_time          = options[:expire_time]
+    self.default_extension    = options[:default_extension]
+    self.perform_caching      = options[:perform_caching]
+    self.logger               = options[:logger]
+    self.use_x_sendfile       = options[:use_x_sendfile]
+    self.use_x_accel_redirect = options[:use_x_accel_redirect]
   end
   
   # Caches a response object for path to disk.
@@ -106,6 +108,8 @@ class ResponseCache
         response.headers.merge!(metadata['headers'] || {})
         if client_has_cache?(metadata, request)
           response.headers.merge!('Status' => '304 Not Modified')
+        elsif use_x_accel_redirect
+          response.headers.merge!('X-Accel-Redirect' => "#{file_path}.data")
         elsif use_x_sendfile
           response.headers.merge!('X-Sendfile' => "#{file_path}.data")
         else
