@@ -1,6 +1,8 @@
 == Change Log
 
 === Edge
+* Use RDiscount's smart quotes instead of SmartyPants. [John Muhl]
+* Update extension generator to use new admin REST routing. [Jeroen Janssen]
 * Update Admin::ResourceController to overcome respond_to weaknesses by
 choosing HTML format by default. [Sean Cribbs]
 * Add an IE-specific integration spec. [Jeroen Janssen]
