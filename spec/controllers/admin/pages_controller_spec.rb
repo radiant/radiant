@@ -78,51 +78,66 @@ describe Admin::PagesController do
   end
   
   describe "permissions" do
-    {:get => [:index, :show, :new, :edit, :remove],
-     :post => [:create],
-     :put => [:update],
-     :delete => [:destroy]}.each do |method, actions|
-      actions.each do |action|
-        before :each do
-          @parameters = lambda do 
-            case action
-            when :index
-              {}
-            when :new
-              {:page_id => page_id(:home)}
-            else
-              {:id => Page.first.id} 
-            end
-          end
-        end
-        
+    
+    [:admin, :developer, :non_admin, :existing].each do |user|
+      {
+        :post => :create,
+        :put => :update,
+        :delete => :destroy
+      }.each do |method, action|
         it "should require login to access the #{action} action" do
           logout
-          lambda { send(method, action, @parameters.call) }.should require_login
+          send method, action, :id => Page.first.id
+          response.should redirect_to('/admin/login')
         end
-
-        it "should allow access to admins for the #{action} action" do
-          lambda { 
-            send(method, action, @parameters.call) 
-          }.should restrict_access(:allow => [users(:developer)], 
-                                   :url => '/admin/pages')
+        
+        it "should allow access to #{user.to_s.humanize}s for the #{action} action" do
+          login_as user
+          send method, action, :id => Page.first.id
+          response.should redirect_to('/admin/pages')
         end
-
-        it "should allow access to developers for the #{action} action" do
-          lambda { 
-            send(method, action, @parameters.call) 
-          }.should restrict_access(:allow => [users(:developer)], 
-                                   :url => '/admin/pages')
-        end
-      
-        it "should allow non-developers and non-admins for the #{action} action" do
-          lambda { 
-            send(method, action, @parameters.call) 
-          }.should restrict_access(:allow => [users(:non_admin), users(:existing)],
-                                   :url => '/admin/pages')
+      end
+    end
+    
+    [:index, :show, :new, :edit, :remove].each do |action|
+      before :each do
+        @parameters = lambda do 
+          case action
+          when :index
+            {}
+          when :new
+            {:page_id => page_id(:home)}
+          else
+            {:id => Page.first.id} 
+          end
         end
       end
       
+      it "should require login to access the #{action} action" do
+        logout
+        lambda { send(:get, action, @parameters.call) }.should require_login
+      end
+
+      it "should allow access to admins for the #{action} action" do
+        lambda { 
+          send(:get, action, @parameters.call) 
+        }.should restrict_access(:allow => [users(:admin)], 
+                                 :url => '/admin/pages')
+      end
+
+      it "should allow access to developers for the #{action} action" do
+        lambda { 
+          send(:get, action, @parameters.call) 
+        }.should restrict_access(:allow => [users(:developer)], 
+                                 :url => '/admin/pages')
+      end
+    
+      it "should allow non-developers and non-admins for the #{action} action" do
+        lambda { 
+          send(:get, action, @parameters.call) 
+        }.should restrict_access(:allow => [users(:non_admin), users(:existing)],
+                                 :url => '/admin/pages')
+      end
     end
   end
   
