@@ -34,8 +34,5 @@ describe Admin::PreferencesController do
     put :update, { :user => { :password => 'funtimes', :password_confirmation => 'funtimes' } }
     user = users(:non_admin)
     user.password.should == user.sha1('funtimes')
-    
-    rails_log.should_not match(/"password"=>"funtimes"/)
-    rails_log.should_not match(/"password_confirmation"=>"funtimes"/)
   end
 end
