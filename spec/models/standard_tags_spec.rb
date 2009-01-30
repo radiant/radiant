@@ -130,6 +130,37 @@ describe "Standard Tags" do
     end
   end
 
+  describe "<r:children:each:if_first>" do
+    it "should render for the first child" do
+      tags = '<r:children:each><r:if_first>FIRST:</r:if_first><r:slug /> </r:children:each>'
+      expected = "FIRST:article article-2 article-3 article-4 "
+      page(:news).should render(tags).as(expected)
+    end
+  end
+
+  describe "<r:children:each:unless_first>" do
+    it "should render for all but the first child" do
+      tags = '<r:children:each><r:unless_first>NOT-FIRST:</r:unless_first><r:slug /> </r:children:each>'
+      expected = "article NOT-FIRST:article-2 NOT-FIRST:article-3 NOT-FIRST:article-4 "
+      page(:news).should render(tags).as(expected)
+    end
+  end
+
+  describe "<r:children:each:if_last>" do
+    it "should render for the last child" do
+      tags = '<r:children:each><r:if_last>LAST:</r:if_last><r:slug /> </r:children:each>'
+      expected = "article article-2 article-3 LAST:article-4 "
+      page(:news).should render(tags).as(expected)
+    end
+  end
+
+  describe "<r:children:each:unless_last>" do
+    it "should render for all but the last child" do
+      tags = '<r:children:each><r:unless_last>NOT-LAST:</r:unless_last><r:slug /> </r:children:each>'
+      expected = "NOT-LAST:article NOT-LAST:article-2 NOT-LAST:article-3 article-4 "
+      page(:news).should render(tags).as(expected)
+    end
+  end
 
   describe "<r:children:each:header>" do
     it "should render the header when it changes" do

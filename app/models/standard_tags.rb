@@ -103,9 +103,12 @@ module StandardTags
     result = []
     children = tag.locals.children
     tag.locals.previous_headers = {}
-    children.find(:all, options).each do |item|
+    kids = children.find(:all, options)
+    kids.each_with_index do |item, i|
       tag.locals.child = item
       tag.locals.page = item
+      tag.locals.first_child = i == 0
+      tag.locals.last_child = i == kids.length - 1
       result << tag.expand
     end
     result
@@ -127,7 +130,81 @@ module StandardTags
     tag.locals.page = tag.locals.child
     tag.expand
   end
+  
+  desc %{
+    Renders the tag contents only if the current page is the first child in the context of
+    a children:each tag
+    
+    *Usage:*
+    
+    <pre><code><r:children:each>
+      <r:if_first >
+        ...
+      </r:if_first>
+    </r:children:each>
+    </code></pre>
+    
+  }
+  tag 'children:each:if_first' do |tag|
+    tag.expand if tag.locals.first_child
+  end
 
+  
+  desc %{
+    Renders the tag contents unless the current page is the first child in the context of
+    a children:each tag
+    
+    *Usage:*
+    
+    <pre><code><r:children:each>
+      <r:unless_first >
+        ...
+      </r:unless_first>
+    </r:children:each>
+    </code></pre>
+    
+  }
+  tag 'children:each:unless_first' do |tag|
+    tag.expand unless tag.locals.first_child
+  end
+  
+  desc %{
+    Renders the tag contents only if the current page is the last child in the context of
+    a children:each tag
+    
+    *Usage:*
+    
+    <pre><code><r:children:each>
+      <r:if_last >
+        ...
+      </r:if_last>
+    </r:children:each>
+    </code></pre>
+    
+  }
+  tag 'children:each:if_last' do |tag|
+    tag.expand if tag.locals.last_child
+  end
+
+  
+  desc %{
+    Renders the tag contents unless the current page is the last child in the context of
+    a children:each tag
+    
+    *Usage:*
+    
+    <pre><code><r:children:each>
+      <r:unless_last >
+        ...
+      </r:unless_last>
+    </r:children:each>
+    </code></pre>
+    
+  }
+  tag 'children:each:unless_last' do |tag|
+    tag.expand unless tag.locals.last_child
+  end
+  
   desc %{
     Renders the tag contents only if the contents do not match the previous header. This
     is extremely useful for rendering date headers for a list of child pages.
