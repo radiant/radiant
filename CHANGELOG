@@ -1,6 +1,12 @@
 == Change Log
 
 === Edge
+* Add Nginx support to ResponseCache. [Sean Cribbs]
+* Changed (some) permissions examples not to use login_system_matcher. [Brandan Lennox]
+* Remove expensive grep of Rails log in spec. [Rick DeNatale]
+* Make markdown filter specs be tolerant of RDiscount. [Sean Cribbs]
+* Be more explicit about vendor libraries, move Textile requirement into core. [Sean Cribbs]
+* Add <r:children:each:if/unless_first/last> tags. [Rick DeNatale]
 * Use RDiscount's smart quotes instead of SmartyPants. [John Muhl]
 * Update extension generator to use new admin REST routing. [Jeroen Janssen]
 * Update Admin::ResourceController to overcome respond_to weaknesses by
