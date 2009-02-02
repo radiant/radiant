@@ -52,6 +52,8 @@ unless File.directory? "#{RAILS_ROOT}/app"
         when ENV['REVISION']
           system "cd vendor/radiant; git checkout -b REV_#{ENV['REVISION']} #{ENV['REVISION']}"
         end
+
+        system "cd vendor/radiant; git submodule init; git submodule update"
       end
     end
 
