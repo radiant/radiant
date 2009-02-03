@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Initialize and update submodules when freezing edge. [John Muhl]
 * Add Nginx support to ResponseCache. [Sean Cribbs]
 * Changed (some) permissions examples not to use login_system_matcher. [Brandan Lennox]
 * Remove expensive grep of Rails log in spec. [Rick DeNatale]
