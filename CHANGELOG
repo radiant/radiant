@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Add support and specs for conditional GETs with ETags. [Sean Cribbs]
 * Initialize and update submodules when freezing edge. [John Muhl]
 * Add Nginx support to ResponseCache. [Sean Cribbs]
 * Changed (some) permissions examples not to use login_system_matcher. [Brandan Lennox]

@@ -1,3 +1,4 @@
+
 class ResponseCache
   include ActionController::Benchmarking::ClassMethods
   
@@ -120,10 +121,12 @@ class ResponseCache
     end
 
     def client_has_cache?(metadata, request)
-        return false unless request
-        request_time = Time.httpdate(request.env["HTTP_IF_MODIFIED_SINCE"]) rescue nil
-        response_time = Time.httpdate(metadata['headers']['Last-Modified']) rescue nil
-        return request_time && response_time && response_time <= request_time
+      return false unless request
+      request_time = Time.httpdate(request.env["HTTP_IF_MODIFIED_SINCE"]) rescue nil
+      response_time = Time.httpdate(metadata['headers']['Last-Modified']) rescue nil
+      request_etag = request.env["HTTP_IF_NONE_MATCH"] rescue nil
+      response_etag = metadata['headers']['ETag'] rescue nil
+      (request_time && response_time && response_time <= request_time) || (request_etag && response_etag && request_etag == response_etag)
     end
     
     # Writes a response to disk.
@@ -138,6 +141,7 @@ class ResponseCache
         expires = Time.now + self.expire_time
       end
       response.headers['Last-Modified'] ||= Time.now.httpdate
+      response.headers['ETag'] ||= Digest::SHA1.hexdigest(response.body)
       metadata = {
         'headers' => response.headers,
         'expires' => expires

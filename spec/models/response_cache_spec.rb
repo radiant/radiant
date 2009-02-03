@@ -173,7 +173,6 @@ describe ResponseCache do
     cached.headers['Content-Type'].should == 'text/plain'
     result.should be_kind_of(TestResponse) 
   end
-
   
   it 'send cached page with last modified' do
     last_modified = Time.now.httpdate
@@ -184,6 +183,17 @@ describe ResponseCache do
     second_call.headers['Status'].should match(/^304/)
     second_call.body.should == ''
     result.should be_kind_of(TestResponse)
+  end
+  
+  it "should send cached page with etag" do
+    etag = Digest::SHA1.hexdigest('content')
+    result = @cache.cache_response('test', response('content', 'ETag' => etag))
+    request = ActionController::TestRequest.new
+    request.env = { 'HTTP_IF_NONE_MATCH' => etag }
+    second_call = @cache.update_response('test', response, request)
+    second_call.headers['Status'].should match(/^304/)
+    second_call.body.should == ''
+    result.should be_kind_of(TestResponse)    
   end
   
   it 'send cached page with old last modified' do
