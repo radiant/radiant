@@ -49,7 +49,7 @@ module StandardTags
     Renders the total number of children.
   }
   tag 'children:count' do |tag|
-    tag.locals.children.count
+    tag.locals.children.count(children_find_options(tag))
   end
 
   desc %{

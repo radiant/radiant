@@ -188,8 +188,17 @@ describe "Standard Tags" do
     end
   end
 
-  it '<r:children:count> should render the number of children of the current page' do
-    page(:parent).should render('<r:children:count />').as('3')
+  describe "<r:children:count>" do
+    it 'should render the number of children of the current page' do
+      page(:parent).should render('<r:children:count />').as('3')
+    end
+    
+    it "should accept the same scoping conditions as <r:children:each>" do
+      page.should render('<r:children:count />').as('10')
+      page.should render('<r:children:count status="all" />').as('11')
+      page.should render('<r:children:count status="draft" />').as('1')
+      page.should render('<r:children:count status="hidden" />').as('0')
+    end
   end
 
   describe "<r:children:first>" do
@@ -947,7 +956,7 @@ describe "Standard Tags" do
         @page = pages(symbol)
       end
     end
-
+    
     def page_children_each_tags(attr = nil)
       attr = ' ' + attr unless attr.nil?
       "<r:children:each#{attr}><r:slug /> </r:children:each>"
