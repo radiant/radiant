@@ -36,10 +36,3 @@ Once you've installed Radiant on your own Web site, be sure to add your name
 and Web site to the list of radiant users:
 
 http://wiki.radiantcms.org/Radiant_Users
-
-== Developer Setup
-
-If you'd like to contribute to Radiant, in addition to the steps described above,
-you'll need to install the following additional dependencies:
-
-1. ZenTest - gem install ZenTest
