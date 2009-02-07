@@ -1,13 +1,14 @@
 == Change Log
 
 === 0.7.0 Intaglio
+* Add Roasters template. [Paul du Coudray]
 * Make ResponseCache spec insensitive to key order. [Sean Cribbs]
 * Adjust <r:children:count /> to use same options as <r:children:each />.
 [Sean Cribbs]
-* Allowing for custom labels and other options in save_model_button. 
+* Allowing for custom labels and other options in save_model_button.
 [Pat Allan]
 * Ignoring TextMate project files. [Pat Allan]
-* Present a more helpful error message when missing a mailer template. 
+* Present a more helpful error message when missing a mailer template.
 [Nikolay Karev]
 * Use ActiveRecord:Base#[] and ActiveRecord:Base#[]= instead of undocumented
 read_attribute and write_attribute. [August Lilleas]
@@ -16,7 +17,7 @@ read_attribute and write_attribute. [August Lilleas]
 * Add support and specs for conditional GETs with ETags. [Sean Cribbs]
 * Initialize and update submodules when freezing edge. [John Muhl]
 * Add Nginx support to ResponseCache. [Sean Cribbs]
-* Changed (some) permissions examples not to use login_system_matcher. 
+* Changed (some) permissions examples not to use login_system_matcher.
 [Brandan Lennox]
 * Remove expensive grep of Rails log in spec. [Rick DeNatale]
 * Make markdown filter specs be tolerant of RDiscount. [Sean Cribbs]

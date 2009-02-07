@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081203140407) do
+ActiveRecord::Schema.define(:version => 20081208005628) do
 
   create_table "config", :force => true do |t|
     t.string "key",   :limit => 40, :default => "", :null => false
@@ -63,10 +63,10 @@ ActiveRecord::Schema.define(:version => 20081203140407) do
     t.string   "keywords"
   end
 
-  add_index "pages", ["virtual", "status_id"], :name => "pages_published"
-  add_index "pages", ["slug", "parent_id"], :name => "pages_child_slug"
-  add_index "pages", ["parent_id"], :name => "pages_parent_id"
   add_index "pages", ["class_name"], :name => "pages_class_name"
+  add_index "pages", ["parent_id"], :name => "pages_parent_id"
+  add_index "pages", ["slug", "parent_id"], :name => "pages_child_slug"
+  add_index "pages", ["virtual", "status_id"], :name => "pages_published"
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id"
@@ -74,8 +74,8 @@ ActiveRecord::Schema.define(:version => 20081203140407) do
     t.datetime "updated_at"
   end
 
-  add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
   add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
+  add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
 
   create_table "snippets", :force => true do |t|
     t.string   "name",          :limit => 100, :default => "", :null => false
