@@ -10,7 +10,9 @@ PKG_FILE_NAME = "#{PKG_NAME}-#{PKG_VERSION}"
 RUBY_FORGE_PROJECT = PKG_NAME
 RUBY_FORGE_USER = ENV['RUBY_FORGE_USER'] || 'jlong'
 
-RELEASE_NAME  = PKG_VERSION
+RELEASE_NAME  = ENV['RELEASE_NAME'] || PKG_VERSION
+RELEASE_NOTES = ENV['RELEASE_NOTES'] ? " -n #{ENV['RELEASE_NOTES']}" : ''
+RELEASE_CHANGES = ENV['RELEASE_CHANGES'] ? " -a #{ENV['RELEASE_CHANGES']}" : ''
 RUBY_FORGE_GROUPID = '1337'
 RUBY_FORGE_PACKAGEID = '1638'
 
@@ -91,9 +93,12 @@ namespace 'radiant' do
     files = ["gem", "tgz", "zip"].map { |ext| "pkg/#{PKG_FILE_NAME}.#{ext}" }
 
     system %{rubyforge login --username #{RUBY_FORGE_USER}}
-  
-    files.each do |file|
-      system %{rubyforge add_release #{RUBY_FORGE_GROUPID} #{RUBY_FORGE_PACKAGEID} "#{RELEASE_NAME}" #{file}}
+    files.each_with_index do |file, idx|
+      if idx == 0
+        system %Q[rubyforge -f#{RELEASE_NOTES}#{RELEASE_CHANGES} add_release #{RUBY_FORGE_GROUPID} #{RUBY_FORGE_PACKAGEID} "#{RELEASE_NAME}" #{file}]
+      else
+        system %Q[rubyforge add_file #{RUBY_FORGE_GROUPID} #{RUBY_FORGE_PACKAGEID "#{RELEASE_NAME}" #{file}]
+      end
     end
   end
 end
