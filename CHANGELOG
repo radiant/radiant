@@ -1,6 +1,7 @@
 == Change Log
 
 === Edge
+* Make extension installer use git submodules when appropriate. [Sean Cribbs]
 * Ease extension updates by proxying deprecated named routes. [Sean Cribbs]
 * Add support and specs for conditional GETs with ETags. [Sean Cribbs]
 * Initialize and update submodules when freezing edge. [John Muhl]

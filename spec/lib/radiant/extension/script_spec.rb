@@ -312,17 +312,49 @@ describe "Registry::Git" do
   before :each do
     @extension = mock("Extension", :name => 'example', :repository_url => 'http://localhost/')
     @git = Registry::Git.new(@extension)
+    @git.stub!(:system)
   end
 
-  it "should use git to clone the repository" do
-    @git.checkout_command.should == 'git clone http://localhost/ example'
+  describe "when the Radiant project is not stored in git" do
+    before :each do
+      File.stub!(:directory?).with(".git").and_return(false)
+    end
+
+    it "should use git to clone the repository" do
+      @git.checkout_command.should == 'git clone http://localhost/ example'
+    end
+
+    it "should initialize and update submodules" do
+      Dir.stub!(:tmpdir).and_return('/tmp')
+      @git.should_receive(:system).with("cd /tmp; git clone http://localhost/ example").ordered
+      @git.should_receive(:system).with("cd /tmp/example; git submodule init && git submodule update").ordered
+      @git.checkout
+    end
+
+    it "should copy the extension to vendor/extensions" do
+      @git.path = "/tmp"
+      FileUtils.should_receive(:cp_r).with('/tmp', "#{RAILS_ROOT}/vendor/extensions/example")
+      FileUtils.should_receive(:rm_r).with('/tmp')
+      @git.copy_to_vendor_extensions
+    end
   end
-  
-  it "should initialize and update submodules" do
-    Dir.stub!(:tmpdir).and_return('/tmp')
-    @git.should_receive(:system).with("cd /tmp; git clone http://localhost/ example").ordered
-    @git.should_receive(:system).with("cd /tmp/example; git submodule init && git submodule update").ordered
-    @git.checkout
+
+  describe "when the Radiant project is stored in git" do
+    before :each do
+      File.stub!(:directory?).with(".git").and_return(true)
+    end
+
+    it "should add the extension as a submodule and initialize and update its submodules" do
+      @git.should_receive(:system).with("git submodule add http://localhost/ vendor/extensions/example").ordered
+      @git.should_receive(:system).with("cd vendor/extensions/example; git submodule init && git submodule update").ordered
+      @git.checkout
+    end
+
+    it "should not copy the extension" do
+      FileUtils.should_not_receive(:cp_r)
+      FileUtils.should_not_receive(:rm_r)
+      @git.copy_to_vendor_extensions
+    end
   end
 end
 
