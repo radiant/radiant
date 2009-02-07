@@ -97,7 +97,7 @@ namespace 'radiant' do
       if idx == 0
         system %Q[rubyforge -f#{RELEASE_NOTES}#{RELEASE_CHANGES} add_release #{RUBY_FORGE_GROUPID} #{RUBY_FORGE_PACKAGEID} "#{RELEASE_NAME}" #{file}]
       else
-        system %Q[rubyforge add_file #{RUBY_FORGE_GROUPID} #{RUBY_FORGE_PACKAGEID "#{RELEASE_NAME}" #{file}]
+        system %Q[rubyforge add_file #{RUBY_FORGE_GROUPID} #{RUBY_FORGE_PACKAGEID} "#{RELEASE_NAME}" #{file}]
       end
     end
   end
