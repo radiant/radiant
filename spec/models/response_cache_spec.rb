@@ -67,7 +67,13 @@ describe ResponseCache do
       @cache.cache_response(url, response)
       name = "#{@dir}/test/me.yml"
       File.exists?(name).should == true
-      file(name).should == "--- \nexpires: 2007-02-08 17:37:09 Z\nheaders: \n  Last-Modified: Tue, 27 Feb 2007 06:13:43 GMT\n  ETag: 040f06fd774092478d450774f5ba30c5da78acc8\n" 
+      YAML.load(file(name)).should == {
+        'expires' => Time.gm(2007, 2, 8, 17, 37, 9),
+        'headers' => {
+          'Last-Modified' => 'Tue, 27 Feb 2007 06:13:43 GMT',
+          'ETag' => '040f06fd774092478d450774f5ba30c5da78acc8'
+        }
+      }
       data_name = "#{@dir}/test/me.data"
       file(data_name).should == "content" 
     end

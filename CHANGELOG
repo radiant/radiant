@@ -1,15 +1,27 @@
 == Change Log
 
-=== Edge
+=== 0.7.0 Intaglio
+* Make ResponseCache spec insensitive to key order. [Sean Cribbs]
+* Adjust <r:children:count /> to use same options as <r:children:each />.
+[Sean Cribbs]
+* Allowing for custom labels and other options in save_model_button. 
+[Pat Allan]
+* Ignoring TextMate project files. [Pat Allan]
+* Present a more helpful error message when missing a mailer template. 
+[Nikolay Karev]
+* Use ActiveRecord:Base#[] and ActiveRecord:Base#[]= instead of undocumented
+read_attribute and write_attribute. [August Lilleas]
 * Make extension installer use git submodules when appropriate. [Sean Cribbs]
 * Ease extension updates by proxying deprecated named routes. [Sean Cribbs]
 * Add support and specs for conditional GETs with ETags. [Sean Cribbs]
 * Initialize and update submodules when freezing edge. [John Muhl]
 * Add Nginx support to ResponseCache. [Sean Cribbs]
-* Changed (some) permissions examples not to use login_system_matcher. [Brandan Lennox]
+* Changed (some) permissions examples not to use login_system_matcher. 
+[Brandan Lennox]
 * Remove expensive grep of Rails log in spec. [Rick DeNatale]
 * Make markdown filter specs be tolerant of RDiscount. [Sean Cribbs]
-* Be more explicit about vendor libraries, move Textile requirement into core. [Sean Cribbs]
+* Be more explicit about vendor libraries, move Textile requirement into
+core. [Sean Cribbs]
 * Add <r:children:each:if/unless_first/last> tags. [Rick DeNatale]
 * Use RDiscount's smart quotes instead of SmartyPants. [John Muhl]
 * Update extension generator to use new admin REST routing. [Jeroen Janssen]
@@ -17,8 +29,6 @@
 choosing HTML format by default. [Sean Cribbs]
 * Add an IE-specific integration spec. [Jeroen Janssen]
 * Update dataset, spec_integration, and vizres plugins. [Sean Cribbs]
-
-=== 0.7.0-RC2
 * Make specs and bootstrap work in instance mode. [Sean Cribbs]
 * Override spec:integration task and rescope some spec task options to
 RADIANT_ROOT. [Sean Cribbs]
@@ -42,8 +52,6 @@ of extension_meta. [Nathaniel Talbott, Sean Cribbs, Rick DeNatale]
 * Replaced scenarios with dataset. [Nathaniel Talbott, Adam Williams, Rick DeNatale]
 * Fix RSpec git submodules. [Nathaniel Talbott, Clinton Nixon]
 * Generate and fix gemspec for GitHub. [Sean Cribbs]
-
-=== 0.7.0-RC1
 * Add support for newer Textile and Markdown libraries, with fallbacks
 on packaged libraries. [Sean Cribbs, Jason Garber]
 * Make request parameters available to tags. [Brian Landau]
