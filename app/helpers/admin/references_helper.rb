@@ -37,6 +37,6 @@ module Admin::ReferencesHelper
   end
 
   def class_of_page
-    @page_class ||= (params[:class_name] || 'Page').constantize
+    @page_class ||= (params[:class_name].blank? ? 'Page' : params[:class_name]).constantize
   end
 end
