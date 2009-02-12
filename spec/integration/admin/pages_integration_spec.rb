@@ -34,6 +34,12 @@ describe 'Page management' do
     response.should have_text(/Under Construction/)
   end
   
+  it "should properly escape part contents" do
+    navigate_to '/admin/pages/new'
+    submit_form 'new_page', :continue => 'Save and Continue', :page => {:title => 'My Site', :slug => '/', :breadcrumb => 'My Site', :parts => [{:name => 'body', :content => '&lt;r:url /&gt;'}], :status_id => Status[:published].id}
+    response.should have_tag('textarea', :text => "&amp;lt;r:url /&amp;gt;")
+  end
+  
   describe 'with homepage' do
     dataset :home_page
     
