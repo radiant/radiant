@@ -83,7 +83,7 @@ module Spec
             page.request = ActionController::TestRequest.new(:sample_param => 'data')
             page.request.request_uri = @request_uri || page.url
             page.request.host = @host || test_host
-            page.request.relative_url_root = @relative_root || ""
+            ActionController::Base.relative_url_root = @relative_root || ""
             page.response = ActionController::TestResponse.new
             if tag_content.nil?
               page.render

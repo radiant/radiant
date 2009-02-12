@@ -184,7 +184,7 @@ describe ResponseCache do
     last_modified = Time.now.httpdate
     result = @cache.cache_response('test', response('content', 'Last-Modified' => last_modified))
     request = ActionController::TestRequest.new
-    request.env = { 'HTTP_IF_MODIFIED_SINCE' => last_modified }
+    request.env['HTTP_IF_MODIFIED_SINCE'] = last_modified
     second_call = @cache.update_response('test', response, request)
     second_call.headers['Status'].should match(/^304/)
     second_call.body.should == ''
@@ -195,7 +195,7 @@ describe ResponseCache do
     etag = Digest::SHA1.hexdigest('content')
     result = @cache.cache_response('test', response('content', 'ETag' => etag))
     request = ActionController::TestRequest.new
-    request.env = { 'HTTP_IF_NONE_MATCH' => etag }
+    request.env['HTTP_IF_NONE_MATCH'] = etag
     second_call = @cache.update_response('test', response, request)
     second_call.headers['Status'].should match(/^304/)
     second_call.body.should == ''
@@ -206,7 +206,7 @@ describe ResponseCache do
     last_modified = Time.now.httpdate
     result = @cache.cache_response('test', response('content', 'Last-Modified' => last_modified))
     request = ActionController::TestRequest.new
-    request.env = { 'HTTP_IF_MODIFIED_SINCE' => 5.minutes.ago.httpdate }
+    request.env['HTTP_IF_MODIFIED_SINCE'] = 5.minutes.ago.httpdate
     second_call = @cache.update_response('test', response, request)
     second_call.body.should == 'content'
     result.should be_kind_of(TestResponse) 

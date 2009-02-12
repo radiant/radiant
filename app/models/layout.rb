@@ -11,6 +11,6 @@ class Layout < ActiveRecord::Base
   # Validations
   validates_presence_of :name, :message => 'required'
   validates_uniqueness_of :name, :message => 'name already in use'
-  validates_length_of :name, :maximum => 100, :message => '%d-character limit'
+  validates_length_of :name, :maximum => 100, :message => '{{count}}-character limit'
 
 end

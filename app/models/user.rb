@@ -19,10 +19,10 @@ class User < ActiveRecord::Base
   
   validates_format_of :email, :message => 'invalid e-mail address', :allow_nil => true, :with => /^$|^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i
   
-  validates_length_of :name, :maximum => 100, :allow_nil => true, :message => '%d-character limit'
-  validates_length_of :login, :within => 3..40, :allow_nil => true, :too_long => '%d-character limit', :too_short => '%d-character minimum'
-  validates_length_of :password, :within => 5..40, :allow_nil => true, :too_long => '%d-character limit', :too_short => '%d-character minimum', :if => :validate_length_of_password?
-  validates_length_of :email, :maximum => 255, :allow_nil => true, :message => '%d-character limit'
+  validates_length_of :name, :maximum => 100, :allow_nil => true, :message => '{{count}}-character limit'
+  validates_length_of :login, :within => 3..40, :allow_nil => true, :too_long => '{{count}}-character limit', :too_short => '{{count}}-character minimum'
+  validates_length_of :password, :within => 5..40, :allow_nil => true, :too_long => '{{count}}-character limit', :too_short => '{{count}}-character minimum', :if => :validate_length_of_password?
+  validates_length_of :email, :maximum => 255, :allow_nil => true, :message => '{{count}}-character limit'
   
   validates_numericality_of :id, :only_integer => true, :allow_nil => true, :message => 'must be a number'
     
