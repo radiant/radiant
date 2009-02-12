@@ -66,10 +66,16 @@ namespace :test do
   
   Rake::TestTask.new(:uncommitted => "db:test:prepare") do |t|
     def t.file_list
-      changed_since_checkin = silence_stderr { `svn status` }.map { |path| path.chomp[7 .. -1] }
+      if File.directory?(".svn")
+        changed_since_checkin = silence_stderr { `svn status` }.map { |path| path.chomp[7 .. -1] }
+      elsif File.directory?(".git")
+        changed_since_checkin = silence_stderr { `git ls-files --modified --others` }.map { |path| path.chomp }
+      else
+        abort "Not a Subversion or Git checkout."
+      end
 
-      models      = changed_since_checkin.select { |path| path =~ /app[\\\/]models[\\\/].*\.rb/ }
-      controllers = changed_since_checkin.select { |path| path =~ /app[\\\/]controllers[\\\/].*\.rb/ }  
+      models      = changed_since_checkin.select { |path| path =~ /app[\\\/]models[\\\/].*\.rb$/ }
+      controllers = changed_since_checkin.select { |path| path =~ /app[\\\/]controllers[\\\/].*\.rb$/ }
 
       unit_tests       = models.map { |model| "test/unit/#{File.basename(model, '.rb')}_test.rb" }
       functional_tests = controllers.map { |controller| "test/functional/#{File.basename(controller, '.rb')}_test.rb" }
@@ -80,7 +86,7 @@ namespace :test do
     t.libs << 'test'
     t.verbose = true
   end
-  Rake::Task['test:uncommitted'].comment = "Test changes since last checkin (only Subversion)"
+  Rake::Task['test:uncommitted'].comment = "Test changes since last checkin (only Subversion and Git)"
 
   Rake::TestTask.new(:units => "db:test:prepare") do |t|
     t.libs << "test"
@@ -102,6 +108,21 @@ namespace :test do
     t.verbose = true
   end
   Rake::Task['test:integration'].comment = "Run the integration tests in test/integration"
+
+  Rake::TestTask.new(:benchmark => 'db:test:prepare') do |t|
+    t.libs << 'test'
+    t.pattern = 'test/performance/**/*_test.rb'
+    t.verbose = true
+    t.options = '-- --benchmark'
+  end
+  Rake::Task['test:benchmark'].comment = 'Benchmark the performance tests'
+
+  Rake::TestTask.new(:profile => 'db:test:prepare') do |t|
+    t.libs << 'test'
+    t.pattern = 'test/performance/**/*_test.rb'
+    t.verbose = true
+  end
+  Rake::Task['test:profile'].comment = 'Profile the performance tests'
 
   Rake::TestTask.new(:plugins => :environment) do |t|
     t.libs << "test"

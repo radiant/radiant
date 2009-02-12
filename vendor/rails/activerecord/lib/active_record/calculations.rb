@@ -14,7 +14,7 @@ module ActiveRecord
       #
       # The third approach, count using options, accepts an option hash as the only parameter. The options are:
       #
-      # * <tt>:conditions</tt>: An SQL fragment like "administrator = 1" or [ "user_name = ?", username ]. See conditions in the intro.
+      # * <tt>:conditions</tt>: An SQL fragment like "administrator = 1" or [ "user_name = ?", username ]. See conditions in the intro to ActiveRecord::Base.
       # * <tt>:joins</tt>: Either an SQL fragment for additional joins like "LEFT JOIN comments ON comments.post_id = id" (rarely needed)
       #   or named associations in the same form used for the <tt>:include</tt> option, which will perform an INNER JOIN on the associated table(s).
       #   If the value is a string, then the records will be returned read-only since they will have attributes that do not correspond to the table's columns.
@@ -98,7 +98,7 @@ module ActiveRecord
       #       end
       #
       # Options:
-      # * <tt>:conditions</tt> - An SQL fragment like "administrator = 1" or [ "user_name = ?", username ]. See conditions in the intro.
+      # * <tt>:conditions</tt> - An SQL fragment like "administrator = 1" or [ "user_name = ?", username ]. See conditions in the intro to ActiveRecord::Base.
       # * <tt>:include</tt>: Eager loading, see Associations for details.  Since calculations don't load anything, the purpose of this is to access fields on joined tables in your conditions, order, or group clauses.
       # * <tt>:joins</tt> - An SQL fragment for additional joins like "LEFT JOIN comments ON comments.post_id = id". (Rarely needed).
       #   The records will be returned read-only since they will have attributes that do not correspond to the table's columns.
@@ -188,7 +188,7 @@ module ActiveRecord
           end
 
           joins = ""
-          add_joins!(joins, options, scope)
+          add_joins!(joins, options[:joins], scope)
 
           if merged_includes.any?
             join_dependency = ActiveRecord::Associations::ClassMethods::JoinDependency.new(self, merged_includes, joins)
@@ -266,7 +266,14 @@ module ActiveRecord
         #   column_alias_for("count(*)")                 # => "count_all"
         #   column_alias_for("count", "id")              # => "count_id"
         def column_alias_for(*keys)
-          connection.table_alias_for(keys.join(' ').downcase.gsub(/\*/, 'all').gsub(/\W+/, ' ').strip.gsub(/ +/, '_'))
+          table_name = keys.join(' ')
+          table_name.downcase!
+          table_name.gsub!(/\*/, 'all')
+          table_name.gsub!(/\W+/, ' ')
+          table_name.strip!
+          table_name.gsub!(/ +/, '_')
+
+          connection.table_alias_for(table_name)
         end
 
         def column_for(field)
@@ -279,7 +286,7 @@ module ActiveRecord
           case operation
             when 'count' then value.to_i
             when 'sum'   then type_cast_using_column(value || '0', column)
-            when 'avg'   then value && value.to_d
+            when 'avg'   then value && (value.is_a?(Fixnum) ? value.to_f : value).to_d
             else type_cast_using_column(value, column)
           end
         end

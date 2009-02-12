@@ -68,72 +68,6 @@ module ActiveRecord
           super
         end
   
-        # Escapes binary strings for bytea input to the database.
-        def self.string_to_binary(value)
-          if PGconn.respond_to?(:escape_bytea)
-            self.class.module_eval do
-              define_method(:string_to_binary) do |value|
-                PGconn.escape_bytea(value) if value
-              end
-            end
-          else
-            self.class.module_eval do
-              define_method(:string_to_binary) do |value|
-                if value
-                  result = ''
-                  value.each_byte { |c| result << sprintf('\\\\%03o', c) }
-                  result
-                end
-              end
-            end
-          end
-          self.class.string_to_binary(value)
-        end
-  
-        # Unescapes bytea output from a database to the binary string it represents.
-        def self.binary_to_string(value)
-          # In each case, check if the value actually is escaped PostgreSQL bytea output
-          # or an unescaped Active Record attribute that was just written.
-          if PGconn.respond_to?(:unescape_bytea)
-            self.class.module_eval do
-              define_method(:binary_to_string) do |value|
-                if value =~ /\\\d{3}/
-                  PGconn.unescape_bytea(value)
-                else
-                  value
-                end
-              end
-            end
-          else
-            self.class.module_eval do
-              define_method(:binary_to_string) do |value|
-                if value =~ /\\\d{3}/
-                  result = ''
-                  i, max = 0, value.size
-                  while i < max
-                    char = value[i]
-                    if char == ?\\
-                      if value[i+1] == ?\\
-                        char = ?\\
-                        i += 1
-                      else
-                        char = value[i+1..i+3].oct
-                        i += 3
-                      end
-                    end
-                    result << char
-                    i += 1
-                  end
-                  result
-                else
-                  value
-                end
-              end
-            end
-          end
-          self.class.binary_to_string(value)
-        end  
-  
         # Maps PostgreSQL-specific data types to logical Rails types.
         def simplified_type(field_type)
           case field_type
@@ -246,9 +180,26 @@ module ActiveRecord
     # * <tt>:min_messages</tt> - An optional client min messages that is used in a <tt>SET client_min_messages TO <min_messages></tt> call on the connection.
     # * <tt>:allow_concurrency</tt> - If true, use async query methods so Ruby threads don't deadlock; otherwise, use blocking query methods.
     class PostgreSQLAdapter < AbstractAdapter
+      ADAPTER_NAME = 'PostgreSQL'.freeze
+
+      NATIVE_DATABASE_TYPES = {
+        :primary_key => "serial primary key".freeze,
+        :string      => { :name => "character varying", :limit => 255 },
+        :text        => { :name => "text" },
+        :integer     => { :name => "integer" },
+        :float       => { :name => "float" },
+        :decimal     => { :name => "decimal" },
+        :datetime    => { :name => "timestamp" },
+        :timestamp   => { :name => "timestamp" },
+        :time        => { :name => "time" },
+        :date        => { :name => "date" },
+        :binary      => { :name => "bytea" },
+        :boolean     => { :name => "boolean" }
+      }
+
       # Returns 'PostgreSQL' as adapter name for identification purposes.
       def adapter_name
-        'PostgreSQL'
+        ADAPTER_NAME
       end
 
       # Initializes and connects a PostgreSQL adapter.
@@ -290,20 +241,7 @@ module ActiveRecord
       end
 
       def native_database_types #:nodoc:
-        {
-          :primary_key => "serial primary key",
-          :string      => { :name => "character varying", :limit => 255 },
-          :text        => { :name => "text" },
-          :integer     => { :name => "integer" },
-          :float       => { :name => "float" },
-          :decimal     => { :name => "decimal" },
-          :datetime    => { :name => "timestamp" },
-          :timestamp   => { :name => "timestamp" },
-          :time        => { :name => "time" },
-          :date        => { :name => "date" },
-          :binary      => { :name => "bytea" },
-          :boolean     => { :name => "boolean" }
-        }
+        NATIVE_DATABASE_TYPES
       end
 
       # Does PostgreSQL support migrations?
@@ -331,6 +269,10 @@ module ActiveRecord
         postgresql_version >= 80200
       end
 
+      def supports_ddl_transactions?
+        true
+      end
+
       # Returns the configured supported identifier length supported by PostgreSQL,
       # or report the default of 63 on PostgreSQL 7.x.
       def table_alias_length
@@ -339,10 +281,78 @@ module ActiveRecord
 
       # QUOTING ==================================================
 
+      # Escapes binary strings for bytea input to the database.
+      def escape_bytea(value)
+        if PGconn.respond_to?(:escape_bytea)
+          self.class.instance_eval do
+            define_method(:escape_bytea) do |value|
+              PGconn.escape_bytea(value) if value
+            end
+          end
+        else
+          self.class.instance_eval do
+            define_method(:escape_bytea) do |value|
+              if value
+                result = ''
+                value.each_byte { |c| result << sprintf('\\\\%03o', c) }
+                result
+              end
+            end
+          end
+        end
+        escape_bytea(value)
+      end
+
+      # Unescapes bytea output from a database to the binary string it represents.
+      # NOTE: This is NOT an inverse of escape_bytea! This is only to be used
+      #       on escaped binary output from database drive.
+      def unescape_bytea(value)
+        # In each case, check if the value actually is escaped PostgreSQL bytea output
+        # or an unescaped Active Record attribute that was just written.
+        if PGconn.respond_to?(:unescape_bytea)
+          self.class.instance_eval do
+            define_method(:unescape_bytea) do |value|
+              if value =~ /\\\d{3}/
+                PGconn.unescape_bytea(value)
+              else
+                value
+              end
+            end
+          end
+        else
+          self.class.instance_eval do
+            define_method(:unescape_bytea) do |value|
+              if value =~ /\\\d{3}/
+                result = ''
+                i, max = 0, value.size
+                while i < max
+                  char = value[i]
+                  if char == ?\\
+                    if value[i+1] == ?\\
+                      char = ?\\
+                      i += 1
+                    else
+                      char = value[i+1..i+3].oct
+                      i += 3
+                    end
+                  end
+                  result << char
+                  i += 1
+                end
+                result
+              else
+                value
+              end
+            end
+          end
+        end
+        unescape_bytea(value)
+      end
+
       # Quotes PostgreSQL-specific data types for SQL input.
       def quote(value, column = nil) #:nodoc:
         if value.kind_of?(String) && column && column.type == :binary
-          "#{quoted_string_prefix}'#{column.class.string_to_binary(value)}'"
+          "#{quoted_string_prefix}'#{escape_bytea(value)}'"
         elsif value.kind_of?(String) && column && column.sql_type =~ /^xml$/
           "xml '#{quote_string(value)}'"
         elsif value.kind_of?(Numeric) && column && column.sql_type =~ /^money$/
@@ -455,11 +465,20 @@ module ActiveRecord
 
       # create a 2D array representing the result set
       def result_as_array(res) #:nodoc:
+        # check if we have any binary column and if they need escaping
+        unescape_col = []
+        for j in 0...res.nfields do
+          # unescape string passed BYTEA field (OID == 17)
+          unescape_col << ( res.ftype(j)==17 )
+        end
+
         ary = []
         for i in 0...res.ntuples do
           ary << []
           for j in 0...res.nfields do
-            ary[i] << res.getvalue(i,j)
+            data = res.getvalue(i,j)
+            data = unescape_bytea(data) if unescape_col[j] and data.is_a?(String)
+            ary[i] << data
           end
         end
         return ary
@@ -509,6 +528,45 @@ module ActiveRecord
       def rollback_db_transaction
         execute "ROLLBACK"
       end
+
+      # ruby-pg defines Ruby constants for transaction status,
+      # ruby-postgres does not.
+      PQTRANS_IDLE = defined?(PGconn::PQTRANS_IDLE) ? PGconn::PQTRANS_IDLE : 0
+
+      # Check whether a transaction is active.
+      def transaction_active?
+        @connection.transaction_status != PQTRANS_IDLE
+      end
+
+      # Wrap a block in a transaction.  Returns result of block.
+      def transaction(start_db_transaction = true)
+        transaction_open = false
+        begin
+          if block_given?
+            if start_db_transaction
+              begin_db_transaction
+              transaction_open = true
+            end
+            yield
+          end
+        rescue Exception => database_transaction_rollback
+          if transaction_open && transaction_active?
+            transaction_open = false
+            rollback_db_transaction
+          end
+          raise unless database_transaction_rollback.is_a? ActiveRecord::Rollback
+        end
+      ensure
+        if transaction_open && transaction_active?
+          begin
+            commit_db_transaction
+          rescue Exception => database_transaction_rollback
+            rollback_db_transaction
+            raise
+          end
+        end
+      end
+
 
       # SCHEMA STATEMENTS ========================================
 
@@ -616,6 +674,19 @@ module ActiveRecord
         column_definitions(table_name).collect do |name, type, default, notnull|
           PostgreSQLColumn.new(name, default, type, notnull == 'f')
         end
+      end
+
+      # Returns the current database name.
+      def current_database
+        query('select current_database()')[0][0]
+      end
+
+      # Returns the current database encoding format.
+      def encoding
+        query(<<-end_sql)[0][0]
+          SELECT pg_encoding_to_char(pg_database.encoding) FROM pg_database
+          WHERE pg_database.datname LIKE '#{current_database}'
+        end_sql
       end
 
       # Sets the schema search path to a string of comma-separated schema names.
@@ -851,7 +922,7 @@ module ActiveRecord
         end
 
       private
-        # The internal PostgreSQL identifer of the money data type.
+        # The internal PostgreSQL identifier of the money data type.
         MONEY_COLUMN_TYPE_OID = 790 #:nodoc:
 
         # Connects to a PostgreSQL server and sets up the adapter depending on the

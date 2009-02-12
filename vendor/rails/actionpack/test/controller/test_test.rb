@@ -64,7 +64,7 @@ class TestTest < Test::Unit::TestCase
 </html>
 HTML
     end
-    
+
     def test_xml_output
       response.content_type = "application/xml"
       render :text => <<XML
@@ -117,8 +117,8 @@ XML
     @controller = TestController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
-    ActionController::Routing::Routes.reload
     ActionController::Routing.use_controllers! %w(content admin/user test_test/test)
+    ActionController::Routing::Routes.load_routes!
   end
 
   def teardown
@@ -366,7 +366,7 @@ XML
           :children => { :count => 1,
             :only => { :tag => "img" } } } }
   end
-  
+
   def test_should_not_impose_childless_html_tags_in_xml
     process :test_xml_output
 
@@ -412,7 +412,7 @@ XML
 
   def test_assert_routing_with_method
     with_routing do |set|
-    	set.draw { |map| map.resources(:content) }
+      set.draw { |map| map.resources(:content) }
       assert_routing({ :method => 'post', :path => 'content' }, { :controller => 'content', :action => 'create' })
     end
   end
@@ -486,7 +486,7 @@ XML
     assert_nil @request.env['HTTP_X_REQUESTED_WITH']
   end
 
-   def test_header_properly_reset_after_get_request
+  def test_header_properly_reset_after_get_request
     get :test_params
     @request.recycle!
     assert_nil @request.instance_variable_get("@request_method")
@@ -537,15 +537,15 @@ XML
     assert_equal new_content_type, file.content_type
 
   end
-  
+
   def test_test_uploaded_file_with_binary
     filename = 'mona_lisa.jpg'
     path = "#{FILES_DIR}/#{filename}"
     content_type = 'image/png'
-    
+
     binary_uploaded_file = ActionController::TestUploadedFile.new(path, content_type, :binary)
     assert_equal File.open(path, READ_BINARY).read, binary_uploaded_file.read
-    
+
     plain_uploaded_file = ActionController::TestUploadedFile.new(path, content_type)
     assert_equal File.open(path, READ_PLAIN).read, plain_uploaded_file.read
   end
@@ -554,10 +554,10 @@ XML
     filename = 'mona_lisa.jpg'
     path = "#{FILES_DIR}/#{filename}"
     content_type = 'image/jpg'
-    
+
     binary_file_upload = fixture_file_upload(path, content_type, :binary)
     assert_equal File.open(path, READ_BINARY).read, binary_file_upload.read
-    
+
     plain_file_upload = fixture_file_upload(path, content_type)
     assert_equal File.open(path, READ_PLAIN).read, plain_file_upload.read
   end
@@ -569,28 +569,6 @@ XML
 
   def test_test_uploaded_file_exception_when_file_doesnt_exist
     assert_raise(RuntimeError) { ActionController::TestUploadedFile.new('non_existent_file') }
-  end
-
-  def test_assert_follow_redirect_to_same_controller
-    with_foo_routing do |set|
-      get :redirect_to_same_controller
-      assert_response :redirect
-      assert_redirected_to :controller => 'test_test/test', :action => 'test_uri', :id => 5
-      assert_deprecated 'follow_redirect' do
-        assert_nothing_raised { follow_redirect }
-      end
-    end
-  end
-
-  def test_assert_follow_redirect_to_different_controller
-    with_foo_routing do |set|
-      get :redirect_to_different_controller
-      assert_response :redirect
-      assert_redirected_to :controller => 'fail', :id => 5
-      assert_raise(RuntimeError) do
-        assert_deprecated { follow_redirect }
-      end
-    end
   end
 
   def test_redirect_url_only_cares_about_location_header
@@ -611,7 +589,7 @@ XML
     get :test_send_file
     assert_nothing_raised(NoMethodError) { @response.binary_content }
   end
-  
+
   protected
     def with_foo_routing
       with_routing do |set|
@@ -624,12 +602,11 @@ XML
     end
 end
 
-
 class CleanBacktraceTest < Test::Unit::TestCase
   def test_should_reraise_the_same_object
     exception = Test::Unit::AssertionFailedError.new('message')
     clean_backtrace { raise exception }
-  rescue => caught
+  rescue Exception => caught
     assert_equal exception.object_id, caught.object_id
     assert_equal exception.message, caught.message
   end
@@ -639,7 +616,7 @@ class CleanBacktraceTest < Test::Unit::TestCase
     exception = Test::Unit::AssertionFailedError.new('message')
     exception.set_backtrace ["#{path}/abc", "#{path}/assertions/def"]
     clean_backtrace { raise exception }
-  rescue => caught
+  rescue Exception => caught
     assert_equal ["#{path}/abc"], caught.backtrace
   end
 
@@ -685,11 +662,12 @@ end
 
 class NamedRoutesControllerTest < ActionController::TestCase
   tests ContentController
-  
+
   def test_should_be_able_to_use_named_routes_before_a_request_is_done
     with_routing do |set|
       set.draw { |map| map.resources :contents }
       assert_equal 'http://test.host/contents/new', new_content_url
+      assert_equal 'http://test.host/contents/1', content_url(:id => 1)
     end
   end
 end

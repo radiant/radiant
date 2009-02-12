@@ -2,15 +2,18 @@ require "cases/helper"
 require 'models/post'
 require 'models/person'
 require 'models/reader'
+require 'models/comment'
 
 class HasManyThroughAssociationsTest < ActiveRecord::TestCase
-  fixtures :posts, :readers, :people
+  fixtures :posts, :readers, :people, :comments, :authors
 
   def test_associate_existing
     assert_queries(2) { posts(:thinking);people(:david) }
-    
+
+    posts(:thinking).people
+
     assert_queries(1) do
-       posts(:thinking).people << people(:david)
+      posts(:thinking).people << people(:david)
     end
     
     assert_queries(1) do
@@ -196,5 +199,49 @@ class HasManyThroughAssociationsTest < ActiveRecord::TestCase
 
   def test_count_with_include_should_alias_join_table
     assert_equal 2, people(:michael).posts.count(:include => :readers)
+  end
+
+  def test_get_ids
+    assert_equal [posts(:welcome).id, posts(:authorless).id].sort, people(:michael).post_ids.sort
+  end
+
+  def test_get_ids_for_loaded_associations
+    person = people(:michael)
+    person.posts(true)
+    assert_queries(0) do
+      person.post_ids
+      person.post_ids
+    end
+  end
+
+  def test_get_ids_for_unloaded_associations_does_not_load_them
+    person = people(:michael)
+    assert !person.posts.loaded?
+    assert_equal [posts(:welcome).id, posts(:authorless).id].sort, person.post_ids.sort
+    assert !person.posts.loaded?
+  end
+
+  uses_mocha 'mocking Tag.transaction' do
+    def test_association_proxy_transaction_method_starts_transaction_in_association_class
+      Tag.expects(:transaction)
+      Post.find(:first).tags.transaction do
+        # nothing
+      end
+    end
+  end
+
+  def test_has_many_association_through_a_belongs_to_association_where_the_association_doesnt_exist
+    author = authors(:mary)
+    post = Post.create!(:title => "TITLE", :body => "BODY")
+    assert_equal [], post.author_favorites
+  end
+
+  def test_has_many_association_through_a_belongs_to_association
+    author = authors(:mary)
+    post = Post.create!(:author => author, :title => "TITLE", :body => "BODY")
+    author.author_favorites.create(:favorite_author_id => 1)
+    author.author_favorites.create(:favorite_author_id => 2)
+    author.author_favorites.create(:favorite_author_id => 3)
+    assert_equal post.author.author_favorites, post.author_favorites
   end
 end

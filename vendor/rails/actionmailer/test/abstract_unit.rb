@@ -1,6 +1,8 @@
 require 'test/unit'
 
 $:.unshift "#{File.dirname(__FILE__)}/../lib"
+$:.unshift "#{File.dirname(__FILE__)}/../../activesupport/lib"
+$:.unshift "#{File.dirname(__FILE__)}/../../actionpack/lib"
 require 'action_mailer'
 require 'action_mailer/test_case'
 
@@ -22,11 +24,15 @@ class MockSMTP
   def sendmail(mail, from, to)
     @@deliveries << [mail, from, to]
   end
+
+  def start(*args)
+    yield self
+  end
 end
 
 class Net::SMTP
-  def self.start(*args)
-    yield MockSMTP.new
+  def self.new(*args)
+    MockSMTP.new
   end
 end
 

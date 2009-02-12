@@ -21,16 +21,13 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-$:.unshift(File.dirname(__FILE__)) unless
-  $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
-
-unless defined?(ActiveSupport)
-  begin
-    $:.unshift "#{File.dirname(__FILE__)}/../../activesupport/lib"
+begin
+  require 'active_support'
+rescue LoadError
+  activesupport_path = "#{File.dirname(__FILE__)}/../../activesupport/lib"
+  if File.directory?(activesupport_path)
+    $:.unshift activesupport_path
     require 'active_support'
-  rescue LoadError
-    require 'rubygems'
-    gem 'activesupport'
   end
 end
 
@@ -53,9 +50,11 @@ require 'action_controller/streaming'
 require 'action_controller/session_management'
 require 'action_controller/http_authentication'
 require 'action_controller/components'
+require 'action_controller/rack_process'
 require 'action_controller/record_identifier'
 require 'action_controller/request_forgery_protection'
 require 'action_controller/headers'
+require 'action_controller/translation'
 
 require 'action_view'
 
@@ -76,4 +75,5 @@ ActionController::Base.class_eval do
   include ActionController::Components
   include ActionController::RecordIdentifier
   include ActionController::RequestForgeryProtection
+  include ActionController::Translation
 end

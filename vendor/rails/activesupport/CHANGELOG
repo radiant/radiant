@@ -1,17 +1,76 @@
-*2.1.2 (October 23rd, 2008)*
+*2.2 (November 21st, 2008)*
+
+* TimeZone offset tests: use current_period, to ensure TimeZone#utc_offset is up-to-date [Geoff Buesing]
+
+* Update bundled TZInfo to 0.3.12 [Geoff Buesing]
+
+* Increment the version of our altered memcache-client to prevent confusion caused when the 1.5.0 gem is installed.
+
+* Fixed the option merging in Array#to_xml #1126 [Rudolf Gavlas]
+
+* Make I18n::Backend::Simple reload its translations in development mode [DHH/Sven Fuchs]
 
 * TimeWithZone#freeze: preload instance variables so that we can actually freeze [Geoff Buesing]
 
+* Fix Brasilia timezone #1180 [Marcus Derencius, Kane]
 
-*2.1.1 (September 4th, 2008)*
+* Time#advance recognizes fractional days and weeks. Deprecate Durations of fractional months and years #970 [Tom Lea]
 
-* Fix Ruby's Time marshaling bug in pre-1.9 versions of Ruby: utc instances are now correctly unmarshaled with a utc zone instead of the system local zone [#900 state:resolved]:activesupport/CHANGELOG
+* Add ActiveSupport::Rescuable module abstracting ActionController::Base rescue_from features. [Norbert Crombach, Pratik]
 
-* TimeWithZone: when crossing DST boundary, treat Durations of days, months or years as variable-length, and all other values as absolute length. A time + 24.hours will advance exactly 24 hours, but a time + 1.day will advance 23-25 hours, depending on the day. Ensure consistent behavior across all advancing methods [Geoff Buesing]
+* Switch from String#chars to String#mb_chars for the unicode proxy.  [Manfred Stienstra]
+
+  This helps with 1.8.7 compatibility and also improves performance for some operations by reducing indirection.
+
+* TimeWithZone #wday, #yday and #to_date avoid trip through #method_missing [Geoff Buesing]
+
+* Added Time, Date, DateTime and TimeWithZone #past?, #future? and #today? #720 [Clemens Kofler, Geoff Buesing]
+
+* Fixed Sri Jayawardenepura time zone to map to Asia/Colombo [Jamis Buck]
+
+* Added Inflector#parameterize for easy slug generation ("Donald E. Knuth".parameterize => "donald-e-knuth") #713 [Matt Darby]
+
+* Changed cache benchmarking to be reported in milliseconds [DHH]
+
+* Fix Ruby's Time marshaling bug in pre-1.9 versions of Ruby: utc instances are now correctly unmarshaled with a utc zone instead of the system local zone [#900 state:resolved] [Luca Guidi, Geoff Buesing]
+
+* Add Array#in_groups which splits or iterates over the array in specified number of groups. #579. [Adrian Mugnolo] Example:
+  
+  a = (1..10).to_a
+  a.in_groups(3)        #=> [[1, 2, 3, 4], [5, 6, 7, nil], [8, 9, 10, nil]]
+  a.in_groups(3, false) #=> [[1, 2, 3, 4], [5, 6, 7], [8, 9, 10]]
 
 * Fix TimeWithZone unmarshaling: coerce unmarshaled Time instances to utc, because Ruby's marshaling of Time instances doesn't respect the zone [Geoff Buesing]
 
-* Added StringQuestioneer for doing things like StringQuestioneer.new("production").production? # => true and StringQuestioneer.new("production").development? # => false [DHH]
+* Added Memoizable mixin for caching simple lazy loaded attributes [Josh Peek]
+
+* Move the test related core_ext stuff out of core_ext so it's only loaded by the test helpers.  [Michael Koziarski]
+
+* Add Inflection rules for String#humanize. #535 [dcmanges]
+
+  ActiveSupport::Inflector.inflections do |inflect|
+    inflect.human(/_cnt$/i, '\1_count')
+  end
+
+  'jargon_cnt'.humanize # => 'Jargon count'
+
+* TimeWithZone: when crossing DST boundary, treat Durations of days, months or years as variable-length, and all other values as absolute length. A time + 24.hours will advance exactly 24 hours, but a time + 1.day will advance 23-25 hours, depending on the day. Ensure consistent behavior across all advancing methods [Geoff Buesing]
+
+* Added TimeZone #=~, to support matching zones by regex in time_zone_select. #195 [Ernie Miller]
+
+* Added Array#second through Array#fifth as aliases for Array#[1] through Array#[4] + Array#forty_two as alias for Array[41] [DHH]
+
+* Added test/do declaration style testing to ActiveSupport::TestCase [DHH via Jay Fields]
+
+* Added Object#present? which is equivalent to !Object#blank? [DHH]
+
+* Added Enumberable#many? to encapsulate collection.size > 1 [DHH/Damian Janowski]
+
+* Add more standard Hash methods to ActiveSupport::OrderedHash [Steve Purcell]
+
+* Namespace Inflector, Dependencies, OrderedOptions, and TimeZone under ActiveSupport [Josh Peek]
+
+* Added StringInquirer for doing things like StringInquirer.new("production").production? # => true and StringInquirer.new("production").development? # => false [DHH]
 
 * Fixed Date#end_of_quarter to not blow up on May 31st [#289 state:resolved] (Danger)
 

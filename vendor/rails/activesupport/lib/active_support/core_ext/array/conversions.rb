@@ -6,10 +6,13 @@ module ActiveSupport #:nodoc:
       module Conversions
         # Converts the array to a comma-separated sentence where the last element is joined by the connector word. Options:
         # * <tt>:connector</tt> - The word used to join the last element in arrays with two or more elements (default: "and")
-        # * <tt>:skip_last_comma</tt> - Set to true to return "a, b and c" instead of "a, b, and c".
-        def to_sentence(options = {})
-          options.assert_valid_keys(:connector, :skip_last_comma)
-          options.reverse_merge! :connector => 'and', :skip_last_comma => false
+        # * <tt>:skip_last_comma</tt> - Set to true to return "a, b and c" instead of "a, b, and c".        
+        def to_sentence(options = {})          
+          options.assert_valid_keys(:connector, :skip_last_comma, :locale)
+          
+          default = I18n.translate(:'support.array.sentence_connector', :locale => options[:locale])
+          default_skip_last_comma = I18n.translate(:'support.array.skip_last_comma', :locale => options[:locale])
+          options.reverse_merge! :connector => default, :skip_last_comma => default_skip_last_comma
           options[:connector] = "#{options[:connector]} " unless options[:connector].nil? || options[:connector].strip == ''
 
           case length
@@ -23,11 +26,12 @@ module ActiveSupport #:nodoc:
               "#{self[0...-1].join(', ')}#{options[:skip_last_comma] ? '' : ','} #{options[:connector]}#{self[-1]}"
           end
         end
+        
 
         # Calls <tt>to_param</tt> on all its elements and joins the result with
         # slashes. This is used by <tt>url_for</tt> in Action Pack. 
         def to_param
-          map(&:to_param).join '/'
+          collect { |e| e.to_param }.join '/'
         end
 
         # Converts an array into a string suitable for use as a URL query string,
@@ -35,7 +39,8 @@ module ActiveSupport #:nodoc:
         #
         #   ['Rails', 'coding'].to_query('hobbies') # => "hobbies%5B%5D=Rails&hobbies%5B%5D=coding"
         def to_query(key)
-          collect { |value| value.to_query("#{key}[]") } * '&'
+          prefix = "#{key}[]"
+          collect { |value| value.to_query(prefix) }.join '&'
         end
 
         def self.included(base) #:nodoc:
@@ -167,7 +172,7 @@ module ActiveSupport #:nodoc:
           else
             xml.tag!(root, options[:skip_types] ? {} : {:type => "array"}) {
               yield xml if block_given?
-              each { |e| e.to_xml(opts.merge!({ :skip_instruct => true })) }
+              each { |e| e.to_xml(opts.merge({ :skip_instruct => true })) }
             }
           end
         end

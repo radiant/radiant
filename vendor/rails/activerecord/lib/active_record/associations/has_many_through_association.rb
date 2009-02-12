@@ -9,15 +9,15 @@ module ActiveRecord
       alias_method :new, :build
 
       def create!(attrs = nil)
-        @reflection.klass.transaction do
-          self << (object = attrs ? @reflection.klass.send(:with_scope, :create => attrs) { @reflection.klass.create! } : @reflection.klass.create!)
+        transaction do
+          self << (object = attrs ? @reflection.klass.send(:with_scope, :create => attrs) { @reflection.create_association! } : @reflection.create_association!)
           object
         end
       end
 
       def create(attrs = nil)
-        @reflection.klass.transaction do
-          self << (object = attrs ? @reflection.klass.send(:with_scope, :create => attrs) { @reflection.klass.create } : @reflection.klass.create)
+        transaction do
+          self << (object = attrs ? @reflection.klass.send(:with_scope, :create => attrs) { @reflection.create_association } : @reflection.create_association)
           object
         end
       end
@@ -31,17 +31,15 @@ module ActiveRecord
         return count
       end
       
-      def count(*args)
-        column_name, options = @reflection.klass.send(:construct_count_options_from_args, *args)
-        if @reflection.options[:uniq]
-          # This is needed because 'SELECT count(DISTINCT *)..' is not valid SQL statement.
-          column_name = "#{@reflection.quoted_table_name}.#{@reflection.klass.primary_key}" if column_name == :all
-          options.merge!(:distinct => true) 
-        end
-        @reflection.klass.send(:with_scope, construct_scope) { @reflection.klass.count(column_name, options) } 
-      end
-
       protected
+        def target_reflection_has_associated_record?
+          if @reflection.through_reflection.macro == :belongs_to && @owner[@reflection.through_reflection.primary_key_name].blank?
+            false
+          else
+            true
+          end
+        end
+
         def construct_find_options!(options)
           options[:select]  = construct_select(options[:select])
           options[:from]  ||= construct_from
@@ -57,8 +55,9 @@ module ActiveRecord
               return false unless record.save
             end
           end
-          klass = @reflection.through_reflection.klass
-          @owner.send(@reflection.through_reflection.name).proxy_target << klass.send(:with_scope, :create => construct_join_attributes(record)) { klass.create! }
+          through_reflection = @reflection.through_reflection
+          klass = through_reflection.klass
+          @owner.send(@reflection.through_reflection.name).proxy_target << klass.send(:with_scope, :create => construct_join_attributes(record)) { through_reflection.create_association! }
         end
 
         # TODO - add dependent option support
@@ -70,6 +69,7 @@ module ActiveRecord
         end
 
         def find_target
+          return [] unless target_reflection_has_associated_record?
           @reflection.klass.find(:all,
             :select     => construct_select,
             :conditions => construct_conditions,
@@ -107,12 +107,14 @@ module ActiveRecord
         # Associate attributes pointing to owner, quoted.
         def construct_quoted_owner_attributes(reflection)
           if as = reflection.options[:as]
-            { "#{as}_id" => @owner.quoted_id,
+            { "#{as}_id" => owner_quoted_id,
               "#{as}_type" => reflection.klass.quote_value(
                 @owner.class.base_class.name.to_s,
                 reflection.klass.columns_hash["#{as}_type"]) }
+          elsif reflection.macro == :belongs_to
+            { reflection.klass.primary_key => @owner[reflection.primary_key_name] }
           else
-            { reflection.primary_key_name => @owner.quoted_id }
+            { reflection.primary_key_name => owner_quoted_id }
           end
         end
 
@@ -183,7 +185,7 @@ module ActiveRecord
             when @reflection.options[:finder_sql]
               @finder_sql = interpolate_sql(@reflection.options[:finder_sql])
 
-              @finder_sql = "#{@reflection.quoted_table_name}.#{@reflection.primary_key_name} = #{@owner.quoted_id}"
+              @finder_sql = "#{@reflection.quoted_table_name}.#{@reflection.primary_key_name} = #{owner_quoted_id}"
               @finder_sql << " AND (#{conditions})" if conditions
             else
               @finder_sql = construct_conditions

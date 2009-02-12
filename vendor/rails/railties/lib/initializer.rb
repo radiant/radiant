@@ -8,6 +8,7 @@ require 'rails/version'
 require 'rails/plugin/locator'
 require 'rails/plugin/loader'
 require 'rails/gem_dependency'
+require 'rails/rack'
 
 
 RAILS_ENV = (ENV['RAILS_ENV'] || 'development').dup unless defined?(RAILS_ENV)
@@ -18,15 +19,27 @@ module Rails
     def configuration
       @@configuration
     end
-  
+
     def configuration=(configuration)
       @@configuration = configuration
     end
-  
-    def logger
-      RAILS_DEFAULT_LOGGER
+
+    def initialized?
+      @initialized || false
     end
-  
+
+    def initialized=(initialized)
+      @initialized ||= initialized
+    end
+
+    def logger
+      if defined?(RAILS_DEFAULT_LOGGER)
+        RAILS_DEFAULT_LOGGER
+      else
+        nil
+      end
+    end
+
     def root
       if defined?(RAILS_ROOT)
         RAILS_ROOT
@@ -34,12 +47,14 @@ module Rails
         nil
       end
     end
-  
+
     def env
-      require 'active_support/string_inquirer'
-      ActiveSupport::StringInquirer.new(RAILS_ENV)
+      @_env ||= begin
+        require 'active_support/string_inquirer'
+        ActiveSupport::StringInquirer.new(RAILS_ENV)
+      end
     end
-  
+
     def cache
       RAILS_CACHE
     end
@@ -56,7 +71,7 @@ module Rails
       @@public_path = path
     end
   end
-  
+
   # The Initializer is responsible for processing the Rails configuration, such
   # as setting the $LOAD_PATH, requiring the right frameworks, initializing
   # logging, and more. It can be run either as a single command that'll just
@@ -90,7 +105,7 @@ module Rails
     #   Rails::Initializer.run(:set_load_path)
     #
     # This is useful if you only want the load path initialized, without
-    # incuring the overhead of completely loading the entire environment.
+    # incurring the overhead of completely loading the entire environment.
     def self.run(command = :process, configuration = Configuration.new)
       yield configuration if block_given?
       initializer = new configuration
@@ -129,12 +144,15 @@ module Rails
       initialize_logger
       initialize_framework_logging
 
-      initialize_framework_views
       initialize_dependency_mechanism
       initialize_whiny_nils
       initialize_temporary_session_directory
+
       initialize_time_zone
+      initialize_i18n
+
       initialize_framework_settings
+      initialize_framework_views
 
       add_support_load_paths
 
@@ -145,7 +163,7 @@ module Rails
       add_gem_load_paths
       load_gems
       check_gem_dependencies
-      
+
       load_application_initializers
 
       # the framework is now fully initialized
@@ -158,8 +176,19 @@ module Rails
       initialize_routing
 
       # Observers are loaded after plugins in case Observers or observed models are modified by plugins.
-      
       load_observers
+
+      # Load view path cache
+      load_view_paths
+
+      # Load application classes
+      load_application_classes
+
+      # Disable dependency loading during request cycle
+      disable_dependency_loading
+
+      # Flag initialized
+      Rails.initialized = true
     end
 
     # Check for valid Ruby version
@@ -188,6 +217,7 @@ module Rails
           Gem.loaded_specs[stub] = Gem::Specification.new do |s|
             s.name = stub
             s.version = Rails::VERSION::STRING
+            s.loaded_from = ""
           end
         end
       end
@@ -240,6 +270,7 @@ module Rails
     end
 
     def add_gem_load_paths
+      Rails::GemDependency.add_frozen_gem_path
       unless @configuration.gems.empty?
         require "rubygems"
         @configuration.gems.each { |gem| gem.add_load_paths }
@@ -302,12 +333,12 @@ Run `rake gems:install` to install the missing gems.
       silence_warnings do
         return if @environment_loaded
         @environment_loaded = true
-        
+
         config = configuration
         constants = self.class.constants
-        
+
         eval(IO.read(configuration.environment_path), binding, configuration.environment_path)
-        
+
         (self.class.constants - constants).each do |const|
           Object.const_set(const, self.class.const_get(const))
         end
@@ -317,6 +348,26 @@ Run `rake gems:install` to install the missing gems.
     def load_observers
       if gems_dependencies_loaded && configuration.frameworks.include?(:active_record)
         ActiveRecord::Base.instantiate_observers
+      end
+    end
+
+    def load_view_paths
+      if configuration.frameworks.include?(:action_view)
+        ActionView::PathSet::Path.eager_load_templates! if configuration.cache_classes
+        ActionController::Base.view_paths.load if configuration.frameworks.include?(:action_controller)
+        ActionMailer::Base.template_root.load if configuration.frameworks.include?(:action_mailer)
+      end
+    end
+
+    # Eager load application classes
+    def load_application_classes
+      if configuration.cache_classes
+        configuration.eager_load_paths.each do |load_path|
+          matcher = /\A#{Regexp.escape(load_path)}(.*)\.rb\Z/
+          Dir.glob("#{load_path}/**/*.rb").sort.each do |file|
+            require_dependency file.sub(matcher, '\1')
+          end
+        end
       end
     end
 
@@ -364,7 +415,7 @@ Run `rake gems:install` to install the missing gems.
     # +STDERR+, with a log level of +WARN+.
     def initialize_logger
       # if the environment has explicitly defined a logger, use it
-      return if defined?(RAILS_DEFAULT_LOGGER)
+      return if Rails.logger
 
       unless logger = configuration.logger
         begin
@@ -372,7 +423,6 @@ Run `rake gems:install` to install the missing gems.
           logger.level = ActiveSupport::BufferedLogger.const_get(configuration.log_level.to_s.upcase)
           if configuration.environment == "production"
             logger.auto_flushing = false
-            logger.set_non_blocking_io
           end
         rescue StandardError => e
           logger = ActiveSupport::BufferedLogger.new(STDERR)
@@ -393,10 +443,11 @@ Run `rake gems:install` to install the missing gems.
     # RAILS_DEFAULT_LOGGER.
     def initialize_framework_logging
       for framework in ([ :active_record, :action_controller, :action_mailer ] & configuration.frameworks)
-        framework.to_s.camelize.constantize.const_get("Base").logger ||= RAILS_DEFAULT_LOGGER
+        framework.to_s.camelize.constantize.const_get("Base").logger ||= Rails.logger
       end
-      
-      RAILS_CACHE.logger ||= RAILS_DEFAULT_LOGGER
+
+      ActiveSupport::Dependencies.logger ||= Rails.logger
+      Rails.cache.logger ||= Rails.logger
     end
 
     # Sets +ActionController::Base#view_paths+ and +ActionMailer::Base#template_root+
@@ -404,8 +455,11 @@ Run `rake gems:install` to install the missing gems.
     # paths have already been set, it is not changed, otherwise it is
     # set to use Configuration#view_path.
     def initialize_framework_views
-      ActionMailer::Base.template_root ||= configuration.view_path  if configuration.frameworks.include?(:action_mailer)
-      ActionController::Base.view_paths = [configuration.view_path] if configuration.frameworks.include?(:action_controller) && ActionController::Base.view_paths.empty?
+      if configuration.frameworks.include?(:action_view)
+        view_path = ActionView::PathSet::Path.new(configuration.view_path, false)
+        ActionMailer::Base.template_root ||= view_path if configuration.frameworks.include?(:action_mailer)
+        ActionController::Base.view_paths = view_path if configuration.frameworks.include?(:action_controller) && ActionController::Base.view_paths.empty?
+      end
     end
 
     # If Action Controller is not one of the loaded frameworks (Configuration#frameworks)
@@ -441,7 +495,7 @@ Run `rake gems:install` to install the missing gems.
     # If assigned value cannot be matched to a TimeZone, an exception will be raised.
     def initialize_time_zone
       if configuration.time_zone
-        zone_default = Time.send!(:get_zone, configuration.time_zone)
+        zone_default = Time.__send__(:get_zone, configuration.time_zone)
         unless zone_default
           raise %{Value assigned to config.time_zone not recognized. Run "rake -D time" for a list of tasks for finding appropriate time zone names.}
         end
@@ -449,6 +503,18 @@ Run `rake gems:install` to install the missing gems.
         if configuration.frameworks.include?(:active_record)
           ActiveRecord::Base.time_zone_aware_attributes = true
           ActiveRecord::Base.default_timezone = :utc
+        end
+      end
+    end
+
+    # Set the i18n configuration from config.i18n but special-case for the load_path which should be 
+    # appended to what's already set instead of overwritten.
+    def initialize_i18n
+      configuration.i18n.each do |setting, value|
+        if setting == :load_path
+          I18n.load_path += value
+        else
+          I18n.send("#{setting}=", value)
         end
       end
     end
@@ -490,9 +556,14 @@ Run `rake gems:install` to install the missing gems.
       return unless configuration.frameworks.include?(:action_controller)
       require 'dispatcher' unless defined?(::Dispatcher)
       Dispatcher.define_dispatcher_callbacks(configuration.cache_classes)
-      Dispatcher.new(RAILS_DEFAULT_LOGGER).send :run_callbacks, :prepare_dispatch
+      Dispatcher.new(Rails.logger).send :run_callbacks, :prepare_dispatch
     end
 
+    def disable_dependency_loading
+      if configuration.cache_classes && !configuration.dependency_loading
+        ActiveSupport::Dependencies.unhook!
+      end
+    end
   end
 
   # The Configuration class holds all the parameters for the Initializer and
@@ -520,7 +591,7 @@ Run `rake gems:install` to install the missing gems.
     # A stub for setting options on ActiveRecord::Base.
     attr_accessor :active_record
 
-    # A stub for setting options on ActiveRecord::Base.
+    # A stub for setting options on ActiveResource::Base.
     attr_accessor :active_resource
 
     # A stub for setting options on ActiveSupport.
@@ -537,7 +608,7 @@ Run `rake gems:install` to install the missing gems.
     # The path to the database configuration file to use. (Defaults to
     # <tt>config/database.yml</tt>.)
     attr_accessor :database_configuration_file
-    
+
     # The path to the routes configuration file to use. (Defaults to
     # <tt>config/routes.rb</tt>.)
     attr_accessor :routes_configuration_file
@@ -555,6 +626,11 @@ Run `rake gems:install` to install the missing gems.
     # An array of paths from which Rails will automatically load from only once.
     # All elements of this array must also be in +load_paths+.
     attr_accessor :load_once_paths
+
+    # An array of paths from which Rails will eager load on boot if cache
+    # classes is enabled. All elements of this array must also be in
+    # +load_paths+.
+    attr_accessor :eager_load_paths
 
     # The log level to use for the default Rails logger. In production mode,
     # this defaults to <tt>:info</tt>. In development mode, it defaults to
@@ -603,7 +679,7 @@ Run `rake gems:install` to install the missing gems.
     # a sub class would have access to fine grained modification of the loading behavior. See
     # the implementation of Rails::Plugin::Loader for more details.
     attr_accessor :plugin_loader
-    
+
     # Enables or disables plugin reloading.  You can get around this setting per plugin.
     # If <tt>reload_plugins?</tt> is false, add this to your plugin's <tt>init.rb</tt>
     # to make it reloadable:
@@ -621,6 +697,17 @@ Run `rake gems:install` to install the missing gems.
     def reload_plugins?
       !!@reload_plugins
     end
+
+    # Enables or disables dependency loading during the request cycle. Setting
+    # <tt>dependency_loading</tt> to true will allow new classes to be loaded
+    # during a request. Setting it to false will disable this behavior.
+    #
+    # Those who want to run in a threaded environment should disable this
+    # option and eager load or require all there classes on initialization.
+    #
+    # If <tt>cache_classes</tt> is disabled, dependency loaded will always be
+    # on.
+    attr_accessor :dependency_loading
 
     # An array of gems that this rails application depends on.  Rails will automatically load
     # these gems during installation, and allow you to install any missing gems with:
@@ -644,7 +731,7 @@ Run `rake gems:install` to install the missing gems.
     def gem(name, options = {})
       @gems << Rails::GemDependency.new(name, options)
     end
-    
+
     # Deprecated options:
     def breakpoint_server(_ = nil)
       $stderr.puts %(
@@ -660,6 +747,9 @@ Run `rake gems:install` to install the missing gems.
     # timezone to <tt>:utc</tt>.
     attr_accessor :time_zone
 
+    # Accessor for i18n settings.
+    attr_accessor :i18n
+
     # Create a new Configuration instance, initialized with the default
     # values.
     def initialize
@@ -668,11 +758,13 @@ Run `rake gems:install` to install the missing gems.
       self.frameworks                   = default_frameworks
       self.load_paths                   = default_load_paths
       self.load_once_paths              = default_load_once_paths
+      self.eager_load_paths             = default_eager_load_paths
       self.log_path                     = default_log_path
       self.log_level                    = default_log_level
       self.view_path                    = default_view_path
       self.controller_paths             = default_controller_paths
       self.cache_classes                = default_cache_classes
+      self.dependency_loading           = default_dependency_loading
       self.whiny_nils                   = default_whiny_nils
       self.plugins                      = default_plugins
       self.plugin_paths                 = default_plugin_paths
@@ -681,6 +773,7 @@ Run `rake gems:install` to install the missing gems.
       self.database_configuration_file  = default_database_configuration_file
       self.routes_configuration_file    = default_routes_configuration_file
       self.gems                         = default_gems
+      self.i18n                         = default_i18n
 
       for framework in default_frameworks
         self.send("#{framework}=", Rails::OrderedOptions.new)
@@ -703,9 +796,19 @@ Run `rake gems:install` to install the missing gems.
         else
           Pathname.new(::RAILS_ROOT).realpath.to_s
         end
-      
+
       Object.const_set(:RELATIVE_RAILS_ROOT, ::RAILS_ROOT.dup) unless defined?(::RELATIVE_RAILS_ROOT)
       ::RAILS_ROOT.replace @root_path
+    end
+
+    # Enable threaded mode. Allows concurrent requests to controller actions and
+    # multiple database connections. Also disables automatic dependency loading
+    # after boot
+    def threadsafe!
+      self.cache_classes = true
+      self.dependency_loading = false
+      self.action_controller.allow_concurrency = true
+      self
     end
 
     # Loads and returns the contents of the #database_configuration_file. The
@@ -745,7 +848,7 @@ Run `rake gems:install` to install the missing gems.
     #
     # See Dispatcher#to_prepare.
     def to_prepare(&callback)
-      after_initialize do 
+      after_initialize do
         require 'dispatcher' unless defined?(::Dispatcher)
         Dispatcher.to_prepare(&callback)
       end
@@ -759,11 +862,11 @@ Run `rake gems:install` to install the missing gems.
     def framework_paths
       paths = %w(railties railties/lib activesupport/lib)
       paths << 'actionpack/lib' if frameworks.include? :action_controller or frameworks.include? :action_view
-      
+
       [:active_record, :action_mailer, :active_resource, :action_web_service].each do |framework|
         paths << "#{framework.to_s.gsub('_', '')}/lib" if frameworks.include? framework
       end
-      
+
       paths.map { |dir| "#{framework_root_path}/#{dir}" }.select { |dir| File.directory?(dir) }
     end
 
@@ -778,7 +881,7 @@ Run `rake gems:install` to install the missing gems.
 
       def default_load_paths
         paths = []
-        
+
         # Add the old mock paths only if the directories exists
         paths.concat(Dir["#{root_path}/test/mocks/#{environment}"]) if File.exists?("#{root_path}/test/mocks/#{environment}")
 
@@ -809,6 +912,14 @@ Run `rake gems:install` to install the missing gems.
         []
       end
 
+      def default_eager_load_paths
+        %w(
+          app/models
+          app/controllers
+          app/helpers
+        ).map { |dir| "#{root_path}/#{dir}" }.select { |dir| File.directory?(dir) }
+      end
+
       def default_log_path
         File.join(root_path, 'log', "#{environment}.log")
       end
@@ -835,12 +946,12 @@ Run `rake gems:install` to install the missing gems.
         paths
       end
 
-      def default_dependency_mechanism
-        :load
+      def default_dependency_loading
+        true
       end
 
       def default_cache_classes
-        false
+        true
       end
 
       def default_whiny_nils
@@ -864,7 +975,7 @@ Run `rake gems:install` to install the missing gems.
       def default_plugin_loader
         Plugin::Loader
       end
-      
+
       def default_cache_store
         if File.exist?("#{root_path}/tmp/cache/")
           [ :file_store, "#{root_path}/tmp/cache/" ]
@@ -872,9 +983,21 @@ Run `rake gems:install` to install the missing gems.
           :memory_store
         end
       end
-      
+
       def default_gems
         []
+      end
+
+      def default_i18n
+        i18n = Rails::OrderedOptions.new
+        i18n.load_path = []
+
+        if File.exist?(File.join(RAILS_ROOT, 'config', 'locales'))
+          i18n.load_path << Dir[File.join(RAILS_ROOT, 'config', 'locales', '*.{rb,yml}')]
+          i18n.load_path.flatten!
+        end
+
+        i18n
       end
   end
 end

@@ -42,14 +42,17 @@ module ActionView
     class ERB < TemplateHandler
       include Compilable
 
-      def compile(template)
-        ::ERB.new(template.source, nil, @view.erb_trim_mode).src
-      end
+      # Specify trim mode for the ERB compiler. Defaults to '-'.
+      # See ERb documentation for suitable values.
+      cattr_accessor :erb_trim_mode
+      self.erb_trim_mode = '-'
 
-      def cache_fragment(block, name = {}, options = nil) #:nodoc:
-        @view.fragment_for(block, name, options) do
-          eval(ActionView::Base.erb_variable, block.binding)
-        end
+      def compile(template)
+        src = ::ERB.new("<% __in_erb_template=true %>#{template.source}", nil, erb_trim_mode, '@output_buffer').src
+
+        # Ruby 1.9 prepends an encoding to the source. However this is
+        # useless because you can only set an encoding on the first line
+        RUBY_VERSION >= '1.9' ? src.sub(/\A#coding:.*\n/, '') : src
       end
     end
   end

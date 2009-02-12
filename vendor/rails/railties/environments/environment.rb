@@ -22,8 +22,10 @@ Rails::Initializer.run do |config|
 
   # Specify gems that this application depends on. 
   # They can then be installed with "rake gems:install" on new installations.
+  # You have to specify the :lib option for libraries, where the Gem name (sqlite3-ruby) differs from the file itself (sqlite3)
   # config.gem "bj"
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
+  # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
 
   # Only load the plugins named here, in the order given. By default, all plugins 
@@ -42,6 +44,11 @@ Rails::Initializer.run do |config|
   # in the database in UTC, and return them converted to the specified local zone.
   # Run "rake -D time" for a list of tasks for finding time zone names. Comment line to use default local time.
   config.time_zone = 'UTC'
+
+  # The internationalization framework can be changed to have another default locale (standard is :en) or more load paths.
+  # All files from config/locales/*.rb,yml are added automatically.
+  # config.i18n.load_path << Dir[File.join(RAILS_ROOT, 'my', 'locales', '*.{rb,yml}')]
+  # config.i18n.default_locale = :de
 
   # Your secret key for verifying cookie session data integrity.
   # If you change this key, all old sessions will become invalid!
@@ -63,5 +70,6 @@ Rails::Initializer.run do |config|
   # config.active_record.schema_format = :sql
 
   # Activate observers that should always be running
-  # config.active_record.observers = :cacher, :garbage_collector
+  # Please note that observers generated using script/generate observer need to have an _observer suffix
+  # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
 end

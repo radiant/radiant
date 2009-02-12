@@ -65,7 +65,7 @@ module ActiveResource
     class << self
 
       # Returns an array of all request objects that have been sent to the mock.  You can use this to check
-      # wether or not your model actually sent an HTTP request.
+      # if your model actually sent an HTTP request.
       #
       # ==== Example
       #   def setup
@@ -146,7 +146,7 @@ module ActiveResource
     attr_accessor :path, :method, :body, :headers
 
     def initialize(method, path, body = nil, headers = {})
-      @method, @path, @body, @headers = method, path, body, headers.reverse_merge('Content-Type' => 'application/xml')
+      @method, @path, @body, @headers = method, path, body, headers.merge(ActiveResource::Connection::HTTP_FORMAT_HEADER_NAMES[method] => 'application/xml')
     end
 
     def ==(other_request)

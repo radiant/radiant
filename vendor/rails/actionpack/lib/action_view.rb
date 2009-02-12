@@ -21,25 +21,33 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-require 'action_view/template_handler'
-require 'action_view/template_handlers/compilable'
-require 'action_view/template_handlers/builder'
-require 'action_view/template_handlers/erb'
-require 'action_view/template_handlers/rjs'
+begin
+  require 'active_support'
+rescue LoadError
+  activesupport_path = "#{File.dirname(__FILE__)}/../../activesupport/lib"
+  if File.directory?(activesupport_path)
+    $:.unshift activesupport_path
+    require 'active_support'
+  end
+end
 
-require 'action_view/template_finder'
+require 'action_view/template_handlers'
+require 'action_view/renderable'
+require 'action_view/renderable_partial'
+
 require 'action_view/template'
-require 'action_view/partial_template'
 require 'action_view/inline_template'
+require 'action_view/paths'
 
 require 'action_view/base'
 require 'action_view/partials'
 require 'action_view/template_error'
 
+I18n.load_path << "#{File.dirname(__FILE__)}/action_view/locale/en.yml"
+
+require 'action_view/helpers'
+
 ActionView::Base.class_eval do
   include ActionView::Partials
-
-  ActionView::Base.helper_modules.each do |helper_module|
-    include helper_module
-  end
+  include ActionView::Helpers
 end

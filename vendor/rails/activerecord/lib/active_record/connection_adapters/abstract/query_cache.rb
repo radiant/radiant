@@ -4,7 +4,6 @@ module ActiveRecord
       class << self
         def included(base)
           base.class_eval do
-            attr_accessor :query_cache_enabled
             alias_method_chain :columns, :query_cache
             alias_method_chain :select_all, :query_cache
           end
@@ -25,6 +24,8 @@ module ActiveRecord
           end
         end
       end
+
+      attr_reader :query_cache, :query_cache_enabled
 
       # Enable the query cache within the block.
       def cache

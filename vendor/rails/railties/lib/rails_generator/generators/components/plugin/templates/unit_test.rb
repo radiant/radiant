@@ -1,8 +1,8 @@
-require 'test/unit'
+require 'test_helper'
 
-class <%= class_name %>Test < Test::Unit::TestCase
+class <%= class_name %>Test < ActiveSupport::TestCase
   # Replace this with your real tests.
-  def test_this_plugin
-    flunk
+  test "the truth" do
+    assert true
   end
 end

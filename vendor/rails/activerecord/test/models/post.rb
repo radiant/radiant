@@ -13,6 +13,7 @@ class Post < ActiveRecord::Base
   end
 
   belongs_to :author_with_posts, :class_name => "Author", :foreign_key => :author_id, :include => :posts
+  belongs_to :author_with_address, :class_name => "Author", :foreign_key => :author_id, :include => :author_address
 
   has_one :last_comment, :class_name => 'Comment', :order => 'id desc'
 
@@ -21,6 +22,8 @@ class Post < ActiveRecord::Base
       find(:first, :order => "id DESC")
     end
   end
+
+  has_many :author_favorites, :through => :author
 
   has_many :comments_with_interpolated_conditions, :class_name => 'Comment',
       :conditions => ['#{"#{aliased_table_name}." rescue ""}body = ?', 'Thank you for the welcome']

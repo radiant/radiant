@@ -43,6 +43,16 @@
 #     plugin is pulled via `svn checkout` or `svn export` but looks
 #     exactly the same.
 # 
+# Specifying revisions:
+#
+#   * Subversion revision is a single integer.
+#
+#   * Git revision format:
+#     - full - 'refs/tags/1.8.0' or 'refs/heads/experimental'
+#     - short: 'experimental' (equivalent to 'refs/heads/experimental')
+#              'tag 1.8.0' (equivalent to 'refs/tags/1.8.0')
+#
+#
 # This is Free Software, copyright 2005 by Ryan Tomayko (rtomayko@gmail.com) 
 # and is licensed MIT: (http://www.opensource.org/licenses/mit-license.php)
 
@@ -175,7 +185,7 @@ class Plugin
     method ||= rails_env.best_install_method?
     if :http == method
       method = :export if svn_url?
-      method = :clone  if git_url?
+      method = :git    if git_url?
     end
 
     uninstall if installed? and options[:force]
@@ -255,8 +265,25 @@ class Plugin
       end
     end
     
-    def install_using_clone(options = {})
-      git_command :clone, options
+    def install_using_git(options = {})
+      root = rails_env.root
+      install_path = mkdir_p "#{root}/vendor/plugins/#{name}"
+      Dir.chdir install_path do
+        init_cmd = "git init"
+        init_cmd += " -q" if options[:quiet] and not $verbose
+        puts init_cmd if $verbose
+        system(init_cmd)
+        base_cmd = "git pull --depth 1 #{uri}"
+        base_cmd += " -q" if options[:quiet] and not $verbose
+        base_cmd += " #{options[:revision]}" if options[:revision]
+        puts base_cmd if $verbose
+        if system(base_cmd)
+          puts "removing: .git" if $verbose
+          rm_rf ".git"
+        else
+          rm_rf install_path
+        end
+      end
     end
 
     def svn_command(cmd, options = {})
@@ -267,16 +294,6 @@ class Plugin
       base_cmd += " -r #{options[:revision]}" if options[:revision]
       puts base_cmd if $verbose
       system(base_cmd)
-    end
-    
-    def git_command(cmd, options = {})
-      root = rails_env.root
-      mkdir_p "#{root}/vendor/plugins"
-      base_cmd = "git #{cmd} --depth 1 #{uri} \"#{root}/vendor/plugins/#{name}\""
-      puts base_cmd if $verbose
-      puts "removing: #{root}/vendor/plugins/#{name}/.git"
-      system(base_cmd)
-      rm_rf "#{root}/vendor/plugins/#{name}/.git"
     end
 
     def guess_name(url)
@@ -444,11 +461,11 @@ module Commands
         
         o.on("-r", "--root=DIR", String,
              "Set an explicit rails app directory.",
-             "Default: #{@rails_root}") { |@rails_root| self.environment = RailsEnvironment.new(@rails_root) }
+             "Default: #{@rails_root}") { |rails_root| @rails_root = rails_root; self.environment = RailsEnvironment.new(@rails_root) }
         o.on("-s", "--source=URL1,URL2", Array,
-             "Use the specified plugin repositories instead of the defaults.") { |@sources|}
+             "Use the specified plugin repositories instead of the defaults.") { |sources| @sources = sources}
         
-        o.on("-v", "--verbose", "Turn on verbose output.") { |$verbose| }
+        o.on("-v", "--verbose", "Turn on verbose output.") { |verbose| $verbose = verbose }
         o.on("-h", "--help", "Show this help message.") { puts o; exit }
         
         o.separator ""
@@ -535,12 +552,12 @@ module Commands
         o.separator   "Options:"
         o.separator   ""
         o.on(         "-s", "--source=URL1,URL2", Array,
-                      "Use the specified plugin repositories.") {|@sources|}
+                      "Use the specified plugin repositories.") {|sources| @sources = sources}
         o.on(         "--local", 
-                      "List locally installed plugins.") {|@local| @remote = false}
+                      "List locally installed plugins.") {|local| @local, @remote = local, false}
         o.on(         "--remote",
                       "List remotely available plugins. This is the default behavior",
-                      "unless --local is provided.") {|@remote|}
+                      "unless --local is provided.") {|remote| @remote = remote}
       end
     end
     
@@ -581,7 +598,7 @@ module Commands
         o.separator   "Options:"
         o.separator   ""
         o.on(         "-c", "--check", 
-                      "Report status of repository.") { |@sources|}
+                      "Report status of repository.") { |sources| @sources = sources}
       end
     end
     
@@ -672,7 +689,7 @@ module Commands
         o.separator   "Options:"
         o.separator   ""
         o.on(         "-l", "--list", 
-                      "List but don't prompt or add discovered repositories.") { |@list| @prompt = !@list }
+                      "List but don't prompt or add discovered repositories.") { |list| @list, @prompt = list, !@list }
         o.on(         "-n", "--no-prompt", 
                       "Add all new repositories without prompting.") { |v| @prompt = !v }
       end
@@ -756,8 +773,8 @@ module Commands
                       "Suppresses the output from installation.",
                       "Ignored if -v is passed (./script/plugin -v install ...)") { |v| @options[:quiet] = true }
         o.on(         "-r REVISION", "--revision REVISION",
-                      "Checks out the given revision from subversion.",
-                      "Ignored if subversion is not used.") { |v| @options[:revision] = v }
+                      "Checks out the given revision from subversion or git.",
+                      "Ignored if subversion/git is not used.") { |v| @options[:revision] = v }
         o.on(         "-f", "--force",
                       "Reinstalls a plugin if it's already installed.") { |v| @options[:force] = true }
         o.separator   ""
@@ -884,7 +901,7 @@ class RecursiveHTTPFetcher
   def initialize(urls_to_fetch, level = 1, cwd = ".")
     @level = level
     @cwd = cwd
-    @urls_to_fetch = urls_to_fetch.to_a
+    @urls_to_fetch = RUBY_VERSION >= '1.9' ? urls_to_fetch.lines : urls_to_fetch.to_a
     @quiet = false
   end
 

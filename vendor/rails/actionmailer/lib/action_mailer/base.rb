@@ -216,7 +216,7 @@ module ActionMailer #:nodoc:
   #   * <tt>:domain</tt> - If you need to specify a HELO domain, you can do it here.
   #   * <tt>:user_name</tt> - If your mail server requires authentication, set the username in this setting.
   #   * <tt>:password</tt> - If your mail server requires authentication, set the password in this setting.
-  #   * <tt>:authentication</tt> - If your mail server requires authentication, you need to specify the authentication type here. 
+  #   * <tt>:authentication</tt> - If your mail server requires authentication, you need to specify the authentication type here.
   #     This is a symbol and one of <tt>:plain</tt>, <tt>:login</tt>, <tt>:cram_md5</tt>.
   #
   # * <tt>sendmail_settings</tt> - Allows you to override options for the <tt>:sendmail</tt> delivery method.
@@ -233,10 +233,10 @@ module ActionMailer #:nodoc:
   # * <tt>deliveries</tt> - Keeps an array of all the emails sent out through the Action Mailer with <tt>delivery_method :test</tt>. Most useful
   #   for unit and functional testing.
   #
-  # * <tt>default_charset</tt> - The default charset used for the body and to encode the subject. Defaults to UTF-8. You can also 
+  # * <tt>default_charset</tt> - The default charset used for the body and to encode the subject. Defaults to UTF-8. You can also
   #   pick a different charset from inside a method with +charset+.
   # * <tt>default_content_type</tt> - The default content type used for the main part of the message. Defaults to "text/plain". You
-  #   can also pick a different content type from inside a method with +content_type+. 
+  #   can also pick a different content type from inside a method with +content_type+.
   # * <tt>default_mime_version</tt> - The default mime version used for the message. Defaults to <tt>1.0</tt>. You
   #   can also pick a different value from inside a method with +mime_version+.
   # * <tt>default_implicit_parts_order</tt> - When a message is built implicitly (i.e. multiple parts are assembled from templates
@@ -246,15 +246,15 @@ module ActionMailer #:nodoc:
   #   +implicit_parts_order+.
   class Base
     include AdvAttrAccessor, PartContainer
-    include ActionController::UrlWriter if Object.const_defined?(:ActionController)
+    if Object.const_defined?(:ActionController)
+      include ActionController::UrlWriter
+      include ActionController::Layout
+    end
 
     private_class_method :new #:nodoc:
 
-    class_inheritable_accessor :template_root
+    class_inheritable_accessor :view_paths
     cattr_accessor :logger
-
-    cattr_accessor :template_extensions
-    @@template_extensions = ['erb', 'builder', 'rhtml', 'rxml']
 
     @@smtp_settings = {
       :address        => "localhost",
@@ -295,6 +295,9 @@ module ActionMailer #:nodoc:
 
     @@default_implicit_parts_order = [ "text/html", "text/enriched", "text/plain" ]
     cattr_accessor :default_implicit_parts_order
+
+    cattr_reader :protected_instance_variables
+    @@protected_instance_variables = %w(@body)
 
     # Specify the BCC addresses for the message
     adv_attr_accessor :bcc
@@ -365,6 +368,7 @@ module ActionMailer #:nodoc:
 
     # The mail object instance referenced by this mailer.
     attr_reader :mail
+    attr_reader :template_name, :default_template_name, :action_name
 
     class << self
       attr_writer :mailer_name
@@ -377,12 +381,20 @@ module ActionMailer #:nodoc:
       alias_method :controller_name, :mailer_name
       alias_method :controller_path, :mailer_name
 
-      def method_missing(method_symbol, *parameters)#:nodoc:
-        case method_symbol.id2name
-          when /^create_([_a-z]\w*)/  then new($1, *parameters).mail
-          when /^deliver_([_a-z]\w*)/ then new($1, *parameters).deliver!
-          when "new" then nil
-          else super
+      def respond_to?(method_symbol, include_private = false) #:nodoc:
+        matches_dynamic_method?(method_symbol) || super
+      end
+
+      def method_missing(method_symbol, *parameters) #:nodoc:
+        if match = matches_dynamic_method?(method_symbol)
+          case match[1]
+            when 'create'  then new(match[2], *parameters).mail
+            when 'deliver' then new(match[2], *parameters).deliver!
+            when 'new'     then nil
+            else super
+          end
+        else
+          super
         end
       end
 
@@ -414,21 +426,25 @@ module ActionMailer #:nodoc:
         new.deliver!(mail)
       end
 
-      # Register a template extension so mailer templates written in a
-      # templating language other than rhtml or rxml are supported.
-      # To use this, include in your template-language plugin's init
-      # code or on a per-application basis, this can be invoked from
-      # <tt>config/environment.rb</tt>:
-      #
-      #   ActionMailer::Base.register_template_extension('haml')
       def register_template_extension(extension)
-        template_extensions << extension
+        ActiveSupport::Deprecation.warn(
+          "ActionMailer::Base.register_template_extension has been deprecated." +
+          "Use ActionView::Base.register_template_extension instead", caller)
+      end
+
+      def template_root
+        self.view_paths && self.view_paths.first
       end
 
       def template_root=(root)
-        write_inheritable_attribute(:template_root, root)
-        ActionView::TemplateFinder.process_view_paths(root)
+        self.view_paths = ActionView::Base.process_view_paths(root)
       end
+
+      private
+        def matches_dynamic_method?(method_name) #:nodoc:
+          method_name = method_name.to_s
+          /^(create|deliver)_([_a-z]\w*)/.match(method_name) || /^(new)$/.match(method_name)
+        end
     end
 
     # Instantiate a new mailer object. If +method_name+ is not +nil+, the mailer
@@ -452,16 +468,18 @@ module ActionMailer #:nodoc:
         # "the_template_file.text.html.erb", etc.). Only do this if parts
         # have not already been specified manually.
         if @parts.empty?
-          templates = Dir.glob("#{template_path}/#{@template}.*")
-          templates.each do |path|
-            basename = File.basename(path)
-            template_regex = Regexp.new("^([^\\\.]+)\\\.([^\\\.]+\\\.[^\\\.]+)\\\.(" + template_extensions.join('|') + ")$")
-            next unless md = template_regex.match(basename)
-            template_name = basename
-            content_type = md.captures[1].gsub('.', '/')
-            @parts << Part.new(:content_type => content_type,
-              :disposition => "inline", :charset => charset,
-              :body => render_message(template_name, @body))
+          Dir.glob("#{template_path}/#{@template}.*").each do |path|
+            template = template_root["#{mailer_name}/#{File.basename(path)}"]
+
+            # Skip unless template has a multipart format
+            next unless template && template.multipart?
+
+            @parts << Part.new(
+              :content_type => template.content_type,
+              :disposition => "inline",
+              :charset => charset,
+              :body => render_message(template, @body)
+            )
           end
           unless @parts.empty?
             @content_type = "multipart/alternative"
@@ -474,7 +492,7 @@ module ActionMailer #:nodoc:
         # normal template exists (or if there were no implicit parts) we render
         # it.
         template_exists = @parts.empty?
-        template_exists ||= Dir.glob("#{template_path}/#{@template}.*").any? { |i| File.basename(i).split(".").length == 2 }
+        template_exists ||= template_root["#{mailer_name}/#{@template}"]
         @body = render_message(@template, @body) if template_exists
 
         # Finally, if there are other message parts and a textual body exists,
@@ -522,6 +540,7 @@ module ActionMailer #:nodoc:
         @content_type ||= @@default_content_type.dup
         @implicit_parts_order ||= @@default_implicit_parts_order.dup
         @template ||= method_name
+        @default_template_name = @action_name = @template
         @mailer_name ||= self.class.name.underscore
         @parts ||= []
         @headers ||= {}
@@ -530,16 +549,38 @@ module ActionMailer #:nodoc:
       end
 
       def render_message(method_name, body)
-        render :file => method_name, :body => body, :use_full_path => true
+        render :file => method_name, :body => body
       end
 
       def render(opts)
         body = opts.delete(:body)
-        if opts[:file] && opts[:file] !~ /\//
+        if opts[:file] && (opts[:file] !~ /\// && !opts[:file].respond_to?(:render))
           opts[:file] = "#{mailer_name}/#{opts[:file]}"
         end
-        opts[:use_full_path] = true
-        initialize_template_class(body).render(opts)
+
+        begin
+          old_template, @template = @template, initialize_template_class(body)
+          layout = respond_to?(:pick_layout, true) ? pick_layout(opts) : false
+          @template.render(opts.merge(:layout => layout))
+        ensure
+          @template = old_template
+        end
+      end
+
+      def default_template_format
+        :html
+      end
+
+      def candidate_for_layout?(options)
+        !@template.send(:_exempt_from_layout?, default_template_name)
+      end
+
+      def template_root
+        self.class.template_root
+      end
+
+      def template_root=(root)
+        self.class.template_root = root
       end
 
       def template_path
@@ -547,7 +588,7 @@ module ActionMailer #:nodoc:
       end
 
       def initialize_template_class(assigns)
-        ActionView::Base.new([template_root], assigns, self)
+        ActionView::Base.new(view_paths, assigns, self)
       end
 
       def sort_parts(parts, order = [])
@@ -625,8 +666,10 @@ module ActionMailer #:nodoc:
         mail.ready_to_send
         sender = mail['return-path'] || mail.from
 
-        Net::SMTP.start(smtp_settings[:address], smtp_settings[:port], smtp_settings[:domain],
-            smtp_settings[:user_name], smtp_settings[:password], smtp_settings[:authentication]) do |smtp|
+        smtp = Net::SMTP.new(smtp_settings[:address], smtp_settings[:port])
+        smtp.enable_starttls_auto if smtp.respond_to?(:enable_starttls_auto)
+        smtp.start(smtp_settings[:domain], smtp_settings[:user_name], smtp_settings[:password],
+                   smtp_settings[:authentication]) do |smtp|
           smtp.sendmail(mail.encoded, sender, destinations)
         end
       end

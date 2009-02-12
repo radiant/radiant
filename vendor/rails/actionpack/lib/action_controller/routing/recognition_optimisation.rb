@@ -51,7 +51,6 @@ module ActionController
     #  3) segm test for /users/:id
     #     (jump to list index = 5)
     #  4) full test for /users/:id => here we are!
-
     class RouteSet
       def recognize_path(path, environment={})
         result = recognize_optimized(path, environment) and return result
@@ -66,32 +65,6 @@ module ActionController
         else
           raise RoutingError, "No route matches #{path.inspect} with #{environment.inspect}"
         end
-      end
-
-      def clear_recognize_optimized!
-        instance_eval %{
-          def recognize_optimized(path, env)
-            write_recognize_optimized!
-            recognize_optimized(path, env)
-          end
-        }, __FILE__, __LINE__
-      end
-
-      def write_recognize_optimized!
-        tree = segment_tree(routes)
-        body = generate_code(tree)
-        instance_eval %{
-          def recognize_optimized(path, env)
-            segments = to_plain_segments(path)
-            index = #{body}
-            return nil unless index
-            while index < routes.size
-              result = routes[index].recognize(path, env) and return result
-              index += 1
-            end
-            nil
-          end
-        }, __FILE__, __LINE__
       end
 
       def segment_tree(routes)
@@ -157,6 +130,39 @@ module ActionController
         segments
       end
 
+      private
+        def write_recognize_optimized!
+          tree = segment_tree(routes)
+          body = generate_code(tree)
+
+          remove_recognize_optimized!
+
+          instance_eval %{
+            def recognize_optimized(path, env)
+              segments = to_plain_segments(path)
+              index = #{body}
+              return nil unless index
+              while index < routes.size
+                result = routes[index].recognize(path, env) and return result
+                index += 1
+              end
+              nil
+            end
+          }, '(recognize_optimized)', 1
+        end
+
+        def clear_recognize_optimized!
+          remove_recognize_optimized!
+          write_recognize_optimized!
+        end
+
+        def remove_recognize_optimized!
+          if respond_to?(:recognize_optimized)
+            class << self
+              remove_method :recognize_optimized
+            end
+          end
+        end
     end
   end
 end

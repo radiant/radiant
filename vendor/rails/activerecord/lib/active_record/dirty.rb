@@ -34,8 +34,10 @@ module ActiveRecord
   #   person.name << 'by'
   #   person.name_change    # => ['uncle bob', 'uncle bobby']
   module Dirty
+    DIRTY_SUFFIXES = ['_changed?', '_change', '_will_change!', '_was']
+
     def self.included(base)
-      base.attribute_method_suffix '_changed?', '_change', '_will_change!', '_was'
+      base.attribute_method_suffix *DIRTY_SUFFIXES
       base.alias_method_chain :write_attribute, :dirty
       base.alias_method_chain :save,            :dirty
       base.alias_method_chain :save!,           :dirty
@@ -44,6 +46,8 @@ module ActiveRecord
 
       base.superclass_delegating_accessor :partial_updates
       base.partial_updates = true
+
+      base.send(:extend, ClassMethods)
     end
 
     # Do any attributes have unsaved changes?
@@ -62,7 +66,7 @@ module ActiveRecord
       changed_attributes.keys
     end
 
-    # Map of changed attrs => [original value, new value]
+    # Map of changed attrs => [original value, new value].
     #   person.changes # => {}
     #   person.name = 'bob'
     #   person.changes # => { 'name' => ['bill', 'bob'] }
@@ -93,27 +97,27 @@ module ActiveRecord
     end
 
     private
-      # Map of change attr => original value.
+      # Map of change <tt>attr => original value</tt>.
       def changed_attributes
         @changed_attributes ||= {}
       end
 
-      # Handle *_changed? for method_missing.
+      # Handle <tt>*_changed?</tt> for +method_missing+.
       def attribute_changed?(attr)
         changed_attributes.include?(attr)
       end
 
-      # Handle *_change for method_missing.
+      # Handle <tt>*_change</tt> for +method_missing+.
       def attribute_change(attr)
         [changed_attributes[attr], __send__(attr)] if attribute_changed?(attr)
       end
 
-      # Handle *_was for method_missing.
+      # Handle <tt>*_was</tt> for +method_missing+.
       def attribute_was(attr)
         attribute_changed?(attr) ? changed_attributes[attr] : __send__(attr)
       end
 
-      # Handle *_will_change! for method_missing.
+      # Handle <tt>*_will_change!</tt> for +method_missing+.
       def attribute_will_change!(attr)
         changed_attributes[attr] = clone_attribute_value(:read_attribute, attr)
       end
@@ -161,5 +165,19 @@ module ActiveRecord
         old != value
       end
 
+    module ClassMethods
+      def self.extended(base)
+        base.metaclass.alias_method_chain(:alias_attribute, :dirty)
+      end
+
+      def alias_attribute_with_dirty(new_name, old_name)
+        alias_attribute_without_dirty(new_name, old_name)
+        DIRTY_SUFFIXES.each do |suffix|
+          module_eval <<-STR, __FILE__, __LINE__+1
+            def #{new_name}#{suffix}; self.#{old_name}#{suffix}; end
+          STR
+        end
+      end
+    end
   end
 end

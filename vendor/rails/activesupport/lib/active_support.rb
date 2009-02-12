@@ -21,8 +21,6 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-$:.unshift(File.dirname(__FILE__))
-
 require 'active_support/vendor'
 require 'active_support/basic_object'
 require 'active_support/inflector'
@@ -30,7 +28,6 @@ require 'active_support/callbacks'
 
 require 'active_support/core_ext'
 
-require 'active_support/clean_logger'
 require 'active_support/buffered_logger'
 
 require 'active_support/gzip'
@@ -43,6 +40,7 @@ require 'active_support/ordered_hash'
 require 'active_support/ordered_options'
 require 'active_support/option_merger'
 
+require 'active_support/memoizable'
 require 'active_support/string_inquirer'
 
 require 'active_support/values/time_zone'
@@ -56,6 +54,8 @@ require 'active_support/base64'
 
 require 'active_support/time_with_zone'
 
-Inflector = ActiveSupport::Deprecation::DeprecatedConstantProxy.new('Inflector', 'ActiveSupport::Inflector')
-Dependencies = ActiveSupport::Deprecation::DeprecatedConstantProxy.new('Dependencies', 'ActiveSupport::Dependencies')
-TimeZone = ActiveSupport::Deprecation::DeprecatedConstantProxy.new('TimeZone', 'ActiveSupport::TimeZone')
+require 'active_support/secure_random'
+
+require 'active_support/rescuable'
+
+I18n.load_path << File.dirname(__FILE__) + '/active_support/locale/en.yml'

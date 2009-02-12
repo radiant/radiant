@@ -37,7 +37,7 @@ module ActiveRecord
             attributes = columns.inject({}) do |attrs, column|
               case column.name.to_s
                 when @reflection.primary_key_name.to_s
-                  attrs[column.name] = @owner.quoted_id
+                  attrs[column.name] = owner_quoted_id
                 when @reflection.association_foreign_key.to_s
                   attrs[column.name] = record.quoted_id
                 else
@@ -64,7 +64,7 @@ module ActiveRecord
             records.each { |record| @owner.connection.delete(interpolate_sql(sql, record)) }
           else
             ids = quoted_record_ids(records)
-            sql = "DELETE FROM #{@owner.connection.quote_table_name @reflection.options[:join_table]} WHERE #{@reflection.primary_key_name} = #{@owner.quoted_id} AND #{@reflection.association_foreign_key} IN (#{ids})"
+            sql = "DELETE FROM #{@owner.connection.quote_table_name @reflection.options[:join_table]} WHERE #{@reflection.primary_key_name} = #{owner_quoted_id} AND #{@reflection.association_foreign_key} IN (#{ids})"
             @owner.connection.delete(sql)
           end
         end
@@ -73,11 +73,21 @@ module ActiveRecord
           if @reflection.options[:finder_sql]
             @finder_sql = interpolate_sql(@reflection.options[:finder_sql])
           else
-            @finder_sql = "#{@owner.connection.quote_table_name @reflection.options[:join_table]}.#{@reflection.primary_key_name} = #{@owner.quoted_id} "
+            @finder_sql = "#{@owner.connection.quote_table_name @reflection.options[:join_table]}.#{@reflection.primary_key_name} = #{owner_quoted_id} "
             @finder_sql << " AND (#{conditions})" if conditions
           end
 
           @join_sql = "INNER JOIN #{@owner.connection.quote_table_name @reflection.options[:join_table]} ON #{@reflection.quoted_table_name}.#{@reflection.klass.primary_key} = #{@owner.connection.quote_table_name @reflection.options[:join_table]}.#{@reflection.association_foreign_key}"
+
+          if @reflection.options[:counter_sql]
+            @counter_sql = interpolate_sql(@reflection.options[:counter_sql])
+          elsif @reflection.options[:finder_sql]
+            # replace the SELECT clause with COUNT(*), preserving any hints within /* ... */
+            @reflection.options[:counter_sql] = @reflection.options[:finder_sql].sub(/SELECT (\/\*.*?\*\/ )?(.*)\bFROM\b/im) { "SELECT #{$1}COUNT(*) FROM" }
+            @counter_sql = interpolate_sql(@reflection.options[:counter_sql])
+          else
+            @counter_sql = @finder_sql
+          end
         end
 
         def construct_scope

@@ -10,7 +10,7 @@ module ActiveRecord
       base.attribute_types_cached_by_default = ATTRIBUTE_TYPES_CACHED_BY_DEFAULT
       base.cattr_accessor :time_zone_aware_attributes, :instance_writer => false
       base.time_zone_aware_attributes = false
-      base.cattr_accessor :skip_time_zone_conversion_for_attributes, :instance_writer => false
+      base.class_inheritable_accessor :skip_time_zone_conversion_for_attributes, :instance_writer => false
       base.skip_time_zone_conversion_for_attributes = []
     end
 
@@ -214,7 +214,7 @@ module ActiveRecord
             if logger
               logger.warn "Exception occurred during reader method compilation."
               logger.warn "Maybe #{attr_name} is not a valid Ruby identifier?"
-              logger.warn "#{err.message}"
+              logger.warn err.message
             end
           end
         end
@@ -231,6 +231,10 @@ module ActiveRecord
     # table with a +master_id+ foreign key can instantiate master through Client#master.
     def method_missing(method_id, *args, &block)
       method_name = method_id.to_s
+
+      if self.class.private_method_defined?(method_name)
+        raise NoMethodError.new("Attempt to call private method", method_name, args)
+      end
 
       # If we haven't generated any methods yet, generate them, then
       # see if we've created the method we're looking for.
@@ -330,14 +334,18 @@ module ActiveRecord
       end
     end
     
-    # A Person object with a name attribute can ask <tt>person.respond_to?("name")</tt>,
-    # <tt>person.respond_to?("name=")</tt>, and <tt>person.respond_to?("name?")</tt>
+    # A Person object with a name attribute can ask <tt>person.respond_to?(:name)</tt>,
+    # <tt>person.respond_to?(:name=)</tt>, and <tt>person.respond_to?(:name?)</tt>
     # which will all return +true+.
     alias :respond_to_without_attributes? :respond_to?
-    def respond_to?(method, include_priv = false)
+    def respond_to?(method, include_private_methods = false)
       method_name = method.to_s
       if super
         return true
+      elsif !include_private_methods && super(method, true)
+        # If we're here than we haven't found among non-private methods
+        # but found among all methods. Which means that given method is private.
+        return false
       elsif !self.class.generated_methods?
         self.class.define_attribute_methods
         if self.class.generated_methods.include?(method_name)

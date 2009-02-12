@@ -10,8 +10,7 @@ class CustomMethodsTest < Test::Unit::TestCase
     @ryan  = { :name => 'Ryan' }.to_xml(:root => 'person')
     @addy  = { :id => 1, :street => '12345 Street' }.to_xml(:root => 'address')
     @addy_deep  = { :id => 1, :street => '12345 Street', :zip => "27519" }.to_xml(:root => 'address')
-    @default_request_headers = { 'Content-Type' => 'application/xml' }
-    
+
     ActiveResource::HttpMock.respond_to do |mock|
       mock.get    "/people/1.xml",             {}, @matz
       mock.get    "/people/1/shallow.xml", {}, @matz
@@ -82,6 +81,8 @@ class CustomMethodsTest < Test::Unit::TestCase
     # Test POST against a new element URL
     ryan = Person.new(:name => 'Ryan')
     assert_equal ActiveResource::Response.new(@ryan, 201, {'Location' => '/people/5.xml'}), ryan.post(:register)
+    expected_request = ActiveResource::Request.new(:post, '/people/new/register.xml', @ryan)
+    assert_equal expected_request.body, ActiveResource::HttpMock.requests.first.body
 
     # Test POST against a nested collection URL
     addy = StreetAddress.new(:street => '123 Test Dr.', :person_id => 1)

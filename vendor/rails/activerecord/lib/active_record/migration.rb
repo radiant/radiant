@@ -349,6 +349,27 @@ module ActiveRecord
     end
   end
 
+  # MigrationProxy is used to defer loading of the actual migration classes
+  # until they are needed
+  class MigrationProxy
+
+    attr_accessor :name, :version, :filename
+
+    delegate :migrate, :announce, :write, :to=>:migration
+
+    private
+
+      def migration
+        @migration ||= load_migration
+      end
+
+      def load_migration
+        load(filename)
+        name.constantize
+      end
+
+  end
+
   class Migrator#:nodoc:
     class << self
       def migrate(migrations_path, target_version = nil)
@@ -443,17 +464,25 @@ module ActiveRecord
       runnable.pop if down? && !target.nil?
       
       runnable.each do |migration|
-        Base.logger.info "Migrating to #{migration} (#{migration.version})"
+        Base.logger.info "Migrating to #{migration.name} (#{migration.version})"
 
         # On our way up, we skip migrating the ones we've already migrated
-        # On our way down, we skip reverting the ones we've never migrated
         next if up? && migrated.include?(migration.version.to_i)
 
+        # On our way down, we skip reverting the ones we've never migrated
         if down? && !migrated.include?(migration.version.to_i)
           migration.announce 'never migrated, skipping'; migration.write
-        else
-          migration.migrate(@direction)
-          record_version_state_after_migrating(migration.version)
+          next
+        end
+
+        begin
+          ddl_transaction do
+            migration.migrate(@direction)
+            record_version_state_after_migrating(migration.version)
+          end
+        rescue => e
+          canceled_msg = Base.connection.supports_ddl_transactions? ? "this and " : ""
+          raise StandardError, "An error has occurred, #{canceled_msg}all later migrations canceled:\n\n#{e}", e.backtrace
         end
       end
     end
@@ -476,11 +505,10 @@ module ActiveRecord
             raise DuplicateMigrationNameError.new(name.camelize) 
           end
           
-          load(file)
-          
-          klasses << returning(name.camelize.constantize) do |klass|
-            class << klass; attr_accessor :version end
-            klass.version = version
+          klasses << returning(MigrationProxy.new) do |migration|
+            migration.name     = name.camelize
+            migration.version  = version
+            migration.filename = file
           end
         end
         
@@ -518,6 +546,15 @@ module ActiveRecord
 
       def down?
         @direction == :down
+      end
+
+      # Wrap the migration in a transaction only if supported by the adapter.
+      def ddl_transaction(&block)
+        if Base.connection.supports_ddl_transactions?
+          Base.transaction { block.call }
+        else
+          block.call
+        end
       end
   end
 end
