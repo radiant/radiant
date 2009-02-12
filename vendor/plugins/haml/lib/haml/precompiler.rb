@@ -93,6 +93,7 @@ module Haml
 extend Haml::Helpers
 _hamlout = @haml_buffer = Haml::Buffer.new(@haml_buffer, #{options_for_buffer.inspect})
 _erbout = _hamlout.buffer
+__in_erb_template = true
 END
       postamble = <<END.gsub("\n", ";")
 @haml_buffer = @haml_buffer.upper
@@ -105,22 +106,22 @@ END
       names = names.keys if Hash == names
 
       names.map do |name|
-        "#{name} = _haml_locals[#{name.to_sym.inspect}] || _haml_locals[#{name.to_s.inspect}]"
+        # Can't use || because someone might explicitly pass in false with a symbol
+        sym_local = "_haml_locals[#{name.to_sym.inspect}]" 
+        str_local = "_haml_locals[#{name.to_s.inspect}]" 
+        "#{name} = #{sym_local}.nil? ? #{str_local} : #{sym_local}"
       end.join(';') + ';'
     end
 
     Line = Struct.new(:text, :unstripped, :index, :spaces, :tabs)
 
     def precompile
+      @haml_comment = @dont_indent_next_line = @dont_tab_up_next_text = false
+      @indentation = nil
       old_line = Line.new
       @template.split(/\r\n|\r|\n/).each_with_index do |text, index|
         @next_line = line = Line.new(text.strip, text.lstrip.chomp, index)
         line.spaces, line.tabs = count_soft_tabs(text)
-
-        if line.text.empty? && !flat?
-          newline
-          next
-        end
 
         suppress_render = handle_multiline(old_line) unless flat?
 
@@ -132,6 +133,11 @@ END
         end
 
         process_indent(old_line) unless old_line.text.empty?
+
+        if line.text.empty? && !flat?
+          newline
+          next
+        end
 
         if flat?
           push_flat(old_line)
@@ -197,11 +203,21 @@ END
       when SILENT_SCRIPT
         return start_haml_comment if text[1] == SILENT_COMMENT
 
+        raise SyntaxError.new(<<END.rstrip, index) if text[1..-1].strip == "end"
+You don't need to use "- end" in Haml. Use indentation instead:
+- if foo?
+  %strong Foo!
+- else
+  Not foo.
+END
+
         push_silent(text[1..-1], true)
         newline_now
-        if (@block_opened && !mid_block_keyword?(text)) || text[1..-1].split(' ', 2)[0] == "case"
-          push_and_tabulate([:script])
-        end
+
+        case_stmt = text[1..-1].split(' ', 2)[0] == "case"
+        block = @block_opened && !mid_block_keyword?(text)
+        push_and_tabulate([:script]) if block || case_stmt
+        push_and_tabulate(nil)       if block && case_stmt
       when FILTER; start_filtered(text[1..-1].downcase)
       when DOCTYPE
         return render_doctype(text) if text[0...3] == '!!!'
@@ -303,13 +319,9 @@ END
 
     # Adds +text+ to <tt>@buffer</tt> while flattening text.
     def push_flat(line)
-      unless @options[:ugly]
-        tabulation = line.spaces - @flat_spaces
-        tabulation = tabulation > -1 ? tabulation : 0
-        @filter_buffer << "#{' ' * tabulation}#{line.unstripped}\n"
-      else
-        @filter_buffer << "#{line.unstripped}\n"
-      end
+      tabulation = line.spaces - @flat_spaces
+      tabulation = tabulation > -1 ? tabulation : 0
+      @filter_buffer << "#{' ' * tabulation}#{line.unstripped}\n"
     end
 
     # Causes <tt>text</tt> to be evaluated in the context of
@@ -365,6 +377,7 @@ END
       when :loud; close_loud value
       when :filtered; close_filtered value
       when :haml_comment; close_haml_comment
+      when nil; close_nil
       end
     end
 
@@ -411,6 +424,10 @@ END
 
     def close_haml_comment
       @haml_comment = false
+      @template_tabs -= 1
+    end
+
+    def close_nil
       @template_tabs -= 1
     end
 
@@ -476,7 +493,7 @@ END
           next
         end
 
-        value = Haml::Helpers.escape_once(value.to_s)
+        value = Haml::Helpers.preserve(Haml::Helpers.escape_once(value.to_s))
         # We want to decide whether or not to escape quotes
         value.gsub!('&quot;', '"')
         this_attr_wrapper = attr_wrapper
@@ -538,7 +555,7 @@ END
       preserve_tag &&= !options[:ugly]
 
       case action
-      when '/'; self_closing = xhtml?
+      when '/'; self_closing = true
       when '~'; parse = preserve_script = true
       when '='
         parse = true
@@ -678,6 +695,8 @@ END
             case type
             when "strict";   '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'
             when "frameset"; '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">'
+            when "mobile";   '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">'
+            when "basic";    '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">'
             else             '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
             end
           end
@@ -695,13 +714,7 @@ END
     # Starts a filtered block.
     def start_filtered(name)
       raise Error.new("Invalid filter name \":#{name}\".") unless name =~ /^\w+$/
-
-      unless filter = Filters.defined[name]
-        if filter == 'redcloth' || filter == 'markdown' || filter == 'textile'
-          raise Error.new("You must have the RedCloth gem installed to use \"#{name}\" filter")
-        end
-        raise Error.new("Filter \"#{name}\" is not defined.")
-      end
+      raise Error.new("Filter \"#{name}\" is not defined.") unless filter = Filters.defined[name]
 
       push_and_tabulate([:filtered, filter])
       @flat_spaces = @template_tabs * 2

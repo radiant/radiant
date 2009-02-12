@@ -2,14 +2,22 @@ if defined?(ActionView) and not defined?(Merb::Plugins)
   module ActionView
     class Base # :nodoc:
       def render_with_haml(*args, &block)
-        return non_haml { render_without_haml(*args, &block) } if is_haml?
+        options = args.first
+
+        # If render :layout is used with a block,
+        # it concats rather than returning a string
+        # so we need it to keep thinking it's Haml
+        # until it hits the sub-render
+        if is_haml? && !(options.is_a?(Hash) && options[:layout] && block_given?)
+          return non_haml { render_without_haml(*args, &block) }
+        end
         render_without_haml(*args, &block)
       end
       alias_method :render_without_haml, :render
       alias_method :render, :render_with_haml
 
       # Rails >2.1
-      if instance_methods.include?('output_buffer')
+      if Haml::Util.has?(:instance_method, self, :output_buffer)
         def output_buffer_with_haml
           return haml_buffer.buffer if is_haml?
           output_buffer_without_haml
@@ -36,22 +44,15 @@ if defined?(ActionView) and not defined?(Merb::Plugins)
       # In Rails <=2.1, we've got to override considerable capturing infrastructure.
       # In Rails >2.1, we can make do with only overriding #capture
       # (which no longer behaves differently in helper contexts).
-      unless ActionView::Base.instance_methods.include?('output_buffer')
+      unless Haml::Util.has?(:instance_method, ActionView::Base, :output_buffer)
         module CaptureHelper
           def capture_with_haml(*args, &block)
             # Rails' #capture helper will just return the value of the block
             # if it's not actually in the template context,
             # as detected by the existance of an _erbout variable.
             # We've got to do the same thing for compatibility.
-            block_is_haml =
-              begin
-                eval('_hamlout', block)
-                true
-              rescue
-                false
-              end
 
-            if block_is_haml && is_haml?
+            if is_haml? && block_is_haml?(block)
               capture_haml(*args, &block)
             else
               capture_without_haml(*args, &block)
@@ -60,11 +61,11 @@ if defined?(ActionView) and not defined?(Merb::Plugins)
           alias_method :capture_without_haml, :capture
           alias_method :capture, :capture_with_haml
 
-          def capture_erb_with_buffer_with_haml(*args, &block)
+          def capture_erb_with_buffer_with_haml(buffer, *args, &block)
             if is_haml?
-              capture_haml_with_buffer(*args, &block)
+              capture_haml(*args, &block)
             else
-              capture_erb_with_buffer_without_haml(*args, &block)
+              capture_erb_with_buffer_without_haml(buffer, *args, &block)
             end
           end
           alias_method :capture_erb_with_buffer_without_haml, :capture_erb_with_buffer
@@ -85,7 +86,7 @@ if defined?(ActionView) and not defined?(Merb::Plugins)
       else
         module CaptureHelper
           def capture_with_haml(*args, &block)
-            if is_haml?
+            if is_haml? && block_is_haml?(block)
               capture_haml(*args, &block)
             else
               capture_without_haml(*args, &block)
@@ -98,14 +99,19 @@ if defined?(ActionView) and not defined?(Merb::Plugins)
 
       module TagHelper
         def content_tag_with_haml(name, *args, &block)
-          content = content_tag_without_haml(name, *args, &block)
+          return content_tag_without_haml(name, *args, &block) unless is_haml?
 
-          if is_haml? && haml_buffer.options[:preserve].include?(name.to_s)
-            content = Haml::Helpers.preserve content
+          preserve = haml_buffer.options[:preserve].include?(name.to_s)
+
+          if block_given? && block_is_haml?(block) && preserve
+            return content_tag_without_haml(name, *args) {preserve(&block)}
           end
 
-          content
+          returning content_tag_without_haml(name, *args, &block) do |content|
+            return Haml::Helpers.preserve(content) if preserve && content
+          end
         end
+
         alias_method :content_tag_without_haml, :content_tag
         alias_method :content_tag, :content_tag_with_haml
       end
@@ -135,10 +141,12 @@ if defined?(ActionView) and not defined?(Merb::Plugins)
                 tab_up
                 oldproc.call(*args)
                 tab_down
+                concat haml_indent
               end
+              concat haml_indent
             end
             res = form_tag_without_haml(url_for_options, options, *parameters_for_url, &proc) + "\n"
-            concat "\n" if block_given? && is_haml?
+            concat "\n" if block_given?
             res
           else
             form_tag_without_haml(url_for_options, options, *parameters_for_url, &proc)
@@ -156,7 +164,9 @@ if defined?(ActionView) and not defined?(Merb::Plugins)
               tab_up
               oldproc.call(*args)
               tab_down
+              concat haml_indent
             end
+            concat haml_indent
           end
           form_for_without_haml(object_name, *args, &proc)
           concat "\n" if block_given? && is_haml?

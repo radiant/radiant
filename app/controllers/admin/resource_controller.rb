@@ -2,7 +2,7 @@ class Admin::ResourceController < ApplicationController
   extend Radiant::ResourceResponses
   
   helper_method :model, :current_object, :models, :current_objects, :model_symbol, :plural_model_symbol, :model_class, :model_name, :plural_model_name
-  # before_filter :populate_format
+  before_filter :populate_format
   before_filter :load_models, :only => :index
   before_filter :load_model, :only => [:new, :create, :edit, :update, :remove, :destroy]
   after_filter :clear_model_cache, :only => [:create, :update, :destroy]
@@ -66,6 +66,19 @@ class Admin::ResourceController < ApplicationController
     response_for :destroy
   end
 
+  def template_name
+    case self.action_name
+    when 'index'
+      'index'
+    when 'new','create'
+      'new'
+    when 'edit', 'update'
+      'edit'
+    when 'remove', 'destroy'
+      'remove'
+    end
+  end
+
   protected
 
     def rescue_action(exception)
@@ -76,17 +89,6 @@ class Admin::ResourceController < ApplicationController
         response_for :stale
       else
         super
-      end
-    end
-
-    def template_name
-      case self.action_name
-      when 'new','create'
-        'new'
-      when 'edit', 'update'
-        'edit'
-      when 'remove', 'destroy'
-        'remove'
       end
     end
     
@@ -174,7 +176,7 @@ class Admin::ResourceController < ApplicationController
     
     # Assist with user agents that cause improper content-negotiation
     # warn "Remove default HTML format, Accept header no longer used. (#{__FILE__}: #{__LINE__})" if Rails.version !~ /^2\.1/
-    # def populate_format
-    #   params[:format] ||= 'html' unless request.xhr?
-    # end
+    def populate_format
+      params[:format] ||= 'html' unless request.xhr?
+    end
 end

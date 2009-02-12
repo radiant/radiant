@@ -112,10 +112,11 @@ module Sass
       root = Tree::Node.new(@options[:style])
       index = 0
       while @lines[index]
+        old_index = index
         child, index = build_tree(index)
 
         if child.is_a? Tree::Node
-          child.line = index
+          child.line = old_index + 1
           root << child
         elsif child.is_a? Array
           child.each do |c|
@@ -277,7 +278,13 @@ END
     def parse_line(line)
       case line[0]
       when ATTRIBUTE_CHAR
-        parse_attribute(line, ATTRIBUTE)
+        if line[1] != ATTRIBUTE_CHAR
+          parse_attribute(line, ATTRIBUTE)
+        else
+          # Support CSS3-style pseudo-elements,
+          # which begin with ::
+          Tree::RuleNode.new(line, @options[:style])
+        end
       when Constant::CONSTANT_CHAR
         parse_constant(line)
       when COMMENT_CHAR
@@ -364,7 +371,7 @@ END
     end
 
     def parse_mixin_definition(line)
-      mixin_name = line[1..-1]
+      mixin_name = line[1..-1].strip
       @mixins[mixin_name] =  []
       index = @line
       line, tabs = @lines[index]
@@ -439,15 +446,9 @@ END
 
       new_filename = find_full_path("#{filename}.sass", load_paths)
 
-      if new_filename.nil?
-        if was_sass
-          raise Exception.new("File to import not found or unreadable: #{original_filename}.")
-        else
-          return filename + '.css'
-        end
-      else
-        new_filename
-      end
+      return new_filename if new_filename
+      return filename + '.css' unless was_sass
+      raise SyntaxError.new("File to import not found or unreadable: #{original_filename}.", @line)
     end
 
     def self.find_full_path(filename, load_paths)

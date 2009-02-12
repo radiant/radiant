@@ -54,9 +54,9 @@ module Haml
     def non_haml
       was_active = @haml_buffer.active?
       @haml_buffer.active = false
-      res = yield
+      yield
+    ensure
       @haml_buffer.active = was_active
-      res
     end
 
     # call-seq:
@@ -254,13 +254,46 @@ module Haml
     # the local variable <tt>foo</tt> would be assigned to "<p>13</p>\n".
     #
     def capture_haml(*args, &block)
-      capture_haml_with_buffer(haml_buffer.buffer, *args, &block)
+      buffer = eval('_hamlout', block.binding) rescue haml_buffer
+      with_haml_buffer(buffer) do
+        position = haml_buffer.buffer.length
+
+        block.call(*args)
+
+        captured = haml_buffer.buffer.slice!(position..-1).split(/^/)
+
+        min_tabs = nil
+        captured.each do |line|
+          tabs = line.index(/[^ ]/) || line.length
+          min_tabs ||= tabs
+          min_tabs = min_tabs > tabs ? tabs : min_tabs
+        end
+
+        result = captured.map do |line|
+          line[min_tabs..-1]
+        end
+        result.to_s
+      end
+    end
+
+    def puts(*args) # :nodoc:
+      warn <<END
+DEPRECATION WARNING:
+The Haml #puts helper is deprecated and will be removed in version 2.4.
+Use the #haml_concat helper instead.
+END
+      haml_concat *args
     end
 
     # Outputs text directly to the Haml buffer, with the proper tabulation
-    def puts(text = "")
-      haml_buffer.buffer << ('  ' * haml_buffer.tabulation) << text.to_s << "\n"
+    def haml_concat(text = "")
+      haml_buffer.buffer << haml_indent << text.to_s << "\n"
       nil
+    end
+
+    # Returns the string that should be used to indent the current line
+    def haml_indent
+      '  ' * haml_buffer.tabulation
     end
 
     #
@@ -271,7 +304,7 @@ module Haml
     # Creates an HTML tag with the given name and optionally text and attributes.
     # Can take a block that will be executed
     # between when the opening and closing tags are output.
-    # If the block is a Haml block or outputs text using puts,
+    # If the block is a Haml block or outputs text using haml_concat,
     # the text will be properly indented.
     #
     # <tt>flags</tt> is a list of symbol flags
@@ -285,10 +318,10 @@ module Haml
     #     haml_tag :tr do
     #       haml_tag :td, {:class => 'cell'} do
     #         haml_tag :strong, "strong!"
-    #         puts "data"
+    #         haml_concat "data"
     #       end
     #       haml_tag :td do
-    #         puts "more_data"
+    #         haml_concat "more_data"
     #       end
     #     end
     #   end
@@ -311,7 +344,7 @@ module Haml
     #
     def haml_tag(name, *rest, &block)
       name = name.to_s
-      text = rest.shift if rest.first.is_a? String
+      text = rest.shift.to_s unless [Symbol, Hash, NilClass].any? {|t| rest.first.is_a? t}
       flags = []
       flags << rest.shift while rest.first.is_a? Symbol
       attributes = Haml::Precompiler.build_attributes(haml_buffer.html?,
@@ -319,7 +352,7 @@ module Haml
                                                       rest.shift || {})
 
       if text.nil? && block.nil? && (haml_buffer.options[:autoclose].include?(name) || flags.include?(:/))
-        puts "<#{name}#{attributes} />"
+        haml_concat "<#{name}#{attributes} />"
         return nil
       end
 
@@ -331,7 +364,7 @@ module Haml
       tag = "<#{name}#{attributes}>"
       if block.nil?
         tag << text.to_s << "</#{name}>"
-        puts tag
+        haml_concat tag
         return
       end
 
@@ -341,15 +374,15 @@ module Haml
 
       if flags.include?(:<)
         tag << capture_haml(&block).strip << "</#{name}>"
-        puts tag
+        haml_concat tag
         return
       end
 
-      puts tag
+      haml_concat tag
       tab_up
       block.call
       tab_down
-      puts "</#{name}>"
+      haml_concat "</#{name}>"
       nil
     end
 
@@ -377,7 +410,30 @@ module Haml
       !@haml_buffer.nil? && @haml_buffer.active?
     end
 
+    # Returns whether or not +block+ is defined directly in a Haml template.
+    def block_is_haml?(block)
+      eval('_hamlout', block.binding)
+      true
+    rescue
+      false
+    end
+
     private
+
+    # call-seq:
+    #   with_haml_buffer(buffer) {...}
+    #
+    # Runs the block with the given buffer as the currently active buffer.
+    def with_haml_buffer(buffer)
+      @haml_buffer, old_buffer = buffer, @haml_buffer
+      old_buffer.active, was_active = false, old_buffer.active? if old_buffer
+      @haml_buffer.active = true
+      yield
+    ensure
+      @haml_buffer.active = false
+      old_buffer.active = was_active if old_buffer
+      @haml_buffer = old_buffer
+    end
 
     # Gets a reference to the current Haml::Buffer object.
     def haml_buffer
@@ -390,28 +446,6 @@ module Haml
       _hamlout = haml_buffer
       _erbout = _hamlout.buffer
       proc { |*args| proc.call(*args) }
-    end
-
-    # Performs the function of capture_haml, assuming <tt>local_buffer</tt>
-    # is where the output of block goes.
-    def capture_haml_with_buffer(local_buffer, *args, &block)
-      position = local_buffer.length
-
-      block.call *args
-
-      captured = local_buffer.slice!(position..-1)
-
-      min_tabs = nil
-      captured.each do |line|
-        tabs = line.index(/[^ ]/)
-        min_tabs ||= tabs
-        min_tabs = min_tabs > tabs ? tabs : min_tabs
-      end
-
-      result = captured.map do |line|
-        line[min_tabs..-1]
-      end
-      result.to_s
     end
 
     include ActionViewExtensions if self.const_defined? "ActionViewExtensions"

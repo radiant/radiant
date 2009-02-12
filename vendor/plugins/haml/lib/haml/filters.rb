@@ -1,6 +1,3 @@
-# This file contains redefinitions of and wrappers around various text
-# filters so they can be used as Haml filters.
-
 module Haml
   # The module containing the default filters,
   # as well as the base module,
@@ -35,6 +32,7 @@ module Haml
       def self.included(base) # :nodoc:
         Filters.defined[base.name.split("::").last.downcase] = base
         base.extend(base)
+        base.instance_variable_set "@lazy_requires", nil
       end
 
       # Takes a string, the source text that should be passed to the filter,
@@ -45,6 +43,12 @@ module Haml
       # If compile is overridden, however, render doesn't need to be.
       def render(text)
         raise Error.new("#{self.inspect}#render not defined!")
+      end
+
+      # Same as render, but takes the Haml options hash as well.
+      # It's only safe to rely on options made available in Haml::Engine#options_for_buffer.
+      def render_with_options(text, options)
+        render(text)
       end
 
       def internal_compile(*args) # :nodoc:
@@ -71,12 +75,12 @@ module Haml
             return if options[:suppress_eval]
 
             push_script(<<RUBY, false)
-find_and_preserve(#{filter.inspect}.render(#{unescape_interpolation(text)}))
+find_and_preserve(#{filter.inspect}.render_with_options(#{unescape_interpolation(text)}, _hamlout.options))
 RUBY
             return
           end
 
-          rendered = Haml::Helpers::find_and_preserve(filter.render(text), precompiler.options[:preserve])
+          rendered = Haml::Helpers::find_and_preserve(filter.render_with_options(text, precompiler.options), precompiler.options[:preserve])
 
           if !options[:ugly]
             push_text(rendered.rstrip.gsub("\n", "\n#{'  ' * @output_tabs}"))
@@ -97,7 +101,7 @@ RUBY
       # For example:
       #
       #   module Haml::Filters::Markdown
-      #     lazy_require 'bluecloth', 'redcloth'
+      #     lazy_require 'rdiscount', 'peg_markdown', 'maruku', 'bluecloth'
       #
       #     ...
       #   end
@@ -123,7 +127,7 @@ RUBY
           @required = @lazy_requires[-1]
           require @required
         rescue LoadError => e
-          classname = self.class.to_s.gsub(/\w+::/, '')
+          classname = self.name.match(/\w+$/)[0]
 
           if @lazy_requires.size == 1
             raise Error.new("Can't run #{classname} filter; required file '#{@lazy_requires.first}' not found")
@@ -153,9 +157,9 @@ module Haml
     module Javascript
       include Base
 
-      def render(text)
+      def render_with_options(text, options)
         <<END
-<script type='text/javascript'>
+<script type=#{options[:attr_wrapper]}text/javascript#{options[:attr_wrapper]}>
   //<![CDATA[
     #{text.rstrip.gsub("\n", "\n    ")}
   //]]>
@@ -187,13 +191,13 @@ END
       def compile(precompiler, text)
         return if precompiler.options[:suppress_eval]
         precompiler.instance_eval do
-          push_silent <<-END.gsub("\n", ';')
+          push_silent <<-FIRST.gsub("\n", ';') + text + <<-LAST.gsub("\n", ';')
             _haml_old_stdout = $stdout
             $stdout = StringIO.new(_hamlout.buffer, 'a')
-            #{text}
+          FIRST
             _haml_old_stdout, $stdout = $stdout, _haml_old_stdout
             _haml_old_stdout.close
-          END
+          LAST
         end
       end
     end
@@ -208,10 +212,10 @@ END
 
     module Sass
       include Base
-      lazy_require 'sass/engine'
+      lazy_require 'sass/plugin'
 
       def render(text)
-        ::Sass::Engine.new(text).render
+        ::Sass::Engine.new(text, ::Sass::Plugin.engine_options).render
       end
     end
 
@@ -226,16 +230,6 @@ END
       end
     end
 
-    module RedCloth
-      include Base
-      lazy_require 'redcloth'
-
-      def render(text)
-        ::RedCloth.new(text).to_html
-      end
-    end
-
-    # Uses RedCloth to provide only Textile (not Markdown) parsing
     module Textile
       include Base
       lazy_require 'redcloth'
@@ -244,18 +238,35 @@ END
         ::RedCloth.new(text).to_html(:textile)
       end
     end
+    RedCloth = Textile
+    Filters.defined['redcloth'] = RedCloth
 
     # Uses BlueCloth or RedCloth to provide only Markdown (not Textile) parsing
     module Markdown
       include Base
-      lazy_require 'bluecloth', 'redcloth'
+      lazy_require 'rdiscount', 'peg_markdown', 'maruku', 'bluecloth'
 
       def render(text)
-        if @required == 'bluecloth'
-          ::BlueCloth.new(text).to_html
-        else
-          ::RedCloth.new(text).to_html(:markdown)
-        end
+        engine = case @required
+                 when 'rdiscount'
+                   ::RDiscount
+                 when 'peg_markdown'
+                   ::PEGMarkdown
+                 when 'maruku'
+                   ::Maruku
+                 when 'bluecloth'
+                   ::BlueCloth
+                 end
+        engine.new(text).to_html
+      end
+    end
+
+    module Maruku
+      include Base
+      lazy_require 'maruku'
+
+      def render(text)
+        ::Maruku.new(text).to_html
       end
     end
   end

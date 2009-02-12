@@ -2,6 +2,12 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'haml/template'
 
+class ActionView::Base
+  def nested_tag
+    content_tag(:span) {content_tag(:div) {"something"}}
+  end
+end
+
 class HelperTest < Test::Unit::TestCase
   include Haml::Helpers
   Post = Struct.new('Post', :body)
@@ -95,7 +101,19 @@ class HelperTest < Test::Unit::TestCase
   def test_capture_haml
     assert_equal("\"<p>13</p>\\n\"\n", render("- foo = capture_haml(13) do |a|\n  %p= a\n= foo.dump"))
   end
-  
+
+  def test_content_tag_block
+    assert_equal(<<HTML.strip, render(<<HAML, :action_view))
+<div><p>bar</p>
+<strong>bar</strong>
+</div>
+HTML
+- content_tag :div do
+  %p bar
+  %strong bar
+HAML
+  end
+
   def test_haml_tag_attribute_html_escaping
     assert_equal("<p id='foo&amp;bar'>baz</p>\n", render("%p{:id => 'foo&bar'} baz", :escape_html => true))
   end
@@ -148,7 +166,7 @@ class HelperTest < Test::Unit::TestCase
     Haml::Helpers.module_eval do 
       def trc(collection, &block)
         collection.each do |record|
-          puts capture_haml(record, &block)
+          haml_concat capture_haml(record, &block)
         end
       end
     end
@@ -175,7 +193,7 @@ class HelperTest < Test::Unit::TestCase
 
     result = context.capture_haml do
       context.haml_tag :p, :attr => "val" do
-        context.puts "Blah"
+        context.haml_concat "Blah"
       end
     end
 
@@ -184,6 +202,10 @@ class HelperTest < Test::Unit::TestCase
 
   def test_non_haml
     assert_equal("false\n", render("= non_haml { is_haml? }"))
+  end
+
+  def test_content_tag_nested
+    assert_equal "<span><div>something</div></span>", render("= nested_tag", :action_view).strip
   end
   
   class ActsLikeTag

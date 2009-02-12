@@ -50,7 +50,7 @@ module ApplicationHelper
   def links_for_navigation
     tabs = admin.tabs
     links = tabs.map do |tab|
-      nav_link_to(tab.name, File.join(request.relative_url_root, tab.url)) if tab.shown_for?(current_user)
+      nav_link_to(tab.name, File.join(ActionController::Base.relative_url_root || '', tab.url)) if tab.shown_for?(current_user)
     end.compact
     links.join(separator)
   end

@@ -104,14 +104,15 @@ module Haml
                     escape_html = false, nuke_inner_whitespace = false)
       tabulation = @real_tabs
 
+      result = result.to_s.rstrip
+      result = result.lstrip if nuke_inner_whitespace
+      result = html_escape(result) if escape_html
+
       if preserve_tag
         result = Haml::Helpers.preserve(result)
       elsif preserve_script
         result = Haml::Helpers.find_and_preserve(result, options[:preserve])
       end
-
-      result = result.to_s.rstrip
-      result = html_escape(result) if escape_html
 
       has_newline = result.include?("\n")
       if in_tag && !nuke_inner_whitespace && (@options[:ugly] || !has_newline || preserve_tag)
@@ -151,16 +152,19 @@ module Haml
       tabulation = @real_tabs
 
       attributes = class_id
-      attributes_hashes.each do |attributes_hash|
-        attributes_hash.keys.each { |key| attributes_hash[key.to_s] = attributes_hash.delete(key) }
-        self.class.merge_attrs(attributes, attributes_hash)
+      attributes_hashes.each do |old|
+        self.class.merge_attrs(attributes, old.inject({}) {|h, (key, val)| h[key.to_s] = val; h})
       end
       self.class.merge_attrs(attributes, parse_object_ref(obj_ref)) if obj_ref
 
-      if self_closing
+      if self_closing && xhtml?
         str = " />" + (nuke_outer_whitespace ? "" : "\n")
       else
-        str = ">" + (try_one_line || preserve_tag || nuke_inner_whitespace ? "" : "\n")
+        str = ">" + ((if self_closing && html?
+                        nuke_outer_whitespace
+                      else
+                        try_one_line || preserve_tag || nuke_inner_whitespace
+                      end) ? "" : "\n")
       end
 
       attributes = Precompiler.build_attributes(html?, @options[:attr_wrapper], attributes)
