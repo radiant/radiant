@@ -1,5 +1,10 @@
 == Change Log
 
+=== 0.7.1 Engraving
+
+* Properly escape page part contents in the UI. [John Muhl, Sean Cribbs]
+* Fix tag reference popup and spec out helper better. [Sean Cribbs]
+
 === 0.7.0 Intaglio
 * Add Roasters template. [Paul du Coudray]
 * Make ResponseCache spec insensitive to key order. [Sean Cribbs]

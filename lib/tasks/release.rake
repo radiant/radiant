@@ -91,13 +91,22 @@ namespace 'radiant' do
   desc "Publish the release files to RubyForge."
   task :release => [:gem, :package] do
     files = ["gem", "tgz", "zip"].map { |ext| "pkg/#{PKG_FILE_NAME}.#{ext}" }
-
-    system %{rubyforge login --username #{RUBY_FORGE_USER}}
+    release_id = nil
+    system %{rubyforge login}
     files.each_with_index do |file, idx|
       if idx == 0
-        system %Q[rubyforge -f#{RELEASE_NOTES}#{RELEASE_CHANGES} add_release #{RUBY_FORGE_GROUPID} #{RUBY_FORGE_PACKAGEID} "#{RELEASE_NAME}" #{file}]
+        cmd = %Q[rubyforge add_release #{RELEASE_NOTES}#{RELEASE_CHANGES} --preformatted #{RUBY_FORGE_GROUPID} #{RUBY_FORGE_PACKAGEID} "#{RELEASE_NAME}" #{file}]
+        puts cmd
+        system cmd
       else
-        system %Q[rubyforge add_file #{RUBY_FORGE_GROUPID} #{RUBY_FORGE_PACKAGEID} "#{RELEASE_NAME}" #{file}]
+        release_id ||= begin
+          puts "rubyforge config #{RUBY_FORGE_PROJECT}"
+          system "rubyforge config #{RUBY_FORGE_PROJECT}"
+          `cat ~/.rubyforge/auto-config.yml | grep "#{RELEASE_NAME}"`.strip.split(/:/).last.strip
+        end
+        cmd = %Q[rubyforge add_file #{RUBY_FORGE_GROUPID} #{RUBY_FORGE_PACKAGEID} #{release_id} #{file}]
+        puts cmd
+        system cmd
       end
     end
   end
