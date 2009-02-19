@@ -22,7 +22,7 @@ class Admin::ResourceController < ApplicationController
 
     r.singular.publish(:xml, :json) { render format_symbol => model }
 
-    r.invalid.publish(:xml, :json) { render format_symbol => model.errors, :status => :unprocessible_entity }
+    r.invalid.publish(:xml, :json) { render format_symbol => model.errors, :status => :unprocessable_entity }
     r.invalid.default {  announce_validation_errors; render :action => template_name }
 
     r.stale.publish(:xml, :json) { head :conflict }

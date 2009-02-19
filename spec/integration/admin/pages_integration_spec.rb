@@ -121,4 +121,9 @@ describe "Pages as resource" do
     get "/admin/pages/#{page_id(:first)}.xml", nil, :authorization => encode_credentials(%w(admin password))
     response.body.should match(/parts type="array"/)
   end
+  
+  it "should reject an invalid page with the correct status code" do
+    post "/admin/pages.xml", {:page => {:title => "Testing"}}, :authorization => encode_credentials(%w(admin password))
+    response.headers['Status'].should =~ /422/
+  end
 end

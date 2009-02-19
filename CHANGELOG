@@ -1,5 +1,9 @@
 == Change Log
 
+=== Edge
+
+* Correct status code typo in Admin::ResourceController. [Sean Cribbs]
+
 === 0.7.1 Engraving
 
 * Properly escape page part contents in the UI. [John Muhl, Sean Cribbs]
