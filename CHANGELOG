@@ -2,6 +2,8 @@
 
 === Edge
 
+* Cleanup the config class a little, add some more documentation. [Sean
+Cribbs]
 * Avoid bootstrap errors related to Radiant::Config by checking for
 table existence. [Sean Cribbs]
 * Correct status code typo in Admin::ResourceController. [Sean Cribbs]

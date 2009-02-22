@@ -11,6 +11,7 @@ describe Radiant::Config do
     before :each do
       @config.stub!(:table_exists?).and_return(false)
       @config.should_not_receive(:find_by_key)
+      @config.should_not_receive(:find_or_initialize_by_key)
     end
 
     it "should ignore the bracket accessor and return nil" do
