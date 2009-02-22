@@ -2,6 +2,7 @@
 
 === Edge
 
+* Correct typo in config/boot.rb [Sean Cribbs]
 * Major refactoring and simplification of LoginSystem. [Sean Cribbs]
 * Update Haml to 2.0.7. [Sean Cribbs]
 * Upgrade to Rails 2.2.2. [Sean Cribbs]
