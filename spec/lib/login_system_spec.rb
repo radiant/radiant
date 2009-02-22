@@ -2,16 +2,9 @@ require File.dirname(__FILE__) + "/../spec_helper"
 
 class StubController < ActionController::Base
   include LoginSystem
-  
-  def rescue_action(e) raise e end
-  
-  def method_missing(method, *args, &block)
-    if (args.size == 0) and not block_given?
-      render :text => 'just a test' unless @performed_render || @performed_redirect
-    else
-      super
-    end
-  end
+
+  def rescue_action(e); raise e; end
+  def index; render :text => 'just a test'; end
 end
 
 class NoLoginRequiredController < StubController;  no_login_required; end
@@ -19,28 +12,35 @@ class LoginRequiredController < StubController; end
 class NoLoginRequiredChildController < NoLoginRequiredController; end
 class LoginRequiredGrandChildController < NoLoginRequiredChildController; login_required; end
 class PrivilegedUsersOnlyController < LoginRequiredController
-  only_allow_access_to :edit, :new, 
-                       :when => [:admin, :developer], 
-                       :denied_url => '/login_required', 
+  only_allow_access_to :edit, :new,
+                       :when => [:admin, :developer],
+                       :denied_url => '/login_required',
                        :denied_message => 'Fun.'
+  def edit; render :text => 'just a test'; end
+  def new; render :text => 'just a test'; end
 end
 class AdminOnlyController < LoginRequiredController
-    only_allow_access_to :edit, 
-                         :when => :admin, 
-                         :denied_url => '/login_required', 
+    only_allow_access_to :edit,
+                         :when => :admin,
+                         :denied_url => '/login_required',
                          :denied_message => 'Fun.'
+    def edit; render :text => 'just a test'; end
 end
 class ConditionalAccessController < LoginRequiredController
     attr_writer :condition
-    define_method(:condition?, proc { @condition ||= false })
-    only_allow_access_to :edit, :if => :condition?, 
-                         :denied_url => '/login_required', 
+    only_allow_access_to :edit, :if => :condition?,
+                         :denied_url => '/login_required',
                          :denied_message => 'Fun.'
+
+    def edit; render :text => 'just a test'; end
+    def condition?
+      @condition ||= false
+    end
 end
 
 describe 'Login System:', :type => :controller do
   dataset :users
-  
+
   before do
     map = ActionController::Routing::RouteSet::Mapper.new(ActionController::Routing::Routes)
     map.connect ':controller/:action/:id'
@@ -65,12 +65,14 @@ describe 'Login System:', :type => :controller do
       response.should be_success
     end
 
-    it "should not authenicate without user in session" do
+    it "should not authenticate without user in session" do
+      logout
       get :index
       response.should redirect_to(login_url)
     end
 
     it "should store location" do
+      logout
       session[:return_to] = nil
       get 'protected_action'
       session[:return_to].should match(%r{protected_action})
@@ -78,11 +80,11 @@ describe 'Login System:', :type => :controller do
   end
 
   describe StubController do
-    
+
     describe ".authenticate" do
       it "should attempt to login from cookie" do
         controller.should_receive(:login_from_cookie)
-        get :action
+        get :index
       end
     end
 
@@ -106,15 +108,7 @@ describe 'Login System:', :type => :controller do
         end
 
         after do
-          controller.send :login_from_cookie
-        end
-
-        it "should log in user" do
-          controller.should_receive(:current_user=).with(@user).and_return {
-            # can't mock current_user before current_user= is
-            # called, else the method doesn't run
-            controller.stub!(:current_user).and_return(@user)
-          }
+          controller.send(:login_from_cookie).should == @user
         end
 
         it "should remember user" do
@@ -152,13 +146,13 @@ describe 'Login System:', :type => :controller do
   end
 
   describe PrivilegedUsersOnlyController do
-    it "should only allow access when user in roles" do
+    it "should only allow access when user in allowed roles" do
       login_as :admin
       get :edit
       response.should be_success
     end
 
-    it "should not allow access when user not in roles" do
+    it "should deny access when user not in allowed roles" do
       login_as :non_admin
       get :edit
       response.should redirect_to('/login_required')
@@ -167,7 +161,7 @@ describe 'Login System:', :type => :controller do
 
     it "should allow access to unrestricted actions when users not in roles" do
       login_as :non_admin
-      get :another
+      get :index
       response.should be_success
     end
   end
