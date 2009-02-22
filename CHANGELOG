@@ -2,6 +2,9 @@
 
 === Edge
 
+* Major refactoring and simplification of LoginSystem. [Sean Cribbs]
+* Update Haml to 2.0.7. [Sean Cribbs]
+* Upgrade to Rails 2.2.2. [Sean Cribbs]
 * Cleanup the config class a little, add some more documentation. [Sean
 Cribbs]
 * Avoid bootstrap errors related to Radiant::Config by checking for
