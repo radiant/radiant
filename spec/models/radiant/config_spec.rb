@@ -7,6 +7,21 @@ describe Radiant::Config do
     set('foo', 'bar')
   end
 
+  describe "before the table exists, as in case of before bootstrap" do
+    before :each do
+      @config.stub!(:table_exists?).and_return(false)
+      @config.should_not_receive(:find_by_key)
+    end
+
+    it "should ignore the bracket accessor and return nil" do
+      @config['test'].should be_nil
+    end
+
+    it "should ignore the bracket assignment" do
+      @config['test'] = 'cool'
+    end
+  end
+
   it "should return the value of a key with the bracket accessor" do
     @config['test'].should == 'cool'
   end
@@ -48,7 +63,7 @@ describe Radiant::Config do
       @config['junk?'].should be_false
     end
   end
-  
+
   def set(key, value)
     setting = Radiant::Config.find_by_key(key)
     setting.destroy if setting

@@ -14,7 +14,7 @@ module Radiant
   #   Loading production environment.
   #   >> Radiant::Config['setting.name'] = 'value'
   #   => "value"
-  #   >> 
+  #   >>
   #
   # Radiant currently uses the following settings:
   #
@@ -24,39 +24,43 @@ module Radiant
   # defaults.page.status  :: a string representation of the default page status
   # dev.host              :: the hostname where draft pages are viewable
   # local.timezone        :: the timezone offset (using a String or integer
-  #                          from http://api.rubyonrails.org/classes/TimeZone.html) 
-  #                          used to correct displayed times 
+  #                          from http://api.rubyonrails.org/classes/TimeZone.html)
+  #                          used to correct displayed times
   class Config < ActiveRecord::Base
     set_table_name "config"
 
     class << self
       def [](key)
-        pair = find_by_key(key)
-        pair.value unless pair.nil?
+        if table_exists?
+          pair = find_by_key(key)
+          pair.value unless pair.nil?
+        end
       end
 
       def []=(key, value)
-        pair = find_by_key(key)
-        unless pair
-          pair = new
-          pair.key, pair.value = key, value
-          pair.save
-        else
-          pair.value = value
-          pair.save
+        if table_exists?
+          pair = find_by_key(key)
+          unless pair
+            pair = new
+            pair.key, pair.value = key, value
+            pair.save
+          else
+            pair.value = value
+            pair.save
+          end
+          value
         end
-        value
       end
 
       def to_hash
         Hash[ *find(:all).map { |pair| [pair.key, pair.value] }.flatten ]
-      end      
+      end
     end
-    
+
     def value=(param)
       self[:value] = param.to_s
     end
-    
+
     def value
       if key.ends_with? "?"
         self[:value] == "true"
