@@ -3,7 +3,7 @@ module Admin::RegionsHelper
     lazy_initialize_region_set
     default_partials = Radiant::AdminUI::RegionPartials.new(self)
     if block_given?
-      junk = capture(default_partials, &block)
+      block.call(default_partials)
       (options[:locals] ||= {}).merge!(:defaults => default_partials)
     end
     output = @region_set[region].compact.map do |partial|

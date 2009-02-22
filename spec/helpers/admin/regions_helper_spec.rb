@@ -4,7 +4,6 @@ require 'ostruct'
 describe Admin::RegionsHelper do
   before :each do
     @controller_name = 'page'
-    # controller = helper.send :controller
     @controller.stub!(:controller_name).and_return(@controller_name)
     @controller.stub!(:template_name).and_return('edit')
     assigns[:controller_name] = @controller_name
@@ -34,11 +33,10 @@ describe Admin::RegionsHelper do
     end
     
     it "should capture the passed block, yielding the RegionPartials object and concatenating" do
-      helper.should_receive(:render).and_raise(::ActionView::ActionViewError)
+      helper.should_receive(:render).and_raise(::ActionView::MissingTemplate.new(Rails.configuration.view_paths, '.'))
       helper.should_receive(:concat).with("foo")
       helper.should_receive(:capture).and_return("foo")
-      helper.render_region(:main) do |main|
-        rputs main.inspect
+      helper.render_region(:main)  do |main|
         main.should be_kind_of(Radiant::AdminUI::RegionPartials)
         main.test do
           "foo"

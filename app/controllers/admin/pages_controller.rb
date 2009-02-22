@@ -2,7 +2,6 @@ class Admin::PagesController < Admin::ResourceController
   before_filter :initialize_meta_rows_and_buttons, :only => [:new, :edit, :create, :update]
 
   responses do |r|
-    r.plural.html { render }
     r.plural.js do
       @level = params[:level].to_i
       @template_name = 'index'
