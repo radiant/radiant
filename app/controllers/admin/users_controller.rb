@@ -16,6 +16,6 @@ class Admin::UsersController < Admin::ResourceController
   private
   
     def announce_cannot_delete_self
-      flash[:error] = 'You cannot delete yourself.'
+      flash[:error] = t('users_controller.cannot_delete_self')
     end  
 end

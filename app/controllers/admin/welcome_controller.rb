@@ -33,11 +33,11 @@ class Admin::WelcomeController < ApplicationController
   private
   
     def announce_logged_out
-      flash[:notice] = 'You are now logged out.'
+      flash[:notice] = t('welcome_controller.logged_out')
     end
     
     def announce_invalid_user
-      flash[:error] = 'Invalid username or password.'
+      flash[:error] = t('welcome_controller.invalid_user')
     end
     
 end

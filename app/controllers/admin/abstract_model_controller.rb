@@ -93,19 +93,19 @@ class Admin::AbstractModelController < ApplicationController
     end
     
     def announce_saved(message = nil)
-      flash[:notice] = message || "#{humanized_model_name} saved below."
+      flash[:notice] = message || t("resource_controller.saved", :humanized_model_name => humanized_model_name) 
     end
     
     def announce_validation_errors
-      flash[:error] = "Validation errors occurred while processing this form. Please take a moment to review the form and correct any input errors before continuing."
+      flash[:error] = t("resource_controller.validation_errors")    
     end
     
     def announce_removed
-      flash[:notice] = "#{humanized_model_name} has been deleted."
+      flash[:notice] = t("resource_controller.removed ", :humanized_model_name => humanized_model_name)  
     end
     
     def announce_update_conflict
-      flash[:error] = "#{humanized_model_name} has been modified since it was last loaded. Changes cannot be saved without potentially losing data."
+      flash[:error] = t("resource_controller.update_conflict", :humanized_model_name => humanized_model_name) 
     end
     
     def clear_model_cache

@@ -9,7 +9,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   
   before_filter :set_current_user
-  before_filter :set_javascripts_and_stylesheets
+  before_filter :set_javascripts_and_stylesheets 
+  before_filter :set_user_language
   
   attr_accessor :config, :cache
   
@@ -43,6 +44,10 @@ class ApplicationController < ActionController::Base
   
     def set_current_user
       UserActionObserver.current_user = current_user
+    end  
+    
+    def set_user_language     
+      I18n.locale = 'de'
     end
   
     def set_javascripts_and_stylesheets

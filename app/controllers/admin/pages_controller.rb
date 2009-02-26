@@ -33,14 +33,14 @@ class Admin::PagesController < Admin::ResourceController
     end
 
     def announce_saved(message = nil)
-      flash[:notice] = message || "Your page has been saved below."
+      flash[:notice] = message || t("pages_controller.saved") 
     end
 
     def announce_pages_removed(count)
       flash[:notice] = if count > 1
-        "The pages were successfully removed from the site."
+        t("pages_controller.removed_many") 
       else
-        "The page was successfully removed from the site."
+        t("pages_controller.removed_one")
       end
     end
 
