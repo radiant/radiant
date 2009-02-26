@@ -977,7 +977,7 @@ module StandardTags
     end
 
     def relative_url_for(url, request)
-      File.join(ActionController::Base.relative_url_root, url)
+      File.join(ActionController::Base.relative_url_root || '', url)
     end
 
     def absolute_path_for(base_path, new_path)

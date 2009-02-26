@@ -16,6 +16,11 @@ describe "Standard Tags" do
     end
   end
 
+  it "<r:url> with a nil relative URL root should scope to the relative root of /" do
+    ActionController::Base.relative_url_root = nil
+    page(:home).should render("<r:url />").as("/")
+  end
+
   it '<r:url> with a relative URL root should scope to the relative root' do
     page(:home).should render("<r:url />").with_relative_root("/foo").as("/foo/")
   end

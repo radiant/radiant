@@ -2,6 +2,8 @@
 
 === Edge
 
+* Adjust StandardTags#relative_url_for for case when relative_url_root
+is nil. [Sean Cribbs]
 * Correct rendering error in extensions controller. [Sean Cribbs]
 * Correct typo in config/boot.rb. [Sean Cribbs]
 * Major refactoring and simplification of LoginSystem. [Sean Cribbs]
