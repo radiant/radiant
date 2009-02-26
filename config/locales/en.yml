@@ -1,0 +1,49 @@
+en: 
+  # Controllers
+  resource_controller:
+    saved: "{{humanized_model_name}} saved below."
+    validation_errors: "DE Validation errors occurred while processing this form. Please take a moment to review the form and correct any input errors before continuing."
+    removed: "{{humanized_model_name}} has been deleted."  
+    update_conflict: "{{humanized_model_name}} has been modified since it was last loaded. Changes cannot be saved without potentially losing data." 
+  pages_controller:
+    saved: "Your page has been saved below."  
+    removed_many: "The pages were successfully removed from the site."   
+    removed_one: "The page was successfully removed from the site."  
+  preferences_contoller:
+    updated: 'Your preferences have been updated.' 
+    error_updating: 'There was an error updating your preferences.'      
+  users_controller:
+    cannot_delete_self: 'You cannot delete yourself.'    
+  welcome_controller:
+    logged_out: 'You are now logged out.'  
+    invalid_user: 'Invalid username or password.'   
+    
+    
+    
+  date:
+    formats:
+      default: "%Y-%m-%d"
+      short: "%e %b"
+      long: "%B %e, %Y"
+      only_day: "%e"
+
+    day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+    abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
+    month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]
+    abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+    order: [ :year, :month, :day ]
+  
+  time:
+    formats:
+      default: "%a %b %d %H:%M:%S %Z %Y"
+      time: "%H:%M"
+      short: "%d %b %H:%M"
+      long: "%B %d, %Y %H:%M"
+      only_second: "%S"
+      
+      datetime:
+        formats:
+          default: "%Y-%m-%dT%H:%M:%S%Z"
+          
+      am: 'am'
+      pm: 'pm'
