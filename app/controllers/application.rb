@@ -47,7 +47,8 @@ class ApplicationController < ActionController::Base
     end  
     
     def set_user_language     
-      I18n.locale = 'de'
+      I18n.locale = :de
+      
     end
   
     def set_javascripts_and_stylesheets

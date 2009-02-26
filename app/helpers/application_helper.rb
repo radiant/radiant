@@ -112,7 +112,8 @@ module ApplicationHelper
   end
 
   def timestamp(time)
-    adjust_time(time).strftime("%I:%M <small>%p</small> on %B %d, %Y")     
+    # adjust_time(time).strftime("%I:%M <small>%p</small> on %B %d, %Y") 
+    I18n.localize(adjust_time(time), :format => :timestamp)    
   end 
   
   def meta_visible(symbol)

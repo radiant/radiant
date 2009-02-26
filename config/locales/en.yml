@@ -29,13 +29,14 @@ en:
 
     day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
     abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
-    month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]
+    month_names: [~, Januar, Februar, März, April, Mai, Juni, Juli, August, September, Oktober, November, Dezember]   
     abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
     order: [ :year, :month, :day ]
   
   time:
     formats:
-      default: "%a %b %d %H:%M:%S %Z %Y"
+      default: "%a %b %d %H:%M:%S %Z %Y"   
+      timestamp: "%I:%M <small>%p</small> on %B %d, %Y" 
       time: "%H:%M"
       short: "%d %b %H:%M"
       long: "%B %d, %Y %H:%M"
