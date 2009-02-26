@@ -42,8 +42,14 @@ de:
   status:
     draft: 'DE Draft'
     reviewed: 'Reviewed'
-    hidden: 'Hidden'
-    published: 'Published'
+    hidden: 'Versteckt'
+    published: 'Publiziert'
+    
+  # Main Navigation Tags
+  tabs: 
+    pages: 'Seiten'
+    snippets: 'Snippets'
+    layouts: 'Layouts'
     
     
   # Date and Time formats  

@@ -37,13 +37,18 @@ en:
     password_confirmation: 'must match confirmation'
     invalid_email: 'invalid e-mail address'
 
-
   # Page status  
   status:
     draft: 'Draft'
     reviewed: 'Reviewed'
     hidden: 'Hidden'
     published: 'Published'  
+    
+  # Main Navigation Tags
+  tabs: 
+    pages: 'Pages'
+    snippets: 'Snippets'
+    layouts: 'Layouts'
     
     
     
