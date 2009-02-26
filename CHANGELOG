@@ -2,6 +2,7 @@
 
 === Edge
 
+* Remove obviated Ruby 1.8.7 compatibility patch. [Sean Cribbs]
 * Adjust StandardTags#relative_url_for for case when relative_url_root
 is nil. [Sean Cribbs]
 * Correct rendering error in extensions controller. [Sean Cribbs]
