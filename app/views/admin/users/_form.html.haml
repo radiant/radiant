@@ -54,6 +54,14 @@
               = f.label :developer
           %td.help
             Roles restrict user privileges and turn parts of the administrative interface on or off.
+      - form.edit_language do
+        %tr
+          %th.label
+            = f.label :language
+          %td.field
+            = f.text_field "language", :class => 'textbox', :maxlength => 40 
+          %td.help
+            The preferred language for the Admin interface. 
       - form.edit_notes do
         %tr
           %th.label
