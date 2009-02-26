@@ -58,8 +58,8 @@
         %tr
           %th.label
             = f.label :language
-          %td.field
-            = f.select "language", LOCALES_AVAILABLE, :class => 'select'
+          %td.select
+            = f.select "language", LOCALES_AVAILABLE
           %td.help
             The preferred language for the Admin interface. 
       - form.edit_notes do

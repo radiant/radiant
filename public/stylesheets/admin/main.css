@@ -397,6 +397,12 @@ h1 {
   padding-right: 10px;
   text-align: right;
 }
+#content table.fieldset td.select {
+  padding-left: 4px;
+  padding-right: 10px;
+  text-align: left;
+}
+
 #content #extended-metadata .fieldset td.field {
   width: 100%;
 }
