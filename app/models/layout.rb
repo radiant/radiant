@@ -9,8 +9,8 @@ class Layout < ActiveRecord::Base
   belongs_to :updated_by, :class_name => 'User'
 
   # Validations
-  validates_presence_of :name, :message => 'required'
-  validates_uniqueness_of :name, :message => 'name already in use'
-  validates_length_of :name, :maximum => 100, :message => '{{count}}-character limit'
+  validates_presence_of :name, :message => I18n.t('models.required')
+  validates_uniqueness_of :name, :message => I18n.t('models.name_in_use')
+  validates_length_of :name, :maximum => 100, :message => I18n.t('models.character_limit', :count => count)
 
 end

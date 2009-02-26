@@ -19,7 +19,31 @@ en:
     cannot_delete_self: 'You cannot delete yourself.'    
   welcome_controller:
     logged_out: 'You are now logged out.'  
-    invalid_user: 'Invalid username or password.'   
+    invalid_user: 'Invalid username or password.' 
+    
+  # Models
+  models:
+    # Shared translations
+    required: 'required'
+    name_in_use: 'name already in use'
+    slug_in_use: 'slug already in use for child of parent'
+    character_limit: '{{count}}-character limit'
+    character_minimum: '{{count}}-character minimum'
+    must_be_number: 'must be a number'
+    invalid_format: 'invalid format'
+    no_spaces_tabs: 'cannot contain spaces or tabs'
+    # User
+    login_in_use: 'login already in use'
+    password_confirmation: 'must match confirmation'
+    invalid_email: 'invalid e-mail address'
+
+
+  # Page status  
+  status:
+    draft: 'Draft'
+    reviewed: 'Reviewed'
+    hidden: 'Hidden'
+    published: 'Published'  
     
     
     

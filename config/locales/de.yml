@@ -9,7 +9,7 @@ de:
     removed: "DE {{humanized_model_name}} has been deleted."  
     update_conflict: "{{humanized_model_name}} has been modified since it was last loaded. Changes cannot be saved without potentially losing data." 
   pages_controller:
-    saved: "Your page has been saved below."  
+    saved: "DE Your page has been saved below."  
     removed_many: "The pages were successfully removed from the site."   
     removed_one: "The page was successfully removed from the site."  
   preferences_contoller:
@@ -20,7 +20,33 @@ de:
   welcome_controller:
     logged_out: 'DE You are now logged out.'  
     invalid_user: 'DE Invalid username or password.'   
+  
+  # Models
+  models:
+    # Shared translations
+    required: 'de_required'
+    name_in_use: 'name already in use'
+    slug_in_use: 'slug already in use for child of parent'
+    character_limit: '{{count}}-character limit'
+    character_minimum: '{{count}}-character minimum'
+    must_be_number: 'must be a number'
+    invalid_format: 'invalid format'
+    no_spaces_tabs: 'cannot contain spaces or tabs'
+    # User
+    login_in_use: 'login already in use'
+    password_confirmation: 'must match confirmation'
+    invalid_email: 'invalid e-mail address'
     
+  
+  # Page status  
+  status:
+    draft: 'DE Draft'
+    reviewed: 'Reviewed'
+    hidden: 'Hidden'
+    published: 'Published'
+    
+    
+  # Date and Time formats  
   date:
     formats:
       default: "%d.%m.%Y"
@@ -35,8 +61,9 @@ de:
   
   time:
     formats:
-      default: "%A, %e. %B %Y, %H:%M Uhr" 
       timestamp: "%H:%M am %d. %B, %Y"
+      # Radiant doesn't really use these, but let's leave them here just in case.
+      default: "%A, %e. %B %Y, %H:%M Uhr" 
       time: "%H:%M Uhr"
       short: "%e.%m., %H:%M Uhr"
       long: "%A, %e. %B %Y, %H:%M Uhr"
