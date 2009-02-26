@@ -1,4 +1,7 @@
 de:  
+  # The display name of this language file
+  this_file_language: "Deutsch" 
+  
   # Controllers       
   resource_controller:
     saved: "DE {{humanized_model_name}} saved below."

@@ -1,4 +1,7 @@
 en: 
+  # The display name of this language file
+  this_file_language: "English" 
+  
   # Controllers
   resource_controller:
     saved: "{{humanized_model_name}} saved below."
@@ -29,7 +32,7 @@ en:
 
     day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
     abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
-    month_names: [~, Januar, Februar, März, April, Mai, Juni, Juli, August, September, Oktober, November, Dezember]   
+    month_names: [~, January, February, March, April, Mai, Juni, Juli, August, September, Oktober, November, Dezember]   
     abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
     order: [ :year, :month, :day ]
   

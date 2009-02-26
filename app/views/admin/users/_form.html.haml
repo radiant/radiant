@@ -59,7 +59,7 @@
           %th.label
             = f.label :language
           %td.field
-            = f.text_field "language", :class => 'textbox', :maxlength => 40 
+            = f.select "language", LOCALES_AVAILABLE, :class => 'select'
           %td.help
             The preferred language for the Admin interface. 
       - form.edit_notes do
