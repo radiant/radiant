@@ -61,10 +61,12 @@ de:
       url: 'Renders the @url@ attribute of the current page.'
     
     children: 
-      desc: "Gives access to a page’s children."
+      desc: "Gives access to a page's children."
       count: 'Renders the total number of children.'
-      first: 'Returns the first child. Inside this tag all page attribute tags are mapped to the first child. <br /> Takes the same ordering options as @<r:children:each>@.'    
-      last: 'Returns the last child. Inside this tag all page attribute tags are mapped tothe last child. <br /> Takes the same ordering options as @<r:children:each>@.›'
+      first: 'Returns the first child. Inside this tag all page attribute tags are mapped to the first child. <br /> 
+        Takes the same ordering options as @<r:children:each>@.'    
+      last: 'Returns the last child. Inside this tag all page attribute tags are mapped tothe last child. <br /> 
+        Takes the same ordering options as @<r:children:each>@.›'
       each: "Cycles through each of the children. Inside this tag all page attribute tags are mapped to the current child page."
       child: "Page attribute tags inside of this tag refer to the current child. This is occasionally <br />
         useful if you are inside of another tag (like &lt;r:find&gt;) and need to refer back to the <br />

@@ -9,8 +9,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   
   before_filter :set_current_user
-  before_filter :set_javascripts_and_stylesheets 
   before_filter :set_user_language
+  before_filter :set_javascripts_and_stylesheets 
   
   attr_accessor :config, :cache
   
