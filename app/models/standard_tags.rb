@@ -6,37 +6,34 @@ module StandardTags
   class TagError < StandardError; end
 
   desc %{
-    Causes the tags referring to a page's attributes to refer to the current page.
+    #{I18n.t('tag_desc.page.desc')}
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:page>...</r:page></code></pre>
   }
+  
   tag 'page' do |tag|
     tag.locals.page = tag.globals.page
     tag.expand
   end
 
   [:breadcrumb, :slug, :title].each do |method|
-    desc %{
-      Renders the @#{method}@ attribute of the current page.
-    }
+    desc I18n.t('tag_desc.page.attributes', :method => method)
     tag method.to_s do |tag|
       tag.locals.page.send(method)
     end
   end
 
-  desc %{
-    Renders the @url@ attribute of the current page.
-  }
+  desc I18n.t('tag_desc.page.url')
   tag 'url' do |tag|
     relative_url_for(tag.locals.page.url, tag.globals.page.request)
   end
 
-  desc %{
-    Gives access to a page's children.
+  desc %{ 
+    #{I18n.t('tag_desc.children.desc')}
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:children>...</r:children></code></pre>
   }
@@ -45,18 +42,15 @@ module StandardTags
     tag.expand
   end
 
-  desc %{
-    Renders the total number of children.
-  }
+  desc I18n.t('tag_desc.children.count')
   tag 'children:count' do |tag|
     tag.locals.children.count(children_find_options(tag))
   end
 
   desc %{
-    Returns the first child. Inside this tag all page attribute tags are mapped to
-    the first child. Takes the same ordering options as @<r:children:each>@.
+    #{I18n.t('tag_desc.children.first')}
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:children:first>...</r:children:first></code></pre>
   }
@@ -70,10 +64,9 @@ module StandardTags
   end
 
   desc %{
-    Returns the last child. Inside this tag all page attribute tags are mapped to
-    the last child. Takes the same ordering options as @<r:children:each>@.
+    #{I18n.t('tag_desc.children.last')}
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:children:last>...</r:children:last></code></pre>
   }
@@ -87,10 +80,9 @@ module StandardTags
   end
 
   desc %{
-    Cycles through each of the children. Inside this tag all page attribute tags
-    are mapped to the current child page.
+    #{I18n.t('tag_desc.children.each')}
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:children:each [offset="number"] [limit="number"] [by="attribute"] [order="asc|desc"]
      [status="draft|reviewed|published|hidden|all"]>
@@ -115,11 +107,9 @@ module StandardTags
   end
 
   desc %{
-    Page attribute tags inside of this tag refer to the current child. This is occasionally
-    useful if you are inside of another tag (like &lt;r:find&gt;) and need to refer back to the
-    current child.
+    #{I18n.t('tag_desc.children.child')}
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:children:each>
       <r:child>...</r:child>
