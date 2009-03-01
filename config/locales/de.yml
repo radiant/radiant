@@ -53,12 +53,34 @@ de:
       version: 'Version'    
     layouts: 
       layouts: 'Layouts'
-      layout: 'Layout' 
-      new_layout: 'New Layout'  
+      layout: 'Layout'  
+      description: 'Use layouts to apply a visual look to a Web page. Layouts can contain special tags to include page content and other elements such as the header or footer. Click on a layout name below to edit it or click <code>Remove</code> to delete it.'
+      new_layout: 'New Layout'    
+      edit_layout: 'Edit Layout'
       content_type: 'Content&#8209;Type'    
       remove_layout: 'Remove Layout' 
       delete_layout: 'Delete Layout'  
-      remove_warning_text: 'DE Are you sure you want to <strong class="warning">permanently remove</strong> the following layout?' 
+      remove_warning_text: 'DE Are you sure you want to <strong class="warning">permanently remove</strong> the following layout?'   
+    page_parts:
+      filter: 'Filter'
+      reference:  'Reference'
+      available_tags: 'Available Tags' 
+    pages:
+      pages: 'Pages'     
+      page: 'Page'     
+      new_page: 'New Page'
+      edit_page:  'Edit Page'   
+      page_title: 'Page Title'  
+      remove_tab: 'Remove Tab'  
+      add_tab: 'Add Tab'   
+      status: 'Status'
+      page_type: 'Page Type'
+      published_at: 'Published at' 
+      close: 'Close'
+      no_pages: 'No Pages' 
+      delete_pages: 'Delete {{pages}}'  
+      remove_pages: 'Remove {{pages}}' 
+      remove_warning_text: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following {{pages}}?'     
       
        
   
@@ -92,9 +114,7 @@ de:
       last: 'Returns the last child. Inside this tag all page attribute tags are mapped tothe last child. <br /> 
         Takes the same ordering options as @<r:children:each>@.›'
       each: "Cycles through each of the children. Inside this tag all page attribute tags are mapped to the current child page."
-      child: "Page attribute tags inside of this tag refer to the current child. This is occasionally <br />
-        useful if you are inside of another tag (like &lt;r:find&gt;) and need to refer back to the <br />
-        current child."
+      child: "Page attribute tags inside of this tag refer to the current child. This is occasionally <br /> useful if you are inside of another tag (like &lt;r:find&gt;) and need to refer back to the <br /> current child."
     
     
   # Date and Time formats  

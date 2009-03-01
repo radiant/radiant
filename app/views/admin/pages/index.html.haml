@@ -1,6 +1,6 @@
 - include_javascript 'admin/sitemap'
 
-%h1 Pages
+%h1= t('views.pages.pages')
 
 = render_region :top
 
@@ -9,17 +9,21 @@
     %tr
       - render_region :sitemap_head do |sitemap_head|
         - sitemap_head.title_column_header do
-          %th.page Page
+          %th.page
+            = t('views.pages.page') 
         - sitemap_head.status_column_header do
-          %th.status Status
+          %th.status
+            = t('views.pages.status')
         - sitemap_head.modify_column_header do
-          %th.modify{:colspan=>"2"} Modify
+          %th.modify{:colspan=>"2"} 
+            = t('views.shared.modify')
   %tbody
     - if @homepage
       = render_node @homepage
     - else
       %tr
-        %td.note{:colspan => 4} No Pages
+        %td.note{:colspan => 4} 
+          = t('views.pages.no_pages')
 
 = render_region :bottom
 
