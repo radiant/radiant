@@ -12,17 +12,19 @@
           %table.fieldset{:cellpadding=>"0", :cellspacing=>"0", :border=>"0"}
             %tr
               %th.label
-                = f.label :content_type, "Context&#8209;Type"
+                = f.label :content_type, t('views.layouts.content_type')
               %td.field
                 = f.text_field 'content_type', :maxlength => 40, :class => "textbox"
             = render_region :extended_metadata
         %p.more-or-less
           %small
-            %a#more-extended-metadata{meta_visible(:meta_more), :href => "#", :onclick=>toggle_javascript_for('extended-metadata')} More
-            %a#less-extended-metadata{meta_visible(:meta_less), :href => "#", :onclick=>toggle_javascript_for('extended-metadata')} Less
+            %a#more-extended-metadata{meta_visible(:meta_more), :href => "#", :onclick=>toggle_javascript_for('extended-metadata')}
+              = t('views.shared.more')
+            %a#less-extended-metadata{meta_visible(:meta_less), :href => "#", :onclick=>toggle_javascript_for('extended-metadata')}
+              = t('views.shared.less')  
       - form.edit_content do
         %p.content
-          = f.label :layout_content, "Body"
+          = f.label :layout_content, t('views.shared.body') 
           ~ f.text_area 'content', :size => '40x20', :style => 'width: 100%', :class => "textarea"
       - form.edit_timestamp do
         = updated_stamp @layout
@@ -32,5 +34,5 @@
       %p.buttons
         = save_model_button @layout
         = save_model_and_continue_editing_button @layout
-        or
-        = link_to "Cancel", admin_layouts_url
+        = t('views.shared.or') 
+        = link_to t('views.shared.cancel'), admin_layouts_url

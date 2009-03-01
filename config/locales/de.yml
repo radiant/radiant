@@ -35,8 +35,32 @@ de:
     # User
     login_in_use: 'login already in use'
     password_confirmation: 'must match confirmation'
-    invalid_email: 'invalid e-mail address'
-    
+    invalid_email: 'invalid e-mail address'  
+  
+  # Views
+  views:   
+    shared:
+      modify: 'Modify' 
+      more: 'More'
+      less: 'Less' 
+      body: 'DE Body' 
+      cancel: 'Cancel'
+      or: 'or'
+    extensions:        
+      extensions: 'Extensions' 
+      extension: 'Extension'
+      website: 'Website'
+      version: 'Version'    
+    layouts: 
+      layouts: 'Layouts'
+      layout: 'Layout' 
+      new_layout: 'New Layout'  
+      content_type: 'Content&#8209;Type'    
+      remove_layout: 'Remove Layout' 
+      delete_layout: 'Delete Layout'  
+      remove_warning_text: 'DE Are you sure you want to <strong class="warning">permanently remove</strong> the following layout?' 
+      
+       
   
   # Page status  
   status:
