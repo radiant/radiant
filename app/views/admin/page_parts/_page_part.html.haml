@@ -3,7 +3,7 @@
     = hidden_field_tag 'page[parts][][name]', page_part.name, :id => "part_#{page_part.name.to_slug}_name"
     %p
       %label{:for => "part_#{page_part.name.to_slug}_filter_id"} 
-        = t('views.page_parts.filter') 
+        = t('views.shared.filter') 
       = select_tag 'page[parts][][filter_id]', filter_options_for_select(page_part.filter_id), :id => "part_#{page_part.name.to_slug}_filter_id"
       %span#reference-links
         = t('views.page_parts.reference')

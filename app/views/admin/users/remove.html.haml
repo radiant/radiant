@@ -1,9 +1,7 @@
 %h1 Remove User
 
 %p 
-  Are you sure you want to 
-  %strong.warning permanently remove
-  the following user?
+  = t('views.users.remove_warning_text')
 
 %table.index#users{:cellpadding=>0, :cellspacing=>0, :border=>0}
   %tbody
@@ -14,5 +12,5 @@
 - form_for [:admin, @user], :html => { :method => :delete } do
   %p.buttons
     %input.button{:type=>"submit", :value=>"Delete User"}/
-    or
+    = t('views.shared.or')  
     = link_to t('views.shared.cancel'), admin_users_path

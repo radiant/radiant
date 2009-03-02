@@ -43,7 +43,9 @@ de:
       modify: 'Modify' 
       more: 'More'
       less: 'Less' 
-      body: 'DE Body' 
+      body: 'DE Body'  
+      name: 'Name'     
+      filter: 'Filter'
       cancel: 'Cancel'
       or: 'or'
     extensions:        
@@ -62,7 +64,6 @@ de:
       delete_layout: 'Delete Layout'  
       remove_warning_text: 'DE Are you sure you want to <strong class="warning">permanently remove</strong> the following layout?'   
     page_parts:
-      filter: 'Filter'
       reference:  'Reference'
       available_tags: 'Available Tags' 
     pages:
@@ -80,7 +81,41 @@ de:
       no_pages: 'No Pages' 
       delete_pages: 'Delete {{pages}}'  
       remove_pages: 'Remove {{pages}}' 
-      remove_warning_text: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following {{pages}}?'     
+      remove_warning_text: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following {{pages}}?' 
+    snippets:
+      snippets: 'Snippets'          
+      snippet: 'Snippet'   
+      new_snippet: 'New Snippet'
+      edit_snippet: 'Edit Snippet'
+      description: 'Snippets are generally small pieces of content which are included in other pages or layouts.'
+      remove_warning_text: 'DE Are you sure you want to <strong class="warning">permanently remove</strong> the following snippet?'   
+    users:
+      user: 'User'
+      users: 'Users'      
+      username: 'Username'
+      password: 'Password' 
+      name: 'Name'
+      login: 'Login' 
+      edit_user: 'Edit User'
+      new_user: 'New User'  
+      roles: 'Roles'    
+      admin: 'Administrator' 
+      developer: 'Developer'
+      language: 'Language'
+      notes: 'Notes'    
+      optional: 'Optional'
+      required: 'Required'  
+      valid_email: 'Please use a valid e-mail address.' 
+      valid_login: 'At least 3 characters. Must be unique.'
+      valid_password: 'At least 5 characters.'
+      leave_password_unchanged: 'Leave password blank for it to remain unchanged.'
+      password_confirmation: 'Confirm Password'
+      roles_description: 'Roles restrict user privileges and turn parts of the administrative interface on or off.' 
+      language_description: 'The preferred language for the Admin interface.' 
+      remove_warning_text: 'DE Are you sure you want to <strong class="warning">permanently remove</strong> the following user?' 
+    welcome:
+      login: 'Please Login' 
+      remember_me: 'Remember me'  
       
        
   

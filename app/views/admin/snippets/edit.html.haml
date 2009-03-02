@@ -1,5 +1,5 @@
 - render_region :main do |main|
   - main.edit_header do
-    %h1 Edit Snippet
+    %h1= t('views.snippets.edit_snippet')  
   - main.edit_form do
     = render :partial => 'form'

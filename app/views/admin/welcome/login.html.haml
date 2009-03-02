@@ -37,25 +37,25 @@
                 font-size: 140%
 
 #login
-  %h1 Please Login
+  %h1= t('views.welcome.login')
 
   - form_tag login_url do
     %table
       %tr
         %td.label
-          %label{:for=>"user_login"} Username
+          %label{:for=>"user_login"}= t('views.users.username')    
         %td.field{:colspan=>2}
           = text_field "user", "login", :class => 'textbox activate', :value => '', :maxlength => 40, :size => 40
       %tr
         %td.label
-          %label{:for=>"user_password"} Password
+          %label{:for=>"user_password"}= t('views.users.password') 
         %td.field{:colspan=>2}
           = password_field "user", "password", :class => 'textbox', :value => '', :maxlength => 40, :size => 40
       %tr
         %td
         %td.checkbox
           = check_box_tag :remember_me, 1, false, :class => 'checkbox'
-          %label.checkbox{:for=>"remember_me"} Remember me
+          %label.checkbox{:for=>"remember_me"}= t('views.welcome.remember_me')    
         %td.buttons
           %input.button{:type=>"submit", :value=>"Login"}/
 
