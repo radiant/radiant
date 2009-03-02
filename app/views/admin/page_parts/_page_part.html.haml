@@ -8,7 +8,7 @@
       %span#reference-links
         = t('views.page_parts.reference')
         %span{:id => "filter-reference-link-#{page_part.name.to_slug}"}
-          = link_to_function t('views.page_parts.filter'), "load_filter_reference('#{page_part.name.to_slug}');"
+          = link_to_function t('views.shared.filter'), "load_filter_reference('#{page_part.name.to_slug}');"
         %span{:id => "tag-reference-link-#{page_part.name.to_slug}"}
           = link_to_function t('views.page_parts.available_tags'), "load_tag_reference('#{page_part.name.to_slug}');"
       = render_region :part_controls, :locals => {:page_part => page_part}
