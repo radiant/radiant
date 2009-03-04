@@ -61,7 +61,7 @@ module Radiant
     end
 
     def view_paths
-      extensions.map { |extension| "#{extension.root}/app/views" }.select { |d| File.directory?(d) }
+      extensions.map { |extension| "#{extension.root}/app/views" }.select { |d| File.directory?(d) }.reverse
     end
 
     # Load the extensions
