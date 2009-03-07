@@ -52,9 +52,23 @@ namespace :doc do
     rm_rf 'doc/plugins' rescue nil
   end
 
+  desc "Generate Rails guides"
+  task :guides do
+    source = File.join(RAILTIES_PATH, "doc/guides")
+    destination = File.join(RAILS_ROOT, "doc/guides")
+    FileUtils.rm_r(destination) if File.directory?(destination)
+    FileUtils.mkdir(destination)
+
+    FileUtils.cp_r File.join(source, 'html/.'), File.join(destination)
+    # Copy images and css files to html directory. These dirs are in .gitigore and shouldn't be source controlled.
+    FileUtils.cp_r File.join(source, 'source/images'), File.join(destination)
+    FileUtils.cp_r File.join(source, 'source/stylesheets'), File.join(destination, 'stylesheets')
+  end
+
   namespace :plugins do
     # Define doc tasks for each plugin
     plugins.each do |plugin|
+      desc "Generate documentation for the #{plugin} plugin"
       task(plugin => :environment) do
         plugin_base   = "vendor/plugins/#{plugin}"
         options       = []
@@ -62,6 +76,7 @@ namespace :doc do
         options << "-o doc/plugins/#{plugin}"
         options << "--title '#{plugin.titlecase} Plugin Documentation'"
         options << '--line-numbers' << '--inline-source'
+        options << '--charset' << 'utf-8'
         options << '-T html'
 
         files.include("#{plugin_base}/lib/**/*.rb")

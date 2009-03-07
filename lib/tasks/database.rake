@@ -28,46 +28,4 @@ namespace :db do
       :database_template => ENV['DATABASE_TEMPLATE']
     )
   end
-  
-  #
-  # The following tasks are only needed by Scenarios until Rails 2
-  #
-  
-  desc 'Drops the database for the current RAILS_ENV'
-  task :drop => :environment do
-    config = ActiveRecord::Base.configurations[RAILS_ENV]
-    case config['adapter']
-    when 'mysql'
-      ActiveRecord::Base.connection.drop_database config['database']
-    when /^sqlite/
-      FileUtils.rm_f(File.join(RAILS_ROOT, config['database']))
-    when 'postgresql'
-      `dropdb "#{config['database']}"`
-    end
-  end
-    
-  desc 'Create the database defined in config/database.yml for the current RAILS_ENV'
-  task :create => :environment do
-    config = ActiveRecord::Base.configurations[RAILS_ENV]
-    begin
-      ActiveRecord::Base.establish_connection(config)
-      ActiveRecord::Base.connection
-    rescue
-      case config['adapter']
-      when 'mysql'
-        `mysqladmin #{config['password'].nil? ? '' : "-p #{config['password']}"} -u #{config['username']} create #{config['database']}`
-      when 'postgresql'
-        `createdb "#{config['database']}" -E utf8`
-      when 'sqlite'
-        `sqlite "#{config['database']}"`
-      when 'sqlite3'
-        `sqlite3 "#{config['database']}"`
-      end
-    else
-      p "#{config['database']} already exists"
-    end
-  end
-  
-  desc "Drops and recreates the database from db/schema.rb for the current environment."
-  task :reset => ['db:drop', 'db:create', 'db:schema:load']
 end

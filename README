@@ -37,7 +37,7 @@ See the INSTALL file for more details.
 
 == Development Requirements
 
- * gem install ZenTest
+ * gem install ZenTest rspec rspec-rails
 
 == Support
 

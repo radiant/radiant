@@ -1,15 +1,48 @@
-*2.1.1 (September 4th, 2008)*
+*2.2 (November 21st, 2008)*
+
+* Ensure indices don't flip order in schema.rb #1266 [Jordi Bunster]
+
+* Fixed that serialized strings should never be type-casted (i.e. turning "Yes" to a boolean) #857 [Andreas Korth]
+
+* Skip collection ids reader optimization if using :finder_sql [Jeremy Kemper]
+
+* Add Model#delete instance method, similar to Model.delete class method. #1086 [Hongli Lai]
+
+* MySQL: cope with quirky default values for not-null text columns.  #1043 [Frederick Cheung]
+
+* Multiparameter attributes skip time zone conversion for time-only columns [#1030 state:resolved] [Geoff Buesing]
+
+* Base.skip_time_zone_conversion_for_attributes uses class_inheritable_accessor, so that subclasses don't overwrite Base [#346 state:resolved] [miloops]
+
+* Added find_last_by dynamic finder #762 [miloops]
+
+* Internal API: configurable association options and build_association method for reflections so plugins may extend and override.  #985 [Hongli Lai]
+
+* Changed benchmarks to be reported in milliseconds [DHH]
+
+* Connection pooling.  #936 [Nick Sieger]
+
+* Merge scoped :joins together instead of overwriting them. May expose scoping bugs in your code!  #501 [Andrew White]
+
+* before_save, before_validation and before_destroy callbacks that return false will now ROLLBACK the transaction.  Previously this would have been committed before the processing was aborted. #891 [Xavier Noria]
+
+* Transactional migrations for databases which support them.  #834 [divoxx, Adam Wiggins, Tarmo Tänav]
 
 * Set config.active_record.timestamped_migrations = false to have migrations with numeric prefix instead of UTC timestamp. #446. [Andrew Stone, Nik Wakelin]
 
-* Fixed that create database statements would always include "DEFAULT NULL" (Nick Sieger) [#334]
-
 * change_column_default preserves the not-null constraint.  #617 [Tarmo Tänav]
+
+* Fixed that create database statements would always include "DEFAULT NULL" (Nick Sieger) [#334]
 
 * Add :tokenizer option to validates_length_of to specify how to split up the attribute string. #507. [David Lowenfels] Example :
 
   # Ensure essay contains at least 100 words.
   validates_length_of :essay, :minimum => 100, :too_short => "Your essay must be at least %d words."), :tokenizer => lambda {|str| str.scan(/\w+/) }
+
+* Allow conditions on multiple tables to be specified using hash. [Pratik Naik]. Example:
+
+  User.all :joins => :items, :conditions => { :age => 10, :items => { :color => 'black' } }
+  Item.first :conditions => { :items => { :color => 'red' } }
 
 * Always treat integer :limit as byte length.  #420 [Tarmo Tänav]
 

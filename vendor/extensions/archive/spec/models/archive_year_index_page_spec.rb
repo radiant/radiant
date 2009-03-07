@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe ArchiveYearIndexPage do
-  scenario :archive
+  dataset :archive
   
   before :each do
     @page = pages(:year_index)

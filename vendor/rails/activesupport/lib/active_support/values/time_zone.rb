@@ -51,7 +51,7 @@ module ActiveSupport
         "La Paz"                       => "America/La_Paz",
         "Santiago"                     => "America/Santiago",
         "Newfoundland"                 => "America/St_Johns",
-        "Brasilia"                     => "America/Argentina/Buenos_Aires",
+        "Brasilia"                     => "America/Sao_Paulo",
         "Buenos Aires"                 => "America/Argentina/Buenos_Aires",
         "Georgetown"                   => "America/Argentina/San_Juan",
         "Greenland"                    => "America/Godthab",
@@ -124,7 +124,7 @@ module ActiveSupport
         "Kathmandu"                    => "Asia/Katmandu",
         "Astana"                       => "Asia/Dhaka",
         "Dhaka"                        => "Asia/Dhaka",
-        "Sri Jayawardenepura"          => "Asia/Dhaka",
+        "Sri Jayawardenepura"          => "Asia/Colombo",
         "Almaty"                       => "Asia/Almaty",
         "Novosibirsk"                  => "Asia/Novosibirsk",
         "Rangoon"                      => "Asia/Rangoon",
@@ -199,6 +199,12 @@ module ActiveSupport
       result = (utc_offset <=> zone.utc_offset)
       result = (name <=> zone.name) if result == 0
       result
+    end
+
+    # Compare #name and TZInfo identifier to a supplied regexp, returning true
+    # if a match is found.
+    def =~(re)
+      return true if name =~ re || MAPPING[name] =~ re
     end
 
     # Returns a textual representation of this time zone.
@@ -298,7 +304,8 @@ module ActiveSupport
                  "Mexico City", "Monterrey", "Central America" ],
        [-18_000, "Eastern Time (US & Canada)", "Indiana (East)", "Bogota",
                  "Lima", "Quito" ],
-       [-14_400, "Atlantic Time (Canada)", "Caracas", "La Paz", "Santiago" ],
+       [-16_200, "Caracas" ],
+       [-14_400, "Atlantic Time (Canada)", "La Paz", "Santiago" ],
        [-12_600, "Newfoundland" ],
        [-10_800, "Brasilia", "Buenos Aires", "Georgetown", "Greenland" ],
        [ -7_200, "Mid-Atlantic" ],
@@ -319,9 +326,9 @@ module ActiveSupport
        [ 14_400, "Abu Dhabi", "Muscat", "Baku", "Tbilisi", "Yerevan" ],
        [ 16_200, "Kabul" ],
        [ 18_000, "Ekaterinburg", "Islamabad", "Karachi", "Tashkent" ],
-       [ 19_800, "Chennai", "Kolkata", "Mumbai", "New Delhi" ],
+       [ 19_800, "Chennai", "Kolkata", "Mumbai", "New Delhi", "Sri Jayawardenepura" ],
        [ 20_700, "Kathmandu" ],
-       [ 21_600, "Astana", "Dhaka", "Sri Jayawardenepura", "Almaty",
+       [ 21_600, "Astana", "Dhaka", "Almaty",
                  "Novosibirsk" ],
        [ 23_400, "Rangoon" ],
        [ 25_200, "Bangkok", "Hanoi", "Jakarta", "Krasnoyarsk" ],

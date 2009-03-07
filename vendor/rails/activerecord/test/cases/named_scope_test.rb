@@ -77,6 +77,10 @@ class NamedScopeTest < ActiveRecord::TestCase
     assert_equal Topic.replied.approved, Topic.replied.approved_as_string
   end
 
+  def test_scopes_can_be_specified_with_deep_hash_conditions
+    assert_equal Topic.replied.approved, Topic.replied.approved_as_hash_condition
+  end
+
   def test_scopes_are_composable
     assert_equal (approved = Topic.find(:all, :conditions => {:approved => true})), Topic.approved
     assert_equal (replied = Topic.find(:all, :conditions => 'replies_count > 0')), Topic.replied
@@ -192,6 +196,55 @@ class NamedScopeTest < ActiveRecord::TestCase
     end
   end
 
+  def test_any_should_not_load_results
+    topics = Topic.base
+    assert_queries(2) do
+      topics.any?    # use count query
+      topics.collect # force load
+      topics.any?    # use loaded (no query)
+    end
+  end
+
+  def test_any_should_call_proxy_found_if_using_a_block
+    topics = Topic.base
+    assert_queries(1) do
+      topics.expects(:empty?).never
+      topics.any? { true }
+    end
+  end
+
+  def test_any_should_not_fire_query_if_named_scope_loaded
+    topics = Topic.base
+    topics.collect # force load
+    assert_no_queries { assert topics.any? }
+  end
+
+  def test_should_build_with_proxy_options
+    topic = Topic.approved.build({})
+    assert topic.approved
+  end
+
+  def test_should_build_new_with_proxy_options
+    topic = Topic.approved.new
+    assert topic.approved
+  end
+
+  def test_should_create_with_proxy_options
+    topic = Topic.approved.create({})
+    assert topic.approved
+  end
+
+  def test_should_create_with_bang_with_proxy_options
+    topic = Topic.approved.create!({})
+    assert topic.approved
+  end
+  
+  def test_should_build_with_proxy_options_chained
+    topic = Topic.approved.by_lifo.build({})
+    assert topic.approved
+    assert_equal 'lifo', topic.author_name
+  end
+
   def test_find_all_should_behave_like_select
     assert_equal Topic.base.select(&:approved), Topic.base.find_all(&:approved)
   end
@@ -202,5 +255,26 @@ class NamedScopeTest < ActiveRecord::TestCase
 
   def test_should_use_where_in_query_for_named_scope
     assert_equal Developer.find_all_by_name('Jamis'), Developer.find_all_by_id(Developer.jamises)
+  end
+
+  def test_size_should_use_count_when_results_are_not_loaded
+    topics = Topic.base
+    assert_queries(1) do
+      assert_sql(/COUNT/i) { topics.size }
+    end
+  end
+
+  def test_size_should_use_length_when_results_are_loaded
+    topics = Topic.base
+    topics.reload # force load
+    assert_no_queries do
+      topics.size # use loaded (no query)
+    end
+  end
+
+  def test_chaining_with_duplicate_joins
+    join = "INNER JOIN comments ON comments.post_id = posts.id"
+    post = Post.find(1)
+    assert_equal post.comments.size, Post.scoped(:joins => join).scoped(:joins => join, :conditions => "posts.id = #{post.id}").size
   end
 end

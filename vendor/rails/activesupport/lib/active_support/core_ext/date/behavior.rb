@@ -1,3 +1,5 @@
+require 'date'
+
 module ActiveSupport #:nodoc:
   module CoreExtensions #:nodoc:
     module Date #:nodoc:
@@ -10,6 +12,7 @@ module ActiveSupport #:nodoc:
 
         # Date memoizes some instance methods using metaprogramming to wrap
         # the methods with one that caches the result in an instance variable.
+        #
         # If a Date is frozen but the memoized method hasn't been called, the
         # first call will result in a frozen object error since the memo
         # instance variable is uninitialized.

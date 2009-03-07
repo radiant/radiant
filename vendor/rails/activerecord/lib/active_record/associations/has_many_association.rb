@@ -1,33 +1,32 @@
 module ActiveRecord
   module Associations
+    # This is the proxy that handles a has many association.
+    #
+    # If the association has a <tt>:through</tt> option further specialization
+    # is provided by its child HasManyThroughAssociation.
     class HasManyAssociation < AssociationCollection #:nodoc:
-      # Count the number of associated records. All arguments are optional.
-      def count(*args)
-        if @reflection.options[:counter_sql]
-          @reflection.klass.count_by_sql(@counter_sql)
-        elsif @reflection.options[:finder_sql]
-          @reflection.klass.count_by_sql(@finder_sql)
-        else
-          column_name, options = @reflection.klass.send(:construct_count_options_from_args, *args)          
-          options[:conditions] = options[:conditions].blank? ?
-            @finder_sql :
-            @finder_sql + " AND (#{sanitize_sql(options[:conditions])})"
-          options[:include] ||= @reflection.options[:include]
-
-          value = @reflection.klass.count(column_name, options)
-
-          limit  = @reflection.options[:limit]
-          offset = @reflection.options[:offset]
-
-          if limit || offset
-            [ [value - offset.to_i, 0].max, limit.to_i ].min
+      protected
+        def owner_quoted_id
+          if @reflection.options[:primary_key]
+            quote_value(@owner.send(@reflection.options[:primary_key]))
           else
-            value
+            @owner.quoted_id
           end
         end
-      end
 
-      protected
+        # Returns the number of records in this collection.
+        #
+        # If the association has a counter cache it gets that value. Otherwise
+        # it will attempt to do a count via SQL, bounded to <tt>:limit</tt> if
+        # there's one.  Some configuration options like :group make it impossible
+        # to do a SQL count, in those cases the array count will be used.
+        #
+        # That does not depend on whether the collection has already been loaded
+        # or not. The +size+ method is the one that takes the loaded flag into
+        # account and delegates to +count_records+ if needed.
+        #
+        # If the collection is empty the target is set to an empty array and
+        # the loaded flag is set to true as well.
         def count_records
           count = if has_cached_counter?
             @owner.send(:read_attribute, cached_counter_attribute_name)
@@ -62,17 +61,18 @@ module ActiveRecord
           record.save
         end
 
+        # Deletes the records according to the <tt>:dependent</tt> option.
         def delete_records(records)
           case @reflection.options[:dependent]
             when :destroy
-              records.each(&:destroy)
+              records.each { |r| r.destroy }
             when :delete_all
-              @reflection.klass.delete(records.map(&:id))
+              @reflection.klass.delete(records.map { |record| record.id })
             else
               ids = quoted_record_ids(records)
               @reflection.klass.update_all(
                 "#{@reflection.primary_key_name} = NULL", 
-                "#{@reflection.primary_key_name} = #{@owner.quoted_id} AND #{@reflection.klass.primary_key} IN (#{ids})"
+                "#{@reflection.primary_key_name} = #{owner_quoted_id} AND #{@reflection.klass.primary_key} IN (#{ids})"
               )
           end
         end
@@ -88,12 +88,12 @@ module ActiveRecord
 
             when @reflection.options[:as]
               @finder_sql = 
-                "#{@reflection.quoted_table_name}.#{@reflection.options[:as]}_id = #{@owner.quoted_id} AND " +
+                "#{@reflection.quoted_table_name}.#{@reflection.options[:as]}_id = #{owner_quoted_id} AND " +
                 "#{@reflection.quoted_table_name}.#{@reflection.options[:as]}_type = #{@owner.class.quote_value(@owner.class.base_class.name.to_s)}"
               @finder_sql << " AND (#{conditions})" if conditions
             
             else
-              @finder_sql = "#{@reflection.quoted_table_name}.#{@reflection.primary_key_name} = #{@owner.quoted_id}"
+              @finder_sql = "#{@reflection.quoted_table_name}.#{@reflection.primary_key_name} = #{owner_quoted_id}"
               @finder_sql << " AND (#{conditions})" if conditions
           end
 

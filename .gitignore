@@ -7,4 +7,5 @@ tmp/*
 .svn
 TAGS
 public/tmp
-
+spec/datasets/tmp
+*.tmproj

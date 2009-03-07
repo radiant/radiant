@@ -94,7 +94,7 @@ module ActionController #:nodoc:
           map! do |filter|
             if filters.include?(filter)
               new_filter = filter.dup
-              new_filter.options.merge!(options)
+              new_filter.update_options!(options)
               new_filter
             else
               filter
@@ -104,16 +104,34 @@ module ActionController #:nodoc:
     end
 
     class Filter < ActiveSupport::Callbacks::Callback #:nodoc:
+      def initialize(kind, method, options = {})
+        super
+        update_options! options
+      end
+
+      # override these to return true in appropriate subclass
       def before?
-        self.class == BeforeFilter
+        false
       end
 
       def after?
-        self.class == AfterFilter
+        false
       end
 
       def around?
-        self.class == AroundFilter
+        false
+      end
+
+      # Make sets of strings from :only/:except options
+      def update_options!(other)
+        if other
+          convert_only_and_except_options_to_sets_of_strings(other)
+          if other[:skip]
+            convert_only_and_except_options_to_sets_of_strings(other[:skip])
+          end
+        end
+
+        options.update(other)
       end
 
       private
@@ -127,9 +145,9 @@ module ActionController #:nodoc:
 
         def included_in_action?(controller, options)
           if options[:only]
-            Array(options[:only]).map(&:to_s).include?(controller.action_name)
+            options[:only].include?(controller.action_name)
           elsif options[:except]
-            !Array(options[:except]).map(&:to_s).include?(controller.action_name)
+            !options[:except].include?(controller.action_name)
           else
             true
           end
@@ -138,11 +156,23 @@ module ActionController #:nodoc:
         def should_run_callback?(controller)
           should_not_skip?(controller) && included_in_action?(controller, options) && super
         end
+
+        def convert_only_and_except_options_to_sets_of_strings(opts)
+          [:only, :except].each do |key|
+            if values = opts[key]
+              opts[key] = Array(values).map(&:to_s).to_set
+            end
+          end
+        end
     end
 
     class AroundFilter < Filter #:nodoc:
       def type
         :around
+      end
+
+      def around?
+        true
       end
 
       def call(controller, &block)
@@ -169,8 +199,8 @@ module ActionController #:nodoc:
           Proc.new do |controller, action|
             method.before(controller)
 
-            if controller.send!(:performed?)
-              controller.send!(:halt_filter_chain, method, :rendered_or_redirected)
+            if controller.__send__(:performed?)
+              controller.__send__(:halt_filter_chain, method, :rendered_or_redirected)
             else
               begin
                 action.call
@@ -187,10 +217,14 @@ module ActionController #:nodoc:
         :before
       end
 
+      def before?
+        true
+      end
+
       def call(controller, &block)
         super
-        if controller.send!(:performed?)
-          controller.send!(:halt_filter_chain, method, :rendered_or_redirected)
+        if controller.__send__(:performed?)
+          controller.__send__(:halt_filter_chain, method, :rendered_or_redirected)
         end
       end
     end
@@ -198,6 +232,10 @@ module ActionController #:nodoc:
     class AfterFilter < Filter #:nodoc:
       def type
         :after
+      end
+
+      def after?
+        true
       end
     end
 

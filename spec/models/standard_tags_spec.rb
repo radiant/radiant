@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Standard Tags" do
-  scenario :users_and_pages, :file_not_found, :snippets
+  dataset :users_and_pages, :file_not_found, :snippets
 
   it '<r:page> should allow access to the current page' do
     page(:home)
@@ -14,6 +14,11 @@ describe "Standard Tags" do
       value = page.send(attr)
       page.should render("<r:#{attr} />").as(value.to_s)
     end
+  end
+
+  it "<r:url> with a nil relative URL root should scope to the relative root of /" do
+    ActionController::Base.relative_url_root = nil
+    page(:home).should render("<r:url />").as("/")
   end
 
   it '<r:url> with a relative URL root should scope to the relative root' do
@@ -130,6 +135,37 @@ describe "Standard Tags" do
     end
   end
 
+  describe "<r:children:each:if_first>" do
+    it "should render for the first child" do
+      tags = '<r:children:each><r:if_first>FIRST:</r:if_first><r:slug /> </r:children:each>'
+      expected = "FIRST:article article-2 article-3 article-4 "
+      page(:news).should render(tags).as(expected)
+    end
+  end
+
+  describe "<r:children:each:unless_first>" do
+    it "should render for all but the first child" do
+      tags = '<r:children:each><r:unless_first>NOT-FIRST:</r:unless_first><r:slug /> </r:children:each>'
+      expected = "article NOT-FIRST:article-2 NOT-FIRST:article-3 NOT-FIRST:article-4 "
+      page(:news).should render(tags).as(expected)
+    end
+  end
+
+  describe "<r:children:each:if_last>" do
+    it "should render for the last child" do
+      tags = '<r:children:each><r:if_last>LAST:</r:if_last><r:slug /> </r:children:each>'
+      expected = "article article-2 article-3 LAST:article-4 "
+      page(:news).should render(tags).as(expected)
+    end
+  end
+
+  describe "<r:children:each:unless_last>" do
+    it "should render for all but the last child" do
+      tags = '<r:children:each><r:unless_last>NOT-LAST:</r:unless_last><r:slug /> </r:children:each>'
+      expected = "NOT-LAST:article NOT-LAST:article-2 NOT-LAST:article-3 article-4 "
+      page(:news).should render(tags).as(expected)
+    end
+  end
 
   describe "<r:children:each:header>" do
     it "should render the header when it changes" do
@@ -157,8 +193,17 @@ describe "Standard Tags" do
     end
   end
 
-  it '<r:children:count> should render the number of children of the current page' do
-    page(:parent).should render('<r:children:count />').as('3')
+  describe "<r:children:count>" do
+    it 'should render the number of children of the current page' do
+      page(:parent).should render('<r:children:count />').as('3')
+    end
+    
+    it "should accept the same scoping conditions as <r:children:each>" do
+      page.should render('<r:children:count />').as('10')
+      page.should render('<r:children:count status="all" />').as('11')
+      page.should render('<r:children:count status="draft" />').as('1')
+      page.should render('<r:children:count status="hidden" />').as('0')
+    end
   end
 
   describe "<r:children:first>" do
@@ -916,7 +961,7 @@ describe "Standard Tags" do
         @page = pages(symbol)
       end
     end
-
+    
     def page_children_each_tags(attr = nil)
       attr = ' ' + attr unless attr.nil?
       "<r:children:each#{attr}><r:slug /> </r:children:each>"

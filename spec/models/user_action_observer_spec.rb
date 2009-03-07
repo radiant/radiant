@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe UserActionObserver do
-  scenario :users, :pages_with_layouts, :snippets
+  dataset :users, :pages_with_layouts, :snippets
   
   before(:each) do
     @user = users(:existing)

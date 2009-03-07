@@ -77,8 +77,6 @@ module Radiant
     def load_initializer
       $LOAD_PATH.unshift "#{RAILS_ROOT}/vendor/radiant/lib" 
       super
-      #require "#{RAILS_ROOT}/vendor/rails/railties/lib/initializer"
-      #Rails::Initializer.run(:install_gem_spec_stubs)
     end
         
     def load_error_message
@@ -101,7 +99,6 @@ module Radiant
     def load_initializer
       self.class.load_rubygems
       load_radiant_gem
-      # require 'initializer'
       super
     end
       
@@ -116,7 +113,7 @@ module Radiant
         gem 'radiant'
       end
     rescue Gem::LoadError => load_error
-      $stderr.puts %(Missing the Radiant #{version} gem. Please `gem install -v=#{version} rails`, update your RADIANT_GEM_VERSION setting in config/environment.rb for the Rails version you do have installed, or comment out RADIANT_GEM_VERSION to use the latest version installed.)
+      $stderr.puts %(Missing the Radiant #{version} gem. Please `gem install -v=#{version} radiant`, update your RADIANT_GEM_VERSION setting in config/environment.rb for the Radiant version you do have installed, or comment out RADIANT_GEM_VERSION to use the latest version installed.)
       exit 1
     end
 

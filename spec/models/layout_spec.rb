@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Layout do
-  scenario :layouts
+  dataset :layouts
   test_helper :validations
   
   before :each do

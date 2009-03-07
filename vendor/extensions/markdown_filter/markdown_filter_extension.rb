@@ -1,6 +1,5 @@
 begin
   require 'rdiscount'
-  BlueCloth = RDiscount unless defined?(BlueCloth)
 rescue LoadError
   # If RDiscount is not available, use packaged BlueCloth
   $LOAD_PATH.unshift "#{File.dirname(__FILE__)}/vendor/bluecloth/lib"

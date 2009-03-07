@@ -14,54 +14,54 @@ module Radiant
   #   Loading production environment.
   #   >> Radiant::Config['setting.name'] = 'value'
   #   => "value"
-  #   >> 
+  #   >>
   #
   # Radiant currently uses the following settings:
   #
-  # admin.title           :: the title of the admin system
-  # admin.subtitle        :: the subtitle of the admin system
-  # defaults.page.parts   :: a comma separated list of default page parts
-  # defaults.page.status  :: a string representation of the default page status
-  # dev.host              :: the hostname where draft pages are viewable
-  # local.timezone        :: the timezone offset (using a String or integer
-  #                          from http://api.rubyonrails.org/classes/TimeZone.html) 
-  #                          used to correct displayed times 
+  # admin.title               :: the title of the admin system
+  # admin.subtitle            :: the subtitle of the admin system
+  # defaults.page.parts       :: a comma separated list of default page parts
+  # defaults.page.status      :: a string representation of the default page status
+  # defaults.page.filter      :: the default filter to use on new page parts
+  # dev.host                  :: the hostname where draft pages are viewable
+  # local.timezone            :: the timezone offset (using a String or integer
+  #                              from http://api.rubyonrails.org/classes/TimeZone.html)
+  #                              used to correct displayed times
+  # page.edit.published_date? :: when true, shows the datetime selector
+  #                              for published date on the page edit screen
   class Config < ActiveRecord::Base
     set_table_name "config"
 
     class << self
       def [](key)
-        pair = find_by_key(key)
-        pair.value unless pair.nil?
+        if table_exists?
+          pair = find_by_key(key)
+          pair.value if pair
+        end
       end
 
       def []=(key, value)
-        pair = find_by_key(key)
-        unless pair
-          pair = new
-          pair.key, pair.value = key, value
-          pair.save
-        else
-          pair.value = value
-          pair.save
+        if table_exists?
+          pair = find_or_initialize_by_key(key)
+          pair.update_attributes(:value => value)
+          value
         end
-        value
       end
 
       def to_hash
         Hash[ *find(:all).map { |pair| [pair.key, pair.value] }.flatten ]
-      end      
+      end
     end
-    
+
     def value=(param)
-      write_attribute :value, param.to_s
+      self[:value] = param.to_s
     end
-    
+
     def value
       if key.ends_with? "?"
-        read_attribute(:value) == "true"
+        self[:value] == "true"
       else
-        read_attribute(:value)
+        self[:value]
       end
     end
   end

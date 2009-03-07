@@ -1,5 +1,5 @@
 dir = File.dirname(__FILE__)
-$LOAD_PATH << dir unless $LOAD_PATH.include?(dir)
+$LOAD_PATH.unshift dir unless $LOAD_PATH.include?(dir)
 
 # = Sass (Syntactically Awesome StyleSheets)
 #
@@ -20,9 +20,10 @@ $LOAD_PATH << dir unless $LOAD_PATH.include?(dir)
 #
 # == Using Sass
 #
-# Sass can be used in several ways:
-# As a plugin for Ruby on Rails or Merb,
-# or as a standalone parser.
+# Sass can be used in three ways:
+# as a plugin for Ruby on Rails,
+# as a standalone Ruby module,
+# and as a command-line tool.
 # Sass is bundled with Haml,
 # so if the Haml plugin or RubyGem is installed,
 # Sass will already be installed as a plugin or gem, respectively.
@@ -42,7 +43,7 @@ $LOAD_PATH << dir unless $LOAD_PATH.include?(dir)
 #
 # to config/dependencies.rb.
 #
-# Sass templates in Rails and Merb don't quite function in the same way as views,
+# Sass templates in Rails don't quite function in the same way as views,
 # because they don't contain dynamic content,
 # and so only need to be compiled when the template file has been updated.
 # By default (see options, below),
@@ -50,6 +51,12 @@ $LOAD_PATH << dir unless $LOAD_PATH.include?(dir)
 # Then, whenever necessary, they're compiled into corresponding CSS files in public/stylesheets.
 # For instance, public/stylesheets/sass/main.sass would be compiled to public/stylesheets/main.css.
 #
+# To run Sass from the command line, just use
+#
+#   sass input.sass output.css
+#
+# Use <tt>sass --help</tt> for full documentation.
+# 
 # Using Sass in Ruby code is very simple.
 # After installing the Haml gem,
 # you can use it by running <tt>require "sass"</tt>
@@ -781,9 +788,9 @@ $LOAD_PATH << dir unless $LOAD_PATH.include?(dir)
 #
 #   Sass::Plugin.options[:style] = :compact
 #
-# ...or by setting the <tt>Merb::Config[:sass]</tt> hash in <tt>init.rb</tt> in Merb...
+# ...or by setting the <tt>Merb::Plugin.config[:sass]</tt> hash in <tt>init.rb</tt> in Merb...
 #
-#   Merb::Config[:sass][:style] = :compact
+#   Merb::Plugin.config[:sass][:style] = :compact
 # 
 # ...or by passing an options hash to Sass::Engine.new.
 # Available options are:

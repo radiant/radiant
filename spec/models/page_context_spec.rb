@@ -1,8 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe PageContext do
-  scenario :pages
-  test_helper :pages
+  dataset :pages
   
   before :each do
     @page = pages(:radius)
@@ -45,8 +44,7 @@ describe PageContext do
 end
 
 describe PageContext, "when errors are not being raised" do
-  scenario :pages
-  test_helper :pages
+  dataset :pages
   
   before :each do
     @page = pages(:radius)

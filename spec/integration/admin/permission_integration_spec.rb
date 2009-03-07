@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe 'User permissions' do
-  scenario :users
+  dataset :users
   
   it 'should allow administrators to login' do
     navigate_to '/admin/login'

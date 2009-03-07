@@ -31,19 +31,25 @@ module ActiveRecord
       # See the concrete implementation for details on the expected parameter values.
       def columns(table_name, name = nil) end
 
-      # Creates a new table
+      # Creates a new table with the name +table_name+. +table_name+ may either
+      # be a String or a Symbol.
+      #
       # There are two ways to work with +create_table+.  You can use the block
       # form or the regular form, like this:
       #
       # === Block form
-      #  # create_table() yields a TableDefinition instance
+      #  # create_table() passes a TableDefinition object to the block.
+      #  # This form will not only create the table, but also columns for the
+      #  # table.
       #  create_table(:suppliers) do |t|
       #    t.column :name, :string, :limit => 60
       #    # Other fields here
       #  end
       #
       # === Regular form
+      #  # Creates a table called 'suppliers' with no columns.
       #  create_table(:suppliers)
+      #  # Add a column to 'suppliers'.
       #  add_column(:suppliers, :name, :string, {:limit => 60})
       #
       # The +options+ hash can include the following keys:
@@ -356,7 +362,7 @@ module ActiveRecord
 
       def type_to_sql(type, limit = nil, precision = nil, scale = nil) #:nodoc:
         if native = native_database_types[type]
-          column_type_sql = native.is_a?(Hash) ? native[:name] : native
+          column_type_sql = (native.is_a?(Hash) ? native[:name] : native).dup
 
           if type == :decimal # ignore limit, use precision and scale
             scale ||= native[:scale]
@@ -371,7 +377,7 @@ module ActiveRecord
               raise ArgumentError, "Error adding decimal column: precision cannot be empty if scale if specified"
             end
 
-          elsif limit ||= native.is_a?(Hash) && native[:limit]
+          elsif (type != :primary_key) && (limit ||= native.is_a?(Hash) && native[:limit])
             column_type_sql << "(#{limit})"
           end
 

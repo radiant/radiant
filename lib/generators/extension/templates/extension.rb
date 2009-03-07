@@ -7,7 +7,9 @@ class <%= class_name %> < Radiant::Extension
   url "http://yourwebsite.com/<%= file_name %>"
   
   # define_routes do |map|
-  #   map.connect 'admin/<%= file_name %>/:action', :controller => 'admin/<%= file_name %>'
+  #   map.namespace :admin, :member => { :remove => :get } do |admin|
+  #     admin.resources :<%= file_name %>
+  #   end
   # end
   
   def activate

@@ -20,7 +20,7 @@ module Radiant
         full_path = File.join(path, template)
         return full_path unless Dir["#{full_path}.*"].empty?
       end
-      nil
+      raise "Template not found: #{template}"
     end
     
     def create_with_view_paths!(method_name, *parameters) #:nodoc:

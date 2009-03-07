@@ -42,13 +42,14 @@ module ActionController #:nodoc:
       :prefix           => "ruby_sess.",    # prefix session file names
       :session_path     => "/",             # available to all paths in app
       :session_key      => "_session_id",
-      :cookie_only      => true
-    } unless const_defined?(:DEFAULT_SESSION_OPTIONS)
+      :cookie_only      => true,
+      :session_http_only=> true
+    }
 
     def initialize(cgi, session_options = {})
       @cgi = cgi
       @session_options = session_options
-      @env = @cgi.send!(:env_table)
+      @env = @cgi.__send__(:env_table)
       super()
     end
 
@@ -61,51 +62,12 @@ module ActionController #:nodoc:
       end
     end
 
-    # The request body is an IO input stream. If the RAW_POST_DATA environment
-    # variable is already set, wrap it in a StringIO.
-    def body
-      if raw_post = env['RAW_POST_DATA']
-        raw_post.force_encoding(Encoding::BINARY) if raw_post.respond_to?(:force_encoding)
-        StringIO.new(raw_post)
-      else
-        @cgi.stdinput
-      end
-    end
-
-    def query_parameters
-      @query_parameters ||= self.class.parse_query_parameters(query_string)
-    end
-
-    def request_parameters
-      @request_parameters ||= parse_formatted_request_parameters
+    def body_stream #:nodoc:
+      @cgi.stdinput
     end
 
     def cookies
       @cgi.cookies.freeze
-    end
-
-    def host_with_port_without_standard_port_handling
-      if forwarded = env["HTTP_X_FORWARDED_HOST"]
-        forwarded.split(/,\s?/).last
-      elsif http_host = env['HTTP_HOST']
-        http_host
-      elsif server_name = env['SERVER_NAME']
-        server_name
-      else
-        "#{env['SERVER_ADDR']}:#{env['SERVER_PORT']}"
-      end
-    end
-
-    def host
-      host_with_port_without_standard_port_handling.sub(/:\d+$/, '')
-    end
-
-    def port
-      if host_with_port_without_standard_port_handling =~ /:(\d+)$/
-        $1.to_i
-      else
-        standard_port
-      end
     end
 
     def session
@@ -146,7 +108,7 @@ module ActionController #:nodoc:
     end
 
     def method_missing(method_id, *arguments)
-      @cgi.send!(method_id, *arguments) rescue super
+      @cgi.__send__(method_id, *arguments) rescue super
     end
 
     private
@@ -203,7 +165,7 @@ end_msg
       begin
         output.write(@cgi.header(@headers))
 
-        if @cgi.send!(:env_table)['REQUEST_METHOD'] == 'HEAD'
+        if @cgi.__send__(:env_table)['REQUEST_METHOD'] == 'HEAD'
           return
         elsif @body.respond_to?(:call)
           # Flush the output now in case the @body Proc uses

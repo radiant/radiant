@@ -2,7 +2,7 @@ module Admin::ReferencesHelper
   def tag_reference
     returning String.new do |output|
       class_of_page.tag_descriptions.sort.each do |tag_name, description|
-        output << render(:partial => "admin/references/tag_reference", 
+        output << render(:partial => "admin/references/tag_reference.haml", 
             :locals => {:tag_name => tag_name, :description => description})
       end
     end
@@ -37,6 +37,6 @@ module Admin::ReferencesHelper
   end
 
   def class_of_page
-    @page_class ||= (params[:class_name] || 'Page').constantize
+    @page_class ||= (params[:class_name].blank? ? 'Page' : params[:class_name]).constantize
   end
 end

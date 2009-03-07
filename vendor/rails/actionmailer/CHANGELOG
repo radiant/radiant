@@ -1,6 +1,14 @@
-*2.1.1 (September 4th, 2008)*
+*2.2.1 [RC2] (November 14th, 2008)*
 
-* Included in Rails 2.1.1
+* Turn on STARTTLS if it is available in Net::SMTP (added in Ruby 1.8.7) and the SMTP server supports it (This is required for Gmail's SMTP server) #1336 [Grant Hollingworth]
+
+
+*2.2.0 [RC1] (October 24th, 2008)*
+
+* Add layout functionality to mailers [Pratik]
+
+  Mailer layouts behaves just like controller layouts, except layout names need to
+  have '_mailer' postfix for them to be automatically picked up.
 
 
 *2.1.0 (May 31st, 2008)*

@@ -1,6 +1,7 @@
 module ApplicationHelper
   include LocalTime
   include Admin::RegionsHelper
+  include Radiant::LegacyRoutes
   
   def config
     Radiant::Config
@@ -22,13 +23,12 @@ module ApplicationHelper
     !current_user.nil?
   end
   
-  def save_model_button(model)
-    label = if model.new_record?
-      "Create #{model.class.name}"
-    else
-      'Save Changes'
-    end
-    submit_tag label, :class => 'button'
+  def save_model_button(model, options = {})
+    options[:label] ||= model.new_record? ?
+      "Create #{model.class.name}" : "Save Changes"
+    options[:class] ||= "button"
+
+    submit_tag options.delete(:label), options
   end
   
   def save_model_and_continue_editing_button(model)
@@ -50,7 +50,7 @@ module ApplicationHelper
   def links_for_navigation
     tabs = admin.tabs
     links = tabs.map do |tab|
-      nav_link_to(tab.name, File.join(request.relative_url_root, tab.url)) if tab.shown_for?(current_user)
+      nav_link_to(tab.name, File.join(ActionController::Base.relative_url_root || '', tab.url)) if tab.shown_for?(current_user)
     end.compact
     links.join(separator)
   end

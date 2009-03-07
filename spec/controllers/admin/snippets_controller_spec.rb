@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
 describe Admin::SnippetsController do
-  scenario :users, :snippets
+  dataset :users, :snippets
 
   before :each do
     ActionController::Routing::Routes.reload
@@ -42,7 +42,7 @@ describe Admin::SnippetsController do
       
       it "should allow non-developers and non-admins for the #{action} action" do
         lambda { 
-          send(method, action, :id => snippet_id(:first)) 
+          send(method, action, :id => Snippet.first.id) 
         }.should restrict_access(:allow => [users(:non_admin), users(:existing)],
                                  :url => '/admin/pages')
       end

@@ -1,8 +1,4 @@
 #!/usr/bin/env ruby
-
-MERB_ENV = RAILS_ENV  = 'testing'
-RAILS_ROOT = '.'
-
 require File.dirname(__FILE__) + '/../test_helper'
 require 'sass/plugin'
 require 'fileutils'
@@ -88,13 +84,22 @@ class SassPluginTest < Test::Unit::TestCase
     end
     
     require 'sass/plugin/merb'
-    MerbHandler.send(:define_method, :process_without_sass) { |*args| }
+    if defined?(MerbHandler)
+      MerbHandler.send(:define_method, :process_without_sass) { |*args| }
+    else
+      Merb::Rack::Application.send(:define_method, :call_without_sass) { |*args| }
+    end
+
     set_plugin_opts
 
     File.delete(tempfile_loc('basic'))
     assert Sass::Plugin.stylesheet_needs_update?('basic')
     
-    MerbHandler.new('.').process nil, nil
+    if defined?(MerbHandler)
+      MerbHandler.new('.').process nil, nil
+    else
+      Merb::Rack::Application.new.call(::Rack::MockRequest.env_for('/'))
+    end
 
     assert !Sass::Plugin.stylesheet_needs_update?('basic')
   end
@@ -151,5 +156,6 @@ class Sass::Engine
 end
 
 class ActionController::Base
+  undef :sass_old_process
   def sass_old_process(*args); end
 end

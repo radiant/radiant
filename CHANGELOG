@@ -1,6 +1,81 @@
 == Change Log
 
-=== 0.7.0-RC1
+=== Edge
+
+* Reverse view paths order in extension loader. [Sean Cribbs, Brent 
+Kroeker]
+* Remove obviated Ruby 1.8.7 compatibility patch. [Sean Cribbs]
+* Adjust StandardTags#relative_url_for for case when relative_url_root
+is nil. [Sean Cribbs]
+* Correct rendering error in extensions controller. [Sean Cribbs]
+* Correct typo in config/boot.rb. [Sean Cribbs]
+* Major refactoring and simplification of LoginSystem. [Sean Cribbs]
+* Update Haml to 2.0.7. [Sean Cribbs]
+* Upgrade to Rails 2.2.2. [Sean Cribbs]
+* Cleanup the config class a little, add some more documentation. [Sean
+Cribbs]
+* Avoid bootstrap errors related to Radiant::Config by checking for
+table existence. [Sean Cribbs]
+* Correct status code typo in Admin::ResourceController. [Sean Cribbs]
+
+=== 0.7.1 Engraving
+
+* Properly escape page part contents in the UI. [John Muhl, Sean Cribbs]
+* Fix tag reference popup and spec out helper better. [Sean Cribbs]
+
+=== 0.7.0 Intaglio
+* Add Roasters template. [Paul du Coudray]
+* Make ResponseCache spec insensitive to key order. [Sean Cribbs]
+* Adjust <r:children:count /> to use same options as <r:children:each />.
+[Sean Cribbs]
+* Allowing for custom labels and other options in save_model_button.
+[Pat Allan]
+* Ignoring TextMate project files. [Pat Allan]
+* Present a more helpful error message when missing a mailer template.
+[Nikolay Karev]
+* Use ActiveRecord:Base#[] and ActiveRecord:Base#[]= instead of undocumented
+read_attribute and write_attribute. [August Lilleas]
+* Make extension installer use git submodules when appropriate. [Sean Cribbs]
+* Ease extension updates by proxying deprecated named routes. [Sean Cribbs]
+* Add support and specs for conditional GETs with ETags. [Sean Cribbs]
+* Initialize and update submodules when freezing edge. [John Muhl]
+* Add Nginx support to ResponseCache. [Sean Cribbs]
+* Changed (some) permissions examples not to use login_system_matcher.
+[Brandan Lennox]
+* Remove expensive grep of Rails log in spec. [Rick DeNatale]
+* Make markdown filter specs be tolerant of RDiscount. [Sean Cribbs]
+* Be more explicit about vendor libraries, move Textile requirement into
+core. [Sean Cribbs]
+* Add <r:children:each:if/unless_first/last> tags. [Rick DeNatale]
+* Use RDiscount's smart quotes instead of SmartyPants. [John Muhl]
+* Update extension generator to use new admin REST routing. [Jeroen Janssen]
+* Update Admin::ResourceController to overcome respond_to weaknesses by
+choosing HTML format by default. [Sean Cribbs]
+* Add an IE-specific integration spec. [Jeroen Janssen]
+* Update dataset, spec_integration, and vizres plugins. [Sean Cribbs]
+* Make specs and bootstrap work in instance mode. [Sean Cribbs]
+* Override spec:integration task and rescope some spec task options to
+RADIANT_ROOT. [Sean Cribbs]
+* Improve rspec-1.1.12 compatibility. [Sean Cribbs]
+* Add Ruby 1.8.7 compatibility patch. [Sean Cribbs]
+* Fix upgrade issue from 0.5.x where class_name is expected to be present.
+[Sean Cribbs]
+* Remove unneeded patch. [Sean Cribbs]
+* Add some inline documentation to resource controller. [Sean Cribbs]
+* Fix some form problems on pages. [Sean Cribbs]
+* Fix form on snippets/remove. [Sean Cribbs]
+* Make sure resourceful responses deeply clone on inheritance. [Sean Cribbs]
+* Fix broken Ajax children callback. [Sean Cribbs]
+* Fix broken URL in snippets/remove. [Sean Cribbs]
+* Correct assume_migrated_upto_version behavior in instance mode. [Sean Cribbs]
+* Correct missing @@configuration variable in initializer. [John Muhl]
+* Handle SQL special characters in extension names in migrations.
+[Erik Ostrom]
+* Converted extension migrations to use schema_migrations table instead
+of extension_meta. [Nathaniel Talbott, Sean Cribbs, Rick DeNatale]
+* Replaced scenarios with dataset. [Nathaniel Talbott, Adam Williams, Rick DeNatale]
+* Fix RSpec git submodules. [Nathaniel Talbott, Clinton Nixon]
+* Generate and fix gemspec for GitHub. [Sean Cribbs]
 * Add support for newer Textile and Markdown libraries, with fallbacks
 on packaged libraries. [Sean Cribbs, Jason Garber]
 * Make request parameters available to tags. [Brian Landau]
@@ -12,7 +87,7 @@ on packaged libraries. [Sean Cribbs, Jason Garber]
 tracking. [Sean Cribbs]
 * Add generator specs and more generators. [Brian Landau]
 * Add initial integration specs. [Adam Williams, Mark Imbriaco]
-* Refactor admin controllers and views toward RESTful principles. 
+* Refactor admin controllers and views toward RESTful principles.
 [Sean Cribbs, Clinton Nixon, Rick DeNatale]
 * Remove RSpec from packaged libraries. [Sean Cribbs]
 * Correct CSS validation errors. [John Muhl]
@@ -39,7 +114,7 @@ tracking. [Sean Cribbs]
 * Make Git extension install method recognize submodules. [Sean Cribbs]
 * Fix malformed Textile in standard tag descriptions. [Jason Garber]
 * Update script/extension help output. [Jim Gay]
-* Allow load_subclasses to work when multiple apps are on the same database. 
+* Allow load_subclasses to work when multiple apps are on the same database.
 [Jim Gay]
 * Add REXML expansion fix. [Sean Cribbs]
 * Fix filter_reference admin helper for filter names that have spaces in

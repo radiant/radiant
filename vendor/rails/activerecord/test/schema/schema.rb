@@ -60,7 +60,7 @@ ActiveRecord::Schema.define do
   end
 
   create_table :booleantests, :force => true do |t|
-    t.integer :value
+    t.boolean :value
   end
 
   create_table :categories, :force => true do |t|
@@ -103,6 +103,7 @@ ActiveRecord::Schema.define do
     t.string  :type
     t.string  :ruby_type
     t.integer :firm_id
+    t.string  :firm_name
     t.string  :name
     t.integer :client_of
     t.integer :rating, :default => 1
@@ -196,6 +197,12 @@ ActiveRecord::Schema.define do
     t.string :name
   end
 
+  create_table :member_details, :force => true do |t|
+    t.integer :member_id
+    t.integer :organization_id
+    t.string :extra_data
+  end
+
   create_table :memberships, :force => true do |t|
     t.datetime :joined_on
     t.integer :club_id, :member_id
@@ -246,6 +253,10 @@ ActiveRecord::Schema.define do
     t.string  :name
     t.integer :billing_customer_id
     t.integer :shipping_customer_id
+  end
+
+  create_table :organizations, :force => true do |t|
+    t.string :name
   end
 
   create_table :owners, :primary_key => :owner_id ,:force => true do |t|

@@ -1,7 +1,8 @@
 class Admin::ResourceController < ApplicationController
   extend Radiant::ResourceResponses
   
-  helper_method :model, :models, :model_symbol, :plural_model_symbol, :model_class, :model_name, :plural_model_name
+  helper_method :model, :current_object, :models, :current_objects, :model_symbol, :plural_model_symbol, :model_class, :model_name, :plural_model_name
+  before_filter :populate_format
   before_filter :load_models, :only => :index
   before_filter :load_model, :only => [:new, :create, :edit, :update, :remove, :destroy]
   after_filter :clear_model_cache, :only => [:create, :update, :destroy]
@@ -11,11 +12,17 @@ class Admin::ResourceController < ApplicationController
   end
 
   responses do |r|
+    # Equivalent respond_to block for :plural responses:
+    # respond_to do |wants|
+    #   wants.xml { render :xml => models }
+    #   wants.json { render :json => models }
+    #   wants.any
+    # end
     r.plural.publish(:xml, :json) { render format_symbol => models }
 
     r.singular.publish(:xml, :json) { render format_symbol => model }
 
-    r.invalid.publish(:xml, :json) { render format_symbol => model.errors, :status => :unprocessible_entity }
+    r.invalid.publish(:xml, :json) { render format_symbol => model.errors, :status => :unprocessable_entity }
     r.invalid.default {  announce_validation_errors; render :action => template_name }
 
     r.stale.publish(:xml, :json) { head :conflict }
@@ -36,23 +43,40 @@ class Admin::ResourceController < ApplicationController
   end
 
   [:show, :new, :edit, :remove].each do |action|
-    define_method action do
-      response_for :singular
-    end
+    class_eval %{
+      def #{action}                # def show
+        response_for :singular     #   response_for :singular
+      end                          # end
+    }, __FILE__, __LINE__
   end
 
   [:create, :update].each do |action|
-    define_method action do
-      model.update_attributes!(params[model_symbol])
-      announce_saved
-      response_for action
-    end
+    class_eval %{
+      def #{action}                                       # def create
+        model.update_attributes!(params[model_symbol])    #   model.update_attributes!(params[model_symbol])
+        announce_saved                                    #   announce_saved
+        response_for :#{action}                           #   response_for :create
+      end                                                 # end
+    }, __FILE__, __LINE__
   end
 
   def destroy
     model.destroy
     announce_removed
     response_for :destroy
+  end
+
+  def template_name
+    case self.action_name
+    when 'index'
+      'index'
+    when 'new','create'
+      'new'
+    when 'edit', 'update'
+      'edit'
+    when 'remove', 'destroy'
+      'remove'
+    end
   end
 
   protected
@@ -67,17 +91,6 @@ class Admin::ResourceController < ApplicationController
         super
       end
     end
-
-    def template_name
-      case self.action_name
-      when 'new','create'
-        'new'
-      when 'edit', 'update'
-        'edit'
-      when 'remove', 'destroy'
-        'remove'
-      end
-    end
     
     def model_class
       self.class.model_class
@@ -86,6 +99,7 @@ class Admin::ResourceController < ApplicationController
     def model
       instance_variable_get("@#{model_symbol}") || load_model
     end
+    alias :current_object :model
     def model=(object)
       instance_variable_set("@#{model_symbol}", object)
     end
@@ -100,6 +114,7 @@ class Admin::ResourceController < ApplicationController
     def models
       instance_variable_get("@#{plural_model_symbol}") || load_models
     end
+    alias :current_objects :models
     def models=(objects)
       instance_variable_set("@#{plural_model_symbol}", objects)
     end
@@ -136,7 +151,7 @@ class Admin::ResourceController < ApplicationController
     end
 
     def announce_validation_errors
-      flash[:error] = "Validation errors occurred while processing this form. Please take a moment to review the form and correct any input errors before continuing."
+      flash.now[:error] = "Validation errors occurred while processing this form. Please take a moment to review the form and correct any input errors before continuing."
     end
 
     def announce_removed
@@ -144,7 +159,7 @@ class Admin::ResourceController < ApplicationController
     end
 
     def announce_update_conflict
-      flash[:error] = "#{humanized_model_name} has been modified since it was last loaded. Changes cannot be saved without potentially losing data."
+      flash.now[:error] = "#{humanized_model_name} has been modified since it was last loaded. Changes cannot be saved without potentially losing data."
     end
 
     def clear_model_cache
@@ -157,5 +172,11 @@ class Admin::ResourceController < ApplicationController
 
     def format
       params[:format] || 'html'
+    end
+    
+    # Assist with user agents that cause improper content-negotiation
+    # warn "Remove default HTML format, Accept header no longer used. (#{__FILE__}: #{__LINE__})" if Rails.version !~ /^2\.1/
+    def populate_format
+      params[:format] ||= 'html' unless request.xhr?
     end
 end

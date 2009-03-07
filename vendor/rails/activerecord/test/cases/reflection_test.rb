@@ -160,10 +160,18 @@ class ReflectionTest < ActiveRecord::TestCase
 
   def test_reflection_of_all_associations
     # FIXME these assertions bust a lot
-    assert_equal 22, Firm.reflect_on_all_associations.size
-    assert_equal 17, Firm.reflect_on_all_associations(:has_many).size
-    assert_equal 5, Firm.reflect_on_all_associations(:has_one).size
+    assert_equal 26, Firm.reflect_on_all_associations.size
+    assert_equal 20, Firm.reflect_on_all_associations(:has_many).size
+    assert_equal 6, Firm.reflect_on_all_associations(:has_one).size
     assert_equal 0, Firm.reflect_on_all_associations(:belongs_to).size
+  end
+
+  def test_reflection_should_not_raise_error_when_compared_to_other_object
+    assert_nothing_raised { Firm.reflections[:clients] == Object.new }
+  end
+
+  def test_has_many_through_reflection
+    assert_kind_of ActiveRecord::Reflection::ThroughReflection, Subscriber.reflect_on_association(:books)
   end
 
   private

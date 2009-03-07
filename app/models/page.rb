@@ -18,9 +18,9 @@ class Page < ActiveRecord::Base
   # Validations
   validates_presence_of :title, :slug, :breadcrumb, :status_id, :message => 'required'
   
-  validates_length_of :title, :maximum => 255, :message => '%d-character limit'
-  validates_length_of :slug, :maximum => 100, :message => '%d-character limit'
-  validates_length_of :breadcrumb, :maximum => 160, :message => '%d-character limit'
+  validates_length_of :title, :maximum => 255, :message => '{{count}}-character limit'
+  validates_length_of :slug, :maximum => 100, :message => '{{count}}-character limit'
+  validates_length_of :breadcrumb, :maximum => 160, :message => '{{count}}-character limit'
   
   validates_format_of :slug, :with => %r{^([-_.A-Za-z0-9]*|/)$}, :message => 'invalid format'  
   validates_uniqueness_of :slug, :scope => :parent_id, :message => 'slug already in use for child of parent'
@@ -212,7 +212,7 @@ class Page < ActiveRecord::Base
           $1.camelize.constantize if page =~ %r{/([^/]+)\.rb}
         end
       end
-      if ActiveRecord::Base.connection.tables.include?('pages') # Assume that we have bootstrapped
+      if ActiveRecord::Base.connection.tables.include?('pages') && Page.column_names.include?('class_name') # Assume that we have bootstrapped
         Page.connection.select_values("SELECT DISTINCT class_name FROM pages WHERE class_name <> '' AND class_name IS NOT NULL").each do |p|
           begin
             p.constantize
@@ -265,7 +265,7 @@ class Page < ActiveRecord::Base
     end
   
     def update_published_at
-      write_attribute(:published_at, Time.now) if published? and !published_at
+      self[:published_at] = Time.now if published? and !published_at
       true
     end
     

@@ -18,12 +18,17 @@ class CalculationsTest < ActiveRecord::TestCase
 
   def test_should_average_field
     value = Account.average(:credit_limit)
-    assert_kind_of Float, value
-    assert_in_delta 53.0, value, 0.001
+    assert_kind_of BigDecimal, value
+    assert_equal BigDecimal.new('53.0'), value
   end
 
   def test_should_return_nil_as_average
     assert_nil NumericData.average(:bank_balance)
+  end
+  
+  def test_type_cast_calculated_value_should_convert_db_averages_of_fixnum_class_to_decimal
+    assert_equal 0, NumericData.send(:type_cast_calculated_value, 0, nil, 'avg')
+    assert_equal 53.0, NumericData.send(:type_cast_calculated_value, 53, nil, 'avg')
   end
 
   def test_should_get_maximum_of_field
@@ -273,7 +278,7 @@ class CalculationsTest < ActiveRecord::TestCase
   end
 
   def test_should_sum_expression
-    assert_equal 636, Account.sum("2 * credit_limit")
+    assert_equal '636', Account.sum("2 * credit_limit")
   end
 
   def test_count_with_from_option

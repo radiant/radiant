@@ -5,8 +5,6 @@ require 'rake/rdoctask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
 require 'rake/contrib/sshpublisher'
-require 'rake/contrib/rubyforgepublisher'
-
 require File.join(File.dirname(__FILE__), 'lib', 'action_pack', 'version')
 
 PKG_BUILD     = ENV['PKG_BUILD'] ? '.' + ENV['PKG_BUILD'] : ''
@@ -27,14 +25,16 @@ task :default => [ :test ]
 desc "Run all unit tests"
 task :test => [:test_action_pack, :test_active_record_integration]
 
-Rake::TestTask.new(:test_action_pack) { |t|
+Rake::TestTask.new(:test_action_pack) do |t|
   t.libs << "test"
-# make sure we include the tests in alphabetical order as on some systems
-# this will not happen automatically and the tests (as a whole) will error
-  t.test_files=Dir.glob( "test/[cft]*/**/*_test.rb" ).sort
-#  t.pattern = 'test/*/*_test.rb'
+
+  # make sure we include the tests in alphabetical order as on some systems
+  # this will not happen automatically and the tests (as a whole) will error
+  t.test_files = Dir.glob( "test/[cft]*/**/*_test.rb" ).sort
+
   t.verbose = true
-}
+  #t.warning = true
+end
 
 desc 'ActiveRecord Integration Tests'
 Rake::TestTask.new(:test_active_record_integration) do |t|
@@ -80,7 +80,7 @@ spec = Gem::Specification.new do |s|
   s.has_rdoc = true
   s.requirements << 'none'
 
-  s.add_dependency('activesupport', '= 2.1.1' + PKG_BUILD)
+  s.add_dependency('activesupport', '= 2.2.2' + PKG_BUILD)
 
   s.require_path = 'lib'
   s.autorequire = 'action_controller'
@@ -136,8 +136,8 @@ task :update_js => [ :update_scriptaculous ]
 
 desc "Publish the API documentation"
 task :pgem => [:package] do 
-  Rake::SshFilePublisher.new("david@greed.loudthinking.com", "/u/sites/gems/gems", "pkg", "#{PKG_FILE_NAME}.gem").upload
-  `ssh david@greed.loudthinking.com '/u/sites/gems/gemupdate.sh'`
+  Rake::SshFilePublisher.new("gems.rubyonrails.org", "/u/sites/gems/gems", "pkg", "#{PKG_FILE_NAME}.gem").upload
+  `ssh gems.rubyonrails.org '/u/sites/gems/gemupdate.sh'`
 end
 
 desc "Publish the API documentation"

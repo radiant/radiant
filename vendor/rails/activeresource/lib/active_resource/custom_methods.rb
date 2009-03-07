@@ -48,8 +48,8 @@ module ActiveResource
           #   # => [{:id => 1, :name => 'Ryan'}]
           #
           # Note: the objects returned from this method are not automatically converted
-          # into Active Resource instances - they are ordinary Hashes. If you are expecting
-          # Active Resource instances, use the <tt>find</tt> class method with the
+          # into ActiveResource::Base instances - they are ordinary Hashes. If you are expecting
+          # ActiveResource::Base instances, use the <tt>find</tt> class method with the
           # <tt>:from</tt> option. For example:
           #
           #   Person.find(:all, :from => :active)
@@ -90,7 +90,7 @@ module ActiveResource
       end
 
       def post(method_name, options = {}, body = nil)
-        request_body = body.nil? ? encode : body
+        request_body = body.blank? ? encode : body
         if new?
           connection.post(custom_method_new_element_url(method_name, options), request_body, self.class.headers)
         else
@@ -109,11 +109,11 @@ module ActiveResource
 
       private
         def custom_method_element_url(method_name, options = {})
-          "#{self.class.prefix(prefix_options)}#{self.class.collection_name}/#{id}/#{method_name}.#{self.class.format.extension}#{self.class.send!(:query_string, options)}"
+          "#{self.class.prefix(prefix_options)}#{self.class.collection_name}/#{id}/#{method_name}.#{self.class.format.extension}#{self.class.__send__(:query_string, options)}"
         end
 
         def custom_method_new_element_url(method_name, options = {})
-          "#{self.class.prefix(prefix_options)}#{self.class.collection_name}/new/#{method_name}.#{self.class.format.extension}#{self.class.send!(:query_string, options)}"
+          "#{self.class.prefix(prefix_options)}#{self.class.collection_name}/new/#{method_name}.#{self.class.format.extension}#{self.class.__send__(:query_string, options)}"
         end
     end
   end

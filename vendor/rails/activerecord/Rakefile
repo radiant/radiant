@@ -5,7 +5,6 @@ require 'rake/rdoctask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
 require 'rake/contrib/sshpublisher'
-require 'rake/contrib/rubyforgepublisher'
 
 require File.join(File.dirname(__FILE__), 'lib', 'active_record', 'version')
 require File.expand_path(File.dirname(__FILE__)) + "/test/config"
@@ -31,7 +30,7 @@ desc 'Run mysql, sqlite, and postgresql tests by default'
 task :default => :test
 
 desc 'Run mysql, sqlite, and postgresql tests'
-task :test => %w(test_mysql test_sqlite test_sqlite3 test_postgresql)
+task :test => %w(test_mysql test_sqlite3 test_postgresql)
 
 for adapter in %w( mysql postgresql sqlite sqlite3 firebird db2 oracle sybase openbase frontbase )
   Rake::TestTask.new("test_#{adapter}") { |t|
@@ -172,7 +171,7 @@ spec = Gem::Specification.new do |s|
     s.files = s.files + Dir.glob( "#{dir}/**/*" ).delete_if { |item| item.include?( "\.svn" ) }
   end
 
-  s.add_dependency('activesupport', '= 2.1.1' + PKG_BUILD)
+  s.add_dependency('activesupport', '= 2.2.2' + PKG_BUILD)
 
   s.files.delete FIXTURES_ROOT + "/fixture_database.sqlite"
   s.files.delete FIXTURES_ROOT + "/fixture_database_2.sqlite"
@@ -226,8 +225,8 @@ end
 
 desc "Publish the beta gem"
 task :pgem => [:package] do
-  Rake::SshFilePublisher.new("david@greed.loudthinking.com", "/u/sites/gems/gems", "pkg", "#{PKG_FILE_NAME}.gem").upload
-  `ssh david@greed.loudthinking.com '/u/sites/gems/gemupdate.sh'`
+  Rake::SshFilePublisher.new("gems.rubyonrails.org", "/u/sites/gems/gems", "pkg", "#{PKG_FILE_NAME}.gem").upload
+  `ssh gems.rubyonrails.org '/u/sites/gems/gemupdate.sh'`
 end
 
 desc "Publish the API documentation"

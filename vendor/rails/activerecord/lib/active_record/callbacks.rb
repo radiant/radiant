@@ -3,9 +3,9 @@ require 'observer'
 module ActiveRecord
   # Callbacks are hooks into the lifecycle of an Active Record object that allow you to trigger logic
   # before or after an alteration of the object state. This can be used to make sure that associated and
-  # dependent objects are deleted when destroy is called (by overwriting +before_destroy+) or to massage attributes
+  # dependent objects are deleted when +destroy+ is called (by overwriting +before_destroy+) or to massage attributes
   # before they're validated (by overwriting +before_validation+). As an example of the callbacks initiated, consider
-  # the <tt>Base#save</tt> call:
+  # the <tt>Base#save</tt> call for a new record:
   #
   # * (-) <tt>save</tt>
   # * (-) <tt>valid</tt>
@@ -22,7 +22,8 @@ module ActiveRecord
   # * (8) <tt>after_save</tt>
   #
   # That's a total of eight callbacks, which gives you immense power to react and prepare for each state in the
-  # Active Record lifecycle.
+  # Active Record lifecycle. The sequence for calling <tt>Base#save</tt> an existing record is similar, except that each 
+  # <tt>_on_create</tt> callback is replaced by the corresponding <tt>_on_update</tt> callback.
   #
   # Examples:
   #   class CreditCard < ActiveRecord::Base
@@ -50,7 +51,7 @@ module ActiveRecord
   #
   # == Inheritable callback queues
   #
-  # Besides the overwriteable callback methods, it's also possible to register callbacks through the use of the callback macros.
+  # Besides the overwritable callback methods, it's also possible to register callbacks through the use of the callback macros.
   # Their main advantage is that the macros add behavior into a callback queue that is kept intact down through an inheritance
   # hierarchy. Example:
   #
@@ -161,7 +162,7 @@ module ActiveRecord
   # == <tt>before_validation*</tt> returning statements
   #
   # If the returning value of a +before_validation+ callback can be evaluated to +false+, the process will be aborted and <tt>Base#save</tt> will return +false+.
-  # If Base#save! is called it will raise a RecordNotSaved exception.
+  # If Base#save! is called it will raise a ActiveRecord::RecordInvalid exception.
   # Nothing will be appended to the errors object.
   #
   # == Canceling callbacks
@@ -169,6 +170,18 @@ module ActiveRecord
   # If a <tt>before_*</tt> callback returns +false+, all the later callbacks and the associated action are cancelled. If an <tt>after_*</tt> callback returns
   # +false+, all the later callbacks are cancelled. Callbacks are generally run in the order they are defined, with the exception of callbacks
   # defined as methods on the model, which are called last.
+  #
+  # == Transactions
+  #
+  # The entire callback chain of a +save+, <tt>save!</tt>, or +destroy+ call runs
+  # within a transaction. That includes <tt>after_*</tt> hooks. If everything
+  # goes fine a COMMIT is executed once the chain has been completed.
+  #
+  # If a <tt>before_*</tt> callback cancels the action a ROLLBACK is issued. You
+  # can also trigger a ROLLBACK raising an exception in any of the callbacks,
+  # including <tt>after_*</tt> hooks. Note, however, that in that case the client
+  # needs to be aware of it because an ordinary +save+ will raise such exception
+  # instead of quietly returning +false+.
   module Callbacks
     CALLBACKS = %w(
       after_find after_initialize before_save after_save before_create after_create before_update after_update before_validation
@@ -197,6 +210,8 @@ module ActiveRecord
     def before_save() end
 
     # Is called _after_ <tt>Base.save</tt> (regardless of whether it's a +create+ or +update+ save).
+    # Note that this callback is still wrapped in the transaction around +save+. For example, if you
+    # invoke an external indexer at this point it won't see the changes in the database.
     #
     #  class Contact < ActiveRecord::Base
     #    after_save { logger.info( 'New contact saved!' ) }
@@ -214,6 +229,8 @@ module ActiveRecord
     def before_create() end
 
     # Is called _after_ <tt>Base.save</tt> on new objects that haven't been saved yet (no record exists).
+    # Note that this callback is still wrapped in the transaction around +save+. For example, if you
+    # invoke an external indexer at this point it won't see the changes in the database.
     def after_create() end
     def create_with_callbacks #:nodoc:
       return false if callback(:before_create) == false
@@ -227,6 +244,8 @@ module ActiveRecord
     def before_update() end
 
     # Is called _after_ <tt>Base.save</tt> on existing objects that have a record.
+    # Note that this callback is still wrapped in the transaction around +save+. For example, if you
+    # invoke an external indexer at this point it won't see the changes in the database.
     def after_update() end
 
     def update_with_callbacks(*args) #:nodoc:
@@ -262,7 +281,7 @@ module ActiveRecord
     def valid_with_callbacks? #:nodoc:
       return false if callback(:before_validation) == false
       if new_record? then result = callback(:before_validation_on_create) else result = callback(:before_validation_on_update) end
-      return false if result == false
+      return false if false == result
 
       result = valid_without_callbacks?
 
@@ -293,13 +312,13 @@ module ActiveRecord
 
     private
       def callback(method)
-        notify(method)
-
-        result = run_callbacks(method) { |result, object| result == false }
+        result = run_callbacks(method) { |result, object| false == result }
 
         if result != false && respond_to_without_attributes?(method)
           result = send(method)
         end
+
+        notify(method)
 
         return result
       end

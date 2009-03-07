@@ -1,8 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe Admin::PreferencesController do
-  scenario :users
-  test_helper :logging
+  dataset :users
   
   it "should allow you to view your preferences" do
     user = login_as(:non_admin)
@@ -35,8 +34,5 @@ describe Admin::PreferencesController do
     put :update, { :user => { :password => 'funtimes', :password_confirmation => 'funtimes' } }
     user = users(:non_admin)
     user.password.should == user.sha1('funtimes')
-    
-    rails_log.should_not match(/"password"=>"funtimes"/)
-    rails_log.should_not match(/"password_confirmation"=>"funtimes"/)
   end
 end

@@ -2,6 +2,7 @@ ENV["RAILS_ENV"] = 'test'
 RAILS_ENV = 'test'
 BASE_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '../../'))
 require 'fileutils'
+require 'tempfile'
 require 'spec'
 require File.join(BASE_ROOT, 'spec/matchers/generator_matchers')
 require File.join(BASE_ROOT, 'lib/plugins/string_extensions/lib/string_extensions')
@@ -49,7 +50,7 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
   end
 
   # Set RAILS_ROOT appropriately fixture generation
-  tmp_dir = File.expand_path(File.join(File.dirname(__FILE__), "../fixtures/tmp"))
+  tmp_dir = File.expand_path(File.join(Dir.tmpdir, 'radiant'))
   $stdout << "#{tmp_dir}\n\n"
   FileUtils.mkdir_p tmp_dir
 

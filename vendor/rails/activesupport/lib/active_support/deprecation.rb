@@ -51,8 +51,8 @@ module ActiveSupport
 
       private
         def deprecation_message(callstack, message = nil)
-          message ||= "You are using deprecated behavior which will be removed from Rails 2.0."
-          "DEPRECATION WARNING: #{message}  See http://www.rubyonrails.org/deprecation for details. #{deprecation_caller_message(callstack)}"
+          message ||= "You are using deprecated behavior which will be removed from the next major or minor release."
+          "DEPRECATION WARNING: #{message}. #{deprecation_caller_message(callstack)}"
         end
 
         def deprecation_caller_message(callstack)
@@ -92,7 +92,7 @@ module ActiveSupport
             class_eval(<<-EOS, __FILE__, __LINE__)
               def #{target}_with_deprecation#{punctuation}(*args, &block)
                 ::ActiveSupport::Deprecation.warn(self.class.deprecated_method_warning(:#{method_name}, #{options[method_name].inspect}), caller)
-                send(:#{target}_without_deprecation#{punctuation}, *args, &block)
+                #{target}_without_deprecation#{punctuation}(*args, &block)
               end
             EOS
           end
@@ -109,7 +109,7 @@ module ActiveSupport
       end
 
       def deprecation_horizon
-        '2.2'
+        '2.3'
       end
     end
 
@@ -162,6 +162,22 @@ module ActiveSupport
         end
     end
 
+    class DeprecatedObjectProxy < DeprecationProxy
+      def initialize(object, message)
+        @object = object
+        @message = message
+      end
+
+      private
+        def target
+          @object
+        end
+
+        def warn(callstack, called, args)
+          ActiveSupport::Deprecation.warn(@message, callstack)
+        end
+    end
+
     # Stand-in for <tt>@request</tt>, <tt>@attributes</tt>, <tt>@params</tt>, etc.
     # which emits deprecation warnings on any method call (except +inspect+).
     class DeprecatedInstanceVariableProxy < DeprecationProxy #:nodoc:
@@ -183,6 +199,10 @@ module ActiveSupport
       def initialize(old_const, new_const)
         @old_const = old_const
         @new_const = new_const
+      end
+
+      def class
+        target.class
       end
 
       private

@@ -125,13 +125,26 @@ Install type:   #{install_type}
   end
 
   class Git < Checkout
+    def project_in_git?
+      @in_git ||= File.directory?(".git")
+    end
+    
     def checkout_command
       "git clone #{url} #{name}"
     end
     
     def checkout
-      super
-      system "cd #{self.path}; git submodule init && git submodule update"
+      if project_in_git?
+        system "git submodule add #{url} vendor/extensions/#{name}"
+        system "cd vendor/extensions/#{name}; git submodule init && git submodule update"
+      else
+        super
+        system "cd #{path}; git submodule init && git submodule update"
+      end
+    end
+    
+    def copy_to_vendor_extensions
+      super unless project_in_git?
     end
   end
 

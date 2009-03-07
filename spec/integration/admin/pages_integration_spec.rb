@@ -1,20 +1,30 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe 'Pages' do
-  scenario :users
+describe 'Page management' do
+  dataset :users
+  
+  def have_slug(expected)
+    satisfy do |response|
+      response.should have_tag('#page_slug') do |tags|
+        tags.size.should == 1
+        tags.first['value'].should == (expected.blank? ? nil : expected)
+      end
+      true
+    end
+  end
   
   before do
     Radiant::Config['defaults.page.parts'] = 'body'
     login :admin
   end
   
-  it 'should be able to go to pages tab' do
+  it 'should list pages' do
     click_on :link => '/admin/pages'
   end
   
-  it 'should be able to create the home page' do
-    Page.delete_all # Need to create a homepage
+  it 'should allow the user to create the homepage' do
     navigate_to '/admin/pages/new'
+    response.should have_slug('/')
     submit_form 'new_page', :continue => 'Save and Continue', :page => {:title => 'My Site', :slug => '/', :breadcrumb => 'My Site', :parts => [{:name => 'body', :content => 'Under Construction'}], :status_id => Status[:published].id}
     response.should_not have_tag('#error')
     response.should have_text(/Under\sConstruction/)
@@ -23,10 +33,69 @@ describe 'Pages' do
     navigate_to '/'
     response.should have_text(/Under Construction/)
   end
+  
+  it "should properly escape part contents" do
+    navigate_to '/admin/pages/new'
+    submit_form 'new_page', :continue => 'Save and Continue', :page => {:title => 'My Site', :slug => '/', :breadcrumb => 'My Site', :parts => [{:name => 'body', :content => '&lt;r:url /&gt;'}], :status_id => Status[:published].id}
+    response.should have_tag('textarea', :text => "&amp;lt;r:url /&amp;gt;")
+  end
+  
+  describe 'with homepage' do
+    dataset :home_page
+    
+    it 'should allow the user to create child pages' do
+      navigate_to "/admin/pages/#{page_id(:home)}/children/new"
+      response.should have_slug('')
+      
+      lambda do
+        submit_form 'new_page', :continue => 'Save and Continue', :page => {
+          :title => 'My Child', :status_id => Status[:published].id,
+          :slug => 'my-child', :breadcrumb => 'My Child',
+          :parts => [{:name => 'body', :content => 'Under Construction'}]
+        }
+      end.should change(Page, :count).by(1)
+      
+      navigate_to '/my-child'
+      response.should have_text(/Under Construction/)
+    end
+    
+    it 'should show errors creating pages' do
+      navigate_to "/admin/pages/#{page_id(:home)}/children/new"
+      lambda do
+        submit_form 'new_page', :continue => 'Save and Continue', :page => {}
+      end.should_not change(Page, :count)
+      response.should render_form_errors(
+        :page => {:title => /required/, :slug => /required/, :breadcrumb => /required/}
+      )
+    end
+    
+    it 'should allow the user to delete the home page' do
+      id = page_id(:home)
+      navigate_to "/admin/pages/#{id}/remove"
+      response.should have_text(/permanently remove/)
+      submit_form 'form.edit_page' 
+      response.should be_showing('/admin/pages')
+    end
+  end
+  
+  describe "with existing pages" do
+    dataset :pages
+    it "should allow the user to change the page type" do
+      id = page_id(:virtual)
+      navigate_to "/admin/pages/#{id}/edit"
+      submit_form 'edit_page', :continue => 'Save and Continue', 
+        :page => {
+          :class_name => '', :title => 'Virtual', :slug => 'virtual',
+          :breadcrumb => 'Virtual', :parts => [{:name => 'body', :content => 'Virtual body.'}]
+          }
+      response.should be_showing("/admin/pages/#{id}/edit")
+      response.should have_tag('option[value=""][selected]', '&lt;normal&gt;')
+    end
+  end
 end
 
 describe "Pages as resource" do
-  scenario :pages, :users
+  dataset :pages, :users
   
   it "should require authentication" do
     get "/admin/pages.xml"
@@ -51,5 +120,10 @@ describe "Pages as resource" do
   it "should include parts" do
     get "/admin/pages/#{page_id(:first)}.xml", nil, :authorization => encode_credentials(%w(admin password))
     response.body.should match(/parts type="array"/)
+  end
+  
+  it "should reject an invalid page with the correct status code" do
+    post "/admin/pages.xml", {:page => {:title => "Testing"}}, :authorization => encode_credentials(%w(admin password))
+    response.headers['Status'].should =~ /422/
   end
 end

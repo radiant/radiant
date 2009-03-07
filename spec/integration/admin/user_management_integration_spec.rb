@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
-require 'ruby-debug'
+
 describe 'Managing users' do
-  scenario :users
+  dataset :users
   
   describe 'as non-admin' do
     before { login :existing }

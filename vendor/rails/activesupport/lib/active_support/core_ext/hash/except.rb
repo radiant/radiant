@@ -10,10 +10,10 @@ module ActiveSupport #:nodoc:
       module Except
         # Returns a new hash without the given keys.
         def except(*keys)
-          clone.except!(*keys)
+          dup.except!(*keys)
         end
 
-        # Replaces the hash without only the given keys.
+        # Replaces the hash without the given keys.
         def except!(*keys)
           keys.map! { |key| convert_key(key) } if respond_to?(:convert_key)
           keys.each { |key| delete(key) }

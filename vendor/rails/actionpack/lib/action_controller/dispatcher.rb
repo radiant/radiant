@@ -22,11 +22,15 @@ module ActionController
         end
 
         if defined?(ActiveRecord)
-          before_dispatch { ActiveRecord::Base.verify_active_connections! }
+          after_dispatch :checkin_connections
           to_prepare(:activerecord_instantiate_observers) { ActiveRecord::Base.instantiate_observers }
         end
 
-        after_dispatch :flush_logger if defined?(RAILS_DEFAULT_LOGGER) && RAILS_DEFAULT_LOGGER.respond_to?(:flush)
+        after_dispatch :flush_logger if Base.logger && Base.logger.respond_to?(:flush)
+
+        to_prepare do
+          I18n.reload!
+        end
       end
 
       # Backward-compatible class method takes CGI-specific args. Deprecated
@@ -38,7 +42,7 @@ module ActionController
       # Add a preparation callback. Preparation callbacks are run before every
       # request in development mode, and before the first request in production
       # mode.
-      # 
+      #
       # An optional identifier may be supplied for the callback. If provided,
       # to_prepare may be called again with the same identifier to replace the
       # existing callback. Passing an identifier is a suggested practice if the
@@ -46,7 +50,7 @@ module ActionController
       def to_prepare(identifier = nil, &block)
         @prepare_dispatch_callbacks ||= ActiveSupport::Callbacks::CallbackChain.new
         callback = ActiveSupport::Callbacks::Callback.new(:prepare_dispatch, block, :identifier => identifier)
-        @prepare_dispatch_callbacks | callback
+        @prepare_dispatch_callbacks.replace_or_append!(callback)
       end
 
       # If the block raises, send status code as a last-ditch response.
@@ -96,19 +100,27 @@ module ActionController
     include ActiveSupport::Callbacks
     define_callbacks :prepare_dispatch, :before_dispatch, :after_dispatch
 
-    def initialize(output, request = nil, response = nil)
+    def initialize(output = $stdout, request = nil, response = nil)
       @output, @request, @response = output, request, response
     end
 
+    def dispatch_unlocked
+      begin
+        run_callbacks :before_dispatch
+        handle_request
+      rescue Exception => exception
+        failsafe_rescue exception
+      ensure
+        run_callbacks :after_dispatch, :enumerator => :reverse_each
+      end
+    end
+
     def dispatch
-      @@guard.synchronize do
-        begin
-          run_callbacks :before_dispatch
-          handle_request
-        rescue Exception => exception
-          failsafe_rescue exception
-        ensure
-          run_callbacks :after_dispatch, :enumerator => :reverse_each
+      if ActionController::Base.allow_concurrency
+        dispatch_unlocked
+      else
+        @@guard.synchronize do
+          dispatch_unlocked
         end
       end
     end
@@ -123,12 +135,19 @@ module ActionController
       failsafe_rescue exception
     end
 
+    def call(env)
+      @request = RackRequest.new(env)
+      @response = RackResponse.new(@request)
+      dispatch
+    end
+
     def reload_application
       # Run prepare callbacks before every request in development mode
       run_callbacks :prepare_dispatch
 
       Routing::Routes.reload
-      ActionView::TemplateFinder.reload! unless ActionView::Base.cache_template_loading
+      ActionController::Base.view_paths.reload!
+      ActionView::Helpers::AssetTagHelper::AssetTag::Cache.clear
     end
 
     # Cleanup the application by clearing out loaded classes so they can
@@ -140,7 +159,22 @@ module ActionController
     end
 
     def flush_logger
-      RAILS_DEFAULT_LOGGER.flush
+      Base.logger.flush
+    end
+
+    def mark_as_test_request!
+      @test_request = true
+      self
+    end
+
+    def test_request?
+      @test_request
+    end
+
+    def checkin_connections
+      # Don't return connection (and peform implicit rollback) if this request is a part of integration test
+      return if test_request?
+      ActiveRecord::Base.clear_active_connections!
     end
 
     protected

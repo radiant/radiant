@@ -1,22 +1,25 @@
 class Admin::PagesController < Admin::ResourceController
   before_filter :initialize_meta_rows_and_buttons, :only => [:new, :edit, :create, :update]
 
+  responses do |r|
+    r.plural.js do
+      @level = params[:level].to_i
+      @template_name = 'index'
+      response.headers['Content-Type'] = 'text/html;charset=utf-8'
+      render :action => 'children.html.haml', :layout => false
+    end
+  end
+  
   def index
     @homepage = Page.find_by_parent_id(nil)
-    respond_to do |format|
-      format.html
-      format.js do
-        @level = params[:level].to_i
-        @template_name = 'index'
-        response.headers['Content-Type'] = 'text/html;charset=utf-8'
-        render :action => 'children.html.haml', :layout => false
-      end
-      format.xml { render :xml => models }
-    end
+    response_for :plural
   end
 
   def new
     self.model = model_class.new_with_defaults(config)
+    if params[:page_id].blank?
+      self.model.slug = '/'
+    end
     response_for :singular
   end
 

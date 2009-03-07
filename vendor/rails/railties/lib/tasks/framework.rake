@@ -5,7 +5,6 @@ namespace :rails do
       deps = %w(actionpack activerecord actionmailer activesupport activeresource)
       require 'rubygems'
       require 'rubygems/gem_runner'
-      Gem.manage_gems
 
       rails = (version = ENV['VERSION']) ?
         Gem.cache.find_name('rails', "= #{version}").first :
@@ -43,9 +42,12 @@ namespace :rails do
       require 'open-uri'
       version = ENV["RELEASE"] || "edge"
       target  = "rails_#{version}.zip"
+      commits = "http://github.com/api/v1/yaml/rails/rails/commits/master"
       url     = "http://dev.rubyonrails.org/archives/#{target}"
 
       chdir 'vendor' do
+        latest_revision = YAML.load(open(commits))["commits"].first["id"]
+
         puts "Downloading Rails from #{url}"
         File.open('rails.zip', 'wb') do |dst|
           open url do |src|
@@ -61,6 +63,8 @@ namespace :rails do
         %w(rails.zip rails/Rakefile rails/cleanlogs.sh rails/pushgems.rb rails/release.rb).each do |goner|
           rm_f goner
         end
+
+        touch "rails/REVISION_#{latest_revision}"
       end
 
       puts 'Updating current scripts, javascripts, and configuration settings'

@@ -1,9 +1,0 @@
-mysql:
-  :adapter: mysql
-  :username: root
-  :database: scenarios_spec
-# 
-# sqlite3:
-#   :adapter: sqlite3
-#   :database: tmp/sqlite3.db
-#   :timeout: 5000

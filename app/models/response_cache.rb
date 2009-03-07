@@ -1,3 +1,4 @@
+
 class ResponseCache
   include ActionController::Benchmarking::ClassMethods
   
@@ -7,11 +8,12 @@ class ResponseCache
     :default_extension => '.yml',
     :perform_caching => true,
     :logger => ActionController::Base.logger,
-    :use_x_sendfile => false
+    :use_x_sendfile => false,
+    :use_x_accel_redirect => false
   }
   cattr_accessor :defaults
   
-  attr_accessor :directory, :expire_time, :default_extension, :perform_caching, :logger, :use_x_sendfile
+  attr_accessor :directory, :expire_time, :default_extension, :perform_caching, :logger, :use_x_sendfile, :use_x_accel_redirect
   alias :page_cache_directory :directory
   alias :page_cache_extension :default_extension
   private :benchmark, :silence, :page_cache_directory,
@@ -29,12 +31,13 @@ class ResponseCache
   # 
   def initialize(options = {})
     options = options.symbolize_keys.reverse_merge(defaults)
-    self.directory         = options[:directory]
-    self.expire_time       = options[:expire_time]
-    self.default_extension = options[:default_extension]
-    self.perform_caching   = options[:perform_caching]
-    self.logger            = options[:logger]
-    self.use_x_sendfile    = options[:use_x_sendfile]
+    self.directory            = options[:directory]
+    self.expire_time          = options[:expire_time]
+    self.default_extension    = options[:default_extension]
+    self.perform_caching      = options[:perform_caching]
+    self.logger               = options[:logger]
+    self.use_x_sendfile       = options[:use_x_sendfile]
+    self.use_x_accel_redirect = options[:use_x_accel_redirect]
   end
   
   # Caches a response object for path to disk.
@@ -106,6 +109,8 @@ class ResponseCache
         response.headers.merge!(metadata['headers'] || {})
         if client_has_cache?(metadata, request)
           response.headers.merge!('Status' => '304 Not Modified')
+        elsif use_x_accel_redirect
+          response.headers.merge!('X-Accel-Redirect' => "#{file_path}.data")
         elsif use_x_sendfile
           response.headers.merge!('X-Sendfile' => "#{file_path}.data")
         else
@@ -116,10 +121,12 @@ class ResponseCache
     end
 
     def client_has_cache?(metadata, request)
-        return false unless request
-        request_time = Time.httpdate(request.env["HTTP_IF_MODIFIED_SINCE"]) rescue nil
-        response_time = Time.httpdate(metadata['headers']['Last-Modified']) rescue nil
-        return request_time && response_time && response_time <= request_time
+      return false unless request
+      request_time = Time.httpdate(request.env["HTTP_IF_MODIFIED_SINCE"]) rescue nil
+      response_time = Time.httpdate(metadata['headers']['Last-Modified']) rescue nil
+      request_etag = request.env["HTTP_IF_NONE_MATCH"] rescue nil
+      response_etag = metadata['headers']['ETag'] rescue nil
+      (request_time && response_time && response_time <= request_time) || (request_etag && response_etag && request_etag == response_etag)
     end
     
     # Writes a response to disk.
@@ -134,6 +141,7 @@ class ResponseCache
         expires = Time.now + self.expire_time
       end
       response.headers['Last-Modified'] ||= Time.now.httpdate
+      response.headers['ETag'] ||= Digest::SHA1.hexdigest(response.body)
       metadata = {
         'headers' => response.headers,
         'expires' => expires

@@ -18,7 +18,7 @@ module Sass
     end
 
     class ValueNode
-      def to_sass(tabs)
+      def to_sass(tabs, opts = {})
         "#{value}\n"
       end
     end
@@ -38,6 +38,12 @@ module Sass
     class AttrNode
       def to_sass(tabs, opts = {})
         "#{'  ' * tabs}#{opts[:alternate] ? '' : ':'}#{name}#{opts[:alternate] ? ':' : ''} #{value}\n"
+      end
+    end
+
+    class DirectiveNode
+      def to_sass(tabs, opts = {})
+        "#{'  ' * tabs}#{value}#{children.map {|c| c.to_sass(tabs + 1, opts)}}\n"
       end
     end
   end
@@ -118,7 +124,7 @@ module Sass
     # containing the CSS template.
     def render
       begin
-        build_tree.to_sass(@options).lstrip
+        build_tree.to_sass(@options).strip + "\n"
       rescue Exception => err
         line = @template.string[0...@template.pos].split("\n").size
 
@@ -132,7 +138,6 @@ module Sass
     def build_tree
       root = Tree::Node.new(nil)
       whitespace
-      directives         root
       rules              root
       expand_commas      root
       parent_ref_rules   root
@@ -142,37 +147,33 @@ module Sass
       root
     end
 
-    def directives(root)
-      while @template.scan(/@/)
-        name = @template.scan /[^\s;]+/
+    def rules(root)
+      while r = rule
+        root << r
         whitespace
-        value = @template.scan /[^;]+/
-        assert_match /;/
-        whitespace
-
-        if name == "import" && value =~ /^(url\()?"?([^\s\(\)\"]+)\.css"?\)?$/
-          value = $2
-        end
-
-        root << Tree::ValueNode.new("@#{name} #{value};", nil)
       end
     end
 
-    def rules(root)
-      rules = []
-      while @template.scan(/[^\{\s]+/)
-        rules << @template[0]
+    def rule
+      return unless rule = @template.scan(/[^\{\};]+/)
+      rule.strip!
+      directive = rule[0] == ?@
+
+      if directive
+        node = Tree::DirectiveNode.new(rule, nil)
+        return node if @template.scan(/;/)
+
+        assert_match /\{/
         whitespace
 
-        if @template.scan(/\{/)
-          result = Tree::RuleNode.new(rules.join(' '), nil)
-          root << result
-          rules = []
-
-          whitespace
-          attributes(result)
-        end
+        rules(node)
+        return node
       end
+
+      assert_match /\{/
+      node = Tree::RuleNode.new(rule, nil)
+      attributes(node)
+      return node
     end
 
     def attributes(rule)
@@ -236,7 +237,7 @@ module Sass
       root.children.map! do |child|
         next child unless Tree::RuleNode === child && child.rule.include?(',')
         child.rule.split(',').map do |rule|
-          node = Tree::RuleNode.new(rule, nil)
+          node = Tree::RuleNode.new(rule.strip, {})
           node.children = child.children
           node
         end

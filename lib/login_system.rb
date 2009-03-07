@@ -1,20 +1,16 @@
 module LoginSystem
   def self.included(base)
-    base.class_eval %{
-      before_filter :authenticate
-      
-      cattr_reader :controller_permissions
-      @@controller_permissions = Hash.new { |h, k| h[k] = Hash.new { |h, k| h[k] = Hash.new } }
-      helper_method :current_user
-    }
     base.extend ClassMethods
-    super
+    base.class_eval do
+      prepend_before_filter :authenticate, :authorize
+      helper_method :current_user
+    end
   end
-  
+
   protected
-  
+
     def current_user
-      @current_user ||= User.find(session['user_id']) rescue nil
+      @current_user ||= (login_from_session || login_from_cookie || login_from_http)
     end
     
     def current_user=(value=nil)
@@ -30,36 +26,36 @@ module LoginSystem
     
     def authenticate
       action = params['action'].to_s.intern
-      login_from_cookie
-      
-      if !current_user && params[:format] == 'xml'
-        authenticate_or_request_with_http_basic do |user_name, password| 
-          self.current_user = User.authenticate(user_name, password)
-        end
-        return false if self.current_user.nil?
-      end
-      
-      if current_user and user_has_access_to_action?(action)
+      if current_user
+        session['user_id'] = current_user.id
         true
       else
-        if current_user
-          permissions = self.class.controller_permissions[self.class][action]
-          flash[:error] = permissions[:denied_message] || 'Access denied.'
-          redirect_to permissions[:denied_url] || { :action => :index }
+        session[:return_to] = request.request_uri
+        if params[:format].to_s =~ /xml|json/
+          head :forbidden
         else
-          session[:return_to] = request.request_uri
           redirect_to login_url
         end
-        false
       end
     end
-  
+
+    def authorize
+      action = action_name.to_s.intern
+      if user_has_access_to_action?(action)
+        true
+      else
+        permissions = self.class.controller_permissions[action]
+        flash[:error] = permissions[:denied_message] || 'Access denied.'
+        redirect_to(permissions[:denied_url] || { :action => :index })
+      end
+    end
+
     def user_has_role?(role)
       current_user.send("#{role}?")
     end
-    
+
     def user_has_access_to_action?(action)
-      permissions = self.class.controller_permissions[self.class][action]
+      permissions = self.class.controller_permissions[action.to_s.intern]
       case
       when allowed_roles = permissions[:when]
         allowed_roles = [allowed_roles].flatten
@@ -74,39 +70,60 @@ module LoginSystem
       end
     end
 
+    def login_from_session
+      User.find(session['user_id']) rescue nil
+    end
+
     def login_from_cookie
       if !cookies[:session_token].blank? && user = User.find_by_session_token(cookies[:session_token]) # don't find by empty value
         user.remember_me
-        self.current_user = user
-        set_session_cookie
+        set_session_cookie(user)
+        user
       end
     end
 
-    def set_session_cookie
-      cookies[:session_token] = { :value => current_user.session_token , :expires => Radiant::Config['session_timeout'].to_i.from_now.utc }
+    def login_from_http
+      if params[:format] =~ /xml|json/
+        user = nil
+        authenticate_or_request_with_http_basic do |user_name, password|
+          user = User.authenticate(user_name, password)
+        end
+        user
+      end
     end
-  
+
+    def set_session_cookie(user = current_user)
+      cookies[:session_token] = { :value => user.session_token , :expires => Radiant::Config['session_timeout'].to_i.from_now.utc }
+    end
+
   module ClassMethods
     def no_login_required
       skip_before_filter :authenticate
+      skip_before_filter :authorize
     end
-    
+
     def login_required?
-      filter_chain.any? {|f| f.method == :authenticate }
+      filter_chain.any? {|f| f.method == :authenticate || f.method == :authorize }
     end
-    
+
     def login_required
-      before_filter :authenticate
+      unless login_required?
+        prepend_before_filter :authenticate, :authorize
+      end
     end
-    
+
     def only_allow_access_to(*args)
       options = {}
       options = args.pop.dup if args.last.kind_of?(Hash)
       options.symbolize_keys!
       actions = args.map { |a| a.to_s.intern }
       actions.each do |action|
-        controller_permissions[self][action] = options
+        controller_permissions[action] = options
       end
+    end
+
+    def controller_permissions
+      @controller_permissions ||= Hash.new { |h,k| h[k.to_s.intern] = Hash.new }
     end
   end
 end

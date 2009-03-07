@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
 describe Admin::LayoutsController do
-  scenario :users, :pages_with_layouts
+  dataset :users, :pages_with_layouts
 
   before :each do
     login_as :developer
