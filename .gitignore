@@ -10,3 +10,4 @@ public/tmp
 spec/datasets/tmp
 *.tmproj
 cache
+.idea
