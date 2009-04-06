@@ -1,7 +1,7 @@
 de:  
   # The display name of this language file
   this_file_language: "Deutsch" 
-  
+
   # Controllers       
   resource_controller:
     saved: "DE {{humanized_model_name}} saved below."
@@ -9,7 +9,7 @@ de:
     removed: "DE {{humanized_model_name}} has been deleted."  
     update_conflict: "{{humanized_model_name}} has been modified since it was last loaded. Changes cannot be saved without potentially losing data." 
   pages_controller:
-    saved: "DE Your page has been saved below."  
+    saved: "Your page has been saved below."  
     removed_many: "The pages were successfully removed from the site."   
     removed_one: "The page was successfully removed from the site."  
   preferences_contoller:
@@ -20,7 +20,7 @@ de:
   welcome_controller:
     logged_out: 'DE You are now logged out.'  
     invalid_user: 'DE Invalid username or password.'   
-  
+
   # Models
   models:
     # Shared translations
