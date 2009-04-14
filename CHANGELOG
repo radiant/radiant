@@ -2,6 +2,8 @@
 
 === Edge
 
+* Convert integration specs to Cucumber stories and update RSpec. [Sean 
+Cribbs]
 * Use ActionView::PathSet instead of normal arrays for view paths. [Pat
 Allan]
 * Don't raise exception on unauthenticated request to /admin/logout. 

@@ -7,6 +7,7 @@ raise "To avoid rake task loading problems: run 'rake clobber' in vendor/plugins
 rspec_base = File.expand_path(File.dirname(__FILE__) + '/../../vendor/plugins/rspec/lib')
 $LOAD_PATH.unshift(rspec_base) if File.exist?(rspec_base)
 require 'spec/rake/spectask'
+require 'cucumber/rake/task'
 
 spec_prereq = File.exist?(File.join(RAILS_ROOT, 'config', 'database.yml')) ? "db:test:prepare" : :noop
 task :noop do
@@ -56,13 +57,15 @@ namespace :spec do
     t.spec_files = FileList['vendor/plugins/**/spec/**/*_spec.rb'].exclude('vendor/plugins/rspec/*')
   end
 
-  Rake::Task['spec:integration'].clear if Rake::Task.task_defined?('spec:integration')
-  [:models, :controllers, :views, :helpers, :lib, :integration].each do |sub|
+  [:models, :controllers, :views, :helpers, :lib].each do |sub|
     desc "Run the specs under spec/#{sub}"
     Spec::Rake::SpecTask.new(sub => spec_prereq) do |t|
       t.spec_opts = ['--options', "\"#{RADIANT_ROOT}/spec/spec.opts\""]
       t.spec_files = FileList["#{RADIANT_ROOT}/spec/#{sub}/**/*_spec.rb"]
     end
+  end
+  Cucumber::Rake::Task.new(:integration) do |t|
+    t.cucumber_opts = "--format progress"
   end
   
   desc 'Run all specs in spec/generators directory'
