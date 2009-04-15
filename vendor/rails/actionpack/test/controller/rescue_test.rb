@@ -1,7 +1,5 @@
 require 'abstract_unit'
 
-uses_mocha 'rescue' do
-
 class RescueController < ActionController::Base
   class NotAuthorized < StandardError
   end
@@ -65,6 +63,11 @@ class RescueController < ActionController::Base
   # This is a Dispatcher exception and should be in ApplicationController.
   rescue_from ActionController::RoutingError do
     render :text => 'no way'
+  end
+
+  before_filter(:only => :before_filter_raises) { raise 'umm nice' }
+
+  def before_filter_raises
   end
 
   def raises
@@ -154,6 +157,16 @@ class RescueControllerTest < ActionController::TestCase
     end
   end
 
+  def test_rescue_exceptions_raised_by_filters
+    with_rails_root FIXTURE_PUBLIC do
+      with_all_requests_local false do
+        get :before_filter_raises
+      end
+    end
+
+    assert_response :internal_server_error
+  end
+
   def test_rescue_action_locally_if_all_requests_local
     @controller.expects(:local_request?).never
     @controller.expects(:rescue_action_locally).with(@exception)
@@ -182,6 +195,24 @@ class RescueControllerTest < ActionController::TestCase
     with_all_requests_local false do
       @controller.send :rescue_action, @exception
     end
+  end
+
+  def test_rescue_action_in_public_with_localized_error_file
+    # Change locale
+    old_locale = I18n.locale
+    I18n.locale = :da
+
+    with_rails_root FIXTURE_PUBLIC do
+      with_all_requests_local false do
+        get :raises
+      end
+    end
+
+    assert_response :internal_server_error
+    body = File.read("#{FIXTURE_PUBLIC}/public/500.da.html")
+    assert_equal body, @response.body
+  ensure
+    I18n.locale = old_locale
   end
 
   def test_rescue_action_in_public_with_error_file
@@ -291,24 +322,6 @@ class RescueControllerTest < ActionController::TestCase
     assert_equal 'template_error',    templates[ActionView::TemplateError.name]
   end
 
-  def test_clean_backtrace
-    with_rails_root nil do
-      # No action if RAILS_ROOT isn't set.
-      cleaned = @controller.send(:clean_backtrace, @exception)
-      assert_equal @exception.backtrace, cleaned
-    end
-
-    with_rails_root Dir.pwd do
-      # RAILS_ROOT is removed from backtrace.
-      cleaned = @controller.send(:clean_backtrace, @exception)
-      expected = @exception.backtrace.map { |line| line.sub(RAILS_ROOT, '') }
-      assert_equal expected, cleaned
-
-      # No action if backtrace is nil.
-      assert_nil @controller.send(:clean_backtrace, Exception.new)
-    end
-  end
-
   def test_not_implemented
     with_all_requests_local false do
       with_rails_public_path(".") do
@@ -385,8 +398,19 @@ class RescueControllerTest < ActionController::TestCase
   end
 
   def test_rescue_dispatcher_exceptions
-    RescueController.process_with_exception(@request, @response, ActionController::RoutingError.new("Route not found"))
+    env = @request.env
+    env["action_controller.rescue.request"] = @request
+    env["action_controller.rescue.response"] = @response
+
+    RescueController.call_with_exception(env, ActionController::RoutingError.new("Route not found"))
     assert_equal "no way", @response.body
+  end
+
+  def test_rescue_dispatcher_exceptions_without_request_set
+    @request.env['REQUEST_URI'] = '/no_way'
+    response = RescueController.call_with_exception(@request.env, ActionController::RoutingError.new("Route not found"))
+    assert_kind_of ActionController::Response, response
+    assert_equal "no way", response.body
   end
 
   protected
@@ -510,4 +534,3 @@ class ControllerInheritanceRescueControllerTest < ActionController::TestCase
     assert_response :created
   end
 end
-end # uses_mocha

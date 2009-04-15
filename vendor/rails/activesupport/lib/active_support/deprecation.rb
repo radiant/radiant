@@ -13,7 +13,7 @@ module ActiveSupport
                          $stderr.puts callstack.join("\n  ") if debug
                        },
       'development' => Proc.new { |message, callstack|
-                         logger = defined?(::RAILS_DEFAULT_LOGGER) ? ::RAILS_DEFAULT_LOGGER : Logger.new($stderr)
+                         logger = defined?(Rails) ? Rails.logger : Logger.new($stderr)
                          logger.warn message
                          logger.debug callstack.join("\n  ") if debug
                        }
@@ -90,10 +90,15 @@ module ActiveSupport
         method_names.each do |method_name|
           alias_method_chain(method_name, :deprecation) do |target, punctuation|
             class_eval(<<-EOS, __FILE__, __LINE__)
-              def #{target}_with_deprecation#{punctuation}(*args, &block)
-                ::ActiveSupport::Deprecation.warn(self.class.deprecated_method_warning(:#{method_name}, #{options[method_name].inspect}), caller)
-                #{target}_without_deprecation#{punctuation}(*args, &block)
-              end
+              def #{target}_with_deprecation#{punctuation}(*args, &block)   # def generate_secret_with_deprecation(*args, &block)
+                ::ActiveSupport::Deprecation.warn(                          #   ::ActiveSupport::Deprecation.warn(
+                  self.class.deprecated_method_warning(                     #     self.class.deprecated_method_warning(
+                    :#{method_name},                                        #       :generate_secret,
+                    #{options[method_name].inspect}),                       #       "You should use ActiveSupport::SecureRandom.hex(64)"),
+                  caller                                                    #     caller
+                )                                                           #   )
+                #{target}_without_deprecation#{punctuation}(*args, &block)  #   generate_secret_without_deprecation(*args, &block)
+              end                                                           # end
             EOS
           end
         end
@@ -111,37 +116,6 @@ module ActiveSupport
       def deprecation_horizon
         '2.3'
       end
-    end
-
-    module Assertions #:nodoc:
-      def assert_deprecated(match = nil, &block)
-        result, warnings = collect_deprecations(&block)
-        assert !warnings.empty?, "Expected a deprecation warning within the block but received none"
-        if match
-          match = Regexp.new(Regexp.escape(match)) unless match.is_a?(Regexp)
-          assert warnings.any? { |w| w =~ match }, "No deprecation warning matched #{match}: #{warnings.join(', ')}"
-        end
-        result
-      end
-
-      def assert_not_deprecated(&block)
-        result, deprecations = collect_deprecations(&block)
-        assert deprecations.empty?, "Expected no deprecation warning within the block but received #{deprecations.size}: \n  #{deprecations * "\n  "}"
-        result
-      end
-
-      private
-        def collect_deprecations
-          old_behavior = ActiveSupport::Deprecation.behavior
-          deprecations = []
-          ActiveSupport::Deprecation.behavior = Proc.new do |message, callstack|
-            deprecations << message
-          end
-          result = yield
-          [result, deprecations]
-        ensure
-          ActiveSupport::Deprecation.behavior = old_behavior
-        end
     end
 
     class DeprecationProxy #:nodoc:
@@ -219,25 +193,4 @@ end
 
 class Module
   include ActiveSupport::Deprecation::ClassMethods
-end
-
-require 'test/unit/error'
-
-module Test
-  module Unit
-    class TestCase
-      include ActiveSupport::Deprecation::Assertions
-    end
-
-    class Error # :nodoc:
-      # Silence warnings when reporting test errors.
-      def message_with_silenced_deprecation
-        ActiveSupport::Deprecation.silence do
-          message_without_silenced_deprecation
-        end
-      end
-
-      alias_method_chain :message, :silenced_deprecation
-    end
-  end
 end

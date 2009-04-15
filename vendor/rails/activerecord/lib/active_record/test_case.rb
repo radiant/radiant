@@ -1,15 +1,7 @@
 require "active_support/test_case"
 
-module ActiveRecord 
+module ActiveRecord
   class TestCase < ActiveSupport::TestCase #:nodoc:
-    self.fixture_path               = FIXTURES_ROOT
-    self.use_instantiated_fixtures  = false
-    self.use_transactional_fixtures = true
-
-    def create_fixtures(*table_names, &block)
-      Fixtures.create_fixtures(FIXTURES_ROOT, table_names, {}, &block)
-    end
-
     def assert_date_from_db(expected, actual, message = nil)
       # SybaseAdapter doesn't have a separate column type just for dates,
       # so the time is in the string and incorrectly formatted
@@ -35,6 +27,7 @@ module ActiveRecord
       $queries_executed = []
       yield
     ensure
+      %w{ BEGIN COMMIT }.each { |x| $queries_executed.delete(x) }
       assert_equal num, $queries_executed.size, "#{$queries_executed.size} instead of #{num} queries were executed.#{$queries_executed.size == 0 ? '' : "\nQueries:\n#{$queries_executed.join("\n")}"}"
     end
 
@@ -55,6 +48,19 @@ module ActiveRecord
     def connection_allow_concurrency_teardown
       ActiveRecord::Base.clear_all_connections!
       ActiveRecord::Base.establish_connection(@connection)
+    end
+
+    def with_kcode(kcode)
+      if RUBY_VERSION < '1.9'
+        orig_kcode, $KCODE = $KCODE, kcode
+        begin
+          yield
+        ensure
+          $KCODE = orig_kcode
+        end
+      else
+        yield
+      end
     end
   end
 end

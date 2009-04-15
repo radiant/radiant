@@ -37,6 +37,7 @@ class Firm < Company
   has_many :clients, :order => "id", :dependent => :destroy, :counter_sql =>
       "SELECT COUNT(*) FROM companies WHERE firm_id = 1 " +
       "AND (#{QUOTED_TYPE} = 'Client' OR #{QUOTED_TYPE} = 'SpecialClient' OR #{QUOTED_TYPE} = 'VerySpecialClient' )"
+  has_many :unsorted_clients, :class_name => "Client"
   has_many :clients_sorted_desc, :class_name => "Client", :order => "id DESC"
   has_many :clients_of_firm, :foreign_key => "client_of", :class_name => "Client", :order => "id"
   has_many :unvalidated_clients_of_firm, :foreign_key => "client_of", :class_name => "Client", :validate => false
@@ -69,6 +70,7 @@ class Firm < Company
   has_one :account_with_select, :foreign_key => "firm_id", :select => "id, firm_id", :class_name=>'Account'
   has_one :readonly_account, :foreign_key => "firm_id", :class_name => "Account", :readonly => true
   has_one :account_using_primary_key, :primary_key => "firm_id", :class_name => "Account"
+  has_one :deletable_account, :foreign_key => "firm_id", :class_name => "Account", :dependent => :delete
 end
 
 class DependentFirm < Company
@@ -80,6 +82,7 @@ class ExclusivelyDependentFirm < Company
   has_one :account, :foreign_key => "firm_id", :dependent => :delete
   has_many :dependent_sanitized_conditional_clients_of_firm, :foreign_key => "client_of", :class_name => "Client", :order => "id", :dependent => :delete_all, :conditions => "name = 'BigShot Inc.'"
   has_many :dependent_conditional_clients_of_firm, :foreign_key => "client_of", :class_name => "Client", :order => "id", :dependent => :delete_all, :conditions => ["name = ?", 'BigShot Inc.']
+  has_many :dependent_hash_conditional_clients_of_firm, :foreign_key => "client_of", :class_name => "Client", :order => "id", :dependent => :delete_all, :conditions => {:name => 'BigShot Inc.'}
 end
 
 class Client < Company

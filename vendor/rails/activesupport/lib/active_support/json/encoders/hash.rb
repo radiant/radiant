@@ -5,7 +5,7 @@ class Hash
   # the hash keys. For example:
   #
   #   { :name => "Konata Izumi", 'age' => 16, 1 => 2 }.to_json
-  #   # => {"name": "Konata Izumi", 1: 2, "age": 16}
+  #   # => {"name": "Konata Izumi", "1": 2, "age": 16}
   #
   # The keys in the JSON string are unordered due to the nature of hashes.
   #
@@ -31,17 +31,16 @@ class Hash
   def to_json(options = {}) #:nodoc:
     hash_keys = self.keys
 
-    if options[:except]
-      hash_keys = hash_keys - Array(options[:except])
-    elsif options[:only]
-      hash_keys = hash_keys & Array(options[:only])
+    if except = options[:except]
+      hash_keys = hash_keys - Array.wrap(except)
+    elsif only = options[:only]
+      hash_keys = hash_keys & Array.wrap(only)
     end
 
-    returning result = '{' do
-      result << hash_keys.map do |key|
-        "#{ActiveSupport::JSON.encode(key)}: #{ActiveSupport::JSON.encode(self[key], options)}"
-      end * ', '
-      result << '}'
-    end
+    result = '{'
+    result << hash_keys.map do |key|
+      "#{ActiveSupport::JSON.encode(key.to_s)}: #{ActiveSupport::JSON.encode(self[key], options)}"
+    end * ', '
+    result << '}'
   end
 end

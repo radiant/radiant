@@ -51,7 +51,8 @@ class ActiveRecordTestConnector
         if Object.const_defined?(:ActiveRecord)
           defaults = { :database => ':memory:' }
           begin
-            options = defaults.merge :adapter => 'sqlite3', :timeout => 500
+            adapter = defined?(JRUBY_VERSION) ? 'jdbcsqlite3' : 'sqlite3'
+            options = defaults.merge :adapter => adapter, :timeout => 500
             ActiveRecord::Base.establish_connection(options)
             ActiveRecord::Base.configurations = { 'sqlite3_ar_integration' => options }
             ActiveRecord::Base.connection
@@ -82,7 +83,9 @@ class ActiveRecordTestConnector
   end
 end
 
-class ActiveRecordTestCase < ActiveSupport::TestCase
+class ActiveRecordTestCase < ActionController::TestCase
+  include ActiveRecord::TestFixtures
+
   # Set our fixture path
   if ActiveRecordTestConnector.able_to_connect
     self.fixture_path = [FIXTURE_LOAD_PATH]
@@ -96,8 +99,6 @@ class ActiveRecordTestCase < ActiveSupport::TestCase
   def run(*args)
     super if ActiveRecordTestConnector.connected
   end
-
-  def default_test; end
 end
 
 ActiveRecordTestConnector.setup

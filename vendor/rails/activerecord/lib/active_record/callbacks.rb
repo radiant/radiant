@@ -77,7 +77,7 @@ module ActiveRecord
   #
   # In that case, <tt>Reply#destroy</tt> would only run +destroy_readers+ and _not_ +destroy_author+. So, use the callback macros when
   # you want to ensure that a certain callback is called for the entire hierarchy, and use the regular overwriteable methods
-  # when you want to leave it up to each descendent to decide whether they want to call +super+ and trigger the inherited callbacks.
+  # when you want to leave it up to each descendant to decide whether they want to call +super+ and trigger the inherited callbacks.
   #
   # *IMPORTANT:* In order for inheritance to work for the callback queues, you must specify the callbacks before specifying the
   # associations. Otherwise, you might trigger the loading of a child before the parent has registered the callbacks and they won't
@@ -104,16 +104,12 @@ module ActiveRecord
   # The callback objects have methods named after the callback called with the record as the only parameter, such as:
   #
   #   class BankAccount < ActiveRecord::Base
-  #     before_save      EncryptionWrapper.new("credit_card_number")
-  #     after_save       EncryptionWrapper.new("credit_card_number")
-  #     after_initialize EncryptionWrapper.new("credit_card_number")
+  #     before_save      EncryptionWrapper.new
+  #     after_save       EncryptionWrapper.new
+  #     after_initialize EncryptionWrapper.new
   #   end
   #
   #   class EncryptionWrapper
-  #     def initialize(attribute)
-  #       @attribute = attribute
-  #     end
-  #
   #     def before_save(record)
   #       record.credit_card_number = encrypt(record.credit_card_number)
   #     end
@@ -135,7 +131,39 @@ module ActiveRecord
   #   end
   #
   # So you specify the object you want messaged on a given callback. When that callback is triggered, the object has
-  # a method by the name of the callback messaged.
+  # a method by the name of the callback messaged. You can make these callbacks more flexible by passing in other
+  # initialization data such as the name of the attribute to work with:
+  #
+  #   class BankAccount < ActiveRecord::Base
+  #     before_save      EncryptionWrapper.new("credit_card_number")
+  #     after_save       EncryptionWrapper.new("credit_card_number")
+  #     after_initialize EncryptionWrapper.new("credit_card_number")
+  #   end
+  #
+  #   class EncryptionWrapper
+  #     def initialize(attribute)
+  #       @attribute = attribute
+  #     end
+  #
+  #     def before_save(record)
+  #       record.send("#{@attribute}=", encrypt(record.send("#{@attribute}")))
+  #     end
+  #
+  #     def after_save(record)
+  #       record.send("#{@attribute}=", decrypt(record.send("#{@attribute}")))
+  #     end
+  #
+  #     alias_method :after_find, :after_save
+  #
+  #     private
+  #       def encrypt(value)
+  #         # Secrecy is committed
+  #       end
+  #
+  #       def decrypt(value)
+  #         # Secrecy is unveiled
+  #       end
+  #   end
   #
   # The callback macros usually accept a symbol for the method they're supposed to run, but you can also pass a "method string",
   # which will then be evaluated within the binding of the callback. Example:
@@ -219,8 +247,9 @@ module ActiveRecord
     def after_save()  end
     def create_or_update_with_callbacks #:nodoc:
       return false if callback(:before_save) == false
-      result = create_or_update_without_callbacks
-      callback(:after_save)
+      if result = create_or_update_without_callbacks
+        callback(:after_save)
+      end
       result
     end
     private :create_or_update_with_callbacks
