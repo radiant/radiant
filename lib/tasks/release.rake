@@ -33,9 +33,6 @@ namespace 'radiant' do
     s.bindir = 'bin'
     s.executables = (Dir['bin/*'] + Dir['scripts/*']).map { |file| File.basename(file) } 
     s.add_dependency 'rake', '>= 0.8.3'
-    s.add_dependency 'rspec', '>= 1.1.11'
-    s.add_dependency 'rspec-rails', '>= 1.1.11'
-    # s.autorequire = 'radiant'
     s.has_rdoc = true
     s.rdoc_options << '--title' << RDOC_TITLE << '--line-numbers' << '--main' << 'README'
     rdoc_excludes = Dir["**"].reject { |f| !File.directory? f }

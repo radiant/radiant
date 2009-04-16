@@ -422,7 +422,7 @@ describe Page, "#find_by_url" do
   end
 
   it 'should find a custom file not found page' do
-    @page.find_by_url('/gallery/nothing-doing/').should == pages(:no_picture)
+    @page.find_by_url('/gallery/nothing-doing').should == pages(:no_picture)
   end
 
   it 'should not find draft pages in live mode' do

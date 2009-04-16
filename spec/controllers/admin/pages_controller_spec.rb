@@ -8,9 +8,9 @@ describe Admin::PagesController do
   end
 
   it "should route children to the pages controller" do
-    route_for(:controller => "admin/pages", :page_id => 1, 
+    route_for(:controller => "admin/pages", :page_id => '1', 
       :action => "index").should == '/admin/pages/1/children'
-    route_for(:controller => "admin/pages", :page_id => 1, 
+    route_for(:controller => "admin/pages", :page_id => '1', 
       :action => 'new').should == '/admin/pages/1/children/new'
   end
 

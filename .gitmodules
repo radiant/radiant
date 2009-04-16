@@ -1,6 +1,3 @@
-[submodule "vendor/plugins/spec_integration"]
-	path = vendor/plugins/spec_integration
-	url = git://github.com/aiwilliams/spec_integration.git
 [submodule "vendor/plugins/vizres"]
 	path = vendor/plugins/vizres
 	url = git://github.com/pelargir/vizres.git

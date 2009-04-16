@@ -144,7 +144,7 @@ module Radiant
         unless ActionMailer::Base.respond_to? :view_paths
           require "#{RADIANT_ROOT}/lib/plugins/extension_patches/lib/mailer_view_paths_extension"
         end
-        ActionMailer::Base.view_paths = view_paths
+        ActionMailer::Base.view_paths = ActionView::Base.process_view_paths(view_paths)
       end
       if configuration.frameworks.include?(:action_controller) || defined?(ActionController::Base)
         view_paths.each do |vp|

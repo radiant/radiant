@@ -2,6 +2,12 @@
 
 === Edge
 
+* Convert integration specs to Cucumber stories and update RSpec. [Sean 
+Cribbs]
+* Use ActionView::PathSet instead of normal arrays for view paths. [Pat
+Allan]
+* Don't raise exception on unauthenticated request to /admin/logout. 
+[Josh French]
 * Reverse view paths order in extension loader. [Sean Cribbs, Brent 
 Kroeker]
 * Remove obviated Ruby 1.8.7 compatibility patch. [Sean Cribbs]
