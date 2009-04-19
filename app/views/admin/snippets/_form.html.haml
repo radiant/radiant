@@ -13,7 +13,7 @@
           ~ f.text_area :content, :class => "textarea", :style => "width: 100%"
       - form.edit_filter do
         %p
-          %label{:for=>"snippet_filter"} Filter
+          %label{:for=>"snippet_filter"}= t('views.shared.filter')
           = f.select :filter_id, [['none', '']] + TextFilter.descendants.map { |f| f.filter_name }.sort, :id => 'snippet_filter'
       - form.edit_timestamp do
         = updated_stamp @snippet

@@ -5,7 +5,7 @@
     - render_region :form do |form|
       - form.edit_title do
         %p.title
-          = f.label :name
+          = f.label :name, t('views.shared.name')
           = f.text_field 'name', :maxlength => 100, :class => "textbox"
       - form.edit_extended_metadata do
         #extended-metadata.row{meta_visible(:meta)}

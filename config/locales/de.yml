@@ -92,6 +92,9 @@ de:
       delete_pages: 'Lösche {{pages}}'  
       remove_pages: 'Lsche {{pages}}' 
       remove_warning_text: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following {{pages}}?' 
+      available_tags_for: 'Available Tags for'
+      search_tags: 'Search Tags:'
+      add_part: 'Add Part'
     snippets:
       snippets: 'Snippets'          
       snippet: 'Snippet'   
