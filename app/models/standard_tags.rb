@@ -125,7 +125,7 @@ module StandardTags
     Renders the tag contents only if the current page is the first child in the context of
     a children:each tag
     
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:children:each>
       <r:if_first >
@@ -144,7 +144,7 @@ module StandardTags
     Renders the tag contents unless the current page is the first child in the context of
     a children:each tag
     
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:children:each>
       <r:unless_first >
@@ -162,7 +162,7 @@ module StandardTags
     Renders the tag contents only if the current page is the last child in the context of
     a children:each tag
     
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:children:each>
       <r:if_last >
@@ -181,7 +181,7 @@ module StandardTags
     Renders the tag contents unless the current page is the last child in the context of
     a children:each tag
     
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:children:each>
       <r:unless_last >
@@ -207,7 +207,7 @@ module StandardTags
     present header changes. Simply specify the names of the other headers in a semicolon
     separated list.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:children:each>
       <r:header [name="header_name"] [restart="name1[;name2;...]"]>
@@ -235,7 +235,7 @@ module StandardTags
   desc %{
     Page attribute tags inside this tag refer to the parent of the current page.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:parent>...</r:parent></code></pre>
   }
@@ -249,7 +249,7 @@ module StandardTags
     Renders the contained elements only if the current contextual page has a parent, i.e.
     is not the root page.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:if_parent>...</r:if_parent></code></pre>
   }
@@ -262,7 +262,7 @@ module StandardTags
     Renders the contained elements only if the current contextual page has no parent, i.e.
     is the root page.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:unless_parent>...</r:unless_parent></code></pre>
   }
@@ -277,7 +277,7 @@ module StandardTags
     to the given status, the default is @"published"@. @status="all"@ includes all
     non-virtual pages regardless of status.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:if_children [status="published"]>...</r:if_children></code></pre>
   }
@@ -292,7 +292,7 @@ module StandardTags
     the default is @"published"@. @status="all"@ includes all non-virtual pages
     regardless of status.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:unless_children [status="published"]>...</r:unless_children></code></pre>
   }
@@ -306,7 +306,7 @@ module StandardTags
     attribute to reset the cycle to the beginning.  Use the @name@ attribute to track
     multiple cycles; the default is @cycle@.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:cycle values="first, second, third" [reset="true|false"] [name="cycle"] /></code></pre>
   }
@@ -330,7 +330,7 @@ module StandardTags
     part to be evaluated in the context of the child page. By default 'contextual'
     is set to true.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:content [part="part_name"] [inherit="true|false"] [contextual="true|false"] /></code></pre>
   }
@@ -365,7 +365,7 @@ module StandardTags
     so that it will render the containing elements if any of the listed parts are found.
     By default the @find@ attribute is set to @all@.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:if_content [part="part_name, other_part"] [inherit="true"] [find="any"]>...</r:if_content></code></pre>
   }
@@ -401,7 +401,7 @@ module StandardTags
     so that it will not render the containing elements if any of the listed parts are found.
     By default the @find@ attribute is set to @all@.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:unless_content [part="part_name, other_part"] [inherit="false"] [find="any"]>...</r:unless_content></code></pre>
   }
@@ -434,7 +434,7 @@ module StandardTags
     given in the @matches@ attribute. If the @ignore_case@ attribute is set to false, the
     match is case sensitive. By default, @ignore_case@ is set to true.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:if_url matches="regexp" [ignore_case="true|false"]>...</r:if_url></code></pre>
   }
@@ -449,7 +449,7 @@ module StandardTags
   desc %{
     The opposite of the @if_url@ tag.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:unless_url matches="regexp" [ignore_case="true|false"]>...</r:unless_url></code></pre>
   }
@@ -466,7 +466,7 @@ module StandardTags
 
     This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is or descends from the current page.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:if_ancestor_or_self>...</r:if_ancestor_or_self></code></pre>
   }
@@ -479,7 +479,7 @@ module StandardTags
 
     This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless the child element is or descends from the current page.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:unless_ancestor_or_self>...</r:unless_ancestor_or_self></code></pre>
   }
@@ -492,7 +492,7 @@ module StandardTags
 
     This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is the current page.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:if_self>...</r:if_self></code></pre>
   }
@@ -505,7 +505,7 @@ module StandardTags
 
     This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless the child element is the current page.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:unless_self>...</r:unless_self></code></pre>
   }
@@ -530,7 +530,7 @@ module StandardTags
     options are @published_at@, @created_at@, @updated_at@, and @now@. @now@ will render the
     current date/time, regardless of the  page.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:date [format="%A, %B %d, %Y"] [for="published_at"]/></code></pre>
   }
@@ -562,7 +562,7 @@ module StandardTags
     append a pound sign (<code>#</code>) followed by the value of the attribute to
     the @href@ attribute of the HTML @a@ tag--effectively making an HTML anchor.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:link [anchor="name"] [other attributes...] /></code></pre>
     
@@ -585,7 +585,7 @@ module StandardTags
     default it is set to @>@. The boolean nolinks attribute can be specified to render
     breadcrumbs in plain text, without any links (useful when generating title tag).
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:breadcrumbs [separator="separator_string"] [nolinks="true"] /></code></pre>
   }
@@ -608,14 +608,14 @@ module StandardTags
   desc %{
     Renders the snippet specified in the @name@ attribute within the context of a page.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:snippet name="snippet_name" /></code></pre>
 
     When used as a double tag, the part in between both tags may be used within the
     snippet itself, being substituted in place of @<r:yield/>@.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:snippet name="snippet_name">Lorem ipsum dolor...</r:snippet></code></pre>
   }
@@ -671,7 +671,7 @@ module StandardTags
     Inside this tag all page related tags refer to the page found at the @url@ attribute.
     @url@s may be relative or absolute paths.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:find url="value_to_find">...</r:find></code></pre>
   }
@@ -689,7 +689,7 @@ module StandardTags
   desc %{
     Randomly renders one of the options specified by the @option@ tags.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:random>
       <r:option>...</r:option>
@@ -713,7 +713,7 @@ module StandardTags
   desc %{
     Nothing inside a set of comment tags is rendered.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:comment>...</r:comment></code></pre>
   }
@@ -723,7 +723,7 @@ module StandardTags
   desc %{
     Escapes angle brackets, etc. for rendering in an HTML document.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:escape_html>...</r:escape_html></code></pre>
   }
@@ -734,7 +734,7 @@ module StandardTags
   desc %{
     Outputs the published date using the format mandated by RFC 1123. (Ideal for RSS feeds.)
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:rfc1123_date /></code></pre>
   }
@@ -757,7 +757,7 @@ module StandardTags
 
     The @between@ tag specifies what should be inserted in between each of the links.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:navigation urls="[Title: url | Title: url | ...]">
       <r:normal><a href="<r:url />"><r:title /></a></r:normal>
@@ -811,7 +811,7 @@ module StandardTags
   desc %{
     Renders the containing elements only if Radiant in is development mode.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:if_dev>...</r:if_dev></code></pre>
   }
@@ -822,7 +822,7 @@ module StandardTags
   desc %{
     The opposite of the @if_dev@ tag.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:unless_dev>...</r:unless_dev></code></pre>
   }
@@ -834,7 +834,7 @@ module StandardTags
     Prints the page's status as a string.  Optional attribute 'downcase'
     will cause the status to be all lowercase.
 
-    *Usage:*
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:status [downcase='true'] /></code></pre>
   }
