@@ -101,7 +101,7 @@ ru:
       edit_snippet: 'Редактирование Вставки'
       description: 'Вставки это небольшие части содержимого которые можно подключають к страницам или макетам.'
       remove_warning_text: 'Вы уверены что хотите <strong class="warning">безвозвратно удалить</strong> эту вставку?'
-      delete_snippet: 'Delete Snippet'
+      delete_snippet: 'Удалить Вставку'
     users:
       user: 'Пользователь'
       users: 'Пользователи'
