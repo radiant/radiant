@@ -1,0 +1,204 @@
+fr:  
+  # The display name of this language file
+  this_file_language: "Français" 
+  
+  # Controllers       
+  resource_controller:
+    saved: "{humanized_model_name}} enregistré ci-dessous."
+    validation_errors: "Erreurs de validation pendant le traitement de ce formulaire. SVP examinez son contenu et corrigez les erreurs avant de continuer."
+    removed: "{{humanized_model_name}} supprimé."  
+    update_conflict: "{{humanized_model_name}} a été modifié depuis son affichage. Toute modification ne pourra être enregistrée sans perte potentielle de donnée." 
+  pages_controller:
+    saved: "Votre page enregistrée ci-dessous."  
+    removed_many: "Les pages ont été correctement retirées du site."   
+    removed_one: "La page a été correctement retirée du site."  
+  preferences_contoller:
+    updated: "Vos préférences ont été modifiées."
+    error_updating: "Une erreur a été détectée pendant la modification de vos préférences."   
+  users_controller:
+    cannot_delete_self: "Vous ne pouvez pas vous supprimer vous-même!. "  
+  welcome_controller:
+    logged_out: "Vous n'êtes plus identifié(e)'"  
+    invalid_user: "Nom ou mot de passe invalide."   
+  
+  # Models
+  models:
+    # Shared translations
+    required: "obligatoire"
+    name_in_use: "nom déjà utilisé"
+    slug_in_use: "jeton (slug) déjà utilisé pour l'enfant de ce parent"
+    character_limit: "{{count}}-caractères maximum"
+    character_minimum: "{{count}}-caractères minimum"
+    must_be_number: "doit être un nombre"
+    invalid_format: "format non valide"
+    no_spaces_tabs: "ne peut pas inclure d'espace our de caractères de tabulation"
+    # User
+    login_in_use: "identification déjà utilisée"
+    password_confirmation: "doit être identique à sa confirmation"
+    invalid_email: "adresse courriel non valide"  
+  
+  # Views
+  views:   
+    shared:
+      modify: "Modifier" 
+      more: "Plus"
+      less: "Moins" 
+      body: "Body"  
+      name: "Nom"     
+      filter: "Filtre"
+      cancel: "Annuler"
+      or: "ou"
+    extensions:        
+      extensions: "Extensions" 
+      extension: "Extension"
+      website: "Website"
+      version: "Version"
+    # This is the rails application layout  
+    layout:
+      made_with_ruby: "Ce site, écrit en Ruby, est propulsé par"  
+      version: "Version"  
+      users: "Utilisateurs"
+      extensions: "Extensions" 
+      preferences: "Préférences" 
+      view_site: "Afficher le site"
+      log_out: "Déconnexion"
+    # These are the templates for the Layouts Controller
+    layouts: 
+      layouts: "Layouts"
+      layout: "Layout"  
+      description: "Utilisez les layouts pour définir l'apparence visuelle d'une page Web. Les layouts peuvent inclure des étiquettes spécifiques (tags) pour incorporer le contenu d'une page et d'autres éléments tels que l'en-tête (header) ou le bas de page (footer). Cliquez sur le nom du layout pour le modifier ou cliquez sur <code>Retirer</code> pour le supprimer."
+      new_layout: "Ajouter Layout"    
+      edit_layout: "Modifier Layout"
+      content_type: "Type&#8209;Contenu"    
+      remove_layout: "Retirer Layout" 
+      delete_layout: "Supprimer Layout"  
+      remove_warning_text: "Confirmez-vous la <strong class='warning'>suppression</strong> du layout suivant?"   
+    page_parts:
+      reference:  "Référence"
+      available_tags: "Tags disponibles"
+    pages:
+      pages: "Pages"     
+      page: "Page"     
+      new_page: "Nouvelle Page"
+      edit_page:  "Modifier Page"   
+      page_title: "Titre"  
+      remove_tab: "Supprimer Onglet"  
+      add_tab: "Ajouter Onglet"   
+      status: "Statut"
+      page_type: "Type Page"
+      published_at: "Publié le" 
+      close: "Fermer"
+      no_pages: "Aucune Page" 
+      delete_pages: "Supprimer {{pages}}"  
+      remove_pages: "Retirer {{pages}}" 
+      remove_warning_text: "Confirmez-vous la <strong class='warning'>suppression</strong> des pages suivantes {{pages}}?" 
+    snippets:
+      snippets: "Snippets"          
+      snippet: "Snippet"   
+      new_snippet: "Ajouter Snippet"
+      edit_snippet: "Modifier Snippet"
+      description: "Les Snippets sont des petit fragments de contenu qui sont inclus dans d'autres pages ou layouts."
+      remove_warning_text: "Confirmez-vous la <strong class='warning'>suppression</strong> des fragments réutilisables (snippet) suivants?"   
+    users:
+      user: "Utilisateur"
+      users: "Utilisateurs"      
+      username: "Nom Utilisateur"
+      password: "Mot de passe" 
+      name: "Nom"
+      login: "Identification" 
+      edit_user: "Modifier Utilisateur"
+      new_user: "Ajouter Utilisateur"  
+      roles: "Roles"    
+      admin: "Administrateur" 
+      developer: "Développeur"
+      language: "Langage"
+      notes: "Notes"    
+      optional: "En option"
+      required: "Obligatoire"  
+      valid_email: "SVP utilisez une adresse courriel valide." 
+      valid_login: "3 caractères minimum. Doit être unique."
+      valid_password: "5 caractères minimum."
+      leave_password_unchanged: "Laissez de mot de passe en blanc for pour ne pas le modifier."
+      password_confirmation: "Confirmer le Mot de passe"
+      roles_description: "Les Rôles restreignent les privilèges des utilisateurs et conditionnent la visibilité de certains éléments affichés dans l'interface d'administration."
+      language_description: "Le langage de préférence pour l'interface d'administration."
+      remove_warning_text: "Are you sure you want to <strong class='warning'>permanently remove</strong> the following user?" 
+    welcome:
+      login: "SVP Identifiez-vous" 
+      remember_me: "Conserver mes informations"  
+      
+       
+  
+  # Page status  
+  status:
+    draft: "Brouillon"
+    reviewed: "Révisé"
+    hidden: "Caché"
+    published: "Publié" 
+  
+  # Buttons
+  buttons:
+    save_and_continue: "Enregistrer et continuer"
+    save_changes: "Enregistrer les modifications"  
+    create: "Créer {{name}}"     
+    
+  # Timestamp. This may need to be changed as it will most likely not work for many languages.
+  timestamp:
+    last_updated: "Dernière modification"
+    by: "par"
+    at: "à"
+    
+  # Select lists
+  select:
+    none: "<aucun>" 
+    normal: "<normal>"
+    inherit: "<hérite de>"
+    
+  # Main Navigation Tags
+  tabs: 
+    pages: "Pages"
+    snippets: "Snippets"
+    layouts: "Layouts"
+    
+  # Standard Tag Descriptions
+  tag_desc:
+    usage: "Utilisation"
+    
+    page:
+      desc: "Permet aux tags attachés aux attributs de page de faire référence à la page actuelle."
+      attributes: "Affiche l'attribut @{{method}}@ de la page actuelle."
+      url: "Affiche l'attribut @url@ de la page actuelle."
+    
+    children: 
+      desc: "Donne accès aux enfants d'une page."
+      count: "Affiche le nombre total d'enfants'."
+      first: "Renvoie le premier enfant. A l'intérieur de ce tag tous les tags d'attributs de page sont mis en correspondance avec le premier enfant. <br /> Utilise les même options de tri que @<r:children:each>@."    
+      last: "Renvoie le dernier enfant.  A l'intérieur de ce tag tous les tags d'attributs de page sont mis en correspondance avec le dernier enfant. <br /> Utilise les même options de tri que @<r:children:each>@.›"
+      each: "Chacun des enfants en séquence. A l'intérieur de ce tag tous les tags d'attributs de page sont mis en correspondance avec la page de l'enfant actuel."
+      child: "Tous les tags d'attributs de Page à l'intérieur de ce tag sont mis en correspondance avec l'enfant actuel. Cela peut être utile <br /> si vous êtes à l'intérieur d'un autre tag (comme <r:find>) et que vous ayez besoin de faire référence en retour à <br /> l'enfant actuel"
+    
+    
+  # Date and Time formats  
+  date:
+    formats:
+      default: "%d.%m.%Y"
+      short: "%e. %b"
+      long: "%e. %B %Y"
+      
+    day_names: [Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi]
+    abbr_day_names: [Di, Lu, Ma, Me, Je, Ve, Sa]
+    month_names: [~, Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Septembre, Octobre, Novembre, Decembre]
+    abbr_month_names: [~, Jan, Fev, Mar, Avr, Mai, Jun, Jul, Aou, Sep, Oct, Nov, Dec]
+    order: [:day, :month, :year]
+  
+  time:
+    formats:
+      timestamp: "%H:%M am %d. %B, %Y"
+      # Radiant doesn't really use these, but let's leave them here just in case.
+      default: "%A, %e. %B %Y, %H:%M Uhr" 
+      time: "%H:%M Uhr"
+      short: "%e.%m., %H:%M Uhr"
+      long: "%A, %e. %B %Y, %H:%M Uhr"
+    
+    am: ""
+    pm: ""

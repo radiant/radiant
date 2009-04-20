@@ -1,0 +1,210 @@
+ru:
+  # The display name of this language file
+  this_file_language: "Russian"
+
+  # Controllers
+  resource_controller:
+    saved: "Данные сохранены."
+    removed: "Объекты удалены успешно."
+    validation_errors: "Форма содержит ошибки. Для продолжения проверьте и исправьте пожалуйста введенные данные."
+    update_conflict: "Данные были модифицированы с момента загрузки. Измененмя не могут быть сохранены т.к. возможна потеря информации."
+  pages_controller:
+    saved: "Страница сохранена."
+    removed_many: "Страницы успешно удалены с сайта."
+    removed_one: "Страница успешно удалена с сайта."
+  preferences_contoller:
+    updated: "Ваши настройки сохранены"
+    error_updating: "Ошибка при сохранении настроек."
+  users_controller:
+    cannot_delete_self: "Нельзя удалять себя."
+  welcome_controller:
+    logged_out: "Вы вышли из системы."
+    invalid_user: "Неверное имя либо пароль."
+
+  # Models
+  models:
+    # Shared translations
+    required: 'обязательное поле'
+    name_in_use: 'имя ужк существует'
+    slug_in_use: 'окончание URL (slug) уже используется в иерархии страниц'
+    character_limit: 'ограничение {{count}} символов'
+    character_minimum: 'минимум {{count}} символов'
+    must_be_number: 'должно быть числом'
+    invalid_format: 'неверный формат'
+    no_spaces_tabs: 'не должно содержать пробелов м табудяций'
+    # User
+    login_in_use: 'Имя пользователя занято'
+    password_confirmation: 'несоответствие подтверждению'
+    invalid_email: 'неверный адрес e-mail'
+
+  # Views
+  views:
+    shared:
+      modify: 'Изменить'
+      more: 'Дополнмтельно'
+      less: 'Скрыть'
+      body: 'Содержимое'
+      name: 'Имя'
+      filter: 'Фильтр'
+      cancel: 'Отменить'
+      or: '&nbsp;&nbsp;'
+    extensions:
+      extensions: 'Расширения'
+      extension: 'Расширение'
+      website: 'Веб сайт'
+      version: 'Версия'
+    # This is the rails application layout
+    layout:
+      made_with_ruby: 'Сайт создан на языке Ruby с использованием'
+      version: 'Версия'
+      users: 'Пользователи'
+      extensions: 'Расширения'
+      preferences: 'Настройки'
+      view_site: 'Просмотр сайта'
+      log_out: 'Выход'
+    layouts:
+      layouts: 'Макеты'
+      layout: 'Макет'
+      description: 'Примнняйте макеты для оформления страниц. Макеты могут содержать спец. тэги для вставки содержимого страниц и других элементов как заголовок и нижний колонтитул. Кликните на его имени макета для его редактирования млм <code>Remove</code> для удаления.'
+      new_layout: 'Новый Макет'
+      edit_layout: 'Редактирование Макета'
+      content_type: 'Content&#8209;Type'
+      remove_layout: 'Удалить Макет' #remove
+      delete_layout: 'Удалить Макет' #delete
+      remove_warning_text: 'Вы уверены что хотите <strong class="warning">безвозвратно удалить</strong> макет'
+    page_parts:
+      reference:  'Справка'
+      available_tags: 'Доступные тэги'
+    pages:
+      pages: 'Страницы'
+      page: 'Страница'   # Странмца vs. Страницу
+      new_page: 'Новая Страница'
+      edit_page:  'Редактирование Страницы'
+      page_title: 'Заголовок'
+      remove_tab: 'Удалить вкладку'
+      add_tab: 'Добавить вкладку'
+      status: 'Статус'
+      page_type: 'Тип страницы'
+      published_at: 'Опубликовано'
+      close: 'Закрыть'
+      no_pages: 'Нет страниц'
+      delete_pages: 'Удалить {{pages}}'  #button
+      remove_pages: 'Удалить {{pages}}'  #page title
+      remove_warning_text: 'Вы уверены что хотите <strong class="warning">безвозвратно удалить</strong> {{pages}}?'
+      available_tags_for: 'Тэги доступные для'
+      search_tags: 'Поиск по тэгам:'
+      add_part: 'Добавить Часть'
+    snippets:
+      snippets: 'Вставки'
+      snippet: 'Вставка'
+      new_snippet: 'Новая Вставка'
+      edit_snippet: 'Редактирование Вставки'
+      description: 'Вставки это небольшие части содержимого которые можно подключають к страницам или макетам.'
+      remove_warning_text: 'Вы уверены что хотите <strong class="warning">безвозвратно удалить</strong> эту вставку?'
+    users:
+      user: 'Пользователь'
+      users: 'Пользователи'
+      username: 'Имя'
+      password: 'Пароль'
+      name: 'Имя'
+      login: 'Логин'
+      edit_user: 'Редактирование Пользователя'
+      new_user: 'Новый Пользователь'
+      roles: 'Роли'
+      admin: 'Администратор'
+      developer: 'Разработчик'
+      language: 'Язык'
+      notes: 'Заметки'
+      optional: 'Опционально'
+      required: 'Обязательно'
+      valid_email: 'Введите действующий адрес e-mail.'
+      valid_login: 'Не менее 3 символов. Должно быть уникально.'
+      valid_password: 'Не менее 5 символов.'
+      leave_password_unchanged: 'Оставьте пустым для сохранения старого пароля.'
+      password_confirmation: 'Подтверждение Пароля'
+      roles_description: 'Роли ограничивают права пользователей открывая и закрывая доступ к частям административного интерфеса.'
+      language_description: 'Язык пользовательского интерфейса административной части.'
+      remove_warning_text: 'Вы уверены что хотите <strong class="warning">безвозвратно удалить</strong> пользователя?'
+    welcome:
+      login: 'Вход в систему'
+      remember_me: 'Запомнить меня'
+
+  # Page status
+  status:
+    draft: 'Черновик'
+    reviewed: 'Проверена'
+    hidden: 'Скрыта'
+    published: 'Опубликована'
+
+  # Buttons
+  buttons:
+    save_and_continue: 'Сохранить и продолжить'
+    save_changes: 'Сохранить'
+    create: 'Создать {{name}}'
+
+  # Select lists
+  select:
+    none: '<none>'
+    normal: '<normal>'
+    inherit: '<inherit>'
+
+  # Timestamp. This may need to be changed as it will most likely not work for many languages.
+  timestamp:
+    last_updated: 'Обновлено'
+    by: 'пользователем'
+    at: ''
+
+  # Main Navigation Tags
+  tabs:
+    pages: 'Страницы'
+    snippets: 'Вставки'
+    layouts: 'Макеты'
+
+  # Standard Tag Descriptions
+  tag_desc:
+    usage: 'Использование'
+
+    page:
+      desc: "Causes the tags referring to a page's attributes to refer to the current page."
+      attributes: 'Renders the @{{method}}@ attribute of the current page.'
+      url: 'Renders the @url@ attribute of the current page.'
+
+    children:
+      desc: "Gives access to a page's children."
+      count: 'Renders the total number of children.'
+      first: 'Returns the first child. Inside this tag all page attribute tags are mapped to the first child. <br />
+        Takes the same ordering options as @<r:children:each>@.'
+      last: 'Returns the last child. Inside this tag all page attribute tags are mapped tothe last child. <br />
+        Takes the same ordering options as @<r:children:each>@.›'
+      each: "Cycles through each of the children. Inside this tag all page attribute tags are mapped to the current child page."
+      child: "Page attribute tags inside of this tag refer to the current child. This is occasionally <br /> useful if you are inside of another tag (like &lt;r:find&gt;) and need to refer back to the <br /> current child."
+
+  date:
+    formats:
+      default: "%D-%M-%Y"
+      short: "%e %b"
+      long: "%B %e, %Y"
+      only_day: "%e"
+
+    day_names: [Воскресенье, Понедельник, Вторник, Среда, четверг, Пятница, Суббота]
+    abbr_day_names: [Вск, Пнд, Втр, Срд, "Чтв", Птн, Суб]
+    month_names: [~, Января, Февраля, Марта, Апреля, Мая, Июня, Июля, Августа, Сентября, Октября, Ноября, Декабря]
+    abbr_month_names: [~, Янв, Фев, Мар, Апр, Май, Июн, Июл, Авг, Сен, Окт, Ноя, Дек]
+    order: [ :day, :month, :year ]
+
+  time:
+    formats:
+      default: "%a %b %d %H:%M:%S %Z %Y"
+      timestamp: "%d %B %Y в %H:%M"
+      time: "%H:%M"
+      short: "%d %b %H:%M"
+      long: "%d %B %Y %H:%M"
+      only_second: "%S"
+
+      datetime:
+        formats:
+          default: "%Y-%m-%dT%H:%M:%S%Z"
+
+    am: "am"
+    pm: "pm"
+

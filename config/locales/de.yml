@@ -4,38 +4,38 @@ de:
 
   # Controllers       
   resource_controller:
-    saved: "DE {{humanized_model_name}} saved below."
-    validation_errors: "DE Validation errors occurred while processing this form. Please take a moment to review the form and correct any input errors before continuing."
-    removed: "DE {{humanized_model_name}} has been deleted."  
+    saved: "{{humanized_model_name}} gespeichert."
+    validation_errors: "Bei der Bearbeitung dieses Formulars sind Bestätigungsfehler aufgetretten. Bitte überprüfen und korrigieren Sie alle Eingabe."
+    removed: "{{humanized_model_name}} wurde gelöscht."  
     update_conflict: "{{humanized_model_name}} has been modified since it was last loaded. Changes cannot be saved without potentially losing data." 
   pages_controller:
-    saved: "Your page has been saved below."  
-    removed_many: "The pages were successfully removed from the site."   
-    removed_one: "The page was successfully removed from the site."  
+    saved: "Ihre Seite wurde gespreichert."  
+    removed_many: "Die Seiten wurden erfolgriech von der Website gelöscht."   
+    removed_one: "Die Seite wurde erfolgriech von der Website gelöscht."  
   preferences_contoller:
-    updated: 'Your preferences have been updated.' 
-    error_updating: 'There was an error updating your preferences.'    
+    updated: 'Ihre Preferenzen wurden Aktualisiert.' 
+    error_updating: 'Beim aktualisieren Ihrer Preferenzen ist ein Fehler aufgetreten.'    
   users_controller:
-    cannot_delete_self: 'You cannot delete yourself.'   
+    cannot_delete_self: 'Sie können sich nicht selbst löschen.'   
   welcome_controller:
-    logged_out: 'DE You are now logged out.'  
-    invalid_user: 'DE Invalid username or password.'   
+    logged_out: 'Sie sind jetzt ausgeloggt.'  
+    invalid_user: 'ungültiger Benutzername oder Passwort.'   
 
   # Models
   models:
     # Shared translations
-    required: 'de_required'
-    name_in_use: 'name already in use'
-    slug_in_use: 'slug already in use for child of parent'
-    character_limit: '{{count}}-character limit'
+    required: 'obligatorisch'
+    name_in_use: 'Name schon in Benutztung'
+    slug_in_use: 'Slug schon in Benutztung als Kind des Elternseite'
+    character_limit: '{{count}}-Zeichnen limit'
     character_minimum: '{{count}}-character minimum'
-    must_be_number: 'must be a number'
-    invalid_format: 'invalid format'
-    no_spaces_tabs: 'cannot contain spaces or tabs'
+    must_be_number: 'muss eine Zahl sein'
+    invalid_format: 'ungülitiges Format'
+    no_spaces_tabs: 'kann kein Leerschläge oder Tabs enthalten'
     # User
-    login_in_use: 'login already in use'
-    password_confirmation: 'must match confirmation'
-    invalid_email: 'invalid e-mail address'  
+    login_in_use: 'Login schon in Benutzung'
+    password_confirmation: 'muss der Bestätigung entsprechen'
+    invalid_email: 'ungülitger E-Mail'  
   
   # Views
   views:   
@@ -66,13 +66,13 @@ de:
     layouts: 
       layouts: 'Layouts'
       layout: 'Layout'  
-      description: 'Use layouts to apply a visual look to a Web page. Layouts can contain special tags to include page content and other elements such as the header or footer. Click on a layout name below to edit it or click <code>Remove</code> to delete it.'
+      description: 'Benutzten Sie Layouts um das Aussehen der Website zu bestimmen. Layouts können spezielle Tags mit Texte oder andere Elemente wie Header oder Footer enthalten. Klicken Sie eine Layout Name ihm zu bearbeiten oder <code>Entfernen</code> zu löschen.'
       new_layout: 'Neue Layout'    
       edit_layout: 'Layout bearbeiten'
       content_type: 'Inhalt&#8209;Typ'    
       remove_layout: 'Layout löschen' 
       delete_layout: 'Layout löschen'  
-      remove_warning_text: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following layout?'   
+      remove_warning_text: 'Sie sind sicher, das folgende Layout <strong class="warning">dauerhaft</strong> entfernen zu wollen?'   
     page_parts:
       reference:  'Referenz'
       available_tags: 'Available Tags'
@@ -82,16 +82,19 @@ de:
       new_page: 'Neue Seite'
       edit_page:  'Seite bearbeiten'   
       page_title: 'Titel'  
-      remove_tab: 'Remove Tab'  
-      add_tab: 'Add Tab'   
+      remove_tab: 'entfernen ein Tab'  
+      add_tab: 'füge Tab ein'   
       status: 'Status'
       page_type: 'Seitentyp'
-      published_at: 'Publiziert am' 
+      published_at: 'Veröffentlich am' 
       close: 'Schliessen'
-      no_pages: 'Keine Seiten' 
-      delete_pages: 'Lösche {{pages}}'  
-      remove_pages: 'Lsche {{pages}}' 
-      remove_warning_text: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following {{pages}}?' 
+      no_pages: 'keine Seiten' 
+      delete_pages: 'lösche {{pages}}'  
+      remove_pages: 'entfernen {{pages}}' 
+      remove_warning_text: 'Sie sind sicher, das folgende {{pages}} <strong class="warning">dauerhaft</strong> entfernen zu wollen?' 
+      available_tags_for: 'Available Tags for'
+      search_tags: 'Search Tags:'
+      add_part: 'Add Part'
     snippets:
       snippets: 'Snippets'          
       snippet: 'Snippet'   
@@ -116,23 +119,23 @@ de:
       optional: 'Optional'
       required: 'Required'  
       valid_email: 'Please use a valid e-mail address.' 
-      valid_login: 'At least 3 characters. Must be unique.'
+      valid_login: 'Minimum 3 Zeichnen. Muss eindeutig sein. '
       valid_password: 'At least 5 characters.'
       leave_password_unchanged: 'Leave password blank for it to remain unchanged.'
-      password_confirmation: 'Confirm Password'
+      password_confirmation: 'Passwort bestätigen'
       roles_description: 'Roles restrict user privileges and turn parts of the administrative interface on or off.' 
       language_description: 'The preferred language for the Admin interface.' 
       remove_warning_text: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following user?' 
     welcome:
-      login: 'Please Login' 
-      remember_me: 'Remember me'  
+      login: 'bitte Einloggen' 
+      remember_me: 'merken'  
       
        
   
   # Page status  
   status:
-    draft: 'DE Draft'
-    reviewed: 'Reviewed'
+    draft: 'Entwürf'
+    reviewed: 'Überprüft'
     hidden: 'Versteckt'
     published: 'Publiziert' 
   

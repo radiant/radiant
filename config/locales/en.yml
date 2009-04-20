@@ -6,7 +6,6 @@ en:
   resource_controller:
     saved: "{{humanized_model_name}} saved below."
     validation_errors: "Validation errors occurred while processing this form. Please take a moment to review the form and correct any input errors before continuing."
-
     removed: "{{humanized_model_name}} has been deleted."  
     update_conflict: "{{humanized_model_name}} has been modified since it was last loaded. Changes cannot be saved without potentially losing data." 
   pages_controller:
@@ -44,7 +43,7 @@ en:
       modify: 'Modify' 
       more: 'More'
       less: 'Less' 
-      body: 'DE Body'  
+      body: 'Body'  
       name: 'Name'     
       filter: 'Filter'
       cancel: 'Cancel'
@@ -83,7 +82,7 @@ en:
       edit_page:  'Edit Page'   
       page_title: 'Page Title'  
       remove_tab: 'Remove Tab'  
-      add_tab: 'Add Tab'   
+      add_tab: 'Add Tab'
       status: 'Status'
       page_type: 'Page Type'
       published_at: 'Published at' 
@@ -91,7 +90,10 @@ en:
       no_pages: 'No Pages' 
       delete_pages: 'Delete {{pages}}'  
       remove_pages: 'Remove {{pages}}' 
-      remove_warning_text: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following {{pages}}?' 
+      remove_warning_text: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following {{pages}}?'
+      available_tags_for: 'Available Tags for'
+      search_tags: 'Search Tags:'
+      add_part: 'Add Part'
     snippets:
       snippets: 'Snippets'          
       snippet: 'Snippet'   
