@@ -57,6 +57,6 @@
           = check_box_tag :remember_me, 1, false, :class => 'checkbox'
           %label.checkbox{:for=>"remember_me"}= t('views.welcome.remember_me')    
         %td.buttons
-          %input.button{:type=>"submit", :value=>"Login"}/
+          %input.button{:type=>"submit", :value => t('views.welcome.login_btn')}/
 
 = javascript_tag "$('user_login').activate();"

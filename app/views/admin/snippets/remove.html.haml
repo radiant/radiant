@@ -12,6 +12,6 @@
 
 - form_for [:admin, @snippet], :html => {:method => :delete} do
   %p.buttons
-    %input.button{:type=>"submit", :value=>"Delete Snippet"}/
+    %input.button{:type=>"submit", :value => t('views.snippets.delete_snippet')}/
     = t('views.shared.or')
     = link_to t('views.shared.cancel'), admin_snippets_url

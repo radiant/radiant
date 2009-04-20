@@ -41,7 +41,7 @@ ru:
   views:
     shared:
       modify: 'Изменить'
-      more: 'Дополнмтельно'
+      more: 'Дополнительно'
       less: 'Скрыть'
       body: 'Содержимое'
       name: 'Имя'
@@ -101,6 +101,7 @@ ru:
       edit_snippet: 'Редактирование Вставки'
       description: 'Вставки это небольшие части содержимого которые можно подключають к страницам или макетам.'
       remove_warning_text: 'Вы уверены что хотите <strong class="warning">безвозвратно удалить</strong> эту вставку?'
+      delete_snippet: 'Delete Snippet'
     users:
       user: 'Пользователь'
       users: 'Пользователи'
@@ -125,8 +126,10 @@ ru:
       roles_description: 'Роли ограничивают права пользователей открывая и закрывая доступ к частям административного интерфеса.'
       language_description: 'Язык пользовательского интерфейса административной части.'
       remove_warning_text: 'Вы уверены что хотите <strong class="warning">безвозвратно удалить</strong> пользователя?'
+      delete_user: 'Удалить Пользователя'
     welcome:
       login: 'Вход в систему'
+      login_btn: 'Войти'
       remember_me: 'Запомнить меня'
 
   # Page status

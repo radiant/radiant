@@ -102,6 +102,7 @@ de:
       edit_snippet: 'Snippet bearbeiten'
       description: 'Snippets are generally small pieces of content which are included in other pages or layouts.'
       remove_warning_text: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following snippet?'   
+      delete_snippet: 'Delete Snippet'
     users:
       user: 'Benutzer'
       users: 'Benutzer'      
@@ -111,7 +112,7 @@ de:
       login: 'Login' 
       edit_user: 'Benutzer bearbeiten'
       new_user: 'Neue Benutzer'  
-      roles: 'Rolen'    
+      roles: 'Rolen'
       admin: 'Administrator' 
       developer: 'Developer'
       language: 'Sprache'
@@ -126,9 +127,11 @@ de:
       roles_description: 'Roles restrict user privileges and turn parts of the administrative interface on or off.' 
       language_description: 'The preferred language for the Admin interface.' 
       remove_warning_text: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following user?' 
+      delete_user: 'Delete User'
     welcome:
       login: 'Please Login' 
-      remember_me: 'Remember me'  
+      login_btn: 'Login'
+      remember_me: 'Remember me'
       
        
   
