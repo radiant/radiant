@@ -143,7 +143,7 @@ ru:
   buttons:
     save_and_continue: 'Сохранить и продолжить'
     save_changes: 'Сохранить'
-    create: 'Создать {{name}}'
+    create: 'Создать' # removed {{name}} because of russian word cases problems 
 
   # Select lists
   select:
@@ -169,18 +169,53 @@ ru:
 
     page:
       desc: "Causes the tags referring to a page's attributes to refer to the current page."
-      attributes: 'Renders the @{{method}}@ attribute of the current page.'
-      url: 'Renders the @url@ attribute of the current page.'
+      attributes: "Renders the @{{method}}@ attribute of the current page."
+      url: "Renders the @url@ attribute of the current page."
 
     children:
       desc: "Gives access to a page's children."
-      count: 'Renders the total number of children.'
-      first: 'Returns the first child. Inside this tag all page attribute tags are mapped to the first child. <br />
-        Takes the same ordering options as @<r:children:each>@.'
-      last: 'Returns the last child. Inside this tag all page attribute tags are mapped tothe last child. <br />
-        Takes the same ordering options as @<r:children:each>@.›'
+      count: "Renders the total number of children."
+      first: "Returns the first child. Inside this tag all page attribute tags are mapped to the first child. Takes the same ordering options as @<r:children:each>@."
+      last: "Returns the last child. Inside this tag all page attribute tags are mapped tothe last child. Takes the same ordering options as @<r:children:each>@.›"
       each: "Cycles through each of the children. Inside this tag all page attribute tags are mapped to the current child page."
-      child: "Page attribute tags inside of this tag refer to the current child. This is occasionally <br /> useful if you are inside of another tag (like &lt;r:find&gt;) and need to refer back to the <br /> current child."
+      child: "Page attribute tags inside of this tag refer to the current child. This is occasionally useful if you are inside of another tag (like &lt;r:find&gt;) and need to refer back to the current child."
+      if_first: "Renders the tag contents only if the current page is the first child in the context of a children:each tag"
+
+    meta:
+      desc: "Ru The namespace for 'meta' attributes. If used as a singleton tag, both the description and keywords fields will be output as &lt;meta /&gt; tags unless the attribute 'tag' is set to 'false'."
+      keywords: "RU Emits the page keywords field in a meta tag, unless attribute 'tag' is set to 'false'."
+      description: "Emits the page description field in a meta tag, unless attribute 'tag' is set to 'false'."
+
+    status:
+      desc: "RU Prints the page's status as a string. Optional attribute 'downcase' will cause the status to be all lowercase."
+
+    unless_dev:
+      desc: "RU The opposite of the @if_dev@ tag."
+
+    if_dev:
+      desc: "RU Renders the containing elements only if Radiant in is development mode."
+
+    navigation:
+      desc: "RU Renders a list of links specified in the @urls@ attribute according to three states: <br/>
+        * @normal@ specifies the normal state for the link<br/>
+        * @here@ specifies the state of the link when the url matches the current page's URL<br/>
+        * @selected@ specifies the state of the link when the current page matches is a child of the specified url<br/>
+        The @between@ tag specifies what should be inserted in between each of the links."
+
+    rfc1123_date:
+      desc: "RU Outputs the published date using the format mandated by RFC 1123. (Ideal for RSS feeds.)"
+
+    escape_html:
+      desc: "RU Escapes angle brackets, etc. for rendering in an HTML document."
+
+    comment:
+      desc: "RU Nothing inside a set of comment tags is rendered."
+
+    random:
+      desc: "RU Randomly renders one of the options specified by the @option@ tags."
+
+    find:
+      desc: "RU Inside this tag all page related tags refer to the page found at the @url@ attribute. @url@s may be relative or absolute paths."
 
   date:
     formats:
@@ -189,7 +224,7 @@ ru:
       long: "%B %e, %Y"
       only_day: "%e"
 
-    day_names: [Воскресенье, Понедельник, Вторник, Среда, четверг, Пятница, Суббота]
+    day_names: [Воскресенье, Понедельник, Вторник, Среда, Четверг, Пятница, Суббота]
     abbr_day_names: [Вск, Пнд, Втр, Срд, "Чтв", Птн, Суб]
     month_names: [~, Января, Февраля, Марта, Апреля, Мая, Июня, Июля, Августа, Сентября, Октября, Ноября, Декабря]
     abbr_month_names: [~, Янв, Фев, Мар, Апр, Май, Июн, Июл, Авг, Сен, Окт, Ноя, Дек]

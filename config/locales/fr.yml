@@ -176,6 +176,43 @@ fr:
       last: "Renvoie le dernier enfant.  A l'intérieur de ce tag tous les tags d'attributs de page sont mis en correspondance avec le dernier enfant. <br /> Utilise les même options de tri que @<r:children:each>@.›"
       each: "Chacun des enfants en séquence. A l'intérieur de ce tag tous les tags d'attributs de page sont mis en correspondance avec la page de l'enfant actuel."
       child: "Tous les tags d'attributs de Page à l'intérieur de ce tag sont mis en correspondance avec l'enfant actuel. Cela peut être utile <br /> si vous êtes à l'intérieur d'un autre tag (comme <r:find>) et que vous ayez besoin de faire référence en retour à <br /> l'enfant actuel"
+      if_first: "Renders the tag contents only if the current page is the first child in the context of a children:each tag"
+
+    meta:
+      desc: "The namespace for 'meta' attributes. If used as a singleton tag, both the description and keywords fields will be output as &lt;meta /&gt; tags unless the attribute 'tag' is set to 'false'."
+      keywords: "Emits the page keywords field in a meta tag, unless attribute 'tag' is set to 'false'."
+      description: "Emits the page description field in a meta tag, unless attribute 'tag' is set to 'false'."
+
+    status:
+      desc: "Prints the page's status as a string. Optional attribute 'downcase' will cause the status to be all lowercase."
+
+    unless_dev:
+      desc: "The opposite of the @if_dev@ tag."
+
+    if_dev:
+      desc: "Renders the containing elements only if Radiant in is development mode."
+
+    navigation:
+      desc: "Renders a list of links specified in the @urls@ attribute according to three states: <br/>
+        * @normal@ specifies the normal state for the link<br/>
+        * @here@ specifies the state of the link when the url matches the current page's URL<br/>
+        * @selected@ specifies the state of the link when the current page matches is a child of the specified url<br/>
+        The @between@ tag specifies what should be inserted in between each of the links."
+
+    rfc1123_date:
+      desc: "Outputs the published date using the format mandated by RFC 1123. (Ideal for RSS feeds.)"
+
+    escape_html:
+      desc: "Escapes angle brackets, etc. for rendering in an HTML document."
+
+    comment:
+      desc: "Nothing inside a set of comment tags is rendered."
+
+    random:
+      desc: "Randomly renders one of the options specified by the @option@ tags."
+
+    find:
+      desc: "Inside this tag all page related tags refer to the page found at the @url@ attribute. @url@s may be relative or absolute paths."
     
     
   # Date and Time formats  

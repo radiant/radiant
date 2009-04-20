@@ -122,8 +122,7 @@ module StandardTags
   end
   
   desc %{
-    Renders the tag contents only if the current page is the first child in the context of
-    a children:each tag
+    #{I18n.t('tag_desc.children.if_first')}
     
     *#{I18n.t('tag_desc.usage')}:*
     
@@ -668,8 +667,7 @@ module StandardTags
   end
 
   desc %{
-    Inside this tag all page related tags refer to the page found at the @url@ attribute.
-    @url@s may be relative or absolute paths.
+    #{I18n.t('tag_desc.find.desc')}
 
     *#{I18n.t('tag_desc.usage')}:*
 
@@ -687,7 +685,7 @@ module StandardTags
   end
 
   desc %{
-    Randomly renders one of the options specified by the @option@ tags.
+    #{I18n.t('tag_desc.random.desc')}
 
     *#{I18n.t('tag_desc.usage')}:*
 
@@ -711,7 +709,7 @@ module StandardTags
   end
 
   desc %{
-    Nothing inside a set of comment tags is rendered.
+    #{I18n.t('tag_desc.comment.desc')}
 
     *#{I18n.t('tag_desc.usage')}:*
 
@@ -721,7 +719,7 @@ module StandardTags
   end
 
   desc %{
-    Escapes angle brackets, etc. for rendering in an HTML document.
+    #{I18n.t('tag_desc.escape_html.desc')}
 
     *#{I18n.t('tag_desc.usage')}:*
 
@@ -732,7 +730,7 @@ module StandardTags
   end
 
   desc %{
-    Outputs the published date using the format mandated by RFC 1123. (Ideal for RSS feeds.)
+    #{I18n.t('tag_desc.rfc1123_date.desc')}
 
     *#{I18n.t('tag_desc.usage')}:*
 
@@ -746,16 +744,7 @@ module StandardTags
   end
 
   desc %{
-    Renders a list of links specified in the @urls@ attribute according to three
-    states:
-
-    * @normal@ specifies the normal state for the link
-    * @here@ specifies the state of the link when the url matches the current
-       page's URL
-    * @selected@ specifies the state of the link when the current page matches
-       is a child of the specified url
-
-    The @between@ tag specifies what should be inserted in between each of the links.
+    #{I18n.t('tag_desc.navigation.desc')}
 
     *#{I18n.t('tag_desc.usage')}:*
 
@@ -809,7 +798,7 @@ module StandardTags
   end
 
   desc %{
-    Renders the containing elements only if Radiant in is development mode.
+    #{I18n.t('tag_desc.if_dev.desc')}:
 
     *#{I18n.t('tag_desc.usage')}:*
 
@@ -820,7 +809,7 @@ module StandardTags
   end
 
   desc %{
-    The opposite of the @if_dev@ tag.
+    #{I18n.t('tag_desc.unless_dev.desc')}:
 
     *#{I18n.t('tag_desc.usage')}:*
 
@@ -831,8 +820,7 @@ module StandardTags
   end
 
   desc %{
-    Prints the page's status as a string.  Optional attribute 'downcase'
-    will cause the status to be all lowercase.
+    #{I18n.t('tag_desc.status.desc')}:
 
     *#{I18n.t('tag_desc.usage')}:*
 
@@ -845,10 +833,9 @@ module StandardTags
   end
 
   desc %{
-    The namespace for 'meta' attributes.  If used as a singleton tag, both the description
-    and keywords fields will be output as &lt;meta /&gt; tags unless the attribute 'tag' is set to 'false'.
+    #{I18n.t('tag_desc.meta.desc')}:
 
-    *Usage*:
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code> <r:meta [tag="false"] />
      <r:meta>
@@ -867,10 +854,9 @@ module StandardTags
   end
 
   desc %{
-    Emits the page description field in a meta tag, unless attribute
-    'tag' is set to 'false'.
+    #{I18n.t('tag_desc.meta.description')}:
 
-    *Usage*:
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code> <r:meta:description [tag="false"] /> </code></pre>
   }
@@ -885,10 +871,9 @@ module StandardTags
   end
 
   desc %{
-    Emits the page keywords field in a meta tag, unless attribute
-    'tag' is set to 'false'.
+    #{I18n.t('tag_desc.meta.keywords')}:  
 
-    *Usage*:
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code> <r:meta:keywords [tag="false"] /> </code></pre>
   }
