@@ -41,7 +41,7 @@ ru:
   views:
     shared:
       modify: 'Изменить'
-      more: 'Ещё'
+      more: 'Дополнмтельно'
       less: 'Скрыть'
       body: 'Содержимое'
       name: 'Имя'
@@ -77,7 +77,7 @@ ru:
       available_tags: 'Доступные тэги'
     pages:
       pages: 'Страницы'
-      page: 'Страницу'   # Странмца vs. Страницу
+      page: 'Страница'   # Странмца vs. Страницу
       new_page: 'Новая Страница'
       edit_page:  'Редактирование Страницы'
       page_title: 'Заголовок'
@@ -94,7 +94,6 @@ ru:
       available_tags_for: 'Тэги доступные для'
       search_tags: 'Поиск по тэгам:'
       add_part: 'Добавить Часть'
-      reference: 'Ссылка'
     snippets:
       snippets: 'Вставки'
       snippet: 'Вставка'
