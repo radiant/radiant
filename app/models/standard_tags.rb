@@ -759,7 +759,7 @@ module StandardTags
   tag 'navigation' do |tag|
     hash = tag.locals.navigation = {}
     tag.expand
-    raise TagError.new("`navigation' tag must include a `normal' tag") unless hash.has_key? :normal
+    raise TagError.new(I18n.t('tag_desc.navigation.error')) unless hash.has_key? :normal
     result = []
     pairs = tag.attr['urls'].to_s.split('|').map do |pair|
       parts = pair.split(':')

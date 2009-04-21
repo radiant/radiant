@@ -1,11 +1,11 @@
 ru:
   # The display name of this language file
-  this_file_language: "Russian"
+  this_file_language: "Русский"
 
   # Controllers
   resource_controller:
     saved: "Данные сохранены."
-    removed: "Объекты удалены успешно."
+    removed: "Объекты успешно удалены."
     validation_errors: "Форма содержит ошибки. Для продолжения проверьте и исправьте пожалуйста введенные данные."
     update_conflict: "Данные были модифицированы с момента загрузки. Измененмя не могут быть сохранены т.к. возможна потеря информации."
   pages_controller:
@@ -201,6 +201,7 @@ ru:
         * @here@ specifies the state of the link when the url matches the current page's URL<br/>
         * @selected@ specifies the state of the link when the current page matches is a child of the specified url<br/>
         The @between@ tag specifies what should be inserted in between each of the links."
+      error: "`navigation' tag must include a `normal' tag"
 
     rfc1123_date:
       desc: "RU Outputs the published date using the format mandated by RFC 1123. (Ideal for RSS feeds.)"
