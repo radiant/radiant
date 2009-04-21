@@ -127,6 +127,8 @@ ru:
       language_description: 'Язык пользовательского интерфейса административной части.'
       remove_warning_text: 'Вы уверены что хотите <strong class="warning">безвозвратно удалить</strong> пользователя?'
       delete_user: 'Удалить Пользователя'
+    preferences:
+      user_preferences: 'Личные Настройки'
     welcome:
       login: 'Вход в систему'
       login_btn: 'Войти'

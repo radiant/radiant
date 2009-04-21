@@ -127,6 +127,8 @@ en:
       language_description: 'The preferred language for the Admin interface.' 
       remove_warning_text: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following user?' 
       delete_user: 'Delete User'
+    preferences:
+      user_preferences: 'User Preferences'
     welcome:
       login: 'Please Login'
       login_btn: 'Login'

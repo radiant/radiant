@@ -1,6 +1,7 @@
 - render_region :main do |main|
   - main.edit_header do
-    %h1 User Preferences
+    %h1
+      = t('views.preferences.user_preferences')
   - main.edit_form do
     - form_for @user, :url => admin_preferences_url, :html => { :method => :put } do |f|
       = render_region :form_top
@@ -9,14 +10,15 @@
           - form.edit_password do
             %tr
               %th.label
-                = label_tag :user_password, "Password"
+                = label_tag :user_password, t('views.users.password')
               %td.field
                 = f.password_field "password", :class => 'textbox', :value => '', :maxlength => 40
               %td.help{:rowspan=>2}
-                At least 5 characters. Leave password blank for it to remain unchanged.
+                = t('views.users.valid_password')
+                = t('views.users.leave_password_unchanged')
             %tr
               %th.label
-                = label_tag :user_password_confirmation, "Confirm Password"
+                = label_tag :user_password_confirmation, t('views.users.password_confirmation')
               %td.field
                 = f.password_field "password_confirmation", :class => 'textbox', :value => '', :maxlength => 40
           - form.edit_email do
@@ -25,12 +27,13 @@
                 = label_tag :user_email, "E-mail"
               %td.field
                 = f.text_field "email", :class => 'textbox', :maxlength => 255
-              %td.help Optional.
+              %td.help
+                = t('views.users.optional')
       - render_region :form_bottom do |form_bottom|
         - form_bottom.edit_buttons do
           %p.buttons
             = save_model_button @user
-            or
-            = link_to 'Cancel', admin_url
+            = t('views.shared.or')
+            = link_to t('views.shared.cancel'), admin_url
 
     = javascript_tag "$('user_password').activate();"

@@ -123,6 +123,8 @@ fr:
       roles_description: "Les Rôles restreignent les privilèges des utilisateurs et conditionnent la visibilité de certains éléments affichés dans l'interface d'administration."
       language_description: "Le langage de préférence pour l'interface d'administration."
       remove_warning_text: "Are you sure you want to <strong class='warning'>permanently remove</strong> the following user?" 
+    preferences:
+      user_preferences: "User Preferences"
     welcome:
       login: "SVP Identifiez-vous" 
       remember_me: "Conserver mes informations"  
