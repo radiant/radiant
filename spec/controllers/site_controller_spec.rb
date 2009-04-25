@@ -28,7 +28,7 @@ describe SiteController, "routes page requests" do
 
   it "should show page not found" do
     get :show_page, :url => 'a/non-existant/page'
-    response.headers["Status"].should == "404 Not Found"
+    response.response_code.should == 404
     response.should render_template('site/not_found')
   end
 

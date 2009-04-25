@@ -29,7 +29,7 @@ describe Admin::PagesController do
     end
 
     it "should allow the index to render even with there are no pages" do
-      Page.destroy_all
+      Page.delete_all; PagePart.delete_all
       get :index
       response.should be_success
       assigns(:homepage).should be_nil
@@ -117,26 +117,32 @@ describe Admin::PagesController do
         logout
         lambda { send(:get, action, @parameters.call) }.should require_login
       end
+      
+      if action == :show
+        it "should authenticate API access on show" do
+          pending "Need to test API access but not UI since unimplemented"
+        end
+      else
+        it "should allow access to admins for the #{action} action" do
+          lambda { 
+            send(:get, action, @parameters.call) 
+          }.should restrict_access(:allow => [users(:admin)], 
+                                   :url => '/admin/pages')
+        end
 
-      it "should allow access to admins for the #{action} action" do
-        lambda { 
-          send(:get, action, @parameters.call) 
-        }.should restrict_access(:allow => [users(:admin)], 
-                                 :url => '/admin/pages')
-      end
-
-      it "should allow access to developers for the #{action} action" do
-        lambda { 
-          send(:get, action, @parameters.call) 
-        }.should restrict_access(:allow => [users(:developer)], 
-                                 :url => '/admin/pages')
-      end
+        it "should allow access to developers for the #{action} action" do
+          lambda { 
+            send(:get, action, @parameters.call) 
+          }.should restrict_access(:allow => [users(:developer)], 
+                                   :url => '/admin/pages')
+        end
     
-      it "should allow non-developers and non-admins for the #{action} action" do
-        lambda { 
-          send(:get, action, @parameters.call) 
-        }.should restrict_access(:allow => [users(:non_admin), users(:existing)],
-                                 :url => '/admin/pages')
+        it "should allow non-developers and non-admins for the #{action} action" do
+          lambda { 
+            send(:get, action, @parameters.call) 
+          }.should restrict_access(:allow => [users(:non_admin), users(:existing)],
+                                   :url => '/admin/pages')
+        end
       end
     end
   end
@@ -182,6 +188,6 @@ describe Admin::PagesController do
     end
 
     def write_cookie(name, value)
-      request.cookies[name] = CGI::Cookie.new(name, value)
+      request.cookies[name] = value
     end
 end
