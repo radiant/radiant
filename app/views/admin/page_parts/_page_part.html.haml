@@ -1,7 +1,8 @@
 .page{:id => "page-#{page_part.name.to_slug}"}
   .part{:id => "part-#{page_part.name.to_slug}"}
-    = hidden_field_tag "page[parts_attributes][#{page_part_counter}][id]", page_part.id, :id => "part_attributes_#{page_part_counter}_id"
     = hidden_field_tag "page[parts_attributes][#{page_part_counter}][name]", page_part.name, :id => "part_#{page_part.name.to_slug}_name"
+    = hidden_field_tag "page[parts_attributes][#{page_part_counter}][id]", page_part.id, :id => "part_#{page_part_counter}_id", :class => "id_input"
+    = hidden_field_tag "page[parts_attributes][#{page_part_counter}][_delete]", false, :class => "delete_input"
     %p
       %label{:for => "part_#{page_part.name.to_slug}_filter_id"} Filter
       = select_tag "page[parts_attributes][#{page_part_counter}][filter_id]", filter_options_for_select(page_part.filter_id), :id => "part_#{page_part.name.to_slug}_filter_id"
