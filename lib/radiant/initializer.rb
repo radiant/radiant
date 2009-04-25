@@ -9,13 +9,12 @@ module Radiant
 
   class Configuration < Rails::Configuration
     attr_accessor :extension_paths
-    attr_accessor :extensions
+    attr_writer :extensions
     attr_accessor :view_paths
 
     def initialize
       self.view_paths = []
       self.extension_paths = default_extension_paths
-      self.extensions = [ :all ]
       super
     end
 
@@ -27,7 +26,17 @@ module Radiant
       paths.unshift(RADIANT_ROOT + "/test/fixtures/extensions") if env == "test"
       paths
     end
-
+    
+    def extensions
+      @extensions ||= all_available_extensions
+    end
+    
+    def all_available_extensions
+      extension_paths.map do |path|
+        Dir["#{path}/*"].select {|f| File.directory?(f) }
+      end.flatten.map {|f| File.basename(f).sub(/^\d+_/, '') }.sort.map(&:to_sym)
+    end
+    
     def admin
       AdminUI.instance
     end
@@ -159,7 +168,17 @@ module Radiant
       extension_loader.add_controller_paths
       super
     end
-
+    
+    def extensions
+      @extensions ||= all_available_extensions
+    end
+    
+    def all_available_extensions
+      extension_paths.map do |path|
+        Dir["#{path}/*"].select {|f| File.directory?(f) }
+      end.flatten.map {|f| File.basename(f).sub(/^\d+_/, '') }.sort.map(&:to_sym)
+    end
+    
     def admin
       configuration.admin
     end
