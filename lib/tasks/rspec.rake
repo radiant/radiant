@@ -25,6 +25,12 @@ task :spec => spec_prereq do
       nil
     rescue => e
       task
+    ensure
+      if task == 'spec:integration'
+        Rake::Task["db:test:load"].reenable
+        Rake::Task["db:schema:load"].reenable
+        Rake::Task["db:test:prepare"].execute
+      end
     end
   end.compact
   abort "Errors running #{errors.to_sentence}!" if errors.any?
