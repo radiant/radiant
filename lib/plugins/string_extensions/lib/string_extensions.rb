@@ -11,7 +11,7 @@ class String
     self.underscore.gsub('/', ' ').humanize.titlecase.gsub(/\s*#{last_part}$/, '')
   end
   
-  alias_method :to_slug,   :parameterize
-  alias_method :slugify,   :parameterize
-  alias_method :slugerize, :parameterize
+  alias :to_slug   :parameterize
+  alias :slugify   :parameterize
+  alias :slugerize :parameterize
 end
