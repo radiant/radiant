@@ -162,14 +162,6 @@ describe Page do
     @page.part(:test).content.should == "test"
   end
 
-  it "should accept new page parts as an array of hashes" do
-    @page.parts = [{:name => 'body', :content => 'Hello, world!'}]
-    @page.parts.size.should == 1
-    @page.parts.first.should be_kind_of(PagePart)
-    @page.parts.first.name.should == 'body'
-    @page.parts.first.content.should == 'Hello, world!'
-  end
-
   it "should accept new page parts as an array of PageParts" do
     @page.parts = [PagePart.new(:name => 'body', :content => 'Hello, world!')]
     @page.parts.size.should == 1
@@ -183,18 +175,6 @@ describe Page do
       @page.parts = [PagePart.new(:name => 'body', :content => 'Hello, world!')] 
       @page.changed.should_not be_empty
     end
-  end
-
-  it "should discard pending parts on reload" do
-    @page.parts = [{:name => 'body', :content => 'Hello, world!'}]
-    @page.parts(true).first.content.should_not == 'Hello, world!'
-  end
-
-  it "should save pending page parts" do
-    @page.parts = [{:name => 'body', :content => 'Hello, world!'}]
-    @page.save!
-    @page.reload
-    @page.parts(true).first.content.should == 'Hello, world!'
   end
 
   it 'should set published_at when published' do
