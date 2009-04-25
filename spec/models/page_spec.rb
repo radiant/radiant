@@ -241,8 +241,9 @@ describe Page do
     @page.child_url(child).should == '/parent/child/'
   end
 
-  it 'should return the appropriate status code in headers' do
-    @page.headers.should == { 'Status' => ActionController::Base::DEFAULT_RENDER_STATUS_CODE }
+  it 'should return no additional headers by default' do
+    pending "Re-evaluate what this method should do in light of ResponseCache refactoring"
+    @page.headers.should == {}
   end
 
   it 'should have status' do
@@ -606,7 +607,7 @@ describe Page, "processing" do
   it 'should set content type based on layout' do
     @page = pages(:utf8)
     @page.process(@request, @response)
-    assert_response :success
+    @response.should be_success
     @response.headers['Content-Type'].should == 'text/html;charset=utf8'
   end
 end

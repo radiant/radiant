@@ -79,7 +79,7 @@ class Page < ActiveRecord::Base
   end
    
   def headers
-    { 'Status' => ActionController::Base::DEFAULT_RENDER_STATUS_CODE }
+    {  }
   end
   
   def part(name)

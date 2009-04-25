@@ -1,13 +1,12 @@
-
 class ResponseCache
   include ActionController::Benchmarking::ClassMethods
   
   @@defaults = {
-    :directory => ActionController::Base.page_cache_directory,
+    :directory => Rails.root + "/cache",
     :expire_time => 5.minutes,
     :default_extension => '.yml',
     :perform_caching => true,
-    :logger => ActionController::Base.logger,
+    :logger => Rails.logger,
     :use_x_sendfile => false,
     :use_x_accel_redirect => false
   }
@@ -106,10 +105,12 @@ class ResponseCache
     def read_response(path, response, request)
       file_path = page_cache_path(path)
       if metadata = read_metadata(path)
+        response.status = metadata['status'] || 200
         response.headers.merge!(metadata['headers'] || {})
         if client_has_cache?(metadata, request)
-          response.headers.merge!('Status' => '304 Not Modified')
+          response.status = 304
         elsif use_x_accel_redirect
+          file_path = file_path.sub(File.expand_path(page_cache_directory), use_x_accel_redirect)
           response.headers.merge!('X-Accel-Redirect' => "#{file_path}.data")
         elsif use_x_sendfile
           response.headers.merge!('X-Sendfile' => "#{file_path}.data")
@@ -122,9 +123,9 @@ class ResponseCache
 
     def client_has_cache?(metadata, request)
       return false unless request
-      request_time = Time.httpdate(request.env["HTTP_IF_MODIFIED_SINCE"]) rescue nil
+      request_time = request.if_modified_since rescue nil
       response_time = Time.httpdate(metadata['headers']['Last-Modified']) rescue nil
-      request_etag = request.env["HTTP_IF_NONE_MATCH"] rescue nil
+      request_etag = request.if_none_match rescue nil
       response_etag = metadata['headers']['ETag'] rescue nil
       (request_time && response_time && response_time <= request_time) || (request_etag && response_etag && request_etag == response_etag)
     end
@@ -144,7 +145,8 @@ class ResponseCache
       response.headers['ETag'] ||= Digest::SHA1.hexdigest(response.body)
       metadata = {
         'headers' => response.headers,
-        'expires' => expires
+        'expires' => expires,
+        'status' => response.status
       }.to_yaml
       cache_page(metadata, response.body, path)
     end

@@ -1,4 +1,4 @@
-module StringExtensions
+class String
   def symbolize
     self.gsub(/[^A-Za-z0-9]+/, "_").gsub(/(^_+|_+$)/, "").underscore.to_sym
   end
@@ -11,12 +11,7 @@ module StringExtensions
     self.underscore.gsub('/', ' ').humanize.titlecase.gsub(/\s*#{last_part}$/, '')
   end
   
-  def to_slug
-    self.strip.downcase.gsub(/[^-a-z0-9~\s\.:;+=_]/, '').gsub(/[\s\.:;=+]+/, '-')
-  end
-  
-  alias_method :slugify, :to_slug
-  alias_method :slugerize, :to_slug
+  alias_method :to_slug,   :parameterize
+  alias_method :slugify,   :parameterize
+  alias_method :slugerize, :parameterize
 end
-
-String.send :include, StringExtensions

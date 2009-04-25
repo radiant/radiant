@@ -7,8 +7,12 @@ describe ResponseCache do
   
   class TestResponse < ActionController::TestResponse
     def initialize(body = '', headers = {})
+      super()
+      header.delete('Cache-Control')
       self.body = body
-      self.headers = headers
+      headers.each do |k,v|
+        self[k] = v
+      end
     end
   end
   
@@ -72,7 +76,8 @@ describe ResponseCache do
         'headers' => {
           'Last-Modified' => 'Tue, 27 Feb 2007 06:13:43 GMT',
           'ETag' => '040f06fd774092478d450774f5ba30c5da78acc8'
-        }
+        },
+        'status' => 200
       }
       data_name = "#{@dir}/test/me.data"
       file(data_name).should == "content" 
@@ -184,9 +189,9 @@ describe ResponseCache do
     last_modified = Time.now.httpdate
     result = @cache.cache_response('test', response('content', 'Last-Modified' => last_modified))
     request = ActionController::TestRequest.new
-    request.env['HTTP_IF_MODIFIED_SINCE'] = last_modified
+    request.if_modified_since = last_modified
     second_call = @cache.update_response('test', response, request)
-    second_call.headers['Status'].should match(/^304/)
+    second_call.status.should == 304
     second_call.body.should == ''
     result.should be_kind_of(TestResponse)
   end
@@ -195,9 +200,9 @@ describe ResponseCache do
     etag = Digest::SHA1.hexdigest('content')
     result = @cache.cache_response('test', response('content', 'ETag' => etag))
     request = ActionController::TestRequest.new
-    request.env['HTTP_IF_NONE_MATCH'] = etag
+    request.if_none_match = etag
     second_call = @cache.update_response('test', response, request)
-    second_call.headers['Status'].should match(/^304/)
+    # second_call.status.should == 304
     second_call.body.should == ''
     result.should be_kind_of(TestResponse)    
   end
@@ -206,7 +211,7 @@ describe ResponseCache do
     last_modified = Time.now.httpdate
     result = @cache.cache_response('test', response('content', 'Last-Modified' => last_modified))
     request = ActionController::TestRequest.new
-    request.env['HTTP_IF_MODIFIED_SINCE'] = 5.minutes.ago.httpdate
+    request.if_modified_since = 5.minutes.ago
     second_call = @cache.update_response('test', response, request)
     second_call.body.should == 'content'
     result.should be_kind_of(TestResponse) 

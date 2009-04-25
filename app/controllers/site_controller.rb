@@ -1,5 +1,4 @@
 class SiteController < ApplicationController
-  session :off
   skip_before_filter :verify_authenticity_token
   
   no_login_required
