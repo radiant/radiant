@@ -2,6 +2,7 @@
 
 === Edge
 
+* Upgrade to Rails 2.3.2. [Sean Cribbs, Rick DeNatale, Josh French, Kunal Shah]
 * Populate config.extensions so extensions can be disabled easily. [Jason Garber]
 * Convert integration specs to Cucumber stories and update RSpec. [Sean 
 Cribbs]
