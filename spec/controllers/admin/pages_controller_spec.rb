@@ -13,10 +13,6 @@ describe Admin::PagesController do
     route_for(:controller => "admin/pages", :page_id => '1', 
       :action => 'new').should == '/admin/pages/1/children/new'
   end
-
-  it "should setup the response cache when it initializes" do
-    @controller.cache.should be_kind_of(ResponseCache)
-  end
   
   describe "viewing the sitemap" do
     integrate_views

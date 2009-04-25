@@ -5,7 +5,7 @@ describe SiteController, "routes page requests" do
 
   before(:each) do
     # don't bork results with stale cache items
-    controller.cache.clear
+    # controller.cache.clear
   end
 
   it "should find and render home page" do

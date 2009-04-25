@@ -21,9 +21,3 @@ Feature: Serving pages from front-end
     And I go to page '/first' sending the ETag
     Then I should get a 304 response code
     And I should get the same ETag header
-
-  Scenario: Rendering cached page with ETag
-    When I go to page '/first'
-    And I go to page '/first' sending the Last-Modified
-    Then I should get a 304 response code
-    And I should get the same Last-Modified header

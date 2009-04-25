@@ -78,9 +78,5 @@ Radiant::Initializer.run do |config|
     Dir["#{RADIANT_ROOT}/app/models/*_filter.rb"].each do |filter|
       require_dependency File.basename(filter).sub(/\.rb$/, '')
     end
-
-    # Response Caching Defaults
-    ResponseCache.defaults[:directory] = ActionController::Base.page_cache_directory
-    ResponseCache.defaults[:logger]    = ActionController::Base.logger
   end
 end

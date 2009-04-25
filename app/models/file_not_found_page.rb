@@ -17,7 +17,7 @@ class FileNotFoundPage < Page
     true
   end
    
-  def status
+  def response_code
     404
   end
   

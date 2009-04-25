@@ -163,7 +163,8 @@ class Admin::ResourceController < ApplicationController
     end
 
     def clear_model_cache
-      cache.clear
+      # No-op for now
+      # cache.clear
     end
 
     def format_symbol

@@ -10,11 +10,6 @@ class Admin::AbstractModelController < ApplicationController
     @model_class
   end
   
-  def initialize
-    super
-    @cache = ResponseCache.instance
-  end
-
   def index
     self.models = model_class.find(:all)
   end

@@ -49,6 +49,7 @@ describe Admin::LayoutsController do
   end
 
   it "should clear the page cache when saved" do
+    pending "Revisit after manual expiration for Rack::Cache is enabled"
     ResponseCache.instance.should_receive(:clear)
     put :update, :id => layout_id(:utf8), :layout => {:content_type => "application/xhtml+xml;charset=utf8"}
   end

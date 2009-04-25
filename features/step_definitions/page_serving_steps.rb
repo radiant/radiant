@@ -1,17 +1,13 @@
 Given /^the page cache is clear$/ do
-  ResponseCache.defaults[:perform_caching] = true
-  ResponseCache.defaults[:directory] = "#{RAILS_ROOT}/tmp/cache"
-  ResponseCache.instance.perform_caching = true
-  ResponseCache.instance.directory = "#{RAILS_ROOT}/tmp/cache"
-  ResponseCache.instance.clear
+  # No-op until we have Rack::Cache installed
 end
 
-When /^I go to page ['"](.*)['"]$/ do |url|
+When(/^I go to page ['"](.*)['"]$/) do |url|
   visit url
   @old_headers ||= response.headers.dup
 end
 
-When /^I go to page ['"](.*)['"] sending the ([-\w]+)$/ do |url, header_key|
+When(/^I go to page ['"](.*)['"] sending the ([-\w]+)$/) do |url, header_key|
   send_header_key = case header_key
   when 'ETag'
     'If-None-Match'

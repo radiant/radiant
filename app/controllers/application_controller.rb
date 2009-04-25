@@ -16,7 +16,6 @@ class ApplicationController < ActionController::Base
   def initialize
     super
     @config = Radiant::Config
-    @cache = ResponseCache.instance
   end
   
   # helpers to include additional assets from actions or views
