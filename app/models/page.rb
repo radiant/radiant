@@ -6,11 +6,11 @@ class Page < ActiveRecord::Base
   
   # Callbacks
   before_save :update_published_at, :update_virtual
-  after_save :save_page_parts
   
   # Associations
   acts_as_tree :order => 'virtual DESC, title ASC'
   has_many :parts, :class_name => 'PagePart', :order => 'id', :dependent => :destroy
+  accepts_nested_attributes_for :parts, :allow_destroy => true
   belongs_to :layout
   belongs_to :created_by, :class_name => 'User'
   belongs_to :updated_by, :class_name => 'User'
@@ -45,22 +45,6 @@ class Page < ActiveRecord::Base
     end
   end
   alias_method_chain :layout, :inheritance
-  
-  def parts_with_pending(reload = false)
-    @page_parts = nil if reload
-    @page_parts || parts_without_pending(reload)
-  end
-  alias_method_chain :parts, :pending
-  
-  def parts_with_pending=(collection)
-    if collection.all? {|item| item.is_a? PagePart }
-      self.parts_without_pending = collection
-    else
-      self.updated_at_will_change!
-      @page_parts = collection.map { |item| PagePart.new(item) }
-    end
-  end
-  alias_method_chain :parts=, :pending
   
   def description
     self["description"]
@@ -304,13 +288,5 @@ class Page < ActiveRecord::Base
       text = object.filter.filter(text) if object.respond_to? :filter_id
       text
     end
-    
-    def save_page_parts
-      if @page_parts
-        self.parts_without_pending.clear
-        @page_parts.each {|p| self.parts_without_pending << p }
-      end
-      @page_parts = nil
-      true
-    end
+
 end
