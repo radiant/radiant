@@ -63,7 +63,7 @@ class Page < ActiveRecord::Base
   end
    
   def headers
-    {  }
+    { 'Cache-Control' => cache? ? "max-age=600" : "no-cache" }
   end
   
   def part(name)
@@ -112,8 +112,20 @@ class Page < ActiveRecord::Base
       @response.headers['Content-Type'] = content_type unless content_type.empty?
     end
     headers.each { |k,v| @response.headers[k] = v }
-    @response.body = render
+    body = render
+    @response.etag = Digest::SHA1.hexdigest(body)
+    if @request.fresh?(@response)
+      @response.status = 304
+      @response.body = ''
+    else
+      @response.status = response_code
+      @response.body = body
+    end
     @request, @response = nil, nil
+  end
+  
+  def response_code
+    200
   end
   
   def render
