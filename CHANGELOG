@@ -2,6 +2,7 @@
 
 === Edge
 
+* Populate config.extensions so extensions can be disabled easily. [Jason Garber]
 * Convert integration specs to Cucumber stories and update RSpec. [Sean 
 Cribbs]
 * Use ActionView::PathSet instead of normal arrays for view paths. [Pat
