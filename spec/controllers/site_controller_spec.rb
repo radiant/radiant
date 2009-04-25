@@ -78,11 +78,6 @@ describe SiteController, "routes page requests" do
     end
   end
 
-  it "should not have cache control header" do
-    get :show_page, :url => '/'
-    response.headers.keys.should_not include("Cache-Control")
-  end
-
   it "should not require login" do
     lambda { get :show_page, :url => '/' }.should_not require_login
   end

@@ -4,8 +4,6 @@ class SiteController < ApplicationController
   no_login_required
   
   def show_page
-    response.headers.delete('Cache-Control')
-    
     url = params[:url]
     if Array === url
       url = url.join('/')
@@ -13,12 +11,15 @@ class SiteController < ApplicationController
       url = url.to_s
     end
     
-    if (request.get? || request.head?) and live? and (@cache.response_cached?(url))
-      @cache.update_response(url, response, request)
+    @page = find_page(url)
+    unless @page.nil?
+      process_page(@page)
       @performed_render = true
     else
-      show_uncached_page(url)
+      render :template => 'site/not_found', :status => 404
     end
+  rescue Page::MissingRootPageError
+    redirect_to welcome_url
   end
   
   private
@@ -30,19 +31,6 @@ class SiteController < ApplicationController
 
     def process_page(page)
       page.process(request, response)
-    end
-    
-    def show_uncached_page(url)
-      @page = find_page(url)
-      unless @page.nil?
-        process_page(@page)
-        @cache.cache_response(url, response) if request.get? and live? and @page.cache?
-        @performed_render = true
-      else
-        render :template => 'site/not_found', :status => 404
-      end
-    rescue Page::MissingRootPageError
-      redirect_to welcome_url
     end
 
     def dev?
