@@ -10,6 +10,12 @@ class String
   def to_name(last_part = '')
     self.underscore.gsub('/', ' ').humanize.titlecase.gsub(/\s*#{last_part}$/, '')
   end
+
+  unless methods.include?('parameterize')
+    def parameterize(sep = '-')
+      ActiveSupport::Inflector.parameterize(self, sep)
+    end
+  end
   
   alias :to_slug   :parameterize
   alias :slugify   :parameterize
