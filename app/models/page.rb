@@ -63,7 +63,8 @@ class Page < ActiveRecord::Base
   end
    
   def headers
-    { 'Cache-Control' => cache? ? "max-age=600" : "no-cache" }
+    # Return a blank hash that child classes can override or merge
+    { }
   end
   
   def part(name)
@@ -112,16 +113,9 @@ class Page < ActiveRecord::Base
       @response.headers['Content-Type'] = content_type unless content_type.empty?
     end
     headers.each { |k,v| @response.headers[k] = v }
-    body = render
-    @response.etag = Digest::SHA1.hexdigest(body)
-    if @request.fresh?(@response)
-      @response.status = 304
-      @response.body = ''
-    else
-      @response.status = response_code
-      @response.body = body
-    end
-    @request, @response = nil, nil
+    @response.body = render
+    @response.status = response_code
+    @response.etag = Digest::SHA1.hexdigest(@response.body)
   end
   
   def response_code

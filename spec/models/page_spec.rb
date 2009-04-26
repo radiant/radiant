@@ -586,46 +586,55 @@ describe Page, "processing" do
     @response.headers['Content-Type'].should == 'text/html;charset=utf8'
   end
   
-  it "should set an appropriate Cache-Control header" do
+  it "should copy custom headers into the response" do
+    @page.stub!(:headers).and_return({"X-Extra-Header" => "This is my header"})
     @page.process(@request, @response)
-    @response.headers['Cache-Control'].should == "max-age=600"
-  end
-  
-  it "should set the Cache-Control header to 'no-cache' when the page should not be cached" do
-    @page.should_receive(:cache?).and_return(false)
-    @page.process(@request, @response)
-    @response.headers['Cache-Control'].should == "no-cache"
+    @response.header['X-Extra-Header'].should == "This is my header"
   end
   
   it "should set the ETag header" do
     @page.process(@request, @response)
     @response.headers['ETag'].should be
   end
-  
-  it "should set the response code to 304 and set a blank response body when the ETag matches" do
-    @request.stub!(:if_none_match).and_return("foobar")
-    @response.stub!(:etag).and_return("foobar")
-    @page.process(@request, @response)
-    @response.response_code.should == 304
-    @response.body.should be_blank
-  end
-  
+
   it "should set a 200 status code by default" do
     @page.process(@request, @response)
     @response.response_code.should == 200
   end
-  
-  it "should set the response code to 200 and render the page into the body when the ETag does not match" do
-    @request.stub!(:if_none_match).and_return("barbaz")
-    @response.stub!(:etag).and_return("foobar")
-    @page.process(@request, @response)
-    @response.response_code.should == 200
-    @response.body.should match(/Hello world!/)
-  end
-  
-  it "should set the response code to the result of the status method on the page" do
+
+  it "should set the response code to the result of the response_code method on the page" do
     @page.stub!(:response_code).and_return(404)
     @page.process(@request, @response)
     @response.response_code.should == 404
   end
+  
+  
+  # it "should set an appropriate Cache-Control header" do
+  #   @page.process(@request, @response)
+  #   @response.headers['Cache-Control'].should == "public, max-age=300"
+  # end
+  # 
+  # it "should set the Cache-Control header to 'no-cache' when the page should not be cached" do
+  #   @page.should_receive(:cache?).and_return(false)
+  #   @page.process(@request, @response)
+  #   @response.headers['Cache-Control'].should == "private, no-cache"
+  # end
+  # 
+  # it "should set the response code to 304 and set a blank response body when the ETag matches" do
+  #   @request.stub!(:if_none_match).and_return("foobar")
+  #   @response.stub!(:etag).and_return("foobar")
+  #   @page.process(@request, @response)
+  #   @response.response_code.should == 304
+  #   @response.body.should be_blank
+  # end
+  # 
+  # 
+  # it "should set the response code to 200 and render the page into the body when the ETag does not match" do
+  #   @request.stub!(:if_none_match).and_return("barbaz")
+  #   @response.stub!(:etag).and_return("foobar")
+  #   @page.process(@request, @response)
+  #   @response.response_code.should == 200
+  #   @response.body.should match(/Hello world!/)
+  # end
+  # 
 end
