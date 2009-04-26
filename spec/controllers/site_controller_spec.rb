@@ -1,12 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe SiteController, "routes page requests" do
+describe SiteController do
   dataset :pages
-
-  before(:each) do
-    # don't bork results with stale cache items
-    # controller.cache.clear
-  end
 
   it "should find and render home page" do
     get :show_page, :url => ''
@@ -80,5 +75,52 @@ describe SiteController, "routes page requests" do
 
   it "should not require login" do
     lambda { get :show_page, :url => '/' }.should_not require_login
+  end
+
+  describe "caching" do
+    it "should add a default Cache-Control header with public and max-age of 5 minutes" do
+      get :show_page, :url => '/'
+      response.headers['Cache-Control'].should =~ /public/
+      response.headers['Cache-Control'].should =~ /max-age=300/
+    end
+    
+    it "should pass along the etag set by the page" do
+      get :show_page, :url => '/'
+      response.headers['ETag'].should be
+    end
+    
+    %w{put post delete}.each do |method|
+      it "should prevent upstream caching on #{method.upcase} requests" do
+        send(method, :show_page, :url => '/')
+        response.headers['Cache-Control'].should =~ /private/
+        response.headers['Cache-Control'].should =~ /no-cache/
+        response.headers['ETag'].should be_blank
+      end
+    end
+    
+    it "should return a not-modified response when the sent etag matches" do
+      response.stub!(:etag).and_return("foobar")
+      request.if_none_match = 'foobar'
+      get :show_page, :url => '/'
+      response.response_code.should == 304
+      response.body.should be_blank
+    end
+    
+    it "should prevent upstream caching when the page should not be cached" do
+      @page = pages(:home)
+      Page.should_receive(:find_by_url).and_return(@page)
+      @page.should_receive(:cache?).and_return(false)
+      get :show_page, :url => '/'
+      response.headers['Cache-Control'].should =~ /private/
+      response.headers['Cache-Control'].should =~ /no-cache/
+      response.headers['ETag'].should be_blank
+    end
+    
+    it "should set the default cache timeout (max-age) to a value assigned by the user" do
+      SiteController.cache_timeout = 10.minutes
+      get :show_page, :url => '/'
+      response.headers['Cache-Control'].should =~ /public/
+      response.headers['Cache-Control'].should =~ /max-age=600/
+    end
   end
 end

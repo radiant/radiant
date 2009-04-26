@@ -172,7 +172,7 @@ describe Page do
 
   it "should dirty the page object when only changing parts" do
     lambda do
-      @page.parts = [PagePart.new(:name => 'body', :content => 'Hello, world!')] 
+      @page.parts = [PagePart.new(:name => 'body', :content => 'Hello, world!')]
       @page.changed.should_not be_empty
     end
   end
@@ -408,7 +408,7 @@ describe Page, "#find_by_url" do
   it 'should find draft pages in dev mode' do
     @page.find_by_url('/draft/', false).should == pages(:draft)
   end
-  
+
   it "should use the top-most published 404 page by default" do
     @page.find_by_url('/foo').should == pages(:file_not_found)
     @page.find_by_url('/foo/bar').should == pages(:file_not_found)
@@ -493,7 +493,7 @@ describe Page, "loading subclasses when upgrading from 0.5.x where class_name co
     column_names = Page.column_names - ["class_name"]
     Page.should_receive(:column_names).and_return(column_names)
   end
-  
+
   it "should not attempt to search for missing subclasses" do
     Page.connection.should_not_receive(:select_values).with("SELECT DISTINCT class_name FROM pages WHERE class_name <> '' AND class_name IS NOT NULL")
     Page.load_subclasses
@@ -585,13 +585,13 @@ describe Page, "processing" do
     @response.should be_success
     @response.headers['Content-Type'].should == 'text/html;charset=utf8'
   end
-  
+
   it "should copy custom headers into the response" do
     @page.stub!(:headers).and_return({"X-Extra-Header" => "This is my header"})
     @page.process(@request, @response)
     @response.header['X-Extra-Header'].should == "This is my header"
   end
-  
+
   it "should set the ETag header" do
     @page.process(@request, @response)
     @response.headers['ETag'].should be
@@ -607,34 +607,4 @@ describe Page, "processing" do
     @page.process(@request, @response)
     @response.response_code.should == 404
   end
-  
-  
-  # it "should set an appropriate Cache-Control header" do
-  #   @page.process(@request, @response)
-  #   @response.headers['Cache-Control'].should == "public, max-age=300"
-  # end
-  # 
-  # it "should set the Cache-Control header to 'no-cache' when the page should not be cached" do
-  #   @page.should_receive(:cache?).and_return(false)
-  #   @page.process(@request, @response)
-  #   @response.headers['Cache-Control'].should == "private, no-cache"
-  # end
-  # 
-  # it "should set the response code to 304 and set a blank response body when the ETag matches" do
-  #   @request.stub!(:if_none_match).and_return("foobar")
-  #   @response.stub!(:etag).and_return("foobar")
-  #   @page.process(@request, @response)
-  #   @response.response_code.should == 304
-  #   @response.body.should be_blank
-  # end
-  # 
-  # 
-  # it "should set the response code to 200 and render the page into the body when the ETag does not match" do
-  #   @request.stub!(:if_none_match).and_return("barbaz")
-  #   @response.stub!(:etag).and_return("foobar")
-  #   @page.process(@request, @response)
-  #   @response.response_code.should == 200
-  #   @response.body.should match(/Hello world!/)
-  # end
-  # 
 end
