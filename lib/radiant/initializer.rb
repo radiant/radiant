@@ -114,6 +114,9 @@ module Radiant
     def load_plugins
       super
       extension_loader.load_extensions
+      add_gem_load_paths
+      load_gems
+      check_gem_dependencies
     end
 
     def after_initialize
