@@ -59,10 +59,6 @@ module Radiant
       def route_definitions
         @route_definitions ||= []
       end
-
-      def extension_config(&block)
-        yield Rails.configuration
-      end
     end
   end
 end
