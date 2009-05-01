@@ -59,6 +59,10 @@ module Radiant
       def route_definitions
         @route_definitions ||= []
       end
+
+      def config
+        Rails.configuration
+      end
     end
   end
 end
