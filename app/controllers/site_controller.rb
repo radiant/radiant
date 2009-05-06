@@ -18,7 +18,6 @@ class SiteController < ApplicationController
 
     if @page = find_page(url)
       process_page(@page)
-      fresh_when({})
       set_cache_control
       @performed_render ||= true
     else

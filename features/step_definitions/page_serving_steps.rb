@@ -1,5 +1,11 @@
+Before do
+  Radiant::Cache.use_x_sendfile = false
+  Radiant::Cache.use_x_accel_redirect = nil
+end
+
 Given /^the page cache is clear$/ do
   # No-op until we have Rack::Cache installed
+  Radiant::Cache.clear if defined?(Radiant::Cache)
 end
 
 When(/^I go to page ['"](.*)['"]$/) do |url|
@@ -23,4 +29,16 @@ end
 
 Then /^I should get the same ([-\w]+) header$/ do |header_key|
   response.headers[header_key].should == @old_headers[header_key]
+end
+
+Given /^I have turned on X\-Sendfile headers$/ do
+  Radiant::Cache.use_x_sendfile = true
+end
+
+Then /^I should get an "([^\"]*)" header in the response$/ do |header_key|
+  response.headers.to_hash[header_key].should be
+end
+
+Given /^I have turned on X\-Accel\-Redirect headers$/ do
+  Radiant::Cache.use_x_accel_redirect = "/cache"
 end

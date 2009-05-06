@@ -6,7 +6,8 @@ require 'radiant/admin_ui'
 require 'radiant/extension_loader'
 
 module Radiant
-
+  autoload :Cache, 'radiant/cache'
+  
   class Configuration < Rails::Configuration
     attr_accessor :extension_paths
     attr_writer :extensions
@@ -47,6 +48,7 @@ module Radiant
         libs = %W{ 
           #{RADIANT_ROOT}/vendor/radius/lib
           #{RADIANT_ROOT}/vendor/highline/lib
+          #{RADIANT_ROOT}/vendor/rack-cache/lib
         }
         begin
           require 'redcloth'

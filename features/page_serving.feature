@@ -15,9 +15,16 @@ Feature: Serving pages from front-end
     When I go to page '/parent/child/grandchild/great-grandchild'
     Then I should get a 200 response code
     And I should see 'Great Grandchild body.'
-
-  Scenario: Rendering cached page with ETag
+  
+  Scenario: Apache/lighttpd acceleration
+    Given I have turned on X-Sendfile headers
     When I go to page '/first'
-    And I go to page '/first' sending the ETag
-    Then I should get a 304 response code
-    And I should get the same ETag header
+    And I go to page '/first'
+    Then I should get an "X-Sendfile" header in the response
+    
+  Scenario: nginx acceleration
+    Given I have turned on X-Accel-Redirect headers
+    When I go to page '/first'
+    And I go to page '/first'
+    Then I should get an "X-Accel-Redirect" header in the response
+  
