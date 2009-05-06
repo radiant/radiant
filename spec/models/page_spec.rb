@@ -592,11 +592,6 @@ describe Page, "processing" do
     @response.header['X-Extra-Header'].should == "This is my header"
   end
 
-  it "should set the ETag header" do
-    @page.process(@request, @response)
-    @response.headers['ETag'].should be
-  end
-
   it "should set a 200 status code by default" do
     @page.process(@request, @response)
     @response.response_code.should == 200
