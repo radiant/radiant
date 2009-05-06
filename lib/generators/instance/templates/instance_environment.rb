@@ -23,13 +23,30 @@ Radiant::Initializer.run do |config|
   # If you change this key, all old sessions will become invalid!
   # Make sure the secret is at least 30 characters and all random,
   # no regular words or you'll be exposed to dictionary attacks.
-
   config.action_controller.session = {
-    :session_key => '_radiant_session',
+    :session_key => '_<%= app_name %>_session',
     :secret      => <% require 'digest/sha1' %>'<%= Digest::SHA1.hexdigest("--#{app_name}--#{Time.now.to_s}--#{rand(10000000)}--") %>'
   }
 
-  # Comment out this line if you want to turn off all caching. NOT RECOMMENDED!
+  # Comment out this line if you want to turn off all caching, or
+  # add options to modify the behavior. In the majority of deployment 
+  # scenarios it is desirable to leave Radiant's cache enabled and in
+  # the default configuration.
+  #
+  # Additional options:
+  #  :use_x_sendfile => true
+  #    Turns on X-Sendfile support for Apache with mod_xsendfile or lighttpd.
+  #  :use_x_accel_redirect => '/some/virtual/path'
+  #    Turns on X-Accel-Redirect support for nginx. You have to provide
+  #    a path that corresponds to a virtual location in your webserver 
+  #    configuration.
+  #  :entitystore => "radiant:cache/entity"
+  #    Sets the entity store type (preceding the colon) and storage 
+  #   location (following the colon, relative to Rails.root).
+  #    We recommend you use radiant: since this will enable manual expiration.
+  #  :metastore => "radiant:cache/meta"
+  #    Sets the meta store type and storage location.  We recommend you use
+  #    radiant: since this will enable manual expiration and acceleration headers.
   config.middleware.use ::Radiant::Cache
 
   # Use the database for sessions instead of the cookie-based default,
@@ -45,18 +62,17 @@ Radiant::Initializer.run do |config|
 
   # Set the default field error proc
   config.action_view.field_error_proc = Proc.new do |html, instance|
-    %{<div class="error-with-field">#{html} <small class="error">&bull; #{[instance.error_message].flatten.first}</small></div>}
+    if html !~ /label/
+      %{<div class="error-with-field">#{html} <small class="error">&bull; #{[instance.error_message].flatten.first}</small></div>}
+    else
+      html
+    end
   end
-  
+
   config.after_initialize do
     # Add new inflection rules using the following format:
     ActiveSupport::Inflector.inflections do |inflect|
       inflect.uncountable 'config'
-    end
-
-    # Auto-require text filters
-    Dir["#{RADIANT_ROOT}/app/models/*_filter.rb"].each do |filter|
-      require_dependency File.basename(filter).sub(/\.rb$/, '')
     end
   end
 end
