@@ -2,6 +2,8 @@
 
 === Edge
 
+* Remove Admin::AbstractModelController. [Sean Cribbs]
+* Cleanup deprecated Gem::manage_gems. [Sean Cribbs]
 * Add begin...rescue blocks to rspec.rake [Sean Cribbs]
 * Add begin...rescue blocks for requiring cucumber. [Matt Henry]
 * Deprecate ResponseCache, add Radiant::Cache based on Rack::Cache. 
