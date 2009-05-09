@@ -6,7 +6,8 @@ begin
   end
   task :features => 'db:test:prepare'
 rescue LoadError
-  puts "Required dependency Cucumber is missing.\nRun 'rake gems:install RAILS_ENV=test'"
-  task :features => 'db:test:prepare'
+  task :features do
+    puts "Required dependency Cucumber is missing.\nRun 'rake gems:install RAILS_ENV=test'"
+  end
 end
 
