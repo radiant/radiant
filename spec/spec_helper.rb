@@ -13,7 +13,6 @@ unless defined? SPEC_ROOT
   require 'spec'
   require 'spec/rails'
   require 'dataset'
-  # require 'spec/integration'
 
   module Kernel
     def rputs(*args)
@@ -21,7 +20,7 @@ unless defined? SPEC_ROOT
     end
   end
 
-  class Test::Unit::TestCase
+  class ActiveSupport::TestCase
     include Dataset
     datasets_directory "#{RADIANT_ROOT}/spec/datasets"
     Dataset::ContextClassMethods.datasets_database_dump_path = File.expand_path(RAILS_ROOT + '/tmp/dataset')

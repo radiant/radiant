@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2004-2008 David Heinemeier Hansson
+# Copyright (c) 2004-2009 David Heinemeier Hansson
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -31,23 +31,28 @@ rescue LoadError
   end
 end
 
-require 'action_view/template_handlers'
-require 'action_view/renderable'
-require 'action_view/renderable_partial'
+module ActionView
+  def self.load_all!
+    [Base, InlineTemplate, TemplateError]
+  end
 
-require 'action_view/template'
-require 'action_view/inline_template'
-require 'action_view/paths'
+  autoload :Base, 'action_view/base'
+  autoload :Helpers, 'action_view/helpers'
+  autoload :InlineTemplate, 'action_view/inline_template'
+  autoload :Partials, 'action_view/partials'
+  autoload :PathSet, 'action_view/paths'
+  autoload :Renderable, 'action_view/renderable'
+  autoload :RenderablePartial, 'action_view/renderable_partial'
+  autoload :Template, 'action_view/template'
+  autoload :ReloadableTemplate, 'action_view/reloadable_template'
+  autoload :TemplateError, 'action_view/template_error'
+  autoload :TemplateHandler, 'action_view/template_handler'
+  autoload :TemplateHandlers, 'action_view/template_handlers'
+  autoload :Helpers, 'action_view/helpers'
+end
 
-require 'action_view/base'
-require 'action_view/partials'
-require 'action_view/template_error'
+class ERB
+  autoload :Util, 'action_view/erb/util'
+end
 
 I18n.load_path << "#{File.dirname(__FILE__)}/action_view/locale/en.yml"
-
-require 'action_view/helpers'
-
-ActionView::Base.class_eval do
-  include ActionView::Partials
-  include ActionView::Helpers
-end

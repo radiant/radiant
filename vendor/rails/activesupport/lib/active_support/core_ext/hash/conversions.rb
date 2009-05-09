@@ -1,47 +1,22 @@
 require 'date'
-require 'cgi'
-require 'builder'
-require 'xmlsimple'
-
-# Locked down XmlSimple#xml_in_string
-class XmlSimple
-  # Same as xml_in but doesn't try to smartly shoot itself in the foot.
-  def xml_in_string(string, options = nil)
-    handle_options('in', options)
-
-    @doc = parse(string)
-    result = collapse(@doc.root)
-
-    if @options['keeproot']
-      merge({}, @doc.root.name, result)
-    else
-      result
-    end
-  end
-
-  def self.xml_in_string(string, options = nil)
-    new.xml_in_string(string, options)
-  end
-end
-
-# This module exists to decorate files deserialized using Hash.from_xml with
-# the <tt>original_filename</tt> and <tt>content_type</tt> methods.
-module FileLike #:nodoc:
-  attr_writer :original_filename, :content_type
-
-  def original_filename
-    @original_filename || 'untitled'
-  end
-
-  def content_type
-    @content_type || 'application/octet-stream'
-  end
-end
 
 module ActiveSupport #:nodoc:
   module CoreExtensions #:nodoc:
     module Hash #:nodoc:
       module Conversions
+        # This module exists to decorate files deserialized using Hash.from_xml with
+        # the <tt>original_filename</tt> and <tt>content_type</tt> methods.
+        module FileLike #:nodoc:
+          attr_writer :original_filename, :content_type
+
+          def original_filename
+            @original_filename || 'untitled'
+          end
+
+          def content_type
+            @content_type || 'application/octet-stream'
+          end
+        end
 
         XML_TYPE_NAMES = {
           "Symbol"     => "symbol",
@@ -49,11 +24,12 @@ module ActiveSupport #:nodoc:
           "Bignum"     => "integer",
           "BigDecimal" => "decimal",
           "Float"      => "float",
+          "TrueClass"  => "boolean",
+          "FalseClass" => "boolean",
           "Date"       => "date",
           "DateTime"   => "datetime",
           "Time"       => "datetime",
-          "TrueClass"  => "boolean",
-          "FalseClass" => "boolean"
+          "ActiveSupport::TimeWithZone" => "datetime"
         } unless defined?(XML_TYPE_NAMES)
 
         XML_FORMATTING = {
@@ -100,7 +76,7 @@ module ActiveSupport #:nodoc:
         # Converts a hash into a string suitable for use as a URL query string. An optional <tt>namespace</tt> can be
         # passed to enclose the param names (see example below).
         #
-        # ==== Example:
+        # ==== Examples
         #   { :name => 'David', :nationality => 'Danish' }.to_query # => "name=David&nationality=Danish"
         #
         #   { :name => 'David', :nationality => 'Danish' }.to_query('user') # => "user%5Bname%5D=David&user%5Bnationality%5D=Danish"
@@ -113,12 +89,13 @@ module ActiveSupport #:nodoc:
         alias_method :to_param, :to_query
 
         def to_xml(options = {})
+          require 'builder' unless defined?(Builder)
+
           options[:indent] ||= 2
           options.reverse_merge!({ :builder => Builder::XmlMarkup.new(:indent => options[:indent]),
                                    :root => "hash" })
           options[:builder].instruct! unless options.delete(:skip_instruct)
-          dasherize = !options.has_key?(:dasherize) || options[:dasherize]
-          root = dasherize ? options[:root].to_s.dasherize : options[:root].to_s
+          root = rename_key(options[:root].to_s, options)
 
           options[:builder].__send__(:method_missing, root) do
             each do |key, value|
@@ -145,7 +122,7 @@ module ActiveSupport #:nodoc:
                   else
                     type_name = XML_TYPE_NAMES[value.class.name]
 
-                    key = dasherize ? key.to_s.dasherize : key.to_s
+                    key = rename_key(key.to_s, options)
 
                     attributes = options[:skip_types] || value.nil? || type_name.nil? ? { } : { :type => type_name }
                     if value.nil?
@@ -165,15 +142,16 @@ module ActiveSupport #:nodoc:
 
         end
 
+        def rename_key(key, options = {})
+          camelize = options.has_key?(:camelize) && options[:camelize]
+          dasherize = !options.has_key?(:dasherize) || options[:dasherize]
+          key = key.camelize if camelize
+          dasherize ? key.dasherize : key
+        end
+
         module ClassMethods
           def from_xml(xml)
-            # TODO: Refactor this into something much cleaner that doesn't rely on XmlSimple
-            typecast_xml_value(undasherize_keys(XmlSimple.xml_in_string(xml,
-              'forcearray'   => false,
-              'forcecontent' => true,
-              'keeproot'     => true,
-              'contentkey'   => '__content__')
-            ))
+            typecast_xml_value(unrename_keys(XmlMini.parse(xml)))
           end
 
           private
@@ -239,15 +217,15 @@ module ActiveSupport #:nodoc:
               end
             end
 
-            def undasherize_keys(params)
+            def unrename_keys(params)
               case params.class.to_s
                 when "Hash"
                   params.inject({}) do |h,(k,v)|
-                    h[k.to_s.tr("-", "_")] = undasherize_keys(v)
+                    h[k.to_s.underscore.tr("-", "_")] = unrename_keys(v)
                     h
                   end
                 when "Array"
-                  params.map { |v| undasherize_keys(v) }
+                  params.map { |v| unrename_keys(v) }
                 else
                   params
               end

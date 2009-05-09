@@ -1,6 +1,8 @@
 module Rails
   module Rack
-    autoload :Logger, "rails/rack/logger"
+    autoload :Debugger, "rails/rack/debugger"
+    autoload :LogTailer, "rails/rack/log_tailer"
+    autoload :Metal, "rails/rack/metal"
     autoload :Static, "rails/rack/static"
   end
 end

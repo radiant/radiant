@@ -1,12 +1,3 @@
-require 'action_controller/mime_type'
-require 'action_controller/request'
-require 'action_controller/response'
-require 'action_controller/routing'
-require 'action_controller/resources'
-require 'action_controller/url_rewriter'
-require 'action_controller/status_codes'
-require 'action_view'
-require 'drb'
 require 'set'
 
 module ActionController #:nodoc:
@@ -31,7 +22,7 @@ module ActionController #:nodoc:
     attr_reader :allowed_methods
 
     def initialize(*allowed_methods)
-      super("Only #{allowed_methods.to_sentence} requests are allowed.")
+      super("Only #{allowed_methods.to_sentence(:locale => :en)} requests are allowed.")
       @allowed_methods = allowed_methods
     end
 
@@ -173,8 +164,8 @@ module ActionController #:nodoc:
   #
   # Other options for session storage are:
   #
-  # * ActiveRecordStore - Sessions are stored in your database, which works better than PStore with multiple app servers and,
-  #   unlike CookieStore, hides your session contents from the user. To use ActiveRecordStore, set
+  # * ActiveRecord::SessionStore - Sessions are stored in your database, which works better than PStore with multiple app servers and,
+  #   unlike CookieStore, hides your session contents from the user. To use ActiveRecord::SessionStore, set
   #
   #     config.action_controller.session_store = :active_record_store
   #
@@ -263,7 +254,7 @@ module ActionController #:nodoc:
     cattr_reader :protected_instance_variables
     # Controller specific instance variables which will not be accessible inside views.
     @@protected_instance_variables = %w(@assigns @performed_redirect @performed_render @variables_added @request_origin @url @parent_controller
-                                        @action_name @before_filter_chain_aborted @action_cache_path @_session @_cookies @_headers @_params
+                                        @action_name @before_filter_chain_aborted @action_cache_path @_session @_headers @_params
                                         @_flash @_response)
 
     # Prepends all the URL-generating helpers from AssetHelper. This makes it possible to easily move javascripts, stylesheets,
@@ -310,10 +301,7 @@ module ActionController #:nodoc:
     # A YAML parser is also available and can be turned on with:
     #
     #   ActionController::Base.param_parsers[Mime::YAML] = :yaml
-    @@param_parsers = { Mime::MULTIPART_FORM   => :multipart_form,
-                        Mime::URL_ENCODED_FORM => :url_encoded_form,
-                        Mime::XML              => :xml_simple,
-                        Mime::JSON             => :json }
+    @@param_parsers = {}
     cattr_accessor :param_parsers
 
     # Controls the default charset for all renders.
@@ -335,6 +323,10 @@ module ActionController #:nodoc:
     # Sets the token parameter name for RequestForgery. Calling +protect_from_forgery+
     # sets it to <tt>:authenticity_token</tt> by default.
     cattr_accessor :request_forgery_protection_token
+
+    # Controls the IP Spoofing check when determining the remote IP.
+    @@ip_spoofing_check = true
+    cattr_accessor :ip_spoofing_check
 
     # Indicates whether or not optimise the generated named
     # route helper methods
@@ -387,6 +379,13 @@ module ActionController #:nodoc:
     attr_accessor :action_name
 
     class << self
+      def call(env)
+        # HACK: For global rescue to have access to the original request and response
+        request = env["action_controller.rescue.request"] ||= Request.new(env)
+        response = env["action_controller.rescue.response"] ||= Response.new
+        process(request, response)
+      end
+
       # Factory for the standard create, process loop where the controller is discarded after processing.
       def process(request, response) #:nodoc:
         new.process(request, response)
@@ -507,7 +506,7 @@ module ActionController #:nodoc:
         protected :filter_parameters
       end
 
-      delegate :exempt_from_layout, :to => 'ActionView::Base'
+      delegate :exempt_from_layout, :to => 'ActionView::Template'
     end
 
     public
@@ -529,7 +528,7 @@ module ActionController #:nodoc:
       end
 
       def send_response
-        response.prepare! unless component_request?
+        response.prepare!
         response
       end
 
@@ -645,7 +644,7 @@ module ActionController #:nodoc:
       end
 
       def session_enabled?
-        request.session_options && request.session_options[:disabled] != false
+        ActiveSupport::Deprecation.warn("Sessions are now lazy loaded. So if you don't access them, consider them disabled.", caller)
       end
 
       self.view_paths = []
@@ -785,9 +784,37 @@ module ActionController #:nodoc:
       #   # placed in "app/views/layouts/special.r(html|xml)"
       #   render :text => "Hi there!", :layout => "special"
       #
-      # The <tt>:text</tt> option can also accept a Proc object, which can be used to manually control the page generation. This should
-      # generally be avoided, as it violates the separation between code and content, and because almost everything that can be
-      # done with this method can also be done more cleanly using one of the other rendering methods, most notably templates.
+      # === Streaming data and/or controlling the page generation
+      #
+      # The <tt>:text</tt> option can also accept a Proc object, which can be used to:
+      #
+      # 1. stream on-the-fly generated data to the browser. Note that you should
+      #    use the methods provided by ActionController::Steaming instead if you
+      #    want to stream a buffer or a file.
+      # 2. manually control the page generation. This should generally be avoided,
+      #    as it violates the separation between code and content, and because almost
+      #    everything that can be done with this method can also be done more cleanly
+      #    using one of the other rendering methods, most notably templates.
+      #
+      # Two arguments are passed to the proc, a <tt>response</tt> object and an
+      # <tt>output</tt> object. The response object is equivalent to the return
+      # value of the ActionController::Base#response method, and can be used to
+      # control various things in the HTTP response, such as setting the
+      # Content-Type header. The output object is an writable <tt>IO</tt>-like
+      # object, so one can call <tt>write</tt> and <tt>flush</tt> on it.
+      #
+      # The following example demonstrates how one can stream a large amount of
+      # on-the-fly generated data to the browser:
+      #
+      #   # Streams about 180 MB of generated data to the browser.
+      #   render :text => proc { |response, output|
+      #     10_000_000.times do |i|
+      #       output.write("This is line #{i}\n")
+      #       output.flush
+      #     end
+      #   }
+      #
+      # Another example:
       #
       #   # Renders "Hello from code!"
       #   render :text => proc { |response, output| output.write("Hello from code!") }
@@ -864,20 +891,31 @@ module ActionController #:nodoc:
       def render(options = nil, extra_options = {}, &block) #:doc:
         raise DoubleRenderError, "Can only render or redirect once per action" if performed?
 
+        validate_render_arguments(options, extra_options, block_given?)
+
         if options.nil?
-          return render(:file => default_template_name, :layout => true)
-        elsif !extra_options.is_a?(Hash)
-          raise RenderError, "You called render with invalid options : #{options.inspect}, #{extra_options.inspect}"
-        else
-          if options == :update
-            options = extra_options.merge({ :update => true })
-          elsif !options.is_a?(Hash)
-            raise RenderError, "You called render with invalid options : #{options.inspect}"
+          options = { :template => default_template, :layout => true }
+        elsif options == :update
+          options = extra_options.merge({ :update => true })
+        elsif options.is_a?(String) || options.is_a?(Symbol)
+          case options.to_s.index('/')
+          when 0
+            extra_options[:file] = options
+          when nil
+            extra_options[:action] = options
+          else
+            extra_options[:template] = options
           end
+
+          options = extra_options
+        elsif !options.is_a?(Hash)
+          extra_options[:partial] = options
+          options = extra_options
         end
 
-        response.layout = layout = pick_layout(options)
-        logger.info("Rendering template within #{layout}") if logger && layout
+        layout = pick_layout(options)
+        response.layout = layout.path_without_format_and_extension if layout
+        logger.info("Rendering template within #{layout.path_without_format_and_extension}") if logger && layout
 
         if content_type = options[:content_type]
           response.content_type = content_type.to_s
@@ -902,7 +940,7 @@ module ActionController #:nodoc:
             render_for_text(@template.render(options.merge(:layout => layout)), options[:status])
 
           elsif action_name = options[:action]
-            render_for_file(default_template_name(action_name.to_s), options[:status], layout)
+            render_for_file(default_template(action_name.to_s), options[:status], layout)
 
           elsif xml = options[:xml]
             response.content_type ||= Mime::XML
@@ -937,7 +975,7 @@ module ActionController #:nodoc:
             render_for_text(nil, options[:status])
 
           else
-            render_for_file(default_template_name, options[:status], layout)
+            render_for_file(default_template, options[:status], layout)
           end
         end
       end
@@ -994,7 +1032,7 @@ module ActionController #:nodoc:
         @performed_redirect = false
         response.redirected_to = nil
         response.redirected_to_method_params = nil
-        response.headers['Status'] = DEFAULT_RENDER_STATUS_CODE
+        response.status = DEFAULT_RENDER_STATUS_CODE
         response.headers.delete('Location')
       end
 
@@ -1065,7 +1103,6 @@ module ActionController #:nodoc:
         end
 
         response.redirected_to = options
-        logger.info("Redirected to #{options}") if logger && logger.info?
 
         case options
           # The scheme name consist of a letter followed by any combination of
@@ -1088,6 +1125,7 @@ module ActionController #:nodoc:
 
       def redirect_to_full_url(url, status)
         raise DoubleRenderError if performed?
+        logger.info("Redirected to #{url}") if logger && logger.info?
         response.redirect(url, interpret_status(status))
         @performed_redirect = true
       end
@@ -1096,6 +1134,11 @@ module ActionController #:nodoc:
       # the client request. If the request doesn't match the options provided, the
       # request is considered stale and should be generated from scratch. Otherwise,
       # it's fresh and we don't need to generate anything and a reply of "304 Not Modified" is sent.
+      #
+      # Parameters:
+      # * <tt>:etag</tt>
+      # * <tt>:last_modified</tt> 
+      # * <tt>:public</tt> By default the Cache-Control header is private, set this to true if you want your application to be cachable by other devices (proxy caches).
       #
       # Example:
       #
@@ -1115,22 +1158,36 @@ module ActionController #:nodoc:
       end
 
       # Sets the etag, last_modified, or both on the response and renders a
-      # "304 Not Modified" response if the request is already fresh. 
+      # "304 Not Modified" response if the request is already fresh.
+      #
+      # Parameters:
+      # * <tt>:etag</tt>
+      # * <tt>:last_modified</tt> 
+      # * <tt>:public</tt> By default the Cache-Control header is private, set this to true if you want your application to be cachable by other devices (proxy caches).
       #
       # Example:
       #
       #   def show
       #     @article = Article.find(params[:id])
-      #     fresh_when(:etag => @article, :last_modified => @article.created_at.utc)
+      #     fresh_when(:etag => @article, :last_modified => @article.created_at.utc, :public => true)
       #   end
-      # 
-      # This will render the show template if the request isn't sending a matching etag or 
+      #
+      # This will render the show template if the request isn't sending a matching etag or
       # If-Modified-Since header and just a "304 Not Modified" response if there's a match.
+      #
       def fresh_when(options)
-        options.assert_valid_keys(:etag, :last_modified)
+        options.assert_valid_keys(:etag, :last_modified, :public)
 
         response.etag          = options[:etag]          if options[:etag]
         response.last_modified = options[:last_modified] if options[:last_modified]
+        
+        if options[:public] 
+          cache_control = response.headers["Cache-Control"].split(",").map {|k| k.strip }
+          cache_control.delete("private")
+          cache_control.delete("no-cache")
+          cache_control << "public"
+          response.headers["Cache-Control"] = cache_control.join(', ')
+        end
 
         if request.fresh?(response)
           head :not_modified
@@ -1142,15 +1199,26 @@ module ActionController #:nodoc:
       #
       # Examples:
       #   expires_in 20.minutes
-      #   expires_in 3.hours, :private => false
-      #   expires in 3.hours, 'max-stale' => 5.hours, :private => nil, :public => true
+      #   expires_in 3.hours, :public => true
+      #   expires in 3.hours, 'max-stale' => 5.hours, :public => true
       #
       # This method will overwrite an existing Cache-Control header.
       # See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html for more possibilities.
       def expires_in(seconds, options = {}) #:doc:
-        cache_options = { 'max-age' => seconds, 'private' => true }.symbolize_keys.merge!(options.symbolize_keys)
-        cache_options.delete_if { |k,v| v.nil? or v == false }
-        cache_control = cache_options.map{ |k,v| v == true ? k.to_s : "#{k.to_s}=#{v.to_s}"}
+        cache_control = response.headers["Cache-Control"].split(",").map {|k| k.strip }
+
+        cache_control << "max-age=#{seconds}"
+        cache_control.delete("no-cache")
+        if options[:public]
+          cache_control.delete("private")
+          cache_control << "public"
+        else
+          cache_control << "private"
+        end
+        
+        # This allows for additional headers to be passed through like 'max-stale' => 5.hours
+        cache_control += options.symbolize_keys.reject{|k,v| k == :public || k == :private }.map{ |k,v| v == true ? k.to_s : "#{k.to_s}=#{v.to_s}"}
+        
         response.headers["Cache-Control"] = cache_control.join(', ')
       end
 
@@ -1164,20 +1232,19 @@ module ActionController #:nodoc:
       def reset_session #:doc:
         request.reset_session
         @_session = request.session
-        response.session = @_session
       end
-
 
     private
       def render_for_file(template_path, status = nil, layout = nil, locals = {}) #:nodoc:
-        logger.info("Rendering #{template_path}" + (status ? " (#{status})" : '')) if logger
+        path = template_path.respond_to?(:path_without_format_and_extension) ? template_path.path_without_format_and_extension : template_path
+        logger.info("Rendering #{path}" + (status ? " (#{status})" : '')) if logger
         render_for_text @template.render(:file => template_path, :locals => locals, :layout => layout), status
       end
 
       def render_for_text(text = nil, status = nil, append_response = false) #:nodoc:
         @performed_render = true
 
-        response.headers['Status'] = interpret_status(status || DEFAULT_RENDER_STATUS_CODE)
+        response.status = interpret_status(status || DEFAULT_RENDER_STATUS_CODE)
 
         if append_response
           response.body ||= ''
@@ -1191,6 +1258,16 @@ module ActionController #:nodoc:
         end
       end
 
+      def validate_render_arguments(options, extra_options, has_block)
+        if options && (has_block && options != :update) && !options.is_a?(String) && !options.is_a?(Hash) && !options.is_a?(Symbol)
+          raise RenderError, "You called render with invalid options : #{options.inspect}"
+        end
+
+        if !extra_options.is_a?(Hash)
+          raise RenderError, "You called render with invalid options : #{options.inspect}, #{extra_options.inspect}"
+        end
+      end
+
       def initialize_template_class(response)
         response.template = ActionView::Base.new(self.class.view_paths, {}, self)
         response.template.helpers.send :include, self.class.master_helper_module
@@ -1199,7 +1276,7 @@ module ActionController #:nodoc:
       end
 
       def assign_shortcuts(request, response)
-        @_request, @_params, @_cookies = request, request.parameters, request.cookies
+        @_request, @_params = request, request.parameters
 
         @_response         = response
         @_response.session = request.session
@@ -1217,11 +1294,10 @@ module ActionController #:nodoc:
       def log_processing
         if logger && logger.info?
           log_processing_for_request_id
-          log_processing_for_session_id
           log_processing_for_parameters
         end
       end
-      
+
       def log_processing_for_request_id
         request_id = "\n\nProcessing #{self.class.name}\##{action_name} "
         request_id << "to #{params[:format]} " if params[:format]
@@ -1230,17 +1306,10 @@ module ActionController #:nodoc:
         logger.info(request_id)
       end
 
-      def log_processing_for_session_id
-        if @_session && @_session.respond_to?(:session_id) && @_session.respond_to?(:dbman) &&
-            !@_session.dbman.is_a?(CGI::Session::CookieStore)
-          logger.info "  Session ID: #{@_session.session_id}"
-        end
-      end
-
       def log_processing_for_parameters
         parameters = respond_to?(:filter_parameters) ? filter_parameters(params) : params.dup
         parameters = parameters.except!(:controller, :action, :format, :_method)
-        
+
         logger.info "  Parameters: #{parameters.inspect}" unless parameters.empty?
       end
 
@@ -1255,10 +1324,17 @@ module ActionController #:nodoc:
         elsif respond_to? :method_missing
           method_missing action_name
           default_render unless performed?
-        elsif template_exists?
-          default_render
         else
-          raise UnknownAction, "No action responded to #{action_name}. Actions: #{action_methods.sort.to_sentence}", caller
+          begin
+            default_render
+          rescue ActionView::MissingTemplate => e
+            # Was the implicit template missing, or was it another template?
+            if e.path == default_template_name
+              raise UnknownAction, "No action responded to #{action_name}. Actions: #{action_methods.sort.to_sentence(:locale => :en)}", caller
+            else
+              raise e
+            end
+          end
         end
       end
 
@@ -1269,11 +1345,6 @@ module ActionController #:nodoc:
       def assign_names
         @action_name = (params['action'] || 'index')
       end
-
-      def assign_default_content_type_and_charset
-        response.assign_default_content_type_and_charset!
-      end
-      deprecate :assign_default_content_type_and_charset => :'response.assign_default_content_type_and_charset!'
 
       def action_methods
         self.class.action_methods
@@ -1305,14 +1376,8 @@ module ActionController #:nodoc:
         "#{request.protocol}#{request.host}#{request.request_uri}"
       end
 
-      def close_session
-        @_session.close if @_session && @_session.respond_to?(:close)
-      end
-
-      def template_exists?(template_name = default_template_name)
-        @template.send(:_pick_template, template_name) ? true : false
-      rescue ActionView::MissingTemplate
-        false
+      def default_template(action_name = self.action_name)
+        self.view_paths.find_template(default_template_name(action_name), default_template_format)
       end
 
       def default_template_name(action_name = self.action_name)
@@ -1334,7 +1399,16 @@ module ActionController #:nodoc:
       end
 
       def process_cleanup
-        close_session
       end
+  end
+
+  Base.class_eval do
+    [ Filters, Layout, Benchmarking, Rescue, Flash, MimeResponds, Helpers,
+      Cookies, Caching, Verification, Streaming, SessionManagement,
+      HttpAuthentication::Basic::ControllerMethods, HttpAuthentication::Digest::ControllerMethods,
+      RecordIdentifier, RequestForgeryProtection, Translation
+    ].each do |mod|
+      include mod
+    end
   end
 end

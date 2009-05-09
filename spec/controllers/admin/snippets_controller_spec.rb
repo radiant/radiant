@@ -26,26 +26,39 @@ describe Admin::SnippetsController do
         lambda { send(method, action, :id => snippet_id(:first)) }.should require_login
       end
 
-      it "should allow access to developers for the #{action} action" do
-        lambda { 
-          send(method, action, :id => snippet_id(:first)) 
-        }.should restrict_access(:allow => [users(:developer)], 
-                                 :url => '/admin/pages')
-      end
+      if action == :show
+        it "should request authentication for API access on show" do
+          logout
+          send(method, action, :id => snippet_id(:first), :format => "xml")
+          response.response_code.should == 401
+        end
+      else
+        it "should allow access to developers for the #{action} action" do
+          lambda {
+            send(method, action, :id => snippet_id(:first))
+          }.should restrict_access(:allow => [users(:developer)],
+                                  :url => '/admin/pages')
+        end
 
-      it "should allow access to admins for the #{action} action" do
-        lambda { 
-          send(method, action, :id => snippet_id(:first)) 
-        }.should restrict_access(:allow => [users(:developer)], 
-                                 :url => '/admin/pages')
-      end
-      
-      it "should allow non-developers and non-admins for the #{action} action" do
-        lambda { 
-          send(method, action, :id => Snippet.first.id) 
-        }.should restrict_access(:allow => [users(:non_admin), users(:existing)],
-                                 :url => '/admin/pages')
+        it "should allow access to admins for the #{action} action" do
+          lambda {
+            send(method, action, :id => snippet_id(:first))
+          }.should restrict_access(:allow => [users(:developer)],
+                                   :url => '/admin/pages')
+        end
+
+        it "should allow non-developers and non-admins for the #{action} action" do
+          lambda {
+            send(method, action, :id => Snippet.first.id)
+          }.should restrict_access(:allow => [users(:non_admin), users(:existing)],
+                                   :url => '/admin/pages')
+        end
       end
     end
+  end
+  
+  it "should clear the page cache when saved" do
+    Radiant::Cache.should_receive(:clear)
+    put :update, :id => snippet_id(:first), :snippet => {:content => "Foobar."}
   end
 end

@@ -3,6 +3,7 @@ require 'date'
 require 'bigdecimal'
 require 'bigdecimal/util'
 
+# TODO: Autoload these files
 require 'active_record/connection_adapters/abstract/schema_definitions'
 require 'active_record/connection_adapters/abstract/schema_statements'
 require 'active_record/connection_adapters/abstract/database_statements'
@@ -63,6 +64,12 @@ module ActiveRecord
       # CREATE TABLE or ALTER TABLE get rolled back by a transaction?  PostgreSQL,
       # SQL Server, and others support this.  MySQL and others do not.
       def supports_ddl_transactions?
+        false
+      end
+      
+      # Does this adapter support savepoints? PostgreSQL and MySQL do, SQLite
+      # does not.
+      def supports_savepoints?
         false
       end
 
@@ -159,9 +166,26 @@ module ActiveRecord
         @open_transactions -= 1
       end
 
-      def log_info(sql, name, seconds)
+      def transaction_joinable=(joinable)
+        @transaction_joinable = joinable
+      end
+
+      def create_savepoint
+      end
+
+      def rollback_to_savepoint
+      end
+
+      def release_savepoint
+      end
+
+      def current_savepoint_name
+        "active_record_#{open_transactions}"
+      end
+
+      def log_info(sql, name, ms)
         if @logger && @logger.debug?
-          name = "#{name.nil? ? "SQL" : name} (#{sprintf("%.1f", seconds * 1000)}ms)"
+          name = '%s (%.1fms)' % [name || 'SQL', ms]
           @logger.debug(format_log_entry(name, sql.squeeze(' ')))
         end
       end
@@ -170,9 +194,9 @@ module ActiveRecord
         def log(sql, name)
           if block_given?
             result = nil
-            seconds = Benchmark.realtime { result = yield }
-            @runtime += seconds
-            log_info(sql, name, seconds)
+            ms = Benchmark.ms { result = yield }
+            @runtime += ms
+            log_info(sql, name, ms)
             result
           else
             log_info(sql, name, 0)

@@ -27,6 +27,23 @@ describe Radiant::Configuration do
     @configuration.extension_paths.should include("#{RADIANT_ROOT}/vendor/extensions") 
   end
   
+  it "should initialize the extensions" do
+    @configuration.extensions.should be_kind_of(Array)
+    @configuration.extensions.should include(:archive, :textile_filter, :markdown_filter) 
+  end
+  
+  it "should remove excluded extensions" do
+    @configuration.extensions -= [:archive]
+    @configuration.extensions.should be_kind_of(Array)
+    @configuration.extensions.should_not include(:archive) 
+  end
+  
+  it "should have extensions only found in extension paths" do
+    @configuration.extension_paths = [RADIANT_ROOT + "/test/fixtures/extensions"]
+    @configuration.extensions.should include(:basic, :overriding, :load_order_green) 
+    @configuration.extensions.should_not include(:archive, :textile_filter, :markdown_filter) 
+  end
+  
   it "should have access to the AdminUI" do
     @configuration.admin.should == Radiant::AdminUI.instance
   end

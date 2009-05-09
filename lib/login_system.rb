@@ -31,11 +31,11 @@ module LoginSystem
         true
       else
         session[:return_to] = request.request_uri
-        if params[:format].to_s =~ /xml|json/
-          head :forbidden
-        else
-          redirect_to login_url
+        respond_to do |format|
+          format.html { redirect_to login_url }
+          format.any(:xml,:json) { request_http_basic_authentication }
         end
+        false
       end
     end
 
@@ -46,7 +46,11 @@ module LoginSystem
       else
         permissions = self.class.controller_permissions[action]
         flash[:error] = permissions[:denied_message] || 'Access denied.'
-        redirect_to(permissions[:denied_url] || { :action => :index })
+        respond_to do |format|
+          format.html { redirect_to(permissions[:denied_url] || { :action => :index }) }
+          format.any(:xml, :json) { head :forbidden }
+        end
+        false
       end
     end
 
@@ -83,12 +87,10 @@ module LoginSystem
     end
 
     def login_from_http
-      if params[:format] =~ /xml|json/
-        user = nil
-        authenticate_or_request_with_http_basic do |user_name, password|
-          user = User.authenticate(user_name, password)
+      if [Mime::XML, Mime::JSON].include?(request.format)
+        authenticate_with_http_basic do |user_name, password|
+          User.authenticate(user_name, password)
         end
-        user
       end
     end
 

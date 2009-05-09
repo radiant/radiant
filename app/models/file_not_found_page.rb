@@ -17,10 +17,10 @@ class FileNotFoundPage < Page
     true
   end
    
-  def headers
-    { 'Status' => '404 Not Found' }
+  def response_code
+    404
   end
-   
+  
   def cache?
     false
   end

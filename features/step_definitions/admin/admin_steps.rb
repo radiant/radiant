@@ -7,7 +7,8 @@ Given(/^I am logged in as ['"](\w+)['"]$/) do |user|
 end
 
 Given /^there are no pages$/ do
-  Page.destroy_all
+  Page.delete_all
+  PagePart.delete_all
 end
 
 Then /^['"](.*)["'] should be selected for ['"](.*)["']$/ do |value, field|

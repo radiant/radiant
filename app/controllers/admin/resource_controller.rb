@@ -163,7 +163,7 @@ class Admin::ResourceController < ApplicationController
     end
 
     def clear_model_cache
-      cache.clear
+      Radiant::Cache.clear if defined?(Radiant::Cache)
     end
 
     def format_symbol
