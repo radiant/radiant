@@ -27,8 +27,10 @@ describe Admin::SnippetsController do
       end
 
       if action == :show
-        it "should authenticate API access on show" do
-          pending "Need to test API access but not UI since unimplemented"
+        it "should request authentication for API access on show" do
+          logout
+          send(method, action, :id => snippet_id(:first), :format => "xml")
+          response.response_code.should == 401
         end
       else
         it "should allow access to developers for the #{action} action" do
@@ -53,5 +55,10 @@ describe Admin::SnippetsController do
         end
       end
     end
+  end
+  
+  it "should clear the page cache when saved" do
+    Radiant::Cache.should_receive(:clear)
+    put :update, :id => snippet_id(:first), :snippet => {:content => "Foobar."}
   end
 end

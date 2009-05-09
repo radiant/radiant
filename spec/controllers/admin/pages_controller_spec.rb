@@ -115,8 +115,10 @@ describe Admin::PagesController do
       end
       
       if action == :show
-        it "should authenticate API access on show" do
-          pending "Need to test API access but not UI since unimplemented"
+        it "should request authentication for API access on show" do
+          logout
+          get action, :id => page_id(:home), :format => "xml"
+          response.response_code.should == 401
         end
       else
         it "should allow access to admins for the #{action} action" do
@@ -169,6 +171,11 @@ describe Admin::PagesController do
     response.should be_success
     assigns(:meta).should be_kind_of(Array)
     assigns(:buttons_partials).should be_kind_of(Array)
+  end
+  
+  it "should clear the page cache when saved" do
+    Radiant::Cache.should_receive(:clear)
+    put :update, :id => page_id(:home), :page => {:breadcrumb => 'Homepage'}
   end
   
   protected
