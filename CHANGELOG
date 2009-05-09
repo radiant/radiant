@@ -2,6 +2,7 @@
 
 === Edge
 
+* Add begin...rescue blocks for requiring cucumber. [Matt Henry]
 * Use app name for session cookie. [Josh French]
 * Upgrade to Rails 2.3.2. [Sean Cribbs, Rick DeNatale, Josh French, Kunal Shah]
 * Populate config.extensions so extensions can be disabled easily. [Jason Garber]
