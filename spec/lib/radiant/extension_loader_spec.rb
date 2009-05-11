@@ -170,6 +170,7 @@ describe Radiant::ExtensionLoader do
     Page.should_receive(:load_subclasses)
     @instance.activate_extensions
   end
+
 end
 
 
