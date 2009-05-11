@@ -41,6 +41,11 @@ describe Radiant::Extension do
     Radiant::Extension.route_definitions.first.should == my_block
   end
 
+  it "should expose configuration object" do
+    SuperExtension.extension_config do |config|
+      config.should eql(Rails.configuration)
+    end
+  end
 end
 
 describe Radiant::Extension, "when inactive" do
