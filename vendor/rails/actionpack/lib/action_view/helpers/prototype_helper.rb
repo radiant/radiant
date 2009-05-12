@@ -1,4 +1,5 @@
 require 'set'
+require 'active_support/json'
 
 module ActionView
   module Helpers
@@ -106,7 +107,7 @@ module ActionView
     # on the page in an Ajax response.
     module PrototypeHelper
       unless const_defined? :CALLBACKS
-        CALLBACKS    = Set.new([ :uninitialized, :loading, :loaded,
+        CALLBACKS    = Set.new([ :create, :uninitialized, :loading, :loaded,
                          :interactive, :complete, :failure, :success ] +
                          (100..599).to_a)
         AJAX_OPTIONS = Set.new([ :before, :after, :condition, :url,
@@ -530,11 +531,6 @@ module ActionView
       #                       is shorthand for
       #                         :with => "'name=' + value"
       #                       This essentially just changes the key of the parameter.
-      # <tt>:on</tt>::        Specifies which event handler to observe. By default,
-      #                       it's set to "changed" for text fields and areas and
-      #                       "click" for radio buttons and checkboxes. With this,
-      #                       you can specify it instead to be "blur" or "focus" or
-      #                       any other event.
       #
       # Additionally, you may specify any of the options documented in the
       # <em>Common options</em> section at the top of this document.
@@ -547,11 +543,6 @@ module ActionView
       #     :url => 'http://example.com/books/edit/1',
       #     :with => 'title'
       #
-      #   # Sends params: {:book_title => 'Title of the book'} when the focus leaves
-      #   # the input field.
-      #   observe_field 'book_title',
-      #     :url => 'http://example.com/books/edit/1',
-      #     :on => 'blur'
       #
       def observe_field(field_id, options = {})
         if options[:frequency] && options[:frequency] > 0
@@ -1093,7 +1084,6 @@ module ActionView
         javascript << "#{options[:frequency]}, " if options[:frequency]
         javascript << "function(element, value) {"
         javascript << "#{callback}}"
-        javascript << ", '#{options[:on]}'" if options[:on]
         javascript << ")"
         javascript_tag(javascript)
       end

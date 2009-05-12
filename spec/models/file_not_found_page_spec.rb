@@ -24,8 +24,8 @@ describe FileNotFoundPage do
     @page.should_not be_cache
   end
   
-  it 'should have the correct headers' do
-    assert_headers({'Status' => '404 Not Found'}, '/gallery/asdf')
+  it 'should return a 404 status code' do
+    @page.response_code.should == 404
   end
   
 end

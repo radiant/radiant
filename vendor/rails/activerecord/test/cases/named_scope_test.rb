@@ -15,7 +15,7 @@ class NamedScopeTest < ActiveRecord::TestCase
     assert_equal Topic.find(:all),   Topic.base
     assert_equal Topic.find(:all),   Topic.base.to_a
     assert_equal Topic.find(:first), Topic.base.first
-    assert_equal Topic.find(:all),   Topic.base.each { |i| i }
+    assert_equal Topic.find(:all),   Topic.base.map { |i| i }
   end
 
   def test_found_items_are_cached
@@ -99,6 +99,12 @@ class NamedScopeTest < ActiveRecord::TestCase
     assert_equal topics_written_before_the_second, Topic.written_before(topics(:second).written_on)
   end
 
+  def test_procedural_scopes_returning_nil
+    all_topics = Topic.find(:all)
+
+    assert_equal all_topics, Topic.written_before(nil)
+  end
+
   def test_scopes_with_joins
     address = author_addresses(:david_address)
     posts_with_authors_at_address = Post.find(
@@ -140,6 +146,15 @@ class NamedScopeTest < ActiveRecord::TestCase
     assert !Comment.containing_the_letter_e.empty?
 
     assert_equal authors(:david).comments & Comment.containing_the_letter_e, authors(:david).comments.containing_the_letter_e
+  end
+
+  def test_named_scopes_honor_current_scopes_from_when_defined
+    assert !Post.ranked_by_comments.limit(5).empty?
+    assert !authors(:david).posts.ranked_by_comments.limit(5).empty?
+    assert_not_equal Post.ranked_by_comments.limit(5), authors(:david).posts.ranked_by_comments.limit(5)
+    assert_not_equal Post.top(5), authors(:david).posts.top(5)
+    assert_equal authors(:david).posts.ranked_by_comments.limit(5), authors(:david).posts.top(5)
+    assert_equal Post.ranked_by_comments.limit(5), Post.top(5)
   end
 
   def test_active_records_have_scope_named__all__
@@ -238,7 +253,7 @@ class NamedScopeTest < ActiveRecord::TestCase
     topic = Topic.approved.create!({})
     assert topic.approved
   end
-  
+
   def test_should_build_with_proxy_options_chained
     topic = Topic.approved.by_lifo.build({})
     assert topic.approved
@@ -254,7 +269,7 @@ class NamedScopeTest < ActiveRecord::TestCase
   end
 
   def test_should_use_where_in_query_for_named_scope
-    assert_equal Developer.find_all_by_name('Jamis'), Developer.find_all_by_id(Developer.jamises)
+    assert_equal Developer.find_all_by_name('Jamis').to_set, Developer.find_all_by_id(Developer.jamises).to_set
   end
 
   def test_size_should_use_count_when_results_are_not_loaded
@@ -276,5 +291,69 @@ class NamedScopeTest < ActiveRecord::TestCase
     join = "INNER JOIN comments ON comments.post_id = posts.id"
     post = Post.find(1)
     assert_equal post.comments.size, Post.scoped(:joins => join).scoped(:joins => join, :conditions => "posts.id = #{post.id}").size
+  end
+
+  def test_chaining_should_use_latest_conditions_when_creating
+    post = Topic.rejected.new
+    assert !post.approved?
+
+    post = Topic.rejected.approved.new
+    assert post.approved?
+
+    post = Topic.approved.rejected.new
+    assert !post.approved?
+
+    post = Topic.approved.rejected.approved.new
+    assert post.approved?
+  end
+
+  def test_chaining_should_use_latest_conditions_when_searching
+    # Normal hash conditions
+    assert_equal Topic.all(:conditions => {:approved => true}), Topic.rejected.approved.all
+    assert_equal Topic.all(:conditions => {:approved => false}), Topic.approved.rejected.all
+
+    # Nested hash conditions with same keys
+    assert_equal [posts(:sti_comments)], Post.with_special_comments.with_very_special_comments.all
+
+    # Nested hash conditions with different keys
+    assert_equal [posts(:sti_comments)], Post.with_special_comments.with_post(4).all.uniq
+  end
+
+  def test_methods_invoked_within_scopes_should_respect_scope
+    assert_equal [], Topic.approved.by_rejected_ids.proxy_options[:conditions][:id]
+  end
+
+  def test_named_scopes_batch_finders
+    assert_equal 3, Topic.approved.count
+
+    assert_queries(4) do
+      Topic.approved.find_each(:batch_size => 1) {|t| assert t.approved? }
+    end
+
+    assert_queries(2) do
+      Topic.approved.find_in_batches(:batch_size => 2) do |group|
+        group.each {|t| assert t.approved? }
+      end
+    end
+  end
+end
+
+class DynamicScopeMatchTest < ActiveRecord::TestCase  
+  def test_scoped_by_no_match
+    assert_nil ActiveRecord::DynamicScopeMatch.match("not_scoped_at_all")
+  end
+
+  def test_scoped_by
+    match = ActiveRecord::DynamicScopeMatch.match("scoped_by_age_and_sex_and_location")
+    assert_not_nil match
+    assert match.scope?
+    assert_equal %w(age sex location), match.attribute_names
+  end
+end
+
+class DynamicScopeTest < ActiveRecord::TestCase
+  def test_dynamic_scope
+    assert_equal Post.scoped_by_author_id(1).find(1), Post.find(1)
+    assert_equal Post.scoped_by_author_id_and_title(1, "Welcome to the weblog").first, Post.find(:first, :conditions => { :author_id => 1, :title => "Welcome to the weblog"})
   end
 end

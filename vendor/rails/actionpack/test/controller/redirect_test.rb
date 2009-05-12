@@ -103,12 +103,8 @@ class RedirectController < ActionController::Base
     end
 end
 
-class RedirectTest < Test::Unit::TestCase
-  def setup
-    @controller = RedirectController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+class RedirectTest < ActionController::TestCase
+  tests RedirectController
 
   def test_simple_redirect
     get :simple_redirect
@@ -216,7 +212,7 @@ class RedirectTest < Test::Unit::TestCase
   end
 
   def test_redirect_to_back_with_no_referer
-    assert_raises(ActionController::RedirectBackError) {
+    assert_raise(ActionController::RedirectBackError) {
       @request.env["HTTP_REFERER"] = nil
       get :redirect_to_back
     }
@@ -243,7 +239,7 @@ class RedirectTest < Test::Unit::TestCase
   end
 
   def test_redirect_to_nil
-    assert_raises(ActionController::ActionControllerError) do
+    assert_raise(ActionController::ActionControllerError) do
       get :redirect_to_nil
     end
   end
@@ -256,12 +252,8 @@ module ModuleTest
     end
   end
 
-  class ModuleRedirectTest < Test::Unit::TestCase
-    def setup
-      @controller = ModuleRedirectController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
-    end
+  class ModuleRedirectTest < ActionController::TestCase
+    tests ModuleRedirectController
 
     def test_simple_redirect
       get :simple_redirect

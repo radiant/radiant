@@ -1,5 +1,6 @@
 require "cases/helper"
 require 'models/club'
+require 'models/member_type'
 require 'models/member'
 require 'models/membership'
 require 'models/sponsor'
@@ -7,7 +8,7 @@ require 'models/organization'
 require 'models/member_detail'
 
 class HasOneThroughAssociationsTest < ActiveRecord::TestCase
-  fixtures :members, :clubs, :memberships, :sponsors, :organizations
+  fixtures :member_types, :members, :clubs, :memberships, :sponsors, :organizations
   
   def setup
     @member = members(:groucho)
@@ -114,8 +115,8 @@ class HasOneThroughAssociationsTest < ActiveRecord::TestCase
   end
 
   def test_has_one_through_proxy_should_not_respond_to_private_methods
-    assert_raises(NoMethodError) { clubs(:moustache_club).private_method }
-    assert_raises(NoMethodError) { @member.club.private_method }
+    assert_raise(NoMethodError) { clubs(:moustache_club).private_method }
+    assert_raise(NoMethodError) { @member.club.private_method }
   end
 
   def test_has_one_through_proxy_should_respond_to_private_methods_via_send
@@ -158,4 +159,34 @@ class HasOneThroughAssociationsTest < ActiveRecord::TestCase
     assert @new_organization.members.include?(@member)
   end
 
+  def test_preloading_has_one_through_on_belongs_to
+    assert_not_nil @member.member_type
+    @organization = organizations(:nsa)
+    @member_detail = MemberDetail.new
+    @member.member_detail = @member_detail
+    @member.organization = @organization
+    @member_details = assert_queries(3) do
+      MemberDetail.find(:all, :include => :member_type)
+    end
+    @new_detail = @member_details[0]
+    assert @new_detail.loaded_member_type?
+    assert_not_nil assert_no_queries { @new_detail.member_type }
+  end
+
+  def test_save_of_record_with_loaded_has_one_through
+    @club = @member.club
+    assert_not_nil @club.sponsored_member
+
+    assert_nothing_raised do
+      Club.find(@club.id).save!
+      Club.find(@club.id, :include => :sponsored_member).save!
+    end
+
+    @club.sponsor.destroy
+
+    assert_nothing_raised do
+      Club.find(@club.id).save!
+      Club.find(@club.id, :include => :sponsored_member).save!
+    end
+  end
 end

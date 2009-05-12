@@ -58,6 +58,13 @@ namespace 'radiant' do
     files.include 'public/.htaccess'
     files.exclude /\btmp\b/
     files.exclude 'radiant.gemspec'
+    # Read .gitignore from plugins and exclude those files
+    Dir['vendor/plugins/*/.gitignore'].each do |gi|
+      dirname = File.dirname(gi)
+      File.readlines(gi).each do |i|
+        files.exclude "#{dirname}/**/#{i}"
+      end
+    end
     s.files = files.to_a
   end
 

@@ -56,7 +56,7 @@ module ActionController
         result = recognize_optimized(path, environment) and return result
 
         # Route was not recognized. Try to find out why (maybe wrong verb).
-        allows = HTTP_METHODS.select { |verb| routes.find { |r| r.recognize(path, :method => verb) } }
+        allows = HTTP_METHODS.select { |verb| routes.find { |r| r.recognize(path, environment.merge(:method => verb)) } }
 
         if environment[:method] && !HTTP_METHODS.include?(environment[:method])
           raise NotImplemented.new(*allows)
@@ -98,7 +98,6 @@ module ActionController
           if Array === item
             i += 1
             start = (i == 1)
-            final = (i == list.size)
             tag, sub = item
             if tag == :dynamic
               body += padding + "#{start ? 'if' : 'elsif'} true\n"
