@@ -51,8 +51,8 @@ namespace 'radiant' do
     files.exclude 'config/mongrel_mimes.yml'
     files.exclude 'db/*.db'
     files.exclude /^doc/
-    files.exclude 'log/*.log'
-    files.exclude 'log/*.pid'
+    files.exclude '**/log/*.log'
+    files.exclude '**/log/*.pid'
     files.include 'log/.keep'
     files.exclude /^pkg/
     files.include 'public/.htaccess'
