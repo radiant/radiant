@@ -51,13 +51,20 @@ namespace 'radiant' do
     files.exclude 'config/mongrel_mimes.yml'
     files.exclude 'db/*.db'
     files.exclude /^doc/
-    files.exclude '**/log/*.log'
-    files.exclude '**/log/*.pid'
+    files.exclude 'log/*.log'
+    files.exclude 'log/*.pid'
     files.include 'log/.keep'
     files.exclude /^pkg/
     files.include 'public/.htaccess'
     files.exclude /\btmp\b/
     files.exclude 'radiant.gemspec'
+    # Read .gitignore from plugins and exclude those files
+    Dir['vendor/plugins/*/.gitignore'].each do |gi|
+      dirname = File.dirname(gi)
+      File.readlines(gi).each do |i|
+        files.exclude "#{dirname}/**/#{i}"
+      end
+    end
     s.files = files.to_a
   end
 
