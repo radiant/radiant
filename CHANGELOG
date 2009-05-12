@@ -2,6 +2,7 @@
 
 === 0.8.0 RC1
 
+* Make features task run in instance mode. [Sean Cribbs]
 * Remove Admin::AbstractModelController. [Sean Cribbs]
 * Cleanup deprecated Gem::manage_gems. [Sean Cribbs]
 * Add begin...rescue blocks to rspec.rake [Sean Cribbs]

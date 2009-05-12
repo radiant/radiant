@@ -72,7 +72,7 @@ begin
       end
     end
     Cucumber::Rake::Task.new(:integration) do |t|
-      t.cucumber_opts = "--format progress"
+      t.cucumber_opts = "--format progress #{RADIANT_ROOT}/features"
     end
   
     desc 'Run all specs in spec/generators directory'
@@ -193,7 +193,7 @@ rescue LoadError
     end
     
     namespace :generators do
-      [:extension_controller, :extension_mailer, :extension_migration, :extension_model, :extension].each do |generator|
+      [:extension_controller, :extension_mailer, :extension_migration, :extension_model, :extension].each do |t|
         task t => :spec_prereq
       end
     end
