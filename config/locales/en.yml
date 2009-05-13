@@ -152,6 +152,12 @@ en:
     none: '<none>' 
     normal: '<normal>'
     inherit: '<inherit>'
+    
+  # Main Navigation Tags
+  tabs: 
+    pages: 'Seiten'
+    snippets: 'Snippets'
+    layouts: 'Layouts'
      
   # Timestamp. This may need to be changed as it will most likely not work for many languages.
   timestamp:
