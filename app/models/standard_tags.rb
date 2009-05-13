@@ -273,10 +273,7 @@ module StandardTags
   end
 
   desc %{
-    Renders the contained elements only if the current contextual page has no children.
-    The @status@ attribute limits the status of found child pages to the given status,
-    the default is @"published"@. @status="all"@ includes all non-virtual pages
-    regardless of status.
+    #{I18n.t('tag_desc.unless_children')}
 
     *#{I18n.t('tag_desc.usage')}:*
     
@@ -288,9 +285,7 @@ module StandardTags
   end
 
   desc %{
-    Renders one of the passed values based on a global cycle counter.  Use the @reset@
-    attribute to reset the cycle to the beginning.  Use the @name@ attribute to track
-    multiple cycles; the default is @cycle@.
+    #{I18n.t('tag_desc.cycle')}
 
     *#{I18n.t('tag_desc.usage')}:*
     
@@ -308,13 +303,7 @@ module StandardTags
   end
 
   desc %{
-    Renders the main content of a page. Use the @part@ attribute to select a specific
-    page part. By default the @part@ attribute is set to body. Use the @inherit@
-    attribute to specify that if a page does not have a content part by that name that
-    the tag should render the parent's content part. By default @inherit@ is set to
-    @false@. Use the @contextual@ attribute to force a part inherited from a parent
-    part to be evaluated in the context of the child page. By default 'contextual'
-    is set to true.
+    #{I18n.t('tag_desc.content')}
 
     *#{I18n.t('tag_desc.usage')}:*
     
@@ -342,14 +331,9 @@ module StandardTags
   end
 
   desc %{
-    Renders the containing elements if all of the listed parts exist on a page.
-    By default the @part@ attribute is set to @body@, but you may list more than one
-    part by separating them with a comma. Setting the optional @inherit@ to true will
-    search ancestors independently for each part. By default @inherit@ is set to @false@.
-
-    When listing more than one part, you may optionally set the @find@ attribute to @any@
-    so that it will render the containing elements if any of the listed parts are found.
-    By default the @find@ attribute is set to @all@.
+    #{I18n.t('tag_desc.if_content_p1')}
+    
+    #{I18n.t('tag_desc.if_content_p2')}
 
     *#{I18n.t('tag_desc.usage')}:*
     
@@ -379,13 +363,9 @@ module StandardTags
   end
 
   desc %{
-    The opposite of the @if_content@ tag. It renders the contained elements if all of the
-    specified parts do not exist. Setting the optional @inherit@ to true will search
-    ancestors independently for each part. By default @inherit@ is set to @false@.
+    #{I18n.t('tag_desc.unless_content_p1')}
 
-    When listing more than one part, you may optionally set the @find@ attribute to @any@
-    so that it will not render the containing elements if any of the listed parts are found.
-    By default the @find@ attribute is set to @all@.
+    #{I18n.t('tag_desc.unless_content_p2')}
 
     *#{I18n.t('tag_desc.usage')}:*
     

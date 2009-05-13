@@ -204,10 +204,40 @@ en:
     parent: "Page attribute tags inside this tag refer to the parent of the current page. "
     if_parent: "Renders the contained elements only if the current contextual page has a parent, i.e. is not the root page."
     unless_parent: "Renders the contained elements only if the current contextual page has no parent, i.e. is the root page."
+    
     if_children: 'Renders the contained elements only if the current contextual page has one or <br />
       more child pages.  The @status@ attribute limits the status of found child pages <br />
       to the given status, the default is @"published"@. @status="all"@ includes all <br />
       non-virtual pages regardless of status.'
+    unless_children: 'Renders the contained elements only if the current contextual page has no children.
+      The @status@ attribute limits the status of found child pages to the given status,
+      the default is @"published"@. @status="all"@ includes all non-virtual pages
+      regardless of status.'
+      
+    cycle: 'Renders one of the passed values based on a global cycle counter.  Use the @reset@
+      attribute to reset the cycle to the beginning.  Use the @name@ attribute to track
+      multiple cycles; the default is @cycle@.'
+    content: "Renders the main content of a page. Use the @part@ attribute to select a specific
+      page part. By default the @part@ attribute is set to body. Use the @inherit@
+      attribute to specify that if a page does not have a content part by that name that
+      the tag should render the parent's content part. By default @inherit@ is set to
+      @false@. Use the @contextual@ attribute to force a part inherited from a parent
+      part to be evaluated in the context of the child page. By default 'contextual'
+      is set to true."
+      
+    if_content_p1: 'Renders the containing elements if all of the listed parts exist on a page.
+      By default the @part@ attribute is set to @body@, but you may list more than one
+      part by separating them with a comma. Setting the optional @inherit@ to true will
+      search ancestors independently for each part. By default @inherit@ is set to @false@.'
+    if_content_p2: 'When listing more than one part, you may optionally set the @find@ attribute to @any@
+      so that it will render the containing elements if any of the listed parts are found.
+      By default the @find@ attribute is set to @all@.'
+    unless_content_p1: 'The opposite of the @if_content@ tag. It renders the contained elements if all of the
+      specified parts do not exist. Setting the optional @inherit@ to true will search
+      ancestors independently for each part. By default @inherit@ is set to @false@.'
+    unless_content_p2: 'When listing more than one part, you may optionally set the @find@ attribute to @any@
+      so that it will not render the containing elements if any of the listed parts are found.
+      By default the @find@ attribute is set to @all@.'
     
     
     meta:

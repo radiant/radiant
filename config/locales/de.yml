@@ -176,7 +176,7 @@ de:
       desc: "Causes the tags referring to a page's attributes to refer to the current page."
       attributes: 'Renders the @{{method}}@ attribute of the current page.'
       url: 'Renders the @url@ attribute of the current page.'
-    
+
     children: 
       desc: "Gives access to a page's children."
       count: 'Renders the total number of children.'
@@ -185,9 +185,58 @@ de:
       last: 'Returns the last child. Inside this tag all page attribute tags are mapped tothe last child. <br /> 
         Takes the same ordering options as @<r:children:each>@.›'
       each: "Cycles through each of the children. Inside this tag all page attribute tags are mapped to the current child page."
-      child: "Page attribute tags inside of this tag refer to the current child. This is occasionally <br /> useful if you are inside of another tag (like &lt;r:find&gt;) and need to refer back to the <br /> current child."
+      child: "Page attribute tags inside of this tag refer to the current child. This is occasionally <br /> 
+        useful if you are inside of another tag (like &lt;r:find&gt;) and need to refer back to the <br /> current child."  
       if_first: "Renders the tag contents only if the current page is the first child in the context of a children:each tag"
-
+      unless_first: "Renders the tag contents unless the current page is the first child in the context of a children:each tag"
+      if_last: "Renders the tag contents unless the current page is the last child in the context of a children:each tag"
+      unless_last: "Renders the tag contents unless the current page is the last child in the context of a children:each tag"
+      header_p1: "Renders the tag contents only if the contents do not match the previous header. This is extremely useful 
+        for rendering date headers for a list of child pages."
+      header_p2: "If you would like to use several header blocks you may use the @name@ attribute to name the header. 
+        When a header is named it will not restart until another header of the same name is different."
+      header_p3: "Using the @restart@ attribute you can cause other named headers to restart when the present header changes. 
+        Simply specify the names of the other headers in a semicolon separated list."
+      
+    parent: "Page attribute tags inside this tag refer to the parent of the current page. "
+    if_parent: "Renders the contained elements only if the current contextual page has a parent, i.e. is not the root page."
+    unless_parent: "Renders the contained elements only if the current contextual page has no parent, i.e. is the root page."
+    
+    if_children: 'Renders the contained elements only if the current contextual page has one or <br />
+      more child pages.  The @status@ attribute limits the status of found child pages <br />
+      to the given status, the default is @"published"@. @status="all"@ includes all <br />
+      non-virtual pages regardless of status.'
+    unless_children: 'Renders the contained elements only if the current contextual page has no children.
+      The @status@ attribute limits the status of found child pages to the given status,
+      the default is @"published"@. @status="all"@ includes all non-virtual pages
+      regardless of status.'
+      
+    cycle: 'Renders one of the passed values based on a global cycle counter.  Use the @reset@
+      attribute to reset the cycle to the beginning.  Use the @name@ attribute to track
+      multiple cycles; the default is @cycle@.'
+    content: "Renders the main content of a page. Use the @part@ attribute to select a specific
+      page part. By default the @part@ attribute is set to body. Use the @inherit@
+      attribute to specify that if a page does not have a content part by that name that
+      the tag should render the parent's content part. By default @inherit@ is set to
+      @false@. Use the @contextual@ attribute to force a part inherited from a parent
+      part to be evaluated in the context of the child page. By default 'contextual'
+      is set to true."
+      
+    if_content_p1: 'Renders the containing elements if all of the listed parts exist on a page.
+      By default the @part@ attribute is set to @body@, but you may list more than one
+      part by separating them with a comma. Setting the optional @inherit@ to true will
+      search ancestors independently for each part. By default @inherit@ is set to @false@.'
+    if_content_p2: 'When listing more than one part, you may optionally set the @find@ attribute to @any@
+      so that it will render the containing elements if any of the listed parts are found.
+      By default the @find@ attribute is set to @all@.'
+    unless_content_p1: 'The opposite of the @if_content@ tag. It renders the contained elements if all of the
+      specified parts do not exist. Setting the optional @inherit@ to true will search
+      ancestors independently for each part. By default @inherit@ is set to @false@.'
+    unless_content_p2: 'When listing more than one part, you may optionally set the @find@ attribute to @any@
+      so that it will not render the containing elements if any of the listed parts are found.
+      By default the @find@ attribute is set to @all@.'
+    
+    
     meta:
       desc: "The namespace for 'meta' attributes. If used as a singleton tag, both the description and keywords fields will be output as &lt;meta /&gt; tags unless the attribute 'tag' is set to 'false'."
       keywords: "Emits the page keywords field in a meta tag, unless attribute 'tag' is set to 'false'."
