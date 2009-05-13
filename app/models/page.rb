@@ -293,18 +293,6 @@ class Page < ActiveRecord::Base
       text = object.filter.filter(text) if object.respond_to? :filter_id
       text
     end
-<<<<<<< HEAD:app/models/page.rb
-    
-    def save_page_parts
-      if @page_parts
-        self.parts_without_pending.clear
-        @page_parts.each {|p| self.parts_without_pending << p }
-      end
-      @page_parts = nil
-      true
-    end
-end
-=======
 
 end
->>>>>>> b775ebe1f6c469fcb0fbb03b33afe1ee44bdb48a:app/models/page.rb
+
