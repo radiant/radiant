@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2004-2008 David Heinemeier Hansson
+# Copyright (c) 2004-2009 David Heinemeier Hansson
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -31,22 +31,32 @@ rescue LoadError
   end
 end
 
-require 'action_mailer/vendor'
-require 'tmail'
+require 'action_view'
 
-require 'action_mailer/base'
-require 'action_mailer/helpers'
-require 'action_mailer/mail_helper'
-require 'action_mailer/quoting'
-require 'action_mailer/test_helper'
+module ActionMailer
+  def self.load_all!
+    [Base, Part, ::Text::Format, ::Net::SMTP]
+  end
 
-require 'net/smtp'
-
-ActionMailer::Base.class_eval do
-  include ActionMailer::Quoting
-  include ActionMailer::Helpers
-
-  helper MailHelper
+  autoload :AdvAttrAccessor, 'action_mailer/adv_attr_accessor'
+  autoload :Base, 'action_mailer/base'
+  autoload :Helpers, 'action_mailer/helpers'
+  autoload :Part, 'action_mailer/part'
+  autoload :PartContainer, 'action_mailer/part_container'
+  autoload :Quoting, 'action_mailer/quoting'
+  autoload :TestCase, 'action_mailer/test_case'
+  autoload :TestHelper, 'action_mailer/test_helper'
+  autoload :Utils, 'action_mailer/utils'
 end
 
-silence_warnings { TMail::Encoder.const_set("MAX_LINE_LEN", 200) }
+module Text
+  autoload :Format, 'action_mailer/vendor/text_format'
+end
+
+module Net
+  autoload :SMTP, 'net/smtp'
+end
+
+autoload :MailHelper, 'action_mailer/mail_helper'
+
+require 'action_mailer/vendor/tmail'

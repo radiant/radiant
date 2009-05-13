@@ -1,4 +1,5 @@
-require 'action_controller/integration'
+require 'active_support/test_case'
+require 'action_controller'
 
 # work around the at_exit hook in test/unit, which kills IRB
 Test::Unit.run = true if Test::Unit.respond_to?(:run=)
@@ -23,8 +24,7 @@ end
 #reloads the environment
 def reload!
   puts "Reloading..."
-  dispatcher = ActionController::Dispatcher.new($stdout)
-  dispatcher.cleanup_application
-  dispatcher.reload_application
+  Dispatcher.cleanup_application
+  Dispatcher.reload_application
   true
 end

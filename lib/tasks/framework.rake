@@ -6,7 +6,6 @@ unless File.directory? "#{RAILS_ROOT}/app"
       task :gems do
         require 'rubygems'
         require 'rubygems/gem_runner'
-        Gem.manage_gems
 
         radiant = (version = ENV['VERSION']) ?
           Gem.cache.search('radiant', "= #{version}").first :
