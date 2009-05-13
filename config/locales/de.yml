@@ -170,7 +170,7 @@ de:
     
   # Standard Tag Descriptions
   tag_desc:
-    usage: 'Usage'
+    usage: 'Benutzung'
     
     page:
       desc: "Causes the tags referring to a page's attributes to refer to the current page."

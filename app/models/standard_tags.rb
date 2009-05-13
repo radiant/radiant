@@ -140,8 +140,7 @@ module StandardTags
 
   
   desc %{
-    Renders the tag contents unless the current page is the first child in the context of
-    a children:each tag
+    #{I18n.t('tag_desc.children.unless_first')}
     
     *#{I18n.t('tag_desc.usage')}:*
     
@@ -158,8 +157,7 @@ module StandardTags
   end
   
   desc %{
-    Renders the tag contents only if the current page is the last child in the context of
-    a children:each tag
+    #{I18n.t('tag_desc.children.if_last')}
     
     *#{I18n.t('tag_desc.usage')}:*
     
@@ -177,8 +175,7 @@ module StandardTags
 
   
   desc %{
-    Renders the tag contents unless the current page is the last child in the context of
-    a children:each tag
+    #{I18n.t('tag_desc.children.unless_last')}
     
     *#{I18n.t('tag_desc.usage')}:*
     
@@ -195,16 +192,11 @@ module StandardTags
   end
   
   desc %{
-    Renders the tag contents only if the contents do not match the previous header. This
-    is extremely useful for rendering date headers for a list of child pages.
-
-    If you would like to use several header blocks you may use the @name@ attribute to
-    name the header. When a header is named it will not restart until another header of
-    the same name is different.
-
-    Using the @restart@ attribute you can cause other named headers to restart when the
-    present header changes. Simply specify the names of the other headers in a semicolon
-    separated list.
+    #{I18n.t('tag_desc.children.header_p1')}
+    
+    #{I18n.t('tag_desc.children.header_p2')}
+    
+    #{I18n.t('tag_desc.children.header_p3')}
 
     *#{I18n.t('tag_desc.usage')}:*
     
@@ -231,8 +223,8 @@ module StandardTags
     end
   end
 
-  desc %{
-    Page attribute tags inside this tag refer to the parent of the current page.
+  desc %{  
+    #{I18n.t('tag_desc.parent')}
 
     *#{I18n.t('tag_desc.usage')}:*
     
@@ -245,9 +237,8 @@ module StandardTags
   end
 
   desc %{
-    Renders the contained elements only if the current contextual page has a parent, i.e.
-    is not the root page.
-
+    #{I18n.t('tag_desc.if_parent')}
+    
     *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:if_parent>...</r:if_parent></code></pre>
@@ -258,9 +249,8 @@ module StandardTags
   end
 
   desc %{
-    Renders the contained elements only if the current contextual page has no parent, i.e.
-    is the root page.
-
+    #{I18n.t('tag_desc.unless_parent')}
+    
     *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:unless_parent>...</r:unless_parent></code></pre>
@@ -271,10 +261,7 @@ module StandardTags
   end
 
   desc %{
-    Renders the contained elements only if the current contextual page has one or
-    more child pages.  The @status@ attribute limits the status of found child pages
-    to the given status, the default is @"published"@. @status="all"@ includes all
-    non-virtual pages regardless of status.
+    #{I18n.t('tag_desc.if_children')}
 
     *#{I18n.t('tag_desc.usage')}:*
     
