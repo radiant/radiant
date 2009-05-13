@@ -238,7 +238,29 @@ en:
     unless_content_p2: 'When listing more than one part, you may optionally set the @find@ attribute to @any@
       so that it will not render the containing elements if any of the listed parts are found.
       By default the @find@ attribute is set to @all@.'
+      
+    if_url: "Renders the containing elements only if the page's url matches the regular expression
+      given in the @matches@ attribute. If the @ignore_case@ attribute is set to false, the
+      match is case sensitive. By default, @ignore_case@ is set to true."
+    unless_url: "The opposite of the @if_url@ tag."
     
+    if_ancestor_or_self_p1: "Renders the contained elements if the current contextual page is either the actual page or one of its parents."
+    if_ancestor_or_self_p2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional 
+      mark-up if the child element is or descends from the current page."
+    unless_self_p1: "Renders the contained elements unless the current contextual page is either the actual page or one of its parents."
+    unless_self_p2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless 
+      the child element is or descends from the current page."
+    if_self_p1: "Renders the contained elements if the current contextual page is also the actual page."
+    if_self_p2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is the current page."
+    unless_self_p1: "Renders the contained elements unless the current contextual page is also the actual page."
+    unless_self_p2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless the child element is the current page."
+    
+    author: 'Renders the name of the author of the current page.'
+    date: "Renders the date based on the current page (by default when it was published or created).
+      The format attribute uses the same formating codes used by the Ruby @strftime@ function. By
+      default it's set to @%A, %B d, %Y@.  The @for@ attribute selects which date to render.  Valid
+      options are @published_at@, @created_at@, @updated_at@, and @now@. @now@ will render the
+      current date/time, regardless of the  page."
     
     meta:
       desc: "The namespace for 'meta' attributes. If used as a singleton tag, both the description and keywords fields will be output as &lt;meta /&gt; tags unless the attribute 'tag' is set to 'false'."

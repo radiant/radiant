@@ -396,9 +396,7 @@ module StandardTags
   end
 
   desc %{
-    Renders the containing elements only if the page's url matches the regular expression
-    given in the @matches@ attribute. If the @ignore_case@ attribute is set to false, the
-    match is case sensitive. By default, @ignore_case@ is set to true.
+    #{I18n.t('tag_desc.if_url')}
 
     *#{I18n.t('tag_desc.usage')}:*
     
@@ -413,7 +411,7 @@ module StandardTags
   end
 
   desc %{
-    The opposite of the @if_url@ tag.
+    #{I18n.t('tag_desc.unless_url')}
 
     *#{I18n.t('tag_desc.usage')}:*
     
@@ -428,10 +426,10 @@ module StandardTags
   end
 
   desc %{
-    Renders the contained elements if the current contextual page is either the actual page or one of its parents.
-
-    This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is or descends from the current page.
-
+    #{I18n.t('tag_desc.if_ancestor_or_self_p1')}
+    
+    #{I18n.t('tag_desc.if_ancestor_or_self_p2')}
+    
     *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:if_ancestor_or_self>...</r:if_ancestor_or_self></code></pre>
@@ -441,10 +439,10 @@ module StandardTags
   end
 
   desc %{
-    Renders the contained elements unless the current contextual page is either the actual page or one of its parents.
-
-    This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless the child element is or descends from the current page.
-
+    #{I18n.t('tag_desc.unless_ancestor_or_self_p1')}
+    
+    #{I18n.t('tag_desc.unless_ancestor_or_self_p2')}
+    
     *#{I18n.t('tag_desc.usage')}:*
     
     <pre><code><r:unless_ancestor_or_self>...</r:unless_ancestor_or_self></code></pre>
@@ -454,9 +452,9 @@ module StandardTags
   end
 
   desc %{
-    Renders the contained elements if the current contextual page is also the actual page.
-
-    This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is the current page.
+    #{I18n.t('tag_desc.if_self_p1')}
+    
+    #{I18n.t('tag_desc.if_self_p2')}
 
     *#{I18n.t('tag_desc.usage')}:*
     
@@ -467,9 +465,9 @@ module StandardTags
   end
 
   desc %{
-    Renders the contained elements unless the current contextual page is also the actual page.
-
-    This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless the child element is the current page.
+    #{I18n.t('tag_desc.unless_self_p1')}
+    
+    #{I18n.t('tag_desc.unless_self_p2')}
 
     *#{I18n.t('tag_desc.usage')}:*
 
@@ -480,7 +478,7 @@ module StandardTags
   end
 
   desc %{
-    Renders the name of the author of the current page.
+    #{I18n.t('tag_desc.author')}
   }
   tag 'author' do |tag|
     page = tag.locals.page
@@ -490,11 +488,7 @@ module StandardTags
   end
 
   desc %{
-    Renders the date based on the current page (by default when it was published or created).
-    The format attribute uses the same formating codes used by the Ruby @strftime@ function. By
-    default it's set to @%A, %B %d, %Y@.  The @for@ attribute selects which date to render.  Valid
-    options are @published_at@, @created_at@, @updated_at@, and @now@. @now@ will render the
-    current date/time, regardless of the  page.
+    #{I18n.t('tag_desc.date')}
 
     *#{I18n.t('tag_desc.usage')}:*
 
