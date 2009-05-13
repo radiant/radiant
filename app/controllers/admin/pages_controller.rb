@@ -15,6 +15,10 @@ class Admin::PagesController < Admin::ResourceController
     @homepage = Page.find_by_parent_id(nil)
     response_for :plural
   end
+  
+  def show
+    redirect_to edit_admin_page_path
+  end
 
   def new
     self.model = model_class.new_with_defaults(config)

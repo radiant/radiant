@@ -8,6 +8,10 @@ When /^I go to ['"](.*)['"]$/ do |url|
   visit url
 end
 
+When /^I view a page$/ do
+  visit "/admin/pages/#{pages(:home).id}"
+end
+
 When /^I request the children of page ['"](\w+)['"]$/ do |page|
   parent_page = pages(page.intern)
   set_headers

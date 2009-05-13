@@ -59,6 +59,10 @@ Feature: Managing pages
     When I press 'Delete Pages'
     Then I should see 'successfully removed'
     
+  Scenario: View a page
+    When I view a page
+    Then I should see 'Edit Page'
+    
   Scenario: Change page type
     When I edit the 'virtual' page
     And I select '&lt;normal&gt;' from 'Page type'
