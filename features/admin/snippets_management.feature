@@ -39,6 +39,10 @@ Feature: Managing snippets
     Then I should see "saved"
     And I should see the form
     
+  Scenario: View a snippet
+    When I view a snippet
+    Then I should see 'Edit Snippet'
+    
   Scenario: Delete a snippet with confirmation
     When I follow 'Snippets'
     And I follow 'Remove'

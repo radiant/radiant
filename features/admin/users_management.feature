@@ -10,6 +10,10 @@ Feature: Managing users
     And I should see 'Developer'
     And I should see 'Existing'
     # And a host of others
+    
+  Scenario: View a user
+    When I view a user
+    Then I should see 'Edit User'
   
   Scenario: Create new user
     When I follow 'New User'

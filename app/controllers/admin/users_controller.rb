@@ -6,6 +6,10 @@ class Admin::UsersController < Admin::ResourceController
 
   before_filter :ensure_deletable, :only => [:remove, :destroy]
   
+  def show
+    redirect_to edit_admin_user_path(params[:id])
+  end
+  
   def ensure_deletable
     if current_user.id.to_s == params[:id].to_s
       announce_cannot_delete_self

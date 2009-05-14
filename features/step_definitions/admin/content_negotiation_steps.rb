@@ -12,6 +12,18 @@ When /^I view a page$/ do
   visit "/admin/pages/#{pages(:home).id}"
 end
 
+When /^I view a snippet$/ do
+  visit "/admin/snippets/#{snippets(:first).id}"
+end
+
+When /^I view a layout$/ do
+  visit "/admin/layouts/#{layouts(:main).id}"
+end
+
+When /^I view a user$/ do
+  visit "/admin/users/#{users(:admin).id}"
+end
+
 When /^I request the children of page ['"](\w+)['"]$/ do |page|
   parent_page = pages(page.intern)
   set_headers
