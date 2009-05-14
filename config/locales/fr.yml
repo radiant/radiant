@@ -179,6 +179,103 @@ fr:
       each: "Chacun des enfants en séquence. A l'intérieur de ce tag tous les tags d'attributs de page sont mis en correspondance avec la page de l'enfant actuel."
       child: "Tous les tags d'attributs de Page à l'intérieur de ce tag sont mis en correspondance avec l'enfant actuel. Cela peut être utile <br /> si vous êtes à l'intérieur d'un autre tag (comme <r:find>) et que vous ayez besoin de faire référence en retour à <br /> l'enfant actuel"
       if_first: "Renders the tag contents only if the current page is the first child in the context of a children:each tag"
+      unless_first: "Renders the tag contents unless the current page is the first child in the context of a children:each tag"
+      if_last: "Renders the tag contents unless the current page is the last child in the context of a children:each tag"
+      unless_last: "Renders the tag contents unless the current page is the last child in the context of a children:each tag"
+      header:
+        part_1: "Renders the tag contents only if the contents do not match the previous header. This is extremely useful for rendering date headers for a list of child pages."
+        part_2: "If you would like to use several header blocks you may use the @name@ attribute to name the header. When a header is named it will not restart until another header of the same name is different."
+        part_3: "Using the @restart@ attribute you can cause other named headers to restart when the present header changes. Simply specify the names of the other headers in a semicolon separated list."
+
+    parent: "Page attribute tags inside this tag refer to the parent of the current page. "
+    if_parent: "Renders the contained elements only if the current contextual page has a parent, i.e. is not the root page."
+    unless_parent: "Renders the contained elements only if the current contextual page has no parent, i.e. is the root page."
+
+    if_children: 'Renders the contained elements only if the current contextual page has one or <br />
+      more child pages.  The @status@ attribute limits the status of found child pages <br />
+      to the given status, the default is @"published"@. @status="all"@ includes all <br />
+      non-virtual pages regardless of status.'
+    unless_children: 'Renders the contained elements only if the current contextual page has no children.
+      The @status@ attribute limits the status of found child pages to the given status,
+      the default is @"published"@. @status="all"@ includes all non-virtual pages
+      regardless of status.'
+
+    cycle: 'Renders one of the passed values based on a global cycle counter.  Use the @reset@
+      attribute to reset the cycle to the beginning.  Use the @name@ attribute to track
+      multiple cycles; the default is @cycle@.'
+    content: "Renders the main content of a page. Use the @part@ attribute to select a specific
+      page part. By default the @part@ attribute is set to body. Use the @inherit@
+      attribute to specify that if a page does not have a content part by that name that
+      the tag should render the parent's content part. By default @inherit@ is set to
+      @false@. Use the @contextual@ attribute to force a part inherited from a parent
+      part to be evaluated in the context of the child page. By default 'contextual'
+      is set to true."
+
+    if_content:
+      part_1: 'Renders the containing elements if all of the listed parts exist on a page.
+        By default the @part@ attribute is set to @body@, but you may list more than one
+        part by separating them with a comma. Setting the optional @inherit@ to true will
+        search ancestors independently for each part. By default @inherit@ is set to @false@.'
+      part_2: 'When listing more than one part, you may optionally set the @find@ attribute to @any@
+        so that it will render the containing elements if any of the listed parts are found.
+        By default the @find@ attribute is set to @all@.'
+    unless_content:
+      part_1: 'The opposite of the @if_content@ tag. It renders the contained elements if all of the
+        specified parts do not exist. Setting the optional @inherit@ to true will search
+        ancestors independently for each part. By default @inherit@ is set to @false@.'
+      part_2: 'When listing more than one part, you may optionally set the @find@ attribute to @any@
+        so that it will not render the containing elements if any of the listed parts are found.
+        By default the @find@ attribute is set to @all@.'
+          
+    if_url: "Renders the containing elements only if the page's url matches the regular expression
+      given in the @matches@ attribute. If the @ignore_case@ attribute is set to false, the
+      match is case sensitive. By default, @ignore_case@ is set to true."
+    unless_url: "The opposite of the @if_url@ tag."
+
+    if_ancestor_or_self:
+      part_1: "Renders the contained elements if the current contextual page is either the actual page or one of its parents."
+      part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is or descends from the current page."
+    unless_self:
+      part_1: "Renders the contained elements unless the current contextual page is either the actual page or one of its parents."
+      part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless   the child element is or descends from the current page."
+    if_self:
+      part_1: "Renders the contained elements if the current contextual page is also the actual page."
+      part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is the current page."
+    unless_self: 
+      part_1: "Renders the contained elements unless the current contextual page is also the actual page."
+      part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless the child element is the current page."
+
+    author: 'Renders the name of the author of the current page.'
+
+    date: "Renders the date based on the current page (by default when it was published or created).
+      The format attribute uses the same formating codes used by the Ruby @strftime@ function. By
+      default it's set to &#37;A, &#37;B &#37;d, &#37;Y. The @for@ attribute selects which date to render.  Valid
+      options are @published_at@, @created_at@, @updated_at@, and @now@. @now@ will render the
+      current date/time, regardless of the  page."
+
+    link: "Renders a link to the page. When used as a single tag it uses the page's title
+      for the link name. When used as a double tag the part in between both tags will
+      be used as the link text. The link tag passes all attributes over to the HTML
+      @a@ tag. This is very useful for passing attributes like the @class@ attribute
+      or @id@ attribute. If the @anchor@ attribute is passed to the tag it will
+      append a pound sign (<code>#</code>) followed by the value of the attribute to
+      the @href@ attribute of the HTML @a@ tag--effectively making an HTML anchor."
+
+    breadcrumbs: "Renders a trail of breadcrumbs to the current page. The separator attribute
+      specifies the HTML fragment that is inserted between each of the breadcrumbs. By
+      default it is set to @>@. The boolean nolinks attribute can be specified to render
+      breadcrumbs in plain text, without any links (useful when generating title tag)."
+    snippet: 
+      part_1: "Renders the snippet specified in the @name@ attribute within the context of a page."
+      part_2: "When used as a double tag, the part in between both tags may be used within the snippet itself, being substituted in place of @<r:yield/>@."
+
+    yield:
+      part_1: "Used within a snippet as a placeholder for substitution of child content, when the snippet is called as a double tag."
+      usage: "Usage (within a snippet):"
+      part_2: 'If the above snippet was named "yielding", you could call it from any Page,
+        Layout or Snippet as follows:'
+      part_3: 'Which would output the following:'
+      part_4: "When called in the context of a Page or a Layout, @<r:yield/>@ outputs nothing."
 
     meta:
       desc: "The namespace for 'meta' attributes. If used as a singleton tag, both the description and keywords fields will be output as &lt;meta /&gt; tags unless the attribute 'tag' is set to 'false'."

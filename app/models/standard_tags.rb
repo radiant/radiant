@@ -331,9 +331,9 @@ module StandardTags
   end
 
   desc %{
-    #{I18n.t('tag_desc.if_content_p1')}
+    #{I18n.t('tag_desc.if_content.part_1')}
     
-    #{I18n.t('tag_desc.if_content_p2')}
+    #{I18n.t('tag_desc.if_content.part_2')}
 
     *#{I18n.t('tag_desc.usage')}:*
     
@@ -363,9 +363,9 @@ module StandardTags
   end
 
   desc %{
-    #{I18n.t('tag_desc.unless_content_p1')}
+    #{I18n.t('tag_desc.unless_content.part_1')}
 
-    #{I18n.t('tag_desc.unless_content_p2')}
+    #{I18n.t('tag_desc.unless_content.part_2')}
 
     *#{I18n.t('tag_desc.usage')}:*
     
