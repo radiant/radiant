@@ -426,9 +426,9 @@ module StandardTags
   end
 
   desc %{
-    #{I18n.t('tag_desc.if_ancestor_or_self_p1')}
+    #{I18n.t('tag_desc.if_ancestor_or_self.part_1')}
     
-    #{I18n.t('tag_desc.if_ancestor_or_self_p2')}
+    #{I18n.t('tag_desc.if_ancestor_or_self.part_2')}
     
     *#{I18n.t('tag_desc.usage')}:*
     
@@ -439,9 +439,9 @@ module StandardTags
   end
 
   desc %{
-    #{I18n.t('tag_desc.unless_ancestor_or_self_p1')}
+    #{I18n.t('tag_desc.unless_ancestor_or_self.part_1')}
     
-    #{I18n.t('tag_desc.unless_ancestor_or_self_p2')}
+    #{I18n.t('tag_desc.unless_ancestor_or_self.part_2')}
     
     *#{I18n.t('tag_desc.usage')}:*
     
@@ -452,9 +452,9 @@ module StandardTags
   end
 
   desc %{
-    #{I18n.t('tag_desc.if_self_p1')}
+    #{I18n.t('tag_desc.if_self.part_1')}
     
-    #{I18n.t('tag_desc.if_self_p2')}
+    #{I18n.t('tag_desc.if_self.part_2')}
 
     *#{I18n.t('tag_desc.usage')}:*
     
@@ -465,9 +465,9 @@ module StandardTags
   end
 
   desc %{
-    #{I18n.t('tag_desc.unless_self_p1')}
+    #{I18n.t('tag_desc.unless_self.part_1')}
     
-    #{I18n.t('tag_desc.unless_self_p2')}
+    #{I18n.t('tag_desc.unless_self.part_2')}
 
     *#{I18n.t('tag_desc.usage')}:*
 
@@ -514,19 +514,13 @@ module StandardTags
   end
 
   desc %{
-    Renders a link to the page. When used as a single tag it uses the page's title
-    for the link name. When used as a double tag the part in between both tags will
-    be used as the link text. The link tag passes all attributes over to the HTML
-    @a@ tag. This is very useful for passing attributes like the @class@ attribute
-    or @id@ attribute. If the @anchor@ attribute is passed to the tag it will
-    append a pound sign (<code>#</code>) followed by the value of the attribute to
-    the @href@ attribute of the HTML @a@ tag--effectively making an HTML anchor.
+    #{I18n.t('tag_desc.link')}:
 
     *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:link [anchor="name"] [other attributes...] /></code></pre>
     
-    or
+    *#{I18n.t('views.shared.or')}:*
     
     <pre><code><r:link [anchor="name"] [other attributes...]>link text here</r:link></code></pre>
   }
@@ -540,10 +534,7 @@ module StandardTags
   end
 
   desc %{
-    Renders a trail of breadcrumbs to the current page. The separator attribute
-    specifies the HTML fragment that is inserted between each of the breadcrumbs. By
-    default it is set to @>@. The boolean nolinks attribute can be specified to render
-    breadcrumbs in plain text, without any links (useful when generating title tag).
+    #{I18n.t('tag_desc.breadcrumbs')}:
 
     *#{I18n.t('tag_desc.usage')}:*
 
@@ -566,14 +557,13 @@ module StandardTags
   end
 
   desc %{
-    Renders the snippet specified in the @name@ attribute within the context of a page.
+    #{I18n.t('tag_desc.snippet.part_1')}:
 
     *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:snippet name="snippet_name" /></code></pre>
 
-    When used as a double tag, the part in between both tags may be used within the
-    snippet itself, being substituted in place of @<r:yield/>@.
+    #{I18n.t('tag_desc.snippet.part_2')}:
 
     *#{I18n.t('tag_desc.usage')}:*
 
@@ -593,10 +583,10 @@ module StandardTags
   end
 
   desc %{
-    Used within a snippet as a placeholder for substitution of child content, when
-    the snippet is called as a double tag.
-
-    *Usage (within a snippet):*
+    #{I18n.t('tag_desc.yield.part_1')}:
+    
+    *#{I18n.t('tag_desc.yield.usage')}:*
+    
     
     <pre><code>
     <div id="outer">
@@ -605,13 +595,12 @@ module StandardTags
       <p>after</p>
     </div>
     </code></pre>
-
-    If the above snippet was named "yielding", you could call it from any Page,
-    Layout or Snippet as follows:
+    
+    #{I18n.t('tag_desc.yield.part_2')}:
 
     <pre><code><r:snippet name="yielding">Content within</r:snippet></code></pre>
-
-    Which would output the following:
+    
+    #{I18n.t('tag_desc.yield.part_3')}:
 
     <pre><code>
     <div id="outer">
@@ -620,8 +609,8 @@ module StandardTags
       <p>after</p>
     </div>
     </code></pre>
-
-    When called in the context of a Page or a Layout, @<r:yield/>@ outputs nothing.
+    
+    #{I18n.t('tag_desc.yield.part_4')}:
   }
   tag 'yield' do |tag|
     tag.locals.yield

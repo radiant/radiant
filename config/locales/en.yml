@@ -244,23 +244,50 @@ en:
       match is case sensitive. By default, @ignore_case@ is set to true."
     unless_url: "The opposite of the @if_url@ tag."
     
-    if_ancestor_or_self_p1: "Renders the contained elements if the current contextual page is either the actual page or one of its parents."
-    if_ancestor_or_self_p2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional 
-      mark-up if the child element is or descends from the current page."
-    unless_self_p1: "Renders the contained elements unless the current contextual page is either the actual page or one of its parents."
-    unless_self_p2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless 
-      the child element is or descends from the current page."
-    if_self_p1: "Renders the contained elements if the current contextual page is also the actual page."
-    if_self_p2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is the current page."
-    unless_self_p1: "Renders the contained elements unless the current contextual page is also the actual page."
-    unless_self_p2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless the child element is the current page."
+    if_ancestor_or_self:
+      part_1: "Renders the contained elements if the current contextual page is either the actual page or one of its parents."
+      part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is or descends from the current page."
+    unless_self:
+      part_1: "Renders the contained elements unless the current contextual page is either the actual page or one of its parents."
+      part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless   the child element is or descends from the current page."
+    if_self:
+      part_1: "Renders the contained elements if the current contextual page is also the actual page."
+      part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is the current page."
+    unless_self: 
+      part_1: "Renders the contained elements unless the current contextual page is also the actual page."
+      part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless the child element is the current page."
     
     author: 'Renders the name of the author of the current page.'
+    
     date: "Renders the date based on the current page (by default when it was published or created).
       The format attribute uses the same formating codes used by the Ruby @strftime@ function. By
       default it's set to @%A, %B d, %Y@.  The @for@ attribute selects which date to render.  Valid
       options are @published_at@, @created_at@, @updated_at@, and @now@. @now@ will render the
       current date/time, regardless of the  page."
+      
+    link: "Renders a link to the page. When used as a single tag it uses the page's title
+      for the link name. When used as a double tag the part in between both tags will
+      be used as the link text. The link tag passes all attributes over to the HTML
+      @a@ tag. This is very useful for passing attributes like the @class@ attribute
+      or @id@ attribute. If the @anchor@ attribute is passed to the tag it will
+      append a pound sign (<code>#</code>) followed by the value of the attribute to
+      the @href@ attribute of the HTML @a@ tag--effectively making an HTML anchor."
+      
+    breadcrumbs: "Renders a trail of breadcrumbs to the current page. The separator attribute
+      specifies the HTML fragment that is inserted between each of the breadcrumbs. By
+      default it is set to @>@. The boolean nolinks attribute can be specified to render
+      breadcrumbs in plain text, without any links (useful when generating title tag)."
+    snippet: 
+      part_1: "Renders the snippet specified in the @name@ attribute within the context of a page."
+      part_2: "When used as a double tag, the part in between both tags may be used within the snippet itself, being substituted in place of @<r:yield/>@."
+    
+    yield:
+      part_1: "Used within a snippet as a placeholder for substitution of child content, when the snippet is called as a double tag."
+      usage: "Usage (within a snippet):"
+      part_2: 'If the above snippet was named "yielding", you could call it from any Page,
+        Layout or Snippet as follows:'
+      part_3: 'Which would output the following:'
+      part_4: "When called in the context of a Page or a Layout, @<r:yield/>@ outputs nothing."
     
     meta:
       desc: "The namespace for 'meta' attributes. If used as a singleton tag, both the description and keywords fields will be output as &lt;meta /&gt; tags unless the attribute 'tag' is set to 'false'."
