@@ -1,5 +1,6 @@
 module ActionController #:nodoc:
-  # Methods for sending files and streams to the browser instead of rendering.
+  # Methods for sending arbitrary data and for streaming files to the browser,
+  # instead of rendering.
   module Streaming
     DEFAULT_SEND_FILE_OPTIONS = {
       :type         => 'application/octet-stream'.freeze,
@@ -24,7 +25,8 @@ module ActionController #:nodoc:
       # Options:
       # * <tt>:filename</tt> - suggests a filename for the browser to use.
       #   Defaults to <tt>File.basename(path)</tt>.
-      # * <tt>:type</tt> - specifies an HTTP content type. Defaults to 'application/octet-stream'.
+      # * <tt>:type</tt> - specifies an HTTP content type. Defaults to 'application/octet-stream'. You can specify
+      #   either a string or a symbol for a registered type register with <tt>Mime::Type.register</tt>, for example :json
       # * <tt>:length</tt> - used to manually override the length (in bytes) of the content that
       #   is going to be sent to the client. Defaults to <tt>File.size(path)</tt>.
       # * <tt>:disposition</tt> - specifies whether the file will be shown inline or downloaded.
@@ -102,12 +104,16 @@ module ActionController #:nodoc:
         end
       end
 
-      # Send binary data to the user as a file download.  May set content type, apparent file name,
-      # and specify whether to show data inline or download as an attachment.
+      # Sends the given binary data to the browser. This method is similar to
+      # <tt>render :text => data</tt>, but also allows you to specify whether
+      # the browser should display the response as a file attachment (i.e. in a
+      # download dialog) or as inline data. You may also set the content type,
+      # the apparent file name, and other things.
       #
       # Options:
       # * <tt>:filename</tt> - suggests a filename for the browser to use.
-      # * <tt>:type</tt> - specifies an HTTP content type. Defaults to 'application/octet-stream'.
+      # * <tt>:type</tt> - specifies an HTTP content type. Defaults to 'application/octet-stream'. You can specify
+      #   either a string or a symbol for a registered type register with <tt>Mime::Type.register</tt>, for example :json
       # * <tt>:disposition</tt> - specifies whether the file will be shown inline or downloaded.
       #   Valid values are 'inline' and 'attachment' (default).
       # * <tt>:status</tt> - specifies the status code to send with the response. Defaults to '200 OK'.
@@ -125,6 +131,10 @@ module ActionController #:nodoc:
       #   send_data image.data, :type => image.content_type, :disposition => 'inline'
       #
       # See +send_file+ for more information on HTTP Content-* headers and caching.
+      #
+      # <b>Tip:</b> if you want to stream large amounts of on-the-fly generated
+      # data to the browser, then use <tt>render :text => proc { ... }</tt>
+      # instead. See ActionController::Base#render for more information.
       def send_data(data, options = {}) #:doc:
         logger.info "Sending data #{options[:filename]}" if logger
         send_file_headers! options.merge(:length => data.size)
@@ -143,9 +153,16 @@ module ActionController #:nodoc:
 
         disposition <<= %(; filename="#{options[:filename]}") if options[:filename]
 
-        headers.update(
+        content_type = options[:type]
+        if content_type.is_a?(Symbol)
+          raise ArgumentError, "Unknown MIME type #{options[:type]}" unless Mime::EXTENSION_LOOKUP.has_key?(content_type.to_s)
+          content_type = Mime::Type.lookup_by_extension(content_type.to_s)
+        end
+        content_type = content_type.to_s.strip # fixes a problem with extra '\r' with some browsers
+
+        headers.merge!(
           'Content-Length'            => options[:length],
-          'Content-Type'              => options[:type].to_s.strip,  # fixes a problem with extra '\r' with some browsers
+          'Content-Type'              => content_type,
           'Content-Disposition'       => disposition,
           'Content-Transfer-Encoding' => 'binary'
         )

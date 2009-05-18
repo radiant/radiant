@@ -30,6 +30,8 @@ var TabControl = Class.create({
   */
   removeTab: function(tab) {
     if (Object.isString(tab)) tab = this.tabs.get(tab);
+    idInput = tab.content.down('.id_input');
+    deleteInput = tab.content.down('.delete_input');
     tab.remove();
     this.tabs.unset(tab);
     
@@ -38,6 +40,10 @@ var TabControl = Class.create({
       if (first) this.select(first);
       else this.selected = null;
     }
+
+    deleteInput.setValue('true');
+		this.tab_container.appendChild(idInput);
+		this.tab_container.appendChild(deleteInput);
   },
 
   /*

@@ -4,6 +4,7 @@
     %h3= t('views.pages.add_part')
     - remote_form_for([:admin, PagePart.new], :update => "pages", :position => :bottom, :loading => 'part_loading()', :complete => 'part_added()', :condition => 'valid_part_name()') do |f|
       %div
+        = hidden_field_tag 'index', @page.parts.size, :id => 'page-part-index-field'
         = f.text_field :name, :id => 'part-name-field' #, :maxlength => 100
         = submit_tag t('views.pages.add_part'), :id => 'add-part-button'
       %p
@@ -23,7 +24,7 @@
 
   #filter-reference-popup.popup{ :style => "display:none;" }
     %h3
-      %span#filter-type= filter.filter_name
+      %span#filter-type= default_filter_name
       = t('views.page_parts.reference')
     #filter-reference= filter_reference
     %p

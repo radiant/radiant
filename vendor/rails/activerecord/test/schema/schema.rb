@@ -55,6 +55,11 @@ ActiveRecord::Schema.define do
     t.binary :data
   end
 
+  create_table :birds, :force => true do |t|
+    t.string :name
+    t.integer :pirate_id
+  end
+
   create_table :books, :force => true do |t|
     t.column :name, :string
   end
@@ -150,8 +155,17 @@ ActiveRecord::Schema.define do
     t.integer :course_id, :null => false
   end
 
+  create_table :events, :force => true do |t|
+    t.string :title, :limit => 5
+  end
+
   create_table :funny_jokes, :force => true do |t|
     t.string :name
+  end
+
+  create_table :goofy_string_id, :force => true, :id => false do |t|
+    t.string :id, :null => false
+    t.string :info
   end
 
   create_table :items, :force => true do |t|
@@ -195,6 +209,7 @@ ActiveRecord::Schema.define do
 
   create_table :members, :force => true do |t|
     t.string :name
+    t.integer :member_type_id
   end
 
   create_table :member_details, :force => true do |t|
@@ -208,6 +223,10 @@ ActiveRecord::Schema.define do
     t.integer :club_id, :member_id
     t.boolean :favourite, :default => false
     t.string :type
+  end
+
+  create_table :member_types, :force => true do |t|
+    t.string :name
   end
 
   create_table :references, :force => true do |t|
@@ -247,6 +266,7 @@ ActiveRecord::Schema.define do
     t.decimal :world_population, :precision => 10, :scale => 0
     t.decimal :my_house_population, :precision => 2, :scale => 0
     t.decimal :decimal_number_with_default, :precision => 3, :scale => 2, :default => 2.78
+    t.float   :temperature
   end
 
   create_table :orders, :force => true do |t|
@@ -293,8 +313,10 @@ ActiveRecord::Schema.define do
   end
 
   create_table :people, :force => true do |t|
-    t.string  :first_name, :null => false
-    t.integer :lock_version, :null => false, :default => 0
+    t.string     :first_name, :null => false
+    t.references :primary_contact
+    t.string     :gender, :limit => 1
+    t.integer    :lock_version, :null => false, :default => 0
   end
 
   create_table :pets, :primary_key => :pet_id ,:force => true do |t|
@@ -343,10 +365,16 @@ ActiveRecord::Schema.define do
 
   create_table :ships, :force => true do |t|
     t.string :name
+    t.integer :pirate_id
     t.datetime :created_at
     t.datetime :created_on
     t.datetime :updated_at
     t.datetime :updated_on
+  end
+
+  create_table :ship_parts, :force => true do |t|
+    t.string :name
+    t.integer :ship_id
   end
 
   create_table :sponsors, :force => true do |t|
@@ -395,6 +423,11 @@ ActiveRecord::Schema.define do
   create_table :tags, :force => true do |t|
     t.column :name, :string
     t.column :taggings_count, :integer, :default => 0
+  end
+
+  create_table :toys, :primary_key => :toy_id ,:force => true do |t|
+    t.string :name
+    t.integer :pet_id, :integer
   end
 
   create_table :treasures, :force => true do |t|

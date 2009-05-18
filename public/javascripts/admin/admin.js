@@ -106,6 +106,7 @@ function part_added() {
   $('busy').hide();
   $('part-name-field').value = '';
   $('add-part-button').enable();
+  $('page-part-index-field').value = parseInt($('page-part-index-field').value) + 1;
   $(page).down('textarea').focus();
   tabControl.select(tab);
 }

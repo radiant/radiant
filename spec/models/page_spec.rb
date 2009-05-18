@@ -162,14 +162,6 @@ describe Page do
     @page.part(:test).content.should == "test"
   end
 
-  it "should accept new page parts as an array of hashes" do
-    @page.parts = [{:name => 'body', :content => 'Hello, world!'}]
-    @page.parts.size.should == 1
-    @page.parts.first.should be_kind_of(PagePart)
-    @page.parts.first.name.should == 'body'
-    @page.parts.first.content.should == 'Hello, world!'
-  end
-
   it "should accept new page parts as an array of PageParts" do
     @page.parts = [PagePart.new(:name => 'body', :content => 'Hello, world!')]
     @page.parts.size.should == 1
@@ -180,21 +172,9 @@ describe Page do
 
   it "should dirty the page object when only changing parts" do
     lambda do
-      @page.parts = [PagePart.new(:name => 'body', :content => 'Hello, world!')] 
+      @page.parts = [PagePart.new(:name => 'body', :content => 'Hello, world!')]
       @page.changed.should_not be_empty
     end
-  end
-
-  it "should discard pending parts on reload" do
-    @page.parts = [{:name => 'body', :content => 'Hello, world!'}]
-    @page.parts(true).first.content.should_not == 'Hello, world!'
-  end
-
-  it "should save pending page parts" do
-    @page.parts = [{:name => 'body', :content => 'Hello, world!'}]
-    @page.save!
-    @page.reload
-    @page.parts(true).first.content.should == 'Hello, world!'
   end
 
   it 'should set published_at when published' do
@@ -239,10 +219,6 @@ describe Page do
     @page = pages(:parent)
     child = pages(:child)
     @page.child_url(child).should == '/parent/child/'
-  end
-
-  it 'should return the appropriate status code in headers' do
-    @page.headers.should == { 'Status' => ActionController::Base::DEFAULT_RENDER_STATUS_CODE }
   end
 
   it 'should have status' do
@@ -422,7 +398,7 @@ describe Page, "#find_by_url" do
   end
 
   it 'should find a custom file not found page' do
-    @page.find_by_url('/gallery/nothing-doing/').should == pages(:no_picture)
+    @page.find_by_url('/gallery/nothing-doing').should == pages(:no_picture)
   end
 
   it 'should not find draft pages in live mode' do
@@ -432,7 +408,7 @@ describe Page, "#find_by_url" do
   it 'should find draft pages in dev mode' do
     @page.find_by_url('/draft/', false).should == pages(:draft)
   end
-  
+
   it "should use the top-most published 404 page by default" do
     @page.find_by_url('/foo').should == pages(:file_not_found)
     @page.find_by_url('/foo/bar').should == pages(:file_not_found)
@@ -517,7 +493,7 @@ describe Page, "loading subclasses when upgrading from 0.5.x where class_name co
     column_names = Page.column_names - ["class_name"]
     Page.should_receive(:column_names).and_return(column_names)
   end
-  
+
   it "should not attempt to search for missing subclasses" do
     Page.connection.should_not_receive(:select_values).with("SELECT DISTINCT class_name FROM pages WHERE class_name <> '' AND class_name IS NOT NULL")
     Page.load_subclasses
@@ -586,10 +562,10 @@ describe Page, "processing" do
   before :all do
     @request = ActionController::TestRequest.new :url => '/page/'
     @response = ActionController::TestResponse.new
+    @page = pages(:home)
   end
 
   it 'should set response body' do
-    @page = pages(:home)
     @page.process(@request, @response)
     @response.body.should match(/Hello world!/)
   end
@@ -606,7 +582,24 @@ describe Page, "processing" do
   it 'should set content type based on layout' do
     @page = pages(:utf8)
     @page.process(@request, @response)
-    assert_response :success
+    @response.should be_success
     @response.headers['Content-Type'].should == 'text/html;charset=utf8'
+  end
+
+  it "should copy custom headers into the response" do
+    @page.stub!(:headers).and_return({"X-Extra-Header" => "This is my header"})
+    @page.process(@request, @response)
+    @response.header['X-Extra-Header'].should == "This is my header"
+  end
+
+  it "should set a 200 status code by default" do
+    @page.process(@request, @response)
+    @response.response_code.should == 200
+  end
+
+  it "should set the response code to the result of the response_code method on the page" do
+    @page.stub!(:response_code).and_return(404)
+    @page.process(@request, @response)
+    @response.response_code.should == 404
   end
 end

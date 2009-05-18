@@ -1,6 +1,13 @@
 task :default => :test
 task :environment do
+  $rails_rake_task = true
   require(File.join(RAILS_ROOT, 'config', 'environment'))
+end
+
+task :rails_env do
+  unless defined? RAILS_ENV
+    RAILS_ENV = ENV['RAILS_ENV'] ||= 'development'
+  end
 end
 
 desc 'Generate a crytographically secure secret key. This is typically used to generate a secret for cookie sessions.'

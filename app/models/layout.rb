@@ -1,7 +1,7 @@
 class Layout < ActiveRecord::Base
   
   # Default Order
-  order_by 'name'
+  default_scope :order => "name"
 
   # Associations
   has_many :pages

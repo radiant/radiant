@@ -42,12 +42,13 @@ class PageCachingTestController < ActionController::Base
   end
 end
 
-class PageCachingTest < Test::Unit::TestCase
+class PageCachingTest < ActionController::TestCase
   def setup
     ActionController::Base.perform_caching = true
 
     ActionController::Routing::Routes.draw do |map|
       map.main '', :controller => 'posts'
+      map.formatted_posts 'posts.:format', :controller => 'posts'
       map.resources :posts
       map.connect ':controller/:action/:id'
     end
@@ -67,7 +68,7 @@ class PageCachingTest < Test::Unit::TestCase
 
   def teardown
     FileUtils.rm_rf(File.dirname(FILE_STORE_PATH))
-
+    ActionController::Routing::Routes.clear!
     ActionController::Base.perform_caching = false
   end
 
@@ -107,21 +108,18 @@ class PageCachingTest < Test::Unit::TestCase
     assert File.exist?("#{FILE_STORE_PATH}/page_caching_test/trailing_slash.html")
   end
 
-  uses_mocha("should_cache_ok_at_custom_path") do
-    def test_should_cache_ok_at_custom_path
-      @request.stubs(:path).returns("/index.html")
-      get :ok
-      assert_response :ok
-      assert File.exist?("#{FILE_STORE_PATH}/index.html")
-    end
+  def test_should_cache_ok_at_custom_path
+    @request.stubs(:path).returns("/index.html")
+    get :ok
+    assert_response :ok
+    assert File.exist?("#{FILE_STORE_PATH}/index.html")
   end
 
   [:ok, :no_content, :found, :not_found].each do |status|
     [:get, :post, :put, :delete].each do |method|
       unless method == :get and status == :ok
         define_method "test_shouldnt_cache_#{method}_with_#{status}_status" do
-          @request.env['REQUEST_METHOD'] = method.to_s.upcase
-          process status
+          send(method, status)
           assert_response status
           assert_page_not_cached status, "#{method} with #{status} status shouldn't have been cached"
         end
@@ -168,7 +166,7 @@ class ActionCachingTestController < ActionController::Base
 
   def forbidden
     render :text => "Forbidden"
-    headers["Status"] = "403 Forbidden"
+    response.status = "403 Forbidden"
   end
 
   def with_layout
@@ -222,7 +220,7 @@ class ActionCachingMockController
   end
 end
 
-class ActionCacheTest < Test::Unit::TestCase
+class ActionCacheTest < ActionController::TestCase
   def setup
     reset!
     FileUtils.mkdir_p(FILE_STORE_PATH)
@@ -291,13 +289,11 @@ class ActionCacheTest < Test::Unit::TestCase
     ActionController::Base.use_accept_header = old_use_accept_header
   end
 
-  uses_mocha 'test action cache' do
-    def test_action_cache_with_store_options
-      MockTime.expects(:now).returns(12345).once
-      @controller.expects(:read_fragment).with('hostname.com/action_caching_test', :expires_in => 1.hour).once
-      @controller.expects(:write_fragment).with('hostname.com/action_caching_test', '12345.0', :expires_in => 1.hour).once
-      get :index
-    end
+  def test_action_cache_with_store_options
+    MockTime.expects(:now).returns(12345).once
+    @controller.expects(:read_fragment).with('hostname.com/action_caching_test', :expires_in => 1.hour).once
+    @controller.expects(:write_fragment).with('hostname.com/action_caching_test', '12345.0', :expires_in => 1.hour).once
+    get :index
   end
 
   def test_action_cache_with_custom_cache_path
@@ -401,7 +397,7 @@ class ActionCacheTest < Test::Unit::TestCase
 
   def test_xml_version_of_resource_is_treated_as_different_cache
     with_routing do |set|
-      ActionController::Routing::Routes.draw do |map|
+      set.draw do |map|
         map.connect ':controller/:action.:format'
         map.connect ':controller/:action'
       end
@@ -429,6 +425,20 @@ class ActionCacheTest < Test::Unit::TestCase
     # run it twice to cache it the first time
     get :index, :id => 'content-type.xml'
     get :index, :id => 'content-type.xml'
+    assert_equal 'application/xml', @response.content_type
+  end
+
+  def test_correct_content_type_is_returned_for_cache_hit_on_action_with_string_key
+    # run it twice to cache it the first time
+    get :show, :format => 'xml'
+    get :show, :format => 'xml'
+    assert_equal 'application/xml', @response.content_type
+  end
+
+  def test_correct_content_type_is_returned_for_cache_hit_on_action_with_string_key_from_proc
+    # run it twice to cache it the first time
+    get :edit, :id => 1, :format => 'xml'
+    get :edit, :id => 1, :format => 'xml'
     assert_equal 'application/xml', @response.content_type
   end
 
@@ -471,7 +481,7 @@ class FragmentCachingTestController < ActionController::Base
   def some_action; end;
 end
 
-class FragmentCachingTest < Test::Unit::TestCase
+class FragmentCachingTest < ActionController::TestCase
   def setup
     ActionController::Base.perform_caching = true
     @store = ActiveSupport::Cache::MemoryStore.new
@@ -527,7 +537,7 @@ class FragmentCachingTest < Test::Unit::TestCase
   def test_write_fragment_with_caching_disabled
     assert_nil @store.read('views/name')
     ActionController::Base.perform_caching = false
-    assert_equal nil, @controller.write_fragment('name', 'value')
+    assert_equal 'value', @controller.write_fragment('name', 'value')
     assert_nil @store.read('views/name')
   end
 
@@ -603,7 +613,7 @@ class FunctionalCachingController < ActionController::Base
   end
 end
 
-class FunctionalFragmentCachingTest < Test::Unit::TestCase
+class FunctionalFragmentCachingTest < ActionController::TestCase
   def setup
     ActionController::Base.perform_caching = true
     @store = ActiveSupport::Cache::MemoryStore.new

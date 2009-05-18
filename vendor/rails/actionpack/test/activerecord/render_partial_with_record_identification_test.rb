@@ -47,19 +47,13 @@ class RenderPartialWithRecordIdentificationController < ActionController::Base
 end
 
 class RenderPartialWithRecordIdentificationTest < ActiveRecordTestCase
+  tests RenderPartialWithRecordIdentificationController
   fixtures :developers, :projects, :developers_projects, :topics, :replies, :companies, :mascots
-
-  def setup
-    @controller = RenderPartialWithRecordIdentificationController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-    super
-  end
 
   def test_rendering_partial_with_has_many_and_belongs_to_association
     get :render_with_has_many_and_belongs_to_association
     assert_template 'projects/_project'
-    assert_equal 'Active RecordActive Controller', @response.body
+    assert_equal assigns(:developer).projects.map(&:name).join, @response.body
   end
 
   def test_rendering_partial_with_has_many_association
@@ -88,7 +82,7 @@ class RenderPartialWithRecordIdentificationTest < ActiveRecordTestCase
 
   def test_render_with_record_collection_and_spacer_template
     get :render_with_record_collection_and_spacer_template
-    assert_equal 'Active Recordonly partialActive Controller', @response.body
+    assert_equal assigns(:developer).projects.map(&:name).join('only partial'), @response.body
   end
 
   def test_rendering_partial_with_has_one_association
@@ -162,12 +156,7 @@ module Fun
 end
 
 class RenderPartialWithRecordIdentificationAndNestedControllersTest < ActiveRecordTestCase
-  def setup
-    @controller = Fun::NestedController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-    super
-  end
+  tests Fun::NestedController
 
   def test_render_with_record_in_nested_controller
     get :render_with_record_in_nested_controller
@@ -183,12 +172,7 @@ class RenderPartialWithRecordIdentificationAndNestedControllersTest < ActiveReco
 end
 
 class RenderPartialWithRecordIdentificationAndNestedDeeperControllersTest < ActiveRecordTestCase
-  def setup
-    @controller = Fun::Serious::NestedDeeperController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-    super
-  end
+  tests Fun::Serious::NestedDeeperController
 
   def test_render_with_record_in_deeper_nested_controller
     get :render_with_record_in_deeper_nested_controller

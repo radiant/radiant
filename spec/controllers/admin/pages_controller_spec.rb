@@ -8,14 +8,10 @@ describe Admin::PagesController do
   end
 
   it "should route children to the pages controller" do
-    route_for(:controller => "admin/pages", :page_id => 1, 
+    route_for(:controller => "admin/pages", :page_id => '1', 
       :action => "index").should == '/admin/pages/1/children'
-    route_for(:controller => "admin/pages", :page_id => 1, 
+    route_for(:controller => "admin/pages", :page_id => '1', 
       :action => 'new').should == '/admin/pages/1/children/new'
-  end
-
-  it "should setup the response cache when it initializes" do
-    @controller.cache.should be_kind_of(ResponseCache)
   end
   
   describe "viewing the sitemap" do
@@ -29,7 +25,7 @@ describe Admin::PagesController do
     end
 
     it "should allow the index to render even with there are no pages" do
-      Page.destroy_all
+      Page.delete_all; PagePart.delete_all
       get :index
       response.should be_success
       assigns(:homepage).should be_nil
@@ -117,26 +113,34 @@ describe Admin::PagesController do
         logout
         lambda { send(:get, action, @parameters.call) }.should require_login
       end
+      
+      if action == :show
+        it "should request authentication for API access on show" do
+          logout
+          get action, :id => page_id(:home), :format => "xml"
+          response.response_code.should == 401
+        end
+      else
+        it "should allow access to admins for the #{action} action" do
+          lambda { 
+            send(:get, action, @parameters.call) 
+          }.should restrict_access(:allow => [users(:admin)], 
+                                   :url => '/admin/pages')
+        end
 
-      it "should allow access to admins for the #{action} action" do
-        lambda { 
-          send(:get, action, @parameters.call) 
-        }.should restrict_access(:allow => [users(:admin)], 
-                                 :url => '/admin/pages')
-      end
-
-      it "should allow access to developers for the #{action} action" do
-        lambda { 
-          send(:get, action, @parameters.call) 
-        }.should restrict_access(:allow => [users(:developer)], 
-                                 :url => '/admin/pages')
-      end
+        it "should allow access to developers for the #{action} action" do
+          lambda { 
+            send(:get, action, @parameters.call) 
+          }.should restrict_access(:allow => [users(:developer)], 
+                                   :url => '/admin/pages')
+        end
     
-      it "should allow non-developers and non-admins for the #{action} action" do
-        lambda { 
-          send(:get, action, @parameters.call) 
-        }.should restrict_access(:allow => [users(:non_admin), users(:existing)],
-                                 :url => '/admin/pages')
+        it "should allow non-developers and non-admins for the #{action} action" do
+          lambda { 
+            send(:get, action, @parameters.call) 
+          }.should restrict_access(:allow => [users(:non_admin), users(:existing)],
+                                   :url => '/admin/pages')
+        end
       end
     end
   end
@@ -169,6 +173,11 @@ describe Admin::PagesController do
     assigns(:buttons_partials).should be_kind_of(Array)
   end
   
+  it "should clear the page cache when saved" do
+    Radiant::Cache.should_receive(:clear)
+    put :update, :id => page_id(:home), :page => {:breadcrumb => 'Homepage'}
+  end
+  
   protected
 
     def assert_rendered_nodes_where(&block)
@@ -182,6 +191,6 @@ describe Admin::PagesController do
     end
 
     def write_cookie(name, value)
-      request.cookies[name] = CGI::Cookie.new(name, value)
+      request.cookies[name] = value
     end
 end

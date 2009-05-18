@@ -213,22 +213,143 @@ class TransactionTest < ActiveRecord::TestCase
     assert Topic.find(2).approved?, "Second should still be approved"
   end
 
-  uses_mocha 'mocking connection.commit_db_transaction' do
-    def test_rollback_when_commit_raises
-      Topic.connection.expects(:begin_db_transaction)
-      Topic.connection.expects(:transaction_active?).returns(true) if current_adapter?(:PostgreSQLAdapter)
-      Topic.connection.expects(:commit_db_transaction).raises('OH NOES')
-      Topic.connection.expects(:rollback_db_transaction)
-
-      assert_raise RuntimeError do
-        Topic.transaction do
-          # do nothing
-        end
+  def test_invalid_keys_for_transaction
+    assert_raise ArgumentError do
+      Topic.transaction :nested => true do
       end
     end
   end
 
-  def test_sqlite_add_column_in_transaction_raises_statement_invalid
+  def test_force_savepoint_in_nested_transaction
+    Topic.transaction do
+      @first.approved = true
+      @second.approved = false
+      @first.save!
+      @second.save!
+
+      begin
+        Topic.transaction :requires_new => true do
+          @first.happy = false
+          @first.save!
+          raise
+        end
+      rescue
+      end
+    end
+
+    assert @first.reload.approved?
+    assert !@second.reload.approved?
+  end if Topic.connection.supports_savepoints?
+
+  def test_no_savepoint_in_nested_transaction_without_force
+    Topic.transaction do
+      @first.approved = true
+      @second.approved = false
+      @first.save!
+      @second.save!
+
+      begin
+        Topic.transaction do
+          @first.approved = false
+          @first.save!
+          raise
+        end
+      rescue
+      end
+    end
+
+    assert !@first.reload.approved?
+    assert !@second.reload.approved?
+  end if Topic.connection.supports_savepoints?
+  
+  def test_many_savepoints
+    Topic.transaction do
+      @first.content = "One"
+      @first.save!
+      
+      begin
+        Topic.transaction :requires_new => true do
+          @first.content = "Two"
+          @first.save!
+          
+          begin
+            Topic.transaction :requires_new => true do
+              @first.content = "Three"
+              @first.save!
+              
+              begin
+                Topic.transaction :requires_new => true do
+                  @first.content = "Four"
+                  @first.save!
+                  raise
+                end
+              rescue
+              end
+              
+              @three = @first.reload.content
+              raise
+            end
+          rescue
+          end
+          
+          @two = @first.reload.content
+          raise
+        end
+      rescue
+      end
+      
+      @one = @first.reload.content
+    end
+    
+    assert_equal "One", @one
+    assert_equal "Two", @two
+    assert_equal "Three", @three
+  end if Topic.connection.supports_savepoints?
+
+  def test_rollback_when_commit_raises
+    Topic.connection.expects(:begin_db_transaction)
+    Topic.connection.expects(:commit_db_transaction).raises('OH NOES')
+    Topic.connection.expects(:outside_transaction?).returns(false)
+    Topic.connection.expects(:rollback_db_transaction)
+
+    assert_raise RuntimeError do
+      Topic.transaction do
+        # do nothing
+      end
+    end
+  end
+  
+  if current_adapter?(:PostgreSQLAdapter) && defined?(PGconn::PQTRANS_IDLE)
+    def test_outside_transaction_works
+      assert Topic.connection.outside_transaction?
+      Topic.connection.begin_db_transaction
+      assert !Topic.connection.outside_transaction?
+      Topic.connection.rollback_db_transaction
+      assert Topic.connection.outside_transaction?
+    end
+    
+    def test_rollback_wont_be_executed_if_no_transaction_active
+      assert_raise RuntimeError do
+        Topic.transaction do
+          Topic.connection.rollback_db_transaction
+          Topic.connection.expects(:rollback_db_transaction).never
+          raise "Rails doesn't scale!"
+        end
+      end
+    end
+    
+    def test_open_transactions_count_is_reset_to_zero_if_no_transaction_active
+      Topic.transaction do
+        Topic.transaction do
+          Topic.connection.rollback_db_transaction
+        end
+        assert_equal 0, Topic.connection.open_transactions
+      end
+      assert_equal 0, Topic.connection.open_transactions
+    end
+  end
+
+  def test_sqlite_add_column_in_transaction
     return true unless current_adapter?(:SQLite3Adapter, :SQLiteAdapter)
 
     # Test first if column creation/deletion works correctly when no
@@ -247,10 +368,15 @@ class TransactionTest < ActiveRecord::TestCase
       assert !Topic.column_names.include?('stuff')
     end
 
-    # Test now inside a transaction: add_column should raise a StatementInvalid
-    Topic.transaction do
-      assert_raises(ActiveRecord::StatementInvalid) { Topic.connection.add_column('topics', 'stuff', :string) }
-      raise ActiveRecord::Rollback
+    if Topic.connection.supports_ddl_transactions?
+      assert_nothing_raised do
+        Topic.transaction { Topic.connection.add_column('topics', 'stuff', :string) }
+      end
+    else
+      Topic.transaction do
+        assert_raise(ActiveRecord::StatementInvalid) { Topic.connection.add_column('topics', 'stuff', :string) }
+        raise ActiveRecord::Rollback
+      end
     end
   end
 
@@ -281,6 +407,45 @@ class TransactionTest < ActiveRecord::TestCase
       end
     end
 end
+
+class TransactionsWithTransactionalFixturesTest < ActiveRecord::TestCase
+  self.use_transactional_fixtures = true
+  fixtures :topics
+
+  def test_automatic_savepoint_in_outer_transaction
+    @first = Topic.find(1)
+    
+    begin
+      Topic.transaction do
+        @first.approved = true
+        @first.save!
+        raise
+      end
+    rescue
+      assert !@first.reload.approved?
+    end
+  end
+
+  def test_no_automatic_savepoint_for_inner_transaction
+    @first = Topic.find(1)
+
+    Topic.transaction do
+      @first.approved = true
+      @first.save!
+
+      begin
+        Topic.transaction do
+          @first.approved = false
+          @first.save!
+          raise
+        end
+      rescue
+      end
+    end
+
+    assert !@first.reload.approved?
+  end
+end if Topic.connection.supports_savepoints?
 
 if current_adapter?(:PostgreSQLAdapter)
   class ConcurrentTransactionTest < TransactionTest

@@ -86,4 +86,13 @@ describe Admin::WelcomeController do
       end
     end
   end
+
+  describe "without a user" do
+    it "should gracefully handle logout" do
+      controller.stub!(:current_member).and_return(nil)
+      get :logout
+      response.should redirect_to(login_url)
+    end
+  end
+
 end

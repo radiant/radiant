@@ -2,7 +2,7 @@ require 'abstract_unit'
 
 ActionController::UrlRewriter
 
-class UrlRewriterTests < Test::Unit::TestCase
+class UrlRewriterTests < ActionController::TestCase
   def setup
     @request = ActionController::TestRequest.new
     @params = {}
@@ -85,8 +85,7 @@ class UrlRewriterTests < Test::Unit::TestCase
   end
 end
 
-class UrlWriterTests < Test::Unit::TestCase
-
+class UrlWriterTests < ActionController::TestCase
   class W
     include ActionController::UrlWriter
   end
@@ -100,7 +99,7 @@ class UrlWriterTests < Test::Unit::TestCase
   end
 
   def test_exception_is_thrown_without_host
-    assert_raises RuntimeError do
+    assert_raise RuntimeError do
       W.new.url_for :controller => 'c', :action => 'a', :id => 'i'
     end
   end
@@ -300,6 +299,57 @@ class UrlWriterTests < Test::Unit::TestCase
 
   def test_path_generation_for_symbol_parameter_keys
     assert_generates("/image", :controller=> :image)
+  end
+
+  def test_named_routes_with_nil_keys
+    ActionController::Routing::Routes.clear!
+    ActionController::Routing::Routes.draw do |map|
+      map.main '', :controller => 'posts'
+      map.resources :posts
+      map.connect ':controller/:action/:id'
+    end
+    # We need to create a new class in order to install the new named route.
+    kls = Class.new { include ActionController::UrlWriter }
+    kls.default_url_options[:host] = 'www.basecamphq.com'
+
+    controller = kls.new
+    params = {:action => :index, :controller => :posts, :format => :xml}
+    assert_equal("http://www.basecamphq.com/posts.xml", controller.send(:url_for, params))    
+    params[:format] = nil
+    assert_equal("http://www.basecamphq.com/", controller.send(:url_for, params))    
+  ensure
+    ActionController::Routing::Routes.load!
+  end
+
+  def test_formatted_url_methods_are_deprecated
+    ActionController::Routing::Routes.draw do |map|
+      map.resources :posts
+    end
+    # We need to create a new class in order to install the new named route.
+    kls = Class.new { include ActionController::UrlWriter }
+    controller = kls.new
+    params = {:id => 1, :format => :xml}
+    assert_deprecated do
+      assert_equal("/posts/1.xml", controller.send(:formatted_post_path, params))    
+    end
+    assert_deprecated do
+      assert_equal("/posts/1.xml", controller.send(:formatted_post_path, 1, :xml))    
+    end
+  ensure
+    ActionController::Routing::Routes.load!
+  end
+
+  def test_multiple_includes_maintain_distinct_options
+    first_class = Class.new { include ActionController::UrlWriter }
+    second_class = Class.new { include ActionController::UrlWriter }
+
+    first_host, second_host = 'firsthost.com', 'secondhost.com'
+
+    first_class.default_url_options[:host] = first_host
+    second_class.default_url_options[:host] = second_host
+
+    assert_equal first_class.default_url_options[:host], first_host
+    assert_equal second_class.default_url_options[:host], second_host
   end
 
   private

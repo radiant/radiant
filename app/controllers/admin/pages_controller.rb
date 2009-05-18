@@ -1,6 +1,7 @@
 class Admin::PagesController < Admin::ResourceController
   before_filter :initialize_meta_rows_and_buttons, :only => [:new, :edit, :create, :update]
-
+  before_filter :count_deleted_pages, :only => [:destroy]
+  
   responses do |r|
     r.plural.js do
       @level = params[:level].to_i
@@ -22,7 +23,7 @@ class Admin::PagesController < Admin::ResourceController
     end
     response_for :singular
   end
-
+  
   private
     def model_class
       if params[:page_id]
@@ -36,12 +37,16 @@ class Admin::PagesController < Admin::ResourceController
       flash[:notice] = message || t("pages_controller.saved") 
     end
 
-    def announce_pages_removed(count)
-      flash[:notice] = if count > 1
+    def announce_removed
+      flash[:notice] = if @count > 0
         t("pages_controller.removed_many") 
       else
         t("pages_controller.removed_one")
       end
+    end
+
+    def count_deleted_pages
+      @count = model.children.count + 1
     end
 
     def initialize_meta_rows_and_buttons

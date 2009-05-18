@@ -1,28 +1,41 @@
 class SiteController < ApplicationController
-  session :off
   skip_before_filter :verify_authenticity_token
   
   no_login_required
   
+  cattr_writer :cache_timeout
+  def self.cache_timeout
+    @@cache_timeout ||= 5.minutes
+  end
+  
   def show_page
-    response.headers.delete('Cache-Control')
-    
     url = params[:url]
     if Array === url
       url = url.join('/')
     else
       url = url.to_s
     end
-    
-    if (request.get? || request.head?) and live? and (@cache.response_cached?(url))
-      @cache.update_response(url, response, request)
-      @performed_render = true
+
+    if @page = find_page(url)
+      process_page(@page)
+      set_cache_control
+      @performed_render ||= true
     else
-      show_uncached_page(url)
+      render :template => 'site/not_found', :status => 404
     end
+  rescue Page::MissingRootPageError
+    redirect_to welcome_url
   end
   
   private
+    def set_cache_control
+      if (request.head? || request.get?) && @page.cache?
+        expires_in self.class.cache_timeout, :public => true, :private => false
+      else
+        expires_in nil, :private => true, "no-cache" => true
+        headers['ETag'] = nil
+      end
+    end
     
     def find_page(url)
       found = Page.find_by_url(url, live?)
@@ -31,19 +44,6 @@ class SiteController < ApplicationController
 
     def process_page(page)
       page.process(request, response)
-    end
-    
-    def show_uncached_page(url)
-      @page = find_page(url)
-      unless @page.nil?
-        process_page(@page)
-        @cache.cache_response(url, response) if request.get? and live? and @page.cache?
-        @performed_render = true
-      else
-        render :template => 'site/not_found', :status => 404
-      end
-    rescue Page::MissingRootPageError
-      redirect_to welcome_url
     end
 
     def dev?
