@@ -182,10 +182,9 @@ fr:
       unless_first: "Renders the tag contents unless the current page is the first child in the context of a children:each tag"
       if_last: "Renders the tag contents unless the current page is the last child in the context of a children:each tag"
       unless_last: "Renders the tag contents unless the current page is the last child in the context of a children:each tag"
-      header:
-        part_1: "Renders the tag contents only if the contents do not match the previous header. This is extremely useful for rendering date headers for a list of child pages."
-        part_2: "If you would like to use several header blocks you may use the @name@ attribute to name the header. When a header is named it will not restart until another header of the same name is different."
-        part_3: "Using the @restart@ attribute you can cause other named headers to restart when the present header changes. Simply specify the names of the other headers in a semicolon separated list."
+      header_p1: "Renders the tag contents only if the contents do not match the previous header. This is extremely useful for rendering date headers for a list of child pages."
+      header_p2: "If you would like to use several header blocks you may use the @name@ attribute to name the header. When a header is named it will not restart until another header of the same name is different."
+      header_p3: "Using the @restart@ attribute you can cause other named headers to restart when the present header changes. Simply specify the names of the other headers in a semicolon separated list."
 
     parent: "Page attribute tags inside this tag refer to the parent of the current page. "
     if_parent: "Renders the contained elements only if the current contextual page has a parent, i.e. is not the root page."
@@ -235,7 +234,7 @@ fr:
     if_ancestor_or_self:
       part_1: "Renders the contained elements if the current contextual page is either the actual page or one of its parents."
       part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is or descends from the current page."
-    unless_self:
+    unless_ancestor_or_self:
       part_1: "Renders the contained elements unless the current contextual page is either the actual page or one of its parents."
       part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless   the child element is or descends from the current page."
     if_self:
