@@ -59,7 +59,7 @@ de:
       version: 'Version'  
       users: 'Benutzer'
       extensions: 'Erweiterungen' 
-      preferences: 'Preferenzen' 
+      preferences: 'Präferenzen' 
       view_site: 'Website anschauen'
       log_out: 'Ausloggen'
     # These are the templates for the Layouts Controller
@@ -82,7 +82,7 @@ de:
       new_page: 'Neue Seite'
       edit_page:  'Seite bearbeiten'   
       page_title: 'Titel'  
-      remove_tab: 'entfernt ein Tab'  
+      remove_tab: 'entfernt einen Tab'  
       add_tab: 'fügt Tab ein'   
       status: 'Status'
       page_type: 'Seitentyp'
@@ -100,9 +100,9 @@ de:
       snippet: 'Snippet'   
       new_snippet: 'Neues Snippet'
       edit_snippet: 'Snippet bearbeiten'
-      description: 'Snippets are generally small pieces of content which are included in other pages or layouts.'
-      remove_warning_text: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following snippet?'   
-      delete_snippet: 'Delete Snippet'
+      description: 'Snippets sind kleine Stücke Inhalt, die in Seiten oder Layouts eingefügt werden können.'
+      remove_warning_text: 'Sind Sie sich sicher, dass Sie das folgende Snippet <strong class="warning">dauerhaft löschen</strong> wollen?'   
+      delete_snippet: 'Snippet löschen'
     users:
       user: 'Benutzer'
       users: 'Benutzer'      
@@ -114,22 +114,22 @@ de:
       new_user: 'Neuer Benutzer'  
       roles: 'Rollen'
       admin: 'Administrator' 
-      developer: 'Developer'
+      developer: 'Entwickler'
       language: 'Sprache'
       notes: 'Notiz'    
       optional: 'Optional'
-      required: 'Required'  
-      valid_email: 'Please use a valid e-mail address.' 
+      required: 'erforderlich'  
+      valid_email: 'Bitte benutzen Sie eine gültige E-Mail-Adresse.' 
       valid_login: 'Minimum 3 Zeichnen. Muss eindeutig sein. '
-      valid_password: 'At least 5 characters.'
-      leave_password_unchanged: 'Leave password blank for it to remain unchanged.'
+      valid_password: 'Mindestens 5 Zeichen.'
+      leave_password_unchanged: 'Lassen Sie das Passwortfeld leer, wenn Sie Ihr Passwort nicht ändern wollen.'
       password_confirmation: 'Passwort bestätigen'
-      roles_description: 'Roles restrict user privileges and turn parts of the administrative interface on or off.' 
-      language_description: 'The preferred language for the Admin interface.' 
-      remove_warning_text: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following user?' 
-      delete_user: 'Delete User'
+      roles_description: 'Rollen beschränken die Möglichkeiten der Benutzer und schalten Teile des Administrationsinterfaces an oder aus.' 
+      language_description: 'Die bevorzugte Sprache für das Admin-Interface.' 
+      remove_warning_text: 'Sind Sie sicher, dass Sie den folgenden Benutzer <strong class="warning">dauerhaft löschen</strong> wollen?' 
+      delete_user: 'Benutzer löschen'
     preferences:
-      user_preferences: 'User Preferences'
+      user_preferences: 'Benutzer Einstellungen'
     welcome:
       login: 'Bitte Einloggen'
       login_btn: 'Login'
@@ -139,7 +139,7 @@ de:
   
   # Page status  
   status:
-    draft: 'Entwürf'
+    draft: 'Entwurf'
     reviewed: 'Überprüft'
     hidden: 'Versteckt'
     published: 'Publiziert' 
@@ -148,7 +148,7 @@ de:
   buttons:
     save_and_continue: 'Sichern und bearbeiten'
     save_changes: 'Änderungen sichern'  
-    create: 'Create {{name}}'     
+    create: '{{name}} erstellen'     
     
   # Timestamp. This may need to be changed as it will most likely not work for many languages.
   timestamp:
@@ -175,20 +175,20 @@ de:
     page:
       desc: "Causes the tags referring to a page's attributes to refer to the current page."
       attributes: 'Renders the @{{method}}@ attribute of the current page.'
-      url: 'Renders the @url@ attribute of the current page.'
+      url: 'Gibt das @url@ Attribut der aktuellen Seite aus.'
 
     children: 
-      desc: "Gives access to a page's children."
-      count: 'Renders the total number of children.'
-      first: 'Returns the first child. Inside this tag all page attribute tags are mapped to the first child. <br /> 
-        Takes the same ordering options as @<r:children:each>@.'    
-      last: 'Returns the last child. Inside this tag all page attribute tags are mapped tothe last child. <br /> 
-        Takes the same ordering options as @<r:children:each>@.›'
-      each: "Cycles through each of the children. Inside this tag all page attribute tags are mapped to the current child page."
-      child: "Page attribute tags inside of this tag refer to the current child. This is occasionally <br /> 
-        useful if you are inside of another tag (like &lt;r:find&gt;) and need to refer back to the <br /> current child."  
-      if_first: "Renders the tag contents only if the current page is the first child in the context of a children:each tag"
-      unless_first: "Renders the tag contents unless the current page is the first child in the context of a children:each tag"
+      desc: "Ermöglicht Zugang zu den Unterseiten einer Seite."
+      count: 'Gibt die Gesamtanzahl der Unterseiten aus.'
+      first: 'Liefert die erste Unterseite zurück. Innerhalb dieses Tags werden alle Tags der Seiten-Attribute auf die erste Unterseite bezogen. <br /> 
+        Akzeptiert die selben Sortieroptionen, wie @<r:children:each>@.'    
+      last: 'Liefert die letzte Unterseite zurück. Innerhalb dieses Tags werden alle Tags der Seiten-Attribute auf die letzte Unterseite bezogen. <br /> 
+        Akzeptiert die selben Sortieroptionen, wie @<r:children:each>@.›'
+      each: "Durchläuft jede der Unterseiten. Innerhalb dieses Tags werden alle Tags der Seiten-Attribute auf die aktuelle Unterseite bezogen."
+      child: "Seitenattribut-Tags innerhalb dieses Tags beziehen sich auf die aktuelle Unterseite. Dies ist insbesondere <br /> 
+        wenn Sie in einem anderen Tag (wie &lt;r:find&gt;) sind und zurück zur aktuellen Unterseite<br /> referenzieren müssen."  
+      if_first: "Gibt den Inhalt nur aus, wenn die aktuelle Unterseite die erste in einem Tag wie children:each ist"
+      unless_first: "Gibt den Inhalt nur dann aus, wenn die aktuelle Unterseite in einem children:each-Tag nicht die erste Unterseite ist."
       if_last: "Renders the tag contents unless the current page is the last child in the context of a children:each tag"
       unless_last: "Renders the tag contents unless the current page is the last child in the context of a children:each tag"
       header:
