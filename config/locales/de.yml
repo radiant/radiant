@@ -310,13 +310,13 @@ de:
       desc: "Escapes angle brackets, etc. for rendering in an HTML document."
 
     comment:
-      desc: "Nothing inside a set of comment tags is rendered."
+      desc: "Dies ist ein Kommentar daher erfolgt keine Ausgabe."
 
     random:
-      desc: "Randomly renders one of the options specified by the @option@ tags."
+      desc: "Liefert zufällig einen Wert aus den @option@ Tags zurück."
 
     find:
-      desc: "Inside this tag all page related tags refer to the page found at the @url@ attribute. @url@s may be relative or absolute paths."
+      desc: "Innerhalb dieses Tags beziehen sich alle zur Seite gehörenden Tags auf die Seite, die durch das @url@-Attribute gefunden werden. @url@s können relative oder absolute Pfade sein."
 
 
   # Date and Time formats  
