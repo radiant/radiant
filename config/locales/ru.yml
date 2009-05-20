@@ -171,27 +171,26 @@ ru:
 
     page:
       desc: "Causes the tags referring to a page's attributes to refer to the current page."
-      attributes: "Renders the @{{method}}@ attribute of the current page."
-      url: "Renders the @url@ attribute of the current page."
+      attributes: "Отображает аттрибут @{{method}}@ текущей страницы."
+      url: "Отображает аттрибут @url@ текущей страницы."
 
     children: 
-      desc: "Gives access to a page's children."
-      count: 'Renders the total number of children.'
+      desc: "Дает доступ к детям/наследникам страницы."
+      count: 'Отображает общее число детей/наследников.'
       first: 'Returns the first child. Inside this tag all page attribute tags are mapped to the first child. <br /> 
         Takes the same ordering options as @<r:children:each>@.'    
       last: 'Returns the last child. Inside this tag all page attribute tags are mapped tothe last child. <br /> 
         Takes the same ordering options as @<r:children:each>@.›'
-      each: "Cycles through each of the children. Inside this tag all page attribute tags are mapped to the current child page."
-      child: "Page attribute tags inside of this tag refer to the current child. This is occasionally <br /> 
+      each: "Цикл по всем детям/наследникам. Inside this tag all page attribute tags are mapped to the current child page." #TODO: finish translation
+      child: "Page attribute tags inside of this tag refer to the current child. This is occasionally <br />
         useful if you are inside of another tag (like &lt;r:find&gt;) and need to refer back to the <br /> current child."  
       if_first: "Renders the tag contents only if the current page is the first child in the context of a children:each tag"
       unless_first: "Renders the tag contents unless the current page is the first child in the context of a children:each tag"
       if_last: "Renders the tag contents unless the current page is the last child in the context of a children:each tag"
       unless_last: "Renders the tag contents unless the current page is the last child in the context of a children:each tag"
-      header:
-        part_1: "Renders the tag contents only if the contents do not match the previous header. This is extremely useful for rendering date headers for a list of child pages."
-        part_2: "If you would like to use several header blocks you may use the @name@ attribute to name the header. When a header is named it will not restart until another header of the same name is different."
-        part_3: "Using the @restart@ attribute you can cause other named headers to restart when the present header changes. Simply specify the names of the other headers in a semicolon separated list."
+      header_p1: "Renders the tag contents only if the contents do not match the previous header. This is extremely useful for rendering date headers for a list of child pages."
+      header_p2: "If you would like to use several header blocks you may use the @name@ attribute to name the header. When a header is named it will not restart until another header of the same name is different."
+      header_p3: "Using the @restart@ attribute you can cause other named headers to restart when the present header changes. Simply specify the names of the other headers in a semicolon separated list."
 
     parent: "Page attribute tags inside this tag refer to the parent of the current page. "
     if_parent: "Renders the contained elements only if the current contextual page has a parent, i.e. is not the root page."
@@ -241,7 +240,7 @@ ru:
     if_ancestor_or_self:
       part_1: "Renders the contained elements if the current contextual page is either the actual page or one of its parents."
       part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is or descends from the current page."
-    unless_self:
+    unless_ancestor_or_self:
       part_1: "Renders the contained elements unless the current contextual page is either the actual page or one of its parents."
       part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless   the child element is or descends from the current page."
     if_self:
@@ -251,7 +250,7 @@ ru:
       part_1: "Renders the contained elements unless the current contextual page is also the actual page."
       part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless the child element is the current page."
 
-    author: 'Renders the name of the author of the current page.'
+    author: 'Отображает имя автора текущей страницы.'
 
     date: "Renders the date based on the current page (by default when it was published or created).
       The format attribute uses the same formating codes used by the Ruby @strftime@ function. By
@@ -267,11 +266,12 @@ ru:
       append a pound sign (<code>#</code>) followed by the value of the attribute to
       the @href@ attribute of the HTML @a@ tag--effectively making an HTML anchor."
 
-    breadcrumbs: "Renders a trail of breadcrumbs to the current page. The separator attribute
-      specifies the HTML fragment that is inserted between each of the breadcrumbs. By
-      default it is set to @>@. The boolean nolinks attribute can be specified to render
-      breadcrumbs in plain text, without any links (useful when generating title tag)."
-    snippet: 
+    breadcrumbs: "Выводит цепочку ссылок для текущей страницы. Аттрибут 'separator'
+      определяет фрагмент HTML вставляемый между ссылками цепи. По умолчанию он устанавлен в @>@.
+      Логический аттрибут 'nolinks' может быть использован для вывода цепочки без ссылок
+      (может быть полезно для генерации тэга title)."
+
+    snippet:
       part_1: "Renders the snippet specified in the @name@ attribute within the context of a page."
       part_2: "When used as a double tag, the part in between both tags may be used within the snippet itself, being substituted in place of @<r:yield/>@."
 
@@ -289,13 +289,13 @@ ru:
       description: "Emits the page description field in a meta tag, unless attribute 'tag' is set to 'false'."
 
     status:
-      desc: "RU Prints the page's status as a string. Optional attribute 'downcase' will cause the status to be all lowercase."
+      desc: "Печатает статус страницы в виде строки. Необязательный аттрибут 'downcase' переводит статус в строчные буквы."
 
     unless_dev:
-      desc: "RU The opposite of the @if_dev@ tag."
+      desc: "Тэг обратный тэгу @if_dev@."
 
     if_dev:
-      desc: "RU Renders the containing elements only if Radiant in is development mode."
+      desc: "Выводмт содержащиеся элементы только если Radiant рвботает в development режиме."
 
     navigation:
       desc: "RU Renders a list of links specified in the @urls@ attribute according to three states: <br/>
@@ -306,19 +306,19 @@ ru:
       error: "`navigation' tag must include a `normal' tag"
 
     rfc1123_date:
-      desc: "RU Outputs the published date using the format mandated by RFC 1123. (Ideal for RSS feeds.)"
+      desc: "Отображает дату публикации используя RFC 1123 формат (Идеально для RSS потоков)"
 
     escape_html:
-      desc: "RU Escapes angle brackets, etc. for rendering in an HTML document."
+      desc: "Заменяет угловые скобки и пр. для отображения внутри HTML документа."
 
     comment:
-      desc: "RU Nothing inside a set of comment tags is rendered."
+      desc: "Ничего, что помещено а тэг коментариев не выводится."
 
     random:
-      desc: "RU Randomly renders one of the options specified by the @option@ tags."
+      desc: "Случайным образом отображает один из вариантов указанный в тэгах @option@."
 
     find:
-      desc: "RU Inside this tag all page related tags refer to the page found at the @url@ attribute. @url@s may be relative or absolute paths."
+      desc: "Внутри этого тэга все тэги указывают на страницу указаннуб в аттрибуте @url@. @url@'и могуть быть относительными или абсолютныии путями."
 
   date:
     formats:
