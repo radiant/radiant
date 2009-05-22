@@ -17,7 +17,7 @@ class Admin::PagesController < Admin::ResourceController
   end
   
   def show
-    redirect_to edit_admin_page_path
+    redirect_to edit_admin_page_path(params[:id])
   end
 
   def new

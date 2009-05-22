@@ -15,6 +15,46 @@ describe Admin::SnippetsController do
   it "should handle Snippets" do
     controller.class.model_class.should == Snippet
   end
+  
+  
+  describe "show" do
+    it "should redirect to the edit action" do
+      get :show, :id => 1
+      response.should redirect_to(edit_admin_snippet_path(params[:id]))
+    end
+  end
+  
+  describe "with invalid snippet id" do
+    [:edit, :remove].each do |action|
+      before do
+        @parameters = {:id => 999}
+      end
+      it "should redirect the #{action} action to the index action" do
+        get action, @parameters
+        response.should redirect_to(admin_snippets_path)
+      end
+      it "should say that the 'Snippet could not be found.' after the #{action} action" do
+        get action, @parameters
+        flash[:notice].should == 'Snippet could not be found.'
+      end
+    end
+    it 'should redirect the update action to the index action' do
+      put :update, @parameters
+      response.should redirect_to(admin_snippets_path)
+    end
+    it "should say that the 'Snippet could not be found.' after the update action" do
+      put :update, @parameters
+      flash[:notice].should == 'Snippet could not be found.'
+    end
+    it 'should redirect the destroy action to the index action' do
+      delete :destroy, @parameters
+      response.should redirect_to(admin_snippets_path)
+    end
+    it "should say that the 'Snippet could not be found.' after the destroy action" do
+      delete :destroy, @parameters
+      flash[:notice].should == 'Snippet could not be found.'
+    end
+  end
 
   {:get => [:index, :show, :new, :edit, :remove],
    :post => [:create],
