@@ -1,5 +1,9 @@
 == Change Log
 
+=== Edge
+
+* Fix children:count for PostgreSQL [Jim Gay]
+
 === 0.8.0 RC1
 
 * Make features task run in instance mode. [Sean Cribbs]
