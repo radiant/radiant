@@ -168,103 +168,99 @@ ru:
   # Standard Tag Descriptions
   tag_desc:
     usage: 'Использование'
+    produces: 'результат'
 
     page:
-      desc: "Causes the tags referring to a page's attributes to refer to the current page."
+      desc: "Causes the tags referring to a page's attributes to refer to the current page."  #TODO: finish translation
       attributes: "Отображает аттрибут @{{method}}@ текущей страницы."
       url: "Отображает аттрибут @url@ текущей страницы."
 
     children: 
       desc: "Дает доступ к детям/наследникам страницы."
-      count: 'Отображает общее число детей/наследников.'
-      first: 'Returns the first child. Inside this tag all page attribute tags are mapped to the first child. <br /> 
-        Takes the same ordering options as @<r:children:each>@.'    
-      last: 'Returns the last child. Inside this tag all page attribute tags are mapped tothe last child. <br /> 
-        Takes the same ordering options as @<r:children:each>@.›'
-      each: "Цикл по всем детям/наследникам. Inside this tag all page attribute tags are mapped to the current child page." #TODO: finish translation
-      child: "Page attribute tags inside of this tag refer to the current child. This is occasionally <br />
-        useful if you are inside of another tag (like &lt;r:find&gt;) and need to refer back to the <br /> current child."  
-      if_first: "Renders the tag contents only if the current page is the first child in the context of a children:each tag"
-      unless_first: "Renders the tag contents unless the current page is the first child in the context of a children:each tag"
-      if_last: "Renders the tag contents unless the current page is the last child in the context of a children:each tag"
-      unless_last: "Renders the tag contents unless the current page is the last child in the context of a children:each tag"
-      header_p1: "Renders the tag contents only if the contents do not match the previous header. This is extremely useful for rendering date headers for a list of child pages."
+      count: "Отображает общее число детей/наследников."
+      first: "Возвращает первого наследника. Внутри этого тэга все тэги являющиеся аттрибутами страницы применяются к первому наследнику.<br />
+        Имеет возможности для упорядочивания аналогичные тегу @<r:children:each>@."
+      last: "Возвращает последнего наследника. Внутри этого тэга все тэги являющиеся аттрибутами страницы применяются к последнему наследнику.<br />
+        Имеет возможности для упорядочивания аналогичные тегу @<r:children:each>@."
+      each: "Цикл по всем детям/наследникам. Внутри этого тэга все тэги являющиеся аттрибутами страницы применяются к текущему наследнику."
+      child: "Тэги являющиеся аттрибутами страницы внутри этого тэга относятся к текущему наследнику. Это иногда удобно
+        если внутри другого тэга (например &lt;r:find&gt;) нужно сослаться на текущего наследника."  
+      if_first: "Отображает содержимое тэга только если текущая страница является первым наследником в контексте тэга &lt;children:each&gt;"
+      unless_first: "Отображает содержимое тэга только если текущая страница является не первым наследником в контексте тэга &lt;children:each&gt;"
+      if_last: "Отображает содержимое тэга только если текущая страница является последним наследником в контексте тэга &lt;children:each&gt;"
+      unless_last: "Отображает содержимое тэга только если текущая страница является не последним наследником в контексте тэга &lt;children:each&gt;"
+      header_p1: "Отображает содержимое тэга только если the contents do not match the previous header. This is extremely useful for rendering date headers for a list of child pages." #TODO: Finish translation
       header_p2: "If you would like to use several header blocks you may use the @name@ attribute to name the header. When a header is named it will not restart until another header of the same name is different."
       header_p3: "Using the @restart@ attribute you can cause other named headers to restart when the present header changes. Simply specify the names of the other headers in a semicolon separated list."
 
-    parent: "Page attribute tags inside this tag refer to the parent of the current page. "
-    if_parent: "Renders the contained elements only if the current contextual page has a parent, i.e. is not the root page."
-    unless_parent: "Renders the contained elements only if the current contextual page has no parent, i.e. is the root page."
+    parent: "Тэги являющиеся аттрибутами страницы внутри этого тэга относятся к родителю текущей страницы."
+    if_parent: "Отображает содержащиеся элементы только если страница в текущем контексте имеет страницу родителя, т.е. не корневая страница."
+    unless_parent: "Отображает содержащиеся элементы только если страница в текущем контексте не имеет страницу родителя, т.е. корневая страница."
 
-    if_children: 'Renders the contained elements only if the current contextual page has one or <br />
-      more child pages.  The @status@ attribute limits the status of found child pages <br />
-      to the given status, the default is @"published"@. @status="all"@ includes all <br />
-      non-virtual pages regardless of status.'
-    unless_children: 'Renders the contained elements only if the current contextual page has no children.
-      The @status@ attribute limits the status of found child pages to the given status,
-      the default is @"published"@. @status="all"@ includes all non-virtual pages
-      regardless of status.'
+    if_children: "Отображает содержащиеся элементы только если страница в текущем контексте имеет одну или
+      более страниц наследников. Аттрибут @status@ ограничивает статус найденных страниц
+      указанным статусом (по умолчанию @'published'@). @status='all'@ включает все невиртуальные страницы независимо от статуса."
+    unless_children: "Отображает содержащиеся элементы только если страница в текущем контексте не имеет страниц наследников.
+      Аттрибут @status@ ограничивает статус найденных страниц наследников указанным статусом,
+      (по умолчанию @'published'@). @status='all'@ включает все невиртуальные страницы независимо от статуса."
 
-    cycle: 'Renders one of the passed values based on a global cycle counter.  Use the @reset@
-      attribute to reset the cycle to the beginning.  Use the @name@ attribute to track
-      multiple cycles; the default is @cycle@.'
-    content: "Renders the main content of a page. Use the @part@ attribute to select a specific
-      page part. By default the @part@ attribute is set to body. Use the @inherit@
-      attribute to specify that if a page does not have a content part by that name that
-      the tag should render the parent's content part. By default @inherit@ is set to
-      @false@. Use the @contextual@ attribute to force a part inherited from a parent
-      part to be evaluated in the context of the child page. By default 'contextual'
-      is set to true."
+    cycle: "Отображает одно из переданных значений на основании глобального счетчика цикла. Для сброса цикла в начало
+      используется аттрибут @reset@. Для множественных циклов используется аттрибут @name@; имя по умолчанию -- @cycle@."
+    content: "Отображает основное содержимое страницы. Используйте аттрибуты @part@ для выделения отдельных частей
+      страницы. По умолчанию аттрибут @part@ установлен в @body@. Используйте аттрибут @inherit@
+      для указания, что если страница не имеет части содержимого с таким именем то
+      необходимо отобразить часть содержимого родителя. По умолчанию @inherit@ установлен в
+      @false@. Используйте аттрибут @contextual@ для принудительной обработки наследованой у родителя части
+      в контексте страницы наследника. По умолчанию аттрибут @contextual@ установлен в @true@."
 
     if_content:
-      part_1: 'Renders the containing elements if all of the listed parts exist on a page.
-        By default the @part@ attribute is set to @body@, but you may list more than one
-        part by separating them with a comma. Setting the optional @inherit@ to true will
-        search ancestors independently for each part. By default @inherit@ is set to @false@.'
-      part_2: 'When listing more than one part, you may optionally set the @find@ attribute to @any@
-        so that it will render the containing elements if any of the listed parts are found.
-        By default the @find@ attribute is set to @all@.'
+      part_1: "Отображает содержащиеся элементы если все перечисленные части (part) присутствуют на странице.
+        По умалчанию аттрибут @part@ эквивалентен @body@, но можно перечислить больше одного элемента
+        разделяя их запятыми. Установка необязательного аттрибута @inherit@ в true обеспечивает
+        поиск предков независимо для кажной части. По умолчанию @inherit@ установлен в @false@."
+      part_2: "При указании более одной части можно установить необязательный аттрибут @find@ равным @any@
+        для вывода содержащихся элементов в случае если хотя бы одна из перечисленных частей найдена.
+        По умолчанию @find@ установлен в @all@."
     unless_content:
-      part_1: 'The opposite of the @if_content@ tag. It renders the contained elements if all of the
-        specified parts do not exist. Setting the optional @inherit@ to true will search
-        ancestors independently for each part. By default @inherit@ is set to @false@.'
-      part_2: 'When listing more than one part, you may optionally set the @find@ attribute to @any@
-        so that it will not render the containing elements if any of the listed parts are found.
-        By default the @find@ attribute is set to @all@.'
+      part_1: "Тэг обратный тэгу @if_content@. Он отображает содержащиеся элементы если все
+        перечисленные части (part) не присутствуют на странице. Установка необязательного аттрибута @inherit@ в true
+        обеспечивает поиск предков независимо для кажной части. По умолчанию @inherit@ установлен в @false@."
+      part_2: "При указании более одной части можно установить необязательный аттрибут @find@ равным @any@
+        для того, чтобы не выводить содержащиеся элементы в случае если хотя бы одна из перечисленных частей найдена.
+        По умолчанию @find@ установлен в @all@."
 
-    if_url: "Renders the containing elements only if the page's url matches the regular expression
-      given in the @matches@ attribute. If the @ignore_case@ attribute is set to false, the
-      match is case sensitive. By default, @ignore_case@ is set to true."
-    unless_url: "The opposite of the @if_url@ tag."
+    if_url: "Отображает содержашиеся элементы только если URL страницы соответствует регулярному выражению
+      указанному в аттрибуте @matches@. Если аттрибут @ignore_case@ установлен в false то проверка производится
+      без учета регистра. По умолчанию @ignore_case@ установлен в true."
+    unless_url: "Тэг обратный тэгу @if_url@."
 
     if_ancestor_or_self:
-      part_1: "Renders the contained elements if the current contextual page is either the actual page or one of its parents."
-      part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is or descends from the current page."
+      part_1: "Отображает содержащиеся элементы если в текущем контексте либо сама страница либо один из ее предков."
+      part_2: "Обычно используется внутри других тэгов (таких как &lt;r:children:each&gt;) для добавления условной разметки в случае если the child element is or descends from the current page." #TODO: finish translation
     unless_ancestor_or_self:
-      part_1: "Renders the contained elements unless the current contextual page is either the actual page or one of its parents."
-      part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless   the child element is or descends from the current page."
+      part_1: "Отображает содержащиеся элементы в случаях кроме тех когда в текущем контексте либо сама страница либо один из ее предков."
+      part_2: "Обычно используется внутри других тэгов (таких как &lt;r:children:each&gt;) для добавления условной разметки unless   the child element is or descends from the current page." #TODO: finish translation
     if_self:
-      part_1: "Renders the contained elements if the current contextual page is also the actual page."
-      part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is the current page."
+      part_1: "Отображает содержащиеся элементы если в текущем контексте и есть сама страница."
+      part_2: "Обычно используется внутри других тэгов (таких как &lt;r:children:each&gt;) для добавления условной разметки if the child element is the current page." #TODO: finish translation
     unless_self: 
-      part_1: "Renders the contained elements unless the current contextual page is also the actual page."
-      part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless the child element is the current page."
+      part_1: "Отображает содержащиеся элементы если в текущем контексте не сама страница."
+      part_2: "Обычно используется внутри других тэгов (таких как &lt;r:children:each&gt;) для добавления условной разметки unless the child element is the current page." #TODO: finish translation
 
-    author: 'Отображает имя автора текущей страницы.'
+    author: "Отображает имя автора текущей страницы."
 
-    date: "Renders the date based on the current page (by default when it was published or created).
-      The format attribute uses the same formating codes used by the Ruby @strftime@ function. By
-      default it's set to &#37;A, &#37;B &#37;d, &#37;Y. The @for@ attribute selects which date to render.  Valid
-      options are @published_at@, @created_at@, @updated_at@, and @now@. @now@ will render the
-      current date/time, regardless of the  page."
+    date: "Отображает дату для текущей страницы (по умолчанию дату публикации или создания).
+      Аттрибут format использует те же форматирующие коды, что и Ruby функция @strftime@.
+      По умолчанию используется &#37;A, &#37;B &#37;d, &#37;Y. Аттрибут @for@ выбирает какую дату выводить.
+      Возможные варианты: @published_at@, @created_at@, @updated_at@, и @now@. @now@ отобразит
+      текущее время независимо от страницы."
 
-    link: "Renders a link to the page. When used as a single tag it uses the page's title
-      for the link name. When used as a double tag the part in between both tags will
-      be used as the link text. The link tag passes all attributes over to the HTML
-      @a@ tag. This is very useful for passing attributes like the @class@ attribute
-      or @id@ attribute. If the @anchor@ attribute is passed to the tag it will
-      append a pound sign (<code>#</code>) followed by the value of the attribute to
-      the @href@ attribute of the HTML @a@ tag--effectively making an HTML anchor."
+    link: "Отображает ссылку на страницу. При использовании в качестве одиночного тэга он использует title страницы
+      как имя ссылки. При использовании в качестве двойного тэга часть между двумя тэгами будет
+      использована как текст ссылки. Тэг link передает всё аттрибуты в HTML
+      тэг @a@. Это удобно для передачи таких аттрибутов как @class@ или @id@.
+      В случае указания у тэга аттрибута @anchor@ к аттрибуту @href@ HTML тэга @a@ будет
+      добавлен символ (<code>#</code>), а за ним значение аттрибута, что в результате дает HTML якорь."
 
     breadcrumbs: "Выводит цепочку ссылок для текущей страницы. Аттрибут 'separator'
       определяет фрагмент HTML вставляемый между ссылками цепи. По умолчанию он устанавлен в @>@.
@@ -272,24 +268,23 @@ ru:
       (может быть полезно для генерации тэга title)."
 
     snippet:
-      part_1: "Renders the snippet specified in the @name@ attribute within the context of a page."
-      part_2: "When used as a double tag, the part in between both tags may be used within the snippet itself, being substituted in place of @<r:yield/>@."
+      part_1: "Выводит вставку указанную в атрибуте @name@ в контексте страницы."
+      part_2: "При использовании двойного тэга часть между тэгами может использоватся внутри самой вставки, заменяя @<r:yield/>@."
 
     yield:
-      part_1: "Used within a snippet as a placeholder for substitution of child content, when the snippet is called as a double tag."
-      usage: "Usage (within a snippet):"
-      part_2: 'If the above snippet was named "yielding", you could call it from any Page,
-        Layout or Snippet as follows:'
-      part_3: 'Which would output the following:'
-      part_4: "When called in the context of a Page or a Layout, @<r:yield/>@ outputs nothing."
+      part_1: "Используется внутри вставок как место для вставки содержимого когда вставка вызывается двойным тэгом."
+      usage: "Использование (внутри вставки):"
+      part_2: "Если вставка приведенная выше имеет имя 'yielding', ее можно вызывать из любой Страницы, Макета или другой Вставки следующим образом:"
+      part_3: "Что приведет к следующему результату:"
+      part_4: "@<r:yield/>@ вызванный в контексте страницы или макета ничего не выводит."
 
     meta:
-      desc: "Ru The namespace for 'meta' attributes. If used as a singleton tag, both the description and keywords fields will be output as &lt;meta /&gt; tags unless the attribute 'tag' is set to 'false'."
-      keywords: "RU Emits the page keywords field in a meta tag, unless attribute 'tag' is set to 'false'."
-      description: "Emits the page description field in a meta tag, unless attribute 'tag' is set to 'false'."
+      desc: "Ru The namespace for 'meta' attributes. If used as a singleton tag, both the description and keywords fields will be output as &lt;meta /&gt; tags unless the attribute 'tag' is set to 'false'."  #TODO: finish translation
+      keywords: "RU Emits the page keywords field in a meta tag, unless attribute 'tag' is set to 'false'."  #TODO: finish translation
+      description: "Emits the page description field in a meta tag, unless attribute 'tag' is set to 'false'."  #TODO: finish translation
 
     status:
-      desc: "Печатает статус страницы в виде строки. Необязательный аттрибут 'downcase' переводит статус в строчные буквы."
+      desc: "Печатает статус страницы в виде строки. Необязательный аттрибут @downcase@ переводит статус в строчные буквы."
 
     unless_dev:
       desc: "Тэг обратный тэгу @if_dev@."
@@ -298,12 +293,12 @@ ru:
       desc: "Выводмт содержащиеся элементы только если Radiant рвботает в development режиме."
 
     navigation:
-      desc: "RU Renders a list of links specified in the @urls@ attribute according to three states: <br/>
-        * @normal@ specifies the normal state for the link<br/>
-        * @here@ specifies the state of the link when the url matches the current page's URL<br/>
-        * @selected@ specifies the state of the link when the current page matches is a child of the specified url<br/>
-        The @between@ tag specifies what should be inserted in between each of the links."
-      error: "`navigation' tag must include a `normal' tag"
+      desc: "Отображает список ссылок указанных в аттрибуте @urls@ в соответствии с тремя состояниями: <br/>
+        * @normal@ определяет обычное состояние ссылок<br/>
+        * @here@ определяет состояние ссылки когда url соостетствует URL'ю текущей страницы<br/>
+        * @selected@ указывает состояние ссылки когда текущая страница является наследником указанного url<br/>
+        Тэг @between@ указывает что будет вставляться между ссылками."
+      error: "тэг @navigation@ должен содержать тэг @normal@"
 
     rfc1123_date:
       desc: "Отображает дату публикации используя RFC 1123 формат (Идеально для RSS потоков)"
@@ -318,7 +313,14 @@ ru:
       desc: "Случайным образом отображает один из вариантов указанный в тэгах @option@."
 
     find:
-      desc: "Внутри этого тэга все тэги указывают на страницу указаннуб в аттрибуте @url@. @url@'и могуть быть относительными или абсолютныии путями."
+      desc: "Внутри этого тэга все тэги указывают на страницу указанную в аттрибуте @url@. @url@ могут быть относительными или абсолютныии путями."
+
+    markdown:
+      desc: "Фильтрует содержимое используя Markdown фильтр."
+    smarty_pants:
+      desc: "Фильтрует содержимое используя SmartyPants фильтр."
+    textile:
+      desc: "Фильтрует содержимое используя Textile фильтр."
 
   date:
     formats:

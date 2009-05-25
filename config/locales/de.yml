@@ -171,6 +171,7 @@ de:
   # Standard Tag Descriptions
   tag_desc:
     usage: 'Benutzung'
+    produces: 'produces'
 
     page:
       desc: "Causes the tags referring to a page's attributes to refer to the current page."
@@ -321,6 +322,13 @@ de:
 
     find:
       desc: "Inside this tag all page related tags refer to the page found at the @url@ attribute. @url@s may be relative or absolute paths."
+
+    markdown:
+      desc: "Filters its contents with the Markdown filter."
+    smarty_pants:
+      desc: "Filters its contents with the SmartyPants filter."
+    textile:
+      desc: "Filters its contents with the Textile filter."
 
 
   # Date and Time formats  

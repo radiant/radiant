@@ -2,21 +2,19 @@ module TextileTags
   include Radiant::Taggable
 
   desc %{
-    Filters its contents with the Textile filter.
+  #{I18n.t('tag_desc.textile.desc')}
 
-    *Usage*:
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:textile>
-    * First
-    * Second
-    </r:textile></code></pre>
+    *&nbsp;First
+    *&nbsp;Second<br>&lt;/r:textile&gt;</code></pre>
 
-    produces:
+    #{I18n.t('tag_desc.produces')}:
 
     <pre><code><ul>
-      <li>First</li>
-      <li>Second</li>
-    </ul></code></pre>
+   &lt;li&gt;First&lt;/li&gt;
+   &lt;li&gt;Second&lt;/li&gt;<br>&lt;/ul&gt;</code></pre>
   }
   tag 'textile' do |tag|
     TextileFilter.filter(tag.expand)

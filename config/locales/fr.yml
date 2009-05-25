@@ -165,6 +165,7 @@ fr:
   # Standard Tag Descriptions
   tag_desc:
     usage: "Utilisation"
+    produces: 'produces'
     
     page:
       desc: "Permet aux tags attachés aux attributs de page de faire référence à la page actuelle."
@@ -312,6 +313,13 @@ fr:
 
     find:
       desc: "Inside this tag all page related tags refer to the page found at the @url@ attribute. @url@s may be relative or absolute paths."
+
+    markdown:
+      desc: "Filters its contents with the Markdown filter."
+    smarty_pants:
+      desc: "Filters its contents with the SmartyPants filter."
+    textile:
+      desc: "Filters its contents with the Textile filter."
     
     
   # Date and Time formats  
