@@ -23,9 +23,9 @@ class Status
   end
   
   @@statuses = [
-    Status.new(:id => 1,   :name => I18n.t('status.draft')    ),
-    Status.new(:id => 50,  :name => I18n.t('status.reviewed') ),
-    Status.new(:id => 100, :name => I18n.t('status.published') ),
-    Status.new(:id => 101, :name => I18n.t('status.hidden')   )
+    Status.new(:id => 1,   :name => 'Draft'    ),
+    Status.new(:id => 50,  :name => 'Reviewed' ),
+    Status.new(:id => 100, :name => 'Published'),
+    Status.new(:id => 101, :name => 'Hidden'   )
   ]
 end

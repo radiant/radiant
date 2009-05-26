@@ -41,7 +41,7 @@
             %p
               %label{:for=>"page_status_id"}
                 = t('views.pages.status')
-              = fields.select :status_id, Status.find_all.map { |s| [s.name, s.id] }, {}
+              = fields.select :status_id, Status.find_all.map { |s| [I18n.t("status.#{s.name.downcase}"), s.id] }, {}
             - if @config['page.edit.published_date?']
               %p#publication-date{:style => "display: none"}
                 %label{:for=>"page_published_at"}
