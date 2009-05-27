@@ -33,7 +33,7 @@ class SiteController < ApplicationController
         expires_in self.class.cache_timeout, :public => true, :private => false
       else
         expires_in nil, :private => true, "no-cache" => true
-        headers['ETag'] = nil
+        headers['ETag'] = ''
       end
     end
     

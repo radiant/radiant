@@ -27,4 +27,16 @@ Feature: Serving pages from front-end
     When I go to page '/first'
     And I go to page '/first'
     Then I should get an "X-Accel-Redirect" header in the response
-  
+    
+  Scenario: page caching enabled
+    Given I have page caching on
+    When I go to page '/first'
+    Then I should get an "ETag" header in the response
+    And The "Cache-Control" header should be "public"
+
+  Scenario: page caching disabled
+    Given I have page caching off
+    When I go to page '/first'
+    Then I should not get an "ETag" header in the response
+    And The "Cache-Control" header should be "private"
+
