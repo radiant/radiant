@@ -1,5 +1,7 @@
 == Change Log
 
+* Fix with_error in render_matcher not causing the spec to fail when no exception raised. [Jason Garber]
+
 === 0.8.0 RC1
 
 * Make features task run in instance mode. [Sean Cribbs]

@@ -14,7 +14,7 @@ module Spec
             @matching = @expected
           end
           case
-            when @error_message: false
+            when @expected_error_message: false
             when @expected: @actual == @expected
             when @matching: @actual =~ @matching
             else true
@@ -38,7 +38,11 @@ module Spec
                 "expected page to #{action}, but got #{@actual.inspect}"
               end
             else
-              "expected rendering #{@content.inspect} to throw exception with message #{@expected_error_message.inspect}, but was #{@actual_error.message.inspect}"
+              if @actual_error
+                "expected rendering #{@content.inspect} to throw exception with message #{@expected_error_message.inspect}, but was #{@actual_error.message.inspect}"
+              else
+                "expected rendering #{@content.inspect} to throw exception with message #{@expected_error_message.inspect}, but no exception thrown. Rendered #{@actual.inspect} instead."
+              end
             end
           else
             "expected #{@content.inspect} to render, but an exception was thrown #{@actual_error.message}"
