@@ -171,6 +171,7 @@ de:
   # Standard Tag Descriptions
   tag_desc:
     usage: 'Benutzung'
+    produces: 'produces'
 
     page:
       desc: "Causes the tags referring to a page's attributes to refer to the current page."
@@ -244,7 +245,7 @@ de:
     if_ancestor_or_self:
       part_1: "Renders the contained elements if the current contextual page is either the actual page or one of its parents."
       part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is or descends from the current page."
-    unless_self:
+    unless_ancestor_or_self:
       part_1: "Renders the contained elements unless the current contextual page is either the actual page or one of its parents."
       part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless   the child element is or descends from the current page."
     if_self:
@@ -317,6 +318,13 @@ de:
 
     find:
       desc: "Innerhalb dieses Tags beziehen sich alle zur Seite gehörenden Tags auf die Seite, die durch das @url@-Attribute gefunden werden. @url@s können relative oder absolute Pfade sein."
+
+    markdown:
+      desc: "Filters its contents with the Markdown filter."
+    smarty_pants:
+      desc: "Filters its contents with the SmartyPants filter."
+    textile:
+      desc: "Filters its contents with the Textile filter."
 
 
   # Date and Time formats  

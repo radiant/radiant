@@ -1,0 +1,20 @@
+= render_region :form_top
+- render_region :form do |form|
+  - form.edit_title do
+    %p.title
+      %label{ :for => "asset_title" } Titel
+      = f.text_field :title, :class => 'textbox', :maxlength => 100 
+  - form.edit_metadata do
+    #extended-metadata{ :class => "row", :style => "display: none" }
+      %table.fieldset{ :cellpadding => "0", :cellspacing => "0", :border => "0" }
+        %tr
+          %td.label
+            %label{ :for => "asset_caption" } Beschreibung
+          %td.field
+            = f.text_field :caption, :class => 'textbox', :maxlength => 255 
+        = render_region :extended_metadata
+    %p
+      %small
+        %a{ :id => "more-extended-metadata", :href => "#", :onclick => "#{toggle_javascript_for('extended-metadata')}; return false;" } Mehr
+        %a{ :id => "less-extended-metadata", :href => "#", :onclick => "#{toggle_javascript_for('extended-metadata')}; return false;", :style => "display: none" } Weniger
+

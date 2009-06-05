@@ -1,0 +1,14 @@
+%h1 Viewing <%= singular_name %>
+
+%div[current_object]
+<% for attribute in attributes -%>
+  %p.<%= attribute.name %>
+    %strong <%= attribute.column.human_name %>
+    = h current_object.<%= attribute.name %>
+<% end -%>
+
+= link_to 'Edit', edit_object_path
+|
+= link_to 'Destroy', object_path, :confirm => 'Really destroy <%= singular_name %>?', :method => :delete
+|
+= link_to 'Back', objects_path

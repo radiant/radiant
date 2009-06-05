@@ -1,0 +1,12 @@
+%div[<%= singular_name %>]
+<% for attribute in attributes -%>
+  %p.<%= attribute.name %>
+    %strong <%= attribute.column.human_name %>
+    = h <%= singular_name %>.<%= attribute.name %>
+<% end -%>
+
+  = link_to 'Show', object_path(<%= singular_name %>)
+  |
+  = link_to 'Edit', edit_object_path(<%= singular_name %>)
+  |
+  = link_to 'Destroy', object_path(<%= singular_name %>), :confirm => 'Really destroy <%= singular_name %>?', :method => :delete

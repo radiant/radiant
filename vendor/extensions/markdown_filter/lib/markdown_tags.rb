@@ -2,13 +2,13 @@ module MarkdownTags
   include Radiant::Taggable
 
   desc %{
-    Filters its contents with the Markdown filter.
+  #{I18n.t('tag_desc.markdown.desc')}
 
-    *Usage*:
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:markdown>** bold text **</r:markdown></code></pre>
 
-    produces:
+    #{I18n.t('tag_desc.produces')}:
 
     <pre><code><strong> bold text </strong></code></pre>
   }
@@ -17,13 +17,13 @@ module MarkdownTags
   end
 
   desc %{
-    Filters its contents with the SmartyPants filter.
+    #{I18n.t('tag_desc.smarty_pants.desc')}
 
-    *Usage*:
+    *#{I18n.t('tag_desc.usage')}:*
 
     <pre><code><r:smarty_pants>"A revolutionary quotation."</r:smarty_pants></code></pre>
 
-    produces:
+    #{I18n.t('tag_desc.produces')}:
 
     <pre><code>&#8220;A revolutionary quotation.&#8221;</code></pre>
   }

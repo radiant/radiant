@@ -1,0 +1,26 @@
+- unless @page.assets.empty?
+  - @page.page_attachments.each do |a|
+    - asset = a.asset
+    - dom_id = "attachment_#{a.id}"
+    %li{ :id => dom_id }
+      - asset_type = asset.image? ? "image" : "link"
+      %div{ :class => "#{asset_type} asset" }
+        = link_to image_tag(asset.thumbnail(:thumbnail)), asset.thumbnail, :onclick => "return false;", :title => "Insert #{asset.title}"
+      .info{ :id => "#{dom_id}_info" }
+        %strong
+          = link_to "edit", edit_asset_url(asset.id), :id => "edit_asset", :title => "Edit #{asset.title}"
+        - if @page
+          = link_to_remote "remove", :html => { :id => "remove_asset", :title => "remove asset" }, :url => remove_page_asset_url(:asset => asset.id, :page => @page.id), | 
+            :confirm => "Are you sure you want to remove this asset from the page?", |
+            :after => "Effect.Fade('#{dom_id}', { duration: 0.5 })", :complete => "Element.remove('#{dom_id}'); Element.highlight('assets')" |
+          = image_tag "/images/assets/reorder_assets.png", :class => "reorder", :title => "Reorder"
+    
+- else
+  %li
+    %p.note You have no attached assets.
+    
+%script{ :type => "text/javascript" }
+  $$('#assets .asset').each(function(element){
+  new Draggable(element, { revert: true });
+  element.addClassName('move');
+  });

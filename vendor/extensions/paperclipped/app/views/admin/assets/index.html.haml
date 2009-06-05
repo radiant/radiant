@@ -1,0 +1,52 @@
+- include_stylesheet 'admin/assets'
+= render_region :top 
+
+- render_region :preamble do |preamble|
+  - preamble.header do
+    %h1 Bilder und Dateien
+
+  - preamble.explanation do
+    %p 
+      Bilder und Dateien können Sie hier hochladen. Klicken Sie auf <code>Remove</code> ein Datei zu löschen. 
+      
+      // Assets and images can be uploaded and then attached or inserted into pages, snippets and layouts. 
+      // Click on a asset name below to edit it or click <code>Remove</code> to delete it.
+
+  - preamble.new_button do
+    %p= link_to image_tag('assets/new-asset.png', :alt => 'New Asset'), new_admin_asset_path
+
+  - preamble.filters do
+    %p
+      - form_tag(admin_assets_path,:id => 'filesearchform', :method => 'get') do
+        %span
+          = link_to "Images", "#"
+        %span
+          = link_to "Others", "#"
+        %span
+          = link_to "Audio", "#"
+        %span
+          = link_to "Movies", "#"
+    
+        #type_boxes{ :style => "display: none" }
+          = check_box_tag 'filter[audio]',  '1', false, :id => 'audio-check' 
+          = check_box_tag 'filter[image]',  '1', false, :id => 'images-check' 
+          = check_box_tag 'filter[other]',  '1', false, :id => 'others-check' 
+          = check_box_tag 'filter[movie]',  '1', false, :id => 'movies-check'
+
+        %label Search
+        %input{ :type => "search", :id => "search", :name => "search" , :value => params[:search] }
+        = submit_tag "Search"
+        = observe_field 'search',  :frequency => 1, :update => 'assets_table', :url =>  { :controller => 'assets', :action=> 'index' }, :method => 'get', :with => "'search=' + escape(value)"
+
+#assets_table
+  = render :partial => 'asset_table', :locals => { :assets => @assets }
+
+= render :partial => 'assets_container'
+  
+- render_region :bottom do |bottom|
+  - bottom.regenerate do
+    - if current_user.admin?
+      %p 
+        You can regenerate all thumbnails here. Beware that this will take a while and consume considerable resources on your server. 
+      - form_tag refresh_admin_assets_path do
+        %input.button{ :type => "submit", :value => "Regenerate" }

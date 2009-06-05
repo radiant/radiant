@@ -1,0 +1,5 @@
+%h1 Listing <%= plural_name %>
+
+= render :partial => '<%= singular_name %>', :collection => current_objects
+
+= link_to 'New <%= singular_name %>', new_object_path 
