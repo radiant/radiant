@@ -1,7 +1,9 @@
 == Change Log
 
 === Edge
-
+* Don't allow a nil ETag in SiteController. [David Cato]
+* Prevent failed login message from sticking around. [Kunal Shah]
+* Fix failing test regarding extension order. [Brett McHargue]
 * Catch ActiveRecord::RecordNotFound in Admin::ResourceController
 [Jim Gay]
 * Catch missing template errors for show routes [Jim Gay]
