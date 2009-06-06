@@ -17,6 +17,21 @@ describe User, "validations" do
     assert_valid :email, ('x' * 246) + '@test.com'
   end
   
+  
+  describe "self.protected_attributes" do
+    it "should be an array of [:password, :password_confirmation, :email]" do
+      # Make sure we clean up after anything set in another spec
+      User.instance_variable_set(:@protected_attributes, nil)
+      User.protected_attributes.should == [:password, :password_confirmation, :email]
+    end
+  end
+  describe "self.protected_attributes=" do
+    it "should set the @@protected_attributes variable to the given array" do
+      User.protected_attributes = [:password, :email, :other]
+      User.protected_attributes.should == [:password, :email, :other]
+    end
+  end
+  
   it 'should validate length ranges' do
     {
       :login => 3..40,

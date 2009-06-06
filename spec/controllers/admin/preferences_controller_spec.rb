@@ -35,4 +35,10 @@ describe Admin::PreferencesController do
     user = users(:non_admin)
     user.password.should == user.sha1('funtimes')
   end
+  
+  it "should use the User.protected_attributes for checking valid_params?" do
+    User.should_receive(:protected_attributes).at_least(:once).and_return([:password, :password_confirmation, :email])
+    login_as :non_admin
+    put :update, { :user => { :password => 'funtimes', :password_confirmation => 'funtimes' } }
+  end
 end

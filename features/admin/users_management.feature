@@ -3,20 +3,20 @@ Feature: Managing users
   As an administrator I want to manage the set of users
   
   Background:
-    Given I am logged in as 'admin'
-    And I go to '/admin/users'
+    Given I am logged in as "admin"
+    And I go to "/admin/users"
   Scenario: Listing users
-    Then I should see 'Admin'
-    And I should see 'Developer'
-    And I should see 'Existing'
+    Then I should see "Admin"
+    And I should see "Developer"
+    And I should see "Existing"
     # And a host of others
     
   Scenario: View a user
     When I view a user
-    Then I should see 'Edit User'
+    Then I should see "Edit User"
   
   Scenario: Create new user
-    When I follow 'New User'
+    When I follow "New User"
     And I fill in "Name" with "New Guy"
     And I fill in "E-mail" with "newguy@example.com"
     And I fill in "Username" with "new_guy"
@@ -27,7 +27,7 @@ Feature: Managing users
     And I should see "New Guy"
   
   Scenario: Display form errors on submit
-    When I follow 'New User'
+    When I follow "New User"
     And I fill in "Name" with "New Guy"
     And I fill in "E-mail" with "newguy@example.com"
     And I press "Create User"
@@ -35,7 +35,7 @@ Feature: Managing users
     And I should see the form
     
   Scenario: Edit existing user
-    When I follow 'Developer'
+    When I follow "Developer"
     Then I should see the form
     When I fill in "Name" with "Old Guy"
     And I fill in "Username" with "oldguy"
@@ -47,17 +47,17 @@ Feature: Managing users
   Scenario: Cannot remove self
     When I attempt to remove my own account
     Then I should see an error message
-    And I should see 'You cannot delete yourself'
+    And I should see "You cannot delete yourself"
 
   Scenario: Cannot forcefully delete self
     When I attempt to delete my own account
     Then I should see an error message
-    And I should see 'You cannot delete yourself'
+    And I should see "You cannot delete yourself"
   
   Scenario: Delete other users
-    When I follow 'Remove'
-    Then I should see 'permanently remove'
-    And I should see 'Another'
-    When I press 'Delete User'
-    Then I should see 'been deleted'
-    And I should not see 'Another'
+    When I follow "Remove"
+    Then I should see "permanently remove"
+    And I should see "Another"
+    When I press "Delete User"
+    Then I should see "been deleted"
+    And I should not see "Another"

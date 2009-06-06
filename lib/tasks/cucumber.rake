@@ -1,12 +1,17 @@
-$:.unshift(RAILS_ROOT + '/vendor/plugins/cucumber/lib')
+$LOAD_PATH.unshift(RAILS_ROOT + '/vendor/plugins/cucumber/lib') if File.directory?(RAILS_ROOT + '/vendor/plugins/cucumber/lib')
+
 begin
   require 'cucumber/rake/task'
+
   Cucumber::Rake::Task.new(:features) do |t|
-    t.cucumber_opts = "--format pretty #{RADIANT_ROOT}/features"
+    t.fork = true
+    t.cucumber_opts = ['--format', (ENV['CUCUMBER_FORMAT'] || 'pretty')]
+    t.feature_pattern = "#{RADIANT_ROOT}/features/**/*.feature"
   end
   task :features => 'db:test:prepare'
 rescue LoadError
+  desc 'Cucumber rake task not available'
   task :features do
-    puts "Required dependency Cucumber is missing.\nRun 'rake gems:install RAILS_ENV=test'"
+    abort 'Cucumber rake task is not available. Be sure to install cucumber as a gem or plugin'
   end
 end

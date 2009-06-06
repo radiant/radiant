@@ -4,7 +4,7 @@ Feature: Edit user preferences
   
   Scenario Outline: Edit preferences
     Given I am logged in as "<username>"
-    When I follow 'Preferences'
+    When I follow "Preferences"
     And I fill in "E-mail" with "my-new-email@example.com"
     And I press "Save Changes"
     Then I should see "updated"

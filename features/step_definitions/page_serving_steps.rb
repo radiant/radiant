@@ -8,7 +8,7 @@ Given /^the page cache is clear$/ do
   Radiant::Cache.clear if defined?(Radiant::Cache)
 end
 
-When(/^I go to page ['"](.*)['"]$/) do |url|
+When(/^I go to page "(.*)"$/) do |url|
   visit url
   @old_headers ||= response.headers.dup
 end

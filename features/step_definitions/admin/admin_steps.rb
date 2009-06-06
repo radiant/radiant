@@ -1,4 +1,4 @@
-Given(/^I am logged in as ['"](\w+)['"]$/) do |user|
+Given(/^I am logged in as "([^\"]*)"$/) do |user|
   visit '/admin/login'
   user = users(user.intern)
   fill_in 'Username', :with => user.login
@@ -11,7 +11,7 @@ Given /^there are no pages$/ do
   PagePart.delete_all
 end
 
-Then /^['"](.*)["'] should be selected for ['"](.*)["']$/ do |value, field|
+Then /^"([^\"]*)" should be selected for "([^\"]*)"$/ do |value, field|
   select_box = field_labeled(field)
   response.should have_tag("select##{select_box.id}") do
     with_tag('option[selected]', :text => value)

@@ -1,4 +1,4 @@
-When /^I send an ["'](.*)["'] header of ['"](.*)['"]$/ do |key, value|
+When /^I send an "([^\"]*)" header of "([^\"]*)"$/ do |key, value|
   @request_headers ||= {}
   @request_headers[key] = value
 end
@@ -24,7 +24,7 @@ When /^I view a user$/ do
   visit "/admin/users/#{users(:admin).id}"
 end
 
-When /^I request the children of page ['"](\w+)['"]$/ do |page|
+When /^I request the children of page "([^\"]*)"$/ do |page|
   parent_page = pages(page.intern)
   set_headers
   visit "/admin/pages/#{parent_page.id}/children", :get, {"level" => "0"}

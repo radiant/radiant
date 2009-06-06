@@ -23,9 +23,9 @@ describe Admin::WelcomeController do
   end
   
   it "should render the login template when login failed" do
+    controller.should_receive(:announce_invalid_user) # Can't test flash.now!
     post :login, :user => {:login => "admin", :password => "wrong"}
     response.should render_template("login")
-    flash[:error].should_not be_nil
   end
   
   describe "remember me" do
