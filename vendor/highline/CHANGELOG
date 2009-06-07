@@ -2,6 +2,45 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.5.1
+
+* Fixed the long standing echo true bug.
+  (reported by Lauri Tuominen)
+* Improved Windows API calls to support the redirection of STDIN.
+  (patch by Aaron Simmons)
+* Updated gem specification to avoid a deprecated call.
+* Made a minor documentation clarification about character mode support.
+* Worked around some API changes in Ruby's standard library in Ruby 1.9.
+  (patch by Jake Benilov)
+
+== 1.5.0
+
+* Fixed a bug that would prevent Readline from showing all completions.
+  (reported by Yaohan Chen)
+* Added the ability to pass a block to HighLine#agree().
+  (patch by Yaohan Chen)
+
+== 1.4.0
+
+* Made the code grabbing terminal size a little more cross-platform by
+  adding support for Solaris.  (patch by Ronald Braswell and Coey Minear)
+
+== 1.2.9
+
+* Additional work on the backspacing issue. (patch by Jeremy Hinegardner)
+* Fixed Readline prompt bug. (patch by Jeremy Hinegardner)
+
+== 1.2.8
+
+* Fixed backspacing past the prompt and interrupting a prompt bugs.
+  (patch by Jeremy Hinegardner)
+
+== 1.2.7
+
+* Fixed the stty indent bug.
+* Fixed the echo backspace bug.
+* Added HighLine::track_eof=() setting to work are threaded eof?() calls.
+
 == 1.2.6
 
 Patch by Jeremy Hinegardner:
