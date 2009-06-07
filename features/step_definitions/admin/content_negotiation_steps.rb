@@ -1,4 +1,4 @@
-When /^I send an ["'](.*)["'] header of ['"](.*)['"]$/ do |key, value|
+When /^I send an "([^\"]*)" header of "([^\"]*)"$/ do |key, value|
   @request_headers ||= {}
   @request_headers[key] = value
 end
@@ -8,7 +8,23 @@ When /^I go to ['"](.*)['"]$/ do |url|
   visit url
 end
 
-When /^I request the children of page ['"](\w+)['"]$/ do |page|
+When /^I view a page$/ do
+  visit "/admin/pages/#{pages(:home).id}"
+end
+
+When /^I view a snippet$/ do
+  visit "/admin/snippets/#{snippets(:first).id}"
+end
+
+When /^I view a layout$/ do
+  visit "/admin/layouts/#{layouts(:main).id}"
+end
+
+When /^I view a user$/ do
+  visit "/admin/users/#{users(:admin).id}"
+end
+
+When /^I request the children of page "([^\"]*)"$/ do |page|
   parent_page = pages(page.intern)
   set_headers
   visit "/admin/pages/#{parent_page.id}/children", :get, {"level" => "0"}

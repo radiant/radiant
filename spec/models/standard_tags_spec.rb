@@ -81,9 +81,9 @@ describe "Standard Tags" do
 
     it 'should error with invalid "offset" attribute' do
       message = "`offset' attribute of `each' tag must be a positive number between 1 and 4 digits"
-      page.should render(%{offset="a"}).with_error(message)
-      page.should render(%{offset="-10"}).with_error(message)
-      page.should render(%{offset="50000"}).with_error(message)
+      page.should render(page_children_each_tags(%{offset="a"})).with_error(message)
+      page.should render(page_children_each_tags(%{offset="-10"})).with_error(message)
+      page.should render(page_children_each_tags(%{offset="50000"})).with_error(message)
     end
 
     it 'should error with invalid "by" attribute' do

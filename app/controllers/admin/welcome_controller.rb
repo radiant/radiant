@@ -37,7 +37,7 @@ class Admin::WelcomeController < ApplicationController
     end
     
     def announce_invalid_user
-      flash[:error] = 'Invalid username or password.'
+      flash.now[:error] = 'Invalid username or password.'
     end
     
 end

@@ -14,6 +14,45 @@ describe Admin::PagesController do
       :action => 'new').should == '/admin/pages/1/children/new'
   end
   
+  describe "show" do
+    it "should redirect to the edit action" do
+      get :show, :id => 1
+      response.should redirect_to(edit_admin_page_path(params[:id]))
+    end
+  end
+  
+  describe "with invalid page id" do
+    [:edit, :remove].each do |action|
+      before do
+        @parameters = {:id => 999}
+      end
+      it "should redirect the #{action} action to the index action" do
+        get action, @parameters
+        response.should redirect_to(admin_pages_path)
+      end
+      it "should say that the 'Page could not be found.' after the #{action} action" do
+        get action, @parameters
+        flash[:notice].should == 'Page could not be found.'
+      end
+    end
+    it 'should redirect the update action to the index action' do
+      put :update, @parameters
+      response.should redirect_to(admin_pages_path)
+    end
+    it "should say that the 'Page could not be found.' after the update action" do
+      put :update, @parameters
+      flash[:notice].should == 'Page could not be found.'
+    end
+    it 'should redirect the destroy action to the index action' do
+      delete :destroy, @parameters
+      response.should redirect_to(admin_pages_path)
+    end
+    it "should say that the 'Page could not be found.' after the destroy action" do
+      delete :destroy, @parameters
+      flash[:notice].should == 'Page could not be found.'
+    end
+  end
+  
   describe "viewing the sitemap" do
     integrate_views
 

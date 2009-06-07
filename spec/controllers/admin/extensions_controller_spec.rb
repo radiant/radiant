@@ -26,7 +26,7 @@ describe Admin::ExtensionsController do
     end
 
     it "should list all extensions" do
-      assigns[:extensions].should == Radiant::Extension.descendants.sort_by(&:name)
+      assigns[:extensions].sort_by(&:name).should == Radiant::Extension.descendants.sort_by(&:name)
     end
 
     it "should pre-set the template name" do

@@ -3,4 +3,8 @@ class Admin::LayoutsController < Admin::ResourceController
     :when => [:developer, :admin],
     :denied_url => { :controller => 'admin/pages', :action => 'index' },
     :denied_message => 'You must have developer privileges to perform this action.'
+    
+  def show
+    redirect_to edit_admin_layout_path(params[:id])
+  end
 end

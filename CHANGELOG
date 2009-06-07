@@ -3,6 +3,16 @@
 === Edge
 
 * Fix children:count for PostgreSQL [Jim Gay]
+* Update Cucumber and RSpec, clean up some features and fix specs. [Sean Cribbs]
+* Set the protected attributes for users in User.protected_attributes 
+[Jim Gay]
+* Don't allow a nil ETag in SiteController. [David Cato]
+* Prevent failed login message from sticking around. [Kunal Shah]
+* Fix failing test regarding extension order. [Brett McHargue]
+* Catch ActiveRecord::RecordNotFound in Admin::ResourceController
+[Jim Gay]
+* Catch missing template errors for show routes [Jim Gay]
+* Fix with_error in render_matcher not causing the spec to fail when no exception raised. [Jason Garber]
 
 === 0.8.0 RC1
 

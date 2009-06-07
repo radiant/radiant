@@ -37,7 +37,7 @@ class Admin::PreferencesController < ApplicationController
 
   def valid_params?
     hash = (params[:user] || {}).symbolize_keys
-    (hash.keys - [:password, :password_confirmation, :email]).size == 0
+    (hash.keys - User.protected_attributes).size == 0
   end
 
   def announce_bad_data

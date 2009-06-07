@@ -72,7 +72,8 @@ begin
       end
     end
     Cucumber::Rake::Task.new(:integration) do |t|
-      t.cucumber_opts = "--format progress #{RADIANT_ROOT}/features"
+      t.cucumber_opts = ["--format","progress"]
+      t.feature_pattern = "#{RADIANT_ROOT}/features/**/*.feature"
     end
   
     desc 'Run all specs in spec/generators directory'
