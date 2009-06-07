@@ -253,6 +253,15 @@ describe "Standard Tags" do
       page(:home).should render('<r:content part="extended" />').as("Just a test.")
     end
 
+    it "should prevent simple recursion" do
+      page(:recursive_parts).should render('<r:content />').with_error("Recursion error: already rendering the `body' part.")
+    end
+
+    it "should prevent deep recursion" do
+      page(:recursive_parts).should render('<r:content part="one"/>').with_error("Recursion error: already rendering the `one' part.")
+      page(:recursive_parts).should render('<r:content part="two"/>').with_error("Recursion error: already rendering the `two' part.")
+    end
+
     describe "with inherit attribute" do
       it "missing or set to 'false' should render the current page's part" do
         page.should render('<r:content part="sidebar" />').as('')

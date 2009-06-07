@@ -2,6 +2,8 @@
 
 === Edge
 
+* Prevent recursion via the <r:content /> tag. [Sean Cribbs]
+* Update Highline. [Sean Cribbs]
 * Update Cucumber and RSpec, clean up some features and fix specs. [Sean Cribbs]
 * Set the protected attributes for users in User.protected_attributes 
 [Jim Gay]
