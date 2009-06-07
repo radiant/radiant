@@ -49,7 +49,9 @@ module StandardTags
     Renders the total number of children.
   }
   tag 'children:count' do |tag|
-    tag.locals.children.count(children_find_options(tag))
+    options = children_find_options(tag)
+    options.delete(:order) # Order is irrelevant
+    tag.locals.children.count(options)
   end
 
   desc %{

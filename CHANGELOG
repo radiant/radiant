@@ -2,6 +2,8 @@
 
 === Edge
 
+* Remove :order option from <r:children:count />, which causes errors on
+postgresql. [Sean Cribbs]
 * Prevent recursion via the <r:content /> tag. [Sean Cribbs]
 * Update Highline. [Sean Cribbs]
 * Update Cucumber and RSpec, clean up some features and fix specs. [Sean Cribbs]
