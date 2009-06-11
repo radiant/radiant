@@ -9,14 +9,16 @@
 #
 # This is Free Software.  See LICENSE and COPYING for details.
 
-require "highline/system_extensions"
-require "highline/question"
-require "highline/menu"
-require "highline/color_scheme"
 require "erb"
 require "optparse"
 require "stringio"
 require "abbrev"
+require "highline/compatibility"
+require "highline/system_extensions"
+require "highline/question"
+require "highline/menu"
+require "highline/color_scheme"
+
 
 #
 # A HighLine object is a "high-level line oriented" shell over an input and an 
@@ -29,7 +31,7 @@ require "abbrev"
 #
 class HighLine
   # The version of the installed library.
-  VERSION = "1.2.6".freeze
+  VERSION = "1.5.1".freeze
   
   # An internal HighLine error.  User code does not need to trap this.
   class QuestionError < StandardError
@@ -47,6 +49,19 @@ class HighLine
   # Returns true if HighLine is currently using color escapes.
   def self.use_color?
     @@use_color
+  end
+  
+  # The setting used to disable EOF tracking.
+  @@track_eof = true
+  
+  # Pass +false+ to _setting_ to turn off HighLine's EOF tracking.
+  def self.track_eof=( setting )
+    @@track_eof = setting
+  end
+  
+  # Returns true if HighLine is currently tracking EOF for input.
+  def self.track_eof?
+    @@track_eof
   end
 
   # The setting used to control color schemes.
@@ -75,7 +90,9 @@ class HighLine
   # An alias for CLEAR.
   RESET      = CLEAR
   # Erase the current line of terminal output.
-  ERASE_LINE = "\e[K" 
+  ERASE_LINE = "\e[K"
+  # Erase the character under the cursor.
+  ERASE_CHAR = "\e[P"
   # The start of an ANSI bold sequence.
   BOLD       = "\e[1m"
   # The start of an ANSI dark sequence.  (Terminal support uncommon.)
@@ -158,7 +175,8 @@ class HighLine
   # A shortcut to HighLine.ask() a question that only accepts "yes" or "no"
   # answers ("y" and "n" are allowed) and returns +true+ or +false+
   # (+true+ for "yes").  If provided a +true+ value, _character_ will cause
-  # HighLine to fetch a single character response.
+  # HighLine to fetch a single character response. A block can be provided
+  # to further configure the question as in HighLine.ask()
   # 
   # Raises EOFError if input is exhausted.
   #
@@ -168,6 +186,8 @@ class HighLine
       q.responses[:not_valid]    = 'Please enter "yes" or "no".'
       q.responses[:ask_on_error] = :question
       q.character                = character
+      
+      yield q if block_given?
     end
   end
   
@@ -189,9 +209,11 @@ class HighLine
     @question ||= Question.new(question, answer_type, &details)
     
     return gather if @question.gather
-    
-    # readline() needs to handle it's own output
-    say(@question) unless @question.readline
+  
+    # readline() needs to handle it's own output, but readline only supports 
+    # full line reading.  Therefore if @question.echo is anything but true, 
+    # the prompt will not be issued. And we have to account for that now.
+    say(@question) unless (@question.readline and @question.echo == true)
     begin
       @answer = @question.answer_or_default(get_response)
       unless @question.valid_answer?(@answer)
@@ -227,15 +249,19 @@ class HighLine
       end
     rescue QuestionError
       retry
-    rescue ArgumentError
-      explain_error(:invalid_type)
+    rescue ArgumentError, NameError => error
+      raise if error.is_a?(NoMethodError)
+      if error.message =~ /ambiguous/
+        # the assumption here is that OptionParser::Completion#complete
+        # (used for ambiguity resolution) throws exceptions containing 
+        # the word 'ambiguous' whenever resolution fails
+        explain_error(:ambiguous_completion)
+      else
+        explain_error(:invalid_type)
+      end
       retry
     rescue Question::NoAutoCompleteMatch
       explain_error(:no_completion)
-      retry
-    rescue NameError
-      raise if $!.is_a?(NoMethodError)
-      explain_error(:ambiguous_completion)
       retry
     ensure
       @question = nil    # Reset Question object.
@@ -560,8 +586,9 @@ class HighLine
       @output  = old_output
       
       # prep auto-completion
-      completions              = @question.selection.abbrev
-      Readline.completion_proc = lambda { |string| completions[string] }
+      Readline.completion_proc = lambda do |string|
+        @question.selection.grep(/\A#{Regexp.escape(string)}/)
+      end
       
       # work-around ugly readline() warnings
       old_verbose = $VERBOSE
@@ -573,7 +600,8 @@ class HighLine
 
       answer
     else
-      raise EOFError, "The input stream is exhausted." if @input.eof?
+      raise EOFError, "The input stream is exhausted." if @@track_eof and
+                                                          @input.eof?
 
       @question.change_case(@question.remove_whitespace(@input.gets))
     end
@@ -597,30 +625,56 @@ class HighLine
       else
         raw_no_echo_mode if stty = CHARACTER_MODE == "stty"
         
-        line = ""
+        line            = ""
+        backspace_limit = 0
         begin
-          while character = (stty ? @input.getc : get_character(@input))
-            line << character.chr
+
+          while character = (stty ? @input.getbyte : get_character(@input))
+            # honor backspace and delete
+            if character == 127 or character == 8
+              line.slice!(-1, 1)
+              backspace_limit -= 1
+            else
+              line << character.chr
+              backspace_limit = line.size
+            end
             # looking for carriage return (decimal 13) or
             # newline (decimal 10) in raw input
             break if character == 13 or character == 10 or
                      (@question.limit and line.size == @question.limit)
-            @output.print(@question.echo) if @question.echo != false
-          end
-          if @question.overwrite
-            @output.print("\r#{ERASE_LINE}")
-            @output.flush
-          else
-            say("\n")
+            if @question.echo != false
+              if character == 127 or character == 8 
+                  # only backspace if we have characters on the line to
+                  # eliminate, otherwise we'll tromp over the prompt
+                  if backspace_limit >= 0 then
+                    @output.print("\b#{ERASE_CHAR}")
+                  else 
+                      # do nothing
+                  end
+              else
+                if @question.echo == true
+                  @output.print(character.chr)
+                else
+                  @output.print(@question.echo)
+                end
+              end
+              @output.flush
+            end
           end
         ensure
           restore_mode if stty
+        end
+        if @question.overwrite
+          @output.print("\r#{ERASE_LINE}")
+          @output.flush
+        else
+          say("\n")
         end
         
         @question.change_case(@question.remove_whitespace(line))
       end
     elsif @question.character == :getc
-      @question.change_case(@input.getc.chr)
+      @question.change_case(@input.getbyte.chr)
     else
       response = get_character(@input).chr
       if @question.overwrite
@@ -675,9 +729,9 @@ class HighLine
   # newlines will not be affected by this process, but additional newlines
   # may be added.
   #
-  def wrap( lines )
+  def wrap( text )
     wrapped = [ ]
-    lines.each do |line|
+    text.each_line do |line|
       while line =~ /([^\n]{#{@wrap_at + 1},})/
         search  = $1.dup
         replace = $1.dup

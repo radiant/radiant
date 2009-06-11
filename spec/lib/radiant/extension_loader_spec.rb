@@ -129,8 +129,8 @@ describe Radiant::ExtensionLoader do
     extensions = [BasicExtension, OverridingExtension]
     @instance.extensions = extensions
     @instance.view_paths.should == [
-       "#{RAILS_ROOT}/test/fixtures/extensions/02_overriding/app/views",
-       "#{RAILS_ROOT}/test/fixtures/extensions/01_basic/app/views"
+       "#{RADIANT_ROOT}/test/fixtures/extensions/02_overriding/app/views",
+       "#{RADIANT_ROOT}/test/fixtures/extensions/01_basic/app/views"
       ]
   end
   

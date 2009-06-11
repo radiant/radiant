@@ -43,7 +43,7 @@ spec = Gem::Specification.new do |spec|
                       delete_if { |item| item.include?("CVS") } +
                       ["Rakefile", "setup.rb"]
 
-  spec.test_suite_file  =  "test/ts_all.rb"
+  spec.test_files       =  "test/ts_all.rb"
   spec.has_rdoc         =  true
   spec.extra_rdoc_files =  %w{README INSTALL TODO CHANGELOG LICENSE}
   spec.rdoc_options     << '--title' << 'HighLine Documentation' <<

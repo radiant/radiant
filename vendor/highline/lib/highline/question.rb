@@ -69,8 +69,9 @@ class HighLine
     #
     # Can be set to +true+ to use HighLine's cross-platform character reader
     # instead of fetching an entire line of input.  (Note: HighLine's
-    # character reader *ONLY* supports STDIN on Windows and Unix.)  Can also 
-    # be set to <tt>:getc</tt> to use that method on the input stream.
+    # character reader *ONLY* supports STDIN on Windows and Unix and may not
+    # work correctly if STDIN is redirected.)  Can also be set to <tt>:getc</tt>
+    # to use that method on the input stream.
     #
     # *WARNING*:  The _echo_ and _overwrite_ attributes for a question are 
     # ignored when using the <tt>:getc</tt> method.  

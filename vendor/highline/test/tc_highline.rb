@@ -44,6 +44,14 @@ class TestHighLine < Test::Unit::TestCase
     assert_equal(true, @terminal.agree("Yes or no?  ", :getc))
   end
   
+  def test_agree_with_block
+    @input << "\n\n"
+    @input.rewind
+
+    assert_equal(true, @terminal.agree("Yes or no?  ") { |q| q.default = "y" })
+    assert_equal(false, @terminal.agree("Yes or no?  ") { |q| q.default = "n" })
+  end
+  
   def test_ask
     name = "James Edward Gray II"
     @input << name << "\n"
@@ -132,6 +140,27 @@ class TestHighLine < Test::Unit::TestCase
     assert_equal(2, answer)
     assert_equal("Select an option (1, 2 or 3):  *\n", @output.string)
   end
+
+  def test_backspace_does_not_enter_prompt
+      @input << "\b\b"
+      @input.rewind
+      answer = @terminal.ask("Please enter your password: ") do |q| 
+          q.echo = "*" 
+      end
+      assert_equal("", answer)
+      assert_equal("Please enter your password: \n",@output.string)
+  end
+  
+  def test_readline_on_non_echo_question_has_prompt
+    @input << "you can't see me"
+    @input.rewind
+    answer = @terminal.ask("Please enter some hidden text: ") do |q|
+      q.readline = true
+      q.echo = "*"
+    end
+    assert_equal("you can't see me", answer)
+    assert_equal("Please enter some hidden text: ****************\n",@output.string)
+  end
   
   def test_character_reading
     # WARNING:  This method does NOT cover Unix and Windows savvy testing!
@@ -143,7 +172,7 @@ class TestHighLine < Test::Unit::TestCase
     end
     assert_equal(1, answer)
   end
-  
+
   def test_color
     @terminal.say("This should be <%= BLUE %>blue<%= CLEAR %>!")
     assert_equal("This should be \e[34mblue\e[0m!\n", @output.string)
@@ -641,14 +670,14 @@ class TestHighLine < Test::Unit::TestCase
     assert_equal(animal, answer)
 
     @input.truncate(@input.rewind)
-    @input << "6/16/76\n"
+    @input << "16th June 1976\n"
     @input.rewind
 
     answer = @terminal.ask("Enter your birthday.", Date)
     assert_instance_of(Date, answer)
     assert_equal(16, answer.day)
     assert_equal(6, answer.month)
-    assert_equal(76, answer.year)
+    assert_equal(1976, answer.year)
 
     @input.truncate(@input.rewind)
     pattern = "^yes|no$"
@@ -769,6 +798,20 @@ class TestHighLine < Test::Unit::TestCase
 
     @terminal.say("-=" * 50)
     assert_equal(("-=" * 40 + "\n") + ("-=" * 10 + "\n"), @output.string)
+  end
+  
+  def test_track_eof
+    assert_raise(EOFError) { @terminal.ask("Any input left?  ") }
+    
+    # turn EOF tracking
+    old_setting = HighLine.track_eof?
+    assert_nothing_raised(Exception) { HighLine.track_eof = false }
+    begin
+      @terminal.ask("And now?  ")  # this will still blow up, nothing available
+    rescue
+      assert_not_equal(EOFError, $!.class)  # but HighLine's safe guards are off
+    end
+    HighLine.track_eof = old_setting
   end
   
   def test_version

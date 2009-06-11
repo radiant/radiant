@@ -51,6 +51,11 @@ class PagesDataset < Dataset::Base
       create_page_part "games"
       create_page "Guests"
     end
+    create_page "Recursive parts" do
+      create_page_part "recursive_body", :name => "body", :content => "<r:content />"
+      create_page_part "recursive_one", :name => "one", :content => '<r:content part="two" />'
+      create_page_part "recursive_two", :name => "two", :content => '<r:content part="one" />'
+    end
   end
   
 end

@@ -49,7 +49,9 @@ module StandardTags
     Renders the total number of children.
   }
   tag 'children:count' do |tag|
-    tag.locals.children.count(children_find_options(tag).merge(:order => nil))
+    options = children_find_options(tag)
+    options.delete(:order) # Order is irrelevant
+    tag.locals.children.count(options)
   end
 
   desc %{
@@ -347,6 +349,13 @@ module StandardTags
   tag 'content' do |tag|
     page = tag.locals.page
     part_name = tag_part_name(tag)
+    # Prevent simple and deep recursive rendering of the same page part
+    rendered_parts = (tag.locals.rendered_parts ||= Hash.new {|h,k| h[k] = []})
+    if rendered_parts[page.id].include?(part_name)
+      raise TagError.new(%{Recursion error: already rendering the `#{part_name}' part.})
+    else
+      rendered_parts[page.id] << part_name
+    end
     boolean_attr = proc do |attribute_name, default|
       attribute = (tag.attr[attribute_name] || default).to_s
       raise TagError.new(%{`#{attribute_name}' attribute of `content' tag must be set to either "true" or "false"}) unless attribute =~ /true|false/i
