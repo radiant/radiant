@@ -2,6 +2,7 @@
 
 === Edge
 
+* Update instance config/environments to remove ResponseCache [Jim Gay]
 * Remove :order option from <r:children:count />, which causes errors on
 postgresql. [Sean Cribbs]
 * Prevent recursion via the <r:content /> tag. [Sean Cribbs]

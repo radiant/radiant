@@ -100,23 +100,57 @@ unless File.directory? "#{RAILS_ROOT}/app"
       task :configs do
         require 'erb'
         FileUtils.cp("#{File.dirname(__FILE__)}/../generators/instance/templates/instance_boot.rb", RAILS_ROOT + '/config/boot.rb')
-        instance_env = "#{RAILS_ROOT}/config/environment.rb"
-        tmp_env = "#{RAILS_ROOT}/config/environment.tmp"
-        gen_env = "#{File.dirname(__FILE__)}/../generators/instance/templates/instance_environment.rb"
-        backup_env = "#{RAILS_ROOT}/config/environment.bak"
-        File.open(tmp_env, 'w') do |f|
-          app_name = File.basename(File.expand_path(RAILS_ROOT))
-          f.write ERB.new(File.read(gen_env)).result(binding)
+        instances = {
+          :env          => "#{RAILS_ROOT}/config/environment.rb",
+          :development  => "#{RAILS_ROOT}/config/environments/development.rb",
+          :test         => "#{RAILS_ROOT}/config/environments/test.rb",
+          :production   => "#{RAILS_ROOT}/config/environments/production.rb"
+        }
+        tmps = {
+          :env          => "#{RAILS_ROOT}/config/environment.tmp",
+          :development  => "#{RAILS_ROOT}/config/environments/development.tmp",
+          :test         => "#{RAILS_ROOT}/config/environments/test.tmp",
+          :production   => "#{RAILS_ROOT}/config/environments/production.tmp"
+        }
+        gens = {
+          :env          => "#{File.dirname(__FILE__)}/../generators/instance/templates/instance_environment.rb",
+          :development  => "#{File.dirname(__FILE__)}/../../config/environments/development.rb",
+          :test         => "#{File.dirname(__FILE__)}/../../config/environments/test.rb",
+          :production   => "#{File.dirname(__FILE__)}/../../config/environments/production.rb"
+        }
+        backups = {
+          :env          => "#{RAILS_ROOT}/config/environment.bak",
+          :development  => "#{RAILS_ROOT}/config/environments/development.bak",
+          :test         => "#{RAILS_ROOT}/config/environments/test.bak",
+          :production   => "#{RAILS_ROOT}/config/environments/production.bak"
+        }
+        @warning_start = "** WARNING **
+The following files have been changed in Radiant 0.8.0. Your originals
+have been backed up with .bak extensions. Please copy your customizations
+to the new files:"
+        [:env, :development, :test, :production].each do |env_type|
+          File.open(tmps[env_type], 'w') do |f|
+            app_name = File.basename(File.expand_path(RAILS_ROOT))
+            f.write ERB.new(File.read(gens[env_type])).result(binding)
+          end
+          unless FileUtils.compare_file(instances[env_type], tmps[env_type])
+            FileUtils.cp(instances[env_type], backups[env_type])
+            FileUtils.cp(tmps[env_type], instances[env_type])
+            @warnings ||= ""
+            case env_type
+            when :env
+              @warnings << "
+- config/environment.rb"
+            else
+              @warnings << "
+- config/environments/#{env_type.to_s}.rb"
+            end
+          end
+          FileUtils.rm(tmps[env_type])
         end
-        unless FileUtils.compare_file(instance_env, tmp_env)
-          FileUtils.cp(instance_env, backup_env)
-          FileUtils.cp(tmp_env, instance_env)
-          puts "** WARNING **
-config/environment.rb was changed in Radiant 0.6.5. Your original has been
-backed up to config/environment.bak and replaced with the packaged version.
-Please copy your customizations to the new file."
+        if @warnings
+          puts @warning_start + @warnings
         end
-        FileUtils.rm(tmp_env)
       end
 
       desc "Update admin images from your current radiant install"
