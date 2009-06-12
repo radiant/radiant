@@ -1,30 +1,26 @@
-%h1 Snippets
-
-- render_region :top do |top|
-  - top.help_text do
-    %p Snippets are generally small pieces of content which are included in other pages or layouts.
-
-%table#snippets.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0"}
-  %thead
-    %tr
-      - render_region :thead do |thead|
-        - thead.title_header do
-          %th.snippet Snippet
-        - thead.modify_header do
-          %th.modify Modify
-  %tbody
-    - @snippets.each do |snippet|
-      %tr.node.level-1
-        - render_region :tbody do |tbody|
-          - tbody.title_cell do
-            %td.snippet
-              = image('snippet', :alt => 'snippet-icon')
-              %span= link_to snippet.name, edit_admin_snippet_url(snippet)
-          - tbody.modify_cell do
-            %td.remove
-              = link_to image('remove', :alt => 'Remove Snippet'), remove_admin_snippet_url(snippet)
-
-- render_region :bottom do |bottom|
-  - bottom.new_button do
-    %p
-      = link_to image('new-snippet', :alt => 'New Snippet'), new_admin_snippet_url
+.outset
+  - render_region :top
+  %table#snippets.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0"}
+    %thead
+      %tr
+        - render_region :thead do |thead|
+          - thead.title_header do
+            %th.snippet Snippet
+          - thead.modify_header do
+            %th.modify Modify
+    %tbody
+      - @snippets.each do |snippet|
+        %tr.node.level-1
+          - render_region :tbody do |tbody|
+            - tbody.title_cell do
+              %td.snippet
+                = image('snippet', :alt => 'snippet-icon')
+                %span= link_to snippet.name, edit_admin_snippet_url(snippet)
+            - tbody.modify_cell do
+              %td.remove
+                = link_to image('remove', :alt => 'Remove Snippet'), remove_admin_snippet_url(snippet)
+  - render_region :bottom do |bottom|
+    - bottom.new_button do
+      #actions
+        %ul
+          %li= link_to "New Snippet", new_admin_snippet_url
