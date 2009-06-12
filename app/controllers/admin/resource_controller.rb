@@ -69,19 +69,6 @@ class Admin::ResourceController < ApplicationController
     response_for :destroy
   end
 
-  def template_name
-    case self.action_name
-    when 'index'
-      'index'
-    when 'new','create'
-      'new'
-    when 'edit', 'update'
-      'edit'
-    when 'remove', 'destroy'
-      'remove'
-    end
-  end
-
   protected
 
     def rescue_action(exception)

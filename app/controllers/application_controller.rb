@@ -28,6 +28,19 @@ class ApplicationController < ActionController::Base
   def include_javascript(script)
     @javascripts << script
   end
+
+  def template_name
+    case self.action_name
+    when 'index'
+      'index'
+    when 'new','create'
+      'new'
+    when 'edit', 'update'
+      'edit'
+    when 'remove', 'destroy'
+      'remove'
+    end
+  end
   
   def rescue_action_in_public(exception)
     case exception

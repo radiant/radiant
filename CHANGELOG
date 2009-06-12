@@ -2,6 +2,7 @@
 
 === Edge
 
+* Moved template_name to ApplicationController [Jim Gay, Michael Kessler]
 * Remove vizres plugin. [Sean Cribbs]
 * Update instance config/environments to remove ResponseCache [Jim Gay]
 * Remove :order option from <r:children:count />, which causes errors on
