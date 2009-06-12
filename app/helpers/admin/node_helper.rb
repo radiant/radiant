@@ -61,7 +61,7 @@ module Admin::NodeHelper
   end
 
   def icon
-    icon_name = @current_node.virtual? ? 'virtual-page' : 'page'
+    icon_name = @current_node.virtual? ? 'virtual_page' : 'page'
     image(icon_name, :class => "icon", :alt => 'page-icon', :title => '')
   end
 
