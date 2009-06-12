@@ -48,6 +48,6 @@ class ApplicationController < ActionController::Base
       @stylesheets ||= []
       @stylesheets.concat %w(admin/main)
       @javascripts ||= []
-      @javascripts.concat %w(prototype string effects admin/tabcontrol admin/ruledtable admin/admin)
+      @javascripts.concat %w(admin/prototype admin/string admin/effects admin/tabcontrol admin/ruledtable admin/application)
     end
 end
