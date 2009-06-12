@@ -1,133 +1,114 @@
+var TabControlBehavior = Behavior.create({
+  initialize: function() {
+    new TabControl(this.element);
+  }
+});
+
 var TabControl = Class.create({
-  /*
-    Initializes a tab control. The variable +element_id+ must be the id of an HTML element
-    containing one element with it's class name set to 'tabs' and another element with it's
-    class name set to 'pages'.
-  */
   initialize: function(element) {
     this.element = $(element);
-    this.control_id = this.element.identify();
-    TabControl.controls.set(this.control_id, this);
-    this.tab_container = this.element.down('.tabs');
-    this.tabs = $H();
+    TabControls[this.element.identify()] = this;
+    this.tabs = $A();
+    this.tabContainer = this.element.down('.tabs');
+    this.tabContainer.observe('click', this.ontabclick.bind(this));
+    this.updateTabs();
+    this.autoSelect();
   },
   
-  /*
-    Creates a new tab. The variable +tab_id+ is a unique string used to identify the tab
-    when calling other methods. The variable +caption+ is a string containing the caption
-    of the tab. The variable +page+ is the ID of an HTML element, or the HTML element
-    itself. When a tab is initially added the page element is hidden.
-  */
-  addTab: function(tab_id, caption, page) {
-    var tab = new TabControl.Tab(this, tab_id, caption, page);
-    
-    this.tabs.set(tab.id, tab);
-    return this.tab_container.appendChild(tab.createElement());
+  updateTabs: function() {
+    this.element.select('.page').each(function(page) {
+      if (!this.findTabByPage(page)) this.addTab(page);
+    }.bind(this));
   },
   
-  /*
-    Removes +tab+. The variable +tab+ may be either a tab ID or a tab element.
-  */
-  removeTab: function(tab) {
-    if (Object.isString(tab)) tab = this.tabs.get(tab);
-    idInput = tab.content.down('.id_input');
-    deleteInput = tab.content.down('.delete_input');
+  addTab: function(page) {
+    var tab = new TabControl.Tab(page);
+    this.tabs.push(tab);
+    this.tabContainer.insert({bottom: tab});
+    page.hide();
+  },
+  
+  removeSelected: function() {
+    var tab = this.selected;
+    var index = this.tabs.indexOf(tab);
+    var newSelectedTab = this.tabs[index-1];
     tab.remove();
-    this.tabs.unset(tab);
-    
-    if (this.selected == tab) {
-      var first = this.firstTab();
-      if (first) this.select(first);
-      else this.selected = null;
-    }
-
-    deleteInput.setValue('true');
-		this.tab_container.appendChild(idInput);
-		this.tab_container.appendChild(deleteInput);
+    this.tabs = this.tabs.without(tab);
+    this.select(newSelectedTab || this.tabs.first());
   },
-
-  /*
-    Selects +tab+ updating the control. The variable +tab+ may be either a tab ID or a
-    tab element.
-  */
+  
   select: function(tab) {
-    if (Object.isString(tab)) tab = this.tabs.get(tab);
     if (this.selected) this.selected.unselect();
-    tab.select();
     this.selected = tab;
-    var persist = this.pageId() + ':' + this.selected.id;
-    document.cookie = "current_tab=" + persist + "; path=/admin";
-  },
-
-  /*
-    Returns the first tab element that was added using #addTab().
-  */
-  firstTab: function() {
-    return this.tabs.get(this.tabs.keys().first());
+    tab.select();
+    cookie = Cookie.set('current_tab', tab.caption, 24, '/admin');
   },
   
-  /*
-    Returns the the last tab element that was added using #addTab().
-  */
-  lastTab: function() {
-    return this.tabs.get(this.tabs.keys().last());
-  },
-  
-  /*
-    Returns the total number of tab elements managed by the control.
-  */
-  tabCount: function() {
-    return this.tabs.keys().length;
-  },
-
   autoSelect: function() {
-    if (!this.tabs.any()) return; // no tabs in control
-    
-    var tab, matches = document.cookie.match(/current_tab=(.+?);/);
-    if (matches) {
-      matches = matches[1].split(':');
-      var page = matches[0], tabId = matches[1];
-      if (!page || page == this.pageId()) tab = this.tabs.get(tabId);
-    }
-    this.select(tab || this.firstTab());
+    if (!this.tabs.any()) return;
+    var caption = Cookie.get('current_tab');
+    var tab = this.findTabByCaption(caption);
+    this.select(tab || this.tabs.first());
   },
-
-  pageId: function() {
-    return /(\d+)/.test(window.location.pathname) ? RegExp.$1 : '';
+  
+  ontabclick: function(event) {
+    var e = event.findElement('.tab');
+    if (e) {
+      var tab = this.findTabByElement(e);
+      if (tab) {
+        if(event.target.hasClassName('close')) {
+          if(confirm('Remove the "' + tab.caption + '" part?')){
+            var lastSelected = this.selected;
+            this.select(tab);
+            this.removeSelected();
+            if(lastSelected != tab)
+              this.select(lastSelected);
+          }
+        } else
+          this.select(tab);
+        event.stop();
+      }
+    }
+  },
+  
+  findTabByCaption: function(caption) {
+    return this.tabs.detect(function(tab) { return tab.caption == caption });
+  },
+  
+  findTabByPage: function(page) {
+    return this.tabs.detect(function(tab) { return tab.page == page });
+  },
+  
+  findTabByElement: function(element) {
+    return this.tabs.detect(function(tab) { return tab.element == element });
   }
 });
-
-TabControl.controls = $H();
 
 TabControl.Tab = Class.create({
-  initialize: function(control, id, label, content) {
-    this.content = $(content).hide();
-    this.label   = label || id;
-    this.id      = id;
-    this.control = control;
+  initialize: function(page) {
+    this.page = page;
+    this.caption = page.readAttribute('caption');
   },
-
-  createElement: function() {
-    return this.element = new Element('a', { className: 'tab', href: '#' }).
-      update("<span>" + this.label + "</span>").
-      observe('click', function(event){
-        this.control.select(this.id);
-        event.stop();
-      }.bindAsEventListener(this));
-  },
-
+  
   select: function() {
-    this.content.show();
+    this.page.show();
     this.element.addClassName('here');
   },
-
+  
   unselect: function() {
-    this.content.hide();
+    this.page.hide();
     this.element.removeClassName('here');
   },
-
+  
   remove: function() {
-    this.content.remove();
-    this.element.stopObserving('click').remove();
+    this.page.remove();
+    this.element.remove();
+  },
+  
+  toElement: function() {
+    this.element = $a({'class': 'tab', 'href': '#'}, $span(this.caption), $img({'src': '/images/admin/tab_close.png', 'class': 'close', 'alt': 'Remove part', 'title': 'Remove part'}));
+    return this.element;
   }
 });
+
+var TabControls = {};
