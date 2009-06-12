@@ -100,14 +100,12 @@ module ApplicationHelper
       login = updated_by ? updated_by.login : nil
       time = (model.updated_at || model.created_at)
       if login or time
-        html = %{<p style="clear: left"><small>Last updated } 
+        html = %{<p class="updated_line">Last updated } 
         html << %{by #{login} } if login
-        html << %{at #{ timestamp(time) }} if time
-        html << %{</small></p>}
+        html << %{at #{timestamp(time)}} if time
+        html << %{</p>}
         html
       end
-    else
-      %{<p class="clear">&nbsp;</p>}
     end
   end
 
