@@ -22,5 +22,6 @@
   = render_region :bottom
 
 - unless @homepage
-  %p
-    = link_to image('new-homepage', :alt => 'New Homepage'), new_admin_page_url
+  #actions
+    %ul
+      %li= link_to "New Homepage", new_admin_page_path
