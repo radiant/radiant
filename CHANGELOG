@@ -2,6 +2,7 @@
 
 === Edge
 
+* Load Metal from Extensions [Jim Gay]
 * Moved template_name to ApplicationController [Jim Gay, Michael Kessler]
 * Remove vizres plugin. [Sean Cribbs]
 * Update instance config/environments to remove ResponseCache [Jim Gay]
