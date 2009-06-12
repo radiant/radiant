@@ -13,14 +13,32 @@
       = javascript_tag @content_for_page_scripts
     - if @content_for_page_css
       %style{:type => "text/css"}= @content_for_page_css
-  %body
+    = yield :meta
+  %body{:class=>body_classes.join(" ")}
     #page
       #header
-        #site-title= link_to_unless_current title, admin_url
-        #site-subtitle= subtitle
+        / - if logged_in?
+        /   #navigation= links_for_navigation
         - if logged_in?
-          #navigation= links_for_navigation
-      %hr{:class=>"hidden"}/
+          #site_links
+            = %{Logged in as #{link_to h(current_user.name), edit_admin_preferences_path} &nbsp; (#{link_to "Logout", logout_path})}
+            &nbsp;
+            %a{:href=>"#view_site_popup", :id=>"view_site", :onclick=>"return false"} View Site
+          %ul#navigation
+            - @selected = :pages
+            - nav_tabs.each do |primary_item|
+              %li{:class=>(primary_item[@selected] ? 'current' : nil)}
+                %a{:href=>(primary_item.first.url unless primary_item.first.nil?)}
+                  = primary_item.proper_name
+                - if primary_item[@selected]
+                  %ul#nav_sub
+                    - primary_item.each do |sub_item|
+                      %li
+                        %a{:href=>sub_item.url, :class=>(sub_item.name == @selected ? 'current' : nil)}>
+                          %span
+                            = sub_item.proper_name
+          #header_bottom
+            %div
       #main
         - if flash[:notice]
           #notice
@@ -30,25 +48,6 @@
             %p= flash[:error]
         #content
           = find_and_preserve(yield)
-      %hr{:class=>"hidden"}/
-      #footer
-        %p 
-          This site was made with Ruby and is powered by 
-          %a{:href=>"http://radiantcms.org"} Radiant CMS
-          version 
-          = Radiant.loaded_via_gem? ? "#{Radiant::Version} (gem)." : "#{Radiant::Version}."
-        %p#site-links
-          - if logged_in?
-            - if admin?
-              = nav_link_to 'Users', admin_users_path
-              %span.separator=" | "
-              = nav_link_to 'Extensions', admin_extensions_path
-            - else
-              = nav_link_to 'Preferences', admin_preferences_url
-            %span.separator=" | "
-            = nav_link_to 'Log Out', logout_url
-            %span.separator=" | "
-            = link_to image('view-site.gif', :alt => "View Site", :title => ''), root_url
       - if @content_for_popups
         #popups
           = yield :popups
