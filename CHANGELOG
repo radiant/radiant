@@ -2,6 +2,7 @@
 
 === Edge
 
+* Prevent stty errors on JRuby while running bootstrap. [Sean Cribbs]
 * Moved template_name to ApplicationController [Jim Gay, Michael Kessler]
 * Remove vizres plugin. [Sean Cribbs]
 * Update instance config/environments to remove ResponseCache [Jim Gay]
