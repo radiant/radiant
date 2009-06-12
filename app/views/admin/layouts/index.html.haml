@@ -1,34 +1,28 @@
-%h1 Layouts
-- render_region :top do |top|
-  - top.help_text do
-    %p
-      Use layouts to apply a visual look to a  Web page. Layouts can contain special tags to include
-      page content and other elements such as the header or footer. Click on a layout name below to
-      edit it or click <code>Remove</code> to delete it.
-
-%table#layouts.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0" }
-  %thead
-    %tr
-      - render_region :thead do |thead|
-        - thead.title_header do
-          %th.layout
-            Layout
-        - thead.modify_header do
-          %th.modify
-            Modify
-  %tbody
-    - @layouts.each do |layout|
-      %tr.node.level-1
-        - render_region :tbody do |tbody|
-          - tbody.title_cell do
-            %td.layout
-              = image('layout', :alt => 'layout-icon')
-              = link_to layout.name, edit_admin_layout_url(layout)
-          - tbody.modify_cell do
-            %td.remove
-              = link_to image('remove', :alt => 'Remove Layout'), remove_admin_layout_url(layout)
-
-- render_region :bottom do |bottom|
-  - bottom.new_button do
-    %p
-      = link_to image('new-layout', :alt => "New Layout"), new_admin_layout_url
+.outset
+  - render_region :top
+  %table#layouts.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0" }
+    %thead
+      %tr
+        - render_region :thead do |thead|
+          - thead.title_header do
+            %th.layout
+              Layout
+          - thead.modify_header do
+            %th.modify
+              Modify
+    %tbody
+      - @layouts.each do |layout|
+        %tr.node.level-1
+          - render_region :tbody do |tbody|
+            - tbody.title_cell do
+              %td.layout
+                = image('layout', :alt => 'layout-icon')
+                = link_to layout.name, edit_admin_layout_url(layout)
+            - tbody.modify_cell do
+              %td.remove
+                = link_to image('remove', :alt => 'Remove Layout'), remove_admin_layout_url(layout)
+  - render_region :bottom do |bottom|
+    - bottom.new_button do
+      #actions
+        %ul
+          %li= link_to "New Layout", new_admin_layout_url
