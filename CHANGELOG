@@ -2,6 +2,7 @@
 
 === Edge
 
+* Warn about using the RedCloth 3 fallback. [Sean Cribbs, Jason Garber]
 * Prevent stty errors on JRuby while running bootstrap. [Sean Cribbs]
 * Moved template_name to ApplicationController [Jim Gay, Michael Kessler]
 * Remove vizres plugin. [Sean Cribbs]
