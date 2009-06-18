@@ -1,5 +1,8 @@
 == Change Log
 
+=== Edge
+* Set template_name for all resourceful action types [Josh French]
+
 === 0.8.0 Asterism
 
 * Warn about using the RedCloth 3 fallback. [Sean Cribbs, Jason Garber]

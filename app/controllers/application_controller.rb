@@ -35,6 +35,8 @@ class ApplicationController < ActionController::Base
       'index'
     when 'new','create'
       'new'
+    when 'show'
+      'show'
     when 'edit', 'update'
       'edit'
     when 'remove', 'destroy'
