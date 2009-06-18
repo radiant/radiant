@@ -12,12 +12,10 @@ module Radiant
     attr_accessor :extension_paths
     attr_writer :extensions
     attr_accessor :view_paths
-    attr_accessor :extension_dependencies
 
     def initialize
       self.view_paths = []
       self.extension_paths = default_extension_paths
-      self.extension_dependencies = []
       super
     end
 
@@ -42,31 +40,6 @@ module Radiant
     
     def admin
       AdminUI.instance
-    end
-
-    def extension(ext)
-      @extension_dependencies << ext unless @extension_dependencies.include?(ext)
-    end
-
-    def check_extension_dependencies
-      unloaded_extensions = []
-      @extension_dependencies.each do |ext|
-        extension = ext.camelcase + 'Extension'
-        begin
-          extension_class = extension.constantize
-          unloaded_extensions << extension unless defined?(extension_class) && (extension_class.active?)
-        rescue NameError
-          unloaded_extensions << extension
-        end
-      end
-      if unloaded_extensions.any?
-        abort <<-end_error
-Missing these required extensions:
-#{unloaded_extensions}
-end_error
-      else
-        return true
-      end
     end
 
     private
@@ -157,15 +130,11 @@ end_error
     def load_plugins
       super
       extension_loader.load_extensions
-      add_gem_load_paths
-      load_gems
-      check_gem_dependencies
     end
 
     def after_initialize
       super
       extension_loader.activate_extensions
-      configuration.check_extension_dependencies
     end
 
     def initialize_default_admin_tabs

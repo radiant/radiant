@@ -94,4 +94,5 @@ describe Admin::WelcomeController do
       response.should redirect_to(login_url)
     end
   end
+
 end

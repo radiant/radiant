@@ -47,29 +47,6 @@ describe Radiant::Configuration do
   it "should have access to the AdminUI" do
     @configuration.admin.should == Radiant::AdminUI.instance
   end
-
-  it "should initialize extension dependencies" do
-    @configuration.extension_dependencies.should eql([])
-  end
-
-  it "should add extension dependencies" do
-    @configuration.extension('basic')
-    @configuration.extension_dependencies.should eql(['basic'])
-  end
-
-  it "should validate dependencies" do
-    @configuration.extensions = [BasicExtension]
-    @configuration.extension('basic')
-    @configuration.check_extension_dependencies.should be_true
-  end
-
-  it "should report missing dependencies" do
-    @configuration.extensions = [BasicExtension]
-    @configuration.extension('does_not_exist')
-    lambda {
-      @configuration.check_extension_dependencies
-    }.should raise_error(SystemExit)
-  end
 end
 
 describe Radiant::Initializer do
@@ -117,10 +94,4 @@ describe Radiant::Initializer do
   it "should have access to the AdminUI" do
     @initializer.admin.should == Radiant::AdminUI.instance
   end
-
-  it "should check dependent extensions" do
-    @initializer.configuration.should_receive(:check_extension_dependencies)
-    @initializer.after_initialize
-  end
-
 end
