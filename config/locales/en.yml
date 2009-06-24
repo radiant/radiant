@@ -1,5 +1,4 @@
 en: 
-<<<<<<< HEAD:config/locales/en.yml
   # The display name of this language file
   this_file_language: "English" 
   
@@ -7,12 +6,6 @@ en:
   resource_controller:
     saved: "{{humanized_model_name}} saved below."
     validation_errors: "Validation errors occurred while processing this form. Please take a moment to review the form and correct any input errors before continuing."
-=======
-  # Controllers
-  resource_controller:
-    saved: "{{humanized_model_name}} saved below."
-    validation_errors: "DE Validation errors occurred while processing this form. Please take a moment to review the form and correct any input errors before continuing."
->>>>>>> 2d622910610dcf4880f719dbb297a5f5fd215d14:config/locales/en.yml
     removed: "{{humanized_model_name}} has been deleted."  
     update_conflict: "{{humanized_model_name}} has been modified since it was last loaded. Changes cannot be saved without potentially losing data." 
   pages_controller:
@@ -26,7 +19,6 @@ en:
     cannot_delete_self: 'You cannot delete yourself.'    
   welcome_controller:
     logged_out: 'You are now logged out.'  
-<<<<<<< HEAD:config/locales/en.yml
     invalid_user: 'Invalid username or password.' 
     
   # Models
@@ -341,12 +333,6 @@ en:
     textile:
       desc: "Filters its contents with the Textile filter."
 
-=======
-    invalid_user: 'Invalid username or password.'   
-    
-    
-    
->>>>>>> 2d622910610dcf4880f719dbb297a5f5fd215d14:config/locales/en.yml
   date:
     formats:
       default: "%Y-%m-%d"
@@ -356,11 +342,7 @@ en:
 
     day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
     abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
-<<<<<<< HEAD:config/locales/en.yml
     month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]   
-=======
-    month_names: [~, Januar, Februar, März, April, Mai, Juni, Juli, August, September, Oktober, November, Dezember]   
->>>>>>> 2d622910610dcf4880f719dbb297a5f5fd215d14:config/locales/en.yml
     abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
     order: [ :year, :month, :day ]
   

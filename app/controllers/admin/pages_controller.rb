@@ -41,13 +41,8 @@ class Admin::PagesController < Admin::ResourceController
       flash[:notice] = message || t("pages_controller.saved") 
     end
 
-<<<<<<< HEAD:app/controllers/admin/pages_controller.rb
-    def announce_removed
-      flash[:notice] = if @count > 0
-=======
     def announce_pages_removed(count)
       flash[:notice] = if count > 1
->>>>>>> 2d622910610dcf4880f719dbb297a5f5fd215d14:app/controllers/admin/pages_controller.rb
         t("pages_controller.removed_many") 
       else
         t("pages_controller.removed_one")
