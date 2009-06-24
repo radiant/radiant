@@ -1,10 +1,8 @@
-%h1 Layouts
+%h1= t('views.layouts.layouts') 
 - render_region :top do |top|
   - top.help_text do
     %p
-      Use layouts to apply a visual look to a  Web page. Layouts can contain special tags to include
-      page content and other elements such as the header or footer. Click on a layout name below to
-      edit it or click <code>Remove</code> to delete it.
+      = t('views.layouts.description')
 
 %table#layouts.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0" }
   %thead
@@ -12,10 +10,10 @@
       - render_region :thead do |thead|
         - thead.title_header do
           %th.layout
-            Layout
+            = t('views.layouts.layout')
         - thead.modify_header do
           %th.modify
-            Modify
+            = t('views.shared.modify')
   %tbody
     - @layouts.each do |layout|
       %tr.node.level-1

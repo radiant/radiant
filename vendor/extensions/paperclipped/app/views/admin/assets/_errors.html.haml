@@ -1,0 +1,5 @@
+- if @asset.errors && !@asset.errors.empty?
+  %p#asset_errors
+    %strong
+      Sorry.
+      = @asset.errors.full_messages.to_sentence

@@ -33,22 +33,22 @@
       %hr{:class=>"hidden"}/
       #footer
         %p 
-          This site was made with Ruby and is powered by 
+          = t('views.layout.made_with_ruby')
           %a{:href=>"http://radiantcms.org"} Radiant CMS
-          version 
+          = t('views.layout.version')   
           = Radiant.loaded_via_gem? ? "#{Radiant::Version} (gem)." : "#{Radiant::Version}."
         %p#site-links
           - if logged_in?
             - if admin?
-              = nav_link_to 'Users', admin_users_path
+              = nav_link_to t('views.layout.users'), admin_users_path
               %span.separator=" | "
-              = nav_link_to 'Extensions', admin_extensions_path
+              = nav_link_to t('views.layout.extensions'), admin_extensions_path
             - else
-              = nav_link_to 'Preferences', admin_preferences_url
+              = nav_link_to t('views.layout.preferences'), admin_preferences_url
             %span.separator=" | "
-            = nav_link_to 'Log Out', logout_url
+            = nav_link_to t('views.layout.log_out'), logout_url
             %span.separator=" | "
-            = link_to image('view-site.gif', :alt => "View Site", :title => ''), root_url
+            = link_to image('view-site.gif', :alt => t('views.layout.view_site'), :title => ''), root_url
       - if @content_for_popups
         #popups
           = yield :popups

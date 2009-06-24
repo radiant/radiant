@@ -1,0 +1,113 @@
+ja: 
+  # Controllers
+  resource_controller:
+    saved: "{{humanized_model_name}}をセーブしました。"
+    validation_errors: "DE Validation errors occurred while processing this form. Please take a moment to review the form and correct any input errors before continuing."
+    removed: "{{humanized_model_name}}を削除しました。."  
+    update_conflict: "ロードした時と比べて、{{humanized_model_name}}に変更があります。セーブしたら、ほかに変更を失う可能性があります。" 
+  pages_controller:
+    saved: "ページをセーブしました。"  
+    removed_many: "ページはサイトから削除しました。"   
+    removed_one: "ページはサイトから削除しました。"  
+  preferences_contoller:
+    updated: '設定変更に終了しました。' 
+    error_updating: '設定変更にエーラーが発生しました。'      
+  users_controller:
+    cannot_delete_self: '自分を削除できません。'    
+  welcome_controller:
+    logged_out: 'ログアウトしました。'  
+    invalid_user: 'ログインもしくはパスワードが異なりますん。'   
+    
+  tabs:
+    pages: 'ページ'  
+    snippets: 'スニペッツ'
+    layouts: 'レイアウト'
+  
+  buttons:
+    save_changes: 'セーブ'
+    save_and_continue: 'セーブして続く'
+  
+  select:
+    none: 'なし'
+    normal: '普通'
+  
+  views:
+    extensions:
+      extension: 'エクステンション'
+      extensions: 'エクステンション'
+      version: 'バージョン'
+      website: 'ウェブサイト'
+    layout:
+      users: 'ユーザー'
+      extensions: 'エクステンション'
+      log_out: 'ログアウト'
+      made_with_ruby: 'Rubyで製作'
+      version: 'バージョン'
+    layouts:
+      layout: 'レイアウト'
+      layouts: 'レイアウト'
+    pages:
+      pages: 'ページ'
+      page_title: 'タイトル'
+      page_type: 'タイプ'
+      edit_page: 'ページ編集'
+      status: 'ステータス'
+    page_parts:
+      available_tags: '使用可能タッグ'
+      reference: 'ヘルプ'
+    shared:
+      less: 'less'
+      modify: '変更'
+      more: '拡大'
+      filter: 'フィルター'
+      or: 'それとも'
+      cancel: '取り消す'
+    snippets:
+      snippet: 'スニペッツ'
+      snippets: 'スニペッツ'
+    users:
+      users: 'ユーザー'
+      name: '名前'
+      login: 'ログイン'
+      username: 'ログイン'
+      password: 'パスワード'
+      roles: '役目'
+    welcome:
+      login: 'ログイン'
+      login_btn: 'ログイン'
+      remember_me: '次回から自動的にログイン'
+ 
+  status:
+    draft: '下書き'
+    reviewed: '編集中'
+    published: '出版'
+    hidden: '隠し'
+    
+  date:
+    formats:
+      default: "%Y年%m月%d日"
+      short: "%e %b"
+      long: "%B %e, %Y"
+      only_day: "%e"
+ 
+    day_names: [日曜, 月曜, 火曜, 水曜, 木曜, 金曜, 土曜]
+    abbr_day_names: [日, 月, 火, 水, 木, 金, 土]
+    month_names: [~, 一月, 二月, 三月, 四月, 五月, 六月, 七月, 八月, 九月, 十月, 十一月, 十二月]   
+    abbr_month_names: [~, 一月, 二月, 三月, 四月, 五月, 六月, 七月, 八月, 九月, 十月, 十一月, 十二月]
+    order: [ :year, :month, :day ]
+  
+  time:
+    formats:
+      default: "%a %b %d %H:%M:%S %Z %Y"   
+      timestamp: "%H:%M <small>%p</small>、 %Y年%m月%d日" 
+      time: "%H:%M"
+      short: "%d %b %H:%M"
+      long: "%B %d, %Y %H:%M"
+      only_second: "%S"
+      
+      datetime:
+        formats:
+          default: "%Y-%m-%dT%H:%M:%S%Z"
+          
+    am: '午前'
+    pm: '午後'

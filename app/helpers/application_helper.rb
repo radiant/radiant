@@ -25,14 +25,14 @@ module ApplicationHelper
   
   def save_model_button(model, options = {})
     options[:label] ||= model.new_record? ?
-      "Create #{model.class.name}" : "Save Changes"
+      t('buttons.create', :name => model.class.name) : t('buttons.save_changes')
     options[:class] ||= "button"
 
     submit_tag options.delete(:label), options
   end
   
   def save_model_and_continue_editing_button(model)
-    submit_tag 'Save and Continue Editing', :name => 'continue', :class => 'button'
+    submit_tag t('buttons.save_and_continue'), :name => 'continue', :class => 'button'
   end
   
   # Redefine pluralize() so that it doesn't put the count at the beginning of
@@ -50,7 +50,7 @@ module ApplicationHelper
   def links_for_navigation
     tabs = admin.tabs
     links = tabs.map do |tab|
-      nav_link_to(tab.name, File.join(ActionController::Base.relative_url_root || '', tab.url)) if tab.shown_for?(current_user)
+      nav_link_to(I18n.t("tabs.#{tab.name.downcase}"), File.join(ActionController::Base.relative_url_root || '', tab.url)) if tab.shown_for?(current_user)
     end.compact
     links.join(separator)
   end
@@ -100,9 +100,9 @@ module ApplicationHelper
       login = updated_by ? updated_by.login : nil
       time = (model.updated_at || model.created_at)
       if login or time
-        html = %{<p style="clear: left"><small>Last updated } 
-        html << %{by #{login} } if login
-        html << %{at #{ timestamp(time) }} if time
+        html = %{<p style="clear: left"><small>#{t('timestamp.last_updated')} } 
+        html << %{#{t('timestamp.by')} #{login} } if login
+        html << %{#{t('timestamp.at')} #{ timestamp(time) }} if time
         html << %{</small></p>}
         html
       end
@@ -112,7 +112,8 @@ module ApplicationHelper
   end
 
   def timestamp(time)
-    adjust_time(time).strftime("%I:%M <small>%p</small> on %B %d, %Y")     
+    # adjust_time(time).strftime("%I:%M <small>%p</small> on %B %d, %Y") 
+    I18n.localize(adjust_time(time), :format => :timestamp)    
   end 
   
   def meta_visible(symbol)
@@ -146,7 +147,7 @@ module ApplicationHelper
   end
   
   def filter_options_for_select(selected=nil)
-    options_for_select([['<none>', '']] + TextFilter.descendants.map { |s| s.filter_name }.sort, selected)
+    options_for_select([[t('select.none'), '']] + TextFilter.descendants.map { |s| s.filter_name }.sort, selected)
   end
   
   private

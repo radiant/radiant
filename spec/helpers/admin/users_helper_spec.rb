@@ -4,8 +4,8 @@ describe Admin::UsersHelper do
   dataset :users
   
   it "should render a string containing the user's roles" do
-    helper.roles(users(:admin)).should == "Administrator"
-    helper.roles(users(:developer)).should == "Developer"
+    helper.roles(users(:admin)).should == I18n.t('views.users.admin')
+    helper.roles(users(:developer)).should == I18n.t('views.users.developer')
     helper.roles(users(:existing)).should == ''
   end
 end

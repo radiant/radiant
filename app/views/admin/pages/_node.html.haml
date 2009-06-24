@@ -12,7 +12,7 @@
             = spinner
     - node.status_column do
       - unless simple
-        %td.status{:class => "#{page.status.name.downcase}-status"}= page.status.name
+        %td.status{:class => "#{page.status.name.downcase}-status"}= I18n.t("status.#{page.status.name.downcase}")
     - node.add_child_column do
       - unless simple
         %td.add-child= link_to image('add-child', :alt => 'add child'), new_admin_page_child_url(page)

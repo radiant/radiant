@@ -139,9 +139,9 @@ module Radiant
 
     def initialize_default_admin_tabs
       admin.tabs.clear
-      admin.tabs.add "Pages",    "/admin/pages"
-      admin.tabs.add "Snippets", "/admin/snippets"
-      admin.tabs.add "Layouts",  "/admin/layouts", :visibility => [:admin, :developer]
+      admin.tabs.add 'Pages',    "/admin/pages"
+      admin.tabs.add 'Snippets', "/admin/snippets"
+      admin.tabs.add 'Layouts',  "/admin/layouts", :visibility => [:admin, :developer]
     end
 
     def initialize_framework_views

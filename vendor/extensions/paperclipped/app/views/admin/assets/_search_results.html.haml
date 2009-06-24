@@ -1,0 +1,16 @@
+%ul#search_list
+  - unless @assets.empty?
+    - @assets.each do |asset| 
+      =# render :partial => 'asset', :locals => { :asset => asset, :page => @page }
+      = render :partial => 'admin/assets/bucket_asset', :locals => { :asset_url => asset.asset.url, :asset_id => asset.id, :asset_type => 'image', :asset_title => asset.title, :asset_thumbnail => asset.thumbnail(:thumbnail), :page => @page }
+
+  - else
+    %li
+      %p.note There were no assets found
+      
+%script
+  Asset.MakeDroppables();
+  Asset.MakeDraggables();
+  Event.addBehavior({ '.asset a' : Asset.DisableLinks, 'a.add_asset' : Asset.AddToPage });
+
+  

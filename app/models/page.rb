@@ -16,15 +16,15 @@ class Page < ActiveRecord::Base
   belongs_to :updated_by, :class_name => 'User'
 
   # Validations
-  validates_presence_of :title, :slug, :breadcrumb, :status_id, :message => 'required'
+  validates_presence_of :title, :slug, :breadcrumb, :status_id, :message => I18n.t('models.required')
 
-  validates_length_of :title, :maximum => 255, :message => '{{count}}-character limit'
-  validates_length_of :slug, :maximum => 100, :message => '{{count}}-character limit'
-  validates_length_of :breadcrumb, :maximum => 160, :message => '{{count}}-character limit'
+  validates_length_of :title, :maximum => 255, :message =>  I18n.t('models.character_limit', :count => count)
+  validates_length_of :slug, :maximum => 100, :message =>  I18n.t('models.character_limit', :count => count)
+  validates_length_of :breadcrumb, :maximum => 160, :message =>  I18n.t('models.character_limit', :count => count)
 
-  validates_format_of :slug, :with => %r{^([-_.A-Za-z0-9]*|/)$}, :message => 'invalid format'
-  validates_uniqueness_of :slug, :scope => :parent_id, :message => 'slug already in use for child of parent'
-  validates_numericality_of :id, :status_id, :parent_id, :allow_nil => true, :only_integer => true, :message => 'must be a number'
+  validates_format_of :slug, :with => %r{^([-_.A-Za-z0-9]*|/)$}, :message => I18n.t('invalid format')  
+  validates_uniqueness_of :slug, :scope => :parent_id, :message => I18n.t('models.slug_in_use')
+  validates_numericality_of :id, :status_id, :parent_id, :allow_nil => true, :only_integer => true, :message => I18n.t('models.must_be_number')
 
   validate :valid_class_name
 
@@ -95,7 +95,7 @@ class Page < ActiveRecord::Base
     Status.find(self.status_id)
   end
   def status=(value)
-    self.status_id = value.id
+    self.status_id = value.object_id
   end
 
   def url
@@ -295,3 +295,4 @@ class Page < ActiveRecord::Base
     end
 
 end
+

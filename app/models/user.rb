@@ -10,21 +10,21 @@ class User < ActiveRecord::Base
   belongs_to :updated_by, :class_name => 'User'
   
   # Validations
-  validates_uniqueness_of :login, :message => 'login already in use'
+  validates_uniqueness_of :login, :message => I18n.t('models.login_in_use')
   
-  validates_confirmation_of :password, :message => 'must match confirmation', :if => :confirm_password?
+  validates_confirmation_of :password, :message => I18n.t('models.password_confirmation'), :if => :confirm_password?
   
-  validates_presence_of :name, :login, :message => 'required'
-  validates_presence_of :password, :password_confirmation, :message => 'required', :if => :new_record?
+  validates_presence_of :name, :login, :message => I18n.t('models.required')
+  validates_presence_of :password, :password_confirmation, :message => I18n.t('models.required'), :if => :new_record?
   
-  validates_format_of :email, :message => 'invalid e-mail address', :allow_nil => true, :with => /^$|^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i
+  validates_format_of :email, :message => I18n.t('models.invalid_email'), :allow_nil => true, :with => /^$|^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i
   
-  validates_length_of :name, :maximum => 100, :allow_nil => true, :message => '{{count}}-character limit'
-  validates_length_of :login, :within => 3..40, :allow_nil => true, :too_long => '{{count}}-character limit', :too_short => '{{count}}-character minimum'
-  validates_length_of :password, :within => 5..40, :allow_nil => true, :too_long => '{{count}}-character limit', :too_short => '{{count}}-character minimum', :if => :validate_length_of_password?
-  validates_length_of :email, :maximum => 255, :allow_nil => true, :message => '{{count}}-character limit'
+  validates_length_of :name, :maximum => 100, :allow_nil => true, :message => I18n.t('models.character_limit', :count => count)
+  validates_length_of :login, :within => 3..40, :allow_nil => true, :too_long => I18n.t('models.character_limit', :count => count), :too_short => I18n.t('models.character_minimum', :count => count)
+  validates_length_of :password, :within => 5..40, :allow_nil => true, :too_long => I18n.t('models.character_limit', :count => count), :too_short => I18n.t('models.character_minimum', :count => count), :if => :validate_length_of_password?
+  validates_length_of :email, :maximum => 255, :allow_nil => true, :message => I18n.t('models.character_limit', :count => count)
   
-  validates_numericality_of :id, :only_integer => true, :allow_nil => true, :message => 'must be a number'
+  validates_numericality_of :id, :only_integer => true, :allow_nil => true, :message => I18n.t('models.must_be_number')
     
   attr_writer :confirm_password
   class << self

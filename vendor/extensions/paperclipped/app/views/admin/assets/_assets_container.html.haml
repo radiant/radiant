@@ -1,0 +1,78 @@
+- @stylesheets << 'admin/assets'
+- include_javascript 'lowpro'
+- include_javascript 'admin/assets'
+- include_javascript 'dragdrop'
+
+#assets-container
+  #asset-tabs
+    - render_region :asset_tabs do |asset_tabs|
+      - if @page && !@page.new_record? 
+        - asset_tabs.attachment_tab do
+          %a.asset-tab{ :href => "#page-attachments", :id => "tab_page-attachments" } Attached Assets
+        - asset_tabs.upload_tab do
+          %a.asset-tab{ :href => "#upload-assets", :id => "tab_upload-assets" } Upload
+        - asset_tabs.bucket_tab do
+          %a.asset-tab{ :href => "#bucket", :id => "tab_bucket" } Bucket
+        - asset_tabs.search_tab do  
+          %a.asset-tab{ :href => "#search-assets" } Search
+      - else
+        - asset_tabs.bucket_tab do
+          %a.asset-tab.here{ :href => "#" } Bucket
+
+  #assets 
+    #bucket.pane
+      - render_region :bucket_pane do |bucket_pane|
+        - bucket_pane.bucket_notes do      
+          %p
+            %span.note 
+              // The Bucket provides temporary storage for your items. You can use it to place items in your pages or snippets. 
+              Sie können der Bucket benützen Bilder und Dateien zu bewegen auf Ihre Seiten. 
+              
+            %span#clear-bucket
+              = link_to_remote('Bucket löschen', {:url => clear_bucket_url} )
+        - bucket_pane.bucket do 
+          = render :partial => "admin/assets/bucket"
+        - bucket_pane.bucket_bottom do 
+          .clear
+
+      
+    - if @page && !@page.new_record? 
+      - render_region :asset_panes do |asset_panes|
+
+        - asset_panes.page_attachments do 
+          #page-attachments.pane
+            %p
+              %span.note 
+                // Attached assets. These can be inserted with drag and drop 
+                // or shown with the <code>&lt;r:assets:each /&gt;</code> tag.  
+                Verbunden Dateien. Sie können die Bilder per Drag und Drop in den Test einsiehen.
+            %ul#attachments
+              = render :partial => "admin/assets/page_assets" 
+            .clear
+      
+        - asset_panes.upload do
+          #upload-assets.pane
+            %p
+              %span.note 
+                // Assets uploaded here will be automatically associated with this page.
+                Dateien hier hochgeladen sind automatisch mit dieser Seiten verbunden.
+            = render :partial => "admin/assets/upload_to_page"
+            .clear
+          
+        - asset_panes.search do
+          #search-assets.pane
+            - form_tag do
+              %p
+                %label.note{ :for => 'search' } Dateisuche
+                %input{ :type => "hidden", :name => "search", :value => @page.id }
+                %input{ :type => "search", :id => "search", :name => "search" }
+                = submit_tag "Suchen"
+            #search-results
+            .clear
+            = observe_field 'search',  :frequency => 1, :update => 'search-results', :url =>  admin_assets_path(:asset_page => @page), :method => 'get', :with => "'search=' + escape(value)"
+
+
+    
+
+
+

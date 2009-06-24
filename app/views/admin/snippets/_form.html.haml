@@ -5,15 +5,15 @@
     - render_region :form do |form|
       - form.edit_title do
         %p.title
-          %label{:for=>"snippet_name"} Name
+          %label{:for=>"snippet_name"}= t('views.shared.name')
           = f.text_field :name, :class => 'textbox', :maxlength => 100
       - form.edit_content do
         %p.content
-          %label{:for=>"snippet_content"} Body
+          %label{:for=>"snippet_content"}= t('views.shared.body') 
           ~ f.text_area :content, :class => "textarea", :style => "width: 100%"
       - form.edit_filter do
         %p
-          %label{:for=>"snippet_filter"} Filter
+          %label{:for=>"snippet_filter"}= t('views.shared.filter')
           = f.select :filter_id, [['none', '']] + TextFilter.descendants.map { |f| f.filter_name }.sort, :id => 'snippet_filter'
       - form.edit_timestamp do
         = updated_stamp @snippet
@@ -25,5 +25,5 @@
       %p.buttons
         = save_model_button(@snippet)
         = save_model_and_continue_editing_button(@snippet)
-        or
-        = link_to 'Cancel', admin_snippets_url
+        = t('views.shared.or')
+        = link_to t('views.shared.cancel'), admin_snippets_url
