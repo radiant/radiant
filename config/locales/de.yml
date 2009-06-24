@@ -66,7 +66,7 @@ de:
     layouts: 
       layouts: 'Layouts'
       layout: 'Layout'  
-      description: 'Benutzten Sie Layouts um das Aussehen der Website zu bestimmen.               Layouts können spezielle Tags mit Text oder anderen Elementen wie Header oder Footer     enthalten. Klicken Sie auf einen Layoutnamen, um ihm zu bearbeiten oder <code>Entfernen</code> zu löschen.'
+      description: 'Benutzten Sie Layouts um das Aussehen der Website zu bestimmen. Layouts können spezielle Tags mit Text oder anderen Elementen wie Header oder Footer     enthalten. Klicken Sie auf einen Layoutnamen, um ihm zu bearbeiten oder <code>Entfernen</code> zu löschen.'
       new_layout: 'Neues Layout'    
       edit_layout: 'Layout bearbeiten'
       content_type: 'Inhalt&#8209;Typ'    
@@ -131,7 +131,7 @@ de:
     preferences:
       user_preferences: 'Benutzer Einstellungen'
     welcome:
-      login: 'Bitte Einloggen'
+      login: 'Bitte Anmelden'
       login_btn: 'Login'
       remember_me: 'Merken'
 
