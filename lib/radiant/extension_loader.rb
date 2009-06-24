@@ -65,7 +65,7 @@ module Radiant
     end
     
     def metal_paths
-      extensions.map { |extension| "#{extension.root}/app/metal" }.select { |d| File.directory?(d) }.reverse
+      load_extension_roots.map { |extension| "#{extension}/app/metal" }.select { |d| File.directory?(d) }.reverse
     end
 
     # Load the extensions

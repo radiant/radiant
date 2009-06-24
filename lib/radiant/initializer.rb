@@ -70,12 +70,10 @@ module Radiant
         # Add the app's controller directory
         paths.concat(Dir["#{RADIANT_ROOT}/app/controllers/"])
 
-        # Then components subdirectories.
-        paths.concat(Dir["#{RADIANT_ROOT}/components/[_a-z]*"])
-
         # Followed by the standard includes.
         paths.concat %w(
           app
+          app/metal
           app/models
           app/controllers
           app/helpers
@@ -114,6 +112,18 @@ module Radiant
     def set_autoload_paths
       extension_loader.add_extension_paths
       super
+    end
+    
+    # override Rails initializer to insert extension metals
+    def initialize_metal
+      Rails::Rack::Metal.requested_metals = configuration.metals
+      Rails::Rack::Metal.metal_paths = ["#{RADIANT_ROOT}/app/metal"] # reset Rails default to RADIANT_ROOT
+      Rails::Rack::Metal.metal_paths += plugin_loader.engine_metal_paths
+      Rails::Rack::Metal.metal_paths += extension_loader.metal_paths
+
+      configuration.middleware.insert_before(
+        :"ActionController::RewindableInput",
+        Rails::Rack::Metal, :if => Rails::Rack::Metal.metals.any?)
     end
 
     def add_plugin_load_paths
