@@ -1,7 +1,0 @@
-.DS_Store
-
-# ignore log files
-log/*.log
-tmp/**/*
-
-db/schema.rb
