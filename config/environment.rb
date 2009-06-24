@@ -77,7 +77,7 @@ Radiant::Initializer.run do |config|
   end
 end
 
-I18n.default_locale = 'ja'
+I18n.default_locale = 'en'
 
 LOCALES_DIRECTORY = "#{RAILS_ROOT}/config/locales/"
 LOCALES_AVAILABLE = Dir.new(LOCALES_DIRECTORY).entries.collect do |x|
