@@ -102,7 +102,7 @@ module Radiant
       
       def prompt_for_admin_password
         password = ask('Password (radiant): ', String) do |q|
-          q.echo = false
+          q.echo = false unless defined?(::JRuby) # JRuby doesn't support stty interaction
           q.validate = /^(|.{5,40})$/
           q.responses[:not_valid] = "Invalid password. Must be at least 5 characters long."
           q.whitespace = :strip

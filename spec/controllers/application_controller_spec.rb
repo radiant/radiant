@@ -62,5 +62,9 @@ describe ApplicationController do
       controller.template_name.should == 'remove'
       end
     end
+    it "should return 'show' when the action_name is show" do
+      controller.stub!(:action_name).and_return('show')
+      controller.template_name.should == 'show'
+    end
   end
 end
