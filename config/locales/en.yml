@@ -6,15 +6,15 @@ en:
   resource_controller:
     saved: "{{humanized_model_name}} saved below."
     validation_errors: "Validation errors occurred while processing this form. Please take a moment to  review the form and correct any input errors before continuing."
+    not_found: "{{humanized_model_name}} could not be found."
     # removed: "{{humanized_model_name}} successfully removed." 
     removed: "{{humanized_model_name}} has been deleted."
-    not_found: "{{humanized_model_name}} could not be found."
     update_conflict: "{{humanized_model_name}} has been modified since it was last loaded. Changes cannot be saved without potentially losing data." 
   pages_controller:
     saved: "Your page has been saved below."  
     removed_many: "The pages were successfully removed from the site."   
     removed_one: "The page was successfully removed from the site."  
-  preferences_contoller:
+  preferences_controller:
     updated: 'Your preferences have been updated.' 
     error_updating: 'There was an error updating your preferences.'      
   users_controller:
@@ -22,6 +22,45 @@ en:
   welcome_controller:
     logged_out: 'You are now logged out.'  
     invalid_user: 'Invalid username or password.' 
+    
+  # Active Record
+  activerecord:
+    errors:
+      models:
+        page:
+          attributes:
+            slug:
+              taken: 'slug already in use for child of parent' # slug_in_use
+        user:
+          attributes:
+            login:
+              taken: 'login already in use' # login already in use
+            password:
+              confirmation: 'must match confirmation' # password_confirmation
+            email:
+              invalid: 'invalid e-mail address' # invalid_email
+      messages:
+        lank: 'required'
+  # Active Record
+  activerecord:
+    errors:
+      messages:
+        blank: 'required' # required
+        taken: 'name already in use' # name_in_use
+        not_a_number: 'must be a number' # must be number
+        too_short: '{{count}}-character minimum' # character_minimum
+        too_long: '{{count}}-character limit' # character_limit
+        invalid: 'invalid format' #invalid_format
+      models:
+        user:
+          attributes:
+            login:
+              taken: 'login already in use' # login already in use
+            password:
+              confirmation: 'must match confirmation' # password_confirmation
+            email:
+              invalid: 'invalid e-mail address' # invalid_email
+      
     
   # Models
   models:

@@ -1,18 +1,21 @@
 ja:
   # The display name of this language file
   this_file_language: "日本語"
-
+  required:  必要'
+  
+  
   # Controllers
   resource_controller:
     saved: "{{humanized_model_name}}をセーブしました。"
-    validation_errors: "DE Validation errors occurred while processing this form. Please take a moment to review the form and correct any input errors before continuing."
+    validation_errors: "Validation errors occurred while processing this form. Please take a moment to review the form and correct any input errors before continuing."
     removed: "{{humanized_model_name}}を削除しました。."
+    not_found: "{{humanized_model_name}} could not be found."
     update_conflict: "ロードした時と比べて、{{humanized_model_name}}に変更があります。セーブしたら、ほかに変更を失う可能性があります。"
   pages_controller:
     saved: "ページをセーブしました。"
     removed_many: "ページはサイトから削除しました。"
     removed_one: "ページはサイトから削除しました。"
-  preferences_contoller:
+  preferences_controller:
     updated: '設定変更に終了しました。'
     error_updating: '設定変更にエーラーが発生しました。'
   users_controller:
@@ -21,6 +24,29 @@ ja:
     logged_out: 'ログアウトしました。'
     invalid_user: 'ログインもしくはパスワードが異なります。'
 
+
+  # Active Record
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            login:
+              taken: 'ログインはすでに使用されています' # login already in use
+            name: 
+              taken: '名前はすでに使用されています' # name_in_use
+            password:
+              confirmation: 'パスワードはパスワード確認と一致する必要があります' # password_confirmation
+            email:
+              invalid: 'Eメールが不正です' # invalid_email
+            
+      messages:
+        blank:  必要 # required
+        not_a_number: '数値である必要があります' # must be number
+        too_short: '{{count}}字以上' # character_minimum
+        too_long: '制限{{count}}字' # character_maximum
+          
+            
   # Models
   models:
     # Model Names for validations
@@ -31,7 +57,7 @@ ja:
     page_page: 'Page Part'
     
     # Shared translations
-    required: '必要'
+    required:  必要'
     name_in_use: '名前はすでに使用されています'
     slug_in_use: 'スラグははすでに親の子として使用されています'
     character_limit: '制限{{count}}字'
@@ -43,7 +69,7 @@ ja:
     login_in_use: 'ログインはすでに使用されています'
     password_confirmation: 'パスワードはパスワード確認と一致する必要があります'
     invalid_email: 'Eメールが不正です'
-
+    
   views:
     shared:
       modify: '変更'

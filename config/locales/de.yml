@@ -12,7 +12,7 @@ de:
     saved: "Ihre Seite wurde gespeichert."  
     removed_many: "Die Seiten wurden erfolgreich von der Website gelöscht."   
     removed_one: "Die Seite wurde erfolgreich von der Website gelöscht."  
-  preferences_contoller:
+  preferences_controller:
     updated: 'Ihre Einstellungen wurden aktualisiert.' 
     error_updating: 'Beim aktualisieren Ihrer Einstellungen ist ein Fehler aufgetreten.'    
   users_controller:

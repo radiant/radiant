@@ -17,10 +17,10 @@ class Admin::PreferencesController < ApplicationController
   def update
     if valid_params?
       if @user.update_attributes(params[:user])
-        flash[:notice] = t('preferences_contoller.updated') 
+        flash[:notice] = t('preferences_controller.updated') 
         redirect_to admin_pages_path
       else
-        flash[:error] = t('preferences_contoller.error_updating')
+        flash[:error] = t('preferences_controller.error_updating')
         render :action => 'edit'
       end
     else

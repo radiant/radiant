@@ -16,15 +16,15 @@ class Page < ActiveRecord::Base
   belongs_to :updated_by, :class_name => 'User'
 
   # Validations
-  validates_presence_of :title, :slug, :breadcrumb, :status_id, :message => I18n.t('models.required')
+  validates_presence_of :title, :slug, :breadcrumb, :status_id
 
-  validates_length_of :title, :maximum => 255, :message =>  I18n.t('models.character_limit', :count => count)
-  validates_length_of :slug, :maximum => 100, :message =>  I18n.t('models.character_limit', :count => count)
-  validates_length_of :breadcrumb, :maximum => 160, :message =>  I18n.t('models.character_limit', :count => count)
+  validates_length_of :title, :maximum => 255
+  validates_length_of :slug, :maximum => 100
+  validates_length_of :breadcrumb, :maximum => 160
 
-  validates_format_of :slug, :with => %r{^([-_.A-Za-z0-9]*|/)$}, :message => I18n.t('invalid format')  
-  validates_uniqueness_of :slug, :scope => :parent_id, :message => I18n.t('models.slug_in_use')
-  validates_numericality_of :id, :status_id, :parent_id, :allow_nil => true, :only_integer => true, :message => I18n.t('models.must_be_number')
+  validates_format_of :slug, :with => %r{^([-_.A-Za-z0-9]*|/)$}
+  validates_uniqueness_of :slug, :scope => :parent_id
+  validates_numericality_of :id, :status_id, :parent_id, :allow_nil => true, :only_integer => true
 
   validate :valid_class_name
 

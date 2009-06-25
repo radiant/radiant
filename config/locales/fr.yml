@@ -12,7 +12,7 @@ fr:
     saved: "Votre page enregistrée ci-dessous."  
     removed_many: "Les pages ont été correctement retirées du site."   
     removed_one: "La page a été correctement retirée du site."  
-  preferences_contoller:
+  preferences_controller:
     updated: "Vos préférences ont été modifiées."
     error_updating: "Une erreur a été détectée pendant la modification de vos préférences."   
   users_controller:

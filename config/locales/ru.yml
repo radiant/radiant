@@ -12,7 +12,7 @@ ru:
     saved: "Страница сохранена."
     removed_many: "Страницы успешно удалены с сайта."
     removed_one: "Страница успешно удалена с сайта."
-  preferences_contoller:
+  preferences_controller:
     updated: "Ваши настройки сохранены"
     error_updating: "Ошибка при сохранении настроек."
   users_controller:
