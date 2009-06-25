@@ -94,4 +94,8 @@ describe Radiant::Initializer do
   it "should have access to the AdminUI" do
     @initializer.admin.should == Radiant::AdminUI.instance
   end
+
+  it "should load metal from RADIANT_ROOT and exensions" do
+    Rails::Rack::Metal.metal_paths.should == ["#{RADIANT_ROOT}/app/metal", "#{RADIANT_ROOT}/test/fixtures/extensions/02_overriding/app/metal", "#{RADIANT_ROOT}/test/fixtures/extensions/01_basic/app/metal"]
+  end
 end
