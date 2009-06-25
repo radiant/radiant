@@ -131,7 +131,7 @@ class Admin::ResourceController < ApplicationController
     alias :models_symbol :plural_model_symbol
 
     def humanized_model_name
-      model_name.underscore.humanize
+      t("models.#{model_name.underscore.downcase}")
     end
 
     def continue_url(options)
@@ -151,7 +151,7 @@ class Admin::ResourceController < ApplicationController
     end
     
     def announce_not_found
-      flash[:notice] = t("resource_controller.removed ", :humanized_model_name => humanized_model_name)    
+      flash[:notice] = t("resource_controller.not_found ", :humanized_model_name => humanized_model_name)    
     end
 
     def announce_update_conflict

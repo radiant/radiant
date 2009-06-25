@@ -23,6 +23,13 @@ ja:
 
   # Models
   models:
+    # Model Names for validations
+    user: 'User'
+    page: 'Page'
+    snippet: 'Snippet'
+    layout: 'Layout'
+    page_page: 'Page Part'
+    
     # Shared translations
     required: '必要'
     name_in_use: '名前はすでに使用されています'

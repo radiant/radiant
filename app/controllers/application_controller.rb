@@ -59,13 +59,9 @@ class ApplicationController < ActionController::Base
     def set_current_user
       UserActionObserver.current_user = current_user
     end  
-    
+        
     def set_user_language     
-      I18n.locale = :de
-      
-    end
-    
-    def set_user_language     
+      I18n.default_locale = 'en'         
       I18n.locale = current_user && current_user.language ? current_user.language : I18n.default_locale
     end
   

@@ -5,8 +5,10 @@ en:
   # Controllers
   resource_controller:
     saved: "{{humanized_model_name}} saved below."
-    validation_errors: "Validation errors occurred while processing this form. Please take a moment to review the form and correct any input errors before continuing."
-    removed: "{{humanized_model_name}} has been deleted."  
+    validation_errors: "Validation errors occurred while processing this form. Please take a moment to  review the form and correct any input errors before continuing."
+    # removed: "{{humanized_model_name}} successfully removed." 
+    removed: "{{humanized_model_name}} has been deleted."
+    not_found: "{{humanized_model_name}} could not be found."
     update_conflict: "{{humanized_model_name}} has been modified since it was last loaded. Changes cannot be saved without potentially losing data." 
   pages_controller:
     saved: "Your page has been saved below."  
@@ -23,6 +25,13 @@ en:
     
   # Models
   models:
+    # Model Names for validations
+    user: 'User'
+    page: 'Page'
+    snippet: 'Snippet'
+    layout: 'Layout'
+    page_page: 'Page Part'
+    
     # Shared translations
     required: 'required'
     name_in_use: 'name already in use'
@@ -359,5 +368,5 @@ en:
         formats:
           default: "%Y-%m-%dT%H:%M:%S%Z"
           
-      am: 'am'
-      pm: 'pm'
+      am: 'AM'
+      pm: 'PM'

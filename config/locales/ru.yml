@@ -23,6 +23,13 @@ ru:
 
   # Models
   models:
+    # Model Names for validations
+    user: 'User'
+    page: 'Page'
+    snippet: 'Snippet'
+    layout: 'Layout'
+    page_page: 'Page Part'
+    
     # Shared translations
     required: 'обязательное поле'
     name_in_use: 'имя ужк существует'

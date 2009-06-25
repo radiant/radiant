@@ -23,6 +23,13 @@ de:
 
   # Models
   models:
+    # Model Names for validations
+    user: 'Benutzer'
+    page: 'Seite'
+    snippet: 'Snippet'
+    layout: 'Layout'
+    page_part: 'Seitenteil'
+    
     # Shared translations
     required: 'obligatorisch'
     name_in_use: 'Name schon in Benutzung'
