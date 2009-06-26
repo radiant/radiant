@@ -1,12 +1,6 @@
-require 'radiant/config'
 module LocalTime
   def adjust_time(time)
-    if (tz_string = Radiant::Config["local.timezone"]) and 
-        timezone = (ActiveSupport::TimeZone[tz_string] || ActiveSupport::TimeZone[tz_string.to_i]) 
-      # adjust time 
-      time.in_time_zone(timezone).time
-    else 
-      time 
-    end 
+    ::ActiveSupport::Deprecation.warn("`adjust_time' is deprecated. All time output is now auto-adjusted to Radiant::Config['local.timezone'] or the default ActiveRecord time zone.", caller)
+    time
   end 
 end

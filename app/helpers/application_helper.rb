@@ -112,7 +112,7 @@ module ApplicationHelper
   end
 
   def timestamp(time)
-    adjust_time(time).strftime("%I:%M <small>%p</small> on %B %d, %Y")     
+    time.strftime("%I:%M <small>%p</small> on %B %d, %Y")
   end 
   
   def meta_visible(symbol)

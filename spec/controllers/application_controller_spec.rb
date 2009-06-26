@@ -67,4 +67,17 @@ describe ApplicationController do
       controller.template_name.should == 'show'
     end
   end
+
+  describe "set_timezone" do
+    it "should use Radiant::Config['local.timezone']" do
+      Radiant::Config['local.timezone'] = 'Kuala Lumpur'
+      controller.send(:set_timezone)
+      Time.zone.name.should == 'Kuala Lumpur'
+    end
+
+    it "should default to config.time_zone" do
+      controller.send(:set_timezone)
+      Time.zone.name.should == 'UTC'
+    end
+  end
 end

@@ -24,8 +24,7 @@ module Radiant
   # defaults.page.status      :: a string representation of the default page status
   # defaults.page.filter      :: the default filter to use on new page parts
   # dev.host                  :: the hostname where draft pages are viewable
-  # local.timezone            :: the timezone offset (using a String or integer
-  #                              from http://api.rubyonrails.org/classes/TimeZone.html)
+  # local.timezone            :: the timezone name (`rake -D time` for full list)
   #                              used to correct displayed times
   # page.edit.published_date? :: when true, shows the datetime selector
   #                              for published date on the page edit screen
