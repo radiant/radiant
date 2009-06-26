@@ -2,6 +2,8 @@
 
 === Edge
 
+* Use Rails for time zone handling [Kunal Shah, Josh French]
+* Allow extensions to declare dependencies [Josh French]
 * Set template_name for all resourceful action types [Josh French]
 * Load Metal from Extensions [Jim Gay]
 
