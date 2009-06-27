@@ -48,7 +48,7 @@ fr:
   # Models
   models:
     # Model Names for validations
-    user: 'User'
+    user: 'Utilisateur'
     page: 'Page'
     snippet: 'Snippet'
     layout: 'Layout'

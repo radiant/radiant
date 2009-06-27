@@ -7,7 +7,6 @@ en:
     saved: "{{humanized_model_name}} saved below."
     validation_errors: "Validation errors occurred while processing this form. Please take a moment to  review the form and correct any input errors before continuing."
     not_found: "{{humanized_model_name}} could not be found."
-    # removed: "{{humanized_model_name}} successfully removed." 
     removed: "{{humanized_model_name}} has been deleted."
     update_conflict: "{{humanized_model_name}} has been modified since it was last loaded. Changes cannot be saved without potentially losing data." 
   pages_controller:
