@@ -4,7 +4,7 @@ fr:
   
   # Controllers       
   resource_controller:
-    saved: "{humanized_model_name}} enregistré ci-dessous."
+    saved: "{{humanized_model_name}} enregistré ci-dessous."
     validation_errors: "Erreurs de validation pendant le traitement de ce formulaire. SVP examinez son contenu et corrigez les erreurs avant de continuer."
     removed: "{{humanized_model_name}} supprimé."  
     update_conflict: "{{humanized_model_name}} a été modifié depuis son affichage. Toute modification ne pourra être enregistrée sans perte potentielle de donnée." 
@@ -21,6 +21,30 @@ fr:
     logged_out: "Vous n'êtes plus identifié(e)'"  
     invalid_user: "Nom ou mot de passe invalide."   
   
+  # Active Record
+  activerecord:
+    errors:
+      messages:
+        blank: 'obligatoire' # required
+        taken: 'nom déjà utilisé' # name_in_use
+        not_a_number: 'doit être un nombre' # must be number
+        too_short: '{{count}}-caractères minimum' # character_minimum
+        too_long: '{{count}}-caractères maximum' # character_limit
+        invalid: 'invalid format' #invalid_format
+      models:
+        user:
+          attributes:
+            login:
+              taken: 'identification déjà utilisée' # login already in use
+            password:
+              confirmation: 'doit être identique à sa confirmation' # password_confirmation
+            email:
+              invalid: 'adresse courriel non valide' # invalid_email
+        page:
+          attributes:
+            slug:
+              taken: "jeton (slug) déjà utilisé pour l'enfant de ce parent" # slug_in_use
+
   # Models
   models:
     # Model Names for validations
@@ -29,20 +53,20 @@ fr:
     snippet: 'Snippet'
     layout: 'Layout'
     page_page: 'Page Part'
-    
+  
     # Shared translations
-    required: "obligatoire"
-    name_in_use: "nom déjà utilisé"
-    slug_in_use: "jeton (slug) déjà utilisé pour l'enfant de ce parent"
-    character_limit: "{{count}}-caractères maximum"
-    character_minimum: "{{count}}-caractères minimum"
-    must_be_number: "doit être un nombre"
-    invalid_format: "format non valide"
-    no_spaces_tabs: "ne peut pas inclure d'espace our de caractères de tabulation"
+    # required: "obligatoire"
+    # name_in_use: "nom déjà utilisé"
+    # slug_in_use: "jeton (slug) déjà utilisé pour l'enfant de ce parent"
+    # character_limit: "{{count}}-caractères maximum"
+    # character_minimum: "{{count}}-caractères minimum"
+    # must_be_number: "doit être un nombre"
+    # invalid_format: "format non valide"
+    # no_spaces_tabs: "ne peut pas inclure d'espace our de caractères de tabulation"
     # User
-    login_in_use: "identification déjà utilisée"
-    password_confirmation: "doit être identique à sa confirmation"
-    invalid_email: "adresse courriel non valide"  
+    # login_in_use: "identification déjà utilisée"
+    # password_confirmation: "doit être identique à sa confirmation"
+    # invalid_email: "adresse courriel non valide"  
   
   # Views
   views:   

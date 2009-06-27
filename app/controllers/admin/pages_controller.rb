@@ -41,8 +41,8 @@ class Admin::PagesController < Admin::ResourceController
       flash[:notice] = message || t("pages_controller.saved") 
     end
 
-    def announce_pages_removed(count)
-      flash[:notice] = if count > 1
+    def announce_removed
+      flash[:notice] = if @count > 0
         t("pages_controller.removed_many") 
       else
         t("pages_controller.removed_one")

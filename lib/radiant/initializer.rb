@@ -41,6 +41,8 @@ module Radiant
     def admin
       AdminUI.instance
     end
+    
+
 
     private
 

@@ -29,46 +29,49 @@ ja:
   activerecord:
     errors:
       models:
+        messages:
+          blank:  必要 # required
+          taken: '名前はすでに使用されています' # name_in_use
+          not_a_number: '数値である必要があります' # must be number
+          too_short: '{{count}}字以上' # character_minimum
+          too_long: '制限{{count}}字' # character_maximum
+          invalid: 'invalid format' #invalid_format
         user:
           attributes:
             login:
               taken: 'ログインはすでに使用されています' # login already in use
-            name: 
-              taken: '名前はすでに使用されています' # name_in_use
             password:
               confirmation: 'パスワードはパスワード確認と一致する必要があります' # password_confirmation
             email:
               invalid: 'Eメールが不正です' # invalid_email
-            
-      messages:
-        blank:  必要 # required
-        not_a_number: '数値である必要があります' # must be number
-        too_short: '{{count}}字以上' # character_minimum
-        too_long: '制限{{count}}字' # character_maximum
-          
+        page:
+          attributes:
+            slug:
+              taken: 'スラグははすでに親の子として使用されています' # slug_in_use
+
             
   # Models
   models:
     # Model Names for validations
-    user: 'User'
-    page: 'Page'
-    snippet: 'Snippet'
-    layout: 'Layout'
+    user: 'ユーザー'
+    page: 'ページ'
+    snippet: 'スニペッツ'
+    layout: 'レイアウト'
     page_page: 'Page Part'
     
-    # Shared translations
-    required:  必要'
-    name_in_use: '名前はすでに使用されています'
-    slug_in_use: 'スラグははすでに親の子として使用されています'
-    character_limit: '制限{{count}}字'
-    character_minimum: '{{count}}字以上'
-    must_be_number: '数値である必要があります'
-    invalid_format: 'フォーマットが異なります'
-    no_spaces_tabs: 'スペースもしくはタブは入力できません'
-    # User
-    login_in_use: 'ログインはすでに使用されています'
-    password_confirmation: 'パスワードはパスワード確認と一致する必要があります'
-    invalid_email: 'Eメールが不正です'
+    # # Shared translations
+    # required:  必要'
+    # name_in_use: '名前はすでに使用されています'
+    # slug_in_use: 'スラグははすでに親の子として使用されています'
+    # character_limit: '制限{{count}}字'
+    # character_minimum: '{{count}}字以上'
+    # must_be_number: '数値である必要があります'
+    # invalid_format: 'フォーマットが異なります'
+    # no_spaces_tabs: 'スペースもしくはタブは入力できません'
+    # # User
+    # login_in_use: 'ログインはすでに使用されています'
+    # password_confirmation: 'パスワードはパスワード確認と一致する必要があります'
+    # invalid_email: 'Eメールが不正です'
     
   views:
     shared:

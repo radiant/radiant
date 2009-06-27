@@ -143,7 +143,7 @@ describe ApplicationHelper do
     model.should_receive(:new_record?).and_return(false)
     model.should_receive(:updated_by).and_return(users(:admin))
     model.should_receive(:updated_at).and_return(Time.local(2008, 3, 30, 10, 30))
-    helper.updated_stamp(model).should == %{<p style="clear: left"><small>Last updated by admin at 10:30 <small>AM</small> on March 30, 2008</small></p>}
+    helper.updated_stamp(model).should == %{<p style="clear: left"><small>Last Updated by admin at 10:30 <small>AM</small> on March 30, 2008</small></p>}
   end
   
   it "should render a timezone-adjusted timestamp" do

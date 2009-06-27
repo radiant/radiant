@@ -61,7 +61,7 @@ class ApplicationController < ActionController::Base
     end  
         
     def set_user_language     
-      I18n.default_locale = 'en'         
+      I18n.default_locale = 'en' #request.env['HTTP_ACCEPT_LANGUAGE'].scan(/^[a-z]{2}/).first       
       I18n.locale = current_user && current_user.language ? current_user.language : I18n.default_locale
     end
   
@@ -71,4 +71,5 @@ class ApplicationController < ActionController::Base
       @javascripts ||= []
       @javascripts.concat %w(prototype string effects admin/tabcontrol admin/ruledtable admin/admin)
     end
+
 end

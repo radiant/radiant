@@ -26,24 +26,6 @@ en:
   # Active Record
   activerecord:
     errors:
-      models:
-        page:
-          attributes:
-            slug:
-              taken: 'slug already in use for child of parent' # slug_in_use
-        user:
-          attributes:
-            login:
-              taken: 'login already in use' # login already in use
-            password:
-              confirmation: 'must match confirmation' # password_confirmation
-            email:
-              invalid: 'invalid e-mail address' # invalid_email
-      messages:
-        lank: 'required'
-  # Active Record
-  activerecord:
-    errors:
       messages:
         blank: 'required' # required
         taken: 'name already in use' # name_in_use
@@ -60,8 +42,11 @@ en:
               confirmation: 'must match confirmation' # password_confirmation
             email:
               invalid: 'invalid e-mail address' # invalid_email
-      
-    
+        page:
+          attributes:
+            slug:
+              taken: 'slug already in use for child of parent' # slug_in_use
+        
   # Models
   models:
     # Model Names for validations
@@ -72,18 +57,18 @@ en:
     page_page: 'Page Part'
     
     # Shared translations
-    required: 'required'
-    name_in_use: 'name already in use'
-    slug_in_use: 'slug already in use for child of parent'
-    character_limit: '{{count}}-character limit'
-    character_minimum: '{{count}}-character minimum'
-    must_be_number: 'must be a number'
-    invalid_format: 'invalid format'
-    no_spaces_tabs: 'cannot contain spaces or tabs'
-    # User
-    login_in_use: 'login already in use'
-    password_confirmation: 'must match confirmation'
-    invalid_email: 'invalid e-mail address'     
+    # required: 'required'
+    # name_in_use: 'name already in use'
+    # slug_in_use: 'slug already in use for child of parent'
+    # character_limit: '{{count}}-character limit'
+    # character_minimum: '{{count}}-character minimum'
+    # must_be_number: 'must be a number'
+    # invalid_format: 'invalid format'
+    # no_spaces_tabs: 'cannot contain spaces or tabs'
+    # # User
+    # login_in_use: 'login already in use'
+    # password_confirmation: 'must match confirmation'
+    # invalid_email: 'invalid e-mail address'     
     
   # Views
   views:   
@@ -396,8 +381,8 @@ en:
   
   time:
     formats:
-      default: "%a %b %d %H:%M:%S %Z %Y"   
       timestamp: "%I:%M <small>%p</small> on %B %d, %Y" 
+      default: "%a %b %d %H:%M:%S %Z %Y"   
       time: "%H:%M"
       short: "%d %b %H:%M"
       long: "%B %d, %Y %H:%M"
@@ -407,5 +392,5 @@ en:
         formats:
           default: "%Y-%m-%dT%H:%M:%S%Z"
           
-      am: 'AM'
-      pm: 'PM'
+    am: 'AM'
+    pm: 'PM'
