@@ -66,7 +66,7 @@ module Admin::NodeHelper
   end
 
   def node_title
-    %{<span class="title">#{ @current_node.title }</span>}
+    %{<span class="title">#{ h(@current_node.title) }</span>}
   end
 
   def page_type
@@ -74,7 +74,7 @@ module Admin::NodeHelper
     if display_name == 'Page'
       ""
     else
-      %{<small class="info">(#{ display_name })</small>}
+      %{<small class="info">(#{ h(display_name) })</small>}
     end
   end
 

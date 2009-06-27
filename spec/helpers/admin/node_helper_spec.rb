@@ -72,6 +72,12 @@ describe Admin::NodeHelper do
     helper.node_title.should == %{<span class="title">Title</span>}
   end
 
+  it "should render the title of the current node with HTML entities escaped" do
+    assigns[:current_node] = @page
+    @page.should_receive(:title).and_return("Ham & Cheese")
+    helper.node_title.should == %{<span class="title">Ham &amp; Cheese</span>}
+  end
+
   it "should render the page type if it's not Page" do
     assigns[:current_node] = @page
     @class = mock("Class")
