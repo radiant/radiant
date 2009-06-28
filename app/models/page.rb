@@ -95,7 +95,7 @@ class Page < ActiveRecord::Base
     Status.find(self.status_id)
   end
   def status=(value)
-    self.status_id = value.object_id
+    self.status_id = value.id
   end
 
   def url
@@ -295,4 +295,3 @@ class Page < ActiveRecord::Base
     end
 
 end
-

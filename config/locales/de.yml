@@ -20,6 +20,30 @@ de:
   welcome_controller:
     logged_out: 'Sie sind jetzt ausgeloggt.'  
     invalid_user: 'Ungültiger Benutzername oder Passwort.'   
+ 
+  # Active Record
+  activerecord:
+    errors:
+      messages:
+        blank: 'obligatorisch' # required
+        taken: 'Name schon in Benutzung' # name_in_use
+        not_a_number: 'Muss eine Zahl sein' # must be number
+        too_short: '{{count}}-Zeichen-Minimum' # character_minimum
+        too_long: '{{count}}-Zeichnen-Limit' # character_limit
+        invalid: 'ungültiges Format' #invalid_format
+      models:
+        user:
+          attributes:
+            login:
+              taken: 'Login schon in Benutzung' # login already in use
+            password:
+              confirmation: 'muss der Bestätigung entsprechen' # password_confirmation
+            email:
+              invalid: 'ungülitge E-Mail-Adresse' # invalid_email
+        page:
+          attributes:
+            slug:
+              taken: 'Slug schon in Benutzung als Kind der Elternseite' # slug_in_use
 
   # Models
   models:
@@ -31,18 +55,18 @@ de:
     page_part: 'Seitenteil'
     
     # Shared translations
-    required: 'obligatorisch'
-    name_in_use: 'Name schon in Benutzung'
-    slug_in_use: 'Slug schon in Benutzung als Kind der Elternseite'
-    character_limit: '{{count}}-Zeichnen-Limit'
-    character_minimum: '{{count}}-Zeichen-Minimum'
-    must_be_number: 'Muss eine Zahl sein'
-    invalid_format: 'ungültiges Format'
-    no_spaces_tabs: 'Darf keine Leerschläge oder Tabs enthalten.'
-    # User
-    login_in_use: 'Login schon in Benutzung'
-    password_confirmation: 'muss der Bestätigung entsprechen'
-    invalid_email: 'ungülitge E-Mail-Adresse'  
+    # required: 'obligatorisch'
+    # name_in_use: 'Name schon in Benutzung'
+    # slug_in_use: 'Slug schon in Benutzung als Kind der Elternseite'
+    # character_limit: '{{count}}-Zeichnen-Limit'
+    # character_minimum: '{{count}}-Zeichen-Minimum'
+    # must_be_number: 'Muss eine Zahl sein'
+    # invalid_format: 'ungültiges Format'
+    # no_spaces_tabs: 'Darf keine Leerschläge oder Tabs enthalten.'
+    # # User
+    # login_in_use: 'Login schon in Benutzung'
+    # password_confirmation: 'muss der Bestätigung entsprechen'
+    # invalid_email: 'ungülitge E-Mail-Adresse'  
   
   # Views
   views:   

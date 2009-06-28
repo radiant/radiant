@@ -20,6 +20,30 @@ ru:
   welcome_controller:
     logged_out: "Вы вышли из системы."
     invalid_user: "Неверное имя либо пароль."
+    
+  # Active Record
+  activerecord:
+    errors:
+      messages:
+        blank: 'обязательное поле' # required
+        taken: 'имя ужк существует' # name_in_use
+        not_a_number: 'должно быть числом' # must be number
+        too_short: 'минимум {{count}} символов' # character_minimum
+        too_long: 'ограничение {{count}} символов' # character_limit
+        invalid: 'неверный формат' #invalid_format
+      models:
+        user:
+          attributes:
+            login:
+              taken: 'Имя пользователя занято' # login_in_use
+            password:
+              confirmation: 'несоответствие подтверждению' # password_confirmation
+            email:
+              invalid: 'неверный адрес e-mail' # invalid_email
+        page:
+          attributes:
+            slug:
+              taken: 'окончание URL (slug) уже используется в иерархии страниц' # slug_in_use
 
   # Models
   models:
@@ -29,20 +53,20 @@ ru:
     snippet: 'Snippet'
     layout: 'Layout'
     page_page: 'Page Part'
-    
-    # Shared translations
-    required: 'обязательное поле'
-    name_in_use: 'имя ужк существует'
-    slug_in_use: 'окончание URL (slug) уже используется в иерархии страниц'
-    character_limit: 'ограничение {{count}} символов'
-    character_minimum: 'минимум {{count}} символов'
-    must_be_number: 'должно быть числом'
-    invalid_format: 'неверный формат'
-    no_spaces_tabs: 'не должно содержать пробелов м табудяций'
-    # User
-    login_in_use: 'Имя пользователя занято'
-    password_confirmation: 'несоответствие подтверждению'
-    invalid_email: 'неверный адрес e-mail'
+  
+    # # Shared translations
+    # required: 'обязательное поле'
+    # name_in_use: 'имя ужк существует'
+    # slug_in_use: 'окончание URL (slug) уже используется в иерархии страниц'
+    # character_limit: 'ограничение {{count}} символов'
+    # character_minimum: 'минимум {{count}} символов'
+    # must_be_number: 'должно быть числом'
+    # invalid_format: 'неверный формат'
+    # no_spaces_tabs: 'не должно содержать пробелов м табудяций'
+    # # User
+    # login_in_use: 'Имя пользователя занято'
+    # password_confirmation: 'несоответствие подтверждению'
+    # invalid_email: 'неверный адрес e-mail'
 
   # Views
   views:
