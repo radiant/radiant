@@ -3,8 +3,7 @@
   - top.help_text do
     %p
       Use layouts to apply a visual look to a  Web page. Layouts can contain special tags to include
-      page content and other elements such as the header or footer. Click on a layout name below to
-      edit it or click <code>Remove</code> to delete it.
+      page content and other elements such as the header or footer.
 
 %table#layouts.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0" }
   %thead
@@ -17,7 +16,7 @@
           %th.modify
             Modify
   %tbody
-    - unless @layouts.empty?
+    - if @layouts.any?
       - @layouts.each do |layout|
         %tr.node.level-1
           - render_region :tbody do |tbody|
@@ -30,7 +29,7 @@
                 = link_to image('remove', :alt => 'Remove Layout'), remove_admin_layout_url(layout)
     - else
       %tr
-        %td.note{:colspan => 2} No layouts exist.
+        %td.note{:colspan => admin.layout.index.tbody.length} No Layouts
 
 - render_region :bottom do |bottom|
   - bottom.new_button do
