@@ -2,6 +2,7 @@
 
 === Edge
 
+* Require Cucumber version 0.3.9 or greater in cucumber.rake [Jim Gay]
 * Set generated extensions to require 'application_controller' [Jim Gay]
 * Add import/export tasks for Radiant::Config [Jim Gay]
 * Set Radiant::Config to cache info in the Rails.cache [Jim Gay]
