@@ -76,6 +76,7 @@ describe ApplicationController do
     end
 
     it "should default to config.time_zone" do
+      Radiant::Config.initialize_cache # to clear out setting from previous tests
       controller.send(:set_timezone)
       Time.zone.name.should == 'UTC'
     end
