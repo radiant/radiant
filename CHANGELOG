@@ -2,6 +2,8 @@
 
 === Edge
 
+* Set generated extensions to require 'application_controller' [Jim Gay]
+* Add import/export tasks for Radiant::Config [Jim Gay]
 * Set Radiant::Config to cache info in the Rails.cache [Jim Gay]
 * Markup fixes [Justin Blecher, Alex Wallace]
 * Use Rails for time zone handling [Kunal Shah, Josh French]
