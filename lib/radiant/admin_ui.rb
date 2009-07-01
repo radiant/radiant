@@ -104,8 +104,8 @@ module Radiant
             edit.main.concat %w{edit_header edit_form edit_popups}
             edit.form.concat %w{edit_title edit_extended_metadata
                                   edit_page_parts}
-            edit.form_bottom.concat %w{edit_buttons}
-            edit.parts_bottom.concat %w{edit_layout_and_type edit_timestamp}
+            edit.form_bottom.concat %w{edit_buttons edit_timestamp}
+            edit.parts_bottom.concat %w{edit_layout_and_type}
         end
         page.index = RegionSet.new do |index|
           index.sitemap_head.concat %w{title_column_header status_column_header
@@ -128,7 +128,7 @@ module Radiant
           edit.main.concat %w{edit_header edit_form}
           edit.form.concat %w{edit_name edit_email edit_username edit_password
                               edit_roles edit_notes}
-          edit.form_bottom.concat %w{edit_timestamp edit_buttons}
+          edit.form_bottom.concat %w{edit_buttons edit_timestamp}
         end
         user.index = RegionSet.new do |index|
           index.thead.concat %w{title_header roles_header modify_header}
@@ -143,8 +143,8 @@ module Radiant
       returning OpenStruct.new do |snippet|
         snippet.edit = RegionSet.new do |edit|
           edit.main.concat %w{edit_header edit_form}
-          edit.form.concat %w{edit_title edit_content edit_filter edit_timestamp}
-          edit.form_bottom.concat %w{edit_buttons}
+          edit.form.concat %w{edit_title edit_content edit_filter}
+          edit.form_bottom.concat %w{edit_buttons edit_timestamp}
         end
         snippet.index = RegionSet.new do |index|
           index.top.concat %w{help_text}
@@ -160,8 +160,8 @@ module Radiant
       returning OpenStruct.new do |layout|
         layout.edit = RegionSet.new do |edit|
           edit.main.concat %w{edit_header edit_form}
-          edit.form.concat %w{edit_title edit_extended_metadata edit_content edit_timestamp}
-          edit.form_bottom.concat %w{edit_buttons}
+          edit.form.concat %w{edit_title edit_extended_metadata edit_content}
+          edit.form_bottom.concat %w{edit_buttons edit_timestamp}
         end
         layout.index = RegionSet.new do |index|
           index.top.concat %w{help_text}

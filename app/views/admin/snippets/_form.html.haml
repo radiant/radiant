@@ -16,9 +16,6 @@
           %p
             %label{:for=>"snippet_filter_id"} Filter
             = f.select :filter_id, [['none', '']] + TextFilter.descendants.map { |f| f.filter_name }.sort, :id => 'snippet_filter'
-      - form.edit_timestamp do
-        %p.updated_line
-          = updated_stamp @snippet
   - render_region :form_bottom do |form_bottom|
     - form_bottom.edit_buttons do
       %p.buttons{:style=>"clear: left"}
@@ -26,3 +23,6 @@
         = save_model_and_continue_editing_button(@snippet)
         or
         = link_to 'Cancel', admin_snippets_url
+    - form_bottom.edit_timestamp do
+      %p.updated_line
+        = updated_stamp @snippet

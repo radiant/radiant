@@ -24,8 +24,6 @@
         %p.content
           = f.label :layout_content, "Body"
           ~ f.text_area 'content', :size => '40x20', :style => 'width: 100%', :class => "textarea"
-      - form.edit_timestamp do
-        = updated_stamp @layout
   = javascript_tag "$('layout_name').activate()"
   - render_region :form_bottom do |form_bottom|
     - form_bottom.edit_buttons do
@@ -34,3 +32,6 @@
         = save_model_and_continue_editing_button @layout
         or
         = link_to "Cancel", admin_layouts_url
+    - form_bottom.edit_timestamp do
+      = updated_stamp @layout
+    

@@ -47,8 +47,6 @@
                 = fields.datetime_select :published_at, :disabled => true
             = render_region :layout_row, :locals => {:f => fields}
           %span.clear &nbsp;
-        - parts_bottom.edit_timestamp do
-          = updated_stamp @page
 - render_region :form_bottom do |form_bottom|
   - form_bottom.edit_buttons do
     - @buttons_partials.each do |partial|
@@ -58,3 +56,6 @@
       = save_model_and_continue_editing_button(@page)
       or
       = link_to 'Cancel', admin_pages_url
+  - form_bottom.edit_timestamp do
+    = updated_stamp @page
+  
