@@ -58,7 +58,7 @@ Radiant::Initializer.run do |config|
   config.active_record.observers = :user_action_observer
 
   # Make Active Record use UTC-base instead of local time
-  config.active_record.default_timezone = :utc
+  config.time_zone = 'UTC'
 
   # Set the default field error proc
   config.action_view.field_error_proc = Proc.new do |html, instance|

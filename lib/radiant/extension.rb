@@ -31,6 +31,20 @@ module Radiant
       AdminUI.instance
     end
 
+    # Determine if another extension is installed and up to date.
+    #
+    # if MyExtension.extension_enabled?(:third_party)
+    #   ThirdPartyExtension.extend(MyExtension::IntegrationPoints)
+    # end
+    def extension_enabled?(extension)
+      begin
+        extension = (extension.to_s.camelcase + 'Extension').constantize
+        extension.active? and extension.migrator.new(:up, extension.migrations_path).pending_migrations.empty?
+      rescue NameError
+        false
+      end
+    end
+
     class << self
 
       def activate_extension
@@ -58,6 +72,20 @@ module Radiant
 
       def route_definitions
         @route_definitions ||= []
+      end
+
+      # Expose the configuration object for depencencies, init hooks, &c
+      # class MyExtension < ActiveRecord::Base
+      #   extension_config do |config|
+      #     config.gem 'gem_name'
+      #     config.extension 'radiant-extension-name'
+      #     config.after_initialize do
+      #       run_something
+      #     end
+      #   end
+      # end
+      def extension_config(&block)
+        yield Rails.configuration
       end
     end
   end
