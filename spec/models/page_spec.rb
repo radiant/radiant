@@ -184,7 +184,7 @@ describe Page do
     @page.status_id = Status[:published].id
     @page.save
     @page.published_at.should_not be_nil
-    @page.published_at.day.should == Time.now.utc.day
+    @page.published_at.utc.day.should == Time.now.utc.day
   end
 
   it 'should not update published_at when already published' do
