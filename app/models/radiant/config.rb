@@ -40,7 +40,7 @@ module Radiant
             Radiant::Config.initialize_cache
           end
           Radiant::Config.initialize_cache if Radiant::Config.stale_cache?
-          Rails.cache.fetch('Radiant::Config')[key]
+          Rails.cache.read('Radiant::Config')[key]
         end
       end
 
@@ -59,11 +59,11 @@ module Radiant
       def initialize_cache
         Radiant::Config.ensure_cache_file
         Rails.cache.write('Radiant::Config',Radiant::Config.to_hash)
-        Rails.cache.write('Radiant.cache_mtime', File.mtime(Rails.cache.fetch('Radiant.cache_file')))
+        Rails.cache.write('Radiant.cache_mtime', File.mtime(Rails.cache.read('Radiant.cache_file')))
       end
       
       def cache_file_exists?
-        return false if Rails.cache.fetch('Radiant.cache_file').nil?
+        return false if Rails.cache.read('Radiant.cache_file').nil?
         File.file?(Rails.cache.read('Radiant.cache_file'))
       end
       
@@ -73,9 +73,9 @@ module Radiant
       end
       
       def ensure_cache_file
-        Radiant::Cache::EntityStore.new if Radiant::Cache.entity_stores.blank?
-        Rails.cache.write('Radiant.cache_file', File.join(Radiant::Cache.entity_stores.first.root,'radiant_config_cache.txt'))
-        File.open(Rails.cache.fetch('Radiant.cache_file'), "wb+") {|f| f.write('')}
+        cache_file = File.join(Rails.root,'tmp','radiant_config_cache.txt')
+        Rails.cache.write('Radiant.cache_file', cache_file)
+        File.open(Rails.cache.read('Radiant.cache_file'), "wb+") {|f| f.write('')}
       end
     end
 

@@ -48,9 +48,11 @@ describe Radiant::Config do
   
   it "should create a cache file when initializing the cache" do
     Radiant::Cache.clear
-    File.exist?(File.join(Radiant::Cache.entity_stores.first.root,'radiant_config_cache.txt')).should be_false
+    cache_file = File.join(Rails.root,'tmp','radiant_config_cache.txt')
+    File.delete(cache_file)
+    File.exist?(cache_file).should be_false
     Radiant::Config.initialize_cache
-    File.file?(File.join(Radiant::Cache.entity_stores.first.root,'radiant_config_cache.txt')).should be_true
+    File.file?(cache_file).should be_true
   end
   
   it "should find the value in the cache with []" do
