@@ -123,7 +123,7 @@ function valid_part_name() {
     return false;
   }
   tabControl.tabs.each(function(pair){
-    if (tabControl.tabs.get(pair.key).caption == name) {
+    if (tabControl.tabs.get(pair.key).label == name) {
       result = false;
       alert('Part name must be unique.');
       throw $break;

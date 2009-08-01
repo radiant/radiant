@@ -2,6 +2,7 @@
 
 === Edge
 
+* Properly check for existing page parts when creating a new part. [alexmek]
 * Use the correct variable name so the extension name is part of the output.
 [John Muhl]
 * Generate Cucumber support for extensions [Jim Gay]
