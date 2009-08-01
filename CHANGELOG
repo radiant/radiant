@@ -2,6 +2,7 @@
 
 === Edge
 
+* Support DB2 [Antonio Cangiano]
 * Properly check for existing page parts when creating a new part. [alexmek]
 * Use the correct variable name so the extension name is part of the output.
 [John Muhl]
