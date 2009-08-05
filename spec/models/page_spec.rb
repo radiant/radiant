@@ -184,7 +184,7 @@ describe Page do
     @page.status_id = Status[:published].id
     @page.save
     @page.published_at.should_not be_nil
-    @page.published_at.day.should == Time.now.utc.day
+    @page.published_at.utc.day.should == Time.now.utc.day
   end
 
   it 'should not update published_at when already published' do
@@ -514,7 +514,7 @@ describe Page, "class which is applied to a page but not defined" do
   dataset :pages
 
   before :each do
-    eval(%Q{class ClassNotDefinedPage < Page; def self.missing?; false end end}, TOPLEVEL_BINDING)
+    Object.send(:const_set, :ClassNotDefinedPage, Class.new(Page){ def self.missing?; false end })
     create_page "Class Not Defined", :class_name => "ClassNotDefinedPage"
     Object.send(:remove_const, :ClassNotDefinedPage)
     Page.load_subclasses
@@ -530,6 +530,10 @@ describe Page, "class which is applied to a page but not defined" do
 
   it "should adjust the display name to indicate that the page type is not installed" do
     ClassNotDefinedPage.display_name.should match(/not installed/)
+  end
+  
+  after :each do
+    Object.send(:remove_const, :ClassNotDefinedPage)
   end
 end
 

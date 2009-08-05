@@ -35,10 +35,15 @@ class ExtensionGenerator < Rails::Generator::NamedBase
         m.directory "#{extension_path}/spec/models"        
         m.directory "#{extension_path}/spec/views"
         m.directory "#{extension_path}/spec/helpers"
+        m.directory "#{extension_path}/features/support"
+        m.directory "#{extension_path}/features/step_definitions/admin"
 
         m.template 'RSpecRakefile',       "#{extension_path}/Rakefile"
         m.template 'spec_helper.rb',      "#{extension_path}/spec/spec_helper.rb"
         m.file     'spec.opts',           "#{extension_path}/spec/spec.opts"
+        m.file     'cucumber.yml',        "#{extension_path}/cucumber.yml"
+        m.template 'cucumber_env.rb',     "#{extension_path}/features/support/env.rb"
+        m.template 'cucumber_paths.rb',   "#{extension_path}/features/support/paths.rb"
       end
     end
   end

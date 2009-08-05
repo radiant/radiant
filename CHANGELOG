@@ -2,6 +2,16 @@
 
 === Edge
 
+* Respond to show methods with xml rendering [Jeremy Stephens]
+* Support DB2 [Antonio Cangiano]
+* Properly check for existing page parts when creating a new part. [alexmek]
+* Use the correct variable name so the extension name is part of the output.
+[John Muhl]
+* Generate Cucumber support for extensions [Jim Gay]
+* Require Cucumber version 0.3.9 or greater in cucumber.rake [Jim Gay]
+* Set generated extensions to require 'application_controller' [Jim Gay]
+* Add import/export tasks for Radiant::Config [Jim Gay]
+* Set Radiant::Config to cache info in the Rails.cache [Jim Gay]
 * Markup fixes [Justin Blecher, Alex Wallace]
 * Use Rails for time zone handling [Kunal Shah, Josh French]
 * Allow extensions to declare dependencies [Josh French]
@@ -48,7 +58,7 @@ Cribbs]
 Allan]
 * Don't raise exception on unauthenticated request to /admin/logout.
 [Josh French]
-* Reverse view paths order in extension loader. [Sean Cribbs, Brent
+* Reverse view paths order in extension loader. [Sean Cribbs, Brent 
 Kroeker]
 * Remove obviated Ruby 1.8.7 compatibility patch. [Sean Cribbs]
 * Adjust StandardTags#relative_url_for for case when relative_url_root

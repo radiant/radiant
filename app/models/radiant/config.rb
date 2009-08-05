@@ -30,12 +30,17 @@ module Radiant
   #                              for published date on the page edit screen
   class Config < ActiveRecord::Base
     set_table_name "config"
+    after_save :update_cache
 
     class << self
       def [](key)
         if table_exists?
-          pair = find_by_key(key)
-          pair.value if pair
+          unless Radiant::Config.cache_file_exists?
+            Radiant::Config.ensure_cache_file
+            Radiant::Config.initialize_cache
+          end
+          Radiant::Config.initialize_cache if Radiant::Config.stale_cache?
+          Rails.cache.read('Radiant::Config')[key]
         end
       end
 
@@ -50,6 +55,30 @@ module Radiant
       def to_hash
         Hash[ *find(:all).map { |pair| [pair.key, pair.value] }.flatten ]
       end
+      
+      def initialize_cache
+        Radiant::Config.ensure_cache_file
+        Rails.cache.write('Radiant::Config',Radiant::Config.to_hash)
+        Rails.cache.write('Radiant.cache_mtime', File.mtime(Rails.cache.read('Radiant.cache_file')))
+      end
+      
+      def cache_file_exists?
+        return false if Rails.cache.read('Radiant.cache_file').nil?
+        File.file?(Rails.cache.read('Radiant.cache_file'))
+      end
+      
+      def stale_cache?
+        return true unless Radiant::Config.cache_file_exists?
+        Rails.cache.read('Radiant.cache_mtime') != File.mtime(Rails.cache.read('Radiant.cache_file'))
+      end
+      
+      def ensure_cache_file
+        cache_path = "#{Rails.root}/tmp"
+        cache_file = File.join(cache_path,'radiant_config_cache.txt')
+        Rails.cache.write('Radiant.cache_file', cache_file)
+        FileUtils.mkpath(cache_path)
+        FileUtils.touch(cache_file)
+      end
     end
 
     def value=(param)
@@ -62,6 +91,10 @@ module Radiant
       else
         self[:value]
       end
+    end
+    
+    def update_cache
+      Radiant::Config.initialize_cache
     end
   end
 end

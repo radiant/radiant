@@ -2,9 +2,13 @@ require File.dirname(__FILE__) + "/../../spec_helper"
 
 describe Radiant::Config do
   before :each do
+    Radiant::Config.initialize_cache
     @config = Radiant::Config
     set('test', 'cool')
     set('foo', 'bar')
+  end
+  after :each do 
+    Radiant::Cache.clear
   end
 
   describe "before the table exists, as in case of before bootstrap" do
@@ -21,6 +25,43 @@ describe Radiant::Config do
     it "should ignore the bracket assignment" do
       @config['test'] = 'cool'
     end
+  end
+  
+  it "should create a cache of all records in a hash with Radiant::Config.initialize_cache" do
+    Rails.cache.read('Radiant::Config').should == Radiant::Config.to_hash
+  end
+  
+  it "should recreate the cache after a record is saved" do
+    Radiant::Config.create!(:key => 'cache', :value => 'true')
+    Rails.cache.read('Radiant::Config').should == Radiant::Config.to_hash
+  end
+  
+  it "should update the mtime on the cache file after a record is saved" do
+    FileUtils.should_receive(:mkpath).with("#{Rails.root}/tmp").at_least(:once)
+    FileUtils.should_receive(:touch).with(Rails.cache.read('Radiant.cache_file'))
+    Radiant::Config['mtime'] = 'now'
+  end
+  
+  it "should record the cache file mtime when the cache is initialized" do
+    Radiant::Config.initialize_cache
+    Rails.cache.read('Radiant.cache_mtime').should == File.mtime(Rails.cache.fetch('Radiant.cache_file'))
+  end
+  
+  it "should create a cache file when initializing the cache" do
+    Radiant::Cache.clear
+    cache_file = File.join(Rails.root,'tmp','radiant_config_cache.txt')
+    FileUtils.rm_rf(cache_file) if File.exist?(cache_file)
+    Radiant::Config.initialize_cache
+    File.file?(cache_file).should be_true
+  end
+  
+  it "should find the value in the cache with []" do
+    Radiant::Config['test'].should === Rails.cache.read('Radiant::Config')['test']
+  end
+  
+  it "should set the value in the database with []=" do
+    Radiant::Config['new-db-key'] = 'db-value'
+    Radiant::Config.find_by_key('new-db-key').value.should == 'db-value'
   end
 
   it "should return the value of a key with the bracket accessor" do
@@ -68,6 +109,6 @@ describe Radiant::Config do
   def set(key, value)
     setting = Radiant::Config.find_by_key(key)
     setting.destroy if setting
-    Radiant::Config.new(:key => key, :value => value).save
+    Radiant::Config.create!(:key => key, :value => value)
   end
 end

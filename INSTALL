@@ -4,7 +4,7 @@
 Once you have extracted the files into the directory where you would like to
 install Radiant:
 
-1. Create the MySQL/PostgreSQL/SQLite databases for your Web site. You only
+1. Create the MySQL/PostgreSQL/SQLite/SQL Server/DB2 databases for your Web site. You only
    need to create the "production" database, but you may also want to create
    the "development" and "test" databases if you are developing extensions
    or running tests.
