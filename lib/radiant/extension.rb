@@ -15,6 +15,14 @@ module Radiant
       @active
     end
     
+    def migrated?
+      migrator.new(:up, migrations_path).pending_migrations.empty?
+    end
+    
+    def enabled?
+      active? and migrated?
+    end
+    
     def migrations_path
       File.join(self.root, 'db', 'migrate')
     end
@@ -39,7 +47,7 @@ module Radiant
     def extension_enabled?(extension)
       begin
         extension = (extension.to_s.camelcase + 'Extension').constantize
-        extension.active? and extension.migrator.new(:up, extension.migrations_path).pending_migrations.empty?
+        extension.enabled?
       rescue NameError
         false
       end

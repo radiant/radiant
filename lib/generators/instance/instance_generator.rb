@@ -4,7 +4,7 @@ class InstanceGenerator < Rails::Generator::Base
   DEFAULT_SHEBANG = File.join(Config::CONFIG['bindir'],
                               Config::CONFIG['ruby_install_name'])
   
-  DATABASES = %w( mysql postgresql sqlite3 sqlserver )
+  DATABASES = %w( mysql postgresql sqlite3 sqlserver db2 )
   
   MYSQL_SOCKET_LOCATIONS = [
     "/tmp/mysql.sock",                        # default

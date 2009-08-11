@@ -73,9 +73,11 @@ module Radiant
       end
       
       def ensure_cache_file
-        cache_file = File.join(Rails.root,'tmp','radiant_config_cache.txt')
+        cache_path = "#{Rails.root}/tmp"
+        cache_file = File.join(cache_path,'radiant_config_cache.txt')
         Rails.cache.write('Radiant.cache_file', cache_file)
-        File.open(Rails.cache.read('Radiant.cache_file'), "wb+") {|f| f.write('')}
+        FileUtils.mkpath(cache_path)
+        FileUtils.touch(cache_file)
       end
     end
 

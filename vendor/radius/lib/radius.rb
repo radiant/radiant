@@ -210,6 +210,11 @@ module Radius
     def render(tag, attributes = {}, &block)
       @context.render_tag(tag, attributes, &block)
     end
+    
+    # Shortcut for accessing tag.attr[key]
+    def [](key)
+      attr[key]
+    end
   end
   
   #

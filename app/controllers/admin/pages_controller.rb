@@ -1,7 +1,7 @@
 class Admin::PagesController < Admin::ResourceController
   before_filter :initialize_meta_rows_and_buttons, :only => [:new, :edit, :create, :update]
   before_filter :count_deleted_pages, :only => [:destroy]
-  
+
   responses do |r|
     r.plural.js do
       @level = params[:level].to_i
@@ -10,14 +10,17 @@ class Admin::PagesController < Admin::ResourceController
       render :action => 'children.html.haml', :layout => false
     end
   end
-  
+
   def index
     @homepage = Page.find_by_parent_id(nil)
     response_for :plural
   end
-  
+
   def show
-    redirect_to edit_admin_page_path(params[:id])
+    respond_to do |format|
+      format.xml { super }
+      format.html { redirect_to edit_admin_page_path(params[:id]) }
+    end
   end
 
   def new
@@ -27,7 +30,7 @@ class Admin::PagesController < Admin::ResourceController
     end
     response_for :singular
   end
-  
+
   private
     def model_class
       if params[:page_id]
