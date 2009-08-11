@@ -2,6 +2,7 @@
 
 === Edge
 
+* Prevent users from cache busting with refresh or "force reload" [John Muhl]
 * Merge latest version of Radius [Kunal Shah]
 * Helpers for extension_enabled? [Kunal Shah]
 * Respond to show methods with xml rendering [Jeremy Stephens]
