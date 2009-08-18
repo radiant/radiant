@@ -54,19 +54,12 @@ module LoginSystem
       end
     end
 
-    def user_has_role?(role)
-      current_user.send("#{role}?")
-    end
-
     def user_has_access_to_action?(action)
       permissions = self.class.controller_permissions[action.to_s.intern]
       case
       when allowed_roles = permissions[:when]
         allowed_roles = [allowed_roles].flatten
-        allowed_roles.each do |role|
-          return true if user_has_role?(role)
-        end
-        false
+        allowed_roles.any? { |role| current_user.has_role?(role) }
       when condition_method = permissions[:if]
         send(condition_method)
       else

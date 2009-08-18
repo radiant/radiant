@@ -8,74 +8,101 @@ module Radiant
 
     class DuplicateTabNameError < StandardError; end
 
-    class Tab
-      attr_accessor :name, :url, :visibility
+    # The NavTab Class holds the structure of a navigation tab (including
+    # its sub-nav items).
+    class NavTab < Array
+      attr_reader :name, :proper_name, :visibility
 
-      def initialize(name, url, options = {})
-        @name, @url = name, url
-        @visibility = [options[:for], options[:visibility]].flatten.compact
-        @visibility = [:all] if @visibility.empty?
+      def initialize(name, proper_name, visibility = [:all])
+        @name, @proper_name, @visibility = name, proper_name, Array(visibility)
       end
 
-      def shown_for?(user)
-        visibility.include?(:all) or
-          visibility.any? { |role| user.send("#{role}?") }
-      end
-    end
-
-    class TabSet
-      def initialize
-        @tabs = []
-      end
-
-      def add(name, url, options = {})
-        options.symbolize_keys!
-        before = options.delete(:before)
-        after = options.delete(:after)
-        tab_name = before || after
-        if self[name]
-          raise DuplicateTabNameError.new("duplicate tab name `#{name}'")
+      def [](id)
+        unless id.kind_of? Fixnum
+          self.find {|subnav_item| subnav_item.name.to_s == id.to_s }
         else
-          if tab_name
-            index = @tabs.index(self[tab_name])
-            index += 1 if before.nil?
-            @tabs.insert(index, Tab.new(name, url, options))
+          super
+        end
+      end
+
+      def <<(*args)
+        options = args.extract_options!
+        item = args.size > 1 ? deprecated_add(*(args << caller)) : args.first
+        raise DuplicateTabNameError.new("duplicate tab name `#{item.name}'") if self[item.name]
+        item.tab = self if item.respond_to?(:tab=)
+        if options.empty?
+          super(item)
+        else
+          options.symbolize_keys!
+          before = options.delete(:before)
+          after = options.delete(:after)
+          tab_name = before || after
+          if self[tab_name]
+            _index = index(self[tab_name])
+            _index += 1 unless before
+            insert(_index, item)
           else
-            @tabs << Tab.new(name, url, options)
+            super(item)
           end
         end
       end
 
-      def remove(name)
-        @tabs.delete(self[name])
+      alias :add :<<
+
+      def visible?(user)
+        visibility.include?(:all) || visibility.any? {|v| user.has_role?(v) }
       end
 
-      def size
-        @tabs.size
+      def deprecated_add(name, url, caller)
+        ActiveSupport::Deprecation.warn("admin.tabs.add is no longer supported in Radiant 0.9+.  Please update your code to use admin.nav", caller)
+        NavSubItem.new(name.underscore.to_sym, name, url)
+      end
+    end
+
+    # Simple structure for storing the properties of a tab's sub items.
+    class NavSubItem
+      attr_reader :name, :proper_name, :url
+      attr_accessor :tab
+
+      def initialize(name, proper_name, url = "#")
+        @name, @proper_name, @url = name, proper_name, url
       end
 
-      def [](index)
-        if index.kind_of? Integer
-          @tabs[index]
+      def visible?(user)
+        tab.visible?(user) && visible_by_controller?(user)
+      end
+
+      def relative_url
+        File.join(ActionController::Base.relative_url_root || '', url)
+      end
+      
+      private
+      def visible_by_controller?(user)
+        params = ActionController::Routing::Routes.recognize_path(url, :method => :get)
+        if params && params[:controller]
+          controller = "#{params[:controller].camelize}Controller".constantize
+          controller.new.send(:user_has_access_to_action?, params[:action])
         else
-          @tabs.find { |tab| tab.name == index }
+          false
         end
       end
-
-      def each
-        @tabs.each { |t| yield t }
-      end
-
-      def clear
-        @tabs.clear
-      end
-
-      include Enumerable
     end
 
     include Simpleton
 
-    attr_accessor :tabs
+    attr_accessor :nav
+    
+    def nav_tab(*args)
+      NavTab.new(*args)
+    end
+    
+    def nav_item(*args)
+      NavSubItem.new(*args)
+    end
+    
+    def tabs
+      nav[:content]
+    end
 
     # Region sets
     %w{page snippet layout user extension}.each do |controller|
@@ -84,8 +111,29 @@ module Radiant
     end
 
     def initialize
-      @tabs = TabSet.new
+      @nav = NavTab.new(:tabs, "Tab Container")
       load_default_regions
+    end
+
+    def load_default_nav
+      content = nav_tab(:content, "Content")
+      content << nav_item(:pages, "Pages", "/admin/pages")
+      content << nav_item(:snippets, "Snippets", "/admin/snippets")
+      nav << content
+
+      design = nav_tab(:design, "Design", [:developer])
+      design << nav_item(:layouts, "Layouts", "/admin/layouts")
+      nav << design
+
+      # media = NavTab.new(:assets, "Assets")
+      # media << NavSubItem.new(:all, "All", "/admin/assets/")
+      # media << NavSubItem.new(:all, "Unattached", "/admin/assets/unattached/")
+
+      settings = nav_tab(:settings, "Settings")
+      settings << nav_item(:general, "Personal", "/admin/preferences/edit")
+      settings << nav_item(:users, "Users", "/admin/users")
+      settings << nav_item(:extensions, "Extensions", "/admin/extensions")
+      nav << settings
     end
 
     def load_default_regions
@@ -171,7 +219,7 @@ module Radiant
         layout.new = layout.edit
       end
     end
-    
+
     def load_default_extension_regions
       returning OpenStruct.new do |extension|
         extension.index = RegionSet.new do |index|

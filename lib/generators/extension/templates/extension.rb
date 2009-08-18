@@ -13,11 +13,6 @@ class <%= class_name %> < Radiant::Extension
   # end
   
   def activate
-    # admin.tabs.add "<%= extension_name %>", "/admin/<%= file_name %>", :after => "Layouts", :visibility => [:all]
+    # admin.nav[:content] << admin.nav_item(:<%= file_name %>, "<%= extension_name %>", "/admin/<%= file_name %>"), :after => :pages
   end
-  
-  def deactivate
-    # admin.tabs.remove "<%= extension_name %>"
-  end
-  
 end

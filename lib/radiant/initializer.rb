@@ -186,10 +186,8 @@ end_error
     end
 
     def initialize_default_admin_tabs
-      admin.tabs.clear
-      admin.tabs.add "Pages",    "/admin/pages"
-      admin.tabs.add "Snippets", "/admin/snippets"
-      admin.tabs.add "Layouts",  "/admin/layouts", :visibility => [:admin, :developer]
+      admin.nav.clear
+      admin.load_default_nav
     end
 
     def initialize_framework_views

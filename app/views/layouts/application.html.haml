@@ -17,24 +17,21 @@
   %body{:class=>body_classes.join(" ")}
     #page
       #header
-        / - if logged_in?
-        /   #navigation= links_for_navigation
         - if logged_in?
           #site_links
             = %{Logged in as #{link_to h(current_user.name), edit_admin_preferences_path} &nbsp; (#{link_to "Logout", logout_path})}
             &nbsp;
             %a{:href=>"#view_site_popup", :id=>"view_site", :onclick=>"return false"} View Site
           %ul#navigation
-            - @selected = :pages
-            - nav_tabs.each do |primary_item|
-              %li{:class=>(primary_item[@selected] ? 'current' : nil)}
-                %a{:href=>(primary_item.first.url unless primary_item.first.nil?)}
-                  = primary_item.proper_name
-                - if primary_item[@selected]
+            - nav_tabs.each do |tab|
+              %li{:class=> current_tab?(tab) ? 'current' : ''}
+                %a{:href=>(tab.first.url if tab.first)}
+                  = tab.proper_name
+                - if current_tab?(tab)
                   %ul#nav_sub
-                    - primary_item.each do |sub_item|
+                    - tab.each do |sub_item|
                       %li
-                        %a{:href=>sub_item.url, :class=>(sub_item.name == @selected ? 'current' : nil)}>
+                        %a{:href => sub_item.url, :class => current_item?(sub_item) ? 'current' : ''}>
                           %span
                             = sub_item.proper_name
           #header_bottom

@@ -183,3 +183,21 @@ describe User, "class methods" do
     User.authenticate('nonexisting', 'password').should be_nil
   end
 end
+
+describe User, "roles" do
+  dataset :users
+  
+  it "should not have a non-existent role" do
+    users(:existing).has_role?(:foo).should be_false
+  end
+  
+  it "should not have a role for which the corresponding method returns false" do
+    users(:existing).has_role?(:developer).should be_false
+    users(:existing).has_role?(:admin).should be_false
+  end
+  
+  it "should have a role for which the corresponding method returns true" do
+    users(:developer).has_role?(:developer).should be_true
+    users(:admin).has_role?(:admin).should be_true
+  end
+end

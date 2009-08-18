@@ -5,7 +5,4 @@ class LoadOrderGreenExtension < Radiant::Extension
   
   def activate
   end
-
-  def deactivate
-  end
 end
