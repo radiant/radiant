@@ -21,11 +21,10 @@ namespace :radiant do
       task :styles do
         FileUtils.mkpath "public/stylesheets/sass/admin"
         FileUtils.cp_r "../prototype/stylesheets/admin", "public/stylesheets/sass"
-        Dir['public/stylesheets/sass/admin/*.sass'].each do |filename|
-          content = IO.read(filename)
-          File.open(filename, "w") do |f|
-            f.write(content.gsub(%r{@import /stylesheets/}, '@import '))
-          end
+        filename = 'public/stylesheets/sass/admin/main.sass'
+        content = IO.read(filename)
+        File.open(filename, "w") do |f|
+          f.write(content.gsub(%r{@import _}, '@import admin/_'))
         end
         FileUtils.rm_rf "public/stylesheets/admin"
       end

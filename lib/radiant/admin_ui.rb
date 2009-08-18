@@ -103,9 +103,8 @@ module Radiant
         page.edit = RegionSet.new do |edit|
             edit.main.concat %w{edit_header edit_form edit_popups}
             edit.form.concat %w{edit_title edit_extended_metadata
-                                  edit_page_parts}
+                                  edit_page_parts edit_layout_and_type}
             edit.form_bottom.concat %w{edit_buttons edit_timestamp}
-            edit.parts_bottom.concat %w{edit_layout_and_type}
         end
         page.index = RegionSet.new do |index|
           index.sitemap_head.concat %w{title_column_header status_column_header

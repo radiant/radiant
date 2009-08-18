@@ -1,3 +1,5 @@
+- body_classes << "reversed"
+
 - render_region :main do |main|
   - main.edit_header do
     %h1 New Page
@@ -6,4 +8,5 @@
       = render :partial => "fields", :object => f
   - main.edit_popups do
     = render :partial => "popups"
-= render :partial => "edit_styles"
+
+- content_for 'page_scripts', page_edit_javascripts

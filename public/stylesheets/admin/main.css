@@ -837,10 +837,10 @@ div.popup .reference table h2, div.popup .reference table h3, div.popup .referen
         font-weight: normal;
         font-size: 80%;
         text-shadow: none; }
-    #tab_control .pages #reference_links {
+    #tab_control .pages .reference_links {
       font-size: 85%;
       margin-left: 10px; }
-      #tab_control .pages #reference_links a {
+      #tab_control .pages .reference_links a {
         color: #0066cc;
         padding-left: 6px; }
 

@@ -1,7 +1,7 @@
 - form_for [:admin, @snippet], :html => {:onsubmit_status => onsubmit_status(@snippet)} do |f|
   = f.hidden_field :lock_version
   = render_region :form_top
-  .form-area
+  .form_area
     - render_region :form do |form|
       - form.edit_title do
         %p.title
