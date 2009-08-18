@@ -39,10 +39,10 @@ module Admin::NodeHelper
       if expanded
         " children_visible"
       else
-        " children-hidden"
+        " children_hidden"
       end
     else
-      " no-children"
+      " no_children"
     end
   end
 
@@ -80,7 +80,7 @@ module Admin::NodeHelper
 
   def spinner
     image('spinner.gif',
-            :class => 'busy', :id => "busy-#{@current_node.id}",
+            :class => 'busy', :id => "busy_#{@current_node.id}",
             :alt => "",  :title => "",
             :style => 'display: none;')
   end

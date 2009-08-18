@@ -25,11 +25,11 @@
           - tbody.modify_cell do
             %td.remove
               - if user == current_user
-                = image('remove-disabled', :alt => 'Remove')
+                = image('remove_disabled', :alt => 'Remove')
               - else
                 = link_to(image('remove', :alt => 'Remove User'), remove_admin_user_url(user)) 
 
 - render_region :bottom do |bottom|
   - bottom.new_button do
     %p
-      = link_to image('new-user', :alt => 'New User'), new_admin_user_url, :title => "New User"
+      = link_to image('new_user', :alt => 'New User'), new_admin_user_url, :title => "New User"
