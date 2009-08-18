@@ -37,7 +37,7 @@ module Admin::NodeHelper
   def children_class
     unless @current_node.children.empty?
       if expanded
-        " children-visible"
+        " children_visible"
       else
         " children-hidden"
       end

@@ -105,7 +105,7 @@ var SiteMapBehavior = Behavior.create({
   showBranch: function(parent, img) {
     var level = this.extractLevel(parent), row = parent.next(),
         children = false, expandLevels = [level + 1];
-    console.log('hello!');
+        
     while (this.isRow(row)) {
       var currentLevel = this.extractLevel(row);
       if (currentLevel <= level) break;
@@ -128,9 +128,10 @@ var SiteMapBehavior = Behavior.create({
         
     new Ajax.Updater(
       row,
-      '../admin/ui/pages/children/' + id + '/' + level,
+      '../admin/pages/' + id + '/children/?level=' + level,
       {
         insertion: "after",
+        method: "get",
         onLoading:  function() { spinner.show(); this.updating = true  }.bind(this),
         onComplete: function() { spinner.fade(); this.updating = false }.bind(this)
       }

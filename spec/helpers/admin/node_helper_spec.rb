@@ -49,7 +49,7 @@ describe Admin::NodeHelper do
     child = mock("child")
     @page.should_receive(:children).and_return([child])
     helper.should_receive(:expanded).and_return(true)
-    helper.children_class.should == " children-visible"
+    helper.children_class.should == " children_visible"
   end
 
   it "should display an icon for the current node" do
