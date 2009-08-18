@@ -31,7 +31,7 @@ module Admin::NodeHelper
   end
 
   def padding_left(level)
-    (level * 22) + 4
+    (level * 23) + 9
   end
 
   def children_class
@@ -50,8 +50,8 @@ module Admin::NodeHelper
     @current_node.virtual? ? " virtual": ""
   end
 
-  def expander
-    unless @current_node.children.empty?
+  def expander(level)
+    unless @current_node.children.empty? or level == 0
       image((expanded ? "collapse" : "expand"),
             :class => "expander", :alt => 'toggle children',
             :title => '')

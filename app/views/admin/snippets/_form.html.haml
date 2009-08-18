@@ -5,11 +5,11 @@
     - render_region :form do |form|
       - form.edit_title do
         %p.title
-          %label{:for=>"snippet_name"} Name
+          = f.label :name
           = f.text_field :name, :class => 'textbox activate', :maxlength => 100
       - form.edit_content do
         %p.content
-          %label{:for=>"snippet_content"} Body
+          = f.label :content, "Body"
           ~ f.text_area :content, :class => "textarea", :style => "width: 100%"
       .row
         - form.edit_filter do

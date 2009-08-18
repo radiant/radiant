@@ -57,7 +57,6 @@ class Admin::ResourceController < ApplicationController
     class_eval %{
       def #{action}                                       # def create
         model.update_attributes!(params[model_symbol])    #   model.update_attributes!(params[model_symbol])
-        announce_saved                                    #   announce_saved
         response_for :#{action}                           #   response_for :create
       end                                                 # end
     }, __FILE__, __LINE__
@@ -138,12 +137,8 @@ class Admin::ResourceController < ApplicationController
       options[:redirect_to] || (params[:continue] ? {:action => 'edit', :id => model.id} : {:action => "index"})
     end
 
-    def announce_saved(message = nil)
-      flash[:notice] = message || "#{humanized_model_name} saved below."
-    end
-
     def announce_validation_errors
-      flash.now[:error] = "Validation errors occurred while processing this form. Please take a moment to review the form and correct any input errors before continuing."
+      flash.now[:error] = "There were validation errors processing this form. Please take a moment to correct them below before continuing."
     end
 
     def announce_removed

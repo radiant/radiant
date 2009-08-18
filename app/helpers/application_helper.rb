@@ -23,6 +23,10 @@ module ApplicationHelper
     !current_user.nil?
   end
   
+  def onsubmit_status(model)
+    model.new_record? ? "Creating #{model.class.name.downcase}&#8230;" : "Saving changes&#8230;"
+  end
+  
   def save_model_button(model, options = {})
     options[:label] ||= model.new_record? ?
       "Create #{model.class.name}" : "Save Changes"
@@ -97,11 +101,11 @@ module ApplicationHelper
   def updated_stamp(model)
     unless model.new_record?
       updated_by = (model.updated_by || model.created_by)
-      login = updated_by ? updated_by.login : nil
+      name = updated_by ? updated_by.name : nil
       time = (model.updated_at || model.created_at)
-      if login or time
+      if name or time
         html = %{<p class="updated_line">Last updated } 
-        html << %{by #{login} } if login
+        html << %{by <strong>#{name}</strong> } if name
         html << %{at #{timestamp(time)}} if time
         html << %{</p>}
         html
@@ -110,7 +114,7 @@ module ApplicationHelper
   end
 
   def timestamp(time)
-    time.strftime("%I:%M <small>%p</small> on %B %d, %Y")
+    time.strftime("%I:%M %p on %B %e, %Y").sub("AM", 'am').sub("PM", 'pm')
   end 
   
   def meta_visible(symbol)
