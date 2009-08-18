@@ -110,7 +110,7 @@ module ApplicationHelper
   end
 
   def timestamp(time)
-    adjust_time(time).strftime("%I:%M <small>%p</small> on %B %d, %Y")     
+    time.strftime("%I:%M <small>%p</small> on %B %d, %Y")
   end 
   
   def meta_visible(symbol)
@@ -128,7 +128,7 @@ module ApplicationHelper
   end
   
   def toggle_javascript_for(id)
-    "Element.toggle('#{id}'); Element.toggle('more-#{id}'); Element.toggle('less-#{id}');"
+    "Element.toggle('#{id}'); Element.toggle('more-#{id}'); Element.toggle('less-#{id}'); return false;"
   end
   
   def image(name, options = {})

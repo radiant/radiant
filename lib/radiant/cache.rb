@@ -18,7 +18,9 @@ module Radiant
       Rack::Cache.new(app, {
           :entitystore => "radiant:cache/entity", 
           :metastore => "radiant:cache/meta",
-          :verbose => false}.merge(options))
+          :verbose => false,
+          :allow_reload => false,
+          :allow_revalidate => false}.merge(options))
     end
 
     def self.clear

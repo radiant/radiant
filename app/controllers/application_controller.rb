@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   
   before_filter :set_current_user
+  before_filter :set_timezone
   before_filter :set_javascripts_and_stylesheets
   
   attr_accessor :config, :cache
@@ -28,6 +29,21 @@ class ApplicationController < ActionController::Base
   def include_javascript(script)
     @javascripts << script
   end
+
+  def template_name
+    case self.action_name
+    when 'index'
+      'index'
+    when 'new','create'
+      'new'
+    when 'show'
+      'show'
+    when 'edit', 'update'
+      'edit'
+    when 'remove', 'destroy'
+      'remove'
+    end
+  end
   
   def rescue_action_in_public(exception)
     case exception
@@ -42,6 +58,10 @@ class ApplicationController < ActionController::Base
   
     def set_current_user
       UserActionObserver.current_user = current_user
+    end
+
+    def set_timezone
+      Time.zone = Radiant::Config['local.timezone'] || Time.zone_default
     end
   
     def set_javascripts_and_stylesheets

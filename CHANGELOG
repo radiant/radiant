@@ -2,6 +2,29 @@
 
 === Edge
 
+* Merge latest version of Radius [Kunal Shah]
+* Helpers for extension_enabled? [Kunal Shah]
+* Respond to show methods with xml rendering [Jeremy Stephens]
+* Support DB2 [Antonio Cangiano]
+* Properly check for existing page parts when creating a new part. [alexmek]
+* Use the correct variable name so the extension name is part of the output.
+[John Muhl]
+* Generate Cucumber support for extensions [Jim Gay]
+* Require Cucumber version 0.3.9 or greater in cucumber.rake [Jim Gay]
+* Set generated extensions to require 'application_controller' [Jim Gay]
+* Add import/export tasks for Radiant::Config [Jim Gay]
+* Set Radiant::Config to cache info in the Rails.cache [Jim Gay]
+* Markup fixes [Justin Blecher, Alex Wallace]
+* Use Rails for time zone handling [Kunal Shah, Josh French]
+* Allow extensions to declare dependencies [Josh French]
+* Set template_name for all resourceful action types [Josh French]
+* Load Metal from Extensions [Jim Gay]
+
+=== 0.8.0 Asterism
+
+* Warn about using the RedCloth 3 fallback. [Sean Cribbs, Jason Garber]
+* Prevent stty errors on JRuby while running bootstrap. [Sean Cribbs]
+* Moved template_name to ApplicationController [Jim Gay, Michael Kessler]
 * Remove vizres plugin. [Sean Cribbs]
 * Update instance config/environments to remove ResponseCache [Jim Gay]
 * Remove :order option from <r:children:count />, which causes errors on
@@ -9,7 +32,7 @@ postgresql. [Sean Cribbs]
 * Prevent recursion via the <r:content /> tag. [Sean Cribbs]
 * Update Highline. [Sean Cribbs]
 * Update Cucumber and RSpec, clean up some features and fix specs. [Sean Cribbs]
-* Set the protected attributes for users in User.protected_attributes 
+* Set the protected attributes for users in User.protected_attributes
 [Jim Gay]
 * Don't allow a nil ETag in SiteController. [David Cato]
 * Prevent failed login message from sticking around. [Kunal Shah]
@@ -17,10 +40,8 @@ postgresql. [Sean Cribbs]
 * Catch ActiveRecord::RecordNotFound in Admin::ResourceController
 [Jim Gay]
 * Catch missing template errors for show routes [Jim Gay]
-* Fix with_error in render_matcher not causing the spec to fail when no exception raised. [Jason Garber]
-
-=== 0.8.0 RC1
-
+* Fix with_error in render_matcher not causing the spec to fail when no
+exception raised. [Jason Garber]
 * Make features task run in instance mode. [Sean Cribbs]
 * Remove Admin::AbstractModelController. [Sean Cribbs]
 * Cleanup deprecated Gem::manage_gems. [Sean Cribbs]
@@ -39,7 +60,7 @@ Cribbs]
 Allan]
 * Don't raise exception on unauthenticated request to /admin/logout.
 [Josh French]
-* Reverse view paths order in extension loader. [Sean Cribbs, Brent
+* Reverse view paths order in extension loader. [Sean Cribbs, Brent 
 Kroeker]
 * Remove obviated Ruby 1.8.7 compatibility patch. [Sean Cribbs]
 * Adjust StandardTags#relative_url_for for case when relative_url_root

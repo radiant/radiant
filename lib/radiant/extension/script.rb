@@ -277,7 +277,7 @@ module Radiant
           if installed?
             find_extension && extension.uninstall
           else
-            puts "#{extension} is not installed."
+            puts "#{extension_name} is not installed."
           end
         end
       end

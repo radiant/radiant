@@ -15,6 +15,14 @@ module Radiant
       @active
     end
     
+    def migrated?
+      migrator.new(:up, migrations_path).pending_migrations.empty?
+    end
+    
+    def enabled?
+      active? and migrated?
+    end
+    
     def migrations_path
       File.join(self.root, 'db', 'migrate')
     end
@@ -29,6 +37,20 @@ module Radiant
 
     def admin
       AdminUI.instance
+    end
+
+    # Determine if another extension is installed and up to date.
+    #
+    # if MyExtension.extension_enabled?(:third_party)
+    #   ThirdPartyExtension.extend(MyExtension::IntegrationPoints)
+    # end
+    def extension_enabled?(extension)
+      begin
+        extension = (extension.to_s.camelcase + 'Extension').constantize
+        extension.enabled?
+      rescue NameError
+        false
+      end
     end
 
     class << self
@@ -58,6 +80,20 @@ module Radiant
 
       def route_definitions
         @route_definitions ||= []
+      end
+
+      # Expose the configuration object for depencencies, init hooks, &c
+      # class MyExtension < ActiveRecord::Base
+      #   extension_config do |config|
+      #     config.gem 'gem_name'
+      #     config.extension 'radiant-extension-name'
+      #     config.after_initialize do
+      #       run_something
+      #     end
+      #   end
+      # end
+      def extension_config(&block)
+        yield Rails.configuration
       end
     end
   end

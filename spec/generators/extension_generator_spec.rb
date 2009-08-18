@@ -79,6 +79,18 @@ describe "ExtensionGenerator with normal options" do
     'vendor/extensions/sample'.should have_generated_file('spec/spec.opts')
   end
   
+  it "should generate extension cucumber.yml file" do
+    'vendor/extensions/sample'.should have_generated_file('cucumber.yml')
+  end
+  
+  it "should generate extension features support directory" do
+    'vendor/extensions/sample'.should have_generated_directory('features/support')
+  end
+  
+  it "should generate extension features step_definitions directory" do
+    'vendor/extensions/sample'.should have_generated_directory('features/step_definitions/admin')
+  end
+  
   after(:each) do
     rm_rf Dir["#{RADIANT_ROOT}/vendor/extensions/*"]
     rm_rf Dir["#{RADIANT_ROOT}/vendor/generators/*"]

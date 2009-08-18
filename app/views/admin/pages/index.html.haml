@@ -17,7 +17,7 @@
         = render_node @homepage
       - else
         %tr
-          %td.note{:colspan => 4} No Pages
+          %td.note{:colspan => admin.page.index.node.length} No Pages
   = render_region :bottom
 
 - unless @homepage

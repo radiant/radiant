@@ -31,7 +31,7 @@ describe Admin::WelcomeController do
   describe "remember me" do
 
     before do
-      Radiant::Config.stub!(:[]).with('session_timeout').and_return(2.weeks)
+      Radiant::Config['session_timeout'] = 2.weeks
       @user = users(:admin)
       controller.stub!(:current_user).and_return(@user)
     end

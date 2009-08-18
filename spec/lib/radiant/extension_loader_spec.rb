@@ -125,12 +125,29 @@ describe Radiant::ExtensionLoader do
     @instance.view_paths.all? {|f| File.directory?(f) }.should be_true
   end
 
+  it "should have metal paths" do
+    @instance.stub!(:load_extension_roots).and_return(@extension_paths)
+    @instance.should respond_to(:metal_paths)
+    @instance.metal_paths.should be_instance_of(Array)
+    @instance.metal_paths.all? {|f| File.directory?(f) }.should be_true
+  end
+
   it "should return the view paths in inverse order to the loaded" do
     extensions = [BasicExtension, OverridingExtension]
     @instance.extensions = extensions
     @instance.view_paths.should == [
        "#{RADIANT_ROOT}/test/fixtures/extensions/02_overriding/app/views",
        "#{RADIANT_ROOT}/test/fixtures/extensions/01_basic/app/views"
+      ]
+  end
+
+  it "should return the metal paths in inverse order to the loaded" do
+    @instance.should_receive(:load_extension_roots).and_return(@extension_paths)
+    extensions = [BasicExtension, OverridingExtension]
+    @instance.extensions = extensions
+    @instance.metal_paths.should == [
+       "#{RADIANT_ROOT}/test/fixtures/extensions/02_overriding/app/metal",
+       "#{RADIANT_ROOT}/test/fixtures/extensions/01_basic/app/metal"
       ]
   end
   

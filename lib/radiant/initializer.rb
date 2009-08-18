@@ -12,10 +12,12 @@ module Radiant
     attr_accessor :extension_paths
     attr_writer :extensions
     attr_accessor :view_paths
+    attr_accessor :extension_dependencies
 
     def initialize
       self.view_paths = []
       self.extension_paths = default_extension_paths
+      self.extension_dependencies = []
       super
     end
 
@@ -42,6 +44,38 @@ module Radiant
       AdminUI.instance
     end
 
+    # Declare another extension as a dependency. Does not allow for the
+    # specification of versions.
+    # class MyExtension < Radiant::Extension
+    #   extension_config do |config|
+    #     config.extension 'multisite'
+    #   end
+    # end
+    def extension(ext)
+      @extension_dependencies << ext unless @extension_dependencies.include?(ext)
+    end
+
+    def check_extension_dependencies
+      unloaded_extensions = []
+      @extension_dependencies.each do |ext|
+        extension = ext.camelcase + 'Extension'
+        begin
+          extension_class = extension.constantize
+          unloaded_extensions << extension unless defined?(extension_class) && (extension_class.active?)
+        rescue NameError
+          unloaded_extensions << extension
+        end
+      end
+      if unloaded_extensions.any?
+        abort <<-end_error
+Missing these required extensions:
+#{unloaded_extensions}
+end_error
+      else
+        return true
+      end
+    end
+
     private
 
       def library_directories
@@ -51,10 +85,15 @@ module Radiant
           #{RADIANT_ROOT}/vendor/rack-cache/lib
         }
         begin
+          Object.send :gem, 'RedCloth', ">=4.0.0"
           require 'redcloth'
-        rescue LoadError
+        rescue LoadError, Gem::LoadError
           # If the gem is not available, use the packaged version
           libs << "#{RADIANT_ROOT}/vendor/redcloth/lib"
+          after_initialize do
+            warn "RedCloth > 4.0 not found.  Falling back to RedCloth 3.0.4 (2005-09-15).  You should run `gem install RedCloth`."
+            require 'redcloth'
+          end
         end
         libs
       end
@@ -70,12 +109,10 @@ module Radiant
         # Add the app's controller directory
         paths.concat(Dir["#{RADIANT_ROOT}/app/controllers/"])
 
-        # Then components subdirectories.
-        paths.concat(Dir["#{RADIANT_ROOT}/components/[_a-z]*"])
-
         # Followed by the standard includes.
         paths.concat %w(
           app
+          app/metal
           app/models
           app/controllers
           app/helpers
@@ -115,6 +152,18 @@ module Radiant
       extension_loader.add_extension_paths
       super
     end
+    
+    # override Rails initializer to insert extension metals
+    def initialize_metal
+      Rails::Rack::Metal.requested_metals = configuration.metals
+      Rails::Rack::Metal.metal_paths = ["#{RADIANT_ROOT}/app/metal"] # reset Rails default to RADIANT_ROOT
+      Rails::Rack::Metal.metal_paths += plugin_loader.engine_metal_paths
+      Rails::Rack::Metal.metal_paths += extension_loader.metal_paths
+
+      configuration.middleware.insert_before(
+        :"ActionController::RewindableInput",
+        Rails::Rack::Metal, :if => Rails::Rack::Metal.metals.any?)
+    end
 
     def add_plugin_load_paths
       # checks for plugins within extensions:
@@ -125,11 +174,15 @@ module Radiant
     def load_plugins
       super
       extension_loader.load_extensions
+      add_gem_load_paths
+      load_gems
+      check_gem_dependencies
     end
 
     def after_initialize
       super
       extension_loader.activate_extensions
+      configuration.check_extension_dependencies
     end
 
     def initialize_default_admin_tabs

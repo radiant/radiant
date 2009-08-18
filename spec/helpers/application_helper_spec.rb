@@ -161,7 +161,7 @@ describe ApplicationHelper do
   end
   
   it "should render a Javascript snippet to toggle the meta area" do
-    helper.toggle_javascript_for("joe").should == "Element.toggle('joe'); Element.toggle('more-joe'); Element.toggle('less-joe');"
+    helper.toggle_javascript_for("joe").should == "Element.toggle('joe'); Element.toggle('more-joe'); Element.toggle('less-joe'); return false;"
   end
   
   it "should render an image tag with a default file extension" do

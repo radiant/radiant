@@ -38,4 +38,47 @@ describe ApplicationController do
     controller.send :set_javascripts_and_stylesheets
     controller.include_javascript('test').should include('test')
   end
+  
+  describe 'self.template_name' do
+    it "should return 'index' when the controller action_name is 'index'" do
+      controller.stub!(:action_name).and_return('index')
+      controller.template_name.should == 'index'
+    end
+    ['new', 'create'].each do |action|
+      it "should return 'new' when the action_name is #{action}" do
+      controller.stub!(:action_name).and_return(action)
+      controller.template_name.should == 'new'
+      end
+    end
+    ['edit', 'update'].each do |action|
+      it "should return 'edit' when the action_name is #{action}" do
+      controller.stub!(:action_name).and_return(action)
+      controller.template_name.should == 'edit'
+      end
+    end
+    ['remove', 'destroy'].each do |action|
+      it "should return 'remove' when the action_name is #{action}" do
+      controller.stub!(:action_name).and_return(action)
+      controller.template_name.should == 'remove'
+      end
+    end
+    it "should return 'show' when the action_name is show" do
+      controller.stub!(:action_name).and_return('show')
+      controller.template_name.should == 'show'
+    end
+  end
+
+  describe "set_timezone" do
+    it "should use Radiant::Config['local.timezone']" do
+      Radiant::Config['local.timezone'] = 'Kuala Lumpur'
+      controller.send(:set_timezone)
+      Time.zone.name.should == 'Kuala Lumpur'
+    end
+
+    it "should default to config.time_zone" do
+      Radiant::Config.initialize_cache # to clear out setting from previous tests
+      controller.send(:set_timezone)
+      Time.zone.name.should == 'UTC'
+    end
+  end
 end
