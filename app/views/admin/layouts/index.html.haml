@@ -25,8 +25,9 @@
       - else
         %tr
           %td.note{:colspan => admin.layout.index.tbody.length} No Layouts
-      - render_region :bottom do |bottom|
-        - bottom.new_button do
-          #actions
-            %ul
-              %li= link_to "New Layout", new_admin_layout_url
+
+- render_region :bottom do |bottom|
+  - bottom.new_button do
+    #actions
+      %ul
+        %li= link_to "New Layout", new_admin_layout_url

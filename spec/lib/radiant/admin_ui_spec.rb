@@ -34,8 +34,8 @@ describe Radiant::AdminUI do
     page.edit.main.should == %w{edit_header edit_form edit_popups}
     page.edit.form.should == %w{edit_title edit_extended_metadata
                                 edit_page_parts}
-    page.edit.parts_bottom.should == %w{edit_layout_and_type edit_timestamp}
-    page.edit.form_bottom.should == %w{edit_buttons}
+    page.edit.parts_bottom.should == %w{edit_layout_and_type}
+    page.edit.form_bottom.should == %w{edit_buttons edit_timestamp}
     page.index.sitemap_head.should == %w{title_column_header
                                         status_column_header
                                         modify_column_header}
@@ -51,9 +51,8 @@ describe Radiant::AdminUI do
     snippet = @admin.snippet
     snippet.edit.should_not be_nil
     snippet.edit.main.should == %w{edit_header edit_form}
-    snippet.edit.form.should == %w{edit_title edit_content edit_filter
-                                   edit_timestamp}
-    snippet.edit.form_bottom.should == %w{edit_buttons}
+    snippet.edit.form.should == %w{edit_title edit_content edit_filter}
+    snippet.edit.form_bottom.should == %w{edit_buttons edit_timestamp}
     snippet.index.should_not be_nil
     snippet.index.top.should == %w{help_text}
     snippet.index.thead.should == %w{title_header modify_header}
@@ -68,8 +67,8 @@ describe Radiant::AdminUI do
     layout.edit.should_not be_nil
     layout.edit.main.should == %w{edit_header edit_form}
     layout.edit.form.should == %w{edit_title edit_extended_metadata
-                                  edit_content edit_timestamp}
-    layout.edit.form_bottom.should == %w{edit_buttons}
+                                  edit_content}
+    layout.edit.form_bottom.should == %w{edit_buttons edit_timestamp}
     layout.index.should_not be_nil
     layout.index.top.should == %w{help_text}
     layout.index.thead.should == %w{title_header modify_header}
@@ -85,7 +84,7 @@ describe Radiant::AdminUI do
     user.edit.main.should == %w{edit_header edit_form}
     user.edit.form.should == %w{edit_name edit_email edit_username
                                 edit_password edit_roles edit_notes}
-    user.edit.form_bottom.should == %w{edit_timestamp edit_buttons}
+    user.edit.form_bottom.should == %w{edit_buttons edit_timestamp}
     user.index.should_not be_nil
     user.index.thead.should == %w{title_header roles_header modify_header}
     user.index.tbody.should == %w{title_cell roles_cell modify_cell}
