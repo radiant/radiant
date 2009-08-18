@@ -3,7 +3,7 @@ When /^I fill in the "([^\"]*)" content with "([^\"]*)"$/ do |part, content|
 end
 
 Then /^there should be an? "([^\"]*)" part$/ do |name|
-  response.should have_tag("#page-#{name.to_slug}")
+  response.should have_tag("#page_#{name.to_slug}")
   response.should have_tag("#part-#{name.to_slug}")
   response.should have_tag("textarea#part_#{name.to_slug}_content")
 end

@@ -105,7 +105,7 @@ var SiteMapBehavior = Behavior.create({
   showBranch: function(parent, img) {
     var level = this.extractLevel(parent), row = parent.next(),
         children = false, expandLevels = [level + 1];
-        
+    console.log('hello!');
     while (this.isRow(row)) {
       var currentLevel = this.extractLevel(row);
       if (currentLevel <= level) break;

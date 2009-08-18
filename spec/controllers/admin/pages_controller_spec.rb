@@ -199,7 +199,7 @@ describe Admin::PagesController do
       get :remove, :id => page_id(:parent), :format => 'html' # shouldn't need this!
       rendered_pages = [:parent, :child, :grandchild, :great_grandchild, :child_2, :child_3].map {|p| pages(p) }
       rendered_pages.each do |page|
-        response.should have_tag("tr#page-#{page.id}")
+        response.should have_tag("tr#page_#{page.id}")
       end
     end
   end
@@ -228,10 +228,10 @@ describe Admin::PagesController do
     def assert_rendered_nodes_where(&block)
       wanted, unwanted = Page.find(:all).partition(&block)
       wanted.each do |page|
-        response.should have_tag("tr#page-#{page.id}")
+        response.should have_tag("tr#page_#{page.id}")
       end
       unwanted.each do |page|
-        response.should_not have_tag("tr#page-#{page.id}")
+        response.should_not have_tag("tr#page_#{page.id}")
       end
     end
 
