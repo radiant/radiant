@@ -14,15 +14,21 @@ describe Admin::LayoutsController do
   it "should handle Layouts" do
     controller.class.model_class.should == Layout
   end
-  
-  
+
+
   describe "show" do
     it "should redirect to the edit action" do
       get :show, :id => 1
       response.should redirect_to(edit_admin_layout_path(params[:id]))
     end
+
+    it "should show xml when format is xml" do
+      layout = Layout.first
+      get :show, :id => layout.id, :format => "xml"
+      response.body.should == layout.to_xml
+    end
   end
-  
+
   describe "with invalid page id" do
     [:edit, :remove].each do |action|
       before do
@@ -66,22 +72,22 @@ describe Admin::LayoutsController do
       end
 
       it "should allow access to developers for the #{action} action" do
-        lambda { 
-          send(method, action, :id => layout_id(:main)) 
-        }.should restrict_access(:allow => [users(:developer)], 
+        lambda {
+          send(method, action, :id => layout_id(:main))
+        }.should restrict_access(:allow => [users(:developer)],
                                  :url => '/admin/pages')
       end
 
       it "should allow access to admins for the #{action} action" do
-        lambda { 
-          send(method, action, :id => layout_id(:main)) 
-        }.should restrict_access(:allow => [users(:developer)], 
+        lambda {
+          send(method, action, :id => layout_id(:main))
+        }.should restrict_access(:allow => [users(:developer)],
                                  :url => '/admin/pages')
       end
-      
+
       it "should deny non-developers and non-admins for the #{action} action" do
-        lambda { 
-          send(method, action, :id => layout_id(:main)) 
+        lambda {
+          send(method, action, :id => layout_id(:main))
         }.should restrict_access(:deny => [users(:non_admin), users(:existing)],
                                  :url => '/admin/pages')
       end

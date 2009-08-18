@@ -15,15 +15,21 @@ describe Admin::SnippetsController do
   it "should handle Snippets" do
     controller.class.model_class.should == Snippet
   end
-  
-  
+
+
   describe "show" do
     it "should redirect to the edit action" do
       get :show, :id => 1
       response.should redirect_to(edit_admin_snippet_path(params[:id]))
     end
+
+    it "should show xml when format is xml" do
+      snippet = Snippet.first
+      get :show, :id => snippet.id, :format => "xml"
+      response.body.should == snippet.to_xml
+    end
   end
-  
+
   describe "with invalid snippet id" do
     [:edit, :remove].each do |action|
       before do
@@ -96,7 +102,7 @@ describe Admin::SnippetsController do
       end
     end
   end
-  
+
   it "should clear the page cache when saved" do
     Radiant::Cache.should_receive(:clear)
     put :update, :id => snippet_id(:first), :snippet => {:content => "Foobar."}

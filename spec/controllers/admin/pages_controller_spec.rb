@@ -8,19 +8,25 @@ describe Admin::PagesController do
   end
 
   it "should route children to the pages controller" do
-    route_for(:controller => "admin/pages", :page_id => '1', 
+    route_for(:controller => "admin/pages", :page_id => '1',
       :action => "index").should == '/admin/pages/1/children'
-    route_for(:controller => "admin/pages", :page_id => '1', 
+    route_for(:controller => "admin/pages", :page_id => '1',
       :action => 'new').should == '/admin/pages/1/children/new'
   end
-  
+
   describe "show" do
     it "should redirect to the edit action" do
       get :show, :id => 1
       response.should redirect_to(edit_admin_page_path(params[:id]))
     end
+
+    it "should show xml when format is xml" do
+      page = Page.first
+      get :show, :id => page.id, :format => "xml"
+      response.body.should == page.to_xml
+    end
   end
-  
+
   describe "with invalid page id" do
     [:edit, :remove].each do |action|
       before do
@@ -52,7 +58,7 @@ describe Admin::PagesController do
       flash[:notice].should == 'Page could not be found.'
     end
   end
-  
+
   describe "viewing the sitemap" do
     integrate_views
 
@@ -101,7 +107,7 @@ describe Admin::PagesController do
       assert_rendered_nodes_where { |page| [nil, page_id(:home), page_id(:parent)].include?(page.parent_id) }
       assigns(:homepage).should_not be_nil
     end
-    
+
     it "should render the appropriate children when branch of the site map is expanded via AJAX" do
       xml_http_request :get, :index, :page_id => page_id(:home), :level => '1'
       response.should be_success
@@ -111,9 +117,9 @@ describe Admin::PagesController do
       response.charset.should == 'utf-8'
     end
   end
-  
+
   describe "permissions" do
-    
+
     [:admin, :developer, :non_admin, :existing].each do |user|
       {
         :post => :create,
@@ -125,7 +131,7 @@ describe Admin::PagesController do
           send method, action, :id => Page.first.id
           response.should redirect_to('/admin/login')
         end
-        
+
         it "should allow access to #{user.to_s.humanize}s for the #{action} action" do
           login_as user
           send method, action, :id => Page.first.id
@@ -133,26 +139,26 @@ describe Admin::PagesController do
         end
       end
     end
-    
+
     [:index, :show, :new, :edit, :remove].each do |action|
       before :each do
-        @parameters = lambda do 
+        @parameters = lambda do
           case action
           when :index
             {}
           when :new
             {:page_id => page_id(:home)}
           else
-            {:id => Page.first.id} 
+            {:id => Page.first.id}
           end
         end
       end
-      
+
       it "should require login to access the #{action} action" do
         logout
         lambda { send(:get, action, @parameters.call) }.should require_login
       end
-      
+
       if action == :show
         it "should request authentication for API access on show" do
           logout
@@ -161,33 +167,33 @@ describe Admin::PagesController do
         end
       else
         it "should allow access to admins for the #{action} action" do
-          lambda { 
-            send(:get, action, @parameters.call) 
-          }.should restrict_access(:allow => [users(:admin)], 
+          lambda {
+            send(:get, action, @parameters.call)
+          }.should restrict_access(:allow => [users(:admin)],
                                    :url => '/admin/pages')
         end
 
         it "should allow access to developers for the #{action} action" do
-          lambda { 
-            send(:get, action, @parameters.call) 
-          }.should restrict_access(:allow => [users(:developer)], 
+          lambda {
+            send(:get, action, @parameters.call)
+          }.should restrict_access(:allow => [users(:developer)],
                                    :url => '/admin/pages')
         end
-    
+
         it "should allow non-developers and non-admins for the #{action} action" do
-          lambda { 
-            send(:get, action, @parameters.call) 
+          lambda {
+            send(:get, action, @parameters.call)
           }.should restrict_access(:allow => [users(:non_admin), users(:existing)],
                                    :url => '/admin/pages')
         end
       end
     end
   end
-  
-  
+
+
   describe "prompting page removal" do
     integrate_views
-    
+
     # TODO: This should be in a view or integration spec
     it "should render the expanded descendants of the page being removed" do
       get :remove, :id => page_id(:parent), :format => 'html' # shouldn't need this!
@@ -197,7 +203,7 @@ describe Admin::PagesController do
       end
     end
   end
-  
+
   it "should initialize meta and buttons_partials in new action" do
     get :new, :page_id => page_id(:home)
     response.should be_success
@@ -211,12 +217,12 @@ describe Admin::PagesController do
     assigns(:meta).should be_kind_of(Array)
     assigns(:buttons_partials).should be_kind_of(Array)
   end
-  
+
   it "should clear the page cache when saved" do
     Radiant::Cache.should_receive(:clear)
     put :update, :id => page_id(:home), :page => {:breadcrumb => 'Homepage'}
   end
-  
+
   protected
 
     def assert_rendered_nodes_where(&block)

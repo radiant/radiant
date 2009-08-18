@@ -197,6 +197,12 @@ class RadiusParserTest < Test::Unit::TestCase
     define_tag('hello') { |tag| tag.render('test', tag.attr) }
     assert_parse_output 'Hello John!', '<r:hello name="John" />'
   end
+  
+  def test_accessing_tag_attributes_through_tag_indexer
+    define_tag('test') { |tag| "Hello #{tag['name']}!" }
+    assert_parse_output 'Hello John!', '<r:test name="John" />'
+  end
+  
   def test_parse_tag__binding_render_tag_with_block
     define_tag('test') { |tag| "Hello #{tag.expand}!" }
     define_tag('hello') { |tag| tag.render('test') { tag.expand } }

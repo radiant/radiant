@@ -2,6 +2,14 @@
 
 === Edge
 
+* Merge latest version of Radius [Kunal Shah]
+* Helpers for extension_enabled? [Kunal Shah]
+* Respond to show methods with xml rendering [Jeremy Stephens]
+* Support DB2 [Antonio Cangiano]
+* Properly check for existing page parts when creating a new part. [alexmek]
+* Use the correct variable name so the extension name is part of the output.
+[John Muhl]
+* Generate Cucumber support for extensions [Jim Gay]
 * Require Cucumber version 0.3.9 or greater in cucumber.rake [Jim Gay]
 * Set generated extensions to require 'application_controller' [Jim Gay]
 * Add import/export tasks for Radiant::Config [Jim Gay]

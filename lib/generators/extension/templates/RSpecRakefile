@@ -24,7 +24,8 @@ require 'rake/testtask'
 rspec_base = File.expand_path(RADIANT_ROOT + '/vendor/plugins/rspec/lib')
 $LOAD_PATH.unshift(rspec_base) if File.exist?(rspec_base)
 require 'spec/rake/spectask'
-# require 'spec/translator'
+require 'cucumber'
+require 'cucumber/rake/task'
 
 # Cleanup the RADIANT_ROOT constant so specs will load the environment
 Object.send(:remove_const, :RADIANT_ROOT)
@@ -39,6 +40,8 @@ Spec::Rake::SpecTask.new(:spec) do |t|
   t.spec_opts = ['--options', "\"#{extension_root}/spec/spec.opts\""]
   t.spec_files = FileList['spec/**/*_spec.rb']
 end
+
+task :features => 'spec:integration'
 
 namespace :spec do
   desc "Run all specs in spec directory with RCov"
@@ -63,13 +66,13 @@ namespace :spec do
     end
   end
   
-  # Hopefully no one has written their extensions in pre-0.9 style
-  # desc "Translate specs from pre-0.9 to 0.9 style"
-  # task :translate do
-  #   translator = ::Spec::Translator.new
-  #   dir = RAILS_ROOT + '/spec'
-  #   translator.translate(dir, dir)
-  # end
+  desc "Run the Cucumber features"
+  Cucumber::Rake::Task.new(:integration) do |t|
+    t.fork = true
+    t.cucumber_opts = ['--format', (ENV['CUCUMBER_FORMAT'] || 'pretty')]
+    # t.feature_pattern = "#{extension_root}/features/**/*.feature"
+    t.profile = "default"
+  end
 
   # Setup specs for stats
   task :statsetup do

@@ -1,0 +1,20 @@
+# This is only an example configuration. Please see the Rails
+# documentation for more details.
+
+development:
+  adapter: ibm_db
+  database: rad_dev
+  username: db2inst1
+  password:
+  
+test:
+  adapter: ibm_db
+  database: rad_test
+  username: db2inst1
+  password:
+
+production:
+  adapter: ibm_db
+  database: radiant
+  username: db2inst1
+  password:

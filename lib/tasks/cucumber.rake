@@ -7,7 +7,7 @@ begin
   Cucumber::Rake::Task.new(:features) do |t|
     minor = Cucumber::VERSION::MINOR.to_i
     tiny = Cucumber::VERSION::TINY.to_i
-    raise LoadError if (minor < 3) || (minor < 3 && tiny < 9)
+    raise LoadError if (minor < 3) || (minor == 3 && tiny < 9)
     t.fork = true
     t.cucumber_opts = ['--format', (ENV['CUCUMBER_FORMAT'] || 'pretty')]
     t.feature_pattern = "#{RADIANT_ROOT}/features/**/*.feature"
