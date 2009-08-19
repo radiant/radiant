@@ -452,6 +452,7 @@ body.reversed textarea {
   border: 1px solid white; }
 body.reversed .box {
   box-shadow: 4px 4px 4px black;
+  -moz-box-shadow: 1px 1px 3px #666;
   -webkit-box-shadow: 1px 1px 3px #666; }
 
 #main {
