@@ -211,10 +211,11 @@
   padding-top: 0
 
 textarea
-  height: 280px
   border: 1px solid #cdc295
   font-family: Monaco, "Courier New", Courier, monospace
   font-size: 95%
+  &.large
+    height: 280px
 
 p.updated_line
   font-size: 80%
@@ -224,6 +225,8 @@ p.updated_line
 body.reversed
   p.updated_line
     color: #eee
+  textarea
+    border: 1px solid white
   .box
     box-shadow: 4px 4px 4px black
     -webkit-box-shadow: 1px 1px 3px #666

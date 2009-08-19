@@ -435,10 +435,11 @@ img.avatar {
   padding-top: 0; }
 
 textarea {
-  height: 280px;
   border: 1px solid #cdc295;
   font-family: Monaco, "Courier New", Courier, monospace;
   font-size: 95%; }
+  textarea.large {
+    height: 280px; }
 
 p.updated_line {
   font-size: 80%;
@@ -447,6 +448,8 @@ p.updated_line {
 
 body.reversed p.updated_line {
   color: #eee; }
+body.reversed textarea {
+  border: 1px solid white; }
 body.reversed .box {
   box-shadow: 4px 4px 4px black;
   -webkit-box-shadow: 1px 1px 3px #666; }

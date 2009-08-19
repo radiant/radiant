@@ -29,7 +29,7 @@ class User < ActiveRecord::Base
   attr_writer :confirm_password
   class << self
     def protected_attributes
-      @protected_attributes ||= [:password, :password_confirmation, :email]
+      @protected_attributes ||= [:name, :email, :login, :password, :password_confirmation]
     end
 
     def protected_attributes=(array)

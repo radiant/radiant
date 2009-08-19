@@ -10,11 +10,11 @@
       - form.edit_content do
         %p.content
           = f.label :content, "Body"
-          ~ f.text_area :content, :class => "textarea", :style => "width: 100%"
+          ~ f.text_area :content, :class => "textarea large", :style => "width: 100%"
       .row
         - form.edit_filter do
           %p
-            %label{:for=>"snippet_filter_id"} Filter
+            = f.label :filter_id, "Filter"
             = f.select :filter_id, [['none', '']] + TextFilter.descendants.map { |f| f.filter_name }.sort, :id => 'snippet_filter'
   - render_region :form_bottom do |form_bottom|
     - form_bottom.edit_buttons do

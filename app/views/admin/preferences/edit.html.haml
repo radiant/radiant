@@ -4,22 +4,28 @@
   - main.edit_header do
     %h1 Personal Preferences
   - main.edit_form do
-    - form_for @user, :url => admin_preferences_url, :html => { :method => :put } do |f|
-      - render_region :form_top
+    - form_for @user, :url => admin_preferences_url, :html => { :method => :put, :onsubmit_status => "Saving preferences&#8230;" } do |f|
+      = render_region :form_top
+      
       - render_region :form do |form|
-        - form.edit_password do
+        - form.edit_name do
           %p
-            = label_tag :user_password, "Password"
-            = f.password_field "password", :class => 'textbox', :value => '', :size => 32, :maxlength => 40
-            %span.hint At least 5 characters. Leave password blank for it to remain unchanged.
-          %p
-            = label_tag :user_password_confirmation, "Confirm Password"
-            = f.password_field "password_confirmation", :class => 'textbox', :value => '', :size => 32, :maxlength => 40
+            = f.label :name
+            = f.text_field :name, :class => "textbox activate", :size => 32, :maxlength => 100 
+        
         - form.edit_email do
           %p
-            = label_tag :user_email, "E-mail"
+            = f.label :email, "E-mail Address", :class => "optional"
             = f.text_field "email", :class => 'textbox', :size => 32, :maxlength => 255
-            %span.hint Optional.
+        
+        - form.edit_username do
+          %p
+            = f.label :login, "Username"
+            = f.text_field "login", :class => "textbox", :size => 32, :maxlength => 40
+        
+        - form.edit_password do
+          = render "admin/users/password_fields", :f => f
+      
       - render_region :form_bottom do |form_bottom|
         - form_bottom.edit_buttons do
           %p.buttons
