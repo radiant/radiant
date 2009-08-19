@@ -20,7 +20,7 @@
     #tab_control
       #tabs.tabs
         #tab_toolbar
-          %a.popup{:href=>"/admin/pages/parts/new", :title=>"Add Part"}
+          %a.popup{:href=> '#add_part_popup', :title=>"Add Part"}
             %img{:src=>"/images/admin/add_tab.png", :alt=>"Add Part", :title=>""}/
       #pages.pages
         = render :partial => 'admin/page_parts/page_part', :collection => @page.parts

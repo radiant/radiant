@@ -1,0 +1,24 @@
+.popup
+  %h3.title
+    Available Tags for
+    = _display_name
+  %p
+    %label.inline{:for => "search_#{class_of_page.name.underscore}_tag_reference"} Filter Tags
+    %input{:id => "search_#{class_of_page.name.underscore}_tag_reference", :type => "search", :name => "search_tag_reference"}/
+  .reference= tag_reference
+  %p.close_link= link_to_function "Close Help", "$(this).closePopup()"
+  :javascript
+    var tags, searchingOn = "";
+    var popup = $('search_#{class_of_page.name.underscore}_tag_reference').up('.popup');
+    new Form.Element.Observer('search_#{class_of_page.name.underscore}_tag_reference', 0.5, function(element, value) {
+      if (!tags) tags = popup.select('.reference .tag_description');
+      if (value.length < 3 && searchingOn != "") {
+        searchingOn = "";
+        tags.invoke('show');
+      } else if (value.length >= 3 && searchingOn != value) {
+        searchingOn = value;
+        tags.each(function(div) {
+          div[div.hasWord(value) ? 'show' : 'hide']();
+        });
+      }
+    });

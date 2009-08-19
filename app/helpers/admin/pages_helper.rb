@@ -28,7 +28,7 @@ module Admin::PagesHelper
        if (validPartName()) {
         new Ajax.Updater(
           $('tab_control').down('.pages'),
-          '/admin/pages/parts/create/',
+          '#{admin_page_parts_path}',
           {
             asynchronous: true,
             evalScripts: true,
@@ -50,6 +50,7 @@ module Admin::PagesHelper
       $('add_part_busy').hide();
       $('add_part_button').disabled = false;
       $('add_part_popup').closePopup();
+      $('part_name_field').value = '';
       tabControl.updateTabs();
       tabControl.select(tabControl.tabs.last());
     }
@@ -71,13 +72,12 @@ module Admin::PagesHelper
       return true;
     }
 
-    var lastPageType = "#{@page.class_name}";
+    var lastPageType = '#{@page.class.name}';
     var tagReferenceWindows = {};
     function loadTagReference(part) {
       var pageType = $F('page_class_name');
-      var window = tagReferenceWindows[pageType];
       if (!tagReferenceWindows[pageType])
-        tagReferenceWindows[pageType] = new Popup.AjaxWindow("/admin/docs/tags/" + encodeURIComponent(pageType));
+        tagReferenceWindows[pageType] = new Popup.AjaxWindow("/admin/references/tags?class_name=" + encodeURIComponent(pageType), {reload: false});
       var window = tagReferenceWindows[pageType];
       if(lastPageType != pageType) {
         $('tag_reference_link_' + part).highlight();
@@ -89,12 +89,12 @@ module Admin::PagesHelper
       return false;
     }
 
-    var lastFilter = "#{default_filter_name}";
+    var lastFilter = '#{default_filter_name}';
     var filterWindows = {};
     function loadFilterReference(part) {
       var filter = $F("part_" + part + "_filter_id");
       if (filter != "") {
-        if (!filterWindows[filter]) filterWindows[filter] = new Popup.AjaxWindow("/admin/docs/filters/" + encodeURIComponent(filter), {reload: false});
+        if (!filterWindows[filter]) filterWindows[filter] = new Popup.AjaxWindow("/admin/references/filters?filter_name="+encodeURIComponent(filter), {reload: false});
         var window = filterWindows[filter];
         if(lastFilter != filter) {
           window.show();

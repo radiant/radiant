@@ -1,31 +1,14 @@
 - content_for 'popups' do
   #add_part_popup.popup{:style => "display: none"}
-    #busy.busy{:style => "display: none"}= image 'spinner.gif'
-    %h3 Add Part
-    - remote_form_for([:admin, PagePart.new], :update => "pages", :position => :bottom, :loading => 'partLoading()', :complete => 'partAdded()', :condition => 'validPartName()') do |f|
-      %div
-        = hidden_field_tag 'index', @page.parts.size, :id => 'page_part_index_field'
-        = f.text_field :name, :id => 'part_name_field' #, :maxlength => 100
-        = submit_tag "Add Part", :id => 'add_epart_button'
+    #add_part_busy.busy{:style => "display: none"}= image 'spinner.gif'
+    %h3.title Add Part
+    - form_for([:admin, PagePart.new], :html => { :onsubmit => "addPart(this); return false" }) do |f|
       %p
-        = link_to 'Close', "#", :class => 'close'
-
-  #tag_reference_popup.popup{ :style => "display:none;" }
-    %div{ :style => "float:right" }
-      %label{:for=> 'search_tag_reference'} Search Tags:
-      %input#search_tag_reference{ :type => "text" }/
-    %h3
-      Available Tags for
-      %span#page_type= @page.class.display_name
-    #tag_reference= tag_reference
-    %p
-      = link_to 'Close', '#', :class => 'close'
-
-  #filter_reference_popup.popup{ :style => "display:none;" }
-    %h3
-      %span#filter_type= default_filter_name
-      Reference
-    #filter_reference= filter_reference
-    %p
-      = link_to 'Close', "#", :class => 'close'
+        %label{:for => 'part_name_field'} Name
+        = f.text_field :name, :id => 'part_name_field', :maxlength => 100, :style => "width: 15em", :class => "textbox big"
+        = hidden_field_tag 'index', @page.parts.size, :id => 'page_part_index_field'
+      %p.buttons
+        = submit_tag "Add Part", :id => 'add_part_button', :class => "button"
+        or
+        = link_to_function 'Cancel', "$(this).closePopup()"
   = render_region :popups
