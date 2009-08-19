@@ -262,7 +262,7 @@ img.avatar {
 #content form p .hint {
   font-size: 90%;
   display: inline;
-  text-shadow: white 0 0 0; }
+  text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.1); }
 #content form p a {
   color: white; }
   #content form p a.action {
@@ -273,7 +273,7 @@ img.avatar {
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
     text-decoration: none;
-    text-shadow: white 0 0 0; }
+    text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.1); }
     #content form p a.action:hover {
       background-color: #555; }
 #content form p.title {
@@ -443,7 +443,7 @@ textarea {
 
 p.updated_line {
   font-size: 80%;
-  text-shadow: #eee 0 0 0;
+  text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.1);
   margin-bottom: 0; }
 
 body.reversed p.updated_line {
@@ -654,7 +654,7 @@ body.reversed #content h1 {
   font-size: 125%;
   margin: -20px -20px 20px;
   padding: 15px 20px;
-  text-shadow: white 0 0 0; }
+  text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.1); }
 
 #footer {
   color: #999;
@@ -789,7 +789,7 @@ div.popup .reference table h2, div.popup .reference table h3, div.popup .referen
   color: #e5e5e5;
   font-family: "Lucida Grande", "Bitstream Vera Sans", Helvetica, Verdana, Arial, sans-serif;
   font-size: 90%;
-  text-shadow: black 0 0 0; }
+  text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.1); }
 
 .status_content {
   padding: 2px 10px 2px 5px; }
