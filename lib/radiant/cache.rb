@@ -50,7 +50,7 @@ module Radiant
       end
 
       private
-      def restore_response(hash, body)
+      def restore_response(hash, body=nil)
         # Cribbed from the Rack::Cache source
         status = hash.delete('X-Status').to_i
         response = Rack::Cache::Response.new(status, hash, body)
