@@ -37,7 +37,10 @@ See the INSTALL file for more details.
 
 == Development Requirements
 
- * gem install ZenTest rspec rspec-rails
+To run tests you will need to have the following gems installed:
+
+  gem install ZenTest rspec rspec-rails cucumber Webrat nokogiri
+
 
 == Support
 
