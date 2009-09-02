@@ -37,7 +37,7 @@ module Radiant
     def all_available_extensions
       extension_paths.map do |path|
         Dir["#{path}/*"].select {|f| File.directory?(f) }
-      end.flatten.map {|f| File.basename(f).sub(/^\d+_/, '') }.sort.map(&:to_sym)
+      end.flatten.map {|f| File.basename(f).sub(/^\d+_/, '') }.sort.map {|e| e.to_sym }
     end
     
     def admin
