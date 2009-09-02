@@ -39,7 +39,7 @@ See the INSTALL file for more details.
 
 To run tests you will need to have the following gems installed:
 
-  gem install ZenTest rspec rspec-rails cucumber Webrat nokogiri
+  gem install ZenTest rspec rspec-rails cucumber webrat nokogiri
 
 
 == Support
