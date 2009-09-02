@@ -1,15 +1,15 @@
-
 == Installation and Setup
 
 Once you have extracted the files into the directory where you would like to
 install Radiant:
 
-1. Create the MySQL/PostgreSQL/SQLite/SQL Server/DB2 databases for your Web site. You only
-   need to create the "production" database, but you may also want to create
-   the "development" and "test" databases if you are developing extensions
-   or running tests.
+1. Create the MySQL/PostgreSQL/SQLite/SQL Server/DB2 databases for your Web
+   site. You only need to create the "production" database, but you may also
+   want to create the "development" and "test" databases if you are developing
+   extensions or running tests.
 
-2. Edit config/database.yml to taste.  There are example files available for various databases in the config directory.
+2. Edit config/database.yml to taste.  There are example files available for
+   various databases in the config directory.
 
 3. Run the database bootstrap rake task:
    
@@ -18,7 +18,8 @@ install Radiant:
    (If you would like bootstrap your development database run `rake
    development db:bootstrap`.)
    
-   If you get the error "no such file to load -- spec/rake/spectask" please install Rspec (gem i rspec).
+   If you get the error "no such file to load -- spec/rake/spectask" please
+   install Rspec (gem install rspec).
 
 4. Start it like a normal Rails application. To test execute:
    
@@ -35,4 +36,4 @@ directories with the user that it runs under.
 Once you've installed Radiant on your own Web site, be sure to add your name
 and Web site to the list of radiant users:
 
-http://wiki.radiantcms.org/Radiant_Users
+http://wiki.github.com/radiant/radiant/radiant-users
