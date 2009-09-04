@@ -13,8 +13,6 @@
     p
       label
         display: block
-        font-weight: bold
-        text-shadow: #666 1px 1px 0
         &.checkbox, &.radio
           display: inline
           font-weight: normal
@@ -67,19 +65,13 @@
         margin: 0
         margin-right: 1em
     .buttons
-      background: white url(/images/admin/buttons_background.png) bottom repeat-x
-      border-radius: 8px
-      -moz-border-radius: 8px
-      -webkit-border-radius: 8px
       color: #666
       font-size: 80%
       margin-top: 2.5em
-      padding: 12px 10px
       button, input.button
         font-size: 150%
       a
         color: red
-  
     p.more_or_less
       margin: 0 0 1em
       padding: 4px 0 5px
@@ -223,11 +215,55 @@ p.updated_line
   margin-bottom: 0
 
 body.reversed
-  p.updated_line
-    color: #eee
-  textarea
-    border: 1px solid white
-  .box
-    box-shadow: 4px 4px 4px black
-    -moz-box-shadow: 1px 1px 3px #666
-    -webkit-box-shadow: 1px 1px 3px #666
+  #content
+    form
+      p
+        label
+          font-weight: bold
+          text-shadow: #666 1px 1px 0
+      .buttons
+        background: white url(/images/admin/buttons_background.png) bottom repeat-x
+        border-radius: 8px
+        -moz-border-radius: 8px
+        -webkit-border-radius: 8px
+        padding: 12px 10px
+    p.updated_line
+      color: #eee
+    textarea
+      border: 1px solid white
+    .box
+      box-shadow: 4px 4px 4px black
+      -moz-box-shadow: 1px 1px 3px #666
+      -webkit-box-shadow: 1px 1px 3px #666
+
+body.login
+  #content
+    #login
+      background: #f5f1e2 url(/images/admin/vertical_tan_gradient.png) center -15px repeat-x
+      border: 0.35em solid #efead3
+      border-radius: 10px
+      -moz-border-radius: 10px
+      -webkit-border-radius: 10px
+      padding: 0.5em 1.5em
+      padding-right: 22px
+      position: relative
+      width: 26em
+      h1
+        font-size: 140%    
+        margin: 0.75em 0 1.25em
+      input.textbox
+        width: 98.5%
+        &.password
+          width: 60%
+      span.remember_me
+        position: relative
+        font-size: 95%
+        top: -3px
+      .buttons
+        margin: 1.75em 0 1em
+    p.version
+      background: url(/images/admin/login_shadow.png) top center no-repeat
+      color: #666
+      font-size: 80%
+      padding-top: 10px
+      margin-top: 0
