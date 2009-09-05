@@ -14,4 +14,4 @@
           = link_to_function 'Available Tags', "load_tag_reference('#{page_part.name.to_slug}');"
       = render_region :part_controls, :locals => {:page_part => page_part}
     %div
-      ~ text_area_tag "page[parts_attributes][#{page_part_counter}][content]", h(page_part.content), :class => "textarea", :style => "width: 100%", :id => "part_#{page_part.name.to_slug}_content"
+      ~ text_area_tag "page[parts_attributes][#{page_part_counter}][content]", page_part.content, :class => "textarea", :style => "width: 100%", :id => "part_#{page_part.name.to_slug}_content"
