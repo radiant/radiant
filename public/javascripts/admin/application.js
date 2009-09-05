@@ -44,5 +44,7 @@ Event.addBehavior({
   
   'form input.activate': function() {
     this.activate();
-  }
+  },
+  
+  'form textarea': CodeAreaBehavior()
 });
