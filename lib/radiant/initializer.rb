@@ -159,9 +159,9 @@ end_error
       Rails::Rack::Metal.metal_paths = ["#{RADIANT_ROOT}/app/metal"] # reset Rails default to RADIANT_ROOT
       Rails::Rack::Metal.metal_paths += plugin_loader.engine_metal_paths
       Rails::Rack::Metal.metal_paths += extension_loader.metal_paths
-
+    
       configuration.middleware.insert_before(
-        :"ActionController::RewindableInput",
+        :"ActionController::ParamsParser",
         Rails::Rack::Metal, :if => Rails::Rack::Metal.metals.any?)
     end
 

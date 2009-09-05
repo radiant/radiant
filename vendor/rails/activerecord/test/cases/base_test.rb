@@ -1,4 +1,5 @@
 require "cases/helper"
+require 'models/post'
 require 'models/author'
 require 'models/topic'
 require 'models/reply'
@@ -12,7 +13,6 @@ require 'models/auto_id'
 require 'models/column_name'
 require 'models/subscriber'
 require 'models/keyboard'
-require 'models/post'
 require 'models/comment'
 require 'models/minimalistic'
 require 'models/warehouse_thing'
@@ -1012,13 +1012,58 @@ class BasicsTest < ActiveRecord::TestCase
     assert_date_from_db Date.new(2004, 6, 24), topic.last_read.to_date
   end
 
-  def test_multiparameter_attributes_on_date_with_empty_date
+  def test_multiparameter_attributes_on_date_with_empty_year
+    attributes = { "last_read(1i)" => "", "last_read(2i)" => "6", "last_read(3i)" => "24" }
+    topic = Topic.find(1)
+    topic.attributes = attributes
+    # note that extra #to_date call allows test to pass for Oracle, which
+    # treats dates/times the same
+    assert_date_from_db Date.new(1, 6, 24), topic.last_read.to_date
+  end
+
+  def test_multiparameter_attributes_on_date_with_empty_month
+    attributes = { "last_read(1i)" => "2004", "last_read(2i)" => "", "last_read(3i)" => "24" }
+    topic = Topic.find(1)
+    topic.attributes = attributes
+    # note that extra #to_date call allows test to pass for Oracle, which
+    # treats dates/times the same
+    assert_date_from_db Date.new(2004, 1, 24), topic.last_read.to_date
+  end
+
+  def test_multiparameter_attributes_on_date_with_empty_day
     attributes = { "last_read(1i)" => "2004", "last_read(2i)" => "6", "last_read(3i)" => "" }
     topic = Topic.find(1)
     topic.attributes = attributes
     # note that extra #to_date call allows test to pass for Oracle, which
     # treats dates/times the same
     assert_date_from_db Date.new(2004, 6, 1), topic.last_read.to_date
+  end
+
+  def test_multiparameter_attributes_on_date_with_empty_day_and_year
+    attributes = { "last_read(1i)" => "", "last_read(2i)" => "6", "last_read(3i)" => "" }
+    topic = Topic.find(1)
+    topic.attributes = attributes
+    # note that extra #to_date call allows test to pass for Oracle, which
+    # treats dates/times the same
+    assert_date_from_db Date.new(1, 6, 1), topic.last_read.to_date
+  end
+
+  def test_multiparameter_attributes_on_date_with_empty_day_and_month
+    attributes = { "last_read(1i)" => "2004", "last_read(2i)" => "", "last_read(3i)" => "" }
+    topic = Topic.find(1)
+    topic.attributes = attributes
+    # note that extra #to_date call allows test to pass for Oracle, which
+    # treats dates/times the same
+    assert_date_from_db Date.new(2004, 1, 1), topic.last_read.to_date
+  end
+
+  def test_multiparameter_attributes_on_date_with_empty_year_and_month
+    attributes = { "last_read(1i)" => "", "last_read(2i)" => "", "last_read(3i)" => "24" }
+    topic = Topic.find(1)
+    topic.attributes = attributes
+    # note that extra #to_date call allows test to pass for Oracle, which
+    # treats dates/times the same
+    assert_date_from_db Date.new(1, 1, 24), topic.last_read.to_date
   end
 
   def test_multiparameter_attributes_on_date_with_all_empty
@@ -1115,7 +1160,7 @@ class BasicsTest < ActiveRecord::TestCase
     Time.zone = nil
     Topic.skip_time_zone_conversion_for_attributes = []
   end
-  
+
   def test_multiparameter_attributes_on_time_only_column_with_time_zone_aware_attributes_does_not_do_time_zone_conversion
     ActiveRecord::Base.time_zone_aware_attributes = true
     ActiveRecord::Base.default_timezone = :utc
@@ -1439,7 +1484,7 @@ class BasicsTest < ActiveRecord::TestCase
     topic = Topic.create("content" => myobj).reload
     assert_equal(myobj, topic.content)
   end
-  
+
   def test_serialized_string_attribute
     myobj = "Yes"
     topic = Topic.create("content" => myobj).reload
@@ -1756,7 +1801,7 @@ class BasicsTest < ActiveRecord::TestCase
   end
 
   def test_scoped_find_with_group_and_having
-    developers = Developer.with_scope(:find => { :group => 'salary', :having => "SUM(salary) > 10000", :select => "SUM(salary) as salary" }) do
+    developers = Developer.with_scope(:find => { :group => 'developers.salary', :having => "SUM(salary) > 10000", :select => "SUM(salary) as salary" }) do
       Developer.find(:all)
     end
     assert_equal 3, developers.size
@@ -2014,7 +2059,7 @@ class BasicsTest < ActiveRecord::TestCase
 
   def test_inspect_instance
     topic = topics(:first)
-    assert_equal %(#<Topic id: 1, title: "The First Topic", author_name: "David", author_email_address: "david@loudthinking.com", written_on: "#{topic.written_on.to_s(:db)}", bonus_time: "#{topic.bonus_time.to_s(:db)}", last_read: "#{topic.last_read.to_s(:db)}", content: "Have a nice day", approved: false, replies_count: 1, parent_id: nil, type: nil>), topic.inspect
+    assert_equal %(#<Topic id: 1, title: "The First Topic", author_name: "David", author_email_address: "david@loudthinking.com", written_on: "#{topic.written_on.to_s(:db)}", bonus_time: "#{topic.bonus_time.to_s(:db)}", last_read: "#{topic.last_read.to_s(:db)}", content: "Have a nice day", approved: false, replies_count: 1, parent_id: nil, parent_title: nil, type: nil>), topic.inspect
   end
 
   def test_inspect_new_instance

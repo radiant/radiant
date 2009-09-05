@@ -185,7 +185,7 @@ class FixturesTest < ActiveRecord::TestCase
 
   def test_binary_in_fixtures
     assert_equal 1, @binaries.size
-    data = File.read(ASSETS_ROOT + "/flowers.jpg")
+    data = File.open(ASSETS_ROOT + "/flowers.jpg", 'rb') { |f| f.read }
     data.force_encoding('ASCII-8BIT') if data.respond_to?(:force_encoding)
     data.freeze
     assert_equal data, @flowers.data
@@ -516,6 +516,11 @@ class FoxyFixturesTest < ActiveRecord::TestCase
 
   def test_identifies_symbols
     assert_equal(Fixtures.identify(:foo), Fixtures.identify(:foo))
+  end
+
+  def test_identifies_consistently
+    assert_equal 1281023246, Fixtures.identify(:ruby)
+    assert_equal 2140105598, Fixtures.identify(:sapphire_2)
   end
 
   TIMESTAMP_COLUMNS = %w(created_at created_on updated_at updated_on)

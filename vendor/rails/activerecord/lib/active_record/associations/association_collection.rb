@@ -143,6 +143,8 @@ module ActiveRecord
       end
 
       # Remove all records from this association
+      #
+      # See delete for more info.
       def delete_all
         load_target
         delete(@target)
@@ -200,12 +202,13 @@ module ActiveRecord
         end
       end
 
-      # Destroy +records+ and remove from this association calling +before_remove+
-      # and +after_remove+ callbacks.
+      # Destroy +records+ and remove them from this association calling
+      # +before_remove+ and +after_remove+ callbacks.
       #
-      # Note this method will always remove records from database ignoring the
-      # +:dependent+ option.
+      # Note that this method will _always_ remove records from the database
+      # ignoring the +:dependent+ option.
       def destroy(*records)
+        records = find(records) if records.any? {|record| record.kind_of?(Fixnum) || record.kind_of?(String)}
         remove_records(records) do |records, old_records|
           old_records.each { |record| record.destroy }
         end
@@ -226,7 +229,9 @@ module ActiveRecord
         self
       end
 
-      # Destory all the records from this association
+      # Destory all the records from this association.
+      #
+      # See destroy for more info.
       def destroy_all
         load_target
         destroy(@target)

@@ -159,6 +159,8 @@ module Rails
 
       add_support_load_paths
 
+      check_for_unbuilt_gems
+
       load_gems
       load_plugins
 
@@ -301,8 +303,27 @@ module Rails
     end
 
     def load_gems
-      unless $gems_build_rake_task
+      unless $gems_rake_task
         @configuration.gems.each { |gem| gem.load }
+      end
+    end
+
+    def check_for_unbuilt_gems
+      unbuilt_gems = @configuration.gems.select(&:frozen?).reject(&:built?)
+      if unbuilt_gems.size > 0
+        # don't print if the gems:build rake tasks are being run
+        unless $gems_build_rake_task
+          abort <<-end_error
+The following gems have native components that need to be built
+  #{unbuilt_gems.map { |gem| "#{gem.name}  #{gem.requirement}" } * "\n  "}
+
+You're running:
+  ruby #{Gem.ruby_version} at #{Gem.ruby}
+  rubygems #{Gem::RubyGemsVersion} at #{Gem.path * ', '}
+
+Run `rake gems:build` to build the unbuilt gems.
+          end_error
+        end
       end
     end
 
@@ -420,7 +441,8 @@ Run `rake gems:install` to install the missing gems.
 
     def initialize_database_middleware
       if configuration.frameworks.include?(:active_record)
-        if ActionController::Base.session_store == ActiveRecord::SessionStore
+        if configuration.frameworks.include?(:action_controller) &&
+            ActionController::Base.session_store.name == 'ActiveRecord::SessionStore'
           configuration.middleware.insert_before :"ActiveRecord::SessionStore", ActiveRecord::ConnectionAdapters::ConnectionManagement
           configuration.middleware.insert_before :"ActiveRecord::SessionStore", ActiveRecord::QueryCache
         else
@@ -565,7 +587,7 @@ Run `rake gems:install` to install the missing gems.
       Rails::Rack::Metal.metal_paths += plugin_loader.engine_metal_paths
 
       configuration.middleware.insert_before(
-        :"ActionController::RewindableInput",
+        :"ActionController::ParamsParser",
         Rails::Rack::Metal, :if => Rails::Rack::Metal.metals.any?)
     end
 
@@ -862,7 +884,7 @@ Run `rake gems:install` to install the missing gems.
 
     # Enable threaded mode. Allows concurrent requests to controller actions and
     # multiple database connections. Also disables automatic dependency loading
-    # after boot, and disables reloading code on every request, as these are 
+    # after boot, and disables reloading code on every request, as these are
     # fundamentally incompatible with thread safety.
     def threadsafe!
       self.preload_frameworks = true
@@ -1103,3 +1125,4 @@ class Rails::OrderedOptions < Array #:nodoc:
       return false
     end
 end
+
