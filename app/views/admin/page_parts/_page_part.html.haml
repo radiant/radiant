@@ -1,4 +1,4 @@
-.page{:id => "page-#{page_part.name.to_slug}"}
+.page{:id => "page_#{page_part.name.to_slug}", :caption=>h(page_part.name)}
   .part{:id => "part-#{page_part.name.to_slug}"}
     = hidden_field_tag "page[parts_attributes][#{page_part_counter}][name]", page_part.name, :id => "part_#{page_part.name.to_slug}_name"
     = hidden_field_tag "page[parts_attributes][#{page_part_counter}][id]", page_part.id, :id => "part_#{page_part_counter}_id", :class => "id_input"
@@ -6,12 +6,12 @@
     %p
       %label{:for => "part_#{page_part.name.to_slug}_filter_id"} Filter
       = select_tag "page[parts_attributes][#{page_part_counter}][filter_id]", filter_options_for_select(page_part.filter_id), :id => "part_#{page_part.name.to_slug}_filter_id"
-      %span#reference-links
+      %span.reference_links
         Reference:
-        %span{:id => "filter-reference-link-#{page_part.name.to_slug}"}
-          = link_to_function "Filter", "load_filter_reference('#{page_part.name.to_slug}');"
-        %span{:id => "tag-reference-link-#{page_part.name.to_slug}"}
-          = link_to_function 'Available Tags', "load_tag_reference('#{page_part.name.to_slug}');"
+        %span{:id => "filter_reference_link_#{page_part.name.to_slug}"}
+          = link_to_function "Filter", "loadFilterReference('#{page_part.name.to_slug}');"
+        %span{:id => "tag_reference_link_#{page_part.name.to_slug}"}
+          = link_to_function 'Available Tags', "loadTagReference('#{page_part.name.to_slug}');"
       = render_region :part_controls, :locals => {:page_part => page_part}
     %div
-      ~ text_area_tag "page[parts_attributes][#{page_part_counter}][content]", h(page_part.content), :class => "textarea", :style => "width: 100%", :id => "part_#{page_part.name.to_slug}_content"
+      ~ text_area_tag "page[parts_attributes][#{page_part_counter}][content]", page_part.content, :class => "textarea", :style => "width: 100%", :id => "part_#{page_part.name.to_slug}_content"

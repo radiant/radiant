@@ -1,6 +1,7 @@
 require 'erb'
 require 'yaml'
 require 'csv'
+require 'zlib'
 require 'active_support/dependencies'
 require 'active_support/test_case'
 
@@ -433,6 +434,7 @@ end
 # Any fixture labeled "DEFAULTS" is safely ignored.
 
 class Fixtures < (RUBY_VERSION < '1.9' ? YAML::Omap : Hash)
+  MAX_ID = 2 ** 31 - 1
   DEFAULT_FILTER_RE = /\.ya?ml$/
 
   @@all_cached_fixtures = {}
@@ -524,11 +526,10 @@ class Fixtures < (RUBY_VERSION < '1.9' ? YAML::Omap : Hash)
     cached_fixtures(connection, table_names)
   end
 
-  # Returns a consistent identifier for +label+. This will always
-  # be a positive integer, and will always be the same for a given
-  # label, assuming the same OS, platform, and version of Ruby.
+  # Returns a consistent, platform-independent identifier for +label+.
+  # Identifiers are positive integers less than 2^32.
   def self.identify(label)
-    label.to_s.hash.abs
+    Zlib.crc32(label.to_s) % MAX_ID
   end
 
   attr_reader :table_name, :name
@@ -620,7 +621,8 @@ class Fixtures < (RUBY_VERSION < '1.9' ? YAML::Omap : Hash)
               targets.each do |target|
                 join_fixtures["#{label}_#{target}"] = Fixture.new(
                   { association.primary_key_name => row[primary_key_name],
-                    association.association_foreign_key => Fixtures.identify(target) }, nil)
+                    association.association_foreign_key => Fixtures.identify(target) },
+                  nil, @connection)
               end
             end
           end
@@ -704,12 +706,12 @@ class Fixtures < (RUBY_VERSION < '1.9' ? YAML::Omap : Hash)
 
         yaml_value.each do |fixture|
           raise Fixture::FormatError, "Bad data for #{@class_name} fixture named #{fixture}" unless fixture.respond_to?(:each)
-	  fixture.each do |name, data|
+          fixture.each do |name, data|
             unless data
               raise Fixture::FormatError, "Bad data for #{@class_name} fixture named #{name} (nil)"
             end
 
-            self[name] = Fixture.new(data, model_class)
+            self[name] = Fixture.new(data, model_class, @connection)
           end
         end
       end
@@ -722,7 +724,7 @@ class Fixtures < (RUBY_VERSION < '1.9' ? YAML::Omap : Hash)
       reader.each do |row|
         data = {}
         row.each_with_index { |cell, j| data[header[j].to_s.strip] = cell.to_s.strip }
-        self["#{@class_name.to_s.underscore}_#{i+=1}"] = Fixture.new(data, model_class)
+        self["#{@class_name.to_s.underscore}_#{i+=1}"] = Fixture.new(data, model_class, @connection)
       end
     end
 
@@ -760,7 +762,8 @@ class Fixture #:nodoc:
 
   attr_reader :model_class
 
-  def initialize(fixture, model_class)
+  def initialize(fixture, model_class, connection = ActiveRecord::Base.connection)
+    @connection = connection
     @fixture = fixture
     @model_class = model_class.is_a?(Class) ? model_class : model_class.constantize rescue nil
   end
@@ -782,14 +785,14 @@ class Fixture #:nodoc:
   end
 
   def key_list
-    columns = @fixture.keys.collect{ |column_name| ActiveRecord::Base.connection.quote_column_name(column_name) }
+    columns = @fixture.keys.collect{ |column_name| @connection.quote_column_name(column_name) }
     columns.join(", ")
   end
 
   def value_list
     list = @fixture.inject([]) do |fixtures, (key, value)|
       col = model_class.columns_hash[key] if model_class.respond_to?(:ancestors) && model_class.ancestors.include?(ActiveRecord::Base)
-      fixtures << ActiveRecord::Base.connection.quote(value, col).gsub('[^\]\\n', "\n").gsub('[^\]\\r', "\r")
+      fixtures << @connection.quote(value, col).gsub('[^\]\\n', "\n").gsub('[^\]\\r', "\r")
     end
     list * ', '
   end

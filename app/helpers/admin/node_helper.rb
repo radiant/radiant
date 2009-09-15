@@ -31,18 +31,18 @@ module Admin::NodeHelper
   end
 
   def padding_left(level)
-    (level * 22) + 4
+    (level * 23) + 9
   end
 
   def children_class
     unless @current_node.children.empty?
       if expanded
-        " children-visible"
+        " children_visible"
       else
-        " children-hidden"
+        " children_hidden"
       end
     else
-      " no-children"
+      " no_children"
     end
   end
 
@@ -50,8 +50,8 @@ module Admin::NodeHelper
     @current_node.virtual? ? " virtual": ""
   end
 
-  def expander
-    unless @current_node.children.empty?
+  def expander(level)
+    unless @current_node.children.empty? or level == 0
       image((expanded ? "collapse" : "expand"),
             :class => "expander", :alt => 'toggle children',
             :title => '')
@@ -61,8 +61,8 @@ module Admin::NodeHelper
   end
 
   def icon
-    icon_name = @current_node.virtual? ? 'virtual-page' : 'page'
-    image(icon_name, :class => "icon", :alt => 'page-icon', :title => '')
+    icon_name = @current_node.virtual? ? 'virtual_page' : 'page'
+    image(icon_name, :class => "icon", :alt => 'page_icon', :title => '')
   end
 
   def node_title
@@ -80,7 +80,7 @@ module Admin::NodeHelper
 
   def spinner
     image('spinner.gif',
-            :class => 'busy', :id => "busy-#{@current_node.id}",
+            :class => 'busy', :id => "busy_#{@current_node.id}",
             :alt => "",  :title => "",
             :style => 'display: none;')
   end

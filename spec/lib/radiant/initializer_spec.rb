@@ -110,8 +110,8 @@ describe Radiant::Initializer do
   end
   
   it "should initialize admin tabs" do
+    Radiant::AdminUI.instance.should_receive(:load_default_nav)
     @initializer.initialize_default_admin_tabs
-    Radiant::AdminUI.instance.tabs.size.should == 3
   end
   
   it "should have access to the AdminUI" do

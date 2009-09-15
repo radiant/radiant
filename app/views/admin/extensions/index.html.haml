@@ -9,32 +9,31 @@
         margin-top: .25em
         margin-bottom: .5em
 
-%h1 Extensions
-
 = render_region :top
 
-%table#extensions.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0"}
-  %thead
-    %tr
-      - render_region :thead do |thead|
-        - thead.title_header do
-          %th.extension Extension
-        - thead.website_header do
-          %th.website Website
-        - thead.version_header do
-          %th.version Version
-  %tbody
-    - @extensions.each do |extension|
-      %tr.node.level-1
-        - render_region :tbody do |tbody|
-          - tbody.title_cell do
-            %td.extension
-              %h4= h extension.extension_name
-              %p= h extension.description
-          - tbody.website_cell do 
-            %td.website
-              = extension.url.nil? || extension.url.empty? ? "" : link_to("Website", extension.url, :target => "_blank")
-          - tbody.version_cell do
-            %td.version= h extension.version
+.outset
+  %table#extensions.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0"}
+    %thead
+      %tr
+        - render_region :thead do |thead|
+          - thead.title_header do
+            %th.extension Extension
+          - thead.website_header do
+            %th.website Website
+          - thead.version_header do
+            %th.version Version
+    %tbody
+      - @extensions.each do |extension|
+        %tr.node.level_1
+          - render_region :tbody do |tbody|
+            - tbody.title_cell do
+              %td.extension
+                %h4= h extension.extension_name
+                %p= h extension.description
+            - tbody.website_cell do 
+              %td.website
+                = extension.url.nil? || extension.url.empty? ? "" : link_to("Website", extension.url, :target => "_blank")
+            - tbody.version_cell do
+              %td.version= h extension.version
 
 = render_region :bottom

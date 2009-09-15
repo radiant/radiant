@@ -1,28 +1,24 @@
-- include_javascript 'admin/sitemap'
-
-%h1 Pages
-
-= render_region :top
-
-%table#site-map.index{:summary=>"Page hierarchy of the current site"}
-  %thead
-    %tr
-      - render_region :sitemap_head do |sitemap_head|
-        - sitemap_head.title_column_header do
-          %th.page Page
-        - sitemap_head.status_column_header do
-          %th.status Status
-        - sitemap_head.modify_column_header do
-          %th.modify{:colspan=>"2"} Modify
-  %tbody
-    - if @homepage
-      = render_node @homepage
-    - else
+.outset
+  = render_region :top
+  %table#site_map.index{:summary=>"Page hierarchy of the current site"}
+    %thead
       %tr
-        %td.note{:colspan => admin.page.index.node.length} No Pages
-
-= render_region :bottom
+        - render_region :sitemap_head do |sitemap_head|
+          - sitemap_head.title_column_header do
+            %th.page Page
+          - sitemap_head.status_column_header do
+            %th.status Status
+          - sitemap_head.modify_column_header do
+            %th.modify{:colspan=>"2"} Modify
+    %tbody
+      - if @homepage
+        = render_node @homepage
+      - else
+        %tr
+          %td.note{:colspan => admin.page.index.node.length} No Pages
+  = render_region :bottom
 
 - unless @homepage
-  %p
-    = link_to image('new-homepage', :alt => 'New Homepage'), new_admin_page_url
+  #actions
+    %ul
+      %li= link_to "New Homepage", new_admin_page_path

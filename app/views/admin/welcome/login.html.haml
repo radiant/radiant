@@ -1,62 +1,24 @@
-- content_for 'page_css' do
-  :sass
-    #content
-      text-align: center
-      #login
-        background-color: #f5f1e2
-        border: 5px solid #efead3
-        text-align: left
-        margin: 2em
-        margin-left: auto
-        margin-right: auto
-        padding: 5px 20px
-        padding-right: 22px
-        position: relative
-        width: 23.5em
-        h1
-          font-size: 140%    
-          margin: 0
-          margin-top: 13px
-        table
-          width: 100%
-          margin: 15px 0 10px 0
-          td
-            text-align: left
-            padding: 6px 0
-            &.label
-              width: 6em
-            &.field
-              input.textbox
-                font-size: 100%
-                width: 98%
-            &.checkbox
-              font-size: 85%
-            &.buttons
-              text-align: right
-              input
-                font-size: 140%
+- body_classes << "login"
 
 #login
   %h1 Please Login
 
   - form_tag login_url do
-    %table
-      %tr
-        %td.label
-          %label{:for=>"user_login"} Username
-        %td.field{:colspan=>2}
-          = text_field "user", "login", :class => 'textbox activate', :value => '', :maxlength => 40, :size => 40
-      %tr
-        %td.label
-          %label{:for=>"user_password"} Password
-        %td.field{:colspan=>2}
-          = password_field "user", "password", :class => 'textbox', :value => '', :maxlength => 40, :size => 40
-      %tr
-        %td
-        %td.checkbox
-          = check_box_tag :remember_me, 1, false, :class => 'checkbox'
-          %label.checkbox{:for=>"remember_me"} Remember me
-        %td.buttons
-          %input.button{:type=>"submit", :value=>"Login"}/
+    %p
+      %label{:for=>"user_login"} Username
+      = text_field "user", "login", :class => 'textbox activate', :value => '', :maxlength => 40, :size => 40
+    %p
+      %label{:for=>"user_password"} Password
+      = password_field "user", "password", :class => 'textbox password', :value => '', :maxlength => 40, :size => 40
+      &nbsp;
+      %span.remember_me
+        = check_box_tag :remember_me, 1, false, :class => 'checkbox'
+        %label.checkbox{:for=>"remember_me"} Remember me
+    %p.buttons
+      %input.button{:type=>"submit", :value=>"Login"}/
 
-= javascript_tag "$('user_login').activate();"
+%p.version
+  Powered by
+  %a{:href=>"http://radiantcms.org"} Radiant CMS
+  version 
+  = Radiant.loaded_via_gem? ? "#{Radiant::Version} (gem)" : "#{Radiant::Version}"

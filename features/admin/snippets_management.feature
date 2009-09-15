@@ -19,7 +19,7 @@ Feature: Managing snippets
     And I fill in "Name" with "Mine"
     And I fill in "Body" with "My snippet"
     And I press "Create Snippet"
-    Then I should see "saved"
+    Then I should be on the snippets list
     And I should see "Mine"
     
   Scenario: Display form errors
@@ -36,7 +36,7 @@ Feature: Managing snippets
     And I fill in "Name" with "Mine"
     And I fill in "Body" with "My snippet"
     And I press "Save and Continue Editing"
-    Then I should see "saved"
+    Then I should see "Edit Snippet"
     And I should see the form
     
   Scenario: View a snippet

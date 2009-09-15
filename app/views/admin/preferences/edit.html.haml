@@ -1,36 +1,34 @@
+- body_classes << "reversed"
+
 - render_region :main do |main|
   - main.edit_header do
-    %h1 User Preferences
+    %h1 Personal Preferences
   - main.edit_form do
-    - form_for @user, :url => admin_preferences_url, :html => { :method => :put } do |f|
+    - form_for @user, :url => admin_preferences_url, :html => { :method => :put, :onsubmit_status => "Saving preferences&#8230;" } do |f|
       = render_region :form_top
-      %table.fieldset{:cellpadding=>0, :cellspacing=>0, :border=>0}
-        - render_region :form do |form|
-          - form.edit_password do
-            %tr
-              %th.label
-                = label_tag :user_password, "Password"
-              %td.field
-                = f.password_field "password", :class => 'textbox', :value => '', :maxlength => 40
-              %td.help{:rowspan=>2}
-                At least 5 characters. Leave password blank for it to remain unchanged.
-            %tr
-              %th.label
-                = label_tag :user_password_confirmation, "Confirm Password"
-              %td.field
-                = f.password_field "password_confirmation", :class => 'textbox', :value => '', :maxlength => 40
-          - form.edit_email do
-            %tr
-              %th.label
-                = label_tag :user_email, "E-mail"
-              %td.field
-                = f.text_field "email", :class => 'textbox', :maxlength => 255
-              %td.help Optional.
+      
+      - render_region :form do |form|
+        - form.edit_name do
+          %p
+            = f.label :name
+            = f.text_field :name, :class => "textbox activate", :size => 32, :maxlength => 100 
+        
+        - form.edit_email do
+          %p
+            = f.label :email, "E-mail Address", :class => "optional"
+            = f.text_field "email", :class => 'textbox', :size => 32, :maxlength => 255
+        
+        - form.edit_username do
+          %p
+            = f.label :login, "Username"
+            = f.text_field "login", :class => "textbox", :size => 32, :maxlength => 40
+        
+        - form.edit_password do
+          = render "admin/users/password_fields", :f => f
+      
       - render_region :form_bottom do |form_bottom|
         - form_bottom.edit_buttons do
           %p.buttons
             = save_model_button @user
             or
             = link_to 'Cancel', admin_url
-
-    = javascript_tag "$('user_password').activate();"

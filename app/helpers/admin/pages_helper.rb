@@ -24,33 +24,86 @@ module Admin::PagesHelper
 
   def page_edit_javascripts
     <<-CODE
-    var last_type = "#{@page.class_name}";
-    function load_tag_reference(part) {
-      page_type = $F('page_class_name');
-      popup = $('tag-reference-popup');
-      if(last_type != page_type) {
-        url = "#{admin_reference_path(:id => 'tags')}";
-        params = "class_name=" + page_type;
-        new Effect.Highlight('tag-reference-link-'+ part);
-        req = new Ajax.Request(url, { method: 'get', parameters: params, evalScripts: true });
-      } else {
-         center(popup);
-         Element.toggle(popup);
+    function addPart(form) {
+       if (validPartName()) {
+        new Ajax.Updater(
+          $('tab_control').down('.pages'),
+          '#{admin_page_parts_path}',
+          {
+            asynchronous: true,
+            evalScripts: true,
+            insertion: 'bottom',
+            onComplete: function(request){ partAdded() },
+            onLoading: function(request){ partLoading() },
+            parameters: Form.serialize(form)
+          }
+        );
       }
+    }
+    function removePart() {
+      if(confirm('Remove the current part?')) {
+        TabControls['tab_control'].removeSelected();
+      }
+    }
+    function partAdded() {
+      var tabControl = TabControls['tab_control'];
+      $('add_part_busy').hide();
+      $('add_part_button').disabled = false;
+      $('add_part_popup').closePopup();
+      $('part_name_field').value = '';
+      tabControl.updateTabs();
+      tabControl.select(tabControl.tabs.last());
+    }
+    function partLoading() {
+      $('add_part_button').disabled = true;
+      $('add_part_busy').appear();
+    }
+    function validPartName() {
+      var partNameField = $('part_name_field');
+      var name = partNameField.value.downcase();
+      if (name.blank()) {
+        alert('Part name cannot be empty.');
+        return false;
+      }
+      if (TabControls['tab_control'].findTabByCaption(name)) {
+        alert('Part name must be unique.');
+        return false;
+      }
+      return true;
+    }
+
+    var lastPageType = '#{@page.class.name}';
+    var tagReferenceWindows = {};
+    function loadTagReference(part) {
+      var pageType = $F('page_class_name');
+      if (!tagReferenceWindows[pageType])
+        tagReferenceWindows[pageType] = new Popup.AjaxWindow("/admin/references/tags?class_name=" + encodeURIComponent(pageType), {reload: false});
+      var window = tagReferenceWindows[pageType];
+      if(lastPageType != pageType) {
+        $('tag_reference_link_' + part).highlight();
+        window.show();
+      } else {
+        window.toggle();
+      }
+      lastPageType = pageType;
       return false;
     }
-    var last_filter = "#{default_filter_name}";
-    function load_filter_reference(part) {
-      filter_type = $F("part_" + part + "_filter_id");
-      popup = $('filter-reference-popup');
-      if(last_filter != filter_type) {
-        url = "#{admin_reference_path(:id => 'filters')}";
-        params = "filter_name=" + filter_type;
-        new Effect.Highlight('filter-reference-link-'+ part);
-        req = new Ajax.Request(url, { method: 'get', parameters: params, evalScripts: true });
+
+    var lastFilter = '#{default_filter_name}';
+    var filterWindows = {};
+    function loadFilterReference(part) {
+      var filter = $F("part_" + part + "_filter_id");
+      if (filter != "") {
+        if (!filterWindows[filter]) filterWindows[filter] = new Popup.AjaxWindow("/admin/references/filters?filter_name="+encodeURIComponent(filter), {reload: false});
+        var window = filterWindows[filter];
+        if(lastFilter != filter) {
+          window.show();
+        } else {
+          window.toggle();
+        }
+        lastFilter = filter;
       } else {
-        center(popup);
-        Element.toggle(popup);
+        alert('No documentation for filter.');
       }
       return false;
     }

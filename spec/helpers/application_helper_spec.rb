@@ -81,26 +81,6 @@ describe ApplicationHelper do
     helper.pluralize(2, "ox", "oxen").should == "oxen"
   end
   
-  it "should generate links for the admin navigation" do
-    helper.stub!(:current_user).and_return(users(:admin))
-    helper.links_for_navigation.should =~ Regexp.new("/admin/pages")
-    helper.links_for_navigation.should =~ Regexp.new(helper.separator)
-    helper.links_for_navigation.should =~ Regexp.new("/admin/snippets")
-    helper.links_for_navigation.should =~ Regexp.new("/admin/layouts")
-  end
-  
-  it "should hide admin links that should not be visible to the current user" do
-    helper.stub!(:current_user).and_return(users(:existing))
-    helper.links_for_navigation.should =~ Regexp.new("/admin/pages")
-    helper.links_for_navigation.should =~ Regexp.new(helper.separator)
-    helper.links_for_navigation.should =~ Regexp.new("/admin/snippets")
-    helper.links_for_navigation.should_not =~ Regexp.new("/admin/layouts")
-  end
-  
-  it "should render a separator" do
-    helper.separator.should == %{ <span class="separator"> | </span> }
-  end
-  
   it "should determine whether a given url matches the current url" do
     request = mock("request")
     helper.stub!(:request).and_return(request)
@@ -143,11 +123,11 @@ describe ApplicationHelper do
     model.should_receive(:new_record?).and_return(false)
     model.should_receive(:updated_by).and_return(users(:admin))
     model.should_receive(:updated_at).and_return(Time.local(2008, 3, 30, 10, 30))
-    helper.updated_stamp(model).should == %{<p style="clear: left"><small>Last updated by admin at 10:30 <small>AM</small> on March 30, 2008</small></p>}
+    helper.updated_stamp(model).should == %{<p class="updated_line">Last updated by <strong>Admin</strong> at 10:30 am on March 30, 2008</p>}
   end
   
   it "should render a timezone-adjusted timestamp" do
-    helper.timestamp(Time.local(2008, 3, 30, 10, 30)).should == "10:30 <small>AM</small> on March 30, 2008"
+    helper.timestamp(Time.local(2008, 3, 30, 10, 30)).should == "10:30 am on March 30, 2008"
   end
   
   it "should determine whether a meta area item should be visible" do

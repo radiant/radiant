@@ -22,7 +22,7 @@ Radiant features:
 
 == License
 
-Radiant is released under the MIT license and is copyright (c) 2006-2008
+Radiant is released under the MIT license and is copyright (c) 2006-2009
 John W. Long and Sean Cribbs. A copy of the MIT license can be found in the
 LICENSE file.
 
@@ -37,7 +37,10 @@ See the INSTALL file for more details.
 
 == Development Requirements
 
- * gem install ZenTest rspec rspec-rails
+To run tests you will need to have the following gems installed:
+
+  gem install ZenTest rspec rspec-rails cucumber webrat nokogiri
+
 
 == Support
 
@@ -45,13 +48,14 @@ The best place to get support is on the mailing list:
 
 http://radiantcms.org/mailing-list/
 
-There is also a Trac powered dev site available here:
+Most of the development for Radiant happens on Github:
 
-http://dev.radiantcms.org/
+http://github.com/radiant/radiant/
 
-Please Note: Before filing a ticket on the dev site discuss your question or
-problem on the mailing list. This makes it much easier to manage legitimate
-tickets.
+The project wiki is here:
+
+http://wiki.github.com/radiant/radiant/
+
 
 Enjoy!
 

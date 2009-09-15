@@ -1,4 +1,3 @@
-- include_javascript 'admin/sitemap'
 - pages = pluralize(@page.children.count + 1, 'Page')
 %h1
   Remove
@@ -10,9 +9,10 @@
   the following
   = pages.downcase + "?"
 
-%table.index#site-map{:cellpadding=>0, :cellspacing=>0, :border=>0}
-  %tbody
-    = render_node @page, :simple => true
+.inset
+  %table.index#site_map{:cellpadding=>0, :cellspacing=>0, :border=>0}
+    %tbody
+      = render_node @page, :simple => true
 
 - form_for [:admin, @page.becomes(Page)], :html => {:method => :delete} do
   %p.buttons

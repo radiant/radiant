@@ -1,35 +1,35 @@
-%h1 Users
-
 = render_region :top 
 
-%table#users.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0"}
-  %thead
-    %tr
-      - render_region :thead do |thead|
-        - thead.title_header do
-          %th.user Name / Login
-        - thead.roles_header do
-          %th.roles Roles
-        - thead.modify_header do
-          %th.modify Modify
-  %tbody
-    - @users.each do |user|
-      %tr.node.level-1
-        - render_region :tbody do |tbody|
-          - tbody.title_cell do
-            %td.user
-              = link_to user.name, edit_admin_user_url(user)
-              %small.login= h user.login
-          - tbody.roles_cell do
-            %td.roles= roles(user)
-          - tbody.modify_cell do
-            %td.remove
-              - if user == current_user
-                = image('remove-disabled', :alt => 'Remove')
-              - else
-                = link_to(image('remove', :alt => 'Remove User'), remove_admin_user_url(user)) 
+.outset
+  %table#users.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0"}
+    %thead
+      %tr
+        - render_region :thead do |thead|
+          - thead.title_header do
+            %th.user Name / Login
+          - thead.roles_header do
+            %th.roles Roles
+          - thead.modify_header do
+            %th.modify Modify
+    %tbody
+      - @users.each do |user|
+        %tr.node.level_1
+          - render_region :tbody do |tbody|
+            - tbody.title_cell do
+              %td.user
+                = link_to user.name, edit_admin_user_url(user)
+                %small.login= h user.login
+            - tbody.roles_cell do
+              %td.roles= roles(user)
+            - tbody.modify_cell do
+              %td.remove
+                - if user == current_user
+                  = image('remove_disabled', :alt => 'Remove')
+                - else
+                  = link_to(image('remove', :alt => 'Remove User'), remove_admin_user_url(user)) 
 
 - render_region :bottom do |bottom|
   - bottom.new_button do
-    %p
-      = link_to image('new-user', :alt => 'New User'), new_admin_user_url, :title => "New User"
+    #actions
+      %ul
+        %li= link_to "New User", new_admin_user_url

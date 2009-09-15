@@ -10,11 +10,12 @@ require 'models/author'
 require 'models/comment'
 require 'models/person'
 require 'models/reader'
+require 'models/tagging'
 
 class HasManyAssociationsTest < ActiveRecord::TestCase
   fixtures :accounts, :categories, :companies, :developers, :projects,
            :developers_projects, :topics, :authors, :comments, :author_addresses,
-           :people, :posts, :readers
+           :people, :posts, :readers, :taggings
 
   def setup
     Client.destroyed_client_ids.clear
@@ -279,6 +280,12 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     assert_equal client2, firm.clients.find(:first, :conditions => ["#{QUOTED_TYPE} = :type", { :type => 'Client' }])
   end
 
+  def test_find_all_with_include_and_conditions
+    assert_nothing_raised do
+      Developer.find(:all, :joins => :audit_logs, :conditions => {'audit_logs.message' => nil, :name => 'Smith'})
+    end
+  end
+
   def test_find_in_collection
     assert_equal Client.find(2).name, companies(:first_firm).clients.find(2).name
     assert_raise(ActiveRecord::RecordNotFound) { companies(:first_firm).clients.find(6) }
@@ -502,6 +509,23 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     assert_equal 0, new_firm.clients_of_firm.size
   end
 
+  def test_deleting_updates_counter_cache
+    topic = Topic.first
+    assert_equal topic.replies.to_a.size, topic.replies_count
+
+    topic.replies.delete(topic.replies.first)
+    topic.reload
+    assert_equal topic.replies.to_a.size, topic.replies_count
+  end
+
+  def test_deleting_updates_counter_cache_without_dependent_destroy
+    post = posts(:welcome)
+
+    assert_difference "post.reload.taggings_count", -1 do
+      post.taggings.delete(post.taggings.first)
+    end
+  end
+
   def test_deleting_a_collection
     force_signal37_to_load_all_clients_of_firm
     companies(:first_firm).clients_of_firm.create("name" => "Another Client")
@@ -545,6 +569,14 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     assert_nothing_raised do
       assert Client.find(client_id).firm.nil?
     end
+  end
+
+  def test_clearing_updates_counter_cache
+    topic = Topic.first
+
+    topic.replies.clear
+    topic.reload
+    assert_equal 0, topic.replies_count
   end
 
   def test_clearing_a_dependent_association_collection
@@ -691,6 +723,28 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     assert_equal 0, companies(:first_firm).clients_of_firm(true).size
   end
 
+  def test_destroying_by_fixnum_id
+    force_signal37_to_load_all_clients_of_firm
+
+    assert_difference "Client.count", -1 do
+      companies(:first_firm).clients_of_firm.destroy(companies(:first_firm).clients_of_firm.first.id)
+    end
+
+    assert_equal 0, companies(:first_firm).reload.clients_of_firm.size
+    assert_equal 0, companies(:first_firm).clients_of_firm(true).size
+  end
+
+  def test_destroying_by_string_id
+    force_signal37_to_load_all_clients_of_firm
+
+    assert_difference "Client.count", -1 do
+      companies(:first_firm).clients_of_firm.destroy(companies(:first_firm).clients_of_firm.first.id.to_s)
+    end
+
+    assert_equal 0, companies(:first_firm).reload.clients_of_firm.size
+    assert_equal 0, companies(:first_firm).clients_of_firm(true).size
+  end
+
   def test_destroying_a_collection
     force_signal37_to_load_all_clients_of_firm
     companies(:first_firm).clients_of_firm.create("name" => "Another Client")
@@ -717,6 +771,12 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     assert_equal 2, firm.clients.size
     firm.destroy
     assert Client.find(:all, :conditions => "firm_id=#{firm.id}").empty?
+  end
+
+  def test_dependence_for_associations_with_hash_condition
+    david = authors(:david)
+    post = posts(:thinking).id
+    assert_difference('Post.count', -1) { assert david.destroy }
   end
 
   def test_destroy_dependent_when_deleted_from_association
@@ -855,7 +915,7 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
       lambda { authors(:mary).comments = [comments(:greetings), comments(:more_greetings)] },
       lambda { authors(:mary).comments << Comment.create!(:body => "Yay", :post_id => 424242) },
       lambda { authors(:mary).comments.delete(authors(:mary).comments.first) },
-    ].each {|block| assert_raise(ActiveRecord::HasManyThroughCantAssociateThroughHasManyReflection, &block) }
+    ].each {|block| assert_raise(ActiveRecord::HasManyThroughCantAssociateThroughHasOneOrManyReflection, &block) }
   end
 
   def test_dynamic_find_should_respect_association_order_for_through

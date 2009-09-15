@@ -1,8 +1,18 @@
 == Change Log
 
-=== Edge
+=== 0.8.1 Luster
 
-* Prevent users from cache busting with refresh or "force reload" [John Muhl]
+* Move default cache location to tmp. [Sean Cribbs]
+* Upgrade Rails and dataset. [Sean Cribbs]
+* Updated README and INSTALL. [John Long]
+* Don't use Symbol#to_proc in initializer because ActiveSupport hasn't
+  loaded yet.
+* Fix links to Textile reference in the wake of _why's disappearance. 
+  [Jason Garber]
+* Correct bug when submitting a POST to a cached page. [Sean Cribbs]
+* Fix typo in generator for features task. [Jim Gay]
+* Page parts may already be marked for destruction, don't explicitly set
+  false. [Kunal Shah]
 * Merge latest version of Radius [Kunal Shah]
 * Helpers for extension_enabled? [Kunal Shah]
 * Respond to show methods with xml rendering [Jeremy Stephens]
@@ -18,6 +28,7 @@
 * Markup fixes [Justin Blecher, Alex Wallace]
 * Use Rails for time zone handling [Kunal Shah, Josh French]
 * Allow extensions to declare dependencies [Josh French]
+* Expose Rails configuration to extensions. [Josh French]
 * Set template_name for all resourceful action types [Josh French]
 * Load Metal from Extensions [Jim Gay]
 

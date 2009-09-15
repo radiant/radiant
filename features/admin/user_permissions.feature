@@ -18,8 +18,8 @@ Feature: User authentication and permissions
   
   Scenario Outline: Authentication-logout
     Given I am logged in as "<username>"
-    When I follow "Log out"
-    Then I should see "You are now logged out."
+    When I follow "Logout"
+    Then I should be on the login screen
     
     Examples:
       | username  |
@@ -58,8 +58,9 @@ Feature: User authentication and permissions
   
   Scenario Outline: Admins and developers can see and edit layouts
     Given I am logged in as "<username>"
-    And I should see "Layouts"
-    When I go to "/admin/layouts"
+    And I should see "Design"
+    When I follow "Design"
+    And I follow "Layouts"
     And I should not see "You must have developer privileges"
     And I follow "Main"
     Then I should see "Edit Layout"
@@ -71,7 +72,7 @@ Feature: User authentication and permissions
       
   Scenario Outline: Ordinary users cannot edit layouts
     Given I am logged in as "<username>"
-    And I should not see "Layouts"
+    And I should not see "Design"
     When I go to "/admin/layouts"
     Then I should see "You must have developer privileges"
 
@@ -82,16 +83,11 @@ Feature: User authentication and permissions
     
   Scenario: Admins can see and edit users
     Given I am logged in as "admin"
-    And I should see "Users"
-    When I go to "/admin/users"
+    When I follow "Settings"
+    And I follow "Users"
     And I should not see "You must have administrative privileges"
     And I follow "Another"
     Then I should see "Edit User"
-
-  Scenario: Admins do not see preferences link
-    Given I am logged in as "admin"
-    And I should see "Users"
-    And I should not see "Preferences"
   
   Scenario Outline: Non-admins cannot see or edit users
     Given I am logged in as "<username>"
@@ -107,9 +103,10 @@ Feature: User authentication and permissions
       
   Scenario Outline: Non-admins see preferences link
     Given I am logged in as "<username>"
-    And I should see "Preferences"
-    When I go to "/admin/preferences"
-    Then I should see "User Preferences"
+    And I should see "Settings"
+    When I follow "Settings"
+    And I follow "Personal"
+    Then I should see "Personal Preferences"
     
     Examples:
       | username  |
@@ -117,15 +114,15 @@ Feature: User authentication and permissions
       | another   |
       | developer |
 
-
   Scenario: Admin users can see extensions
     Given I am logged in as "admin"
-    And I should see "Extensions"
-    When I go to "/admin/extensions"
+    When I follow "Settings"
+    And I follow "Extensions"
     Then I should see "Archive"
   
   Scenario Outline: Non-admin users cannot see extensions
     Given I am logged in as "<username>"
+    When I follow "Settings"
     And I should not see "Extensions"
     When I go to "/admin/extensions"
     Then I should see "You must have administrative privileges"

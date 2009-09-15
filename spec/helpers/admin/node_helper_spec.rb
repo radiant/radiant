@@ -39,9 +39,9 @@ describe Admin::NodeHelper do
   end
 
   it "should determine the left padding for the current level" do
-    helper.padding_left(0).should == 4
-    helper.padding_left(1).should == 26
-    helper.padding_left(2).should == 48
+    helper.padding_left(0).should == 9
+    helper.padding_left(1).should == 32
+    helper.padding_left(2).should == 55
   end
 
   it "should determine the class of a parent node" do
@@ -49,20 +49,20 @@ describe Admin::NodeHelper do
     child = mock("child")
     @page.should_receive(:children).and_return([child])
     helper.should_receive(:expanded).and_return(true)
-    helper.children_class.should == " children-visible"
+    helper.children_class.should == " children_visible"
   end
 
   it "should display an icon for the current node" do
     assigns[:current_node] = @page
     @page.should_receive(:virtual?).and_return(false)
-    helper.should_receive(:image).with("page", :class => "icon", :alt => 'page-icon', :title => '')
+    helper.should_receive(:image).with("page", :class => "icon", :alt => 'page_icon', :title => '')
     helper.icon
   end
   
   it "should display the virtual icon if the current node is virtual" do
     assigns[:current_node] = @page
     @page.should_receive(:virtual?).and_return(true)
-    helper.should_receive(:image).with("virtual-page", :class => "icon", :alt => 'page-icon', :title => '')
+    helper.should_receive(:image).with("virtual_page", :class => "icon", :alt => 'page_icon', :title => '')
     helper.icon
   end
 
@@ -96,7 +96,7 @@ describe Admin::NodeHelper do
     assigns[:current_node] = @page
     @page.should_receive(:id).and_return(1)
     helper.should_receive(:image).with('spinner.gif',
-            :class => 'busy', :id => "busy-1",
+            :class => 'busy', :id => "busy_1",
             :alt => "",  :title => "",
             :style => 'display: none;')
     helper.spinner

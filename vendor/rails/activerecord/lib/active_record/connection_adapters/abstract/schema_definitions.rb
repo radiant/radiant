@@ -277,7 +277,6 @@ module ActiveRecord
         add_column_options!(column_sql, column_options) unless type.to_sym == :primary_key
         column_sql
       end
-      alias to_s :to_sql
 
       private
 
@@ -316,6 +315,20 @@ module ActiveRecord
         @base = base
       end
 
+      #Handles non supported datatypes - e.g. XML
+      def method_missing(symbol, *args)
+        if symbol.to_s == 'xml'
+          xml_column_fallback(args)
+        end
+      end
+
+      def xml_column_fallback(*args)
+        case @base.adapter_name.downcase
+          when 'sqlite', 'mysql'
+            options = args.extract_options!
+            column(args[0], :text, options)
+          end
+        end
       # Appends a primary key definition to the table definition.
       # Can be called multiple times, but this is probably not a good idea.
       def primary_key(name)
@@ -508,7 +521,7 @@ module ActiveRecord
       # concatenated together. This string can then be prepended and appended to
       # to generate the final SQL to create the table.
       def to_sql
-        @columns * ', '
+        @columns.map(&:to_sql) * ', '
       end
 
       private
@@ -706,3 +719,4 @@ module ActiveRecord
 
   end
 end
+

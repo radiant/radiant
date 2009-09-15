@@ -159,9 +159,9 @@ end_error
       Rails::Rack::Metal.metal_paths = ["#{RADIANT_ROOT}/app/metal"] # reset Rails default to RADIANT_ROOT
       Rails::Rack::Metal.metal_paths += plugin_loader.engine_metal_paths
       Rails::Rack::Metal.metal_paths += extension_loader.metal_paths
-
+    
       configuration.middleware.insert_before(
-        :"ActionController::RewindableInput",
+        :"ActionController::ParamsParser",
         Rails::Rack::Metal, :if => Rails::Rack::Metal.metals.any?)
     end
 
@@ -186,10 +186,8 @@ end_error
     end
 
     def initialize_default_admin_tabs
-      admin.tabs.clear
-      admin.tabs.add "Pages",    "/admin/pages"
-      admin.tabs.add "Snippets", "/admin/snippets"
-      admin.tabs.add "Layouts",  "/admin/layouts", :visibility => [:admin, :developer]
+      admin.nav.clear
+      admin.load_default_nav
     end
 
     def initialize_framework_views

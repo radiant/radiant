@@ -4,7 +4,6 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
-require 'rake/contrib/sshpublisher'
 
 require File.join(File.dirname(__FILE__), 'lib', 'active_record', 'version')
 require File.expand_path(File.dirname(__FILE__)) + "/test/config"
@@ -25,14 +24,30 @@ PKG_FILES = FileList[
     "lib/**/*", "test/**/*", "examples/**/*", "doc/**/*", "[A-Z]*", "install.rb", "Rakefile"
 ].exclude(/\bCVS\b|~$/)
 
+def run_without_aborting(*tasks)
+  errors = []
+
+  tasks.each do |task|
+    begin
+      Rake::Task[task].invoke
+    rescue Exception
+      errors << task
+    end
+  end
+
+  abort "Errors running #{errors.join(', ')}" if errors.any?
+end
 
 desc 'Run mysql, sqlite, and postgresql tests by default'
 task :default => :test
 
 desc 'Run mysql, sqlite, and postgresql tests'
-task :test => defined?(JRUBY_VERSION) ?
-  %w(test_jdbcmysql test_jdbcsqlite3 test_jdbcpostgresql) :
-  %w(test_mysql test_sqlite3 test_postgresql)
+task :test do
+  tasks = defined?(JRUBY_VERSION) ?
+    %w(test_jdbcmysql test_jdbcsqlite3 test_jdbcpostgresql) :
+    %w(test_mysql test_sqlite3 test_postgresql)
+  run_without_aborting(*tasks)
+end
 
 for adapter in %w( mysql postgresql sqlite sqlite3 firebird db2 oracle sybase openbase frontbase jdbcmysql jdbcpostgresql jdbcsqlite3 jdbcderby jdbch2 jdbchsqldb )
   Rake::TestTask.new("test_#{adapter}") { |t|
@@ -54,8 +69,8 @@ end
 namespace :mysql do
   desc 'Build the MySQL test databases'
   task :build_databases do
-    %x( mysqladmin --user=#{MYSQL_DB_USER} create activerecord_unittest )
-    %x( mysqladmin --user=#{MYSQL_DB_USER} create activerecord_unittest2 )
+    %x( echo "create DATABASE activerecord_unittest DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci " | mysql --user=#{MYSQL_DB_USER})
+    %x( echo "create DATABASE activerecord_unittest2 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci " | mysql --user=#{MYSQL_DB_USER})
   end
 
   desc 'Drop the MySQL test databases'
@@ -76,8 +91,8 @@ task :rebuild_mysql_databases => 'mysql:rebuild_databases'
 namespace :postgresql do
   desc 'Build the PostgreSQL test databases'
   task :build_databases do
-    %x( createdb activerecord_unittest )
-    %x( createdb activerecord_unittest2 )
+    %x( createdb -E UTF8 activerecord_unittest )
+    %x( createdb -E UTF8 activerecord_unittest2 )
   end
 
   desc 'Drop the PostgreSQL test databases'
@@ -177,7 +192,7 @@ spec = Gem::Specification.new do |s|
     s.files = s.files + Dir.glob( "#{dir}/**/*" ).delete_if { |item| item.include?( "\.svn" ) }
   end
 
-  s.add_dependency('activesupport', '= 2.3.2' + PKG_BUILD)
+  s.add_dependency('activesupport', '= 2.3.4' + PKG_BUILD)
 
   s.files.delete FIXTURES_ROOT + "/fixture_database.sqlite"
   s.files.delete FIXTURES_ROOT + "/fixture_database_2.sqlite"
@@ -231,12 +246,14 @@ end
 
 desc "Publish the beta gem"
 task :pgem => [:package] do
+  require 'rake/contrib/sshpublisher'
   Rake::SshFilePublisher.new("gems.rubyonrails.org", "/u/sites/gems/gems", "pkg", "#{PKG_FILE_NAME}.gem").upload
   `ssh gems.rubyonrails.org '/u/sites/gems/gemupdate.sh'`
 end
 
 desc "Publish the API documentation"
 task :pdoc => [:rdoc] do
+  require 'rake/contrib/sshpublisher'
   Rake::SshDirPublisher.new("wrath.rubyonrails.org", "public_html/ar", "doc").upload
 end
 

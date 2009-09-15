@@ -13,6 +13,7 @@ unless Radiant.app?
     radiant:release
     radiant:repackage
     radiant:uninstall_gem
+    radiant:import:prototype:styles
     rails:freeze:edge
     rails:freeze:gems
     rails:unfreeze

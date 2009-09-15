@@ -1,11 +1,25 @@
-var SiteMap = Class.create(RuledTable, {
-  initialize: function($super, element) {
-    $super(element);
+/*
+ *  sitemap.js
+ *  
+ *  depends on: prototype.js and lowpro.js
+ *  
+ *  Used by Radiant to create the expandable sitemap.
+ *  
+ *  To use, simply add the following lines to application.js:
+ *  
+ *     Event.addBehavior({
+ *       'table#site_map': SiteMapBehavior()
+ *     });
+ *
+ */
+
+var SiteMapBehavior = Behavior.create({
+  
+  initialize: function() {
     this.readExpandedCookie();
-    Event.observe(element, 'click', this.onMouseClickRow.bindAsEventListener(this));
   },
   
-  onMouseClickRow: function(event) {
+  onclick: function(event) {
     if (this.isExpander(event.target)) {
       var row = event.findElement('tr');
       if (this.hasChildren(row)) {
@@ -15,7 +29,7 @@ var SiteMap = Class.create(RuledTable, {
   },
   
   hasChildren: function(row) {
-    return !row.hasClassName('no-children');
+    return !row.hasClassName('no_children');
   },
   
   isExpander: function(element) {
@@ -23,7 +37,7 @@ var SiteMap = Class.create(RuledTable, {
   },
   
   isExpanded: function(row) {
-    return row.hasClassName('children-visible');
+    return row.hasClassName('children_visible');
   },
   
   isRow: function(element) {
@@ -31,12 +45,12 @@ var SiteMap = Class.create(RuledTable, {
   },
   
   extractLevel: function(row) {
-    if (/level-(\d+)/i.test(row.className))
+    if (/level_(\d+)/i.test(row.className))
       return RegExp.$1.toInteger();
   },
   
   extractPageId: function(row) {
-    if (/page-(\d+)/i.test(row.id))
+    if (/page_(\d+)/i.test(row.id))
       return RegExp.$1.toInteger();
   },
   
@@ -68,13 +82,13 @@ var SiteMap = Class.create(RuledTable, {
     if (!img) img = this.getExpanderImageForRow(row);
     if (this.isExpanded(row)) {
       img.src = img.src.replace('collapse', 'expand');
-      row.removeClassName('children-visible');
-      row.addClassName('children-hidden');
+      row.removeClassName('children_visible');
+      row.addClassName('children_hidden');
       this.persistCollapsed(row);
     } else {
       img.src = img.src.replace('expand', 'collapse');
-      row.removeClassName('children-hidden');
-      row.addClassName('children-visible');
+      row.removeClassName('children_hidden');
+      row.addClassName('children_visible');
       this.persistExpanded(row);
     }
   },
@@ -108,25 +122,29 @@ var SiteMap = Class.create(RuledTable, {
   },
   
   getBranch: function(row) {
-    var id = this.extractPageId(row), level = this.extractLevel(row),
-        spinner = $('busy-' + id);
+    var id = this.extractPageId(row);
+    var level = this.extractLevel(row);
+    var spinner = $('busy_' + id);
         
     new Ajax.Updater(
       row,
-      '/admin/pages/' + id + '/children?level=' + level,
+      '../admin/pages/' + id + '/children/?level=' + level,
       {
         insertion: "after",
+        method: "get",
         onLoading:  function() { spinner.show(); this.updating = true  }.bind(this),
-        onComplete: function() { spinner.fade(); this.updating = false }.bind(this),
-        method: 'get'
+        onComplete: function() { spinner.fade(); this.updating = false }.bind(this)
       }
     );
   },
   
   toggleBranch: function(row, img) {
     if (!this.updating) {
-      var method = (this.isExpanded(row) ? 'hide' : 'show') + 'Branch';
-      this[method](row, img);
+      if (this.isExpanded(row)) {
+        this.hideBranch(row, img);
+      } else {
+        this.showBranch(row, img);
+      }
     }
   }
 });
