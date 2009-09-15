@@ -17,14 +17,13 @@ describe Admin::PreferencesController do
     login_as :non_admin
     put :update, :user => { :password => '', :password_confirmation => '', :email => 'updated@gmail.com' }
     user = users(:non_admin)
-    response.should redirect_to(admin_pages_path)
-    flash[:notice].should match(/preferences.*?updated/i)
+    response.should redirect_to(admin_preferences_path)
     user.email.should == 'updated@gmail.com'
   end
 
-  it "should not allow you to update your login through the preferences page" do
+  it "should not allow you to update your role through the preferences page" do
     login_as :non_admin
-    put :update, 'user' => { :login => 'superman' }
+    put :update, 'user' => { :admin => true }
     response.should be_success
     flash[:error].should match(/bad form data/i)
   end

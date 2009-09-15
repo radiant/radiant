@@ -228,10 +228,10 @@ describe Admin::PagesController do
     def assert_rendered_nodes_where(&block)
       wanted, unwanted = Page.find(:all).partition(&block)
       wanted.each do |page|
-        response.should have_tag("tr#page_#{page.id}")
+        response.should have_tag("tr[id=page_#{page.id}]")
       end
       unwanted.each do |page|
-        response.should_not have_tag("tr#page_#{page.id}")
+        response.should_not have_tag("tr[id=page_#{page.id}]")
       end
     end
 

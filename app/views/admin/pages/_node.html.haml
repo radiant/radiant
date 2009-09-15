@@ -1,4 +1,4 @@
-%tr.node[page]{:class =>"level_#{level}#{children_class}#{virtual_class}"}
+%tr.node.page{:class =>"level_#{level}#{children_class}#{virtual_class}", :id => "page_#{page.id}"}
   - render_region :node, :locals => {:page => page, :level => level, :simple => simple} do |node|
     - node.title_column do
       %td.page{:style => "padding-left: #{padding_left(level)}px"}
