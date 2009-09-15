@@ -249,9 +249,10 @@ module ActiveRecord
       unless valid = association.valid?
         if reflection.options[:autosave]
           unless association.marked_for_destruction?
-            association.errors.each do |attribute, message|
-              attribute = "#{reflection.name}_#{attribute}"
-              errors.add(attribute, message) unless errors.on(attribute)
+            association.errors.each_error do |attribute, error|
+              error = error.dup
+              error.attribute = "#{reflection.name}_#{attribute}"
+              errors.add(error) unless errors.on(error.attribute)
             end
           end
         else
@@ -311,11 +312,13 @@ module ActiveRecord
     # ActiveRecord::Base after the AutosaveAssociation module, which it does by default.
     def save_has_one_association(reflection)
       if (association = association_instance_get(reflection.name)) && !association.target.nil?
-        if reflection.options[:autosave] && association.marked_for_destruction?
+        autosave = reflection.options[:autosave]
+
+        if autosave && association.marked_for_destruction?
           association.destroy
-        elsif new_record? || association.new_record? || association[reflection.primary_key_name] != id || reflection.options[:autosave]
+        elsif new_record? || association.new_record? || association[reflection.primary_key_name] != id || autosave
           association[reflection.primary_key_name] = id
-          association.save(false)
+          association.save(!autosave)
         end
       end
     end
@@ -330,13 +333,16 @@ module ActiveRecord
     # ActiveRecord::Base after the AutosaveAssociation module, which it does by default.
     def save_belongs_to_association(reflection)
       if association = association_instance_get(reflection.name)
-        if reflection.options[:autosave] && association.marked_for_destruction?
+        autosave = reflection.options[:autosave]
+
+        if autosave && association.marked_for_destruction?
           association.destroy
         else
-          association.save(false) if association.new_record? || reflection.options[:autosave]
+          association.save(!autosave) if association.new_record? || autosave
 
           if association.updated?
-            self[reflection.primary_key_name] = association.id
+            association_id = association.send(reflection.options[:primary_key] || :id)
+            self[reflection.primary_key_name] = association_id
             # TODO: Removing this code doesn't seem to matter…
             if reflection.options[:polymorphic]
               self[reflection.options[:foreign_type]] = association.class.base_class.name.to_s

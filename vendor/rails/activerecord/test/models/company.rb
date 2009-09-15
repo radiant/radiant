@@ -9,6 +9,8 @@ class Company < AbstractCompany
   validates_presence_of :name
 
   has_one :dummy_account, :foreign_key => "firm_id", :class_name => "Account"
+  has_many :contracts
+  has_many :developers, :through => :contracts
 
   def arbitrary_method
     "I am Jack's profound disappointment"
@@ -78,19 +80,13 @@ class DependentFirm < Company
   has_many :companies, :foreign_key => 'client_of', :order => "id", :dependent => :nullify
 end
 
-class ExclusivelyDependentFirm < Company
-  has_one :account, :foreign_key => "firm_id", :dependent => :delete
-  has_many :dependent_sanitized_conditional_clients_of_firm, :foreign_key => "client_of", :class_name => "Client", :order => "id", :dependent => :delete_all, :conditions => "name = 'BigShot Inc.'"
-  has_many :dependent_conditional_clients_of_firm, :foreign_key => "client_of", :class_name => "Client", :order => "id", :dependent => :delete_all, :conditions => ["name = ?", 'BigShot Inc.']
-  has_many :dependent_hash_conditional_clients_of_firm, :foreign_key => "client_of", :class_name => "Client", :order => "id", :dependent => :delete_all, :conditions => {:name => 'BigShot Inc.'}
-end
-
 class Client < Company
   belongs_to :firm, :foreign_key => "client_of"
   belongs_to :firm_with_basic_id, :class_name => "Firm", :foreign_key => "firm_id"
   belongs_to :firm_with_select, :class_name => "Firm", :foreign_key => "firm_id", :select => "id"
   belongs_to :firm_with_other_name, :class_name => "Firm", :foreign_key => "client_of"
   belongs_to :firm_with_condition, :class_name => "Firm", :foreign_key => "client_of", :conditions => ["1 = ?", 1]
+  belongs_to :firm_with_primary_key, :class_name => "Firm", :primary_key => "name", :foreign_key => "firm_name"
   belongs_to :readonly_firm, :class_name => "Firm", :foreign_key => "firm_id", :readonly => true
 
   # Record destruction so we can test whether firm.clients.clear has
@@ -125,6 +121,12 @@ class Client < Company
   end
 end
 
+class ExclusivelyDependentFirm < Company
+  has_one :account, :foreign_key => "firm_id", :dependent => :delete
+  has_many :dependent_sanitized_conditional_clients_of_firm, :foreign_key => "client_of", :class_name => "Client", :order => "id", :dependent => :delete_all, :conditions => "name = 'BigShot Inc.'"
+  has_many :dependent_conditional_clients_of_firm, :foreign_key => "client_of", :class_name => "Client", :order => "id", :dependent => :delete_all, :conditions => ["name = ?", 'BigShot Inc.']
+  has_many :dependent_hash_conditional_clients_of_firm, :foreign_key => "client_of", :class_name => "Client", :order => "id", :dependent => :delete_all, :conditions => {:name => 'BigShot Inc.'}
+end
 
 class SpecialClient < Client
 end

@@ -24,16 +24,18 @@
             %a{:href=>"#view_site_popup", :id=>"view_site", :onclick=>"return false"} View Site
           %ul#navigation
             - nav_tabs.each do |tab|
-              %li{:class=> current_tab?(tab) ? 'current' : ''}
-                %a{:href=>(tab.first.url if tab.first)}
-                  = tab.proper_name
-                - if current_tab?(tab)
-                  %ul#nav_sub
-                    - tab.each do |sub_item|
-                      %li
-                        %a{:href => sub_item.url, :class => current_item?(sub_item) ? 'current' : ''}>
-                          %span
-                            = sub_item.proper_name
+              - if tab.visible?(current_user)
+                %li{:class=> current_tab?(tab) ? 'current' : ''}
+                  %a{:href=>(tab.first.url if tab.first)}
+                    = tab.proper_name
+                  - if current_tab?(tab)
+                    %ul#nav_sub
+                      - tab.each do |sub_item|
+                        - if sub_item.visible?(current_user)
+                          %li
+                            %a{:href => sub_item.url, :class => current_item?(sub_item) ? 'current' : ''}>
+                              %span
+                                = sub_item.proper_name
           #header_bottom
             %div
       #main

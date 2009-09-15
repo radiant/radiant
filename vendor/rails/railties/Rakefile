@@ -2,7 +2,6 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
-require 'rake/contrib/rubyforgepublisher'
 
 require 'date'
 require 'rbconfig'
@@ -200,11 +199,14 @@ task :copy_configs do
 
   cp "configs/locales/en.yml", "#{PKG_DESTINATION}/config/locales/en.yml"
 
+  cp "configs/seeds.rb", "#{PKG_DESTINATION}/db/seeds.rb"
+
   cp "environments/boot.rb",        "#{PKG_DESTINATION}/config/boot.rb"
   cp "environments/environment.rb", "#{PKG_DESTINATION}/config/environment.rb"
   cp "environments/production.rb",  "#{PKG_DESTINATION}/config/environments/production.rb"
   cp "environments/development.rb", "#{PKG_DESTINATION}/config/environments/development.rb"
   cp "environments/test.rb",        "#{PKG_DESTINATION}/config/environments/test.rb"
+
 end
 
 task :copy_binfiles do
@@ -246,7 +248,7 @@ def copy_with_rewritten_ruby_path(src_file, dest_file)
 end
 
 desc 'Generate guides (for authors), use ONLY=foo to process just "foo.textile"'
-task :guides do
+task :generate_guides do
   ruby "guides/rails_guides.rb"
 end
 
@@ -294,6 +296,7 @@ PKG_FILES = FileList[
   'doc/**/*', 
   'dispatches/**/*', 
   'environments/**/*', 
+  'guides/**/*', 
   'helpers/**/*', 
   'generators/**/*', 
   'html/**/*', 
@@ -311,16 +314,16 @@ spec = Gem::Specification.new do |s|
   EOF
 
   s.add_dependency('rake', '>= 0.8.3')
-  s.add_dependency('activesupport',    '= 2.3.2' + PKG_BUILD)
-  s.add_dependency('activerecord',     '= 2.3.2' + PKG_BUILD)
-  s.add_dependency('actionpack',       '= 2.3.2' + PKG_BUILD)
-  s.add_dependency('actionmailer',     '= 2.3.2' + PKG_BUILD)
-  s.add_dependency('activeresource',   '= 2.3.2' + PKG_BUILD)
+  s.add_dependency('activesupport',    '= 2.3.4' + PKG_BUILD)
+  s.add_dependency('activerecord',     '= 2.3.4' + PKG_BUILD)
+  s.add_dependency('actionpack',       '= 2.3.4' + PKG_BUILD)
+  s.add_dependency('actionmailer',     '= 2.3.4' + PKG_BUILD)
+  s.add_dependency('activeresource',   '= 2.3.4' + PKG_BUILD)
 
   s.rdoc_options << '--exclude' << '.'
   s.has_rdoc = false
 
-  s.files = PKG_FILES.to_a.delete_if {|f| f.include?('.svn')}
+  s.files = PKG_FILES.to_a.delete_if {|f| f =~ %r{\.svn|guides/output}}
   s.require_path = 'lib'
   s.bindir = "bin"                               # Use these for applications.
   s.executables = ["rails"]
@@ -345,7 +348,7 @@ task :pgem => [:gem] do
 end
 
 desc "Publish the guides"
-task :pguides => :guides do
+task :pguides => :generate_guides do
   mkdir_p 'pkg'
   `tar -czf pkg/guides.gz guides/output`
   Rake::SshFilePublisher.new("web.rubyonrails.org", "/u/sites/guides.rubyonrails.org/public", "pkg", "guides.gz").upload
@@ -354,6 +357,7 @@ end
 
 desc "Publish the release files to RubyForge."
 task :release => [ :package ] do
+  require 'rake/contrib/rubyforgepublisher'
   require 'rubyforge'
 
   packages = %w( gem ).collect{ |ext| "pkg/#{PKG_NAME}-#{PKG_VERSION}.#{ext}" }

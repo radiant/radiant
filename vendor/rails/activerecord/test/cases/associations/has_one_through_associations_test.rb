@@ -28,6 +28,16 @@ class HasOneThroughAssociationsTest < ActiveRecord::TestCase
     assert_not_nil new_member.current_membership
     assert_not_nil new_member.club
   end
+
+  def test_creating_association_builds_through_record_for_new
+    new_member = Member.new(:name => "Jane")
+    new_member.club = clubs(:moustache_club)
+    assert new_member.current_membership
+    assert_equal clubs(:moustache_club), new_member.current_membership.club
+    assert_equal clubs(:moustache_club), new_member.club
+    assert new_member.save
+    assert_equal clubs(:moustache_club), new_member.club
+  end
   
   def test_replace_target_record
     new_club = Club.create(:name => "Marx Bros")
@@ -43,7 +53,14 @@ class HasOneThroughAssociationsTest < ActiveRecord::TestCase
       @member.reload      
     end
   end
-  
+
+  def test_set_record_to_nil_should_delete_association
+    @member.club = nil
+    @member.reload
+    assert_equal nil, @member.current_membership
+    assert_nil @member.club
+  end
+
   def test_has_one_through_polymorphic
     assert_equal clubs(:moustache_club), @member.sponsor_club
   end

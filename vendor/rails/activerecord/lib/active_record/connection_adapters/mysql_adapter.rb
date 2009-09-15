@@ -52,12 +52,7 @@ module ActiveRecord
       socket   = config[:socket]
       username = config[:username] ? config[:username].to_s : 'root'
       password = config[:password].to_s
-
-      if config.has_key?(:database)
-        database = config[:database]
-      else
-        raise ArgumentError, "No database specified. Missing argument: database."
-      end
+      database = config[:database]
 
       # Require the MySQL driver and define Mysql::Result.all_hashes
       unless defined? Mysql
@@ -80,7 +75,7 @@ module ActiveRecord
   module ConnectionAdapters
     class MysqlColumn < Column #:nodoc:
       def extract_default(default)
-        if type == :binary || type == :text
+        if sql_type =~ /blob/i || type == :text
           if default.blank?
             return null ? nil : ''
           else
@@ -94,7 +89,7 @@ module ActiveRecord
       end
 
       def has_default?
-        return false if type == :binary || type == :text #mysql forbids defaults on blob and text columns
+        return false if sql_type =~ /blob/i || type == :text #mysql forbids defaults on blob and text columns
         super
       end
 
@@ -212,6 +207,10 @@ module ActiveRecord
         true
       end
       
+      def supports_primary_key? #:nodoc:
+        true
+      end
+
       def supports_savepoints? #:nodoc:
         true
       end
@@ -554,6 +553,12 @@ module ActiveRecord
         keys.length == 1 ? [keys.first, nil] : nil
       end
 
+      # Returns just a table's primary key
+      def primary_key(table)
+        pk_and_sequence = pk_and_sequence_for(table)
+        pk_and_sequence && pk_and_sequence.first
+      end
+
       def case_sensitive_equality_operator
         "= BINARY"
       end
@@ -572,6 +577,10 @@ module ActiveRecord
           if @config[:sslca] || @config[:sslkey]
             @connection.ssl_set(@config[:sslkey], @config[:sslcert], @config[:sslca], @config[:sslcapath], @config[:sslcipher])
           end
+
+          @connection.options(Mysql::OPT_CONNECT_TIMEOUT, @config[:connect_timeout]) if @config[:connect_timeout]
+          @connection.options(Mysql::OPT_READ_TIMEOUT, @config[:read_timeout]) if @config[:read_timeout]
+          @connection.options(Mysql::OPT_WRITE_TIMEOUT, @config[:write_timeout]) if @config[:write_timeout]
 
           @connection.real_connect(*@connection_options)
 

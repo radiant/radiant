@@ -80,8 +80,8 @@ module Radiant
       def visible_by_controller?(user)
         params = ActionController::Routing::Routes.recognize_path(url, :method => :get)
         if params && params[:controller]
-          controller = "#{params[:controller].camelize}Controller".constantize
-          controller.new.send(:user_has_access_to_action?, params[:action])
+          klass = "#{params[:controller].camelize}Controller".constantize
+          klass.user_has_access_to_action?(user, params[:action])
         else
           false
         end
@@ -121,7 +121,7 @@ module Radiant
       content << nav_item(:snippets, "Snippets", "/admin/snippets")
       nav << content
 
-      design = nav_tab(:design, "Design", [:developer])
+      design = nav_tab(:design, "Design", [:developer, :admin])
       design << nav_item(:layouts, "Layouts", "/admin/layouts")
       nav << design
 

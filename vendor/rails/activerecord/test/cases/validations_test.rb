@@ -345,13 +345,13 @@ class ValidationsTest < ActiveRecord::TestCase
   def test_validate_uniqueness
     Topic.validates_uniqueness_of(:title)
 
-    t = Topic.new("title" => "I'm unique!")
+    t = Topic.new("title" => "I'm uniqué!")
     assert t.save, "Should save t as unique"
 
     t.content = "Remaining unique"
     assert t.save, "Should still save t as unique"
 
-    t2 = Topic.new("title" => "I'm unique!")
+    t2 = Topic.new("title" => "I'm uniqué!")
     assert !t2.valid?, "Shouldn't be valid"
     assert !t2.save, "Shouldn't save t2 as unique"
     assert_equal "has already been taken", t2.errors.on(:title)
@@ -537,6 +537,16 @@ class ValidationsTest < ActiveRecord::TestCase
     assert e1.valid?, "Could not create an event with a unique, 5 character title"
     e2 = Event.create(:title => "abcdefgh")
     assert !e2.valid?, "Created an event whose title, with limit taken into account, is not unique"
+  end
+
+  def test_validate_uniqueness_with_limit_and_utf8
+    with_kcode('UTF8') do
+      # Event.title is limited to 5 characters
+      e1 = Event.create(:title => "一二三四五")
+      assert e1.valid?, "Could not create an event with a unique, 5 character title"
+      e2 = Event.create(:title => "一二三四五六七八")
+      assert !e2.valid?, "Created an event whose title, with limit taken into account, is not unique"
+    end
   end
 
   def test_validate_straight_inheritance_uniqueness

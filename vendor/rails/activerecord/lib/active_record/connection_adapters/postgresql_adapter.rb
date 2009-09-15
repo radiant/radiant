@@ -39,6 +39,12 @@ module ActiveRecord
   end
 
   module ConnectionAdapters
+    class TableDefinition
+      def xml(*args)
+        options = args.extract_options!
+        column(args[0], 'xml', options)
+      end
+    end
     # PostgreSQL-specific extensions to column definitions in a table.
     class PostgreSQLColumn < Column #:nodoc:
       # Instantiates a new PostgreSQL column definition in a table.
@@ -67,7 +73,7 @@ module ActiveRecord
           # depending on the server specifics
           super
         end
-  
+
         # Maps PostgreSQL-specific data types to logical Rails types.
         def simplified_type(field_type)
           case field_type
@@ -99,10 +105,10 @@ module ActiveRecord
               :string
             # XML type
             when /^xml$/
-              :string
+              :xml
             # Arrays
             when /^\D+\[\]$/
-              :string              
+              :string
             # Object identifier types
             when /^oid$/
               :integer
@@ -111,7 +117,7 @@ module ActiveRecord
               super
           end
         end
-  
+
         # Extracts the value from a PostgreSQL column default definition.
         def self.extract_value_from_default(default)
           case default
@@ -194,7 +200,8 @@ module ActiveRecord
         :time        => { :name => "time" },
         :date        => { :name => "date" },
         :binary      => { :name => "bytea" },
-        :boolean     => { :name => "boolean" }
+        :boolean     => { :name => "boolean" },
+        :xml         => { :name => "xml" }
       }
 
       # Returns 'PostgreSQL' as adapter name for identification purposes.
@@ -249,6 +256,11 @@ module ActiveRecord
         true
       end
 
+      # Does PostgreSQL support finding primary key on non-ActiveRecord tables?
+      def supports_primary_key? #:nodoc:
+        true
+      end
+
       # Does PostgreSQL support standard conforming strings?
       def supports_standard_conforming_strings?
         # Temporarily set the client message level above error to prevent unintentional
@@ -272,7 +284,7 @@ module ActiveRecord
       def supports_ddl_transactions?
         true
       end
-      
+
       def supports_savepoints?
         true
       end
@@ -287,7 +299,13 @@ module ActiveRecord
 
       # Escapes binary strings for bytea input to the database.
       def escape_bytea(value)
-        if PGconn.respond_to?(:escape_bytea)
+        if @connection.respond_to?(:escape_bytea)
+          self.class.instance_eval do
+            define_method(:escape_bytea) do |value|
+              @connection.escape_bytea(value) if value
+            end
+          end
+        elsif PGconn.respond_to?(:escape_bytea)
           self.class.instance_eval do
             define_method(:escape_bytea) do |value|
               PGconn.escape_bytea(value) if value
@@ -358,7 +376,7 @@ module ActiveRecord
         if value.kind_of?(String) && column && column.type == :binary
           "#{quoted_string_prefix}'#{escape_bytea(value)}'"
         elsif value.kind_of?(String) && column && column.sql_type =~ /^xml$/
-          "xml '#{quote_string(value)}'"
+          "xml E'#{quote_string(value)}'"
         elsif value.kind_of?(Numeric) && column && column.sql_type =~ /^money$/
           # Not truly string input, so doesn't require (or allow) escape string syntax.
           "'#{value.to_s}'"
@@ -376,7 +394,13 @@ module ActiveRecord
 
       # Quotes strings for use in SQL input in the postgres driver for better performance.
       def quote_string(s) #:nodoc:
-        if PGconn.respond_to?(:escape)
+        if @connection.respond_to?(:escape)
+          self.class.instance_eval do
+            define_method(:quote_string) do |s|
+              @connection.escape(s)
+            end
+          end
+        elsif PGconn.respond_to?(:escape)
           self.class.instance_eval do
             define_method(:quote_string) do |s|
               PGconn.escape(s)
@@ -392,9 +416,28 @@ module ActiveRecord
         quote_string(s)
       end
 
+      # Checks the following cases:
+      #
+      # - table_name
+      # - "table.name"
+      # - schema_name.table_name
+      # - schema_name."table.name"
+      # - "schema.name".table_name
+      # - "schema.name"."table.name"
+      def quote_table_name(name)
+        schema, name_part = extract_pg_identifier_from_name(name.to_s)
+
+        unless name_part
+          quote_column_name(schema)
+        else
+          table_name, name_part = extract_pg_identifier_from_name(name_part)
+          "#{quote_column_name(schema)}.#{quote_column_name(table_name)}"
+        end
+      end
+
       # Quotes column names for use in SQL queries.
       def quote_column_name(name) #:nodoc:
-        %("#{name}")
+        PGconn.quote_ident(name.to_s)
       end
 
       # Quote date/time values for use in SQL input. Includes microseconds
@@ -532,7 +575,7 @@ module ActiveRecord
       def rollback_db_transaction
         execute "ROLLBACK"
       end
-      
+
       if defined?(PGconn::PQTRANS_IDLE)
         # The ruby-pg driver supports inspecting the transaction status,
         # while the ruby-postgres driver does not.
@@ -621,33 +664,36 @@ module ActiveRecord
       def indexes(table_name, name = nil)
          schemas = schema_search_path.split(/,/).map { |p| quote(p) }.join(',')
          result = query(<<-SQL, name)
-           SELECT distinct i.relname, d.indisunique, a.attname
-             FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+           SELECT distinct i.relname, d.indisunique, d.indkey, t.oid
+             FROM pg_class t, pg_class i, pg_index d
            WHERE i.relkind = 'i'
              AND d.indexrelid = i.oid
              AND d.indisprimary = 'f'
              AND t.oid = d.indrelid
              AND t.relname = '#{table_name}'
              AND i.relnamespace IN (SELECT oid FROM pg_namespace WHERE nspname IN (#{schemas}) )
-             AND a.attrelid = t.oid
-             AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
-                OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
-                OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
-                OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
-                OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
           ORDER BY i.relname
         SQL
 
-        current_index = nil
+
         indexes = []
 
-        result.each do |row|
-          if current_index != row[0]
-            indexes << IndexDefinition.new(table_name, row[0], row[1] == "t", [])
-            current_index = row[0]
-          end
+        indexes = result.map do |row|
+          index_name = row[0]
+          unique = row[1] == 't'
+          indkey = row[2].split(" ")
+          oid = row[3]
 
-          indexes.last.columns << row[2]
+          columns = query(<<-SQL, "Columns for index #{row[0]} on #{table_name}").inject({}) {|attlist, r| attlist[r[1]] = r[0]; attlist}
+          SELECT a.attname, a.attnum
+          FROM pg_attribute a
+          WHERE a.attrelid = #{oid}
+          AND a.attnum IN (#{indkey.join(",")})
+          SQL
+
+          column_names = indkey.map {|attnum| columns[attnum] }
+          IndexDefinition.new(table_name, index_name, unique, column_names)
+
         end
 
         indexes
@@ -745,7 +791,7 @@ module ActiveRecord
             AND attr.attrelid     = cons.conrelid
             AND attr.attnum       = cons.conkey[1]
             AND cons.contype      = 'p'
-            AND dep.refobjid      = '#{table}'::regclass
+            AND dep.refobjid      = '#{quote_table_name(table)}'::regclass
         end_sql
 
         if result.nil? or result.empty?
@@ -764,7 +810,7 @@ module ActiveRecord
             JOIN pg_attribute   attr ON (t.oid = attrelid)
             JOIN pg_attrdef     def  ON (adrelid = attrelid AND adnum = attnum)
             JOIN pg_constraint  cons ON (conrelid = adrelid AND adnum = conkey[1])
-            WHERE t.oid = '#{table}'::regclass
+            WHERE t.oid = '#{quote_table_name(table)}'::regclass
               AND cons.contype = 'p'
               AND def.adsrc ~* 'nextval'
           end_sql
@@ -774,6 +820,12 @@ module ActiveRecord
         [result.first, result.last]
       rescue
         nil
+      end
+
+      # Returns just a table's primary key
+      def primary_key(table)
+        pk_and_sequence = pk_and_sequence_for(table)
+        pk_and_sequence && pk_and_sequence.first
       end
 
       # Renames a table.
@@ -839,7 +891,7 @@ module ActiveRecord
 
       # Drops an index from a table.
       def remove_index(table_name, options = {})
-        execute "DROP INDEX #{index_name(table_name, options)}"
+        execute "DROP INDEX #{quote_table_name(index_name(table_name, options))}"
       end
 
       # Maps logical Rails types to PostgreSQL-specific data types.
@@ -874,18 +926,18 @@ module ActiveRecord
         sql = "DISTINCT ON (#{columns}) #{columns}, "
         sql << order_columns * ', '
       end
-      
+
       # Returns an ORDER BY clause for the passed order option.
-      # 
+      #
       # PostgreSQL does not allow arbitrary ordering when using DISTINCT ON, so we work around this
       # by wrapping the +sql+ string as a sub-select and ordering in that query.
       def add_order_by_for_association_limiting!(sql, options) #:nodoc:
         return sql if options[:order].blank?
-        
+
         order = options[:order].split(',').collect { |s| s.strip }.reject(&:blank?)
         order.map! { |s| 'DESC' if s =~ /\bdesc$/i }
         order = order.zip((0...order.size).to_a).map { |s,i| "id_list.alias_#{i} #{s}" }.join(', ')
-        
+
         sql.replace "SELECT * FROM (#{sql}) AS id_list ORDER BY #{order}"
       end
 
@@ -998,7 +1050,7 @@ module ActiveRecord
                 if res.ftype(cell_index) == MONEY_COLUMN_TYPE_OID
                   # Because money output is formatted according to the locale, there are two
                   # cases to consider (note the decimal separators):
-                  #  (1) $12,345,678.12        
+                  #  (1) $12,345,678.12
                   #  (2) $12.345.678,12
                   case column = row[cell_index]
                     when /^-?\D+[\d,]+\.\d{2}$/  # (1)
@@ -1040,11 +1092,22 @@ module ActiveRecord
             SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
               FROM pg_attribute a LEFT JOIN pg_attrdef d
                 ON a.attrelid = d.adrelid AND a.attnum = d.adnum
-             WHERE a.attrelid = '#{table_name}'::regclass
+             WHERE a.attrelid = '#{quote_table_name(table_name)}'::regclass
                AND a.attnum > 0 AND NOT a.attisdropped
              ORDER BY a.attnum
           end_sql
         end
+
+        def extract_pg_identifier_from_name(name)
+          match_data = name[0,1] == '"' ? name.match(/\"([^\"]+)\"/) : name.match(/([^\.]+)/)
+
+          if match_data
+            rest = name[match_data[0].length..-1]
+            rest = rest[1..-1] if rest[0,1] == "."
+            [match_data[1], (rest.length > 0 ? rest : nil)]
+          end
+        end
     end
   end
 end
+

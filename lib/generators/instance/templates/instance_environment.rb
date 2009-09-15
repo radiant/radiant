@@ -29,7 +29,7 @@ Radiant::Initializer.run do |config|
   }
 
   # Comment out this line if you want to turn off all caching, or
-  # add options to modify the behavior. In the majority of deployment 
+  # add options to modify the behavior. In the majority of deployment
   # scenarios it is desirable to leave Radiant's cache enabled and in
   # the default configuration.
   #
@@ -38,13 +38,13 @@ Radiant::Initializer.run do |config|
   #    Turns on X-Sendfile support for Apache with mod_xsendfile or lighttpd.
   #  :use_x_accel_redirect => '/some/virtual/path'
   #    Turns on X-Accel-Redirect support for nginx. You have to provide
-  #    a path that corresponds to a virtual location in your webserver 
+  #    a path that corresponds to a virtual location in your webserver
   #    configuration.
-  #  :entitystore => "radiant:cache/entity"
-  #    Sets the entity store type (preceding the colon) and storage 
+  #  :entitystore => "radiant:tmp/cache/entity"
+  #    Sets the entity store type (preceding the colon) and storage
   #   location (following the colon, relative to Rails.root).
   #    We recommend you use radiant: since this will enable manual expiration.
-  #  :metastore => "radiant:cache/meta"
+  #  :metastore => "radiant:tmp/cache/meta"
   #    Sets the meta store type and storage location.  We recommend you use
   #    radiant: since this will enable manual expiration and acceleration headers.
   config.middleware.use ::Radiant::Cache

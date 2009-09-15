@@ -10,6 +10,30 @@ module ActiveSupport
         @keys = []
       end
 
+      def self.[](*args)
+        ordered_hash = new
+
+        if (args.length == 1 && args.first.is_a?(Array))
+          args.first.each do |key_value_pair|
+            next unless (key_value_pair.is_a?(Array))
+            ordered_hash[key_value_pair[0]] = key_value_pair[1]
+          end
+
+          return ordered_hash
+        end
+
+        unless (args.size % 2 == 0)
+          raise ArgumentError.new("odd number of arguments for Hash")
+        end
+
+        args.each_with_index do |val, ind|
+          next if (ind % 2 != 0)
+          ordered_hash[val] = args[ind + 1]
+        end
+
+        ordered_hash
+      end
+
       def initialize_copy(other)
         super
         # make a deep copy of keys
@@ -55,6 +79,10 @@ module ActiveSupport
 
       def to_hash
         self
+      end
+
+      def to_a
+        @keys.map { |key| [ key, self[key] ] }
       end
 
       def each_key

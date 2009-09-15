@@ -30,7 +30,8 @@ Feature: Managing pages
     And I fill in the "extended" content with "foobar"
     And I select "Published" from "Status"
     And I press "Create page"
-    Then I should see "Your page has been saved"
+    Then I should be on the sitemap
+    And I should see "My site"
     When I go to "/"
     Then I should see "Under Construction"
   
@@ -47,7 +48,7 @@ Feature: Managing pages
     And I fill in the "extended" content with "foobar"
     And I select "Published" from "Status"
     And I press "Save and Continue Editing"
-    Then I should see "Your page has been saved"
+    Then I should see "Edit Page"
     And I should see "Under Construction"
     When I go to "/my-child"
     Then I should see "Under Construction"
@@ -67,5 +68,5 @@ Feature: Managing pages
     When I edit the "virtual" page
     And I select "&lt;normal&gt;" from "Page type"
     And I press "Save and Continue Editing"
-    Then I should see "Your page has been saved"
+    Then I should see "Edit Page"
     And "&lt;normal&gt;" should be selected for "Page type"
