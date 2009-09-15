@@ -43,27 +43,27 @@ describe ApplicationHelper do
   it "should create a button for a new model" do
     model = mock_model(Page)
     model.should_receive(:new_record?).and_return(true)
-    helper.should_receive(:submit_tag).with("Create Page", :class => 'button')
+    helper.should_receive(:submit_tag).with("Create Page", :class => 'button', :accesskey=>"S")
     helper.save_model_button(model)
   end
   
   it "should create a button for an existing model" do
     model = mock_model(Page)
     model.should_receive(:new_record?).and_return(false)
-    helper.should_receive(:submit_tag).with("Save Changes", :class => 'button')
+    helper.should_receive(:submit_tag).with("Save Changes", :class => 'button', :accesskey=>"S")
     helper.save_model_button(model)
   end
   
   it "should create a button with custom options" do
     model = mock_model(Page)
     model.should_receive(:new_record?).and_return(false)
-    helper.should_receive(:submit_tag).with("Save Changes", :class => 'custom')
+    helper.should_receive(:submit_tag).with("Save Changes", :class => 'custom', :accesskey=>"S")
     helper.save_model_button(model, :class => 'custom')
   end
   
   it "should create a button with a custom label" do
     model = mock_model(Page)
-    helper.should_receive(:submit_tag).with("Create PAGE", :class => 'button')
+    helper.should_receive(:submit_tag).with("Create PAGE", :class => 'button', :accesskey=>"S")
     helper.save_model_button(model, :label => "Create PAGE")
   end
   

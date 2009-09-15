@@ -21,7 +21,7 @@
           #site_links
             = %{Logged in as #{link_to h(current_user.name), edit_admin_preferences_path} &nbsp; (#{link_to "Logout", logout_path})}
             &nbsp;
-            %a{:href=>"#view_site_popup", :id=>"view_site", :onclick=>"return false"} View Site
+            %a{:href=>"/", :id=>"view_site"} View Site
           %ul#navigation
             - nav_tabs.each do |tab|
               - if tab.visible?(current_user)
