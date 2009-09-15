@@ -4,14 +4,14 @@ Feature: Edit user preferences
   
   Scenario Outline: Edit preferences
     Given I am logged in as "<username>"
-    When I follow "Preferences"
-    And I fill in "E-mail" with "my-new-email@example.com"
+    When I open my preferences
+    And I fill in "E-mail Address" with "my-new-email@example.com"
     And I press "Save Changes"
-    Then I should see "updated"
-    And I should see "Home"
+    Then I should be on the preferences screen
     
     Examples:
       | username  |
+      | admin     |
       | another   |
       | existing  |
       | developer |

@@ -55,16 +55,7 @@ module LoginSystem
     end
 
     def user_has_access_to_action?(action)
-      permissions = self.class.controller_permissions[action.to_s.intern]
-      case
-      when allowed_roles = permissions[:when]
-        allowed_roles = [allowed_roles].flatten
-        allowed_roles.any? { |role| current_user.has_role?(role) }
-      when condition_method = permissions[:if]
-        send(condition_method)
-      else
-        true
-      end
+      self.class.user_has_access_to_action?(current_user, action, self)
     end
 
     def login_from_session
@@ -119,6 +110,19 @@ module LoginSystem
 
     def controller_permissions
       @controller_permissions ||= Hash.new { |h,k| h[k.to_s.intern] = Hash.new }
+    end
+    
+    def user_has_access_to_action?(user, action, instance=new)
+      permissions = controller_permissions[action.to_s.intern]
+      case
+      when allowed_roles = permissions[:when]
+        allowed_roles = [allowed_roles].flatten
+        allowed_roles.any? { |role| user.has_role?(role) }
+      when condition_method = permissions[:if]
+        instance.send(condition_method)
+      else
+        true
+      end
     end
   end
 end

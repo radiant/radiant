@@ -20,10 +20,10 @@ Feature: Managing users
     And I fill in "Name" with "New Guy"
     And I fill in "E-mail" with "newguy@example.com"
     And I fill in "Username" with "new_guy"
-    And I fill in "Password" with "password"
-    And I fill in "Confirm password" with "password"
+    And I fill in "New Password" with "password"
+    And I fill in "Confirm New Password" with "password"
     And I press "Create User"
-    Then I should see "saved"
+    Then I should be on the users list
     And I should see "New Guy"
   
   Scenario: Display form errors on submit

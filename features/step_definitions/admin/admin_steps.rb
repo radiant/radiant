@@ -1,7 +1,7 @@
 Given(/^I am logged in as "([^\"]*)"$/) do |user|
   visit '/admin/login'
-  user = users(user.intern)
-  fill_in 'Username', :with => user.login
+  @user = users(user.intern)
+  fill_in 'Username', :with => @user.login
   fill_in 'Password', :with => 'password'
   click_button 'Login'
 end
