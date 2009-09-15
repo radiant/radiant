@@ -19,10 +19,10 @@ describe User, "validations" do
   
   
   describe "self.protected_attributes" do
-    it "should be an array of [:password, :password_confirmation, :email]" do
+    it "should be an array of [:name, :email, :login, :password, :password_confirmation]" do
       # Make sure we clean up after anything set in another spec
       User.instance_variable_set(:@protected_attributes, nil)
-      User.protected_attributes.should == [:password, :password_confirmation, :email]
+      User.protected_attributes.should == [:name, :email, :login, :password, :password_confirmation]
     end
   end
   describe "self.protected_attributes=" do
