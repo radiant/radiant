@@ -1,7 +1,7 @@
 module ActiveSupport #:nodoc:
   module CoreExtensions #:nodoc:
     module Date #:nodoc:
-      # Enables the use of time calculations within Time itself
+      # Enables the use of time calculations within Date itself
       module Calculations
         def self.included(base) #:nodoc:
           base.extend ClassMethods
@@ -92,6 +92,7 @@ module ActiveSupport #:nodoc:
         # Provides precise Date calculations for years, months, and days.  The +options+ parameter takes a hash with
         # any of these keys: <tt>:years</tt>, <tt>:months</tt>, <tt>:weeks</tt>, <tt>:days</tt>.
         def advance(options)
+          options = options.dup
           d = self
           d = d >> options.delete(:years) * 12 if options[:years]
           d = d >> options.delete(:months)     if options[:months]

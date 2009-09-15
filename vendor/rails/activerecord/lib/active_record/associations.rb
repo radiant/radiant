@@ -34,11 +34,13 @@ module ActiveRecord
     end
   end
 
-  class HasManyThroughCantAssociateThroughHasManyReflection < ActiveRecordError #:nodoc:
+  class HasManyThroughCantAssociateThroughHasOneOrManyReflection < ActiveRecordError #:nodoc:
     def initialize(owner, reflection)
       super("Cannot modify association '#{owner.class.name}##{reflection.name}' because the source reflection class '#{reflection.source_reflection.class_name}' is associated to '#{reflection.through_reflection.class_name}' via :#{reflection.source_reflection.macro}.")
     end
   end
+  HasManyThroughCantAssociateThroughHasManyReflection = ActiveSupport::Deprecation::DeprecatedConstantProxy.new('ActiveRecord::HasManyThroughCantAssociateThroughHasManyReflection', 'ActiveRecord::HasManyThroughCantAssociateThroughHasOneOrManyReflection')
+
   class HasManyThroughCantAssociateNewRecords < ActiveRecordError #:nodoc:
     def initialize(owner, reflection)
       super("Cannot associate new records through '#{owner.class.name}##{reflection.name}' on '#{reflection.source_reflection.class_name rescue nil}##{reflection.source_reflection.name rescue nil}'. Both records must have an id in order to create the has_many :through record associating them.")
@@ -410,6 +412,32 @@ module ActiveRecord
     #   @firm.clients.collect { |c| c.invoices }.flatten # select all invoices for all clients of the firm
     #   @firm.invoices                                   # selects all invoices by going through the Client join model.
     #
+    # Similarly you can go through a +has_one+ association on the join model:
+    #
+    #   class Group < ActiveRecord::Base
+    #     has_many   :users
+    #     has_many   :avatars, :through => :users
+    #   end
+    #
+    #   class User < ActiveRecord::Base
+    #     belongs_to :group
+    #     has_one    :avatar
+    #   end
+    #
+    #   class Avatar < ActiveRecord::Base
+    #     belongs_to :user
+    #   end
+    #
+    #   @group = Group.first
+    #   @group.users.collect { |u| u.avatar }.flatten # select all avatars for all users in the group
+    #   @group.avatars                                # selects all avatars by going through the User join model.
+    #
+    # An important caveat with going through +has_one+ or +has_many+ associations on the join model is that these associations are 
+    # *read-only*.  For example, the following would not work following the previous example:
+    #
+    #   @group.avatars << Avatar.new                # this would work if User belonged_to Avatar rather than the other way around.
+    #   @group.avatars.delete(@group.avatars.last)  # so would this
+    #
     # === Polymorphic Associations
     #
     # Polymorphic associations on models are not restricted on what types of models they can be associated with.  Rather, they
@@ -759,7 +787,7 @@ module ActiveRecord
       # [:through]
       #   Specifies a Join Model through which to perform the query.  Options for <tt>:class_name</tt> and <tt>:foreign_key</tt>
       #   are ignored, as the association uses the source reflection. You can only use a <tt>:through</tt> query through a <tt>belongs_to</tt>
-      #   or <tt>has_many</tt> association on the join model.
+      #   <tt>has_one</tt> or <tt>has_many</tt> association on the join model.
       # [:source]
       #   Specifies the source association name used by <tt>has_many :through</tt> queries.  Only use it if the name cannot be
       #   inferred from the association.  <tt>has_many :subscribers, :through => :subscriptions</tt> will look for either <tt>:subscribers</tt> or
@@ -957,6 +985,8 @@ module ActiveRecord
       #   of the association with an "_id" suffix. So a class that defines a <tt>belongs_to :person</tt> association will use
       #   "person_id" as the default <tt>:foreign_key</tt>. Similarly, <tt>belongs_to :favorite_person, :class_name => "Person"</tt>
       #   will use a foreign key of "favorite_person_id".
+      # [:primary_key]
+      #   Specify the method that returns the primary key of associated object used for the association. By default this is id.
       # [:dependent]
       #   If set to <tt>:destroy</tt>, the associated object is destroyed when this object is. If set to
       #   <tt>:delete</tt>, the associated object is deleted *without* calling its destroy method. This option should not be specified when
@@ -981,15 +1011,21 @@ module ActiveRecord
       #   If false, don't validate the associated objects when saving the parent object. +false+ by default.
       # [:autosave]
       #   If true, always save the associated object or destroy it if marked for destruction, when saving the parent object. Off by default.
+      # [:touch]
+      #   If true, the associated object will be touched (the updated_at/on attributes set to now) when this record is either saved or
+      #   destroyed. If you specify a symbol, that attribute will be updated with the current time instead of the updated_at/on attribute.
       #
       # Option examples:
       #   belongs_to :firm, :foreign_key => "client_of"
+      #   belongs_to :person, :primary_key => "name", :foreign_key => "person_name"
       #   belongs_to :author, :class_name => "Person", :foreign_key => "author_id"
       #   belongs_to :valid_coupon, :class_name => "Coupon", :foreign_key => "coupon_id",
       #              :conditions => 'discounts > #{payments_count}'
       #   belongs_to :attachable, :polymorphic => true
       #   belongs_to :project, :readonly => true
       #   belongs_to :post, :counter_cache => true
+      #   belongs_to :company, :touch => true
+      #   belongs_to :company, :touch => :employees_last_updated_at
       def belongs_to(association_id, options = {})
         reflection = create_belongs_to_reflection(association_id, options)
 
@@ -1001,28 +1037,8 @@ module ActiveRecord
           association_constructor_method(:create, reflection, BelongsToAssociation)
         end
 
-        # Create the callbacks to update counter cache
-        if options[:counter_cache]
-          cache_column = reflection.counter_cache_column
-
-          method_name = "belongs_to_counter_cache_after_create_for_#{reflection.name}".to_sym
-          define_method(method_name) do
-            association = send(reflection.name)
-            association.class.increment_counter(cache_column, send(reflection.primary_key_name)) unless association.nil?
-          end
-          after_create method_name
-
-          method_name = "belongs_to_counter_cache_before_destroy_for_#{reflection.name}".to_sym
-          define_method(method_name) do
-            association = send(reflection.name)
-            association.class.decrement_counter(cache_column, send(reflection.primary_key_name)) unless association.nil?
-          end
-          before_destroy method_name
-
-          module_eval(
-            "#{reflection.class_name}.send(:attr_readonly,\"#{cache_column}\".intern) if defined?(#{reflection.class_name}) && #{reflection.class_name}.respond_to?(:attr_readonly)"
-          )
-        end
+        add_counter_cache_callbacks(reflection)          if options[:counter_cache]
+        add_touch_callbacks(reflection, options[:touch]) if options[:touch]
 
         configure_dependency_for_belongs_to(reflection)
       end
@@ -1253,7 +1269,11 @@ module ActiveRecord
 
             if association_proxy_class == HasOneThroughAssociation
               association.create_through_record(new_value)
-              self.send(reflection.name, new_value)
+              if new_record?
+                association_instance_set(reflection.name, new_value.nil? ? nil : association)
+              else
+                self.send(reflection.name, new_value)
+              end
             else
               association.replace(new_value)
               association_instance_set(reflection.name, new_value.nil? ? nil : association)
@@ -1305,7 +1325,7 @@ module ActiveRecord
 
             define_method("#{reflection.name.to_s.singularize}_ids=") do |new_value|
               ids = (new_value || []).reject { |nid| nid.blank? }
-              send("#{reflection.name}=", reflection.class_name.constantize.find(ids))
+              send("#{reflection.name}=", reflection.klass.find(ids))
             end
           end
         end
@@ -1327,6 +1347,43 @@ module ActiveRecord
               association.send(constructor, attributees)
             end
           end
+        end
+
+        def add_counter_cache_callbacks(reflection)
+          cache_column = reflection.counter_cache_column
+
+          method_name = "belongs_to_counter_cache_after_create_for_#{reflection.name}".to_sym
+          define_method(method_name) do
+            association = send(reflection.name)
+            association.class.increment_counter(cache_column, association.id) unless association.nil?
+          end
+          after_create(method_name)
+
+          method_name = "belongs_to_counter_cache_before_destroy_for_#{reflection.name}".to_sym
+          define_method(method_name) do
+            association = send(reflection.name)
+            association.class.decrement_counter(cache_column, association.id) unless association.nil?
+          end
+          before_destroy(method_name)
+
+          module_eval(
+            "#{reflection.class_name}.send(:attr_readonly,\"#{cache_column}\".intern) if defined?(#{reflection.class_name}) && #{reflection.class_name}.respond_to?(:attr_readonly)"
+          )
+        end
+        
+        def add_touch_callbacks(reflection, touch_attribute)
+          method_name = "belongs_to_touch_after_save_or_destroy_for_#{reflection.name}".to_sym
+          define_method(method_name) do
+            association = send(reflection.name)
+            
+            if touch_attribute == true
+              association.touch unless association.nil?
+            else
+              association.touch(touch_attribute) unless association.nil?
+            end
+          end
+          after_save(method_name)
+          after_destroy(method_name)
         end
 
         def find_with_associations(options = {})
@@ -1353,7 +1410,7 @@ module ActiveRecord
             dependent_conditions = []
             dependent_conditions << "#{reflection.primary_key_name} = \#{record.quoted_id}"
             dependent_conditions << "#{reflection.options[:as]}_type = '#{base_class.name}'" if reflection.options[:as]
-            dependent_conditions << sanitize_sql(reflection.options[:conditions]) if reflection.options[:conditions]
+            dependent_conditions << sanitize_sql(reflection.options[:conditions], reflection.quoted_table_name) if reflection.options[:conditions]
             dependent_conditions << extra_conditions if extra_conditions
             dependent_conditions = dependent_conditions.collect {|where| "(#{where})" }.join(" AND ")
             dependent_conditions = dependent_conditions.gsub('@', '\@')
@@ -1497,9 +1554,9 @@ module ActiveRecord
 
         mattr_accessor :valid_keys_for_belongs_to_association
         @@valid_keys_for_belongs_to_association = [
-          :class_name, :foreign_key, :foreign_type, :remote, :select, :conditions,
+          :class_name, :primary_key, :foreign_key, :foreign_type, :remote, :select, :conditions,
           :include, :dependent, :counter_cache, :extend, :polymorphic, :readonly,
-          :validate
+          :validate, :touch
         ]
 
         def create_belongs_to_reflection(association_id, options)
@@ -1643,17 +1700,29 @@ module ActiveRecord
           string.scan(/([\.a-zA-Z_]+).?\./).flatten
         end
 
+        def tables_in_hash(hash)
+          return [] if hash.blank?
+          tables = hash.map do |key, value|
+            if value.is_a?(Hash)
+              key.to_s
+            else
+              tables_in_string(key) if key.is_a?(String)
+            end
+          end
+          tables.flatten.compact
+        end
+
         def conditions_tables(options)
           # look in both sets of conditions
           conditions = [scope(:find, :conditions), options[:conditions]].inject([]) do |all, cond|
             case cond
               when nil   then all
-              when Array then all << cond.first
-              when Hash  then all << cond.keys
-              else            all << cond
+              when Array then all << tables_in_string(cond.first)
+              when Hash  then all << tables_in_hash(cond)
+              else            all << tables_in_string(cond)
             end
           end
-          tables_in_string(conditions.join(' '))
+          conditions.flatten
         end
 
         def order_tables(options)
@@ -1801,7 +1870,7 @@ module ActiveRecord
                     descendant
                   end.flatten.compact
 
-                  remove_duplicate_results!(reflection.class_name.constantize, parent_records, associations[name]) unless parent_records.empty?
+                  remove_duplicate_results!(reflection.klass, parent_records, associations[name]) unless parent_records.empty?
                 end
             end
           end
@@ -2101,7 +2170,7 @@ module ActiveRecord
                 klass.send(:type_condition, aliased_table_name)] unless klass.descends_from_active_record?
 
               [through_reflection, reflection].each do |ref|
-                join << "AND #{interpolate_sql(sanitize_sql(ref.options[:conditions]))} " if ref && ref.options[:conditions]
+                join << "AND #{interpolate_sql(sanitize_sql(ref.options[:conditions], aliased_table_name))} " if ref && ref.options[:conditions]
               end
 
               join

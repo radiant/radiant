@@ -130,7 +130,7 @@ class PrototypeHelperTest < PrototypeHelperBaseTest
   end
 
   def test_form_remote_tag_with_method
-    assert_dom_equal %(<form action=\"http://www.example.com/fast\" method=\"post\" onsubmit=\"new Ajax.Updater('glass_of_beer', 'http://www.example.com/fast', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;\"><div style='margin:0;padding:0'><input name='_method' type='hidden' value='put' /></div>),
+    assert_dom_equal %(<form action=\"http://www.example.com/fast\" method=\"post\" onsubmit=\"new Ajax.Updater('glass_of_beer', 'http://www.example.com/fast', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;\"><div style='margin:0;padding:0;display:inline'><input name='_method' type='hidden' value='put' /></div>),
       form_remote_tag(:update => "glass_of_beer", :url => { :action => :fast  }, :html => { :method => :put })
   end
 
@@ -158,7 +158,7 @@ class PrototypeHelperTest < PrototypeHelperBaseTest
     @record.save
     remote_form_for(@record) {}
 
-    expected = %(<form action='#{author_path(@record)}' id='edit_author_1' method='post' onsubmit="new Ajax.Request('#{author_path(@record)}', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;" class='edit_author'><div style='margin:0;padding:0'><input name='_method' type='hidden' value='put' /></div></form>)
+    expected = %(<form action='#{author_path(@record)}' id='edit_author_1' method='post' onsubmit="new Ajax.Request('#{author_path(@record)}', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;" class='edit_author'><div style='margin:0;padding:0;display:inline'><input name='_method' type='hidden' value='put' /></div></form>)
     assert_dom_equal expected, output_buffer
   end
 
@@ -174,7 +174,7 @@ class PrototypeHelperTest < PrototypeHelperBaseTest
     @article.save
     remote_form_for([@author, @article]) {}
 
-    expected = %(<form action='#{author_article_path(@author, @article)}' id='edit_article_1' method='post' onsubmit="new Ajax.Request('#{author_article_path(@author, @article)}', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;" class='edit_article'><div style='margin:0;padding:0'><input name='_method' type='hidden' value='put' /></div></form>)
+    expected = %(<form action='#{author_article_path(@author, @article)}' id='edit_article_1' method='post' onsubmit="new Ajax.Request('#{author_article_path(@author, @article)}', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;" class='edit_article'><div style='margin:0;padding:0;display:inline'><input name='_method' type='hidden' value='put' /></div></form>)
     assert_dom_equal expected, output_buffer
   end
 
@@ -327,28 +327,28 @@ class JavaScriptGeneratorTest < PrototypeHelperBaseTest
   def test_remove
     assert_equal 'Element.remove("foo");',
       @generator.remove('foo')
-    assert_equal '["foo", "bar", "baz"].each(Element.remove);',
+    assert_equal '["foo","bar","baz"].each(Element.remove);',
       @generator.remove('foo', 'bar', 'baz')
   end
 
   def test_show
     assert_equal 'Element.show("foo");',
       @generator.show('foo')
-    assert_equal '["foo", "bar", "baz"].each(Element.show);',
+    assert_equal '["foo","bar","baz"].each(Element.show);',
       @generator.show('foo', 'bar', 'baz')
   end
 
   def test_hide
     assert_equal 'Element.hide("foo");',
       @generator.hide('foo')
-    assert_equal '["foo", "bar", "baz"].each(Element.hide);',
+    assert_equal '["foo","bar","baz"].each(Element.hide);',
       @generator.hide('foo', 'bar', 'baz')
   end
 
   def test_toggle
     assert_equal 'Element.toggle("foo");',
       @generator.toggle('foo')
-    assert_equal '["foo", "bar", "baz"].each(Element.toggle);',
+    assert_equal '["foo","bar","baz"].each(Element.toggle);',
       @generator.toggle('foo', 'bar', 'baz')
   end
 
@@ -385,7 +385,7 @@ class JavaScriptGeneratorTest < PrototypeHelperBaseTest
     assert_equal <<-EOS.chomp, @generator.to_s
 Element.insert("element", { top: "\\u003Cp\\u003EThis is a test\\u003C/p\\u003E" });
 Element.insert("element", { bottom: "\\u003Cp\\u003EThis is a test\\u003C/p\\u003E" });
-["foo", "bar"].each(Element.remove);
+["foo","bar"].each(Element.remove);
 Element.update("baz", "\\u003Cp\\u003EThis is a test\\u003C/p\\u003E");
     EOS
   end
@@ -554,8 +554,8 @@ return (value.className == "welcome");
     end
 
     assert_equal <<-EOS.strip, @generator.to_s
-var a = [1, 2, 3].zip([4, 5, 6], [7, 8, 9]);
-var b = [1, 2, 3].zip([4, 5, 6], [7, 8, 9], function(array) {
+var a = [1, 2, 3].zip([4,5,6], [7,8,9]);
+var b = [1, 2, 3].zip([4,5,6], [7,8,9], function(array) {
 return array.reverse();
 });
     EOS
@@ -606,7 +606,7 @@ return value.reverse();
 
   def test_literal
     literal = @generator.literal("function() {}")
-    assert_equal "function() {}", literal.to_json
+    assert_equal "function() {}", ActiveSupport::JSON.encode(literal)
     assert_equal "", @generator.to_s
   end
 

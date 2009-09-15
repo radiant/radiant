@@ -1,5 +1,6 @@
 require 'abstract_unit'
 require 'controller/fake_controllers'
+require 'action_controller/routing/route_set'
 
 class MilestonesController < ActionController::Base
   def index() head :ok end
@@ -742,7 +743,7 @@ class MockController
   end
 end
 
-class LegacyRouteSetTests < Test::Unit::TestCase
+class LegacyRouteSetTests < ActiveSupport::TestCase
   attr_reader :rs
 
   def setup
@@ -756,6 +757,10 @@ class LegacyRouteSetTests < Test::Unit::TestCase
   
   def teardown
     @rs.clear!
+  end
+
+  def test_routes_for_controller_and_action_deprecated
+    assert_deprecated { @rs.routes_for_controller_and_action("controller", "action") }
   end
 
   def test_default_setup
@@ -1605,7 +1610,7 @@ class RouteTest < Test::Unit::TestCase
     end
 end
 
-class RouteSetTest < Test::Unit::TestCase
+class RouteSetTest < ActiveSupport::TestCase
   def set
     @set ||= ROUTING::RouteSet.new
   end
@@ -1659,6 +1664,17 @@ class RouteSetTest < Test::Unit::TestCase
     set.draw do |map|
       map.connect '/hello/world', :controller => 'a', :action => 'b'
     end
+    assert_equal 1, set.routes.size
+  end
+
+  def test_draw_symbol_controller_name
+    assert_equal 0, set.routes.size
+    set.draw do |map|
+      map.connect '/users/index', :controller => :users, :action => :index
+    end
+    @request = ActionController::TestRequest.new
+    @request.request_uri = '/users/index'
+    assert_nothing_raised { set.recognize(@request) }
     assert_equal 1, set.routes.size
   end
 
@@ -2476,6 +2492,16 @@ class RouteSetTest < Test::Unit::TestCase
     end
     assert_equal({:controller => 'pages', :action => 'show', :name => 'JAMIS'}, set.recognize_path('/page/JAMIS'))
   end
+
+  def test_routes_with_symbols
+    set.draw do |map|
+      map.connect 'unnamed', :controller => :pages, :action => :show, :name => :as_symbol
+      map.named   'named',   :controller => :pages, :action => :show, :name => :as_symbol
+    end
+    assert_equal({:controller => 'pages', :action => 'show', :name => :as_symbol}, set.recognize_path('/unnamed'))
+    assert_equal({:controller => 'pages', :action => 'show', :name => :as_symbol}, set.recognize_path('/named'))
+  end
+
 end
 
 class RouteLoadingTest < Test::Unit::TestCase

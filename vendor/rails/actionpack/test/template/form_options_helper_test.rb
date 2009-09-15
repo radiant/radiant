@@ -80,6 +80,14 @@ class FormOptionsHelperTest < ActionView::TestCase
     )
   end
 
+  def test_string_options_for_select
+    options = "<option value=\"Denmark\">Denmark</option><option value=\"USA\">USA</option><option value=\"Sweden\">Sweden</option>"
+    assert_dom_equal(
+      options,
+      options_for_select(options)
+    )
+  end
+
   def test_array_options_for_select
     assert_dom_equal(
       "<option value=\"&lt;Denmark&gt;\">&lt;Denmark&gt;</option>\n<option value=\"USA\">USA</option>\n<option value=\"Sweden\">Sweden</option>",
@@ -320,6 +328,20 @@ class FormOptionsHelperTest < ActionView::TestCase
 
     assert_dom_equal(
       "<select id=\"post_108_category\" name=\"post[108][category]\"><option value=\"abe\">abe</option>\n<option value=\"&lt;mus&gt;\" selected=\"selected\">&lt;mus&gt;</option>\n<option value=\"hest\">hest</option></select>",
+      output_buffer
+    )
+  end
+
+  def test_select_under_fields_for_with_string_and_given_prompt
+    @post = Post.new
+    options = "<option value=\"abe\">abe</option><option value=\"mus\">mus</option><option value=\"hest\">hest</option>"
+
+    fields_for :post, @post do |f|
+      concat f.select(:category, options, :prompt => 'The prompt')
+    end
+
+    assert_dom_equal(
+      "<select id=\"post_category\" name=\"post[category]\"><option value=\"\">The prompt</option>\n#{options}</select>",
       output_buffer
     )
   end
@@ -739,6 +761,40 @@ class FormOptionsHelperTest < ActionView::TestCase
                    "<option value=\"E\">E</option>" +
                    "</select>",
                    html
+  end
+
+  def test_grouped_collection_select
+    @continents = [
+      Continent.new("<Africa>", [Country.new("<sa>", "<South Africa>"), Country.new("so", "Somalia")] ),
+      Continent.new("Europe", [Country.new("dk", "Denmark"), Country.new("ie", "Ireland")] )
+    ]
+
+    @post = Post.new
+    @post.origin = 'dk'
+
+    assert_dom_equal(
+      %Q{<select id="post_origin" name="post[origin]"><optgroup label="&lt;Africa&gt;"><option value="&lt;sa&gt;">&lt;South Africa&gt;</option>\n<option value="so">Somalia</option></optgroup><optgroup label="Europe"><option value="dk" selected="selected">Denmark</option>\n<option value="ie">Ireland</option></optgroup></select>},
+      grouped_collection_select("post", "origin", @continents, :countries, :continent_name, :country_id, :country_name)
+    )
+  end
+
+  def test_grouped_collection_select_under_fields_for
+    @continents = [
+      Continent.new("<Africa>", [Country.new("<sa>", "<South Africa>"), Country.new("so", "Somalia")] ),
+      Continent.new("Europe", [Country.new("dk", "Denmark"), Country.new("ie", "Ireland")] )
+    ]
+
+    @post = Post.new
+    @post.origin = 'dk'
+
+    fields_for :post, @post do |f|
+      concat f.grouped_collection_select("origin", @continents, :countries, :continent_name, :country_id, :country_name)
+    end
+
+    assert_dom_equal(
+      %Q{<select id="post_origin" name="post[origin]"><optgroup label="&lt;Africa&gt;"><option value="&lt;sa&gt;">&lt;South Africa&gt;</option>\n<option value="so">Somalia</option></optgroup><optgroup label="Europe"><option value="dk" selected="selected">Denmark</option>\n<option value="ie">Ireland</option></optgroup></select>},
+      output_buffer
+    )
   end
 
   private

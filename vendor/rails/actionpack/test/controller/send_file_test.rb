@@ -1,9 +1,10 @@
+# encoding: utf-8
 require 'abstract_unit'
 
 module TestFileUtils
   def file_name() File.basename(__FILE__) end
   def file_path() File.expand_path(__FILE__) end
-  def file_data() File.open(file_path, 'rb') { |f| f.read } end
+  def file_data() @data ||= File.open(file_path, 'rb') { |f| f.read } end
 end
 
 class SendFileController < ActionController::Base
@@ -15,6 +16,7 @@ class SendFileController < ActionController::Base
 
   def file() send_file(file_path, options) end
   def data() send_data(file_data, options) end
+  def multibyte_text_data() send_data("Кирилица\n祝您好運", options) end
 
   def rescue_action(e) raise end
 end
@@ -49,6 +51,7 @@ class SendFileTest < ActionController::TestCase
     require 'stringio'
     output = StringIO.new
     output.binmode
+    output.string.force_encoding(file_data.encoding) if output.string.respond_to?(:force_encoding)
     assert_nothing_raised { response.body.call(response, output) }
     assert_equal file_data, output.string
   end
@@ -108,7 +111,7 @@ class SendFileTest < ActionController::TestCase
     @controller.send(:send_file_headers!, options)
 
     h = @controller.headers
-    assert_equal 1, h['Content-Length']
+    assert_equal '1', h['Content-Length']
     assert_equal 'image/png', h['Content-Type']
     assert_equal 'disposition; filename="filename"', h['Content-Disposition']
     assert_equal 'binary', h['Content-Transfer-Encoding']
@@ -157,5 +160,12 @@ class SendFileTest < ActionController::TestCase
       assert_nothing_raised { assert_not_nil process(method) }
       assert_equal ActionController::Base::DEFAULT_RENDER_STATUS_CODE, @response.status
     end
+  end
+
+  def test_send_data_content_length_header
+    @controller.headers = {}
+    @controller.options = { :type => :text, :filename => 'file_with_utf8_text' }
+    process('multibyte_text_data')
+    assert_equal '29', @controller.headers['Content-Length']
   end
 end

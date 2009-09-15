@@ -76,6 +76,50 @@ class ResourcesTest < ActionController::TestCase
     end
   end
 
+  def test_override_paths_for_member_and_collection_methods
+    collection_methods = { 'rss' => :get, 'reorder' => :post, 'csv' => :post }
+    member_methods    = { 'rss' => :get, :atom => :get, :upload => :post, :fix => :post }
+    path_names = {:new => 'nuevo', 'rss' => 'canal', :fix => 'corrigir' }
+
+    with_restful_routing :messages,
+        :collection => collection_methods,
+        :member => member_methods,
+        :path_names => path_names do
+
+      assert_restful_routes_for :messages,
+          :collection => collection_methods,
+          :member => member_methods,
+          :path_names => path_names do |options|
+        member_methods.each do |action, method|
+          assert_recognizes(options.merge(:action => action.to_s, :id => '1'),
+            :path => "/messages/1/#{path_names[action] || action}",
+            :method => method)
+        end
+
+        collection_methods.each do |action, method|
+          assert_recognizes(options.merge(:action => action),
+            :path => "/messages/#{path_names[action] || action}",
+            :method => method)
+        end
+      end
+
+      assert_restful_named_routes_for :messages,
+          :collection => collection_methods,
+          :member => member_methods,
+          :path_names => path_names do |options|
+
+        collection_methods.keys.each do |action|
+          assert_named_route "/messages/#{path_names[action] || action}", "#{action}_messages_path", :action => action
+        end
+
+        member_methods.keys.each do |action|
+          assert_named_route "/messages/1/#{path_names[action] || action}", "#{action}_message_path", :action => action, :id => "1"
+        end
+
+      end
+    end
+  end
+
   def test_override_paths_for_default_restful_actions
     resource = ActionController::Resources::Resource.new(:messages,
       :path_names => {:new => 'nuevo', :edit => 'editar'})
@@ -117,6 +161,14 @@ class ResourcesTest < ActionController::TestCase
     expected_options = {:controller => 'messages', :action => 'show', :thread_id => '1.1.1', :id => '1'}
     with_restful_routing :messages, :path_prefix => '/thread/:thread_id', :requirements => {:thread_id => /[0-9]\.[0-9]\.[0-9]/} do
       assert_recognizes(expected_options, :path => 'thread/1.1.1/messages/1', :method => :get)
+    end
+  end
+
+  def test_irregular_id_requirements_should_get_passed_to_member_actions
+    expected_options = {:controller => 'messages', :action => 'custom', :id => '1.1.1'}
+
+    with_restful_routing(:messages, :member => {:custom => :get}, :requirements => {:id => /[0-9]\.[0-9]\.[0-9]/}) do
+      assert_recognizes(expected_options, :path => 'messages/1.1.1/custom', :method => :get)
     end
   end
 

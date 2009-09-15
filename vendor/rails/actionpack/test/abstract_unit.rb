@@ -8,7 +8,7 @@ require 'yaml'
 require 'stringio'
 require 'test/unit'
 
-gem 'mocha', '>= 0.9.5'
+gem 'mocha', '>= 0.9.7'
 require 'mocha'
 
 begin
@@ -43,3 +43,19 @@ ActionController::Base.view_paths = FIXTURE_LOAD_PATH
 CACHED_VIEW_PATHS = ActionView::Base.cache_template_loading? ?
                       ActionController::Base.view_paths :
                       ActionController::Base.view_paths.map {|path| ActionView::Template::EagerPath.new(path.to_s)}
+
+class DummyMutex
+  def lock
+    @locked = true
+  end
+
+  def unlock
+    @locked = false
+  end
+
+  def locked?
+    @locked
+  end
+end
+
+ActionController::Reloader.default_lock = DummyMutex.new

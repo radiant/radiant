@@ -1,3 +1,4 @@
+require 'rack/session/abstract/id'
 module ActionController #:nodoc:
   class TestRequest < Request #:nodoc:
     attr_accessor :cookies, :session_options
@@ -13,6 +14,8 @@ module ActionController #:nodoc:
 
       @query_parameters   = {}
       @session            = TestSession.new
+      default_rack_options = Rack::Session::Abstract::ID::DEFAULT_OPTIONS
+      @session_options    ||= {:id => generate_sid(default_rack_options[:sidbits])}.merge(default_rack_options)
 
       initialize_default_values
       initialize_containers
@@ -110,6 +113,7 @@ module ActionController #:nodoc:
     end
 
     def recycle!
+      @env["action_controller.request.request_parameters"] = {}
       self.query_parameters   = {}
       self.path_parameters    = {}
       @headers, @request_method, @accepts, @content_type = nil, nil, nil, nil
@@ -120,6 +124,10 @@ module ActionController #:nodoc:
     end
 
     private
+      def generate_sid(sidbits)
+        "%0#{sidbits / 4}x" % rand(2**sidbits - 1)
+      end
+
       def initialize_containers
         @cookies = {}
       end
@@ -250,7 +258,7 @@ module ActionController #:nodoc:
     def cookies
       cookies = {}
       Array(headers['Set-Cookie']).each do |cookie|
-        key, value = cookie.split(";").first.split("=")
+        key, value = cookie.split(";").first.split("=").map {|val| Rack::Utils.unescape(val)}
         cookies[key] = value
       end
       cookies
