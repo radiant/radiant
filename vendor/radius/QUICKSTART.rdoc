@@ -8,7 +8,7 @@ the tags that will be used in the template. This is actually quite simple:
 
   require 'radius'
   
-  context = Context.new
+  context = Radius::Context.new
   context.define_tag "hello" do |tag|
     "Hello #{tag.attr['name'] || 'World'}!"
   end
@@ -53,7 +53,7 @@ With the code above your parser can easily handle Textile:
 
 This code will output:
 
-  <h1>Hello <strong>World</strong>!</h1>
+  <h1>Hello <b>World</b>!</h1>
 
 
 == Nested Tags
@@ -61,7 +61,7 @@ This code will output:
 But wait!--it gets better. Because container tags can manipulate the content they contain
 you can use them to iterate over collections:
 
-  context = Context.new
+  context = Radius::Context.new
   
   context.define_tag "stooge" do |tag|
     content = ''
@@ -72,7 +72,7 @@ you can use them to iterate over collections:
     content
   end
   
-  context.define_tag "stooge:name" do
+  context.define_tag "stooge:name" do |tag|
     tag.locals.name
   end
   
@@ -126,7 +126,7 @@ So far this doesn't save you a whole lot of typing, but suppose you want to expo
 methods that are on that object? You could do this:
 
   context.define_tag "user", :for => user, :expose => [ :name, :age, :email ]
-  
+
 This will add a total of four tags to the context. One for the <tt>user</tt> variable, and
 one for each of the three methods listed in the +expose+ clause. You could now get the user's
 name inside your template like this:
@@ -206,6 +206,7 @@ accessible to all tags:
   context.define_tag "inc" do |tag|
     tag.globals.count ||= 0
     tag.globals.count += 1
+    ""
   end
   
   context.define_tag "count" do |tag|
@@ -215,20 +216,18 @@ accessible to all tags:
 TagBinding#locals mirrors the variables that are in TagBinding#globals, but allows child
 tags to redefine variables. This is valuable when defining context sensitive tags:
 
-  require 'radius'
-
   class Person
     attr_accessor :name, :friend
     def initialize(name)
       @name = name
     end
   end
-
+  
   jack = Person.new('Jack')
   jill = Person.new('Jill')
   jack.friend = jill
   jill.friend = jack
-
+  
   context = Radius::Context.new do |c|
     c.define_tag "jack" do |tag|
       tag.locals.person = jack
@@ -252,9 +251,9 @@ tags to redefine variables. This is valuable when defining context sensitive tag
   parser.parse('<r:jack:name />') #=> "Jack"
   parser.parse('<r:jill:name />') #=> "Jill"
   parser.parse('<r:jill:friend:name />') #=> "Jack"
-  parser.parse('<r:jill:friend:friend:name />') #=> "Jack"
+  parser.parse('<r:jack:friend:friend:name />') #=> "Jack"
   parser.parse('<r:jill><r:friend:name /> and <r:name /></r:jill>') #=> "Jack and Jill"
-  parser.parse('<r:name />') # raises an UndefinedTagError exception
+  parser.parse('<r:name />') # raises a Radius::UndefinedTagError exception
 
 Notice how TagBinding#locals enables intelligent nesting. "<r:jill:name />" evaluates to
 "Jill", but "<r:jill:friend:name />" evaluates to "Jack". Locals loose scope as soon as
@@ -264,7 +263,7 @@ The final line in the example above demonstrates that calling "<r:name />" raise
 TagMissing error. This is because of the way the name tag was defined:
 
   tag.locals.person.name rescue tag.missing!
-  
+
 If person is not defined on locals it will return nil. Calling #name on nil would normally
 raise a NoMethodError exception, but because of the 'rescue' clause the TagBinding#missing!
 method is called which fires off Context#tag_missing. By default Context#tag_missing raises

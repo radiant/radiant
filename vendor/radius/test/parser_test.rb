@@ -1,83 +1,4 @@
-require 'test/unit'
-require 'radius'
-
-module RadiusTestHelper
-  class TestContext < Radius::Context; end
-  
-  def new_context
-    Radius::Context.new do |c|
-      c.define_tag("reverse"   ) { |tag| tag.expand.reverse }
-      c.define_tag("capitalize") { |tag| tag.expand.upcase  }
-      c.define_tag("attr"      ) { |tag| tag.attr.inspect   }
-      c.define_tag("echo"      ) { |tag| tag.attr['value']  }
-      c.define_tag("wrap"      ) { |tag| "[#{tag.expand}]"  }
-    end
-  end
-  
-  def define_tag(name, options = {}, &block)
-    @context.define_tag name, options, &block
-  end
-end
-
-class RadiusContextTest < Test::Unit::TestCase
-  include RadiusTestHelper
-  
-  def setup
-    @context = new_context
-  end
-  
-  def test_initialize
-    @context = Radius::Context.new
-  end
-  
-  def test_initialize_with_block
-    @context = Radius::Context.new do |c|
-      assert_kind_of Radius::Context, c
-      c.define_tag('test') { 'just a test' }
-    end
-    assert_not_equal Hash.new, @context.definitions
-  end
-  
-  def test_with
-    got = @context.with do |c|
-      assert_equal @context, c
-    end
-    assert_equal @context, got
-  end
-  
-  def test_render_tag
-    define_tag "hello" do |tag|
-      "Hello #{tag.attr['name'] || 'World'}!"
-    end
-    assert_render_tag_output 'Hello World!', 'hello'
-    assert_render_tag_output 'Hello John!', 'hello', 'name' => 'John'
-  end
-  
-  def test_render_tag__undefined_tag
-    e = assert_raises(Radius::UndefinedTagError) { @context.render_tag('undefined_tag') }
-    assert_equal "undefined tag `undefined_tag'", e.message
-  end
-  
-  def test_tag_missing
-    class << @context
-      def tag_missing(tag, attr, &block)
-        "undefined tag `#{tag}' with attributes #{attr.inspect}"
-      end
-    end
-    
-    text = ''
-    expected = %{undefined tag `undefined_tag' with attributes {"cool"=>"beans"}}
-    assert_nothing_raised { text = @context.render_tag('undefined_tag', 'cool' => 'beans') }
-    assert_equal expected, text
-  end
-  
-  private
-    
-    def assert_render_tag_output(output, *render_tag_params)
-      assert_equal output, @context.render_tag(*render_tag_params)
-    end
-  
-end
+require File.join(File.dirname(__FILE__), 'test_helper')
 
 class RadiusParserTest < Test::Unit::TestCase
   include RadiusTestHelper
@@ -145,6 +66,11 @@ class RadiusParserTest < Test::Unit::TestCase
       assert_parsed_is_unchanged "<r:attr#{middle}>"
     end
   end
+  
+  def test_tags_inside_html_tags
+    assert_parse_output %{<div class="xzibit">tags in yo tags</div>},
+      %{<div class="<r:reverse>tibizx</r:reverse>">tags in yo tags</div>}
+  end
     
   def test_parse_result_is_always_a_string
     define_tag("twelve") { 12 }
@@ -191,7 +117,12 @@ class RadiusParserTest < Test::Unit::TestCase
     e = assert_raises(Radius::UndefinedTagError) { @parser.parse("<r:test />") }
     assert_equal "undefined tag `test'", e.message
   end
-  
+
+  def test_parse_chirpy_bird
+    # :> chirp chirp
+    assert_parse_output "<:", "<:"
+  end
+
   def test_parse_tag__binding_render_tag
     define_tag('test') { |tag| "Hello #{tag.attr['name']}!" }
     define_tag('hello') { |tag| tag.render('test', tag.attr) }
@@ -254,6 +185,23 @@ class RadiusParserTest < Test::Unit::TestCase
     assert_parse_output %{Three Stooges: "Larry", "Moe", "Curly"}, %{Three Stooges: <r:each between=", ">"<r:item />"</r:each>}
   end
   
+  def test_parse_speed
+    define_tag "set" do |tag|
+      tag.globals.var = tag.attr['value']
+      ''
+    end
+    define_tag "var" do |tag|
+      tag.globals.var
+    end
+    parts = %w{decima nobis augue at facer processus commodo legentis odio lectorum dolore nulla esse lius qui nonummy ullamcorper erat ii notare}
+    multiplier = parts.map{|p| "#{p}=\"#{rand}\""}.join(' ')
+    assert_nothing_raised do
+      Timeout.timeout(10) do
+        assert_parse_output " false", %{<r:set value="false" #{multiplier} /> <r:var />}
+      end
+    end
+  end
+  
   def test_tag_option_for
     define_tag 'fun', :for => 'just for kicks'
     assert_parse_output 'just for kicks', '<r:fun />'
@@ -283,7 +231,22 @@ class RadiusParserTest < Test::Unit::TestCase
   
   def test_parse_fail_on_missing_end_tag
     assert_raises(Radius::MissingEndTagError) { @parser.parse("<r:reverse>") }
-    assert_raises(Radius::MissingEndTagError) { @parser.parse("<r:reverse><r:capitalize></r:reverse>") }
+  end
+  
+  def test_parse_fail_on_wrong_end_tag
+    assert_raises(Radius::WrongEndTagError) { @parser.parse("<r:reverse><r:capitalize></r:reverse>") }
+  end
+  
+  def test_parse_with_default_tag_prefix
+    define_tag("hello") { |tag| "Hello world!" }
+    @parser = Radius::Parser.new(@context)
+    assert_equal "<p>Hello world!</p>", @parser.parse('<p><radius:hello /></p>')
+  end
+  
+  def test_parse_with_other_radius_like_tags
+    define_tag('hello') { "hello" }
+    @parser = Radius::Parser.new(@context, :tag_prefix => "ralph")
+    assert_equal "<r:ralph:hello />", @parser.parse("<r:ralph:hello />")
   end
   
   protected

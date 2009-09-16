@@ -1,4 +1,12 @@
 = Change Log
+=== 0.6.1
+* Fixed a problem with non-tags that have no prefix or tagname (see test_parse_chirpy_bird)
+
+=== 0.6.0 (private release)
+* Split radius.rb into multiple files.
+* Port the really hairy regexes from Radius::Parser to a single Ragel machine.
+* Added and refactored tests.
+* Refactored Rakefile and other administrativia.
 
 === 0.5.1
 * Fixed a problem with parsing quotes where a single tag preceding a double tag would consume the start
