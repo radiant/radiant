@@ -21,11 +21,11 @@
           #site_links
             = %{Logged in as #{link_to h(current_user.name), edit_admin_preferences_path} &nbsp; (#{link_to "Logout", logout_path})}
             &nbsp;
-            %a{:href=>"/", :id=>"view_site"} View Site
+            = link_to "View Site", root_path, :id=>"view_site"
           %ul#navigation
             - nav_tabs.each do |tab|
               - if tab.visible?(current_user)
-                %li{:class=> current_tab?(tab) ? 'current' : ''}
+                %li{:class=>('current' if current_tab?(tab))}
                   %a{:href=>(tab.first.url if tab.first)}
                     = tab.proper_name
                   - if current_tab?(tab)
