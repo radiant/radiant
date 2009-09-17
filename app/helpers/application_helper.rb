@@ -31,12 +31,12 @@ module ApplicationHelper
     options[:label] ||= model.new_record? ?
       "Create #{model.class.name}" : "Save Changes"
     options[:class] ||= "button"
-
+    options[:accesskey] ||= 'S'
     submit_tag options.delete(:label), options
   end
 
   def save_model_and_continue_editing_button(model)
-    submit_tag 'Save and Continue Editing', :name => 'continue', :class => 'button'
+    submit_tag 'Save and Continue Editing', :name => 'continue', :class => 'button', :accesskey => "s"
   end
 
   # Redefine pluralize() so that it doesn't put the count at the beginning of

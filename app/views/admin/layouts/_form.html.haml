@@ -12,14 +12,13 @@
           %table.fieldset{:cellpadding=>"0", :cellspacing=>"0", :border=>"0"}
             %tr
               %th.label
-                = f.label :content_type, "Context&#8209;Type"
+                = f.label :content_type, "Content&#8209;Type"
               %td.field
                 = f.text_field :content_type, :maxlength => 40, :class => "textbox"
             = render_region :extended_metadata
         %p.more_or_less
-          %a{:id=>"more_extended_metadata", :href=>"javascript: $('extended_metadata').show(); $('less_extended_metadata').show(); $('more_extended_metadata').hide(); this.stop()", :style=>(meta_errors? ? "display: none" : nil)} Metadata
+          %a{:id=>"more_extended_metadata", :href=>"javascript: $('extended_metadata').show(); $('less_extended_metadata').show(); $('more_extended_metadata').hide(); this.stop()", :style=>(meta_errors? ? "display: none" : nil)} More
           %a{:id=>"less_extended_metadata", :href=>"javascript: $('extended_metadata').hide(); $('more_extended_metadata').show(); $('less_extended_metadata').hide(); this.stop()", :style=>(!meta_errors? ? "display: none" : nil)} Hide
-          
       - form.edit_content do
         %p.content
           = f.label :layout_content, "Body"
