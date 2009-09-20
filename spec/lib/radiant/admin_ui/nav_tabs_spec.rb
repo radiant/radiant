@@ -64,21 +64,19 @@ describe Radiant::AdminUI::NavTab do
   describe "visibility" do
     dataset :users
     
-    it "should be visible by default" do
-      User.all.each {|user| @tab.should be_visible(user) }
-    end
-    
-    it "should restrict to a specific role" do
-      @tab.visibility.replace [:developer]
-      @tab.should be_visible(users(:developer))
+    it "should not be visible if it is empty" do
       @tab.should_not be_visible(users(:admin))
-      @tab.should_not be_visible(users(:existing))
     end
     
-    it "should restrict to a group of roles" do
-      @tab.visibility.replace [:developer, :admin]
-      @tab.should be_visible(users(:developer))
+    it "should be visible if any of the sub items are visible to the current user" do
+      @subitem = Radiant::AdminUI::NavSubItem.new(:pages, "Pages", "/admin/pages")
+      @tab << @subitem
       @tab.should be_visible(users(:admin))
+    end
+    
+    it "should not be visible if any of the sub items are not visible to the current user" do
+      @subitem = Radiant::AdminUI::NavSubItem.new(:users, "Users", "/admin/users")
+      @tab << @subitem
       @tab.should_not be_visible(users(:existing))
     end
   end
@@ -140,12 +138,6 @@ describe Radiant::AdminUI::NavSubItem do
     
     it "should check the visibility against the controller permissions" do
       User.all.each {|user| @subitem.should be_visible(user) }
-    end
-    
-    it "should not be visible when the parent tab is not visible to the user" do
-      @tab.visibility.replace [:admin]
-      @subitem.should_not be_visible(users(:developer))
-      @subitem.should_not be_visible(users(:existing))
     end
     
     describe "when the controller limits access to the action" do

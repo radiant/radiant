@@ -48,9 +48,16 @@ module Radiant
       end
 
       alias :add :<<
-
+      
       def visible?(user)
-        visibility.include?(:all) || visibility.any? {|v| user.has_role?(v) }
+        visible = false
+        self.each do |sub_item|
+          if sub_item.visible?(user)
+            visible = true
+            break
+          end
+        end
+        return visible
       end
 
       def deprecated_add(name, url, caller)
@@ -69,7 +76,7 @@ module Radiant
       end
 
       def visible?(user)
-        tab.visible?(user) && visible_by_controller?(user)
+        visible_by_controller?(user)
       end
 
       def relative_url
