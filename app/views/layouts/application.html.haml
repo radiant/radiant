@@ -5,10 +5,9 @@
     %title= @page_title || default_page_title
     - @stylesheets.uniq.each do |stylesheet|
       = stylesheet_link_tag stylesheet
-    - @javascripts.uniq.each do |javascript|
-      = javascript_include_tag javascript
     /[if lt IE 7]
       %script{:type=>"text/javascript", :src=>"/javascripts/pngfix.js"}
+    = javascript_include_tag @javascripts, :cache => 'admin/all'
     - if @content_for_page_scripts
       = javascript_tag @content_for_page_scripts
     - if @content_for_page_css
