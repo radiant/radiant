@@ -42,6 +42,8 @@ class ApplicationController < ActionController::Base
       'edit'
     when 'remove', 'destroy'
       'remove'
+    else
+      self.action_name
     end
   end
   
