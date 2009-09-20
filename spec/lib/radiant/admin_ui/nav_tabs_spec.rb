@@ -31,16 +31,16 @@ describe Radiant::AdminUI::NavTab do
   end
 
   it "should assign the tab on the sub-item when adding" do
-    subtab = Radiant::AdminUI::NavSubItem.new(:pages, "Pages", "/admin/pages")
+    subtab = Radiant::AdminUI::NavSubItem.new("/admin/pages")
     @tab << subtab
     subtab.tab.should == @tab
   end
 
   describe "inserting sub-items in specific places" do
     before :each do
-      @pages    = Radiant::AdminUI::NavSubItem.new(:pages,    "Pages",    "/admin/pages")
-      @snippets = Radiant::AdminUI::NavSubItem.new(:snippets, "Snippets", "/admin/snippets")
-      @comments = Radiant::AdminUI::NavSubItem.new(:comments, "Comments", "/admin/comments")
+      @pages    = Radiant::AdminUI::NavSubItem.new("/admin/pages")
+      @snippets = Radiant::AdminUI::NavSubItem.new("/admin/snippets")
+      @comments = Radiant::AdminUI::NavSubItem.new("/admin/comments")
       @tab << @pages
       @tab << @snippets
     end
@@ -74,13 +74,13 @@ describe Radiant::AdminUI::NavTab do
     end
     
     it "should be visible if any of the sub items are visible to the current user" do
-      @subitem = Radiant::AdminUI::NavSubItem.new(:pages, "Pages", "/admin/pages")
+      @subitem = Radiant::AdminUI::NavSubItem.new("/admin/pages")
       @tab << @subitem
       @tab.should be_visible(users(:admin))
     end
     
     it "should not be visible if any of the sub items are not visible to the current user" do
-      @subitem = Radiant::AdminUI::NavSubItem.new(:users, "Users", "/admin/users")
+      @subitem = Radiant::AdminUI::NavSubItem.new("/admin/users")
       @tab << @subitem
       @tab.should_not be_visible(users(:existing))
     end
@@ -88,7 +88,7 @@ describe Radiant::AdminUI::NavTab do
   
   it "should warn about using the deprecated add method" do
     ActiveSupport::Deprecation.should_receive(:warn)
-    @tab.add("Pages", "/admin/pages")
+    @tab.add("/admin/pages")
     @tab[:pages].proper_name.should == "Pages"
     @tab[:pages].url.should == "/admin/pages"
   end
@@ -96,8 +96,8 @@ end
 
 describe Radiant::AdminUI::NavSubItem do
   before :each do
-    @tab = Radiant::AdminUI::NavTab.new(:content, "Content")
-    @subitem = Radiant::AdminUI::NavSubItem.new(:pages, "Pages", "/admin/pages")
+    @tab = Radiant::AdminUI::NavTab.new(:content)
+    @subitem = Radiant::AdminUI::NavSubItem.new("/admin/pages")
     @tab << @subitem
   end
 
@@ -111,6 +111,21 @@ describe Radiant::AdminUI::NavSubItem do
 
   it "should have a URL" do
     @subitem.url.should == "/admin/pages"
+  end
+  
+  it "should create it's name based on the given URL" do
+    @subitem = Radiant::AdminUI::NavSubItem.new('/admin/all_around/town')
+    @subitem.name.should == :all_around_town
+  end
+  
+  it "should parameterize and underscore a generated name" do
+    @subitem = Radiant::AdminUI::NavSubItem.new('/admin/things/to-do')
+    @subitem.name.should == :things_to_do
+  end
+  
+  it "should generate a titilized proper name when given no proper_name" do
+    @subitem = Radiant::AdminUI::NavSubItem.new('/admin/things/to-do')
+    @subitem.proper_name.should == 'Things To Do'
   end
   
   describe "generating a relative url" do
