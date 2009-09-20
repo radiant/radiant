@@ -63,7 +63,7 @@ Radiant::Initializer.run do |config|
   # Set the default field error proc
   config.action_view.field_error_proc = Proc.new do |html, instance|
     if html !~ /label/
-      %{<div class="error-with-field">#{html} <small class="error">&bull; #{[instance.error_message].flatten.first}</small></div>}
+      %{<span class="error-with-field">#{html} <small class="error">&bull; #{[instance.error_message].flatten.first}</small></span>}
     else
       html
     end
