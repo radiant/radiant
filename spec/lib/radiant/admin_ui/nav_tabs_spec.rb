@@ -12,6 +12,11 @@ describe Radiant::AdminUI::NavTab do
   it "should have a proper name" do
     @tab.proper_name.should == "Content"
   end
+  
+  it "should set the proper name according to the name if no proper_name is given" do
+    @tab = Radiant::AdminUI::NavTab.new(:a_new_tab)
+    @tab.proper_name.should == "A New Tab"
+  end
 
   it "should be Enumerable" do
     Enumerable.should === @tab

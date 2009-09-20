@@ -11,10 +11,11 @@ module Radiant
     # The NavTab Class holds the structure of a navigation tab (including
     # its sub-nav items).
     class NavTab < Array
-      attr_reader :name, :proper_name, :visibility
+      attr_reader :name, :proper_name
 
-      def initialize(name, proper_name, visibility = [:all])
-        @name, @proper_name, @visibility = name, proper_name, Array(visibility)
+      def initialize(name, proper_name = nil)
+        @name = name
+        @proper_name = proper_name || name.to_s.titleize
       end
 
       def [](id)
@@ -123,20 +124,20 @@ module Radiant
     end
 
     def load_default_nav
-      content = nav_tab(:content, "Content")
+      content = nav_tab(:content)
       content << nav_item(:pages, "Pages", "/admin/pages")
       content << nav_item(:snippets, "Snippets", "/admin/snippets")
       nav << content
 
-      design = nav_tab(:design, "Design", [:developer, :admin])
+      design = nav_tab(:design)
       design << nav_item(:layouts, "Layouts", "/admin/layouts")
       nav << design
 
-      # media = NavTab.new(:assets, "Assets")
+      # media = NavTab.new(:assets)
       # media << NavSubItem.new(:all, "All", "/admin/assets/")
       # media << NavSubItem.new(:all, "Unattached", "/admin/assets/unattached/")
 
-      settings = nav_tab(:settings, "Settings")
+      settings = nav_tab(:settings)
       settings << nav_item(:general, "Personal", "/admin/preferences/edit")
       settings << nav_item(:users, "Users", "/admin/users")
       settings << nav_item(:extensions, "Extensions", "/admin/extensions")
