@@ -66,6 +66,10 @@ describe ApplicationController do
       controller.stub!(:action_name).and_return('show')
       controller.template_name.should == 'show'
     end
+    it "should return the action_name when the action_name is a non-standard name" do
+      controller.stub!(:action_name).and_return('other')
+      controller.template_name.should == 'other'
+    end
   end
 
   describe "set_timezone" do
