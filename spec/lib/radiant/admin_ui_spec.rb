@@ -15,7 +15,7 @@ describe Radiant::AdminUI do
   end
 
   it "should create a new nav tab" do
-    @admin.nav_tab(:content).should be_kind_of(Radiant::AdminUI::NavTab)
+    @admin.nav_tab(:content, "Content").should be_kind_of(Radiant::AdminUI::NavTab)
   end
   
   it "should create a new nav item" do

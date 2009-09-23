@@ -1,9 +1,5 @@
 == Change Log
 
-=== Edge
-
-* Simplify the adding of tabs and links in navigation [Jim Gay]
-
 === 0.8.1 Luster
 
 * Move default cache location to tmp. [Sean Cribbs]
