@@ -51,14 +51,7 @@ module Radiant
       alias :add :<<
       
       def visible?(user)
-        visible = false
-        self.each do |sub_item|
-          if sub_item.visible?(user)
-            visible = true
-            break
-          end
-        end
-        return visible
+        any? { |sub_item| sub_item.visible?(user) }
       end
 
       def deprecated_add(name, url, caller)

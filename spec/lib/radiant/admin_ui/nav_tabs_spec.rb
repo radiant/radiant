@@ -88,7 +88,7 @@ describe Radiant::AdminUI::NavTab do
   
   it "should warn about using the deprecated add method" do
     ActiveSupport::Deprecation.should_receive(:warn)
-    @tab.add("/admin/pages")
+    @tab.add("Pages", "/admin/pages")
     @tab[:pages].proper_name.should == "Pages"
     @tab[:pages].url.should == "/admin/pages"
   end
