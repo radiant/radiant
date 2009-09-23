@@ -11,10 +11,11 @@ module Radiant
     # The NavTab Class holds the structure of a navigation tab (including
     # its sub-nav items).
     class NavTab < Array
-      attr_reader :name, :proper_name, :visibility
+      attr_reader :name, :proper_name
 
-      def initialize(name, proper_name, visibility = [:all])
-        @name, @proper_name, @visibility = name, proper_name, Array(visibility)
+      def initialize(name, proper_name = nil)
+        @name = name
+        @proper_name = proper_name || name.to_s.titleize
       end
 
       def [](id)
@@ -48,14 +49,14 @@ module Radiant
       end
 
       alias :add :<<
-
+      
       def visible?(user)
-        visibility.include?(:all) || visibility.any? {|v| user.has_role?(v) }
+        any? { |sub_item| sub_item.visible?(user) }
       end
 
       def deprecated_add(name, url, caller)
         ActiveSupport::Deprecation.warn("admin.tabs.add is no longer supported in Radiant 0.9+.  Please update your code to use admin.nav", caller)
-        NavSubItem.new(name.underscore.to_sym, name, url)
+        NavSubItem.new(url, name.underscore.to_sym, name)
       end
     end
 
@@ -64,12 +65,14 @@ module Radiant
       attr_reader :name, :proper_name, :url
       attr_accessor :tab
 
-      def initialize(name, proper_name, url = "#")
-        @name, @proper_name, @url = name, proper_name, url
+      def initialize(url, name = nil, proper_name = nil)
+        @url = url
+        @name = name || url.sub(/^\/admin/,'').parameterize('_').underscore.wrapped_string.to_sym
+        @proper_name = proper_name || @name.to_s.titleize
       end
 
       def visible?(user)
-        tab.visible?(user) && visible_by_controller?(user)
+        visible_by_controller?(user)
       end
 
       def relative_url
@@ -116,23 +119,23 @@ module Radiant
     end
 
     def load_default_nav
-      content = nav_tab(:content, "Content")
-      content << nav_item(:pages, "Pages", "/admin/pages")
-      content << nav_item(:snippets, "Snippets", "/admin/snippets")
+      content = nav_tab(:content)
+      content << nav_item("/admin/pages")
+      content << nav_item("/admin/snippets")
       nav << content
 
-      design = nav_tab(:design, "Design", [:developer, :admin])
-      design << nav_item(:layouts, "Layouts", "/admin/layouts")
+      design = nav_tab(:design)
+      design << nav_item("/admin/layouts")
       nav << design
 
-      # media = NavTab.new(:assets, "Assets")
-      # media << NavSubItem.new(:all, "All", "/admin/assets/")
-      # media << NavSubItem.new(:all, "Unattached", "/admin/assets/unattached/")
+      # media = nav_tab(:assets)
+      # media << nav_item("/admin/assets/", :all)
+      # media << nav_item("/admin/assets/unattached/", :unattached)
 
-      settings = nav_tab(:settings, "Settings")
-      settings << nav_item(:general, "Personal", "/admin/preferences/edit")
-      settings << nav_item(:users, "Users", "/admin/users")
-      settings << nav_item(:extensions, "Extensions", "/admin/extensions")
+      settings = nav_tab(:settings)
+      settings << nav_item("/admin/preferences/edit", :general, 'Personal')
+      settings << nav_item("/admin/users")
+      settings << nav_item("/admin/extensions")
       nav << settings
     end
 
