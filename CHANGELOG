@@ -1,5 +1,19 @@
 == Change Log
 
+=== Edge
+
+* Fix dev-site behavior when 'dev.host' is configured. [Chris Ricca]
+* Use HTML 5 doctype. [John Muhl]
+* Concatenate admin javascript files. [John Muhl]
+* Use more descriptive page titles. [John Muhl]
+* Allow non-standard controller methods for render_region. [Jim Gay]
+* Updated to use Radius 0.6.1. [John Long]
+* Use root_path instead of "/" on View Site link. [John Long]
+* Correct type on content-type and move to more/hide language. [John Long]
+* Add some helpful shortcut keys. [Sean Cribbs]
+* Implement "Blade" user-interface. [John Long, Chris Parrish, Daniel Beach,
+Brandon Mathis, Sean Cribbs, Ben Morrow, John Muhl]
+
 === 0.8.1 Luster
 
 * Move default cache location to tmp. [Sean Cribbs]
