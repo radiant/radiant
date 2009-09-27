@@ -1017,7 +1017,10 @@ module StandardTags
     end
 
     def dev?(request)
-      dev_host = Radiant::Config['dev.host']
-      request && ((dev_host && dev_host == request.host) || request.host =~ /^dev\./)
+      if dev_host = Radiant::Config['dev.host']
+        dev_host == request.host
+      else
+        request.host =~ /^dev\./
+      end
     end
 end
