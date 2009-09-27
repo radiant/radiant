@@ -2,6 +2,7 @@
 
 === Edge
 
+* Undefine prototype rake tasks in instance mode. [Sean Cribbs]
 * Verify that the cache directory exists before trying to store a response. 
 [Sean Cribbs]
 * Fix page-part deletion in JS. [Sean Cribbs]
