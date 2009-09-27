@@ -2,6 +2,8 @@
 
 === Edge
 
+* Verify that the cache directory exists before trying to store a response. 
+[Sean Cribbs]
 * Fix page-part deletion in JS. [Sean Cribbs]
 * Don't cache extension-defined javascripts, but do cache the defaults. 
 [Sean Cribbs]

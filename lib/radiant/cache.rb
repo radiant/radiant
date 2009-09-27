@@ -37,6 +37,12 @@ module Radiant
       def clear
         Dir[File.join(self.root, "*")].each {|file| FileUtils.rm_rf(file) }
       end
+      
+      def write(body)
+        # Verify that the cache directory exists before attempting to write
+        FileUtils.mkdir_p(self.root, :mode => 0755) unless File.directory?(self.root)
+        super
+      end
     end
 
     class MetaStore < Rack::Cache::MetaStore::Disk
@@ -47,6 +53,12 @@ module Radiant
 
       def clear
         Dir[File.join(self.root, "*")].each {|file| FileUtils.rm_rf(file) }
+      end
+
+      def store(request, response, entitystore)
+        # Verify that the cache directory exists before attempting to store
+        FileUtils.mkdir_p(self.root, :mode => 0755) unless File.directory?(self.root)
+        super
       end
 
       private
