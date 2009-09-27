@@ -2,6 +2,8 @@
 
 === Edge
 
+* Don't cache extension-defined javascripts, but do cache the defaults. 
+[Sean Cribbs]
 * Fix dev-site behavior when 'dev.host' is configured. [Chris Ricca]
 * Use HTML 5 doctype. [John Muhl]
 * Concatenate admin javascript files. [John Muhl]

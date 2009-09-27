@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 %html{html_attrs}
   %head
-    %meta{"http-equiv"=>"Content-type", :content=>"text/html; charset=utf-8"}/
+    %meta{"http-equiv"=>"Content-type", :content=>"text/html;charset=utf-8"}/
     %title= @page_title || default_page_title
     - @stylesheets.uniq.each do |stylesheet|
       = stylesheet_link_tag stylesheet
+    = javascript_include_tag %w(admin/prototype admin/effects admin/lowpro admin/cookie admin/popup admin/status admin/utility admin/codearea admin/tabcontrol admin/ruledtable admin/sitemap admin/shortcuts admin/application), :cache => 'admin/all'
     /[if lt IE 7]
-      %script{:type=>"text/javascript", :src=>"/javascripts/pngfix.js"}
-    = javascript_include_tag @javascripts, :cache => 'admin/all'
+      = javascript_include_tag 'admin/pngfix'
+    - @javascripts.uniq.each do |javascript|
+      = javascript_include_tag javascript
     - if @content_for_page_scripts
       = javascript_tag @content_for_page_scripts
     - if @content_for_page_css
