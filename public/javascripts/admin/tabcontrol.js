@@ -32,8 +32,12 @@ var TabControl = Class.create({
     var tab = this.selected;
     var index = this.tabs.indexOf(tab);
     var newSelectedTab = this.tabs[index-1];
+    var idInput = tab.page.down('.id_input');
+    var deleteInput = tab.page.down('.delete_input');
+    deleteInput.setValue('true');
     tab.remove();
     this.tabs = this.tabs.without(tab);
+    this.element.insert(idInput).insert(deleteInput);
     this.select(newSelectedTab || this.tabs.first());
   },
 

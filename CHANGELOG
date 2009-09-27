@@ -2,6 +2,7 @@
 
 === Edge
 
+* Fix page-part deletion in JS. [Sean Cribbs]
 * Don't cache extension-defined javascripts, but do cache the defaults. 
 [Sean Cribbs]
 * Fix dev-site behavior when 'dev.host' is configured. [Chris Ricca]
