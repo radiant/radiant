@@ -19,6 +19,10 @@ When /^I follow "([^\"]*)"$/ do |link|
   click_link(link)
 end
 
+When /^I follow "([^\"]*)" within "([^\"]*)"$/ do |link, element_id|
+  click_link_within("##{element_id}", link)
+end
+
 When /^I fill in "([^\"]*)" with "([^\"]*)"$/ do |field, value|
   fill_in(field, :with => value) 
 end
@@ -114,4 +118,8 @@ end
 
 Then /^I should be on (.+)$/ do |page_name|
   URI.parse(current_url).path.should == path_to(page_name)
+end
+
+Then /^show me the page$/ do
+  save_and_open_page
 end

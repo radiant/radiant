@@ -92,8 +92,8 @@ module ApplicationHelper
     current_user and current_user.admin?
   end
 
-  def developer?
-    current_user and (current_user.developer? or current_user.admin?)
+  def designer?
+    current_user and (current_user.designer? or current_user.admin?)
   end
 
   def focus(field_name)

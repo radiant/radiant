@@ -4,7 +4,7 @@ class UsersDataset < Dataset::Base
     create_user "Existing"
     create_user "Another"
     create_user "Admin", :admin => true
-    create_user "Developer", :developer => true
+    create_user "Designer", :designer => true
     create_user "Non-admin", :admin => false
   end
   

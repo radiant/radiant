@@ -14,7 +14,7 @@ Feature: User authentication and permissions
       | username  |
       | admin     |
       | existing  |
-      | developer |
+      | designer |
   
   Scenario Outline: Authentication-logout
     Given I am logged in as "<username>"
@@ -25,7 +25,7 @@ Feature: User authentication and permissions
       | username  |
       | admin     |
       | existing  |
-      | developer |
+      | designer |
   
   
   Scenario Outline: All users can edit pages
@@ -40,41 +40,41 @@ Feature: User authentication and permissions
       | username  |
       | admin     |
       | existing  |
-      | developer |
+      | designer |
       
-  Scenario Outline: Admins and developers can see and edit snippets
+  Scenario Outline: Admins and designers can see and edit snippets
     Given I am logged in as "<username>"
     And I should see "Design"
-    When I follow "Design"
+    When I follow "Design" within "navigation"
     And I follow "Snippets"
-    And I should not see "You must have developer privileges"
+    And I should not see "You must have designer privileges"
     And I follow "first"
     Then I should see "Edit Snippet"
     
     Examples:
       | username  |
       | admin     |
-      | developer |
+      | designer |
   
-  Scenario Outline: Admins and developers can see and edit layouts
+  Scenario Outline: Admins and designers can see and edit layouts
     Given I am logged in as "<username>"
     And I should see "Design"
-    When I follow "Design"
+    When I follow "Design" within "navigation"
     And I follow "Layouts"
-    And I should not see "You must have developer privileges"
+    And I should not see "You must have designer privileges"
     And I follow "Main"
     Then I should see "Edit Layout"
     
     Examples:
       | username  |
       | admin     |
-      | developer |
+      | designer |
       
   Scenario Outline: Ordinary users cannot edit layouts
     Given I am logged in as "<username>"
     And I should not see "Design"
     When I go to "/admin/layouts"
-    Then I should see "You must have developer privileges"
+    Then I should see "You must have designer privileges"
 
     Examples:
       | username  |
@@ -85,7 +85,7 @@ Feature: User authentication and permissions
     Given I am logged in as "<username>"
     And I should not see "Design"
     When I go to "/admin/snippets"
-    Then I should see "You must have developer privileges"
+    Then I should see "You must have designer privileges"
 
     Examples:
       | username  |
@@ -110,7 +110,7 @@ Feature: User authentication and permissions
       | username  |
       | existing  |
       | another   |
-      | developer |
+      | designer |
       
   Scenario Outline: Non-admins see preferences link
     Given I am logged in as "<username>"
@@ -123,7 +123,7 @@ Feature: User authentication and permissions
       | username  |
       | existing  |
       | another   |
-      | developer |
+      | designer |
 
   Scenario: Admin users can see extensions
     Given I am logged in as "admin"
@@ -142,7 +142,7 @@ Feature: User authentication and permissions
       | username  |
       | existing  |
       | another   |
-      | developer |
+      | designer |
   
   Scenario Outline: Anyone can export YAML
     Given I am logged in as "<username>"
@@ -154,4 +154,4 @@ Feature: User authentication and permissions
       | admin     |
       | existing  |
       | another   |
-      | developer |
+      | designer |

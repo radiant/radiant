@@ -2,7 +2,7 @@ module Admin::UsersHelper
   def roles(user)
     roles = []
     roles << 'Administrator' if user.admin?
-    roles << 'Developer' if user.developer?
+    roles << 'Designer' if user.designer?
     roles.join(', ')
   end
 end

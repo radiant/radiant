@@ -13,7 +13,7 @@ class NoLoginRequiredChildController < NoLoginRequiredController; end
 class LoginRequiredGrandChildController < NoLoginRequiredChildController; login_required; end
 class PrivilegedUsersOnlyController < LoginRequiredController
   only_allow_access_to :edit, :new,
-                       :when => [:admin, :developer],
+                       :when => [:admin, :designer],
                        :denied_url => '/login_required',
                        :denied_message => 'Fun.'
   def edit; render :text => 'just a test'; end

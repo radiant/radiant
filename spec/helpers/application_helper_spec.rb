@@ -109,9 +109,9 @@ describe ApplicationHelper do
     helper.admin?.should be_true
   end
   
-  it "should determine whether the current user is a developer" do
-    helper.should_receive(:current_user).at_least(1).times.and_return(users(:developer))
-    helper.developer?.should be_true
+  it "should determine whether the current user is a designer" do
+    helper.should_receive(:current_user).at_least(1).times.and_return(users(:designer))
+    helper.designer?.should be_true
   end
   
   it "should render a Javascript snippet that focuses a given field" do

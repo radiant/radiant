@@ -7,7 +7,7 @@ Feature: Managing users
     And I go to "/admin/users"
   Scenario: Listing users
     Then I should see "Admin"
-    And I should see "Developer"
+    And I should see "Designer"
     And I should see "Existing"
     # And a host of others
     
@@ -35,14 +35,14 @@ Feature: Managing users
     And I should see the form
     
   Scenario: Edit existing user
-    When I follow "Developer"
+    When I follow "Designer"
     Then I should see the form
     When I fill in "Name" with "Old Guy"
     And I fill in "Username" with "oldguy"
-    And I uncheck "Developer"
+    And I uncheck "Designer"
     And I press "Save Changes"
     Then I should see "Old Guy"
-    But I should not see "Developer"
+    But I should not see "Designer"
 
   Scenario: Cannot remove self
     When I attempt to remove my own account

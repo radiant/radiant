@@ -120,7 +120,7 @@ describe Admin::PagesController do
 
   describe "permissions" do
 
-    [:admin, :developer, :non_admin, :existing].each do |user|
+    [:admin, :designer, :non_admin, :existing].each do |user|
       {
         :post => :create,
         :put => :update,
@@ -173,14 +173,14 @@ describe Admin::PagesController do
                                    :url => '/admin/pages')
         end
 
-        it "should allow access to developers for the #{action} action" do
+        it "should allow access to designers for the #{action} action" do
           lambda {
             send(:get, action, @parameters.call)
-          }.should restrict_access(:allow => [users(:developer)],
+          }.should restrict_access(:allow => [users(:designer)],
                                    :url => '/admin/pages')
         end
 
-        it "should allow non-developers and non-admins for the #{action} action" do
+        it "should allow non-designers and non-admins for the #{action} action" do
           lambda {
             send(:get, action, @parameters.call)
           }.should restrict_access(:allow => [users(:non_admin), users(:existing)],

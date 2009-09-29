@@ -5,7 +5,7 @@ describe Admin::UsersHelper do
   
   it "should render a string containing the user's roles" do
     helper.roles(users(:admin)).should == "Administrator"
-    helper.roles(users(:developer)).should == "Developer"
+    helper.roles(users(:designer)).should == "Designer"
     helper.roles(users(:existing)).should == ''
   end
 end

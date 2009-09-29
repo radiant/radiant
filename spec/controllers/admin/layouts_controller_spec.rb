@@ -4,7 +4,7 @@ describe Admin::LayoutsController do
   dataset :users, :pages_with_layouts
 
   before :each do
-    login_as :developer
+    login_as :designer
   end
 
   it "should be a ResourceController" do
@@ -71,21 +71,21 @@ describe Admin::LayoutsController do
         lambda { send(method, action).should require_login }
       end
 
-      it "should allow access to developers for the #{action} action" do
+      it "should allow access to designers for the #{action} action" do
         lambda {
           send(method, action, :id => layout_id(:main))
-        }.should restrict_access(:allow => [users(:developer)],
+        }.should restrict_access(:allow => [users(:designer)],
                                  :url => '/admin/pages')
       end
 
       it "should allow access to admins for the #{action} action" do
         lambda {
           send(method, action, :id => layout_id(:main))
-        }.should restrict_access(:allow => [users(:developer)],
+        }.should restrict_access(:allow => [users(:designer)],
                                  :url => '/admin/pages')
       end
 
-      it "should deny non-developers and non-admins for the #{action} action" do
+      it "should deny non-designers and non-admins for the #{action} action" do
         lambda {
           send(method, action, :id => layout_id(:main))
         }.should restrict_access(:deny => [users(:non_admin), users(:existing)],

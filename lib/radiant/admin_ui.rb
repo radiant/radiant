@@ -120,7 +120,7 @@ module Radiant
       content << nav_item(:pages, "Pages", "/admin/pages")
       nav << content
 
-      design = nav_tab(:design, "Design", [:developer, :admin])
+      design = nav_tab(:design, "Design", [:designer, :admin])
       design << nav_item(:layouts, "Layouts", "/admin/layouts")
       design << nav_item(:snippets, "Snippets", "/admin/snippets")
       nav << design

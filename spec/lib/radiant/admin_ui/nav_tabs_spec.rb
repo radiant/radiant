@@ -69,15 +69,15 @@ describe Radiant::AdminUI::NavTab do
     end
     
     it "should restrict to a specific role" do
-      @tab.visibility.replace [:developer]
-      @tab.should be_visible(users(:developer))
+      @tab.visibility.replace [:designer]
+      @tab.should be_visible(users(:designer))
       @tab.should_not be_visible(users(:admin))
       @tab.should_not be_visible(users(:existing))
     end
     
     it "should restrict to a group of roles" do
-      @tab.visibility.replace [:developer, :admin]
-      @tab.should be_visible(users(:developer))
+      @tab.visibility.replace [:designer, :admin]
+      @tab.should be_visible(users(:designer))
       @tab.should be_visible(users(:admin))
       @tab.should_not be_visible(users(:existing))
     end
@@ -144,7 +144,7 @@ describe Radiant::AdminUI::NavSubItem do
     
     it "should not be visible when the parent tab is not visible to the user" do
       @tab.visibility.replace [:admin]
-      @subitem.should_not be_visible(users(:developer))
+      @subitem.should_not be_visible(users(:designer))
       @subitem.should_not be_visible(users(:existing))
     end
     

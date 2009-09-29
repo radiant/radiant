@@ -4,7 +4,7 @@ describe Admin::ExportController do
   dataset :users_and_pages
   
   before :each do
-    login_as :developer
+    login_as :designer
   end
   
   it "should export a YAML file" do

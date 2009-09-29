@@ -1,13 +1,12 @@
 Feature: Managing snippets
-  In order to remove the repetition of entering the same content 
-  multiple times and allow applying the same block to small pieces of
-  content, as a content editor I want to manage a collection of snippets
+  In order to share content between layouts and pages, as a designer I want to
+  manage a collection of snippets
   
   Background:
-    Given I am logged in as "developer"
+    Given I am logged in as "designer"
   
   Scenario: List snippets
-    When I follow "Design"
+    When I follow "Design" within "navigation"
     And I follow "Snippets"
     Then I should see "first"
     And I should see "another"
@@ -15,7 +14,7 @@ Feature: Managing snippets
     # And a host of others
   
   Scenario: Create a snippet
-    When I follow "Design"
+    When I follow "Design" within "navigation"
     And I follow "Snippets"
     And I follow "New Snippet"
     And I fill in "Name" with "Mine"
@@ -25,7 +24,7 @@ Feature: Managing snippets
     And I should see "Mine"
     
   Scenario: Display form errors
-    When I follow "Design"
+    When I follow "Design" within "navigation"
     And I follow "Snippets"
     And I follow "New Snippet"
     And I fill in "Body" with "My snippet"
@@ -34,7 +33,7 @@ Feature: Managing snippets
     And I should see the form
   
   Scenario: Continue editing
-    When I follow "Design"
+    When I follow "Design" within "navigation"
     And I follow "Snippets"
     And I follow "New Snippet"
     And I fill in "Name" with "Mine"
@@ -48,7 +47,7 @@ Feature: Managing snippets
     Then I should see "Edit Snippet"
     
   Scenario: Delete a snippet with confirmation
-    When I follow "Design"
+    When I follow "Design" within "navigation"
     And I follow "Snippets"
     And I follow "Remove"
     Then I should see "permanently remove"

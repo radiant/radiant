@@ -14,5 +14,5 @@ Feature: Edit user preferences
       | admin     |
       | another   |
       | existing  |
-      | developer |
+      | designer |
       | non_admin |

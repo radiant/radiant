@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081203140407) do
+ActiveRecord::Schema.define(:version => 20090929164633) do
 
   create_table "config", :force => true do |t|
     t.string "key",   :limit => 40, :default => "", :null => false
@@ -100,7 +100,7 @@ ActiveRecord::Schema.define(:version => 20081203140407) do
     t.integer  "created_by_id"
     t.integer  "updated_by_id"
     t.boolean  "admin",                        :default => false, :null => false
-    t.boolean  "developer",                    :default => false, :null => false
+    t.boolean  "designer",                     :default => false, :null => false
     t.text     "notes"
     t.integer  "lock_version",                 :default => 0
     t.string   "salt"

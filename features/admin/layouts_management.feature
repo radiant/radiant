@@ -1,9 +1,9 @@
 Feature: Managing snippets
   In order to properly display the content 
-  As a developer I want to manage the layouts
+  As a designer I want to manage the layouts
   
   Background:
-    Given I am logged in as "developer"
+    Given I am logged in as "designer"
     
   Scenario: View a layout
     When I view a layout
