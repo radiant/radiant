@@ -14,6 +14,9 @@ unless Radiant.app?
     radiant:repackage
     radiant:uninstall_gem
     radiant:import:prototype:styles
+    radiant:import:prototype:images
+    radiant:import:prototype:javascripts
+    radiant:import:prototype:assets
     rails:freeze:edge
     rails:freeze:gems
     rails:unfreeze

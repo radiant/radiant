@@ -71,7 +71,12 @@ describe "Standard Tags" do
     it "should include draft pages by default on the dev host" do
       page.should render('<r:children:each by="slug"><r:slug /> </r:children:each>').as('a b c d draft e f g h i j ').on('dev.site.com')
     end
-
+    
+    it 'should not list draft pages on dev.site.com when Radiant::Config["dev.host"] is set to something else' do
+      Radiant::Config['dev.host'] = 'preview.site.com'
+      page.should render('<r:children:each by="title"><r:slug /> </r:children:each>').as('a b c d e f g h i j ').on('dev.site.com')
+    end
+    
     it 'should error with invalid "limit" attribute' do
       message = "`limit' attribute of `each' tag must be a positive number between 1 and 4 digits"
       page.should render(page_children_each_tags(%{limit="a"})).with_error(message)

@@ -2,7 +2,23 @@
 
 === Edge
 
-* Simplify the adding of tabs and links in navigation [Jim Gay]
+* Undefine prototype rake tasks in instance mode. [Sean Cribbs]
+* Verify that the cache directory exists before trying to store a response. 
+[Sean Cribbs]
+* Fix page-part deletion in JS. [Sean Cribbs]
+* Don't cache extension-defined javascripts, but do cache the defaults. 
+[Sean Cribbs]
+* Fix dev-site behavior when 'dev.host' is configured. [Chris Ricca]
+* Use HTML 5 doctype. [John Muhl]
+* Concatenate admin javascript files. [John Muhl]
+* Use more descriptive page titles. [John Muhl]
+* Allow non-standard controller methods for render_region. [Jim Gay]
+* Updated to use Radius 0.6.1. [John Long]
+* Use root_path instead of "/" on View Site link. [John Long]
+* Correct type on content-type and move to more/hide language. [John Long]
+* Add some helpful shortcut keys. [Sean Cribbs]
+* Implement "Blade" user-interface. [John Long, Chris Parrish, Daniel Beach,
+Brandon Mathis, Sean Cribbs, Ben Morrow, John Muhl]
 
 === 0.8.1 Luster
 
