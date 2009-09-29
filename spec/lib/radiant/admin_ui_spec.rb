@@ -25,8 +25,8 @@ describe Radiant::AdminUI do
   it "should load the default navigation tabs and sub-items" do
     @admin.load_default_nav
     @admin.nav.should have(3).items
-    @admin.nav[:content].should have(2).items
-    @admin.nav[:design].should have(1).items
+    @admin.nav[:content].should have(1).items
+    @admin.nav[:design].should have(2).items
     @admin.nav[:settings].should have(3).items
   end
 

@@ -5,7 +5,7 @@ describe Admin::SnippetsController do
 
   before :each do
     ActionController::Routing::Routes.reload
-    login_as :existing
+    login_as :developer
   end
 
   it "should be an ResourceController" do
@@ -93,10 +93,10 @@ describe Admin::SnippetsController do
                                    :url => '/admin/pages')
         end
 
-        it "should allow non-developers and non-admins for the #{action} action" do
+        it "should deny non-developers and non-admins for the #{action} action" do
           lambda {
             send(method, action, :id => Snippet.first.id)
-          }.should restrict_access(:allow => [users(:non_admin), users(:existing)],
+          }.should restrict_access(:deny => [users(:non_admin), users(:existing)],
                                    :url => '/admin/pages')
         end
       end

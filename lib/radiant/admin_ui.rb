@@ -118,11 +118,11 @@ module Radiant
     def load_default_nav
       content = nav_tab(:content, "Content")
       content << nav_item(:pages, "Pages", "/admin/pages")
-      content << nav_item(:snippets, "Snippets", "/admin/snippets")
       nav << content
 
       design = nav_tab(:design, "Design", [:developer, :admin])
       design << nav_item(:layouts, "Layouts", "/admin/layouts")
+      design << nav_item(:snippets, "Snippets", "/admin/snippets")
       nav << design
 
       # media = NavTab.new(:assets, "Assets")

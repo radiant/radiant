@@ -42,10 +42,11 @@ Feature: User authentication and permissions
       | existing  |
       | developer |
       
-  Scenario Outline: All users can see and edit snippets
+  Scenario Outline: Admins and developers can see and edit snippets
     Given I am logged in as "<username>"
-    And I should see "Snippets"
-    When I go to "/admin/snippets"
+    And I should see "Design"
+    When I follow "Design"
+    And I follow "Snippets"
     And I should not see "You must have developer privileges"
     And I follow "first"
     Then I should see "Edit Snippet"
@@ -53,7 +54,6 @@ Feature: User authentication and permissions
     Examples:
       | username  |
       | admin     |
-      | existing  |
       | developer |
   
   Scenario Outline: Admins and developers can see and edit layouts
@@ -74,6 +74,17 @@ Feature: User authentication and permissions
     Given I am logged in as "<username>"
     And I should not see "Design"
     When I go to "/admin/layouts"
+    Then I should see "You must have developer privileges"
+
+    Examples:
+      | username  |
+      | existing  |
+      | another   |
+  
+  Scenario Outline: Ordinary users cannot edit snippets
+    Given I am logged in as "<username>"
+    And I should not see "Design"
+    When I go to "/admin/snippets"
     Then I should see "You must have developer privileges"
 
     Examples:
