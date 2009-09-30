@@ -82,14 +82,16 @@ namespace 'radiant' do
   namespace :gem do
     desc "Uninstall Gem"
     task :uninstall do
-      sh "gem uninstall #{PKG_NAME}" rescue nil
+      sudo = "sudo " unless RUBY_PLATFORM =~ /mswin|mingw/
+      sh "sudo gem uninstall #{PKG_NAME}" rescue nil
     end
 
     desc "Build and install Gem from source"
     task :install => [:package, :uninstall] do
       chdir("#{RADIANT_ROOT}/pkg") do
         latest = Dir["#{PKG_NAME}-*.gem"].last
-        sh "gem install #{latest}"
+        sudo = "sudo " unless RUBY_PLATFORM =~ /mswin|mingw/
+        sh "#{sudo}gem install #{latest}"
       end
     end
   end
