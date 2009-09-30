@@ -29,7 +29,7 @@ class SiteController < ApplicationController
   
   private
     def set_cache_control
-      if (request.head? || request.get?) && @page.cache?
+      if (request.head? || request.get?) && @page.cache? && live?
         expires_in self.class.cache_timeout, :public => true, :private => false
       else
         expires_in nil, :private => true, "no-cache" => true
