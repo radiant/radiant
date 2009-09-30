@@ -2,12 +2,14 @@
 
 === Edge
 
+* Fixed bug where pages were being cached in dev mode. This has been a problem since switching to Rack::Cache. [Jason Garber]
+* Snippets are now only accessible to people with the "Designer" role. [John Long]
+* Renamed "Developer" role to "Designer". [John Long]
+* Invoke sudo on unix systems when installing the gem using rake [John Long]
 * Undefine prototype rake tasks in instance mode. [Sean Cribbs]
-* Verify that the cache directory exists before trying to store a response. 
-[Sean Cribbs]
+* Verify that the cache directory exists before trying to store a response. [Sean Cribbs]
 * Fix page-part deletion in JS. [Sean Cribbs]
-* Don't cache extension-defined javascripts, but do cache the defaults. 
-[Sean Cribbs]
+* Don't cache extension-defined javascripts, but do cache the defaults. [Sean Cribbs]
 * Fix dev-site behavior when 'dev.host' is configured. [Chris Ricca]
 * Use HTML 5 doctype. [John Muhl]
 * Concatenate admin javascript files. [John Muhl]
@@ -17,29 +19,24 @@
 * Use root_path instead of "/" on View Site link. [John Long]
 * Correct type on content-type and move to more/hide language. [John Long]
 * Add some helpful shortcut keys. [Sean Cribbs]
-* Implement "Blade" user-interface. [John Long, Chris Parrish, Daniel Beach,
-Brandon Mathis, Sean Cribbs, Ben Morrow, John Muhl]
+* Implemented "Blade" user-interface. [John Long, Chris Parrish, Daniel Beach, Brandon Mathis, Sean Cribbs, Ben Morrow, John Muhl]
 
-=== 0.8.1 Luster
+=== 0.8.1 Luster (September 5, 2009)
 
 * Move default cache location to tmp. [Sean Cribbs]
 * Upgrade Rails and dataset. [Sean Cribbs]
 * Updated README and INSTALL. [John Long]
-* Don't use Symbol#to_proc in initializer because ActiveSupport hasn't
-  loaded yet.
-* Fix links to Textile reference in the wake of _why's disappearance. 
-  [Jason Garber]
+* Don't use Symbol#to_proc in initializer because ActiveSupport hasn't loaded yet.
+* Fix links to Textile reference in the wake of _why's disappearance. [Jason Garber]
 * Correct bug when submitting a POST to a cached page. [Sean Cribbs]
 * Fix typo in generator for features task. [Jim Gay]
-* Page parts may already be marked for destruction, don't explicitly set
-  false. [Kunal Shah]
+* Page parts may already be marked for destruction, don't explicitly set false. [Kunal Shah]
 * Merge latest version of Radius [Kunal Shah]
 * Helpers for extension_enabled? [Kunal Shah]
 * Respond to show methods with xml rendering [Jeremy Stephens]
 * Support DB2 [Antonio Cangiano]
 * Properly check for existing page parts when creating a new part. [alexmek]
-* Use the correct variable name so the extension name is part of the output.
-[John Muhl]
+* Use the correct variable name so the extension name is part of the output. [John Muhl]
 * Generate Cucumber support for extensions [Jim Gay]
 * Require Cucumber version 0.3.9 or greater in cucumber.rake [Jim Gay]
 * Set generated extensions to require 'application_controller' [Jim Gay]
@@ -52,155 +49,118 @@ Brandon Mathis, Sean Cribbs, Ben Morrow, John Muhl]
 * Set template_name for all resourceful action types [Josh French]
 * Load Metal from Extensions [Jim Gay]
 
-=== 0.8.0 Asterism
+=== 0.8.0 Asterism (June 14, 2009)
 
 * Warn about using the RedCloth 3 fallback. [Sean Cribbs, Jason Garber]
 * Prevent stty errors on JRuby while running bootstrap. [Sean Cribbs]
 * Moved template_name to ApplicationController [Jim Gay, Michael Kessler]
 * Remove vizres plugin. [Sean Cribbs]
 * Update instance config/environments to remove ResponseCache [Jim Gay]
-* Remove :order option from <r:children:count />, which causes errors on
-postgresql. [Sean Cribbs]
+* Remove :order option from <r:children:count />, which causes errors on postgresql. [Sean Cribbs]
 * Prevent recursion via the <r:content /> tag. [Sean Cribbs]
 * Update Highline. [Sean Cribbs]
 * Update Cucumber and RSpec, clean up some features and fix specs. [Sean Cribbs]
-* Set the protected attributes for users in User.protected_attributes
-[Jim Gay]
+* Set the protected attributes for users in User.protected_attributes [Jim Gay]
 * Don't allow a nil ETag in SiteController. [David Cato]
 * Prevent failed login message from sticking around. [Kunal Shah]
 * Fix failing test regarding extension order. [Brett McHargue]
-* Catch ActiveRecord::RecordNotFound in Admin::ResourceController
-[Jim Gay]
+* Catch ActiveRecord::RecordNotFound in Admin::ResourceController [Jim Gay]
 * Catch missing template errors for show routes [Jim Gay]
-* Fix with_error in render_matcher not causing the spec to fail when no
-exception raised. [Jason Garber]
+* Fix with_error in render_matcher not causing the spec to fail when no exception raised. [Jason Garber]
 * Make features task run in instance mode. [Sean Cribbs]
 * Remove Admin::AbstractModelController. [Sean Cribbs]
 * Cleanup deprecated Gem::manage_gems. [Sean Cribbs]
 * Add begin...rescue blocks to rspec.rake [Sean Cribbs]
 * Add begin...rescue blocks for requiring cucumber. [Matt Henry]
-* Deprecate ResponseCache, add Radiant::Cache based on Rack::Cache.
-[Sean Cribbs]
+* Deprecate ResponseCache, add Radiant::Cache based on Rack::Cache. [Sean Cribbs]
 * Use app name for session cookie. [Josh French]
-* Upgrade to Rails 2.3.2. [Sean Cribbs, Rick DeNatale, Josh French,
-Kunal Shah]
-* Populate config.extensions so extensions can be disabled easily.
-[Jason Garber]
-* Convert integration specs to Cucumber stories and update RSpec. [Sean
-Cribbs]
-* Use ActionView::PathSet instead of normal arrays for view paths. [Pat
-Allan]
-* Don't raise exception on unauthenticated request to /admin/logout.
-[Josh French]
-* Reverse view paths order in extension loader. [Sean Cribbs, Brent 
-Kroeker]
+* Upgrade to Rails 2.3.2. [Sean Cribbs, Rick DeNatale, Josh French, Kunal Shah]
+* Populate config.extensions so extensions can be disabled easily. [Jason Garber]
+* Convert integration specs to Cucumber stories and update RSpec. [Sean Cribbs]
+* Use ActionView::PathSet instead of normal arrays for view paths. [Pat Allan]
+* Don't raise exception on unauthenticated request to /admin/logout. [Josh French]
+* Reverse view paths order in extension loader. [Sean Cribbs, Brent Kroeker]
 * Remove obviated Ruby 1.8.7 compatibility patch. [Sean Cribbs]
-* Adjust StandardTags#relative_url_for for case when relative_url_root
-is nil. [Sean Cribbs]
+* Adjust StandardTags#relative_url_for for case when relative_url_root is nil. [Sean Cribbs]
 * Correct rendering error in extensions controller. [Sean Cribbs]
 * Correct typo in config/boot.rb. [Sean Cribbs]
 * Major refactoring and simplification of LoginSystem. [Sean Cribbs]
 * Update Haml to 2.0.7. [Sean Cribbs]
 * Upgrade to Rails 2.2.2. [Sean Cribbs]
-* Cleanup the config class a little, add some more documentation. [Sean
-Cribbs]
-* Avoid bootstrap errors related to Radiant::Config by checking for
-table existence. [Sean Cribbs]
+* Cleanup the config class a little, add some more documentation. [Sean Cribbs]
+* Avoid bootstrap errors related to Radiant::Config by checking for table existence. [Sean Cribbs]
 * Correct status code typo in Admin::ResourceController. [Sean Cribbs]
 
-=== 0.7.1 Engraving
+=== 0.7.1 Engraving (February 15, 2009)
 
 * Properly escape page part contents in the UI. [John Muhl, Sean Cribbs]
 * Fix tag reference popup and spec out helper better. [Sean Cribbs]
 
-=== 0.7.0 Intaglio
+=== 0.7.0 Intaglio (February 7, 2009)
+
 * Add Roasters template. [Paul du Coudray]
 * Make ResponseCache spec insensitive to key order. [Sean Cribbs]
-* Adjust <r:children:count /> to use same options as
-<r:children:each />. [Sean Cribbs]
-* Allowing for custom labels and other options in save_model_button.
-[Pat Allan]
+* Adjust <r:children:count /> to use same options as <r:children:each />. [Sean Cribbs]
+* Allowing for custom labels and other options in save_model_button. [Pat Allan]
 * Ignoring TextMate project files. [Pat Allan]
-* Present a more helpful error message when missing a mailer template.
-[Nikolay Karev]
-* Use ActiveRecord:Base#[] and ActiveRecord:Base#[]= instead of
-undocumented read_attribute and write_attribute. [August Lilleas]
-* Make extension installer use git submodules when appropriate. [Sean
-Cribbs]
-* Ease extension updates by proxying deprecated named routes. [Sean
-Cribbs]
+* Present a more helpful error message when missing a mailer template. [Nikolay Karev]
+* Use ActiveRecord:Base#[] and ActiveRecord:Base#[]= instead of undocumented read_attribute and write_attribute. [August Lilleas]
+* Make extension installer use git submodules when appropriate. [Sean Cribbs]
+* Ease extension updates by proxying deprecated named routes. [Sean Cribbs]
 * Add support and specs for conditional GETs with ETags. [Sean Cribbs]
 * Initialize and update submodules when freezing edge. [John Muhl]
 * Add Nginx support to ResponseCache. [Sean Cribbs]
-* Changed (some) permissions examples not to use login_system_matcher.
-[Brandan Lennox]
+* Changed (some) permissions examples not to use login_system_matcher. [Brandan Lennox]
 * Remove expensive grep of Rails log in spec. [Rick DeNatale]
 * Make markdown filter specs be tolerant of RDiscount. [Sean Cribbs]
-* Be more explicit about vendor libraries, move Textile requirement into
-core. [Sean Cribbs]
+* Be more explicit about vendor libraries, move Textile requirement into core. [Sean Cribbs]
 * Add <r:children:each:if/unless_first/last> tags. [Rick DeNatale]
 * Use RDiscount's smart quotes instead of SmartyPants. [John Muhl]
-* Update extension generator to use new admin REST routing. [Jeroen
-Janssen]
-* Update Admin::ResourceController to overcome respond_to weaknesses by
-choosing HTML format by default. [Sean Cribbs]
+* Update extension generator to use new admin REST routing. [Jeroen Janssen]
+* Update Admin::ResourceController to overcome respond_to weaknesses by choosing HTML format by default. [Sean Cribbs]
 * Add an IE-specific integration spec. [Jeroen Janssen]
 * Update dataset, spec_integration, and vizres plugins. [Sean Cribbs]
 * Make specs and bootstrap work in instance mode. [Sean Cribbs]
-* Override spec:integration task and rescope some spec task options to
-RADIANT_ROOT. [Sean Cribbs]
+* Override spec:integration task and rescope some spec task options to RADIANT_ROOT. [Sean Cribbs]
 * Improve rspec-1.1.12 compatibility. [Sean Cribbs]
 * Add Ruby 1.8.7 compatibility patch. [Sean Cribbs]
-* Fix upgrade issue from 0.5.x where class_name is expected to be
-present. [Sean Cribbs]
+* Fix upgrade issue from 0.5.x where class_name is expected to be present. [Sean Cribbs]
 * Remove unneeded patch. [Sean Cribbs]
 * Add some inline documentation to resource controller. [Sean Cribbs]
 * Fix some form problems on pages. [Sean Cribbs]
 * Fix form on snippets/remove. [Sean Cribbs]
-* Make sure resourceful responses deeply clone on inheritance. [Sean
-Cribbs]
+* Make sure resourceful responses deeply clone on inheritance. [Sean Cribbs]
 * Fix broken Ajax children callback. [Sean Cribbs]
 * Fix broken URL in snippets/remove. [Sean Cribbs]
-* Correct assume_migrated_upto_version behavior in instance mode. [Sean
-Cribbs]
+* Correct assume_migrated_upto_version behavior in instance mode. [Sean Cribbs]
 * Correct missing @@configuration variable in initializer. [John Muhl]
-* Handle SQL special characters in extension names in migrations.
-[Erik Ostrom]
-* Converted extension migrations to use schema_migrations table instead
-of extension_meta. [Nathaniel Talbott, Sean Cribbs, Rick DeNatale]
-* Replaced scenarios with dataset. [Nathaniel Talbott, Adam Williams,
-Rick DeNatale]
+* Handle SQL special characters in extension names in migrations. [Erik Ostrom]
+* Converted extension migrations to use schema_migrations table instead of extension_meta. [Nathaniel Talbott, Sean Cribbs, Rick DeNatale]
+* Replaced scenarios with dataset. [Nathaniel Talbott, Adam Williams, Rick DeNatale]
 * Fix RSpec git submodules. [Nathaniel Talbott, Clinton Nixon]
 * Generate and fix gemspec for GitHub. [Sean Cribbs]
-* Add support for newer Textile and Markdown libraries, with fallbacks
-on packaged libraries. [Sean Cribbs, Jason Garber]
+* Add support for newer Textile and Markdown libraries, with fallbacks on packaged libraries. [Sean Cribbs, Jason Garber]
 * Make request parameters available to tags. [Brian Landau]
 * Add URL method helpers to tags. [Brian Landau]
 * Add some database indexes. [Yevgeny Smirnoff]
-* Added notice to install RSpec if a certain database error occurs.
-[Sytse Sijbrandij]
-* Refactor LoginSystem to use filter-skipping instead of controller
-tracking. [Sean Cribbs]
+* Added notice to install RSpec if a certain database error occurs. [Sytse Sijbrandij]
+* Refactor LoginSystem to use filter-skipping instead of controller tracking. [Sean Cribbs]
 * Add generator specs and more generators. [Brian Landau]
 * Add initial integration specs. [Adam Williams, Mark Imbriaco]
-* Refactor admin controllers and views toward RESTful principles.
-[Sean Cribbs, Clinton Nixon, Rick DeNatale]
+* Refactor admin controllers and views toward RESTful principles. [Sean Cribbs, Clinton Nixon, Rick DeNatale]
 * Remove RSpec from packaged libraries. [Sean Cribbs]
 * Correct CSS validation errors. [John Muhl]
 * Add String#to_slug. [Andrew O'Brien]
 * New page parts should have the default filter_id. [Joe Van Dyk]
 * Show draft children by default on dev host. [Sean Cribbs]
-* Correct db:schema:dump error when in instance mode. [Pat Allan, Sean
-Cribbs]
+* Correct db:schema:dump error when in instance mode. [Pat Allan, Sean Cribbs]
 * Simplify set_javascripts_and_stylesheets. [Sean Cribbs]
-* Cleanup boot.rb and allow generators from user-installed plugins.
-[Sean Cribbs]
+* Cleanup boot.rb and allow generators from user-installed plugins. [Sean Cribbs]
 * Added regions to user-preferences screen. [Jim Gay]
 * Apply Rails redirect sanitization patch. [Sean Cribbs]
 * Updated to Rspec and Rspec-Rails 1.1.8 [Jim Gay]
 * Added development dependency to INSTALL [Matt Henry]
-* Added reference to sample database configuration files to INSTALL.
-[Keith Bennett]
+* Added reference to sample database configuration files to INSTALL. [Keith Bennett]
 * Added ZenTest development dependency to README. [Thomas Ingram]
 * Remove REXML expansion fix, included in Rails 2.1.1 [Sean Cribbs]
 * Upgrade to 2.1.1 [Sean Cribbs]
@@ -213,135 +173,99 @@ Cribbs]
 * Make Git extension install method recognize submodules. [Sean Cribbs]
 * Fix malformed Textile in standard tag descriptions. [Jason Garber]
 * Update script/extension help output. [Jim Gay]
-* Allow load_subclasses to work when multiple apps are on the same
-database. [Jim Gay]
+* Allow load_subclasses to work when multiple apps are on the same database. [Jim Gay]
 * Add REXML expansion fix. [Sean Cribbs]
-* Fix filter_reference admin helper for filter names that have spaces in
-them. [Mislav Marohnić]
-* Make script/extension more friendly, adding help and info commands.
-[Sean Cribbs]
-* Added more render regions to layout, snippet, user, and extension
-views. [Sean Cribbs]
-* Fixed the radiant:update:scripts to find the proper directory [Jim
-Gay]
-* Factor out dev? functionality in StandardTags, allowing other tags to
-access it. [Sean Cribbs]
+* Fix filter_reference admin helper for filter names that have spaces in them. [Mislav Marohnić]
+* Make script/extension more friendly, adding help and info commands. [Sean Cribbs]
+* Added more render regions to layout, snippet, user, and extension views. [Sean Cribbs]
+* Fixed the radiant:update:scripts to find the proper directory [Jim Gay]
+* Factor out dev? functionality in StandardTags, allowing other tags to access it. [Sean Cribbs]
 
-=== 0.6.9 Etch
-* Make <r:random> accept dynamically generated options. [Jim Gay, Sean
-Cribbs]
-* Correctly set default 'inherit' to false on <r:unless_content> [Mark
-A. Yoon]
-* Correct authenticity token errors when using cookie session store
-[Sean Cribbs]
+=== 0.6.9 Etch (August 1, 2008)
+
+* Make <r:random> accept dynamically generated options. [Jim Gay, Sean Cribbs]
+* Correctly set default 'inherit' to false on <r:unless_content> [Mark A. Yoon]
+* Correct authenticity token errors when using cookie session store [Sean Cribbs]
 * Make script/extension executable. [Sean Cribbs]
 * Correct bugs in radiant:freeze:edge task. [Sean Cribbs]
-* Fix strange Page subclass loading errors in development mode. [Sean
-Cribbs]
+* Fix strange Page subclass loading errors in development mode. [Sean Cribbs]
 * Fix typo in if_content description. [Jim Gay]
 * Correct error in radiant:update:configs task. [Sean Cribbs]
 
-=== 0.6.8 Incise
-* Hide page publish date selector unless page.edit.published_date?
-config is set. [Sean Cribbs]
-* Add <r:yield /> tag to support snippets that accept blocks. [Andrew
-Neil]
-* Fix bug with FileNotFoundPage subclasses and draft status. [Glenn
-Murray]
-* Update radiant:freeze:edge task to support BRANCH, TAG, and REVISION.
-[John Muhl]
+=== 0.6.8 Incise (July 27, 2008)
+
+* Hide page publish date selector unless page.edit.published_date? config is set. [Sean Cribbs]
+* Add <r:yield /> tag to support snippets that accept blocks. [Andrew Neil]
+* Fix bug with FileNotFoundPage subclasses and draft status. [Glenn Murray]
+* Update radiant:freeze:edge task to support BRANCH, TAG, and REVISION. [John Muhl]
 * Update to Haml 2.0.1. [Jim Gay]
-* Fix radiant:update:configs task to properly evaluate environment.rb
-[Sean Cribbs]
+* Fix radiant:update:configs task to properly evaluate environment.rb [Sean Cribbs]
 * Fix page subclass loading issues. [Sean Cribbs]
-* Add <r:unless_ancestor_or_self> and <r:unless_self> tags. [Tim
-Gossett]
-* Add specific installation modes for gzip and bzip2 compression. [Sean
-Cribbs]
+* Add <r:unless_ancestor_or_self> and <r:unless_self> tags. [Tim Gossett]
+* Add specific installation modes for gzip and bzip2 compression. [Sean Cribbs]
 * Added extension installation scripts. [Sean Cribbs]
-* Added find attr to r:if_content and r:unless_content to expand based
-on finding 'any' or 'all' specified parts [Jim Gay]
-* Added inherit attr to r:if_content and r:unless_content to search for
-parts independently in the page tree. [Jim Gay]
+* Added find attr to r:if_content and r:unless_content to expand based on finding 'any' or 'all' specified parts [Jim Gay]
+* Added inherit attr to r:if_content and r:unless_content to search for parts independently in the page tree. [Jim Gay]
 * Update radiant:freeze:edge task to use git and GitHub. [John Muhl]
 * Update login page layout from prototype. [Sean Cribbs]
-* Change order of extension paths to prefer project extensions over
-Radiant's. [John Muhl]
+* Change order of extension paths to prefer project extensions over Radiant's. [John Muhl]
 * Switch default session store to cookies [Josh French]
 * Add remember-me function to login [Josh French]
-* Allow an inclusive list of parts in r:if_content and r:unless_content
-[Jim Gay]
-* Added a defaults.page.filter config setting for setting a default page
-filter. [Alex Wayne]
-* Fix Users fixtures for extensions that still use test/unit. [Nick
-Plante]
-* Don't search for missing Page subclasses before bootstrap. [Sean
-Cribbs]
+* Allow an inclusive list of parts in r:if_content and r:unless_content [Jim Gay]
+* Added a defaults.page.filter config setting for setting a default page filter. [Alex Wayne]
+* Fix Users fixtures for extensions that still use test/unit. [Nick Plante]
+* Don't search for missing Page subclasses before bootstrap. [Sean Cribbs]
 * Added tolerance for missing Page class definitions. [Loren Johnson]
-* Don't require an authenticity token check on the login action. [Sean
-Cribbs]
-* Make sure region sets are reloaded when activating extensions in
-development mode. [Sean Cribbs]
+* Don't require an authenticity token check on the login action. [Sean Cribbs]
+* Make sure region sets are reloaded when activating extensions in development mode. [Sean Cribbs]
 * Fix Haml rendering errors. [Thomas Watson Steen]
 
-=== 0.6.7 Mordant
+=== 0.6.7 Mordant (May 16, 2008)
+
 * Integrate shards extension into core. [Sean Cribbs]
 * Convert all views to Haml. [Sean Cribbs, John Long]
 * Avoid authenticity check when listing page children. [Sean Cribbs]
 * Add radiant:extensions:update_all task. [Josh French]
-* Tweak LoginSystem to allow attempted URL redirection after login and
-auto-redirect from login URL if logged in. [Josh French]
+* Tweak LoginSystem to allow attempted URL redirection after login and auto-redirect from login URL if logged in. [Josh French]
 * Add per-user salting to password encryption. [Sean Cribbs]
 * Address CSRF vulnerabilities in forms. [Sean Cribbs]
-* Remove clear cache action, always clear cache after saving a page.
-[Sean Cribbs]
+* Remove clear cache action, always clear cache after saving a page. [Sean Cribbs]
 
-=== 0.6.6 Chiseled
-* Make sure extension view paths override Radiant view paths. [Josh
-French]
-* Fix problem in framework.rake when public/javascripts/admin doesn't
-exist. [Sean Cribbs]
+=== 0.6.6 Chiseled (April 20, 2008)
 
-=== 0.6.5 Chisel
+* Make sure extension view paths override Radiant view paths. [Josh French]
+* Fix problem in framework.rake when public/javascripts/admin doesn't exist. [Sean Cribbs]
+
+=== 0.6.5 Chisel (April 19, 2008)
+
 * Convert StandardTags specs to nested describe blocks. [Sean Cribbs]
 * Remove test/unit tests - all RSpec now. [Sean Cribbs]
 * Fix radiant:update:javascripts task. [Sean Cribbs]
 * Fix problem in test fixtures. [Adam Keyes]
-* Add <r:meta /> tag and appropriate fields to pages table. [Sean
-Cribbs]
+* Add <r:meta /> tag and appropriate fields to pages table. [Sean Cribbs]
 * Move admin-related javascripts to admin/. [Bjørn Arild Mæland]
 * Add if_self and if_ancestor_or_self tags. [Marty Haught, Sean Cribbs]
-* Rename created_by and updated_by columns on standard models. [Sean
-Cribbs]
+* Rename created_by and updated_by columns on standard models. [Sean Cribbs]
 * Fix Dir glob for extension rake tasks. [Sean Cribbs]
 * Respect view_paths set by plugins in extensions. [xtoddx]
 * Move extra initialization into after_initialize block. [Sean Cribbs]
 * Notice area now fades away after 3 seconds. [Andrew O'Brien]
-* <r:find /> now accepts paths relative to the current page. [Andrew
-O'Brien]
+* <r:find /> now accepts paths relative to the current page. [Andrew O'Brien]
 * Update RSpec and RSpec on Rails to r3333. [Josh French]
 * Add autotest support for Radiant and extensions. [Josh French]
-* Add pkg/ ignore to git, correct CSS problems with fieldset tables.
-[Sean Cribbs]
+* Add pkg/ ignore to git, correct CSS problems with fieldset tables. [Sean Cribbs]
 * Ignore git files when building gem. [Sean Cribbs]
-* Fix generated test and spec harnesses, convert core extensions to
-specs. [Sean Cribbs]
+* Fix generated test and spec harnesses, convert core extensions to specs. [Sean Cribbs]
 * Cover edge case in Page spec. [Sean Cribbs]
-* Increase coverage of helper, controller, and model specs. [Sean
-Cribbs]
+* Increase coverage of helper, controller, and model specs. [Sean Cribbs]
 * Correct some view and spec bugs. [Sean Cribbs]
 * Added specs for view helpers. [Sean Cribbs]
 * Use TH for fieldset tables and correct error in CSS. [skrat]
-* Adjust admin links and r:breadcrumbs tag to deal with Rails site
-prefix. [Sean Cribbs]
-* Adjust tags to deal with Rails site prefix (relative_url_root).
-[Sean Cribbs]
-* Resolve issue with undefined method :view_paths in ActionMailer.
-[Sean Cribbs]
-* Fixed incompatibility with RubyGems >= 0.9.5 that broke
-radiant:freeze:gems rake task. [Michael Klett]
-* Fixed problem with the list of templates containing duplicates in the
-db:bootstrap rake task when not running in instance mode. [John Long]
+* Adjust admin links and r:breadcrumbs tag to deal with Rails site prefix. [Sean Cribbs]
+* Adjust tags to deal with Rails site prefix (relative_url_root). [Sean Cribbs]
+* Resolve issue with undefined method :view_paths in ActionMailer. [Sean Cribbs]
+* Fixed incompatibility with RubyGems >= 0.9.5 that broke radiant:freeze:gems rake task. [Michael Klett]
+* Fixed problem with the list of templates containing duplicates in the db:bootstrap rake task when not running in instance mode. [John Long]
 * Update Subversion URL so rake radiant:freeze:edge works. [John Long]
 * Add AVLUX to list of links in Styled Blog template. [John Long]
 * Fix Ruby 1.8.5 compatibility issue with Dir[]. [Sean Cribbs]
@@ -349,62 +273,44 @@ db:bootstrap rake task when not running in instance mode. [John Long]
 * Fill out more controller specs. [Sean Cribbs]
 * Fix Admin::PageController specs. [Sean Cribbs]
 * Make autotest work. [Matthew Elder]
-* Clean up cache files before running site_controller spec. [Matthew
-Elder]
+* Clean up cache files before running site_controller spec. [Matthew Elder]
 * Add r:status tag. [Andrew O'Brien]
-* Add ability to set publication date manually. [Nick Plante, Sean
-Cribbs]
+* Add ability to set publication date manually. [Nick Plante, Sean Cribbs]
 * Remove blank nodes in r:navigation tag. [ben]
 * Bubble up parsing exceptions in development mode. [jonleighton]
 * Fix authorization system for controller inheritance [Josh French]
 * Add 'nolinks' attribute to breadcrumbs tag. [abstractioneer]
 * Fix fixtures for RSpec enabled extensions. [andreas]
-* Generate extensions with RSpec support by default, fix rake and
-script/spec in instance mode. [Andrew O'Brien]
+* Generate extensions with RSpec support by default, fix rake and script/spec in instance mode. [Andrew O'Brien]
 * Support database templates in a Radiant instance. [Benny Degezelle]
 * Make rake test:extensions work in instance mode. [Daniel Sheppard]
-* Fix tests failing in instance mode with config.extensions set.
-[Daniel Sheppard]
-* Finished converting page_controller_test.rb to page_controller_spec.rb
-[John Long]
-* Completed converting user_controller_test.rb to
-user_controller_spec.rb [John Long]
-* Fix failing extension loading tests, remove irrelevant ones. [Sean
-Cribbs]
+* Fix tests failing in instance mode with config.extensions set. [Daniel Sheppard]
+* Finished converting page_controller_test.rb to page_controller_spec.rb [John Long]
+* Completed converting user_controller_test.rb to user_controller_spec.rb [John Long]
+* Fix failing extension loading tests, remove irrelevant ones. [Sean Cribbs]
 * Fix test:extensions Rake task. [Sean Cribbs]
-* Prevent following the link that toggles visibility of meta items on
-page edit. [Mislav Marohnić]
-* Fix extension loader and previously failing unit tests; update specs.
-[Mislav Marohnić]
-* Fixed problem with response_cached? returning true when perform
-caching was off; fixed failing spec. [John Long]
+* Prevent following the link that toggles visibility of meta items on page edit. [Mislav Marohnić]
+* Fix extension loader and previously failing unit tests; update specs. [Mislav Marohnić]
+* Fixed problem with response_cached? returning true when perform caching was off; fixed failing spec. [John Long]
 * Fixed issues with whitespace in page.rb. [John Long]
 * Fix filtering in tag reference popup. [Mislav Marohnić]
 * Updated rspec and rspec_on_rails. [John Long]
-* Add more controller specs and a matcher for LoginSystem features.
-[Sean Cribbs]
+* Add more controller specs and a matcher for LoginSystem features. [Sean Cribbs]
 * Make all extensions loaded by default. [Sean Cribbs]
 * Update extension loader spec. [Sean Cribbs]
-* Work around a nasty issue with extensions + Dependencies unloading in
-development mode. [Mislav Marohnić]
-* Fix the tree expansion issue in admin interface (cookie-related).
-minor cleanup server-side [Mislav Marohnić]
-* Cleanup up the underscore layout hack by using method chain.
-[Mislav Marohnić]
-* Refactored initialization, extension loading, updated plugins. [Sean
-Cribbs]
+* Work around a nasty issue with extensions + Dependencies unloading in development mode. [Mislav Marohnić]
+* Fix the tree expansion issue in admin interface (cookie-related). minor cleanup server-side [Mislav Marohnić]
+* Cleanup up the underscore layout hack by using method chain. [Mislav Marohnić]
+* Refactored initialization, extension loading, updated plugins. [Sean Cribbs]
 * Fix SiteController#show_page for Rails 2.0. [Mislav Marohnić]
-* Minor optimization for Page; remove the unneccessary 'virtual'
-accessor. [Mislav Marohnić]
-* Fix tests for PostgreSQL: comment out a test that breaks most of the
-specs somehow. [Mislav Marohnić]
+* Minor optimization for Page; remove the unneccessary 'virtual' accessor. [Mislav Marohnić]
+* Fix tests for PostgreSQL: comment out a test that breaks most of the specs somehow. [Mislav Marohnić]
 * Failures in initializer_spec.rb fixed [John Long]
 * Failure in site_controller_spec.rb fixed. [John Long]
 * The last test/unit failure is now fixed. [John Long]
 * Failing tests in page_controller_test.rb fixed. [John Long]
 * Error in response cache spec fixed. [Keeran Hawoldar]
-* ActionController::Base.view_paths is now set correctly for extensions.
-[John Long]
+* ActionController::Base.view_paths is now set correctly for extensions. [John Long]
 * Changed view extensions to ".html.erb" [John Long]
 * Fixed content type test failures. [John Long]
 * Fix page_test. [John Long]
@@ -412,20 +318,16 @@ specs somehow. [Mislav Marohnić]
 * Modify ApplicationController spec. [Loren Johnson]
 * Modify SiteController spec. [Loren Johnson]
 * Fix failing unit test for old type of logger. [Daniel Sheppard]
-* Fix problems preventing script/console from running: acts_as_tree is
-now a plugin, view_paths is now a core feature. [Daniel Sheppard]
+* Fix problems preventing script/console from running: acts_as_tree is now a plugin, view_paths is now a core feature. [Daniel Sheppard]
 * Upgrade to Rails 2.0.2 [Daniel Sheppard]
-* Escape angle brackets to avoid assertion warnings in StandardTags.
-[Sean Cribbs]
+* Escape angle brackets to avoid assertion warnings in StandardTags. [Sean Cribbs]
 * Remove unused ConsoleUtils module and fix failing specs. [Sean Cribbs]
 * Added standard_tags_spec.rb [John Long]
 * Make sure all scenario pages have at least a body part. [Sean Cribbs]
 * Added render matcher. [John Long]
 * Modify pages scenario. [Loren Johnson]
-* A beginning on the Application and Site controller specs. [Loren
-Johnson]
-* Fix failing specs - use of before(:all) when before(:each) was needed
-[Daniel Sheppard]
+* A beginning on the Application and Site controller specs. [Loren Johnson]
+* Fix failing specs - use of before(:all) when before(:each) was needed [Daniel Sheppard]
 * Fix failing extension_load_order_test.rb [Daniel Sheppard]
 * Don't load scenarios stuff unless using specs. [Sean Cribbs]
 * Add initializer spec. [Sean Cribbs]
@@ -439,225 +341,150 @@ Johnson]
 * Added spec/models/snippet_spec.rb [John Long]
 * Added response_cache_spec.rb [John Long]
 * Small improvements to page_part_spec.rb [John Long]
-* Remove duplicate specs and move Radiant::ExtensionMigrator? spec to
-proper location. [Sean Cribbs]
-* Fix admin.js to initialize TabControl even if there are no tabs.
-[Benny Degezelle]
-* Correct RenderTestHelper to better resemble expectations from Rails.
-[Sean Cribbs]
+* Remove duplicate specs and move Radiant::ExtensionMigrator? spec to proper location. [Sean Cribbs]
+* Fix admin.js to initialize TabControl even if there are no tabs. [Benny Degezelle]
+* Correct RenderTestHelper to better resemble expectations from Rails. [Sean Cribbs]
 * Add model specs and scenarios. [John Long]
 * Modify script/spec to work in instance mode. [Andrew O'Brien]
 * Add RSpec to load path in test environment. [Andrew O'Brien]
 * Add specs for Radiant::Extension and Radiant::Taggable. [Sean Cribbs]
 * Fixed admin CSS for IE6 - ugly borders begone! [Bjørn Arild Mæland]
-* Fixed that homepage is no longer cached outside of cache dir, but to
-  "_site-root.data". [Bjørn Arild Mæland]
+* Fixed that homepage is no longer cached outside of cache dir, but to "_site-root.data". [Bjørn Arild Mæland]
 * Fix typo in pngfix.js. [Mislav Marohnić]
-* Turn off auto-loading RSpec stuff, even in test environment.
-  [Mislav Marohnić]
-* Add specs for Annotatable, InheritableClassAttributes, LocalTime,
-  MethodObserver, and Simpleton. [Sean Cribbs]
+* Turn off auto-loading RSpec stuff, even in test environment. [Mislav Marohnić]
+* Add specs for Annotatable, InheritableClassAttributes, LocalTime, MethodObserver, and Simpleton. [Sean Cribbs]
 * Add spec for Radiant::AdminUI and Users scenario. [Sean Cribbs]
 * Import and create boilerplate for RSpec and Scenarios. [Sean Cribbs]
-* Honor config.extensions when running rake test:extensions and also
-include core extensions. [Daniel Sheppard]
-* Propagate global page when using <r:content /> with inherit attribute.
-  [Sean Cribbs]
+* Honor config.extensions when running rake test:extensions and also include core extensions. [Daniel Sheppard]
+* Propagate global page when using <r:content /> with inherit attribute. [Sean Cribbs]
 
-=== 0.6.4 Gem Shaper
-* Extract Archive pages into a core extension. Add automatic testing of
-core extensions from default test task. [Sean Cribbs]
+=== 0.6.4 Gem Shaper (November 10, 2007)
+
+* Extract Archive pages into a core extension. Add automatic testing of core extensions from default test task. [Sean Cribbs]
 * Add <r:if_children /> and <r:unless_children /> tags. [Andrew Neil]
 * Add HTML labels to role checkboxes in user edit template. [zilkey]
-* Cleanup whitespace and line-endings in environment.rb. [Bjørn Arild
-Mæland]
+* Cleanup whitespace and line-endings in environment.rb. [Bjørn Arild Mæland]
 * Fix various SQL Server issues via Rails ticket #8886. [Mark Gallop]
 * Refactor locals from _node.rhtml into Admin::NodeHelper. [Sean Cribbs]
 * Fix XHTML validation errors in view templates. [Bjørn Arild Mæland]
-* Update Prototype and script.aculo.us to 1.6 and 1.8 releases. [Sean
-Cribbs]
-* Fix edge case in tabcontrol.js where tab label is incorrect. [Sean
-Cribbs]
+* Update Prototype and script.aculo.us to 1.6 and 1.8 releases. [Sean Cribbs]
+* Fix edge case in tabcontrol.js where tab label is incorrect. [Sean Cribbs]
 * Remove duplication in admin.js. [Sean Cribbs]
-* Factor TimeZone stuff out of Radiant::Config into a module, fix
-failing tests. [Sean Cribbs]
-* Add has_part?, inherits_part?, and has_or_inherits_part? methods to
-Page. [ana]
-* Allow setting of local timezone via Radiant::Config and
-auto-adjustment of times in admin UI and <r:date /> tag. [Bodhi Philpot]
-* Update to latest Prototype and script.aculo.us and refactor and
-extract inline Javascript into external files. [Mislav Marohnić]
-* Narrow scope of exception to only throw on missing fixture files,
-allowing invalid yaml errors through. [Daniel Sheppard]
-* Added tests to ensure that response_cache stays within the cache dir.
-[Daniel Sheppard]
+* Factor TimeZone stuff out of Radiant::Config into a module, fix failing tests. [Sean Cribbs]
+* Add has_part?, inherits_part?, and has_or_inherits_part? methods to Page. [ana]
+* Allow setting of local timezone via Radiant::Config and auto-adjustment of times in admin UI and <r:date /> tag. [Bodhi Philpot]
+* Update to latest Prototype and script.aculo.us and refactor and extract inline Javascript into external files. [Mislav Marohnić]
+* Narrow scope of exception to only throw on missing fixture files, allowing invalid yaml errors through. [Daniel Sheppard]
+* Added tests to ensure that response_cache stays within the cache dir. [Daniel Sheppard]
 * Add assert_requires_login to LoginTestHelper. [Sean Cribbs]
-* Make sure tag binding stack is popped when an exception occurs.
-[jay@jay.fm]
+* Make sure tag binding stack is popped when an exception occurs. [jay@jay.fm]
 * Clean up some apparent cruft in page.rb [Daniel Sheppard]
 * Add logout method to LoginTestHelper. [Sean Cribbs]
-* Run single extension tests with rake test:extensions
-EXT=<extension_name> [Brian Skahan]
-* Update Javascript libraries to Prototype 1.6.0_rc1 and script.aculo.us
-1.8.0_pre1. [Mislav Marohnić]
+* Run single extension tests with rake test:extensions EXT=<extension_name> [Brian Skahan]
+* Update Javascript libraries to Prototype 1.6.0_rc1 and script.aculo.us 1.8.0_pre1. [Mislav Marohnić]
 * Fixed <r:attempted_url /> tag to escape the uri [Daniel Sheppard]
-* Allow parts to be accessed by name from Page#part before they are
-saved. [Sean Cribbs]
+* Allow parts to be accessed by name from Page#part before they are saved. [Sean Cribbs]
 * Disambiguate namespace of ActionMailer::Part. [Sean Cribbs]
-* Fix namespacing problem with ActionController::RoutingError. [Sean
-Cribbs]
+* Fix namespacing problem with ActionController::RoutingError. [Sean Cribbs]
 * Update Rails to 1.2.5. [John Long]
-* Ensured that the request and response are passed along to other pages
-that are rendered within the same context. [John Long]
+* Ensured that the request and response are passed along to other pages that are rendered within the same context. [John Long]
 * Added <r:if_dev /> and <r:unless_dev /> tags. [Peter Berkenbosch]
 * Removed session stringification patch in test helper. [Sean Cribbs]
 * Update Rails to 1.2.4. [Sean Cribbs]
-* Add extensions paths to the standard $LOAD_PATH so requires work
-properly. [Sean Cribbs]
-* Fixed some loading issues for plugins that are included in extensions.
-[Sean Cribbs]
+* Add extensions paths to the standard $LOAD_PATH so requires work properly. [Sean Cribbs]
+* Fixed some loading issues for plugins that are included in extensions. [Sean Cribbs]
 
-=== 0.6.3 Rock Grinder
+=== 0.6.3 Rock Grinder (October 6, 2007)
+
 * Add generic public/ copy task to generated extensions. [Sean Cribbs]
 * Fix typo in StandardTags. [oli]
 * Added db:remigrate:extensions task. [Sean Cribbs]
-* Show all child pages on remove confirmation, regardless of sitemap
-expansion. [Sean Cribbs]
-* Make LoginSystem store user ids in session rather than whole user
-objects. [Sean Cribbs]
-* Plugins included in an extension's vendor/plugins directory will
-automatically be loaded before the extension is activated. Plugins
-included in more than one extension will be loaded only once according
-to the extension load order. [Sean Cribbs]
+* Show all child pages on remove confirmation, regardless of sitemap expansion. [Sean Cribbs]
+* Make LoginSystem store user ids in session rather than whole user objects. [Sean Cribbs]
+* Plugins included in an extension's vendor/plugins directory will automatically be loaded before the extension is activated. Plugins
+included in more than one extension will be loaded only once according to the extension load order. [Sean Cribbs]
 * Allow subclassing of FileNotFoundPage. [Daniel Sheppard]
 * <r:find/> should not return FileNotFoundPage. [Daniel Sheppard]
-* Change test for tabs to just check dupes and for the requested tab
-rather than a specific list (test was breaking if a real extension added
-a tab). [Daniel Sheppard]
-* Ensure test extensions are loaded in the test environment. [Daniel
-Sheppard]
-* Prevent ExtensionInitializationTest from unloading real extensions.
-[Daniel Sheppard]
-* Expire the old URL from the cache when the page slug changes. [Daniel
-Sheppard]
+* Change test for tabs to just check dupes and for the requested tab rather than a specific list (test was breaking if a real extension added a tab). [Daniel Sheppard]
+* Ensure test extensions are loaded in the test environment. [Daniel Sheppard]
+* Prevent ExtensionInitializationTest from unloading real extensions. [Daniel Sheppard]
+* Expire the old URL from the cache when the page slug changes. [Daniel Sheppard]
 * Fix failing tests in instance mode. [Daniel Sheppard]
-* Move difference assertions upstream from forms extension into a test
-helper. [Sean Cribbs]
+* Move difference assertions upstream from forms extension into a test helper. [Sean Cribbs]
 * Update Prototype to 1.5.0 final release. [Sean Cribbs]
-* Allow specification of extension loading order in environment.rb
-[Daniel Sheppard]
-* Fix bugs in assert_global_tag_defined and assert_tag_defined of
-ExtensionTagTestHelper. [Sean Cribbs]
-* Make sure included stylesheets and javascripts are only linked to once
-in <head>. [Sean Cribbs]
+* Allow specification of extension loading order in environment.rb [Daniel Sheppard]
+* Fix bugs in assert_global_tag_defined and assert_tag_defined of ExtensionTagTestHelper. [Sean Cribbs]
+* Make sure included stylesheets and javascripts are only linked to once in <head>. [Sean Cribbs]
 * Fix navigation tag tests. [vitali]
-* Suppress errors about missing default helper by providing a blank
-helper. [Sean Cribbs]
-* Fix mis-alignment of "Clear cache" button when homepage not present.
-[Sean Cribbs]
-* Fix issues with misnesting of modules in fixture loading extension and
-test suites running randomly from dispatchers. [Sean Cribbs]
+* Suppress errors about missing default helper by providing a blank helper. [Sean Cribbs]
+* Fix mis-alignment of "Clear cache" button when homepage not present. [Sean Cribbs]
+* Fix issues with misnesting of modules in fixture loading extension and test suites running randomly from dispatchers. [Sean Cribbs]
 * Remove invalid image alignment. [tolbrino]
-* Display not_found.rhtml on standard 'not found'-like exceptions.
-[Sean Cribbs]
+* Display not_found.rhtml on standard 'not found'-like exceptions. [Sean Cribbs]
 * Make sitemap.js use relative URLs. [Earl Chew]
 * Preliminary support for active_record sessions. [John Long]
 
 === 0.6.2 Jewel Carver (June 23, 2007)
-* Removed some of the database specific code from the ArchiveFinder
-[Daniel Sheppard]
-* Fixed typo in extension model generator documentation.
-* Reworked the way the generator extension is loaded (closing #500)
-[Keita]
+
+* Removed some of the database specific code from the ArchiveFinder [Daniel Sheppard]
+* Fixed typo in extension model generator documentation. [John Long]
+* Reworked the way the generator extension is loaded (closing #500) [Keita]
 * Fixed failing unit tests in instance mode [Daniel Sheppard]
-* Modified the page edit form to use multipart/form-data (useful for an
-upload extension) [Sean Cribbs]
+* Modified the page edit form to use multipart/form-data (useful for an upload extension) [Sean Cribbs]
 
 === 0.6.1 Stone Cutter (May 5, 2007)
-* Fixed a security vulnerability which caused passwords to appear in the
-logs
-* Fixed a bug in the site map code which caused it to forget which rows
-were expanded
-* The find_by_url method has been optimized to improve performance
-[Daniel Sheppard]
-* GET requests are now the only requests that are cached [Daniel
-Sheppard]
-* Added rudimentary support for extension dependency specification
-through directory prefixing [Daniel Sheppard]
+
+* Fixed a security vulnerability which caused passwords to appear in the logs [John Long]
+* Fixed a bug in the site map code which caused it to forget which rows were expanded [John Long]
+* The find_by_url method has been optimized to improve performance [Daniel Sheppard]
+* GET requests are now the only requests that are cached [Daniel Sheppard]
+* Added rudimentary support for extension dependency specification through directory prefixing [Daniel Sheppard]
 * Fixed syntax error in fixture loading extension [Sean Cribbs]
 * Minor documentation fix for date tag [Sean Cribbs]
-* Fixed a bug in the migrations that prevented 0.5.x users from
-upgrading properly [Sean Cribbs]
+* Fixed a bug in the migrations that prevented 0.5.x users from upgrading properly [Sean Cribbs]
 
 === 0.6.0 Lapidary (April 24, 2007)
-* Added support for extensions--an extremely flexible way to extend
-radiant
-* Merged Behaviors into the Page class; subclass page now instead
-* Improved database support for Postgres and Sqlite
-* Limited support for SQL Server
-* Exceptions from tags now bubble up during testing
-* Page parts are now sorted by ID so the order that you create them in
-is preserved [Josh Ferguson]
+
+* Added support for extensions--an extremely flexible way to extend radiant [John Long]
+* Merged Behaviors into the Page class; subclass page now instead [John Long]
+* Improved database support for Postgres and Sqlite [John Long]
+* Limited support for SQL Server [John Long]
+* Exceptions from tags now bubble up during testing [John Long]
+* Page parts are now sorted by ID so the order that you create them in is preserved [Josh Ferguson]
 * Implemented tag documentation DSL and UI [Sean Cribbs]
-* Reworked the setup code
-* Renamed script/setup_database to rake db:bootstrap
-* Reworked the upgrade code to work around rake tasks
-* Added rake tasks for freezing and unfreezing radiant to the edge
-* r:children:each, r:children:first, and r:children:last now all accept
-the same ordering and limit attributes and have the same defaults
-* Snippets are now responsive to global context via the r:page tag. This
-means that any tags inside r:page will refer to the page currently being
-rendered, i.e. the page requested, not the local contextual page via
-tags like r:children:each, etc. This is most relevant to recursive
-snippets like the sitemapper example [Sean Cribbs]
-* r:navigation now uses the pipe character ("|") to delimit URLs in the
-urls attribute rather than the semi-colon
-* r:date now accepts a "for" attribute that specifies which attribute of
-the page to render. Valid values of the attribute are published_at,
-updated_at, created_at, and now.
-* Created the r:cycle tag to make alternating tables and lists possible
-* Added popups for filter and tag documentation inside the page editing
-interface
+* Reworked the setup code [John Long]
+* Renamed script/setup_database to rake db:bootstrap [John Long]
+* Reworked the upgrade code to work around rake tasks [John Long]
+* Added rake tasks for freezing and unfreezing radiant to the edge [John Long]
+* r:children:each, r:children:first, and r:children:last now all accept the same ordering and limit attributes and have the same defaults [John Long]
+* Snippets are now responsive to global context via the r:page tag. This means that any tags inside r:page will refer to the page currently being rendered, i.e. the page requested, not the local contextual page via tags like r:children:each, etc. This is most relevant to recursive snippets like the sitemapper example [Sean Cribbs]
+* r:navigation now uses the pipe character ("|") to delimit URLs in the urls attribute rather than the semi-colon [John Long]
+* r:date now accepts a "for" attribute that specifies which attribute of the page to render. Valid values of the attribute are published_at, updated_at, created_at, and now. [John Long]
+* Created the r:cycle tag to make alternating tables and lists possible [John Long]
+* Added popups for filter and tag documentation inside the page editing interface [John Long]
 * Added support for optimistic locking for all models [Daniel Sheppard]
 * Added support to Radiant::Config for boolean values [Sean Cribbs]
-* Caching no longer stores the headers and body in the same file [Daniel
-  Sheppard]
-* Added support for the X-Sendfile header that works in conjunction with
-  caching to speed it up (by default X-Sendfile support is off) [Daniel
-  Sheppard]
-* Moved the images and stylesheets into images/admin and
-stylesheets/admin respectively to make it easier for Radiant's assets to
-coexist easily with the site's assets
-* Improved the Javascript that automatically updates the slug and
-breadcrumb based off of the title so that it now response to all change
-events
-* For the full scoop on what's changed see Sean Cribbs' detailed blog
-post: http://seancribbs.com/tech/2007/04/18/whats-new-in-radiant-0-6
+* Caching no longer stores the headers and body in the same file [Daniel Sheppard]
+* Added support for the X-Sendfile header that works in conjunction with caching to speed it up (by default X-Sendfile support is off) [Daniel Sheppard]
+* Moved the images and stylesheets into images/admin and stylesheets/admin respectively to make it easier for Radiant's assets to coexist easily with the site's assets [John Long]
+* Improved the Javascript that automatically updates the slug and breadcrumb based off of the title so that it now response to all change events [John Long]
+* For the full scoop on what's changed see Sean Cribbs' detailed blog post: http://seancribbs.com/tech/2007/04/18/whats-new-in-radiant-0-6
 
 === 0.5.2 Raildust (August 10, 2006)
-* Upgraded Rails to 1.1.6 because of a security vulnerability in 1.1.5
+
+* Upgraded Rails to 1.1.6 because of a security vulnerability in 1.1.5  [John Long]
 
 === 0.5.1 Gemdust (August 10, 2006)
-* Upgraded Rails to 1.1.5 because of a security vulnerability in 1.1.4
-* Added basic support for upgrades to the `radiant` command
-* Gem now includes the .htaccess file (this should make Apache users
-happier)
-* Updated icons for layouts
-* Migrations are now repaired so that you can run `rake migrate` to
-create the initial database. (`script/setup_database` is still the
-recommended method.) (closes ticket #46) [Daniel Sheppard]
-* When you collapse a branch in the admin page tree view and move to
-another tab the collapsed status is now saved so that when you return,
-the collapsed status is preserved. Also the status of collapsed branches
-is preserved when collapsing and expanding parent nodes. (closes ticket
-#29) [Daniel Sheppard]
-* Fixed documentation problem in response_cache.rb (closes ticket #142)
-[Paul Smith]
-* Fixed problem with timezones on fixtures causing tests to fail in
-Japan (closes ticket #154) [Bodhi Philpot]
-* Fixed a problem with an error being thrown when the <r:context /> tag
-was rendered with the inherit attribute set to true and the page part
-did not exist (closes ticket #155) [Bodhi Philpot]
+
+* Upgraded Rails to 1.1.5 because of a security vulnerability in 1.1.4  [John Long]
+* Added basic support for upgrades to the `radiant` command  [John Long]
+* Gem now includes the .htaccess file (this should make Apache users happier)  [John Long]
+* Updated icons for layouts  [John Long]
+* Migrations are now repaired so that you can run `rake migrate` to create the initial database. (`script/setup_database` is still the recommended method.) (closes ticket #46) [Daniel Sheppard]
+* When you collapse a branch in the admin page tree view and move to another tab the collapsed status is now saved so that when you return, the collapsed status is preserved. Also the status of collapsed branches is preserved when collapsing and expanding parent nodes. (closes ticket #29) [Daniel Sheppard]
+* Fixed documentation problem in response_cache.rb (closes ticket #142) [Paul Smith]
+* Fixed problem with timezones on fixtures causing tests to fail in Japan (closes ticket #154) [Bodhi Philpot]
+* Fixed a problem with an error being thrown when the <r:context /> tag was rendered with the inherit attribute set to true and the page part did not exist (closes ticket #155) [Bodhi Philpot]
 
 === 0.5.0 Grindstone (June 28, 2006)
-* First release.
+* First release. [John Long]
