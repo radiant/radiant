@@ -87,7 +87,7 @@ namespace 'radiant' do
     end
 
     desc "Build and install Gem from source"
-    task :install => [:package, :uninstall] do
+    task :install => [:gemspec, :package, :uninstall] do
       chdir("#{RADIANT_ROOT}/pkg") do
         latest = Dir["#{PKG_NAME}-*.gem"].last
         sudo = "sudo " unless RUBY_PLATFORM =~ /mswin|mingw/
