@@ -83,7 +83,7 @@ namespace 'radiant' do
     desc "Uninstall Gem"
     task :uninstall do
       sudo = "sudo " unless RUBY_PLATFORM =~ /mswin|mingw/
-      sh "sudo gem uninstall #{PKG_NAME}" rescue nil
+      sh "#{sudo}gem uninstall #{PKG_NAME}" rescue nil
     end
 
     desc "Build and install Gem from source"
