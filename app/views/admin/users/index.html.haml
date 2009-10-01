@@ -1,4 +1,4 @@
-- @page_title = 'Users - ' + default_page_title
+- @page_title = t('views.users.users') + ' - ' + default_page_title
 
 = render_region :top 
 
@@ -8,11 +8,11 @@
       %tr
         - render_region :thead do |thead|
           - thead.title_header do
-            %th.user Name / Login
+            %th.user== #{t('views.users.name')} / #{t('views.users.login')}
           - thead.roles_header do
-            %th.roles Roles
+            %th.roles= t('views.users.roles')
           - thead.modify_header do
-            %th.modify Modify
+            %th.modify= t('views.shared.modify')
     %tbody
       - @users.each do |user|
         %tr.node.level_1
@@ -34,4 +34,4 @@
   - bottom.new_button do
     #actions
       %ul
-        %li= link_to "New User", new_admin_user_url
+        %li= link_to = t('views.users.new_user'), new_admin_user_url

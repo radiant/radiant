@@ -20,9 +20,9 @@
       #header
         - if logged_in?
           #site_links
-            = %{Logged in as #{link_to h(current_user.name), edit_admin_preferences_path} &nbsp; (#{link_to "Logout", logout_path})}
+            = %{#{t('views.layout.logged_in_as')} #{link_to h(current_user.name), edit_admin_preferences_path} &nbsp; (#{link_to t('views.layout.log_out'), logout_path})}
             &nbsp;
-            = link_to "View Site", root_path, :id=>"view_site"
+            = link_to t('views.layout.view_site'), root_path, :id=>"view_site"
           %ul#navigation
             - nav_tabs.each do |tab|
               - if tab.visible?(current_user)
@@ -48,6 +48,7 @@
             %p= flash[:error]
         #content
           = find_and_preserve(yield)
+
       - if @content_for_popups
         #popups
           = yield :popups

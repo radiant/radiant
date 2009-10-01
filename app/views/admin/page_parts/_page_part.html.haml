@@ -4,14 +4,15 @@
     = hidden_field_tag "page[parts_attributes][#{page_part_counter}][id]", page_part.id, :id => "part_#{page_part_counter}_id", :class => "id_input"
     = hidden_field_tag "page[parts_attributes][#{page_part_counter}][_delete]", page_part._delete, :class => "delete_input"
     %p
-      %label{:for => "part_#{page_part.name.to_slug}_filter_id"} Filter
+      %label{:for => "part_#{page_part.name.to_slug}_filter_id"} 
+        = t('views.shared.filter') 
       = select_tag "page[parts_attributes][#{page_part_counter}][filter_id]", filter_options_for_select(page_part.filter_id), :id => "part_#{page_part.name.to_slug}_filter_id"
       %span.reference_links
-        Reference:
+        = t('views.page_parts.reference')
         %span{:id => "filter_reference_link_#{page_part.name.to_slug}"}
-          = link_to_function "Filter", "loadFilterReference('#{page_part.name.to_slug}');"
+          = link_to_function t('views.shared.filter'), "loadFilterReference('#{page_part.name.to_slug}');"
         %span{:id => "tag_reference_link_#{page_part.name.to_slug}"}
-          = link_to_function 'Available Tags', "loadTagReference('#{page_part.name.to_slug}');"
+          = link_to_function t('views.page_parts.available_tags'), "loadTagReference('#{page_part.name.to_slug}');"
       = render_region :part_controls, :locals => {:page_part => page_part}
     %div
       ~ text_area_tag "page[parts_attributes][#{page_part_counter}][content]", page_part.content, :class => "textarea large", :style => "width: 100%", :id => "part_#{page_part.name.to_slug}_content"
