@@ -22,7 +22,7 @@ Feature: Managing snippets
     And I press "Create Snippet"
     Then I should be on the snippets list
     And I should see "Mine"
-    
+  
   Scenario: Display form errors
     When I follow "Design" within "navigation"
     And I follow "Snippets"
@@ -41,17 +41,16 @@ Feature: Managing snippets
     And I press "Save and Continue Editing"
     Then I should see "Edit Snippet"
     And I should see the form
-    
+  
   Scenario: View a snippet
     When I view a snippet
     Then I should see "Edit Snippet"
-    
+  
   Scenario: Delete a snippet with confirmation
     When I follow "Design" within "navigation"
     And I follow "Snippets"
-    And I follow "Remove"
+    And I follow "Remove Snippet"
     Then I should see "permanently remove"
     And I should see "another"
     When I press "Delete Snippet"
-    Then I should see "has been deleted"
-    And I should see "first"
+    Then I should not see "another"
