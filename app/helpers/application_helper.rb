@@ -24,7 +24,7 @@ module ApplicationHelper
   end
   
   def onsubmit_status(model)
-    model.new_record? ? "Creating #{model.class.name.downcase}&#8230;" : "Saving changes&#8230;"
+    model.new_record? ? "#{t('views.shared.creating')} #{model.class.name.downcase}&#8230;" : "#{t('views.shared.saving_changes')}&#8230;"
   end
   
   def save_model_button(model, options = {})
@@ -107,8 +107,8 @@ module ApplicationHelper
       time = (model.updated_at || model.created_at)
       if name or time
         html = %{<p class="updated_line">#{t('timestamp.last_updated')} } 
-        html << %{by <strong>#{name}</strong> } if name
-        html << %{at #{timestamp(time)}} if time
+        html << %{#{t('timestamp.by')} <strong>#{name}</strong> } if name
+        html << %{#{t('timestamp.at')} #{timestamp(time)}} if time
         html << %{</p>}
         html
       end
