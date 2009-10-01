@@ -105,6 +105,7 @@ ActiveRecord::Schema.define(:version => 20090929164633) do
     t.integer  "lock_version",                 :default => 0
     t.string   "salt"
     t.string   "session_token"
+    t.string   "language"
   end
 
   add_index "users", ["login"], :name => "login", :unique => true

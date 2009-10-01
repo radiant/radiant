@@ -42,9 +42,9 @@ class Admin::PagesController < Admin::ResourceController
 
     def announce_removed
       flash[:notice] = if @count > 0
-        "The pages were successfully removed from the site."
+        t("pages_controller.removed_many") 
       else
-        "The page was successfully removed from the site."
+        t("pages_controller.removed_one")
       end
     end
 

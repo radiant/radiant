@@ -5,17 +5,17 @@
   - render_region :form do |form|
     - form.edit_name do
       %p
-        = f.label :name
+        = f.label :name, t('views.users.name') 
         = f.text_field :name, :class => "textbox activate", :size => 32, :maxlength => 100 
     
     - form.edit_email do
       %p
-        = f.label :email, "E-mail Address", :class => "optional"
+        = f.label :email, t('views.users.email_address') , :class => "optional"
         = f.text_field "email", :class => 'textbox', :size => 32, :maxlength => 255
     
     - form.edit_username do
       %p
-        = f.label :login, "Username"
+        = f.label :login, t('views.users.username') 
         = f.text_field "login", :class => "textbox", :size => 32, :maxlength => 40 
     
     - form.edit_password do
@@ -23,15 +23,20 @@
     
     - form.edit_roles do
       %p
-        %label.multi_option Roles
+        %label.multi_option= t('views.users.roles')
         = f.check_box "admin", :class => "checkbox"
-        = f.label :admin, "Administrator", :class => "checkbox"
+        = f.label :admin, t('views.users.admin'), :class => "checkbox"
         = f.check_box "designer", :class => "checkbox"
-        = f.label :designer, "Designer", :class => "checkbox"
+        = f.label :designer, t('views.users.designer'), :class => "checkbox"
+    
+    - form.edit_language do
+      %p
+        = f.label :language, t('views.users.language') 
+        = f.select "language", LOCALES_AVAILABLE
     
     - form.edit_notes do
       %p
-        = f.label :notes, "Notes", :class => "optional"
+        = f.label :notes, t('views.users.notes'), :class => "optional"
         ~ f.text_area "notes", :size => "53x4", :class => "textarea"
   
   - render_region :form_bottom do |form_bottom|
@@ -39,7 +44,7 @@
       %p.buttons
         = save_model_button(@user)
         = save_model_and_continue_editing_button(@user)
-        or 
-        = link_to "Cancel", admin_users_path
+        = t('views.shared.or')   
+        = link_to t('views.shared.cancel'), admin_users_path
     - form_bottom.edit_timestamp do
       = updated_stamp @user

@@ -130,27 +130,28 @@ class Admin::ResourceController < ApplicationController
     alias :models_symbol :plural_model_symbol
 
     def humanized_model_name
-      model_name.underscore.humanize
+      t("models.#{model_name.underscore.downcase}")
     end
 
     def continue_url(options)
       options[:redirect_to] || (params[:continue] ? {:action => 'edit', :id => model.id} : {:action => "index"})
     end
 
+
     def announce_validation_errors
-      flash.now[:error] = "There were validation errors processing this form. Please take a moment to correct them below before continuing."
+      flash.now[:error] = t("resource_controller.validation_errors")
     end
 
     def announce_removed
-      flash[:notice] = "#{humanized_model_name} has been deleted."
+      flash[:notice] = t("resource_controller.removed", :humanized_model_name => humanized_model_name)    
     end
     
     def announce_not_found
-      flash[:notice] = "#{humanized_model_name} could not be found."
+      flash[:notice] = t("resource_controller.not_found", :humanized_model_name => humanized_model_name)    
     end
 
     def announce_update_conflict
-      flash.now[:error] = "#{humanized_model_name} has been modified since it was last loaded. Changes cannot be saved without potentially losing data."
+      flash.now[:error] =  t("resource_controller.update_conflict", :humanized_model_name => humanized_model_name)  
     end
 
     def clear_model_cache

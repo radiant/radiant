@@ -2,6 +2,7 @@
 
 - render_region :main do |main|
   - main.edit_header do
-    %h1 New User
+    %h1 
+      = t('views.users.new_user')  
   - main.edit_form do
     = render :partial => 'form'

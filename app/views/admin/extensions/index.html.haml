@@ -19,11 +19,11 @@
       %tr
         - render_region :thead do |thead|
           - thead.title_header do
-            %th.extension Extension
+            %th.extension= t('views.extensions.extension')
           - thead.website_header do
-            %th.website Website
+            %th.website= t('views.extensions.website') 
           - thead.version_header do
-            %th.version Version
+            %th.version= t('views.extensions.version')
     %tbody
       - @extensions.each do |extension|
         %tr.node.level_1
@@ -34,7 +34,7 @@
                 %p= h extension.description
             - tbody.website_cell do 
               %td.website
-                = extension.url.nil? || extension.url.empty? ? "" : link_to("Website", extension.url, :target => "_blank")
+                = extension.url.nil? || extension.url.empty? ? "" : link_to(t('views.extensions.website'), extension.url, :target => "_blank")
             - tbody.version_cell do
               %td.version= h extension.version
 

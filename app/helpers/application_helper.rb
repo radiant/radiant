@@ -29,14 +29,14 @@ module ApplicationHelper
   
   def save_model_button(model, options = {})
     options[:label] ||= model.new_record? ?
-      "Create #{model.class.name}" : "Save Changes"
+      t('buttons.create', :name => model.class.name) : t('buttons.save_changes')
     options[:class] ||= "button"
     options[:accesskey] ||= 'S'
     submit_tag options.delete(:label), options
   end
 
   def save_model_and_continue_editing_button(model)
-    submit_tag 'Save and Continue Editing', :name => 'continue', :class => 'button', :accesskey => "s"
+    submit_tag t('buttons.save_and_continue'), :name => 'continue', :class => 'button', :accesskey => "s"
   end
 
   # Redefine pluralize() so that it doesn't put the count at the beginning of
@@ -106,7 +106,7 @@ module ApplicationHelper
       name = updated_by ? updated_by.name : nil
       time = (model.updated_at || model.created_at)
       if name or time
-        html = %{<p class="updated_line">Last updated } 
+        html = %{<p class="updated_line">#{t('timestamp.last_updated')} } 
         html << %{by <strong>#{name}</strong> } if name
         html << %{at #{timestamp(time)}} if time
         html << %{</p>}
@@ -116,7 +116,8 @@ module ApplicationHelper
   end
 
   def timestamp(time)
-    time.strftime("%I:%M %p on %B %e, %Y").sub("AM", 'am').sub("PM", 'pm')
+    # time.strftime("%I:%M %p on %B %e, %Y").sub("AM", 'am').sub("PM", 'pm')
+    I18n.localize(time, :format => :timestamp)    
   end 
   
   def meta_visible(symbol)
@@ -150,7 +151,7 @@ module ApplicationHelper
   end
 
   def filter_options_for_select(selected=nil)
-    options_for_select([['<none>', '']] + TextFilter.descendants.map { |s| s.filter_name }.sort, selected)
+    options_for_select([[t('select.none'), '']] + TextFilter.descendants.map { |s| s.filter_name }.sort, selected)
   end
 
   def body_classes

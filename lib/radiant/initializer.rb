@@ -43,6 +43,8 @@ module Radiant
     def admin
       AdminUI.instance
     end
+    
+
 
     # Declare another extension as a dependency. Does not allow for the
     # specification of versions.

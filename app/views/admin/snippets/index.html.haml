@@ -7,9 +7,9 @@
       %tr
         - render_region :thead do |thead|
           - thead.title_header do
-            %th.snippet Snippet
+            %th.snippet= t('views.snippets.snippet')
           - thead.modify_header do
-            %th.modify Modify
+            %th.modify= t('views.shared.modify')
     %tbody
       - if @snippets.any?
         - @snippets.each do |snippet|
@@ -21,13 +21,13 @@
                   %span= link_to snippet.name, edit_admin_snippet_url(snippet)
               - tbody.modify_cell do
                 %td.remove
-                  = link_to image('remove', :alt => 'Remove Snippet'), remove_admin_snippet_url(snippet)
+                  = link_to image('remove', :alt => t('views.snippets.remove_snippet')), remove_admin_snippet_url(snippet)
       - else
         %tr
-          %td.note{:colspan => admin.snippet.index.tbody.length} No Snippets
+          %td.note{:colspan => admin.snippet.index.tbody.length}= t('views.snippets.no_snippets')
 
 - render_region :bottom do |bottom|
   - bottom.new_button do
     #actions
       %ul
-        %li= link_to "New Snippet", new_admin_snippet_url
+        %li= link_to t('views.snippets.new_snippet'), new_admin_snippet_url
