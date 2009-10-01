@@ -74,7 +74,7 @@ en:
     shared:
       modify: 'Modify' 
       more: 'More'
-      less: 'Less' 
+      hide: 'Hide' 
       body: 'Body'  
       name: 'Name'     
       filter: 'Filter'
@@ -142,6 +142,7 @@ en:
       users: 'Users'      
       username: 'Username'
       password: 'Password' 
+      new_password: 'New Password'
       name: 'Name'
       email_address: 'E-mail Address'
       login: 'Login' 
@@ -154,6 +155,8 @@ en:
       notes: 'Notes'    
       optional: 'Optional'
       required: 'Required'  
+      account: 'Account'
+      change: 'Change'
       valid_email: 'Please use a valid e-mail address.' 
       valid_login: 'At least 3 characters. Must be unique.'
       valid_password: 'At least 5 characters.'
@@ -192,21 +195,21 @@ en:
     
   # Main Navigation Tags
   tabs: 
-    pages: 'Seiten'
+    content: 'Content'
+    pages: 'Pages'
+    design: 'Design'
     snippets: 'Snippets'
     layouts: 'Layouts'
+    settings: 'Settings'
+    personal: 'Personal'
+    users: 'Users'
+    extensions: 'Extensions'
      
   # Timestamp. This may need to be changed as it will most likely not work for many languages.
   timestamp:
     last_updated: 'Last Updated'
     by: 'by'
     at: 'at'
-    
-  # Main Navigation Tags
-  tabs: 
-    pages: 'Pages'
-    snippets: 'Snippets'
-    layouts: 'Layouts'
     
   # Standard Tag Descriptions
   tag_desc:

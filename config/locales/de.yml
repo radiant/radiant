@@ -53,27 +53,13 @@ de:
     snippet: 'Snippet'
     layout: 'Layout'
     page_part: 'Seitenteil'
-    
-    # Shared translations
-    # required: 'obligatorisch'
-    # name_in_use: 'Name schon in Benutzung'
-    # slug_in_use: 'Slug schon in Benutzung als Kind der Elternseite'
-    # character_limit: '{{count}}-Zeichnen-Limit'
-    # character_minimum: '{{count}}-Zeichen-Minimum'
-    # must_be_number: 'Muss eine Zahl sein'
-    # invalid_format: 'ungültiges Format'
-    # no_spaces_tabs: 'Darf keine Leerschläge oder Tabs enthalten.'
-    # # User
-    # login_in_use: 'Login schon in Benutzung'
-    # password_confirmation: 'muss der Bestätigung entsprechen'
-    # invalid_email: 'ungülitge E-Mail-Adresse'  
   
   # Views
   views:   
     shared:
       modify: 'Bearbeiten' 
       more: 'Mehr'
-      less: 'Weniger' 
+      hide: 'Verstecken' 
       body: 'Body'  
       name: 'Name'     
       filter: 'Filter'
@@ -140,6 +126,8 @@ de:
       users: 'Benutzer'      
       username: 'Benutzername'
       password: 'Passwort' 
+      new_password: 'Neues Passwort'
+      change: 'Ändern'
       name: 'Name'
       email_address: 'E-Mail Adresse'
       login: 'Login' 
@@ -198,10 +186,16 @@ de:
     
   # Main Navigation Tags
   tabs: 
+    content: 'Inhalt'
     pages: 'Seiten'
+    design: 'Design'
     snippets: 'Snippets'
     layouts: 'Layouts'
-    
+    settings: 'Einstellungen'
+    personal: 'Personal'
+    users: 'Benutzer'
+    extensions: 'Erweiterungen'
+
   # Standard Tag Descriptions
   tag_desc:
     usage: 'Benutzung'
