@@ -15,10 +15,10 @@
         %td.status{:class => "#{page.status.name.downcase}_status"}= I18n.t("status.#{page.status.name.downcase}")
     - node.add_child_column do
       - unless simple
-        %td.add_child= link_to image('add_child', :alt => t('views.pages.add_child')), new_admin_page_child_url(page)
+        %td.add_child= link_to t('views.pages.add_child'), new_admin_page_child_url(page)
     - node.remove_column do
       - unless simple
-        %td.remove= link_to image('remove', :alt => t('views.pages.remove_page')), remove_admin_page_url(page)
+        %td.remove= link_to t('views.shared.remove'), remove_admin_page_url(page)
 
 - if expanded
   - page.children.each do |child|

@@ -54,21 +54,7 @@ en:
     snippet: 'Snippet'
     layout: 'Layout'
     page_page: 'Page Part'
-    
-    # Shared translations
-    # required: 'required'
-    # name_in_use: 'name already in use'
-    # slug_in_use: 'slug already in use for child of parent'
-    # character_limit: '{{count}}-character limit'
-    # character_minimum: '{{count}}-character minimum'
-    # must_be_number: 'must be a number'
-    # invalid_format: 'invalid format'
-    # no_spaces_tabs: 'cannot contain spaces or tabs'
-    # # User
-    # login_in_use: 'login already in use'
-    # password_confirmation: 'must match confirmation'
-    # invalid_email: 'invalid e-mail address'     
-    
+       
   # Views
   views:   
     shared:
@@ -80,6 +66,7 @@ en:
       filter: 'Filter'
       cancel: 'Cancel'
       or: 'or'
+      remove: 'Remove'
     extensions:        
       extensions: 'Extensions' 
       extension: 'Extension'
@@ -144,6 +131,7 @@ en:
       password: 'Password' 
       new_password: 'New Password'
       name: 'Name'
+      account: 'Account'
       email_address: 'E-mail Address'
       login: 'Login' 
       edit_user: 'Edit User'
@@ -155,7 +143,6 @@ en:
       notes: 'Notes'    
       optional: 'Optional'
       required: 'Required'  
-      account: 'Account'
       change: 'Change'
       valid_email: 'Please use a valid e-mail address.' 
       valid_login: 'At least 3 characters. Must be unique.'

@@ -65,6 +65,7 @@ de:
       filter: 'Filter'
       cancel: 'Zurück'
       or: 'oder'
+      remove: 'Remove'
     extensions:        
       extensions: 'Erweiterungen' 
       extension: 'Erweiterung'
@@ -98,6 +99,7 @@ de:
       pages: 'Seiten'     
       page: 'Seite'     
       new_page: 'Neue Seite'
+      add_child: 'Neuer&nbsp;Unterseite'
       edit_page:  'Seite bearbeiten'   
       page_title: 'Titel'  
       remove_tab: 'entfernt einen Tab'  
@@ -129,6 +131,7 @@ de:
       new_password: 'Neues Passwort'
       change: 'Ändern'
       name: 'Name'
+      account: 'Konto'
       email_address: 'E-Mail Adresse'
       login: 'Login' 
       edit_user: 'Benutzer bearbeiten'
