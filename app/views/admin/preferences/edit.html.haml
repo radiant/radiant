@@ -26,6 +26,11 @@
             = f.label :login, t("views.users.username")
             = f.text_field "login", :class => "textbox", :size => 32, :maxlength => 40
         
+        // - form.edit_language do
+        //   %p
+        //     = f.label :language, t('views.users.language') 
+        //     = f.select "language", LOCALES_AVAILABLE
+            
         - form.edit_password do
           = render "admin/users/password_fields", :f => f
       
