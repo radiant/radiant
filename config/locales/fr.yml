@@ -74,7 +74,7 @@ fr:
   layouts: "Layouts"
   log_out: "Déconnexion"
   logged_in_as: 'Logged in as'
-  login: "SVP Identifiez-vous" 
+  login: "Login" 
   modify: "Modifier" 
   more: "Plus"
   name: "Nom"
@@ -100,7 +100,7 @@ fr:
   password_confirmation: "Confirmer le Mot de passe"
   personal: 'Personal'
   personal_preferences: 'Personal Preferences'
-  please_login: 'Please Login'
+  please_login: 'SVP Identifiez-vous'
   powered_by: 'Powered by'
   preferences: "Préférences" 
   preferences_controller:
