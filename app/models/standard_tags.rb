@@ -94,8 +94,9 @@ module StandardTags
 
     *Usage:*
     
-    <pre><code><r:children:each [offset="number"] [limit="number"] [by="attribute"] [order="asc|desc"]
-     [status="draft|reviewed|published|hidden|all"]>
+    <pre><code><r:children:each [offset="number"] [limit="number"]
+     [by="published_at|updated_at|created_at|slug|title|keywords|description"]
+     [order="asc|desc"] [status="draft|reviewed|published|hidden|all"]>
      ...
     </r:children:each>
     </code></pre>
