@@ -1,9 +1,7 @@
 ---
-fr: 
-  # The display name of this language file:
+en-US: 
   account: 'Account'
   activerecord:
-    # Timestamp. This may need to be changed as it will most likely not work for many languages.:
     errors:
       messages:
         blank: 'required' # required
@@ -30,19 +28,16 @@ fr:
   add_tab: 'Add Tab'
   admin: 'Administrator' 
   available_tags: 'Available Tags'
-    # Main Navigation Tags:
   available_tags_for: 'Available Tags for'
   body: 'Body'  
   breadcrumb: 'Breadcrumb'
   buttons:
-    # Select lists:
     create: 'Create {{name}}'   
     save_and_continue: 'Save and Continue Editing'
     save_changes: 'Save Changes'  
   cancel: 'Cancel'
   change: 'Change'
   close: 'Close'
-    # Users Views   :
   content: 'Content'
   content_type: 'Content&#8209;Type'    
   date:
@@ -57,7 +52,6 @@ fr:
     month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]   
     order: [ :year, :month, :day ]
   delete_layout: 'Delete Layout'
-    # Page status:
   delete_pages: 'Delete {{pages}}'  
   delete_snippet: 'Delete Snippet'
   description: 'Description'
@@ -71,7 +65,6 @@ fr:
   email_address: 'E-mail Address'
   extension: 'Extension'
   extensions: 'Extensions'
-    # Buttons:
   filter: 'Filter'
   hidden: 'Hidden'
   hide: 'Hide' 
@@ -97,7 +90,6 @@ fr:
   or: 'or'
   page: 'Page'
   page_page: 'Page Part'
-    # Shared Views:
   page_title: 'Page Title'  
   page_type: 'Page Type'
   pages: 'Pages'
@@ -133,18 +125,16 @@ fr:
   roles: 'Roles'
   search_tags: 'Search Tags:'
   select:
-    # Warning and info text:
     inherit: '<inherit>'
     none: '<none>' 
     normal: '<normal>'
   settings: 'Settings'
-    # Sub Navigation Tabs:
   slug: 'Slug'
   snippet: 'Snippet'   
   snippets: 'Snippets'
   status: 'Status'
+  # Warnings and info text
   text:
-    # Controllers:
     layouts:
       remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following layout?'   
     pages: 
@@ -152,7 +142,6 @@ fr:
     snippets:
       remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following snippet?'
   this_file_language: "English" 
-    # Model Names:
   time:
     am: 'AM'
     formats:
@@ -179,6 +168,5 @@ fr:
   view_site: 'View Site'
   website: 'Website'
   welcome_controller:
-    # Active Record Errors:
     invalid_user: 'Invalid username or password.' 
     logged_out: 'You are now logged out.'  

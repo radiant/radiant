@@ -1,88 +1,176 @@
-de:  
-  # The display name of this language file
-  this_file_language: "Deutsch" 
-  
-  # Model Names
-  user: 'User'
-  users: 'Users'
-  admin: 'Administrator' 
-  designer: 'Designer'
-  page: 'Page'
-  pages: 'Pages'
-  snippet: 'Snippet'
-  snippets: 'Snippets'
-  layout: 'Layout'
-  layouts: 'Layouts'
-  page_page: 'Page Part'
-  
-  # Shared Views
-  slug: 'Slug'
-  breadcrumb: 'Breadcrumb'
-  description: 'Beschreibung'
-  keywords: 'Keywords'
-  modify: 'Bearbeiten' 
-  more: 'Mehr'
-  hide: 'Verstecken' 
-  body: 'Body'  
-  name: 'Name'     
-  filter: 'Filter'
-  cancel: 'Zurück'
-  or: 'oder'
-  remove: 'Löschen'
-  close: 'Schliessen'
-  
-  # Users Views   
-  username: 'Benutzername'
-  password: 'Passwort' 
-  new_password: 'Neues Passwort'
-  change: 'Ändern'
-  name: 'Name'
+---
+de: 
+  # The display name of this language file:
   account: 'Konto'
-  email_address: 'E-Mail Adresse'
-  login: 'Login' 
-  edit_user: 'Benutzer bearbeiten'
-  new_user: 'Neuer Benutzer'  
-  roles: 'Rollen'
-
-  # Controllers       
-  resource_controller:
-    saved: "{{humanized_model_name}} gespeichert."
-    validation_errors: "Bei der Bearbeitung dieses Formulars sind Bestätigungsfehler aufgetreten. Bitte überprüfen und korrigieren Sie alle Eingaben."
-    removed: "{{humanized_model_name}} wurde gelöscht."  
-    update_conflict: "Seit dem letzten Laden wurde {{humanized_model_name}} geändert. Änderungen können nicht ohne Verlust gespeichert werden." 
-  pages_controller:
-    saved: "Ihre Seite wurde gespeichert."  
-    removed_many: "Die Seiten wurden erfolgreich von der Website gelöscht."   
-    removed_one: "Die Seite wurde erfolgreich von der Website gelöscht."  
-  preferences_controller:
-    updated: 'Ihre Einstellungen wurden aktualisiert.' 
-    error_updating: 'Beim aktualisieren Ihrer Einstellungen ist ein Fehler aufgetreten.'    
-  users_controller:
-    cannot_delete_self: 'Sie können sich nicht selbst löschen.'   
-  welcome_controller:
-    logged_out: 'Sie sind jetzt ausgeloggt.'  
-    invalid_user: 'Ungültiger Benutzername oder Passwort.'   
- 
-  # Active Record
   activerecord:
+    # Timestamp. This may need to be changed as it will most likely not work for many languages.:
     errors:
       messages:
         blank: 'obligatorisch' # required
-        taken: 'Name schon in Benutzung' # name_in_use
-        not_a_number: 'Muss eine Zahl sein' # must be number
-        too_short: '{{count}}-Zeichen-Minimum' # character_minimum
-        too_long: '{{count}}-Zeichnen-Limit' # character_limit
         invalid: 'ungültiges Format' #invalid_format
+        not_a_number: 'Muss eine Zahl sein' # must be number
+        taken: 'Name schon in Benutzung' # name_in_use
+        too_long: '{{count}}-Zeichnen-Limit' # character_limit
+        too_short: '{{count}}-Zeichen-Minimum' # character_minimum
       models:
-        user:
-          attributes:
-            login:
-              taken: 'Login schon in Benutzung' # login already in use
-            password:
-              confirmation: 'muss der Bestätigung entsprechen' # password_confirmation
-            email:
-              invalid: 'ungülitge E-Mail-Adresse' # invalid_email
         page:
           attributes:
             slug:
               taken: 'Slug schon in Benutzung als Kind der Elternseite' # slug_in_use
+        user:
+          attributes:
+            email:
+              invalid: 'ungülitge E-Mail-Adresse' # invalid_email
+            login:
+              taken: 'Login schon in Benutzung' # login already in use
+            password:
+              confirmation: 'muss der Bestätigung entsprechen' # password_confirmation
+  add_child: 'Neue Unterseite'
+  add_part: 'Neues Part'
+  add_tab: 'fügt Tab ein'   
+  admin: 'Administrator' 
+  available_tags: 'Available Tags'
+  available_tags_for: 'Available Tags for'
+  body: 'Body'  
+  breadcrumb: 'Breadcrumb'
+  buttons:
+    create: '{{name}} erstellen'     
+    save_and_continue: 'Sichern und bearbeiten'
+    save_changes: 'Änderungen sichern'  
+  cancel: 'Zurück'
+  change: 'Change'
+  close: 'Schliessen'
+  content: 'Inhalt'
+  content_type: 'Inhalt&#8209;Typ'    
+  date:
+    abbr_day_names: [So, Mo, Di, Mi, Do, Fr, Sa]
+    abbr_month_names: [~, Jan, Feb, Mär, Apr, Mai, Jun, Jul, Aug, Sep, Okt, Nov, Dez]
+    day_names: [Sonntag, Montag, Dienstag, Mittwoch, Donnerstag, Freitag, Samstag]
+    formats:
+      default: "%d.%m.%Y"
+      long: "%e. %B %Y"
+      only_day: "%e"
+      short: "%e. %b"
+    month_names: [~, Januar, Februar, März, April, Mai, Juni, Juli, August, September, Oktober, November, Dezember]
+    order: [:day, :month, :year]
+  delete_layout: 'Layout löschen'  
+  delete_pages: 'lösche {{pages}}'  
+  delete_snippet: 'Snippet löschen'
+  description: 'Snippets sind kleine Stücke Inhalt, die in Seiten oder Layouts eingefügt werden können.'
+  design: 'Design'
+  designer: 'Designer'
+  draft: 'Entwurf'
+  edit_layout: 'Layout bearbeiten'
+  edit_page:  'Seite bearbeiten'   
+  edit_snippet: 'Snippet bearbeiten'
+  edit_user: 'Benutzer bearbeiten'
+  email_address: 'E-Mail Adresse'
+  extension: 'Erweiterung'
+  extensions: 'Erweiterungen' 
+  filter: 'Filter'
+  hidden: 'Versteckt'
+  hide: 'Verstecken' 
+  keywords: 'Keywords'
+  language: 'Sprache'
+  layout: 'Layout'  
+  layouts: 'Layouts'
+  log_out: 'Ausloggen'
+  logged_in_as: 'Eingeloggt als'
+  login: 'Bitte Anmelden'
+  login_btn: 'Login'
+  modify: 'Bearbeiten' 
+  more: 'Mehr'
+  name: 'Name'
+  new_layout: 'Neues Layout'    
+  new_page: 'Neue Seite'
+  new_password: 'New Password'
+  new_snippet: 'Neues Snippet'
+  new_user: 'Neuer Benutzer'  
+  no_pages: 'keine Seiten' 
+  notes: 'Notiz'    
+  optional: 'Optional'
+  or: 'oder'
+  page: 'Seite'     
+  page_page: 'Seite Part'
+  page_title: 'Titel'  
+  page_type: 'Seitentyp'
+  pages: 'Seiten'     
+  pages_controller:
+    removed_many: "Die Seiten wurden erfolgreich von der Website gelöscht."   
+    removed_one: "Die Seite wurde erfolgreich von der Website gelöscht."  
+    saved: "Ihre Seite wurde gespeichert."  
+  password: 'Passwort' 
+  password_confirmation: 'Passwort bestätigen'
+  personal: 'Personal'
+  personal_preferences: 'Benutzer Einstellungen'
+  preferences: 'Präferenzen' 
+  preferences_controller:
+    error_updating: 'Beim aktualisieren Ihrer Einstellungen ist ein Fehler aufgetreten.'    
+    updated: 'Ihre Einstellungen wurden aktualisiert.' 
+  published: 'Publiziert' 
+  published_at: 'Veröffentlicht am' 
+  reference:  'Referenz'
+  remember_me: 'Merken'
+  remove: 'Remove'
+  remove_layout: 'Layout löschen' 
+  remove_page: 'Remove Page'
+  remove_pages: 'entferne {{pages}}' 
+  remove_tab: 'entfernt einen Tab'  
+  required: 'erforderlich'  
+  resource_controller:
+    not_found: "{{humanized_model_name}} could not be found."
+    removed: "{{humanized_model_name}} wurde gelöscht."  
+    saved: "{{humanized_model_name}} gespeichert."
+    update_conflict: "Seit dem letzten Laden wurde {{humanized_model_name}} geändert. Änderungen können nicht ohne Verlust gespeichert werden." 
+    validation_errors: "Bei der Bearbeitung dieses Formulars sind Bestätigungsfehler aufgetreten. Bitte überprüfen und korrigieren Sie alle Eingaben."
+  reviewed: 'Überprüft'
+  roles: 'Rollen'
+  search_tags: 'Search Tags:'
+  select:
+    inherit: '<inherit>'
+    none: '<none>' 
+    normal: '<normal>'
+  settings: 'Einstellungen'
+  slug: 'Slug'
+  snippet: 'Snippet'   
+  snippets: 'Snippets'          
+  status: 'Status'    
+  # Warning and info text:
+  text:
+    # Controllers:
+    layouts:
+      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following layout?'   
+    pages: 
+      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following {{pages}}?'
+    snippets:
+      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following snippet?'
+  this_file_language: "Deutsch" 
+  time:
+    am: ""
+    formats:
+      datetime:
+        formats:
+          default: "%Y-%m-%dT%H:%M:%S%Z"
+      default: "%A, %e. %B %Y, %H:%M Uhr" 
+      long: "%A, %e. %B %Y, %H:%M Uhr"
+      only_second: "%S"
+      short: "%e.%m., %H:%M Uhr"
+      time: "%H:%M Uhr"
+      timestamp: "%H:%M am %d. %B, %Y"
+    pm: 'PM'
+  timestamp:
+    at: 'um'
+    by: 'von'
+    last_updated: 'Zuletzt geändert'
+  user: 'Benutzer'
+  username: 'Benutzername'
+  users: 'Benutzer'      
+  users_controller:
+    cannot_delete_self: 'Sie können sich nicht selbst löschen.'   
+  version: 'Version'  
+  view_site: 'Website'
+  website: 'Website'
+  welcome_controller:
+    invalid_user: 'Ungültiger Benutzername oder Passwort.'   
+    logged_out: 'Sie sind jetzt ausgeloggt.'  
+

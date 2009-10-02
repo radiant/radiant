@@ -77,11 +77,14 @@ Radiant::Initializer.run do |config|
   end
 end
 
+AVAILABLE_LOCALES = {}
 LOCALES_DIRECTORY = "#{RAILS_ROOT}/config/locales/"
-LOCALES_AVAILABLE = Dir.new(LOCALES_DIRECTORY).entries.collect do |x|
+locales = Dir.new(LOCALES_DIRECTORY).entries.collect do |x|
   x =~ /\.yml/ ? x.sub(/\.yml/,"") : nil
 end.compact.each_with_object({}) do |str, hsh|
-  name =  YAML.load_file(File.join(LOCALES_DIRECTORY, "#{str}.yml"))[str]["this_file_language"] rescue nil
-  hsh[name] = str
-end.freeze # {"it-IT" => "Italiano", "en-US" => "American English"}
+  locale_file = YAML.load_file(LOCALES_DIRECTORY + "/" + str + ".yml")
+  hsh[locale_file[str]["this_file_language"]] = str if locale_file.has_key? str
+end.freeze
+
+AVAILABLE_LOCALES.merge! locales
 
