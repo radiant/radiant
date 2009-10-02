@@ -560,6 +560,11 @@ body.login #content p.version {
         font-size: 80%;
         padding: 0 0 0 20px;
         background: url(/images/admin/minus.png) 4px 0 no-repeat; }
+      #content table.index .remove .disabled {
+        color: #ccc;
+        font-size: 80%;
+        padding: 0 0 0 20px;
+        background: url(/images/admin/minus_disabled.png) 4px 0 no-repeat; }
     #content table.index .node .layout {
       font-size: 115%;
       font-weight: bold; }

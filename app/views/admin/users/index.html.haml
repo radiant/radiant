@@ -26,7 +26,7 @@
             - tbody.modify_cell do
               %td.remove
                 - if user == current_user
-                  =# image('remove_disabled', :alt => 'Remove')
+                  %span.disabled= t('remove')
                 - else
                   = link_to t('remove'), remove_admin_user_url(user)
 
