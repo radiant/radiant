@@ -46,8 +46,9 @@ fr:
     day_names: [Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi]
     formats:
       default: "%d.%m.%Y"
-      short: "%e. %b"
       long: "%e. %B %Y"
+      only_day: "%e"
+      short: "%e. %b"
     month_names: [~, Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Septembre, Octobre, Novembre, Decembre]
     order: [:day, :month, :year]
   delete_layout: "Supprimer Layout"  
@@ -74,7 +75,6 @@ fr:
   log_out: "Déconnexion"
   logged_in_as: 'Logged in as'
   login: "SVP Identifiez-vous" 
-  login_btn: 'Login'
   modify: "Modifier" 
   more: "Plus"
   name: "Nom"
@@ -100,6 +100,8 @@ fr:
   password_confirmation: "Confirmer le Mot de passe"
   personal: 'Personal'
   personal_preferences: 'Personal Preferences'
+  please_login: 'Please Login'
+  powered_by: 'Powered by'
   preferences: "Préférences" 
   preferences_controller:
     error_updating: "Une erreur a été détectée pendant la modification de vos préférences."   

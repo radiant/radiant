@@ -1,7 +1,7 @@
 - body_classes << "login"
 
 #login
-  %h1= t('login')
+  %h1= t('please_login')
 
   - form_tag login_url do
     %p
@@ -15,7 +15,7 @@
         = check_box_tag :remember_me, 1, false, :class => 'checkbox'
         %label.checkbox{:for=>"remember_me"}= t('remember_me')   
     %p.buttons
-      %input.button{:type=>"submit", :value=>"Login"}/
+      %input.button{:type => "submit", :value => t('login')}
 
 %p.version
   = t('powered_by')

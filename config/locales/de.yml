@@ -75,7 +75,6 @@ de:
   log_out: 'Ausloggen'
   logged_in_as: 'Eingeloggt als'
   login: 'Bitte Anmelden'
-  login_btn: 'Login'
   modify: 'Bearbeiten' 
   more: 'Mehr'
   name: 'Name'
@@ -101,6 +100,8 @@ de:
   password_confirmation: 'Passwort bestätigen'
   personal: 'Personal'
   personal_preferences: 'Benutzer Einstellungen'
+  please_login: 'Please Login'
+  powered_by: 'Powered by'
   preferences: 'Präferenzen' 
   preferences_controller:
     error_updating: 'Beim aktualisieren Ihrer Einstellungen ist ein Fehler aufgetreten.'    
@@ -133,7 +134,7 @@ de:
   snippet: 'Snippet'   
   snippets: 'Snippets'          
   status: 'Status'    
-  # Warnings and info text:
+    # Warnings and info text:
   text:
     layouts:
       remove_warning: 'Sie sind sicher, das folgende Layout <strong class="warning">dauerhaft</strong> entfernen zu wollen?'   

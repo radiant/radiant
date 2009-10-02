@@ -74,8 +74,7 @@ en-US:
   layouts: 'Layouts'
   log_out: 'Log out'
   logged_in_as: 'Logged in as'
-  login: 'Please Login'
-  login_btn: 'Login'
+  login: 'Login'
   modify: 'Modify' 
   more: 'More'
   name: 'Name'
@@ -101,6 +100,8 @@ en-US:
   password_confirmation: 'Confirm New Password'
   personal: 'Personal'
   personal_preferences: 'Personal Preferences'
+  please_login: 'Please Login'
+  powered_by: 'Powered by'
   preferences: 'Preferences' 
   preferences_controller:
     error_updating: 'There was an error updating your preferences.'      
