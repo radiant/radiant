@@ -7,17 +7,17 @@
       %tr
         - render_region :sitemap_head do |sitemap_head|
           - sitemap_head.title_column_header do
-            %th.page= t('views.pages.page') 
+            %th.page= t('page') 
           - sitemap_head.status_column_header do
-            %th.status= t('views.pages.status')
+            %th.status= t('status')
           - sitemap_head.modify_column_header do
-            %th.modify{:colspan=>"2"}= t('views.shared.modify')
+            %th.modify{:colspan=>"2"}= t('modify')
     %tbody
       - if @homepage
         = render_node @homepage
       - else
         %tr
-          %td.note{:colspan => admin.page.index.node.length}= t('views.pages.no_pages')
+          %td.note{:colspan => admin.page.index.node.length}= t('no_pages')
   = render_region :bottom
 
 - unless @homepage

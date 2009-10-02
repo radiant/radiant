@@ -12,13 +12,13 @@
             = spinner
     - node.status_column do
       - unless simple
-        %td.status{:class => "#{page.status.name.downcase}_status"}= I18n.t("status.#{page.status.name.downcase}")
+        %td.status{:class => "#{page.status.name.downcase}_status"}= t(page.status.name.downcase)
     - node.add_child_column do
       - unless simple
-        %td.add_child= link_to t('views.pages.add_child'), new_admin_page_child_url(page)
+        %td.add_child= link_to t('add_child'), new_admin_page_child_url(page)
     - node.remove_column do
       - unless simple
-        %td.remove= link_to t('views.shared.remove'), remove_admin_page_url(page)
+        %td.remove= link_to t('remove'), remove_admin_page_url(page)
 
 - if expanded
   - page.children.each do |child|

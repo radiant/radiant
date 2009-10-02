@@ -1,8 +1,11 @@
-- pages = @page.children.count > 1 ? t('views.pages.pages') : t('views.pages.page')
+- pages = @page.children.count > 1 ? t('pages') : t('page')
 
 %h1
-  = t('views.pages.remove_pages', :pages => pages)
+  = t('remove_pages', :pages => pages)
 
+%p 
+  = t('text.pages.remove_warning', :pages => pages)
+    
 .inset
   %table.index#site_map{:cellpadding=>0, :cellspacing=>0, :border=>0}
     %tbody
@@ -10,6 +13,6 @@
 
 - form_for [:admin, @page.becomes(Page)], :html => {:method => :delete} do
   %p.buttons
-    %input.button{:type=>"submit", :value => t('views.pages.delete_pages', :pages => pages) }/
-    = t('views.shared.or')    
-    = link_to t('views.shared.cancel'), admin_pages_url
+    %input.button{:type=>"submit", :value => t('delete_pages', :pages => pages) }/
+    = t('or')    
+    = link_to t('cancel'), admin_pages_url

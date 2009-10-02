@@ -1,7 +1,7 @@
 %h1
-  = t('views.layouts.remove_layout')
+  = t('remove_layout')
 
-%p= t('views.layouts.remove_warning_text')
+%p= t('text.layouts.remove_warning')
 
 %table.index#layouts{:cellpadding=>0, :cellspacing=>0, :border=>0}
   %tbody
@@ -12,6 +12,6 @@
 
 - form_for [:admin, @layout], :html => { :method => 'delete' } do
   %p.buttons
-    %input.button{:type => "submit", :value => t('views.layouts.delete_layout')  }/
-    = t('views.shared.or')
-    = link_to t('views.shared.cancel'), admin_layouts_url
+    %input.button{:type => "submit", :value => t('delete_layout')  }/
+    = t('or')
+    = link_to t('cancel'), admin_layouts_url

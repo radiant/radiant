@@ -24,7 +24,7 @@ module ApplicationHelper
   end
   
   def onsubmit_status(model)
-    model.new_record? ? "#{t('views.shared.creating')} #{model.class.name.downcase}&#8230;" : "#{t('views.shared.saving_changes')}&#8230;"
+    model.new_record? ? "#{t('creating')} #{model.class.name.downcase}&#8230;" : "#{t('saving_changes')}&#8230;"
   end
   
   def save_model_button(model, options = {})

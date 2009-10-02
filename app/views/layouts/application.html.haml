@@ -20,15 +20,15 @@
       #header
         - if logged_in?
           #site_links
-            = %{#{t('views.layout.logged_in_as')} #{link_to h(current_user.name), edit_admin_preferences_path} &nbsp; (#{link_to t('views.layout.log_out'), logout_path})}
+            = %{#{t('logged_in_as')} #{link_to h(current_user.name), edit_admin_preferences_path} &nbsp; (#{link_to t('log_out'), logout_path})}
             &nbsp;
-            = link_to t('views.layout.view_site'), root_path, :id=>"view_site"
+            = link_to t('view_site'), root_path, :id=>"view_site"
           %ul#navigation
             - nav_tabs.each do |tab|
               - if tab.visible?(current_user)
                 %li{:class=>('current' if current_tab?(tab))}
                   %a{:href=>(tab.first.url if tab.first)}
-                    = t("tabs.#{tab.proper_name.downcase}")
+                    = t(tab.proper_name.downcase)
                   - if current_tab?(tab)
                     %ul#nav_sub
                       - tab.each do |sub_item|
@@ -36,7 +36,7 @@
                           %li
                             %a{:href => sub_item.url, :class => current_item?(sub_item) ? 'current' : ''}>
                               %span
-                                = t("tabs.#{sub_item.proper_name.downcase}")
+                                = t(sub_item.proper_name.downcase)
           #header_bottom
             %div
       #main

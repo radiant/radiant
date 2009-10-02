@@ -529,7 +529,7 @@ module StandardTags
 
     <pre><code><r:link [anchor="name"] [other attributes...] /></code></pre>
     
-    *#{I18n.t('views.shared.or')}:*
+    *#{I18n.t('or')}:*
     
     <pre><code><r:link [anchor="name"] [other attributes...]>link text here</r:link></code></pre>
   }

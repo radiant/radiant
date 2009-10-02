@@ -6,7 +6,7 @@
   - form.edit_title do
     %p.title
       %label{:for=>"page_title"}
-        = t('views.pages.page_title')
+        = t('page_title')
       = fields.text_field :title, :class => 'textbox', :maxlength => 255
   - form.edit_extended_metadata do
     #extended_metadata{meta_visible(:meta)}
@@ -14,31 +14,31 @@
         = render :partial => "meta_row", :collection => @meta, :locals => {:f => fields}
         = render_region :extended_metadata, :locals => {:f => fields}
     %p.more_or_less
-      %a{:id=>"more_extended_metadata", :href=>"javascript: $('extended_metadata').show(); $('less_extended_metadata').show(); $('more_extended_metadata').hide(); this.stop()", :style=>(meta_errors? ? "display: none" : nil)}= t('views.shared.more')    
-      %a{:id=>"less_extended_metadata", :href=>"javascript: $('extended_metadata').hide(); $('more_extended_metadata').show(); $('less_extended_metadata').hide(); this.stop()", :style=>(!meta_errors? ? "display: none" : nil)}= t('views.shared.hide')    
+      %a{:id=>"more_extended_metadata", :href=>"javascript: $('extended_metadata').show(); $('less_extended_metadata').show(); $('more_extended_metadata').hide(); this.stop()", :style=>(meta_errors? ? "display: none" : nil)}= t('more')    
+      %a{:id=>"less_extended_metadata", :href=>"javascript: $('extended_metadata').hide(); $('more_extended_metadata').show(); $('less_extended_metadata').hide(); this.stop()", :style=>(!meta_errors? ? "display: none" : nil)}= t('hide')    
   - form.edit_page_parts do
     #tab_control
       #tabs.tabs
         #tab_toolbar
-          %a.popup{:href=> '#add_part_popup', :title=>t('views.pages.add_part')}
-            %img{:src=>"/images/admin/add_tab.png", :alt=>t('views.pages.add_part'), :title=>""}/
+          %a.popup{:href=> '#add_part_popup', :title=>t('add_part')}
+            %img{:src=>"/images/admin/add_tab.png", :alt=>t('add_part'), :title=>""}/
       #pages.pages
         = render :partial => 'admin/page_parts/page_part', :collection => @page.parts
     = render_region :parts_bottom
   - form.edit_layout_and_type do
     .row
       %p
-        = fields.label :layout_id, t('views.layouts.layout')
+        = fields.label :layout_id, t('layout')
         = fields.select :layout_id, [['<inherit>', '']] + Layout.find(:all).map { |s| [s.name, s.id] }
       %p
-        = fields.label :class_name, t('views.pages.page_type')  
+        = fields.label :class_name, t('page_type')  
         = fields.select :class_name, [['<normal>', '']] + Page.descendants.map { |p| [p.display_name, p.name] }.sort_by { |p| p.first }
       %p
-        = fields.label :status_id, t('views.pages.status')  
-        = fields.select :status_id, Status.find_all.map { |s| [s.name, s.id] }, {}
+        = fields.label :status_id, t('status')  
+        = fields.select :status_id, Status.find_all.map { |s| [t("#{s.name.downcase}"), s.id] }, {}
       - if @config['page.edit.published_date?']
         %p#publication_date{:style => "display: none"}
-          = fields.label :page_published_at, t('pages.views.published_at')
+          = fields.label :page_published_at, t('published_at')
           = fields.datetime_select :published_at, :disabled => true
       = render_region :layout_row, :locals => {:f => fields}
 - render_region :form_bottom do |form_bottom|
@@ -48,8 +48,8 @@
     %p.buttons{:style=>"clear: left"}
       = save_model_button(@page)
       = save_model_and_continue_editing_button(@page)
-      = t('views.shared.or')
-      = link_to t('views.shared.cancel'), admin_pages_url
+      = t('or')
+      = link_to t('cancel'), admin_pages_url
   - form_bottom.edit_timestamp do
     = updated_stamp @page
     

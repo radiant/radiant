@@ -1,10 +1,10 @@
-- @page_title = @user.name + ' ' + t('views.users.account') + ' - ' + default_page_title
+- @page_title = @user.name + ' ' + t('account') + ' - ' + default_page_title
 
 - body_classes << "reversed"
 
 - render_region :main do |main|
   - main.edit_header do
     %h1 
-      = t('views.users.edit_user')
+      = t('edit_user')
   - main.edit_form do
     = render :partial => 'form'
