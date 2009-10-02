@@ -58,7 +58,7 @@ Feature: Managing pages
     And I follow "remove page"
     Then I should see "permanently remove"
     When I press "Delete Pages"
-    Then I should see "successfully removed"
+    Then I should see "No Pages"
     
   Scenario: View a page
     When I view a page

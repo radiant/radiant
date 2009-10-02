@@ -116,6 +116,15 @@ describe SiteController do
       response.headers['ETag'].should be_blank
     end
     
+    it "should prevent upstream caching in dev mode" do
+      request.host = "dev.site.com"
+      
+      get :show_page, :url => '/'
+      response.headers['Cache-Control'].should =~ /private/
+      response.headers['Cache-Control'].should =~ /no-cache/
+      response.headers['ETag'].should be_blank
+    end
+    
     it "should set the default cache timeout (max-age) to a value assigned by the user" do
       SiteController.cache_timeout = 10.minutes
       get :show_page, :url => '/'

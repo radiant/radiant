@@ -59,5 +59,4 @@ Feature: Managing users
     Then I should see "permanently remove"
     And I should see "Another"
     When I press "Delete User"
-    Then I should see "been deleted"
     And I should not see "Another"

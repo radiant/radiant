@@ -54,7 +54,7 @@ module Radiant
       end
 
       def deprecated_add(name, url, caller)
-        ActiveSupport::Deprecation.warn("admin.tabs.add is no longer supported in Radiant 0.9+.  Please update your code to use admin.nav", caller)
+        ActiveSupport::Deprecation.warn("admin.tabs.add is no longer supported in Radiant 0.9.x.  Please update your code to use admin.nav", caller)
         NavSubItem.new(name.underscore.to_sym, name, url)
       end
     end

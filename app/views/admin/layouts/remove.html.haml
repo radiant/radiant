@@ -10,7 +10,7 @@
         = image('layout', :alt => 'layout-icon')
         = h @layout.name
 
-- form_for [:admin, @layout], :html => { :method => 'delete' } do
+- form_for [:admin, @layout], :html => { :method => 'delete', :onsubmit_status=>"Removing layout&#8230;" } do
   %p.buttons
     %input.button{:type => "submit", :value => t('delete_layout')  }/
     = t('or')

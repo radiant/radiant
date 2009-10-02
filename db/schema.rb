@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(:version => 20090929164633) do
     t.integer  "lock_version",                 :default => 0
     t.string   "description"
     t.string   "keywords"
+    t.integer  "position"
   end
 
   add_index "pages", ["class_name"], :name => "pages_class_name"

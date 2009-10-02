@@ -10,7 +10,7 @@
         = image('snippet', :alt => "snippet-icon")
         %span.title= @snippet.name
 
-- form_for [:admin, @snippet], :html => {:method => :delete} do
+- form_for [:admin, @snippet], :html => {:method => :delete, :onsubmit_status=>"Removing snippet&#8230;"} do
   %p.buttons
     %input.button{:type=>"submit", :value => t('delete_snippet')}/
     = t('or')

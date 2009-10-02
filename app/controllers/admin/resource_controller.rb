@@ -64,7 +64,6 @@ class Admin::ResourceController < ApplicationController
 
   def destroy
     model.destroy
-    announce_removed
     response_for :destroy
   end
 
@@ -143,6 +142,7 @@ class Admin::ResourceController < ApplicationController
     end
 
     def announce_removed
+      ActiveSupport::Deprecation.warn("announce_removed is no longer encouraged in Radiant 0.9.x.", caller)
       flash[:notice] = t("resource_controller.removed", :humanized_model_name => humanized_model_name)    
     end
     
