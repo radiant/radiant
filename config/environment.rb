@@ -56,6 +56,11 @@ Radiant::Initializer.run do |config|
 
   # Activate observers that should always be running
   config.active_record.observers = :user_action_observer
+  
+  # The internationalization framework can be changed to have another default locale (standard is :en) or more load paths.
+  # All files from config/locales/*.rb,yml are added automatically.
+  # config.i18n.load_path << Dir[File.join(RAILS_ROOT, 'my', 'locales', '*.{rb,yml}')]
+  # config.i18n.default_locale = :'en'
 
   # Make Active Record use UTC-base instead of local time
   config.time_zone = 'UTC'
@@ -78,11 +83,11 @@ Radiant::Initializer.run do |config|
 end
 
 AVAILABLE_LOCALES = {}
-LOCALES_DIRECTORY = "#{RAILS_ROOT}/config/locales/"
-locales = Dir.new(LOCALES_DIRECTORY).entries.collect do |x|
+
+locales = Dir.new("#{RAILS_ROOT}/config/locales/").entries.collect do |x|
   x =~ /\.yml/ ? x.sub(/\.yml/,"") : nil
 end.compact.each_with_object({}) do |str, hsh|
-  locale_file = YAML.load_file(LOCALES_DIRECTORY + "/" + str + ".yml")
+  locale_file = YAML.load_file("#{RAILS_ROOT}/config/locales/" + "/" + str + ".yml")
   hsh[locale_file[str]["this_file_language"]] = str if locale_file.has_key? str
 end.freeze
 

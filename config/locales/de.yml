@@ -54,7 +54,7 @@ de:
   delete_layout: 'Layout löschen'  
   delete_pages: 'lösche {{pages}}'  
   delete_snippet: 'Snippet löschen'
-  description: 'Snippets sind kleine Stücke Inhalt, die in Seiten oder Layouts eingefügt werden können.'
+  description: 'Beschreibung'
   design: 'Design'
   designer: 'Designer'
   draft: 'Entwurf'

@@ -51,6 +51,14 @@ module Radiant
     def add_plugin_paths
       configuration.plugin_paths.concat plugin_paths
     end
+    
+    def locale_paths
+      load_extension_roots.map { |extension|  Dir[File.join("#{extension}/config/locales" , '*.{rb,yml}')]  }.flatten
+    end
+    
+    def add_locale_paths
+      configuration.i18n.load_path.concat(locale_paths)
+    end
 
     def controller_paths
       extensions.map { |extension| "#{extension.root}/app/controllers" }.select { |d| File.directory?(d) }
