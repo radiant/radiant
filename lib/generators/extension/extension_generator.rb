@@ -15,13 +15,15 @@ class ExtensionGenerator < Rails::Generator::NamedBase
       m.directory "#{extension_path}/app/helpers"
       m.directory "#{extension_path}/app/models"
       m.directory "#{extension_path}/app/views"
+      m.directory "#{extension_path}/config/locales"
       m.directory "#{extension_path}/db/migrate"
       m.directory "#{extension_path}/lib/tasks"
       
       m.template 'README',              "#{extension_path}/README"
       m.template 'extension.rb',        "#{extension_path}/#{extension_file_name}.rb"
       m.template 'tasks.rake',          "#{extension_path}/lib/tasks/#{extension_file_name}_tasks.rake"
-
+      m.template 'en.yml',              "#{extension_path}/config/locales/en.yml"
+      
       if options[:with_test_unit]
         m.directory "#{extension_path}/test/fixtures"
         m.directory "#{extension_path}/test/functional"
