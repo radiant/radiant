@@ -40,14 +40,6 @@ class Admin::PagesController < Admin::ResourceController
       end
     end
 
-    def announce_removed
-      flash[:notice] = if @count > 0
-        t("pages_controller.removed_many") 
-      else
-        t("pages_controller.removed_one")
-      end
-    end
-
     def count_deleted_pages
       @count = model.children.count + 1
     end
