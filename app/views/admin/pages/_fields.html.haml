@@ -29,10 +29,10 @@
     .row
       %p
         = fields.label :layout_id, t('layout')
-        = fields.select :layout_id, [['<inherit>', '']] + Layout.find(:all).map { |s| [s.name, s.id] }
+        = fields.select :layout_id, [[t('select.inherit') , '']] + Layout.find(:all).map { |s| [s.name, s.id] }
       %p
         = fields.label :class_name, t('page_type')  
-        = fields.select :class_name, [['<normal>', '']] + Page.descendants.map { |p| [p.display_name, p.name] }.sort_by { |p| p.first }
+        = fields.select :class_name, [[t('select.normal'), '']] + Page.descendants.map { |p| [p.display_name, p.name] }.sort_by { |p| p.first }
       %p
         = fields.label :status_id, t('status')  
         = fields.select :status_id, Status.find_all.map { |s| [t("#{s.name.downcase}"), s.id] }, {}
