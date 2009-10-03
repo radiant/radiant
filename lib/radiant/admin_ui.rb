@@ -168,7 +168,7 @@ module Radiant
       returning OpenStruct.new do |user|
         user.preferences = RegionSet.new do |preferences|
           preferences.main.concat %w{edit_header edit_form}
-          preferences.form.concat %w{edit_name edit_email edit_username edit_password}
+          preferences.form.concat %w{edit_name edit_email edit_username edit_language edit_password}
           preferences.form_bottom.concat %w{edit_buttons}
         end
         user.edit = RegionSet.new do |edit|

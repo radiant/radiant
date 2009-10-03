@@ -51,6 +51,7 @@ module Radiant
         step { Radiant::Config['defaults.page.status' ] = 'draft' }
         step { Radiant::Config['defaults.page.filter' ] = nil }
         step { Radiant::Config['session_timeout'] = 2.weeks }
+        step { Radiant::Config['default_locale'] = 'en' }
       end
     end
     
