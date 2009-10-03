@@ -97,7 +97,7 @@ describe Radiant::AdminUI do
     user.edit.should_not be_nil
     user.edit.main.should == %w{edit_header edit_form}
     user.edit.form.should == %w{edit_name edit_email edit_username
-                                edit_password edit_roles edit_language edit_notes}
+                                edit_password edit_roles edit_locale edit_notes}
     user.edit.form_bottom.should == %w{edit_buttons edit_timestamp}
     user.index.should_not be_nil
     user.index.thead.should == %w{title_header roles_header modify_header}

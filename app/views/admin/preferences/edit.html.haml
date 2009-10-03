@@ -26,10 +26,10 @@
             = f.label :login, t("username")
             = f.text_field "login", :class => "textbox", :size => 32, :maxlength => 40
         
-        - form.edit_language do
+        - form.edit_locale do
           %p
-            = f.label :language, t('language') 
-            = f.select "language", Radiant::AvailableLocales.locales.merge({'<default>'=>''})
+            = f.label :locale, t('language') 
+            = f.select "locale", Radiant::AvailableLocales.locales.merge({'<default>'=>''})
             
         - form.edit_password do
           = render "admin/users/password_fields", :f => f

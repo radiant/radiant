@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090929164633) do
+ActiveRecord::Schema.define(:version => 20091003095744) do
 
   create_table "config", :force => true do |t|
     t.string "key",   :limit => 40, :default => "", :null => false
@@ -61,7 +61,6 @@ ActiveRecord::Schema.define(:version => 20090929164633) do
     t.integer  "lock_version",                 :default => 0
     t.string   "description"
     t.string   "keywords"
-    t.integer  "position"
   end
 
   add_index "pages", ["class_name"], :name => "pages_class_name"
@@ -106,7 +105,7 @@ ActiveRecord::Schema.define(:version => 20090929164633) do
     t.integer  "lock_version",                 :default => 0
     t.string   "salt"
     t.string   "session_token"
-    t.string   "language"
+    t.string   "locale"
   end
 
   add_index "users", ["login"], :name => "login", :unique => true

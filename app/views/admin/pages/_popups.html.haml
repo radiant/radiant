@@ -9,6 +9,6 @@
         = hidden_field_tag 'index', @page.parts.size, :id => 'page_part_index_field'
       %p.buttons
         = submit_tag t('add_part'), :id => 'add_part_button', :class => "button"
-        or
-        = link_to_function 'Cancel', "$(this).closePopup()"
+        = t('or')
+        = link_to_function t('cancel'), "$(this).closePopup()"
   = render_region :popups
