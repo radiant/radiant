@@ -1,4 +1,4 @@
-.page{:id => "page_#{page_part.name.to_slug}", :caption=>h(page_part.name)}
+.page{:id => "page_#{page_part.name.to_slug}", :"data-caption"=>h(page_part.name)}
   .part{:id => "part-#{page_part.name.to_slug}"}
     = hidden_field_tag "page[parts_attributes][#{page_part_counter}][name]", page_part.name, :id => "part_#{page_part.name.to_slug}_name"
     = hidden_field_tag "page[parts_attributes][#{page_part_counter}][id]", page_part.id, :id => "part_#{page_part_counter}_id", :class => "id_input"
