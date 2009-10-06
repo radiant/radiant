@@ -17,7 +17,7 @@
             - render_region :tbody do |tbody|
               - tbody.title_cell do
                 %td.snippet
-                  = image('snippet', :alt => 'snippet-icon')
+                  = image('snippet', :alt => '')
                   %span= link_to snippet.name, edit_admin_snippet_url(snippet)
               - tbody.modify_cell do
                 %td.remove
