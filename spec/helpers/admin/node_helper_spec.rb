@@ -55,14 +55,14 @@ describe Admin::NodeHelper do
   it "should display an icon for the current node" do
     assigns[:current_node] = @page
     @page.should_receive(:virtual?).and_return(false)
-    helper.should_receive(:image).with("page", :class => "icon", :alt => 'page_icon', :title => '')
+    helper.should_receive(:image).with("page", :class => "icon", :alt => '', :title => '')
     helper.icon
   end
   
   it "should display the virtual icon if the current node is virtual" do
     assigns[:current_node] = @page
     @page.should_receive(:virtual?).and_return(true)
-    helper.should_receive(:image).with("virtual_page", :class => "icon", :alt => 'page_icon', :title => '')
+    helper.should_receive(:image).with("virtual_page", :class => "icon", :alt => '', :title => '')
     helper.icon
   end
 
