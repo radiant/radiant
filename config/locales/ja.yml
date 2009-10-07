@@ -40,6 +40,7 @@ ja:
   close: '閉める'
   content: 'Content'
   content_type: 'コンテンツ&#8209;タイプ'
+  creating_status: 'Creating {{model}}&#8230;'
   date:
     abbr_day_names: [日, 月, 火, 水, 木, 金, 土]
     abbr_month_names: [~, 一月, 二月, 三月, 四月, 五月, 六月, 七月, 八月, 九月, 十月, 十一月, 十二月]
@@ -54,6 +55,7 @@ ja:
   delete_layout: 'レイアウト削除'
   delete_pages: '{{pages}}削除'
   delete_snippet: 'スニペッツ削除'
+  delete_user: 'Delete User'
   description: 'Description'
   design: 'Design'
   designer: 'Designer'
@@ -124,6 +126,7 @@ ja:
     validation_errors: "Validation errors occurred while processing this form. Please take a moment to review the form and correct any input errors before continuing."
   reviewed: '編集中'
   roles: '役目'
+  saving_changes: Saving Changes
   search_tags: 'タッグ検索:'
   select:
     inherit: '<inherit>'
@@ -142,6 +145,8 @@ ja:
       remove_warning: '本当に下記の{{pages}}を<strong class="warning">永久に削除</strong>してよろしいでしょうか?'
     snippets:
       remove_warning: '本当に下記のスニペッツを<strong class="warning">永久に削除</strong>してよろしいでしょうか?'
+    users: 
+      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following user?'
   this_file_language: "日本語"
   time:
     am: '午前'

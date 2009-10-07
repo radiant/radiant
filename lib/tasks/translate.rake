@@ -11,7 +11,7 @@ namespace :radiant do
         puts "Syncing #{basename}"
         (comments, other) = read_file(filename, basename)
         words.each { |k,v| other[k] ||= words[k] }  # Initializing hash variable as empty if it does not exist
-        other.delete_if { |k,v| !words[k] }         # Remove if not defined in en-US.yml
+        other.delete_if { |k,v| !words[k] }         # Remove if not defined in en.yml
         write_file(filename, basename, comments, other)
       end
     end
@@ -45,7 +45,7 @@ end
 
 #Retrieve US word set
 def get_translation_keys(language_root, suffix=nil)
-  (dummy_comments, words) = read_file("#{language_root}en-US#{suffix}.yml", 'en-US')
+  (dummy_comments, words) = read_file("#{language_root}en#{suffix}.yml", 'en')
   words
 end
 
