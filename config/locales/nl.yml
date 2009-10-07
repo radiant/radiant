@@ -4,91 +4,91 @@ nl:
   activerecord:
     errors:
       messages:
-        blank: 'required' # required
-        invalid: 'invalid format' #invalid_format
-        not_a_number: 'must be a number' # must be number
-        taken: 'name already in use' # name_in_use
-        too_long: '{{count}}-character limit' # character_limit
-        too_short: '{{count}}-character minimum' # character_minimum
+        blank: 'verplicht' # verplicht
+        invalid: 'ongeldige indeling' #invalid_format
+        not_a_number: 'moet een getal zijn' # must be number
+        taken: 'naam reeds in gebruik' # name_in_use
+        too_long: 'maximum {{count}} tekens' # character_limit
+        too_short: 'minimum {{count}} tekens' # character_minimum
       models:
         page:
           attributes:
             slug:
-              taken: 'slug already in use for child of parent' # slug_in_use
+              taken: 'URL pagina (slug) reeds in gebruik' # slug_in_use
         user:
           attributes:
             email:
-              invalid: 'invalid e-mail address' # invalid_email
+              invalid: 'ongeldig e-mailadres' # invalid_email
             login:
-              taken: 'login already in use' # login already in use
+              taken: 'login reeds in gebruik' # login already in use
             password:
-              confirmation: 'must match confirmation' # password_confirmation
-  add_child: 'Add Child'
-  add_part: 'Add Part'
-  add_tab: 'Add Tab'
-  admin: 'Administrator'
-  available_tags: 'Available Tags'
-  available_tags_for: 'Available Tags for'
+              confirmation: 'moet overeen komen' # password_confirmation
+  add_child: 'Child Toevoegen'
+  add_part: 'Part Toevoegen'
+  add_tab: 'Tab Toevoegen'
+  admin: 'Beheerder'
+  available_tags: 'Beschikbare Tags'
+  available_tags_for: 'Beschikbare Tags voor'
   body: 'Body'
   breadcrumb: 'Breadcrumb'
   buttons:
-    create: 'Create {{name}}'
-    save_and_continue: 'Save and Continue Editing'
-    save_changes: 'Save Changes'
-  cancel: 'Cancel'
-  change: 'Change'
-  close: 'Close'
+    create: '{{name}} Aanmaken'
+    save_and_continue: 'Opslaan en verder Aanpassen'
+    save_changes: 'Opslaan'
+  cancel: 'Annuleren'
+  change: 'Wijzigen'
+  close: 'Sluiten'
   content: 'Content'
   content_type: 'Content&#8209;Type'
   date:
-    abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
-    abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
-    day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+    abbr_day_names: [Zon, Maa, Din, Woe, Don, Vri, Zat]
+    abbr_month_names: [~, Jan, Feb, Maa, Apr, Mei, Jun, Jul, Aug, Sep, Okt, Nov, Dec]
+    day_names: [Zondag, Maandag, Dinsdag, Woensdag, Donderdag, Vrijdag, Zaterdag]
     formats:
-      default: "%Y-%m-%d"
-      long: "%B %e, %Y"
+      default: "%d/%m/%Y"
+      long: "%e %B %Y"
       only_day: "%e"
       short: "%e %b"
-    month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]
+    month_names: [~, Januari, Februari, Maart, April, Mei, Juni, Juli, Augustus, September, Oktober, November, December]
     order: [ :year, :month, :day ]
-  delete_layout: 'Delete Layout'
-  delete_pages: 'Delete {{pages}}'
-  delete_snippet: 'Delete Snippet'
-  delete_user: 'Delete User'
-  description: 'Description'
+  delete_layout: 'Layout Verwijderen'
+  delete_pages: '{{pages}} Verwijderen'
+  delete_snippet: 'Snippet Verwijderen'
+  delete_user: 'Gebruiker Verwijderen'
+  description: 'Omschrijving'
   design: 'Design'
   designer: 'Designer'
-  draft: 'Draft'
-  edit_layout: 'Edit Layout'
-  edit_page:  'Edit Page'
-  edit_snippet: 'Edit Snippet'
-  edit_user: 'Edit User'
-  email_address: 'E-mail Address'
-  extension: 'Extension'
-  extensions: 'Extensions'
+  draft: 'Ontwerp'
+  edit_layout: 'Layout Aanpassen'
+  edit_page:  'Pagina Aanpassen'
+  edit_snippet: 'Snippet Aanpassen'
+  edit_user: 'Gebruiker Aanpassen'
+  email_address: 'E-mailadres'
+  extension: 'Extensie'
+  extensions: 'Extensies'
   filter: 'Filter'
-  hidden: 'Hidden'
-  hide: 'Hide'
-  keywords: 'Keywords'
-  language: 'Language'
+  hidden: 'Verborgen'
+  hide: 'Verberg'
+  keywords: 'Trefwoorden'
+  language: 'Taal'
   layout: 'Layout'
   layouts: 'Layouts'
-  log_out: 'Logout'
-  logged_in_as: 'Logged in as'
-  login: 'Login'
-  modify: 'Modify'
-  more: 'More'
-  name: 'Name'
-  new_layout: 'New Layout'
-  new_page: 'New Page'
-  new_password: 'New Password'
-  new_snippet: 'New Snippet'
-  new_user: 'New User'
-  no_pages: 'No Pages'
-  notes: 'Notes'
-  optional: 'Optional'
-  or: 'or'
-  page: 'Page'
+  log_out: 'Afmelden'
+  logged_in_as: 'Aangemeld als'
+  login: 'Aanmelden'
+  modify: 'Wijzigen'
+  more: 'Meer'
+  name: 'Naam'
+  new_layout: 'Niewe Layout'
+  new_page: 'Niewe Pagina'
+  new_password: 'Niew Wachtwoord'
+  new_snippet: 'Nieuwe Snippet'
+  new_user: 'Nieuwe Gebruiker'
+  no_pages: "Geen Pagina's"
+  notes: 'Notities'
+  optional: 'Optioneel'
+  or: 'of'
+  page: 'Pagina'
   page_page: 'Page Part'
   page_title: 'Page Title'
   page_type: 'Page Type'
