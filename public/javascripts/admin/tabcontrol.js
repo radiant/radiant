@@ -114,7 +114,7 @@ var TabControl = Class.create({
 TabControl.Tab = Class.create({
   initialize: function(page) {
     this.page = page;
-    this.caption = page.readAttribute('caption');
+    this.caption = page.readAttribute('data-caption');
   },
 
   select: function() {
