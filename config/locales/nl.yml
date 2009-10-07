@@ -89,15 +89,15 @@ nl:
   optional: 'Optioneel'
   or: 'of'
   page: 'Pagina'
-  page_page: 'Page Part'
-  page_title: 'Page Title'
-  page_type: 'Page Type'
-  pages: 'Pages'
+  page_page: 'Pagina Part'
+  page_title: 'Pagina Title'
+  page_type: 'Pagina Type'
+  pages: "Pagina's"
   pages_controller:
-    removed_many: "The pages were successfully removed from the site."
-    removed_one: "The page was successfully removed from the site."
-    saved: "Your page has been saved below."
-  password: 'Password'
+    removed_many: "De pagina's werden succesvol verwijderd van de site."
+    removed_one: "De pagina werd succesvol verwijderd van de site."
+    saved: "Je pagina werd hieronder opgeslagen."
+  password: 'Wachtwoordgit checkut'
   password_confirmation: 'Confirm New Password'
   personal: 'Personal'
   personal_preferences: 'Personal Preferences'
