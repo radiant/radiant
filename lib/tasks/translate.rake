@@ -24,22 +24,7 @@ namespace :radiant do
       write_file("#{language_root}/#{ENV['LOCALE']}.yml", "#{ENV['LOCALE']}", '---', get_translation_keys(language_root))
       # print "Also, download the rails translation from: http://github.com/svenfuchs/rails-i18n/tree/master/rails/locale\n"
     end
-    
-    namespace :sync do
-      task :available_tags => :environment do
-        words = get_translation_keys(language_root, '_available_tags')
-        Dir["#{language_root}*.yml"].each do |filename|
-          next unless filename.match('_available_tags')
-          basename = File.basename(filename, '.yml')
-          puts "Syncing #{basename}"
-          (comments, other) = read_file(filename, basename)
-          words.each { |k,v| other[k] ||= words[k] }  # Initializing hash variable as empty if it does not exist
-          other.delete_if { |k,v| !words[k] }         # Remove if not defined in en-US.yml
-          write_file(filename, basename, comments, other)
-        end
-      end
-    end
-    
+        
   end
 end
 
