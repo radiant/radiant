@@ -6,6 +6,14 @@ class <%= class_name %> < Radiant::Extension
   description "Describe your extension here"
   url "http://yourwebsite.com/<%= file_name %>"
   
+  # extension_config do |config|
+  #   config.gem 'gem_name'
+  #   config.extension 'radiant-extension-name'
+  #   config.after_initialize do
+  #     run_something
+  #   end
+  # end
+  
   # define_routes do |map|
   #   map.namespace :admin, :member => { :remove => :get } do |admin|
   #     admin.resources :<%= file_name %>
@@ -13,6 +21,6 @@ class <%= class_name %> < Radiant::Extension
   # end
   
   def activate
-    # admin.nav[:content] << admin.nav_item(:<%= file_name %>, "<%= extension_name %>", "/admin/<%= file_name %>"), :after => :pages
+    # tab('Content').add_item("<%= extension_name %>", "/admin/<%= file_name %>", :after => "Pages")
   end
 end

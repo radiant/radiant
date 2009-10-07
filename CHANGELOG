@@ -2,6 +2,7 @@
 
 === Edge
 
+* Simplify admin tab API [Jim Gay, John Long, Sean Cribbs]
 * Fixed bug where pages were being cached in dev mode. This has been a problem since switching to Rack::Cache. [Jason Garber]
 * Snippets are now only accessible to people with the "Designer" role. [John Long]
 * Renamed "Developer" role to "Designer". [John Long]

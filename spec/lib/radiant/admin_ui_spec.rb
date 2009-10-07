@@ -15,11 +15,11 @@ describe Radiant::AdminUI do
   end
 
   it "should create a new nav tab" do
-    @admin.nav_tab(:content, "Content").should be_kind_of(Radiant::AdminUI::NavTab)
+    @admin.nav_tab("Content").should be_kind_of(Radiant::AdminUI::NavTab)
   end
   
   it "should create a new nav item" do
-    @admin.nav_item(:foo, "Foo", "/admin/foo").should be_kind_of(Radiant::AdminUI::NavSubItem)
+    @admin.nav_item("Foo", "/admin/foo").should be_kind_of(Radiant::AdminUI::NavSubItem)
   end
   
   it "should load the default navigation tabs and sub-items" do
