@@ -83,7 +83,7 @@ describe Admin::NodeHelper do
     @class = mock("Class")
     @page.should_receive(:class).and_return(@class)
     @class.should_receive(:display_name).and_return("Special")
-    helper.page_type.should ==  %{<small class="info">(Special)</small>}
+    helper.page_type.should ==  %{<span class="info">(Special)</span>}
   end
 
   it "should not render the page type if it's Page" do

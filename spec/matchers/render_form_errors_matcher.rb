@@ -25,7 +25,7 @@ module Spec
                     :attributes => {:name => field_name}
                   },
                   :child => {
-                    :tag => 'small',
+                    :tag => 'span',
                     :attributes => {:class => 'error'},
                     :content => error_message
                   }

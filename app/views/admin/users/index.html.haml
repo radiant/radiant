@@ -20,7 +20,7 @@
             - tbody.title_cell do
               %td.user
                 = link_to user.name, edit_admin_user_url(user)
-                %small.login= h user.login
+                %span.login= h user.login
             - tbody.roles_cell do
               %td.roles= roles(user)
             - tbody.modify_cell do

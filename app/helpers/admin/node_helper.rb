@@ -74,7 +74,7 @@ module Admin::NodeHelper
     if display_name == 'Page'
       ""
     else
-      %{<small class="info">(#{ h(display_name) })</small>}
+      %{<span class="info">(#{ h(display_name) })</span>}
     end
   end
 
