@@ -55,14 +55,14 @@ describe Admin::NodeHelper do
   it "should display an icon for the current node" do
     assigns[:current_node] = @page
     @page.should_receive(:virtual?).and_return(false)
-    helper.should_receive(:image).with("page", :class => "icon", :alt => 'page_icon', :title => '')
+    helper.should_receive(:image).with("page", :class => "icon", :alt => '', :title => '')
     helper.icon
   end
   
   it "should display the virtual icon if the current node is virtual" do
     assigns[:current_node] = @page
     @page.should_receive(:virtual?).and_return(true)
-    helper.should_receive(:image).with("virtual_page", :class => "icon", :alt => 'page_icon', :title => '')
+    helper.should_receive(:image).with("virtual_page", :class => "icon", :alt => '', :title => '')
     helper.icon
   end
 
@@ -83,7 +83,7 @@ describe Admin::NodeHelper do
     @class = mock("Class")
     @page.should_receive(:class).and_return(@class)
     @class.should_receive(:display_name).and_return("Special")
-    helper.page_type.should ==  %{<small class="info">(Special)</small>}
+    helper.page_type.should ==  %{<span class="info">(Special)</span>}
   end
 
   it "should not render the page type if it's Page" do

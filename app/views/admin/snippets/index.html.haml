@@ -1,8 +1,8 @@
-- @page_title = 'Snippets - ' + default_page_title
+- @page_title = t('snippets') + ' - ' + default_page_title
 
 .outset
   - render_region :top
-  %table#snippets.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0"}
+  %table#snippets.index
     %thead
       %tr
         - render_region :thead do |thead|
@@ -17,7 +17,7 @@
             - render_region :tbody do |tbody|
               - tbody.title_cell do
                 %td.snippet
-                  = image('snippet', :alt => 'snippet-icon')
+                  = image('snippet', :alt => '')
                   %span= link_to snippet.name, edit_admin_snippet_url(snippet)
               - tbody.modify_cell do
                 %td.remove

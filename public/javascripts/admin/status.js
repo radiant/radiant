@@ -119,7 +119,7 @@ Status.Window = Class.create({
     this.spinner = $img({src: Status.SpinnerImage, width: Status.SpinnerImageWidth, height: Status.SpinnerImageHeight, alt: ''});
     this.status = $div()
     
-    var table = $table({border: 0, cellpadding: 0, cellspacing: 0},
+    var table = $table(
       $tr(
         $td(this.spinner),
         $td({style: 'padding-left: ' + Status.CornerThickness + 'px'}, this.status)

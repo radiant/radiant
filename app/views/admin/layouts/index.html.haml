@@ -1,8 +1,8 @@
-- @page_title = 'Layouts - ' + default_page_title
+- @page_title = t('layouts') + ' - ' + default_page_title
 
 .outset
   - render_region :top
-  %table#layouts.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0" }
+  %table#layouts.index
     %thead
       %tr
         - render_region :thead do |thead|
@@ -19,7 +19,7 @@
             - render_region :tbody do |tbody|
               - tbody.title_cell do
                 %td.layout
-                  = image('layout', :alt => 'layout-icon')
+                  = image('layout', :alt => '')
                   = link_to layout.name, edit_admin_layout_url(layout)
               - tbody.modify_cell do
                 %td.remove

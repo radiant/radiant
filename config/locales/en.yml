@@ -117,6 +117,7 @@ en:
   remove_page: 'Remove Page'
   remove_pages: 'Remove {{pages}}' 
   remove_tab: 'Remove Tab'  
+  remove_user: 'Remove user'
   required: 'Required'  
   resource_controller:
     not_found: "{{humanized_model_name}} could not be found."

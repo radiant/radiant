@@ -18,18 +18,18 @@ ol, ul {
 blockquote, q {
   quotes: none; }
 
-/* remember to define focus styles! */ */
+/* remember to define focus styles! */
 *:focus {
   outline: 0; }
 
-/* remember to highlight inserts somehow! */ */
+/* remember to highlight inserts somehow! */
 ins {
   text-decoration: none; }
 
 del {
   text-decoration: line-through; }
 
-/* tables still need 'cellspacing="0"' in the markup */ */
+/* tables still need 'cellspacing="0"' in the markup */
 table {
   border-collapse: collapse;
   border-spacing: 0; }
@@ -80,7 +80,7 @@ input[type=image] {
 input.big {
   font-size: 120%; }
 
-small {
+#change_password span, span.info, span.error {
   font-size: 80%; }
 
 .hidden {
@@ -568,7 +568,7 @@ body.login #content p.version {
     #content table.index .node .layout {
       font-size: 115%;
       font-weight: bold; }
-    #content table.index .node .user small {
+    #content table.index .node .user .login {
       color: #666;
       font-size: 90%;
       font-style: italic;
