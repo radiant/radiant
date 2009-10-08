@@ -1,166 +1,166 @@
 ---
-nl:  
+nl:
   # Available Tag Descriptions
   tag_desc:
-    usage: 'Usage'
-    produces: 'produces'
-  
+    usage: 'Gebruik'
+    produces: 'produceert'
+
     page:
-      desc: "Causes the tags referring to a page's attributes to refer to the current page."
-      attributes: 'Renders the @{{method}}@ attribute of the current page.'
-      url: 'Renders the @url@ attribute of the current page.'
-  
-    children: 
+      desc: "Zorgt ervoor dat de tags die verwijzen naar de kenmerken van een pagina verwijzen naar de huidige pagina."
+      attributes: 'Maakt de @{{method}}@ eigenschap van de huidige pagina.'
+      url: 'Produceert de @url@ eigenschap van de huidige pagina.'
+
+    children:
       # Gives access to a page's children.
-      desc: "Gives access to a page's children."
+      desc: "Geeft toegang tot alle child (onderliggende) pagina&rsquo;s van een pagina."
       # Renders the total number of children.
-      count: 'Renders the total number of children.'
-      first: 'Returns the first child. Inside this tag all page attribute tags are mapped to the first child. <br /> 
-        Takes the same ordering options as @<r:children:each>@.'    
-      last: 'Returns the last child. Inside this tag all page attribute tags are mapped tothe last child. <br /> 
-        Takes the same ordering options as @<r:children:each>@.›'
-      each: "Cycles through each of the children. Inside this tag all page attribute tags are mapped to the current child page."
-      child: "Page attribute tags inside of this tag refer to the current child. This is occasionally <br /> 
-        useful if you are inside of another tag (like &lt;r:find&gt;) and need to refer back to the <br /> current child."  
-      if_first: "Renders the tag contents only if the current page is the first child in the context of a children:each tag"
-      unless_first: "Renders the tag contents unless the current page is the first child in the context of a children:each tag"
-      if_last: "Renders the tag contents unless the current page is the last child in the context of a children:each tag"
-      unless_last: "Renders the tag contents unless the current page is the last child in the context of a children:each tag"
-      header_p1: "Renders the tag contents only if the contents do not match the previous header. This is extremely useful for rendering date headers for a list of child pages."
-      header_p2: "If you would like to use several header blocks you may use the @name@ attribute to name the header. When a header is named it will not restart until another header of the same name is different."
-      header_p3: "Using the @restart@ attribute you can cause other named headers to restart when the present header changes. Simply specify the names of the other headers in a semicolon separated list."
-      
-    parent: "Page attribute tags inside this tag refer to the parent of the current page. "
-    if_parent: "Renders the contained elements only if the current contextual page has a parent, i.e. is not the root page."
-    unless_parent: "Renders the contained elements only if the current contextual page has no parent, i.e. is the root page."
-    
-    if_children: 'Renders the contained elements only if the current contextual page has one or <br />
-      more child pages.  The @status@ attribute limits the status of found child pages <br />
-      to the given status, the default is @"published"@. @status="all"@ includes all <br />
-      non-virtual pages regardless of status.'
-    unless_children: 'Renders the contained elements only if the current contextual page has no children.
-      The @status@ attribute limits the status of found child pages to the given status,
-      the default is @"published"@. @status="all"@ includes all non-virtual pages
-      regardless of status.'
-      
-    cycle: 'Renders one of the passed values based on a global cycle counter.  Use the @reset@
-      attribute to reset the cycle to the beginning.  Use the @name@ attribute to track
-      multiple cycles; the default is @cycle@.'
-    content: "Renders the main content of a page. Use the @part@ attribute to select a specific
-      page part. By default the @part@ attribute is set to body. Use the @inherit@
-      attribute to specify that if a page does not have a content part by that name that
-      the tag should render the parent's content part. By default @inherit@ is set to
-      @false@. Use the @contextual@ attribute to force a part inherited from a parent
-      part to be evaluated in the context of the child page. By default 'contextual'
-      is set to true."
-      
+      count: "Produceert het totaal aantal child pagina&rsquo;s."
+      first: 'Geeft de eerste child pagina terug. Binnen deze tag worden alle eigenschappen van een pagina toegewezen aan de eerste child pagina. <br />
+        Neemt dezelfde sorteringsopties over als @<r:children:each>@.'
+      last: 'Geeft de laatste child pagina terug. Binnen deze tag worden alle eigenschappen van een pagina toegewezen aan de laatste child pagina. <br />
+        Neemt dezelfde sorteringsopties over als @<r:children:each>@.›'
+      each: "Loopt door elk van de child pagina&rsquo;s. Binnen deze tag worden alle eigenschappen van een pagina toegewezen aan de huidige child pagina."
+      child: "De pagina eigenschap tags binnen deze tag verwijzen naar de huidige child (onderliggende) pagina. Dit is af en toe
+        nuttig als je binnen een andere tag bent (zoals @<r:find>@) en je de behoefte hebt terug te verwijzen naar de huidige child pagina."
+      if_first: "Produceert de tag inhoud enkel als de huidige pagina de eerste child pagina is in de context van een @<r:children:each>@ tag"
+      unless_first: "Produceert de tag inhoud enkel als de huidige pagina de eerste child pagina niet is in de context van een @<r:children:each>@ tag"
+      if_last: "Produceert de tag inhoud enkel als de huidige pagina de laatste child pagina is in de context van een @<r:children:each>@ tag"
+      unless_last: "Produceert de tag inhoud enkel als de huidige pagina de laatste child pagina niet is in de context van een @<r:children:each>@ tag"
+      header_p1: "Produceert de tag inhoud enkel als de inhoud niet overeenkomt met de vorige titel. Dit is uiterst nuttig om datum titels te produceren voor een lijst van child pagina&rsquo;s."
+      header_p2: "Als je verschillende titel blokken wil gebruiken kan je de @name@ eigenschap gebruiken om de titel te benoemen. Wanneer een titel benoemd is zal die niet opnieuw starten tot er een ander titel van dezelfde naam verschillend is."
+      header_p3: "De @restart@ eigenschap gebruiken laat andere genoemde titels herstarten wanneer de huidige titel wijzigt. Specificeer enkel de naam van de andere titels in een lijst in een met puntkomma's gescheiden lijst."
+
+    parent: "De pagina eigenschap tags binnen deze tag verwijzen naar de huidige parent (bovenliggende) pagina. "
+    if_parent: "Produceert de tag inhoud enkel als de huidige contextuele pagina een parent (bovenliggende) pagina heeft, dwz dus niet de root (bovenste pagina in hiërarchie) is."
+    unless_parent: "Produceert de tag inhoud enkel als de huidige contextuele pagina geen parent (bovenliggende) pagina heeft, dwz dus de root (bovenste pagina in hiërarchie) is."
+
+    if_children: 'Produceert de bevattende elementen enkel als de huidige contextuele pagina één of
+      meerder child (onderliggende) pagina&rsquo;s heeft.. De @status@ eigenschap beperkt de gevonden child pagina&rsquo;s
+      tot die met de opgegeven status, standaard wordt @"gepubliceerd"@ gebruikt. @status="all"@ omvat alle
+      niet-virtuele pagina&rsquo;s onafhankelijk van hun status.'
+    unless_children: 'Produceert de bevattende elementen enkel als de huidige contextuele pagina geen
+      child (onderliggende) pagina&rsquo;s heeft. De @status@ eigenschap beperkt de gevonden child pagina&rsquo;s
+      tot die met de opgegeven status, standaard wordt @"gepubliceerd"@ gebruikt. @status="all"@ omvat alle
+      niet-virtuele pagina&rsquo;s onafhankelijk van hun status.'
+
+    cycle: 'Produceert één van de opgegeven waarden gebaseerd op een globale cycle teller. Gebruik de @reset@
+      eigenschap om de cycle te laten herbeginnen. Gebruik de @name@ eigenschap om meerdere cycles
+      aan te sturen; de standaardnaam is @"cycle"@.'
+    content: 'Produceert de hoofd-content van een pagina. <br />Gebruik de @part@ eigenschap om een specifiek pagina part
+      te produceren. Standaard produceert de @part@ eigenschap de waarde @"body"@. <br />Gebruik de @inherit@
+      eigenschap om aan te duiden dat, indien een pagina geen content part heeft met deze naam dat het
+      het content part van de bovenliggende pagina moet produceren. Standaard heeft de @inherit@ eigenschap
+      de waarde @"false"@. <br />Gebruik de @contextual@ eigenschap om te forceren dat een pagina part overgenomen van de een bovenliggend
+      pagina part geëvalueerd wordt in de context van de onderliggende pagina. Standaard heeft de @contextual@
+      eigenschap de waarde @"true"@.'
+
     if_content:
-      part_1: 'Renders the containing elements if all of the listed parts exist on a page.
-        By default the @part@ attribute is set to @body@, but you may list more than one
-        part by separating them with a comma. Setting the optional @inherit@ to true will
-        search ancestors independently for each part. By default @inherit@ is set to @false@.'
-      part_2: 'When listing more than one part, you may optionally set the @find@ attribute to @any@
-        so that it will render the containing elements if any of the listed parts are found.
-        By default the @find@ attribute is set to @all@.'
+      part_1: 'Produceert de bevattende elementen enkel als al de opgegeven pagina parts bestaan op de pagina.<br />
+        Standaard heeft de @part@ eigenschap de waarde @"body"@, maar je kan overwegen meer dan één pagina part
+        op te geven, gescheiden door een komma. <br />Door de optionele eigenschap @inherit@ op @"true"@ te zetten
+        worden de bovenliggende pagina&rsquo;s onafhankelijk doorzocht voor elk pagina part. Standaard staat de @inherit@ eigenschap op waarde @"false"@.'
+      part_2: 'Wanneer meer dan één pagina part opgelijst wordt, kan je optioneel de @find@ eigenschap op @"any"@ zetten
+        zodat het de bevattende elementen produceert als één of meerdere van de opgelijste pagina parts gevonden worden.
+        Standaard staat de @find@ eigenschap op waarde @"all"@.'
     unless_content:
-      part_1: 'The opposite of the @if_content@ tag. It renders the contained elements if all of the
-        specified parts do not exist. Setting the optional @inherit@ to true will search
-        ancestors independently for each part. By default @inherit@ is set to @false@.'
-      part_2: 'When listing more than one part, you may optionally set the @find@ attribute to @any@
-        so that it will not render the containing elements if any of the listed parts are found.
-        By default the @find@ attribute is set to @all@.'
-      
-    if_url: "Renders the containing elements only if the page's url matches the regular expression
-      given in the @matches@ attribute. If the @ignore_case@ attribute is set to false, the
-      match is case sensitive. By default, @ignore_case@ is set to true."
-    unless_url: "The opposite of the @if_url@ tag."
-    
+      part_1: 'Het tegengestelde van de @<r:if_content>@ tag. De tag produceert de bevattende elementen als alle
+        opgelijste pagina parts niet bestaan. <br />Door de optionele @inherit@ eigenschap op @"true"@ te zetten
+        worden de bovenliggende pagina&rsquo;s onafhankelijk doorzocht voor elk pagina part. Standaard staat de @inherit@ eigenschap op waarde @"false"@.'
+      part_2: 'Wanneer meer dan één pagina part opgelijst wordt, kan je optioneel de @find@ eigenschap op @"any"@ zetten
+        zodat het de bevattende elementen niet produceert als één of meerdere van de opgelijste pagina parts gevonden worden.
+        Standaard staat de @find@ eigenschap op waarde @"all"@.'
+
+    if_url: 'Produceert de bevattende elementen enkel als de url van de pagina overeenkomt met de reguliere expressie
+      opgegeven in de @matches@ eigenschap. Als de @ignore_case@ eigenschap op @"false"@ wordt gezet, dan is de match
+      hoofdlettergevoelig. Standaard staat de @ignore_case@ waarde op @"true"@.'
+    unless_url: "Het tegengestelde van de @<r:if_url>@ tag."
+
     if_ancestor_or_self:
-      part_1: "Renders the contained elements if the current contextual page is either the actual page or one of its parents."
-      part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is or descends from the current page."
+      part_1: "Produceert de bevattende elementen enkel als de huidige contextuele pagina ook de huidige pagina of één van de bovenliggende pagina&rsquo;s is."
+      part_2: "Dit wordt over het algemeen binnen een andere tag (zoals @<r:children:each>@) gebruikt om conditionele opmaak toe te voegen als het onderliggend element de huidige pagina is of als het onder de huidige pagina ligt."
     unless_ancestor_or_self:
-      part_1: "Renders the contained elements unless the current contextual page is either the actual page or one of its parents."
-      part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless   the child element is or descends from the current page."
+      part_1: "Produceert de bevattende elementen tenzij de huidige contextuele pagina ook de huidige pagina of één van de bovenliggende pagina&rsquo;s is."
+      part_2: "Dit wordt over het algemeen binnen een andere tag (zoals @<r:children:each>@) gebruikt om conditionele opmaak toe te voegen als het onderliggend element niet de huidige pagina is of als het niet onder de huidige pagina ligt."
     if_self:
-      part_1: "Renders the contained elements if the current contextual page is also the actual page."
-      part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is the current page."
-    unless_self: 
-      part_1: "Renders the contained elements unless the current contextual page is also the actual page."
-      part_2: "This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless the child element is the current page."
-    
-    author: 'Renders the name of the author of the current page.'
-    
-    date: "Renders the date based on the current page (by default when it was published or created).
-      The format attribute uses the same formating codes used by the Ruby @strftime@ function. By
-      default it's set to &#37;A, &#37;B &#37;d, &#37;Y. The @for@ attribute selects which date to render.  Valid
-      options are @published_at@, @created_at@, @updated_at@, and @now@. @now@ will render the
-      current date/time, regardless of the  page."
-      
-    link: "Renders a link to the page. When used as a single tag it uses the page's title
-      for the link name. When used as a double tag the part in between both tags will
-      be used as the link text. The link tag passes all attributes over to the HTML
-      @a@ tag. This is very useful for passing attributes like the @class@ attribute
-      or @id@ attribute. If the @anchor@ attribute is passed to the tag it will
-      append a pound sign (<code>#</code>) followed by the value of the attribute to
-      the @href@ attribute of the HTML @a@ tag--effectively making an HTML anchor."
-      
-    breadcrumbs: "Renders a trail of breadcrumbs to the current page. The separator attribute
-      specifies the HTML fragment that is inserted between each of the breadcrumbs. By
-      default it is set to @>@. The boolean nolinks attribute can be specified to render
-      breadcrumbs in plain text, without any links (useful when generating title tag)."
-    snippet: 
-      part_1: "Renders the snippet specified in the @name@ attribute within the context of a page."
-      part_2: "When used as a double tag, the part in between both tags may be used within the snippet itself, being substituted in place of @<r:yield/>@."
-    
+      part_1: "Produceert de bevattende elementen enkel als de huidige contextuele pagina ook de huidige pagina is."
+      part_2: "Dit wordt over het algemeen binnen een andere tag (zoals @<r:children:each>@) gebruikt om conditionele opmaak toe te voegen als het onderliggend element de huidige pagina is."
+    unless_self:
+      part_1: "Produceert de bevattende elementen tenzij de huidige contextuele pagina ook de huidige pagina is."
+      part_2: "Dit wordt over het algemeen binnen een andere tag (zoals @<r:children:each>@) gebruikt om conditionele opmaak toe te voegen als het onderliggend element niet de huidige pagina is."
+
+    author: 'Produceert de naam van de auteur van de huidige pagina.'
+
+    date: 'Produceert de datum gebaseerd op de huidige pagina (standaard wanneer deze gepubliceerd of aangemaakt werd).
+      De @format@ eigenschap gebruikt dezelfde opmaakcodes die gebruikt worden door de Ruby @strftime@ functie.
+      Deze staat standaard op &#37;A, &#37;B &#37;d, &#37;Y. De @for@ eigenschap geeft aan welke datum geproduceerd wordt. Geldige
+      opties zijn @"published_at"@, @"created_at"@, @"updated_at"@, en @"now"@. @"now"@ produceert de
+      huidige datum/tijd, onafhankelijk van de huidige pagina.'
+
+    link: "Produceert een link naar de pagina. Wanneer deze tag enkel gebruikt wordt zal de titel van de pagina
+      gebruikt worden als naam voor de link. Wanneer de tag dubbel gebruikt wordt (met open en sluit tag) wordt het gedeelte tussen de 2 tags
+      gebruikt als naam voor de link. De link tag geeft alle eigenschappen door aan de
+      @a@ HTML tag. Dit is nuttig om eigenschappen als @class@ of
+      @id@ mee te geven. Als de @anchor@ eigenschap meegegeven wordt aan de tag zal het
+      een hekje (<code>#</code>) toevoegen gevolgd door de waarde van de eigenschap aan de
+      @href@ eigenschap van de @a@ HTML tag--om effectief een 'HTML anker' te maken."
+
+    breadcrumbs: 'Produceert een spoor van breadcrumbs binnen de huidige pagina. De @separator@ eigenschap
+      geeft het HTML fragment op dat weergegeven wordt tussen elk van de breadcrumbs. Standaard
+      staat deze waarde op @">"@. De booleaanse @nolinks@ eigenschap kan opgegeven worden om de breadcrumbs
+      in platte-tekst versie te produceren, zonder enige links (nuttig wanneer een @title@ tag wordt geproduceerd).'
+    snippet:
+      part_1: "Produceert de snippet opgegeven in de @name@ eigenschap binnen de context van de huidige pagina."
+      part_2: "Wanneer de tag dubbel gebruikt wordt (met open en sluit tag), kan het gedeelte opgegeven tussen beide tags gebruikt worden binnen de snippet zelf, het wordt dan geplaatst door de @<r:yield/>@ tag te gebruiken in de snippet."
+
     yield:
-      part_1: "Used within a snippet as a placeholder for substitution of child content, when the snippet is called as a double tag."
-      usage: "Usage (within a snippet):"
-      part_2: 'If the above snippet was named "yielding", you could call it from any Page,
-        Layout or Snippet as follows:'
-      part_3: 'Which would output the following:'
-      part_4: "When called in the context of a Page or a Layout, @<r:yield/>@ outputs nothing."
-    
+      part_1: "Gebruikt binnen een snippet als plaatsbekleder voor vervanging door onderliggende content, wanneer de snippet aangeroepen wordt door een dubbel gebruikte tag (met open en sluit tag)."
+      usage: "Gebruik (binnen een snippet):"
+      part_2: 'Als de bovenstaande snippet de naam "yielding" heeft, kan je die van eender welke pagina, layout of snippet aanroepen
+        door:'
+      part_3: 'Wat volgende output zou geven:'
+      part_4: "Wanneer aangeroepen in de context van een pagina of layout, produceert @<r:yield/>@ niets."
+
     meta:
-      desc: "The namespace for 'meta' attributes. If used as a singleton tag, both the description and keywords fields will be output as &lt;meta /&gt; tags unless the attribute 'tag' is set to 'false'."
-      keywords: "Emits the page keywords field in a meta tag, unless attribute 'tag' is set to 'false'."
-      description: "Emits the page description field in a meta tag, unless attribute 'tag' is set to 'false'."
-  
+      desc: 'De manier om &rsquo;meta&rsquo; eigenschappen op te geven. Indien gebruikt als een enkele tag, produceren zowel de &rsquo;description&rsquo; als de &rsquo;keywords&rsquo; velden dezelfde &lt;meta /&gt; tags tenzij de eigenschap @tag@ de waarde @"false"@ meekrijgt.'
+      keywords: 'Produceert de &rsquo;keywords&rsquo; van de pagina in een meta tag, tenzij de eigenschap @tag@ de waarde @"false"@ meekrijgt.'
+      description: 'Produceert het &rsquo;description&rsquo; veld van de pagina in een meta tag, tenzij de eigenschap @tag@ de waarde @"false"@ meekrijgt.'
+
     status:
-      desc: "Prints the page's status as a string. Optional attribute 'downcase' will cause the status to be all lowercase."
-  
+      desc: "Produceert de status van de huidige pagina as een string. De optionele eigenschap @downcase@ zal de status in kleine letters weergeven."
+
     unless_dev:
-      desc: "The opposite of the @if_dev@ tag."
-  
+      desc: "Het tegengestelde van de @<r:if_dev>@ tag."
+
     if_dev:
-      desc: "Renders the containing elements only if Radiant in is development mode."
-  
+      desc: "Produceert de bevattende elementen enkel als Radiant in development (ontwikkel) modus draait."
+
     navigation:
-      desc: "Renders a list of links specified in the @urls@ attribute according to three states: <br/>
-        * @normal@ specifies the normal state for the link<br/>
-        * @here@ specifies the state of the link when the url matches the current page's URL<br/>
-        * @selected@ specifies the state of the link when the current page matches is a child of the specified url<br/>
-        The @between@ tag specifies what should be inserted in between each of the links."
-      error: "`navigation' tag must include a `normal' tag"
-  
+      desc: "Produceert een lijst van links opgegeven in de @urls@ eigenschap volgens 3 mogelijke toestanden: <br/>
+        * @normal@ produceert de normale toestand voor de link<br/>
+        * @here@ produceert de toestand voor de link als de url overeenkomt met de url van de huidige pagina<br/>
+        * @selected@ produceert de toestand voor de link als de link van de huidige pagina overeenkomt met de url van een onderliggende pagina<br/>
+        De @between@ tag geeft op wat er tussen elk van deze link ingevoegd moet worden."
+      error: "binnen de @<r:navigation>@ tag moet een @normal@ tag gebruikt worden"
+
     rfc1123_date:
-      desc: "Outputs the published date using the format mandated by RFC 1123. (Ideal for RSS feeds.)"
-  
+      desc: "Produceert de datum van publicatie volgens het formaat gemandateerd door RFC 1123. (Ideaal voor RSS feeds.)"
+
     escape_html:
-      desc: "Escapes angle brackets, etc. for rendering in an HTML document."
-  
+      desc: "Vertaald speciale tekens (zoals bv groter dan en kleiner dan tekens) om correct weer te geven in een HTML document."
+
     comment:
-      desc: "Nothing inside a set of comment tags is rendered."
-  
+      desc: "De tekst binnen deze tag wordt niet weergegeven."
+
     random:
-      desc: "Randomly renders one of the options specified by the @option@ tags."
-  
+      desc: "Produceert willekeurig één van de opties opgegeven door de @option@ tags."
+
     find:
-      desc: "Inside this tag all page related tags refer to the page found at the @url@ attribute. @url@s may be relative or absolute paths."
-  
+      desc: "Binnen deze tag refereren alle pagina gerelateerde tags naar de pagina gevonden door de @url@ eigenschap. @url@ kan een relatief of absoluut path zijn."
+
     markdown:
-      desc: "Filters its contents with the Markdown filter."
+      desc: "Filtert zijn inhoud met de Markdown filter."
     smarty_pants:
-      desc: "Filters its contents with the SmartyPants filter."
+      desc: "Filtert zijn inhoud met de SmartyPants filter."
     textile:
-      desc: "Filters its contents with the Textile filter."
- 
+      desc: "Filtert zijn inhoud met de Textile filter."
+
