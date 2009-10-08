@@ -1,0 +1,180 @@
+---
+nl: 
+  account: 'Account'
+  activerecord:
+    errors:
+      messages:
+        blank: 'verplicht' # required
+        invalid: 'ongeldig formaat' #invalid_format
+        not_a_number: 'moet een nummer zijn' # must be number
+        taken: 'reeds in gebruik' # name_in_use
+        too_long: '{{count}}-karakters limiet' # character_limit
+        too_short: '{{count}}-karakters minimum' # character_minimum
+      models:
+        page:
+          attributes:
+            slug:
+              taken: 'slug bestaat al voor child van parent' # slug_in_use
+        user:
+          attributes:
+            email:
+              invalid: 'Ongeldig e-mail adres' # invalid_email
+            login:
+              taken: 'login is al in gebruik' # login already in use
+            password:
+              confirmation: 'moet overeen komen' # password_confirmation
+  add_child: 'Child toevoegen'
+  add_part: 'Part toevoegen'
+  add_tab: 'Tab toevoegen'
+  admin: 'Administrator'
+  assets: 'Bestanden'
+  available_tags: 'Beschikbare tags'
+  available_tags_for: 'Beschikbare tags for'
+  body: 'Body'
+  breadcrumb: 'Broodkruimel'
+  buttons:
+    create: 'Creëer {{name}}'   
+    save_and_continue: 'Opslaan en verder bewerken'
+    save_changes: 'Veranderingen opslaan'
+  cancel: 'Annuleren'
+  change: 'Aanpassen'
+  close: 'Sluiten'
+  content: 'Inhoud'
+  content_type: 'Inhoudstype'    
+  creating_status: '{{model}}&#8230; aan het maken'
+  date:
+    abbr_day_names: [zo, ma, di, wo, do, vr, za]
+    abbr_month_names: [~, jan, feb, mar, apr, mei, jun, jul, aug, sep, okt, nov, dec]
+    day_names: [zondag, maandag, dinsdag, woensdag, donderdag, vrijdag, zaterdag]
+    formats:
+      default: "%d/%m/%Y"
+      long: "%B %e, %Y"
+      only_day: "%e"
+      short: "%e %b"
+    month_names: [~, januari, februari, maart, april, mei, juni, juli, augustus, september, october, november, december]   
+    order: [ :day, :month, :year ]
+  delete_layout: 'Layout verwijderen'
+  delete_pages: '{{pages}} verwijderen'  
+  delete_snippet: 'Snippet verwijderen'
+  delete_user: 'Gebruiker verwijderen'
+  description: 'Omschrijving'
+  design: 'Ontwerp'
+  designer: 'Ontwerper'
+  draft: 'Klad'
+  edit_layout: 'Layout aanpassen'
+  edit_page:  'Pagina aanpassen'   
+  edit_snippet: 'Snippet aanpassen'
+  edit_user: 'Gebruiker aanpassen'
+  email_address: 'E-mail adres'
+  extension: 'Extension'
+  extensions: 'Extensions'
+  filter: 'Filter'
+  galleries: 'Galerijen'
+  hidden: 'Verborgen'
+  hide: 'Verbergen' 
+  keywords: 'Sleutelwoorden'
+  language: 'Taal'
+  layout: 'Layout'
+  layouts: 'Layouts'
+  log_out: 'Uitloggen'
+  logged_in_as: 'Ingelogd als'
+  login: 'Inloggen'
+  modify: 'Bewerken' 
+  more: 'Meer'
+  name: 'Naam'
+  new_layout: 'Nieuwe Layout'    
+  new_page: 'Nieuwe Pagina'
+  new_password: 'Nieuw Paswoord'
+  new_snippet: 'Nieuwe Snippet'
+  new_user: 'Nieuwe Gebruiker'  
+  no_pages: "Geen pagina's"
+  notes: 'Notities'    
+  optional: 'Optioneel'
+  or: 'of'
+  page: 'Pagina'
+  page_page: 'Page Part'
+  page_title: 'Pagina Titel'  
+  page_type: 'Pagina Type'
+  pages: "Pagina's"
+  pages_controller:
+    removed_many: "De pagina's werden van de site verwijderd."   
+    removed_one: "De pagina is van de site verwijderd."  
+    saved: "Je pagina werd hieronder opgeslaan."  
+  password: 'Wachtwoord'
+  password_confirmation: 'Nieuw wachtwoord bevestigen'
+  personal: 'Persoonlijk'
+  personal_preferences: 'Persoonlijke Voorkeuren'
+  please_login: 'Gelieve in te loggen'
+  powered_by: 'Powered by'
+  preferences: 'Voorkeuren' 
+  preferences_controller:
+    error_updating: 'Er was een probleem om je voorkeuren aan te passen.'      
+    updated: 'Je voorkeuren zijn bijgewerkt.' 
+  published: 'Gepubliceerd'
+  published_at: 'Gepubliceerd op' 
+  reference:  'Referentie'
+  remember_me: 'Onthoud mij'
+  remove: 'Verwijder'
+  remove_layout: 'Layout verwijderen' 
+  remove_page: 'Pagina verwijderen'
+  remove_pages: '{{pages}} verwijderen' 
+  remove_tab: 'Tab verwijderen'  
+  required: 'Vereist'  
+  resource_controller:
+    not_found: "{{humanized_model_name}} kon niet gevonden worden."
+    removed: "{{humanized_model_name}} werd verwijderd."
+    saved: "{{humanized_model_name}} is opgeslaan."
+    update_conflict: "{{humanized_model_name}} is bijgewerkt sinds het werd ingeladen. Veranderingen kunnen niet opgeslaan worden zonder mogelijk verlies van data." 
+    validation_errors: "Er zijn validatiefouten opgetreden tijdens het verwerken van dit formulier. Gelieve het formulier te overlopen, en fouten te verbeteren alvorens verder te gaan."
+  reviewed: 'Nagekeken'
+  roles: 'Rollen'
+  saving_changes: 'Aan het bijwerken'
+  search_tags: 'Tags doorzoeken:'
+  select:
+    inherit: '<erven>'
+    none: '<geen>' 
+    normal: '<normal>'
+  settings: 'Instellingen'
+  slug: 'Slug'
+  snippet: 'Snippet'   
+  snippets: 'Snippets'
+  status: 'Status'
+    # Warnings and info text:
+  text:
+    layouts:
+      remove_warning: 'Ben je zeker dat je deze layout <strong>voorgoed</strong> wilt verwijderen?'   
+    pages: 
+      remove_warning: 'Ben je zeker dat je de volgende {{pages}} <strong>voorgoed</strong> wilt verwijderen?'
+    snippets:
+      remove_warning: 'Ben je zeker dat je de volgende snippet <strong>voorgoed</strong> wilt verwijderen?'
+    users: 
+      remove_warning: 'Ben je zeker dat je de volgende gebruiker <strong>voorgoed</strong> wilt verwijderen?'
+  this_file_language: "Nederlands" 
+  time:
+    am: 'am'
+    formats:
+      datetime:
+        formats:
+          default: "%Y-%m-%dT%H:%M:%S%Z"
+      default: "%a %b %d %H:%M:%S %Z %Y"   
+      long: "%B %d, %Y %H:%M"
+      only_second: "%S"
+      short: "%d %b %H:%M"
+      time: "%H:%M"
+      timestamp: "%I:%M %p on %B %d, %Y" 
+    pm: 'pm'
+  timestamp:
+    at: 'op'
+    by: 'door'
+    last_updated: 'Laatst bijgewerkt'
+  user: 'Gebruiker'
+  username: 'Gebruikersnaam'
+  users: 'Gebruikers'
+  users_controller:
+    cannot_delete_self: 'Je kunt jezelf niet verwijderen.'    
+  version: 'Versie'
+  view_site: 'Site bezoeken'
+  website: 'Website'
+  welcome_controller:
+    invalid_user: 'Ongeldige gebruikersnaam of wachtwoord.' 
+    logged_out: 'Je bent nu uitgelogd.'  
