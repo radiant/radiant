@@ -76,3 +76,5 @@ Radiant::Initializer.run do |config|
     end
   end
 end
+
+Haml::Template.options[:format] = :html5
