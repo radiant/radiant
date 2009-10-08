@@ -33,7 +33,7 @@ nl:
   breadcrumb: 'Breadcrumb'
   buttons:
     create: '{{name}} Aanmaken'
-    save_and_continue: 'Opslaan en verder Aanpassen'
+    save_and_continue: 'Opslaan en verder Wijzigen'
     save_changes: 'Opslaan'
   cancel: 'Annuleren'
   change: 'Wijzigen'
@@ -59,10 +59,10 @@ nl:
   design: 'Design'
   designer: 'Designer'
   draft: 'Ontwerp'
-  edit_layout: 'Layout Aanpassen'
-  edit_page:  'Pagina Aanpassen'
-  edit_snippet: 'Snippet Aanpassen'
-  edit_user: 'Gebruiker Aanpassen'
+  edit_layout: 'Layout Wijzigen'
+  edit_page:  'Pagina Wijzigen'
+  edit_snippet: 'Snippet Wijzigen'
+  edit_user: 'Gebruiker Wijzigen'
   email_address: 'E-mailadres'
   extension: 'Extensie'
   extensions: 'Extensies'
@@ -90,47 +90,47 @@ nl:
   or: 'of'
   page: 'Pagina'
   page_page: 'Pagina Part'
-  page_title: 'Pagina Title'
+  page_title: 'Pagina Titel'
   page_type: 'Pagina Type'
   pages: "Pagina's"
   pages_controller:
     removed_many: "De pagina's werden succesvol verwijderd van de site."
     removed_one: "De pagina werd succesvol verwijderd van de site."
-    saved: "Je pagina werd hieronder opgeslagen."
-  password: 'Wachtwoordgit checkut'
-  password_confirmation: 'Confirm New Password'
-  personal: 'Personal'
-  personal_preferences: 'Personal Preferences'
-  please_login: 'Please Login'
+    saved: "Je pagina is hieronder opgeslagen."
+  password: 'Wachtwoord'
+  password_confirmation: Bevestig Nieuw Wachtwoord'
+  personal: 'Personlijk'
+  personal_preferences: 'Persoonlijke Voorkeuren'
+  please_login: 'Aub Aanmelden'
   powered_by: 'Powered by'
-  preferences: 'Preferences'
+  preferences: 'Voorkeuren'
   preferences_controller:
-    error_updating: 'There was an error updating your preferences.'
-    updated: 'Your preferences have been updated.'
-  published: 'Published'
-  published_at: 'Published at'
-  reference:  'Reference'
-  remember_me: 'Remember me'
-  remove: 'Remove'
-  remove_layout: 'Remove Layout'
-  remove_page: 'Remove Page'
-  remove_pages: 'Remove {{pages}}'
-  remove_tab: 'Remove Tab'
-  required: 'Required'
+    error_updating: 'Er is een fout opgetreden bij het opslaan van je voorkeuren.'
+    updated: 'Je voorkeuren werden gewijzigd.'
+  published: 'Gepubliceerd'
+  published_at: 'Gepuliceerd op'
+  reference:  'Referentie'
+  remember_me: 'Onthoud me'
+  remove: 'Verwijderen'
+  remove_layout: 'Layout Verwijderen'
+  remove_page: 'Pagina Verwijderen'
+  remove_pages: '{{pages}} Verwijderen'
+  remove_tab: 'Tab Verwijderen'
+  required: 'Verplicht'
   resource_controller:
-    not_found: "{{humanized_model_name}} could not be found."
-    removed: "{{humanized_model_name}} has been deleted."
-    saved: "{{humanized_model_name}} saved below."
-    update_conflict: "{{humanized_model_name}} has been modified since it was last loaded. Changes cannot be saved without potentially losing data."
-    validation_errors: "Validation errors occurred while processing this form. Please take a moment to  review the form and correct any input errors before continuing."
-  reviewed: 'Reviewed'
-  roles: 'Roles'
-  search_tags: 'Search Tags:'
+    not_found: "{{humanized_model_name}} is niet gevonden."
+    removed: "{{humanized_model_name}} is verwijderd."
+    saved: "{{humanized_model_name}} is hieronder opgelsagen."
+    update_conflict: "{{humanized_model_name}} is gewijzigd sinds sinds het laden. De wijzigingen kunnen niet opgeslagen worden zonder mogelijk verlies van gegevens."
+    validation_errors: "Validatie fouten zijn opgetreden bij het verwerken van dit formulier. Kijk het formulier aub na en verbeter eventuele fouten om verder te gaan."
+  reviewed: 'Nagekeken'
+  roles: 'Rollen'
+  search_tags: 'Zoek Tags:'
   select:
-    inherit: '<inherit>'
-    none: '<none>'
-    normal: '<normal>'
-  settings: 'Settings'
+    inherit: '<erven>'
+    none: '<geen>'
+    normal: '<normaal>'
+  settings: 'Instellingen'
   slug: 'Slug'
   snippet: 'Snippet'
   snippets: 'Snippets'
@@ -138,39 +138,39 @@ nl:
     # Warnings and info text:
   text:
     layouts:
-      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following layout?'
+      remove_warning: 'Ben je zeker dat je de volgende layout <strong class="warning">definitief</strong> wil <strong class="warning">verwijderen</strong>?'
     pages:
-      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following {{pages}}?'
+      remove_warning: 'Ben je zeker dat je de volgende pagina <strong class="warning">definitief</strong> wil <strong class="warning">verwijderen</strong>?'
     snippets:
-      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following snippet?'
+      remove_warning: 'Ben je zeker dat je de volgende snippet <strong class="warning">definitief</strong> wil <strong class="warning">verwijderen</strong>?'
     users:
-      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following user?'
-  this_file_language: "English"
+      remove_warning: 'Ben je zeker dat je de volgende gebruiker <strong class="warning">definitief</strong> wil <strong class="warning">verwijderen</strong>?'
+  this_file_language: "Nederlands"
   time:
     am: 'am'
     formats:
       datetime:
         formats:
           default: "%Y-%m-%dT%H:%M:%S%Z"
-      default: "%a %b %d %H:%M:%S %Z %Y"
-      long: "%B %d, %Y %H:%M"
+      default: "%a %d %b %H:%M:%S %Z %Y"
+      long: "%d %B %Y %H:%M"
       only_second: "%S"
       short: "%d %b %H:%M"
       time: "%H:%M"
-      timestamp: "%I:%M %p on %B %d, %Y"
+      timestamp: "%H:%M op %d %B %Y"
     pm: 'pm'
   timestamp:
-    at: 'at'
-    by: 'by'
-    last_updated: 'Last Updated'
-  user: 'User'
-  username: 'Username'
-  users: 'Users'
+    at: 'om'
+    by: 'door'
+    last_updated: 'Laatst gewijzigd'
+  user: 'Gebruiker'
+  username: 'Gebruikersnaam'
+  users: 'Gebruikers'
   users_controller:
-    cannot_delete_self: 'You cannot delete yourself.'
-  version: 'Version'
-  view_site: 'View Site'
+    cannot_delete_self: 'Je kan jezelf niet verwijderen.'
+  version: 'Versie'
+  view_site: 'Bekijk Site'
   website: 'Website'
   welcome_controller:
-    invalid_user: 'Invalid username or password.'
-    logged_out: 'You are now logged out.'
+    invalid_user: 'Onbekende gebruikersnaam of wachtwoord.'
+    logged_out: 'Je bent nu afgemeld.'
