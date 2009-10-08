@@ -13,3 +13,4 @@ spec/datasets/tmp
 cache
 .idea
 db/schema.rb
+*.kpf
