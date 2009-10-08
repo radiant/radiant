@@ -1,6 +1,6 @@
 - content_for 'popups' do
   #add_part_popup.popup{:style => "display: none"}
-    #add_part_busy.busy{:style => "display: none"}= image 'spinner.gif'
+    #add_part_busy.busy{:style => "display: none"}= image('spinner.gif', :alt => "")
     %h3.title= t('add_part')
     - form_for([:admin, PagePart.new], :html => { :onsubmit => "addPart(this); return false" }) do |f|
       %p
