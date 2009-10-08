@@ -66,8 +66,8 @@ nl:
   edit_snippet: 'Snippet aanpassen'
   edit_user: 'Gebruiker aanpassen'
   email_address: 'E-mail adres'
-  extension: 'Extension'
-  extensions: 'Extensions'
+  extension: 'Module'
+  extensions: 'Modules'
   filter: 'Filter'
   galleries: 'Galerijen'
   hidden: 'Verborgen'
@@ -78,7 +78,7 @@ nl:
   layouts: 'Layouts'
   log_out: 'Uitloggen'
   logged_in_as: 'Ingelogd als'
-  login: 'Inloggen'
+  login: 'Login'
   modify: 'Bewerken' 
   more: 'Meer'
   name: 'Naam'
@@ -119,6 +119,7 @@ nl:
   remove_page: 'Pagina verwijderen'
   remove_pages: '{{pages}} verwijderen' 
   remove_tab: 'Tab verwijderen'  
+  remove_user: 'Gebruiker verwijderen'
   required: 'Vereist'  
   resource_controller:
     not_found: "{{humanized_model_name}} kon niet gevonden worden."
