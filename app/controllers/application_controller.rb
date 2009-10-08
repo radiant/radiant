@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   
   before_filter :set_current_user
   before_filter :set_timezone
-  before_filter :set_user_language
+  before_filter :set_user_locale
   before_filter :set_javascripts_and_stylesheets
   
   attr_accessor :config, :cache
@@ -63,9 +63,8 @@ class ApplicationController < ActionController::Base
       UserActionObserver.current_user = current_user
     end  
         
-    def set_user_language     
-      I18n.default_locale = 'en' #request.env['HTTP_ACCEPT_LANGUAGE'].scan(/^[a-z]{2}/).first       
-      I18n.locale = current_user && current_user.language ? current_user.language : I18n.default_locale
+    def set_user_locale      
+      I18n.locale = current_user && !current_user.locale.blank? ? current_user.locale : Radiant::Config['default_locale']
     end
 
     def set_timezone

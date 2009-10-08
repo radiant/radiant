@@ -40,6 +40,7 @@ en:
   close: 'Close'
   content: 'Content'
   content_type: 'Content&#8209;Type'    
+  creating_status: 'Creating {{model}}&#8230;'
   date:
     abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
     abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
@@ -116,6 +117,7 @@ en:
   remove_page: 'Remove Page'
   remove_pages: 'Remove {{pages}}' 
   remove_tab: 'Remove Tab'  
+  remove_user: 'Remove user'
   required: 'Required'  
   resource_controller:
     not_found: "{{humanized_model_name}} could not be found."
@@ -125,6 +127,8 @@ en:
     validation_errors: "Validation errors occurred while processing this form. Please take a moment to  review the form and correct any input errors before continuing."
   reviewed: 'Reviewed'
   roles: 'Roles'
+  saving_changes: Saving Changes
+  saving_preferences: Saving preferences
   search_tags: 'Search Tags:'
   select:
     inherit: '<inherit>'

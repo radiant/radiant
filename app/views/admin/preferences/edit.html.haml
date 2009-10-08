@@ -1,4 +1,4 @@
-- @page_title = @user.name + ' Preferences - ' + default_page_title
+- @page_title = @user.name + ' ' + t('preferences') + ' - ' + default_page_title
 
 - body_classes << "reversed"
 
@@ -7,7 +7,7 @@
     %h1= t('personal_preferences') 
 
   - main.edit_form do
-    - form_for @user, :url => admin_preferences_url, :html => { :method => :put, :onsubmit_status => "Saving preferences&#8230;" } do |f|
+    - form_for @user, :url => admin_preferences_url, :html => { :method => :put, :onsubmit_status => "#{t('saving_preferences')}&#8230;" } do |f|
       = render_region :form_top
       
       - render_region :form do |form|
@@ -26,10 +26,10 @@
             = f.label :login, t("username")
             = f.text_field "login", :class => "textbox", :size => 32, :maxlength => 40
         
-        // - form.edit_language do
-        //   %p
-        //     = f.label :language, t('language') 
-        //     = f.select "language", AVAILABLE_LOCALES
+        - form.edit_locale do
+          %p
+            = f.label :locale, t('language') 
+            = f.select "locale", Radiant::AvailableLocales.locales.merge({'<default>'=>''})
             
         - form.edit_password do
           = render "admin/users/password_fields", :f => f

@@ -40,6 +40,7 @@ de:
   close: 'Schliessen'
   content: 'Inhalt'
   content_type: 'Inhalt&#8209;Typ'    
+  creating_status: 'Creating {{model}}&#8230;'
   date:
     abbr_day_names: [So, Mo, Di, Mi, Do, Fr, Sa]
     abbr_month_names: [~, Jan, Feb, Mär, Apr, Mai, Jun, Jul, Aug, Sep, Okt, Nov, Dez]
@@ -54,6 +55,7 @@ de:
   delete_layout: 'Layout löschen'  
   delete_pages: 'lösche {{pages}}'  
   delete_snippet: 'Snippet löschen'
+  delete_user: 'Benutzer Löschen'
   description: 'Beschreibung'
   design: 'Design'
   designer: 'Designer'
@@ -115,6 +117,7 @@ de:
   remove_page: 'Remove Page'
   remove_pages: 'entferne {{pages}}' 
   remove_tab: 'entfernt einen Tab'  
+  remove_user: 'Remove user'
   required: 'erforderlich'  
   resource_controller:
     not_found: "{{humanized_model_name}} could not be found."
@@ -124,6 +127,8 @@ de:
     validation_errors: "Bei der Bearbeitung dieses Formulars sind Bestätigungsfehler aufgetreten. Bitte überprüfen und korrigieren Sie alle Eingaben."
   reviewed: 'Überprüft'
   roles: 'Rollen'
+  saving_changes: Saving Changes
+  saving_preferences: Saving preferences
   search_tags: 'Search Tags:'
   select:
     inherit: '<vererbt>'
@@ -137,11 +142,13 @@ de:
     # Warnings and info text:
   text:
     layouts:
-      remove_warning: 'Sie sind sicher, das folgende Layout <strong class="warning">dauerhaft</strong> entfernen zu wollen?'   
+      remove_warning: 'Sie sind sicher, das folgende Layout <strong class="warning">dauerhaft entfernen</strong> zu wollen?'   
     pages: 
-      remove_warning: 'Sie sind sicher, das Folgende {{pages}} <strong class="warning">dauerhaft</strong> entfernen zu wollen?' 
+      remove_warning: 'Sie sind sicher, das Folgende {{pages}} <strong class="warning">dauerhaft entfernen</strong> zu wollen?' 
     snippets:
-      remove_warning:'Sind Sie sich sicher, dass Sie das folgende Snippet <strong class="warning">dauerhaft löschen</strong> wollen?'
+      remove_warning:'Sind Sie sich sicher, dass Sie das folgende Snippet <strong class="warning">dauerhaft entfernen</strong> wollen?'
+    users: 
+      remove_warning: 'Sind Sie sich sicher, dass Sie den Nutzer <strong class="warning">dauerhaft entfernen</strong> möchten?'
   this_file_language: "Deutsch" 
   time:
     am: ""

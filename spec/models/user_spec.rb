@@ -22,7 +22,7 @@ describe User, "validations" do
     it "should be an array of [:name, :email, :login, :password, :password_confirmation]" do
       # Make sure we clean up after anything set in another spec
       User.instance_variable_set(:@protected_attributes, nil)
-      User.protected_attributes.should == [:name, :email, :login, :password, :password_confirmation]
+      User.protected_attributes.should == [:name, :email, :login, :password, :password_confirmation, :locale]
     end
   end
   describe "self.protected_attributes=" do

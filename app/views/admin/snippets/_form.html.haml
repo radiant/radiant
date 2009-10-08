@@ -15,7 +15,7 @@
         - form.edit_filter do
           %p
             = f.label :filter_id, t('filter')
-            = f.select :filter_id, [['none', '']] + TextFilter.descendants.map { |f| f.filter_name }.sort, :id => 'snippet_filter'
+            = f.select :filter_id, [[t('select.none'), '']] + TextFilter.descendants.map { |f| f.filter_name }.sort, :id => 'snippet_filter'
 
   - render_region :form_bottom do |form_bottom|
     - form_bottom.edit_buttons do

@@ -29,10 +29,10 @@
         = f.check_box "designer", :class => "checkbox"
         = f.label :designer, t('designer'), :class => "checkbox"
     
-    - form.edit_language do
+    - form.edit_locale do
       %p
-        = f.label :language, t('language') 
-        = f.select "language", AVAILABLE_LOCALES
+        = f.label :locale, t('language') 
+        = f.select "locale", Radiant::AvailableLocales.locales.merge({'<default>'=>''})
     
     - form.edit_notes do
       %p
