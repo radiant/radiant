@@ -27,7 +27,6 @@ nl:
   add_part: 'Part toevoegen'
   add_tab: 'Tab toevoegen'
   admin: 'Administrator'
-  assets: 'Bestanden'
   available_tags: 'Beschikbare tags'
   available_tags_for: 'Beschikbare tags for'
   body: 'Body'
@@ -69,7 +68,6 @@ nl:
   extension: 'Module'
   extensions: 'Modules'
   filter: 'Filter'
-  galleries: 'Galerijen'
   hidden: 'Verborgen'
   hide: 'Verbergen' 
   keywords: 'Sleutelwoorden'
@@ -130,6 +128,7 @@ nl:
   reviewed: 'Nagekeken'
   roles: 'Rollen'
   saving_changes: 'Aan het bijwerken'
+  saving_preferences: Saving preferences
   search_tags: 'Tags doorzoeken:'
   select:
     inherit: '<erven>'
