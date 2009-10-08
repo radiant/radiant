@@ -1,7 +1,7 @@
 !!!
-%html{html_attrs}
+%html{:lang=>"en-US"}
   %head
-    %meta{"http-equiv"=>"Content-type", :content=>"text/html;charset=utf-8"}/
+    %meta{:charset=>"utf-8"}/
     %title= @page_title || default_page_title
     - @stylesheets.uniq.each do |stylesheet|
       = stylesheet_link_tag stylesheet
