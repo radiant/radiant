@@ -128,7 +128,7 @@ nl:
   reviewed: 'Nagekeken'
   roles: 'Rollen'
   saving_changes: 'Aan het bijwerken'
-  saving_preferences: Saving preferences
+  saving_preferences: 'Instellingen aan het bijwerken'
   search_tags: 'Tags doorzoeken:'
   select:
     inherit: '<erven>'
