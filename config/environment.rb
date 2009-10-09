@@ -84,3 +84,4 @@ end
 
 Haml::Template.options[:format] = :html5
 Haml::Template.options[:ugly] = true if ENV['RAILS_ENV'] == 'production'
+
