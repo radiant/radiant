@@ -117,6 +117,7 @@ fr:
   remove_page: 'Remove Page'
   remove_pages: "Retirer {{pages}}" 
   remove_tab: "Supprimer Onglet"  
+  remove_user: 'Remove user'
   required: "Obligatoire"  
   resource_controller:
     not_found: "{{humanized_model_name}} could not be found."
@@ -127,6 +128,7 @@ fr:
   reviewed: "Révisé"
   roles: "Roles"    
   saving_changes: Saving Changes
+  saving_preferences: Saving preferences
   search_tags: 'Search Tags:'
   select:
     inherit: "<hérite de>"
