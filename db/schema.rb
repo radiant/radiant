@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file,
+# This file is auto-generated from the current state of the database. Instead of editing this file, 
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -9,7 +9,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090929164633) do
+ActiveRecord::Schema.define(:version => 20091003095744) do
+
+  create_table "assets", :force => true do |t|
+    t.string   "name"
+    t.integer  "folder_id"
+    t.integer  "created_by_id"
+    t.integer  "updated_by_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "config", :force => true do |t|
     t.string "key",   :limit => 40, :default => "", :null => false
@@ -22,6 +31,16 @@ ActiveRecord::Schema.define(:version => 20090929164633) do
     t.string  "name"
     t.integer "schema_version", :default => 0
     t.boolean "enabled",        :default => true
+  end
+
+  create_table "folders", :force => true do |t|
+    t.string   "name"
+    t.integer  "parent_id"
+    t.integer  "created_by_id"
+    t.integer  "updated_by_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "slug"
   end
 
   create_table "layouts", :force => true do |t|
@@ -105,7 +124,7 @@ ActiveRecord::Schema.define(:version => 20090929164633) do
     t.integer  "lock_version",                 :default => 0
     t.string   "salt"
     t.string   "session_token"
-    t.string   "language"
+    t.string   "locale"
   end
 
   add_index "users", ["login"], :name => "login", :unique => true
