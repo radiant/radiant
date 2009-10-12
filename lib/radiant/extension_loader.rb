@@ -53,11 +53,11 @@ module Radiant
     end
     
     def locale_paths
-      load_extension_roots.map { |extension|  Dir[File.join("#{extension}/config/locales" , '*.{rb,yml}')]  }.flatten
+      load_extension_roots.map { |extension| "#{extension}/config/locales" }.select { |d| File.directory?(d) }.reverse
     end
     
     def add_locale_paths
-      configuration.i18n.load_path.concat(locale_paths)
+      configuration.i18n.load_path.concat(locale_paths.map{ |path| Dir[File.join("#{path}","*.{rb,yml}")] })
     end
 
     def controller_paths
