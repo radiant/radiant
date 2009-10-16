@@ -1,12 +1,13 @@
 class LanguageExtensionGenerator < Rails::Generator::NamedBase
   default_options :with_test_unit => false
   
-  attr_reader :extension_path, :extension_file_name
+  attr_reader :extension_path, :extension_file_name, :localization_name
   
   def initialize(runtime_args, runtime_options = {})
     super
     @extension_file_name = "i18n_#{file_name}_extension"
     @extension_path = "vendor/extensions/i18n_#{file_name}"
+    @localization_name = localization_name
   end
   
   def manifest
@@ -14,10 +15,10 @@ class LanguageExtensionGenerator < Rails::Generator::NamedBase
       m.directory "#{extension_path}/config/locales"
       m.directory "#{extension_path}/lib/tasks"
       
-      m.template 'README',              "#{extension_path}/README"
-      m.template 'extension.rb',        "#{extension_path}/#{extension_file_name}.rb"
-      m.template 'tasks.rake',          "#{extension_path}/lib/tasks/#{extension_file_name}_tasks.rake"
-      m.template 'lang.yml',            "#{extension_path}/config/locales/#{file_name}.yml"
+      m.template 'README',                "#{extension_path}/README"
+      m.template 'extension.rb',          "#{extension_path}/#{extension_file_name}.rb"
+      m.template 'tasks.rake',            "#{extension_path}/lib/tasks/#{extension_file_name}_tasks.rake"
+      m.template 'lang.yml',              "#{extension_path}/config/locales/#{localization_name}.yml"
       
       if options[:with_test_unit]
         m.directory "#{extension_path}/test/fixtures"
@@ -61,7 +62,6 @@ class LanguageExtensionGenerator < Rails::Generator::NamedBase
   end
   
   def localization_name
-    @localization = file_name.split('_')[1]
-    @localization.nil? ?  file_name : "#{file_name.split('_')[0]}-#{@localization.upcase}"
+    file_name.split('_')[1] ? file_name : "#{file_name.split('_')[0]}-#{@file_name.split('_')[1].upcase}"
   end
 end

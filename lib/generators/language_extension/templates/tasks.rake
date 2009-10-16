@@ -2,7 +2,7 @@ namespace :radiant do
   namespace :extensions do
     namespace :<%= file_name %> do
       
-      desc "Runs the migration of the <%= extension_name %> extension"
+      desc "Runs the migration of the <%= localization_name %> language pack"
       task :migrate => :environment do
         require 'radiant/extension_migrator'
         if ENV["VERSION"]
@@ -12,7 +12,7 @@ namespace :radiant do
         end
       end
       
-      desc "Copies public assets of the <%= extension_name %> to the instance public/ directory."
+      desc "Copies public assets of the <%= localization_name %> language pack to the instance public/ directory."
       task :update => :environment do
         is_svn_or_dir = proc {|path| path =~ /\.svn/ || File.directory?(path) }
         puts "Copying assets from <%= class_name %>"
