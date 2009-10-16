@@ -62,6 +62,6 @@ class LanguageExtensionGenerator < Rails::Generator::NamedBase
   end
   
   def localization_name
-    file_name.split('_')[1] ? file_name : "#{file_name.split('_')[0]}-#{@file_name.split('_')[1].upcase}"
+    file_name.split('_')[1] ? "#{file_name.split('_')[0]}-#{file_name.split('_')[1].upcase}" : file_name 
   end
 end
