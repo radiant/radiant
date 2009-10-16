@@ -1,16 +1,18 @@
 module Radiant::AvailableLocales
-    
-  def self.locales
+  
+  def self.locale_paths
     root_locales = [File.join(RADIANT_ROOT, 'config', 'locales'), File.join(RADIANT_ROOT, 'config', 'locales')].uniq
-    all_locale_paths = unless root_locales.empty?
+    unless root_locales.empty?
       Radiant::ExtensionLoader.locale_paths.dup + root_locales
     else
       Radiant::ExtensionLoader.locale_paths
     end
-
+  end
+    
+  def self.locales
     available_locales = {}
     
-    all_locale_paths.each do |path|    
+    locale_paths.each do |path|    
     	if File.exists? path
     		Dir.new(path).entries.collect do |x|
     		  result = x =~ /\.yml/ ? x.sub(/\.yml/,"") : nil
