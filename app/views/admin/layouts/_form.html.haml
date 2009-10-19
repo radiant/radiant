@@ -1,4 +1,4 @@
-- form_for [:admin, @layout], :html => {:onsubmit_status => onsubmit_status(@layout)} do |f|
+- form_for [:admin, @layout], :html => {'data-onsubmit_status' => onsubmit_status(@layout)} do |f|
   = f.hidden_field :lock_version
   = render_region :form_top
   .form_area

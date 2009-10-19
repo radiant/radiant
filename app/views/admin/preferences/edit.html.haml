@@ -6,7 +6,7 @@
   - main.edit_header do
     %h1 Personal Preferences
   - main.edit_form do
-    - form_for @user, :url => admin_preferences_url, :html => { :method => :put, :onsubmit_status => "Saving preferences&#8230;" } do |f|
+    - form_for @user, :url => admin_preferences_url, :html => { :method => :put, 'data-onsubmit_status' => "Saving preferences&#8230;" } do |f|
       = render_region :form_top
       
       - render_region :form do |form|

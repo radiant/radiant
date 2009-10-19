@@ -11,7 +11,7 @@
       %td.user
         %span.title= @user.name
 
-- form_for [:admin, @user], :html => { :method => :delete, :onsubmit_status=>"Removing user&#8230;" } do
+- form_for [:admin, @user], :html => { :method => :delete, 'data-onsubmit_status'=>"Removing user&#8230;" } do
   %p.buttons
     %input.button{:type=>"submit", :value=>"Delete User"}/
     or

@@ -14,7 +14,7 @@
     %tbody
       = render_node @page, :simple => true
 
-- form_for [:admin, @page.becomes(Page)], :html => {:method => :delete, :onsubmit_status=>"Removing pages&#8230;"} do
+- form_for [:admin, @page.becomes(Page)], :html => {:method => :delete, 'data-onsubmit_status'=>"Removing pages&#8230;"} do
   %p.buttons
     %input.button{:type=>"submit", :value=>"Delete Pages"}/
     or
