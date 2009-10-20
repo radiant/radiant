@@ -23,5 +23,19 @@ namespace :radiant do
       end
     end
     
+    desc "Creates or updates the English available tag descriptions"
+    task :available_tags => :environment do
+      descriptions = Hash.new
+      Page.tag_descriptions.sort.each do |tag, desc|
+        tag = '    ' + tag.gsub(':','-') + ':'
+        desc = desc.gsub('    ','      ')
+        descriptions[tag] = desc.gsub(':','&#58;').gsub('%','&#37;')
+      end
+      # tag_descriptions = Hash.new
+      # tag_descriptions['desc'] = descriptions
+      comments = ''
+      TranslationSupport.write_file("#{RADIANT_ROOT}/config/locales/test.yml","en:\n desc",comments,descriptions)
+    end          
+    
   end
 end

@@ -140,6 +140,7 @@ en:
   snippets: 'Snippets'
   status: 'Status'
     # Warnings and info text:
+  testing: Testing
   text:
     layouts:
       remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following layout?'   

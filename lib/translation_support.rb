@@ -9,7 +9,7 @@ class TranslationSupport
     
     #Retrieve comments, translation data in hash form
     def read_file(filename, basename)
-      (comments, data) = IO.read(filename).split(/\n#{basename}:\s*\n/)   #Add error checking for failed file read?
+      (comments, data) = IO.read(filename).split(/\n#{basename}:\s*\n/)   
       return comments, create_hash(data, basename)
     end
     
@@ -22,12 +22,12 @@ class TranslationSupport
       data.split("\n").each do |w|
         next if w.strip.blank?
         (key, value) = w.split(':', 2)
-        value ||= ''
-        shift = (key =~ /\w/)/2 - parent.size                             #Determine level of current key in comparison to parent array
-        key = key.sub(/^\s+/,'')
-        parent << previous_key if shift > 0                               #If key is child of previous key, add previous key as parent
-        (shift*-1).times { parent.pop } if shift < 0                      #If key is not related to previous key, remove parent keys
-        previous_key = key                                                #Track key in case next key is child of this key
+        value ||= ''                                      
+        shift = (key =~ /\w/)/2 - parent.size             #Determine level of current key in comparison to parent array
+        key = key.sub(/^\s+/,'')                          
+        parent << previous_key if shift > 0               #If key is child of previous key, add previous key as parent
+        (shift*-1).times { parent.pop } if shift < 0      #If key is not related to previous key, remove parent keys
+        previous_key = key                                #Track key in case next key is child of this key
         words[parent.join(':')+':'+key] = value
       end
       words

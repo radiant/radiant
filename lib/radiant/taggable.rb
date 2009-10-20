@@ -52,7 +52,8 @@ module Radiant::Taggable
     end
   
     def desc(text)
-      Radiant::Taggable.last_description = RedCloth.new(Util.strip_leading_whitespace(text)).to_html
+      Radiant::Taggable.last_description = text
+      # Radiant::Taggable.last_description = RedCloth.new(Util.strip_leading_whitespace(text)).to_html
     end
     
     def tag(name, &block)

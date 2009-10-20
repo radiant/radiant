@@ -3,7 +3,9 @@ module Admin::ReferencesHelper
     returning String.new do |output|
       class_of_page.tag_descriptions.sort.each do |tag_name, description|
         output << render(:partial => "admin/references/tag_reference.haml", 
-            :locals => {:tag_name => tag_name, :description => description})
+            :locals => {:tag_name => tag_name, 
+                        :description => RedCloth.new(Util.strip_leading_whitespace(text)).to_html
+                       })
       end
     end
   end
