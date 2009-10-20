@@ -1,0 +1,18 @@
+# Uncomment this if you reference any of your controllers in activate
+# require_dependency 'application_controller'
+
+class I18nJaExtension < Radiant::Extension
+  version "1.0"
+  description "Describe your extension here"
+  url "http://yourwebsite.com/ja"
+  
+  # define_routes do |map|
+  #   map.namespace :admin, :member => { :remove => :get } do |admin|
+  #     admin.resources :ja
+  #   end
+  # end
+  
+  def activate
+    # admin.nav[:content] << admin.nav_item(:ja, "I18n Ja", "/admin/ja"), :after => :pages
+  end
+end
