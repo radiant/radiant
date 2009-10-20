@@ -29,12 +29,12 @@ namespace :radiant do
       Page.tag_descriptions.sort.each do |tag, desc|
         tag = '    ' + tag.gsub(':','-') + ':'
         desc = desc.gsub('    ','      ')
-        descriptions[tag] = desc.gsub(':','&#58;').gsub('%','&#37;')
+        descriptions[tag] = desc.gsub('%','&#37;').gsub(':','&#58;').gsub('r&#58;','r:')
       end
       # tag_descriptions = Hash.new
       # tag_descriptions['desc'] = descriptions
       comments = ''
-      TranslationSupport.write_file("#{RADIANT_ROOT}/config/locales/test.yml","en:\n desc",comments,descriptions)
+      TranslationSupport.write_file("#{RADIANT_ROOT}/config/locales/en_available_tags.yml","en:\n desc",comments,descriptions)
     end          
     
   end

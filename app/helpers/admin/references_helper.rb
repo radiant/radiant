@@ -4,7 +4,7 @@ module Admin::ReferencesHelper
       class_of_page.tag_descriptions.sort.each do |tag_name, description|
         output << render(:partial => "admin/references/tag_reference.haml", 
             :locals => {:tag_name => tag_name, 
-                        :description => RedCloth.new(Util.strip_leading_whitespace(text)).to_html
+                        :description =>  RedCloth.new(Radiant::Taggable::Util.strip_leading_whitespace(t("desc.#{tag_name.gsub(':','-')}"))).to_html
                        })
       end
     end
