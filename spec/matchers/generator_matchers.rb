@@ -108,7 +108,7 @@ module Spec
           
           dir.should have_generated_file("#{path}_spec.rb") do |body|
             if class_name
-              body.should match(/describe #{class_name} do\n((\s*.*\n)+)\nend/)
+              body.should match(/describe #{class_name} do\n((\s*.*\n)+)\s*end/)
               yield $1 if block_given?
             else
               yield body if block_given?
