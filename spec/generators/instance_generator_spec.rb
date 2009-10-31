@@ -77,7 +77,6 @@ describe "IntanceGenerator" do
   end
   
   after(:all) do
-    sleep(60)
     rm_rf Dir["#{RADIANT_ROOT}"]
   end
 end
