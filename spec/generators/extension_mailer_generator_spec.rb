@@ -43,7 +43,7 @@ describe "ExtensionMailerGenerator with test unit" do
   end
   
   it 'should generate the unit test file in the correct location' do
-    'vendor/extensions/example'.should have_generated_unit_test_for('SignupNotifications')
+    'vendor/extensions/example'.should have_generated_unit_test_for('SignupNotifications', 'ActionMailer::TestCase')
   end
   
   it 'should generate the fixture file in the correct location' do
