@@ -55,15 +55,15 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
   FileUtils.mkdir_p tmp_dir
 
   if defined? RADIANT_ROOT
-    RADIANT_ROOT.replace tmp_dir
+    RADIANT_ROOT.replace tmp_dir.dup
   else
-    RADIANT_ROOT = tmp_dir
+    RADIANT_ROOT = tmp_dir.dup
   end
 
   if defined? RAILS_ROOT
-    RAILS_ROOT.replace tmp_dir
+    RAILS_ROOT.replace tmp_dir.dup
   else
-    RAILS_ROOT = tmp_dir
+    RAILS_ROOT = tmp_dir.dup
   end
 
   require 'initializer'
