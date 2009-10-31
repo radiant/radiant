@@ -29,7 +29,7 @@ describe "ExtensionGenerator with normal options" do
   it "should generate extension Rake tasks file" do
     'vendor/extensions/sample'.should have_generated_file('lib/tasks/sample_extension_tasks.rake') do |body|
       body.should match(r = /namespace :radiant do\n  namespace :extensions do\n    namespace :sample do\n((\n|\s*.*\n)*)    end\n  end\nend/)
-      tasks = body.match(r).values_at(0).first
+      tasks = body.match(r)[1]
       tasks.should match(/task :migrate => :environment do\n((\n|\s*.*\n)*)\s+end/)
       tasks.should match(/task :update => :environment do\n((\n|\s*.*\n)*)\s+end/)
     end
@@ -126,7 +126,7 @@ describe "ExtensionGenerator with test-unit option" do
   it "should generate extension Rake tasks file" do
     'vendor/extensions/sample'.should have_generated_file('lib/tasks/sample_extension_tasks.rake') do |body|
       body.should match(r = /namespace :radiant do\n  namespace :extensions do\n    namespace :sample do\n((\n|\s*.*\n)*)    end\n  end\nend/)
-      tasks = body.match(r).values_at(0).first
+      tasks = body.match(r)[1]
       tasks.should match(/task :migrate => :environment do\n((\n|\s*.*\n)*)\s+end/)
       tasks.should match(/task :update => :environment do\n((\n|\s*.*\n)*)\s+end/)
     end
