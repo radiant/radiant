@@ -92,7 +92,7 @@ begin
     end
   
     namespace :generators do
-      [:extension_controller, :extension_mailer, :extension_migration, :extension_model, :extension].each do |generator|
+      [:extension_controller, :extension_mailer, :extension_migration, :extension_model, :extension, :instance].each do |generator|
         desc "Run the spec at spec/geneartors/#{generator}_generator_spec.rb"
         Spec::Rake::SpecTask.new(generator => spec_prereq) do |t|
           t.spec_opts = ['--options', "\"#{RADIANT_ROOT}/spec/spec.opts\""]
@@ -194,7 +194,7 @@ rescue LoadError
     end
     
     namespace :generators do
-      [:extension_controller, :extension_mailer, :extension_migration, :extension_model, :extension].each do |t|
+      [:extension_controller, :extension_mailer, :extension_migration, :extension_model, :extension, :instance].each do |t|
         task t => :spec_prereq
       end
     end

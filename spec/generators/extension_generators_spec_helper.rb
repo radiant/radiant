@@ -99,6 +99,29 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
       Rails::Generator::Base.logger = logger_original
       myout.string
     end
+    
+    # Run the block with RADIANT_ROOT replaced with BASE_ROOT
+    def with_radiant_root_as_base_root
+      prev_radiant_root = RADIANT_ROOT.dup
+      RADIANT_ROOT.replace BASE_ROOT.dup
+      begin
+        yield
+      ensure
+        RADIANT_ROOT.replace prev_radiant_root
+      end
+    end
+     
+    # Run the block with $stdout suppressed
+    def suppress_stdout
+      original_stdout = $stdout
+      $stdout = fake = StringIO.new
+      begin
+        yield
+      ensure
+        $stdout = original_stdout
+      end
+      fake.string
+    end
   end
 
   share_as :AllGenerators do
