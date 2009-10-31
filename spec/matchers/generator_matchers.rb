@@ -98,12 +98,14 @@ module Spec
         simple_matcher "directory contains generated model spec" do |dir, matcher|
           matcher.failure_message = "the file '#{path}.rb' should be a spec"
           
-          if path.split('/').size > 3
-            path =~ /\/?(\d+_)?(\w+)\/(\w+)$/
-            class_name = "#{$2.camelize}::#{$3.camelize}"
-          else
-            path =~ /\/?(\d+_)?(\w+)$/
-            class_name = $2.camelize
+          unless class_name == false
+            if path.split('/').size > 3
+              path =~ /\/?(\d+_)?(\w+)\/(\w+)$/
+              class_name = "#{$2.camelize}::#{$3.camelize}"
+            else
+              path =~ /\/?(\d+_)?(\w+)$/
+              class_name = $2.camelize
+            end
           end
           
           dir.should have_generated_file("#{path}_spec.rb") do |body|
