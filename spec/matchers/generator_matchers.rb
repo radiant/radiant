@@ -26,22 +26,17 @@ module Spec
       end
       
       class FileGenerated
-        def initialize(file, &block)
+        def initialize(file)
           @file = file
-          @match_block = block if block_given?
         end
         
         def matches?(base)
           @base = base
           @path = File.join(RADIANT_ROOT, @base, @file)
-          if @match_block
-            contents_match = File.open(@path) do |f|
-              @match_block.call(f.read)
-            end
-            contents_match && file_exists(@path)
-          else
-            file_exists(@path)
+          if file_exists(@path) && block_given?
+            File.open(@path) { |f| yield(f.read) }
           end
+          file_exists(@path)
         end
         
         def failure_message
@@ -57,8 +52,8 @@ module Spec
         end
       end
       
-      def have_generated_file(file, &block)
-        FileGenerated.new(file, &block)
+      def have_generated_file(file)
+        FileGenerated.new(file)
       end
       
       def have_generated_class(path, parent = nil)
