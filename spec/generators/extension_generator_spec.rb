@@ -14,7 +14,7 @@ describe "ExtensionGenerator with normal options" do
   
   it "should generate Rake file" do
     'vendor/extensions/sample'.should have_generated_file('Rakefile') do |body|
-      body.should match(/Spec::Rake::SpecTask.new(:spec)/)
+      body.should match(/Spec::Rake::SpecTask\.new\(:spec\)/)
     end
   end
   
@@ -28,8 +28,8 @@ describe "ExtensionGenerator with normal options" do
   
   it "should generate extension Rake tasks file" do
     'vendor/extensions/sample'.should have_generated_file('lib/tasks/sample_extension_tasks.rake') do |body|
-      body.should match(/namespace :radiant do\n  namespace :extensions do\n    namespace :sample do\n((\n|\s*.*\n)*)    end\n  end\nend/)
-      tasks = $1
+      body.should match(r = /namespace :radiant do\n  namespace :extensions do\n    namespace :sample do\n((\n|\s*.*\n)*)    end\n  end\nend/)
+      tasks = body.match(r).values_at(0).first
       tasks.should match(/task :migrate => :environment do\n((\n|\s*.*\n)*)\s+end/)
       tasks.should match(/task :update => :environment do\n((\n|\s*.*\n)*)\s+end/)
     end
@@ -111,7 +111,7 @@ describe "ExtensionGenerator with test-unit option" do
   
   it "should generate Rake file" do
     'vendor/extensions/sample'.should have_generated_file('Rakefile') do |body|
-      body.should match(/Rake::TestTask.new(:test)/)
+      body.should match(/Rake::TestTask\.new\(:test\)/)
     end
   end
   
@@ -125,8 +125,8 @@ describe "ExtensionGenerator with test-unit option" do
   
   it "should generate extension Rake tasks file" do
     'vendor/extensions/sample'.should have_generated_file('lib/tasks/sample_extension_tasks.rake') do |body|
-      body.should match(/namespace :radiant do\n  namespace :extensions do\n    namespace :sample do\n((\n|\s*.*\n)*)    end\n  end\nend/)
-      tasks = $1
+      body.should match(r = /namespace :radiant do\n  namespace :extensions do\n    namespace :sample do\n((\n|\s*.*\n)*)    end\n  end\nend/)
+      tasks = body.match(r).values_at(0).first
       tasks.should match(/task :migrate => :environment do\n((\n|\s*.*\n)*)\s+end/)
       tasks.should match(/task :update => :environment do\n((\n|\s*.*\n)*)\s+end/)
     end
