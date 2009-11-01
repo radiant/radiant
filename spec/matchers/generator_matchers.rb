@@ -29,13 +29,8 @@ module Spec
       end
       
       class YamlGenerated
-        def initialize(path)
-          @path = path
-          @parent = parent
-          @failure_message = "the file '#{@path}.yml' should be a YAML file"
-        end
-        
-        def failure_message()            @failure_message end
+        def initialize(path)            @path = path end
+        def failure_message()           "the file '#{@path}.yml' should be a YAML file" end
         def negative_failure_message()  "expected no file, but file '#{@path}.yml' was found" end
         
         def matches?(base)
