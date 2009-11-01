@@ -22,7 +22,7 @@ describe "ExtensionGenerator with normal options" do
     'vendor/extensions/sample'.should have_generated_class('sample_extension', 'Radiant::Extension') do |body|
       body.should match(/version "1.0"\n\s+description "Describe your extension here"\n\s+url "http:\/\/yourwebsite.com\/sample"/)
       body.should match(/define_routes do \|map\|((\n|\s*.*\n)*)\s+\# end/)
-      body.should have_methods('activate', 'deactivate')
+      body.should have_method('activate')
     end
   end
   
@@ -119,7 +119,7 @@ describe "ExtensionGenerator with test-unit option" do
     'vendor/extensions/sample'.should have_generated_class('sample_extension', 'Radiant::Extension') do |body|
       body.should match(/version "1.0"\n\s+description "Describe your extension here"\n\s+url "http:\/\/yourwebsite.com\/sample"/)
       body.should match(/define_routes do \|map\|((\n|\s*.*\n)*)\s+\# end/)
-      body.should have_methods('activate', 'deactivate')
+      body.should have_method('activate')
     end
   end
   
