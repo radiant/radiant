@@ -115,7 +115,7 @@ describe "IntanceGenerator" do
       @shebang = '/my/path/to/ruby'
       with_radiant_root_as_base_root { suppress_stdout { run_generator('instance', ['-r', @shebang, RAILS_ROOT]) } }
       @files = Dir.glob("#{RADIANT_ROOT}/script/**/*") + Dir.glob("#{RADIANT_ROOT}/public/dispatch*")
-      @files.collect! {|i| [i, i.gsub(/\A#{RADIANT_ROOT}\//, '')] }
+      @files.collect! {|i| [i, i.gsub(/\A#{Regexp.escape(RADIANT_ROOT)}\//, '')] }
     end
     
     it 'should set shebang for scripts & dispatchers' do
