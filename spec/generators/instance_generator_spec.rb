@@ -83,7 +83,7 @@ describe "IntanceGenerator" do
     end
   end
 
-  describe('with db options') do
+  describe('with db option') do
     { 'db2'=>'ibm_db', 'mysql'=>'mysql', 'postgresql'=>'postgresql', 
       'sqlite3'=>'sqlite3', 'sqlserver'=>'sqlserver' }.each do |db, adapter|
       it "should generate database.yml with adapter #{adapter} for #{db}" do
@@ -95,6 +95,28 @@ describe "IntanceGenerator" do
     end
     
     after(:each) do
+      rm_rf Dir["#{RADIANT_ROOT}"]
+    end
+  end
+  
+  describe('with shebang option') do
+    before(:all) do
+      @shebang = '/my/path/to/ruby'
+      with_radiant_root_as_base_root { suppress_stdout { run_generator('instance', ['-r', @shebang, RAILS_ROOT]) } }
+      @files = Dir.glob("#{RADIANT_ROOT}/script/**/*") + Dir.glob("#{RADIANT_ROOT}/public/dispatch*")
+      @files.collect! {|i| [i, i.gsub(/\A#{RADIANT_ROOT}\//, '')] }
+    end
+    
+    it 'should set shebang for scripts & dispatchers' do
+      @files.each do |fn, f|
+        next if File.directory?(fn)
+        ''.should have_generated_file(f) do |body|
+          body.should match(/\A\#\!#{@shebang}\n/), "#{f} should have shebang '\#!#{@shebang}' but has '#{body.match(/\A(.*)\n/)[1]}'"
+        end
+      end
+    end
+    
+    after(:all) do
       rm_rf Dir["#{RADIANT_ROOT}"]
     end
   end
