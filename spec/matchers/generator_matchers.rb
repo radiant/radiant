@@ -34,7 +34,7 @@ module Spec
         def negative_failure_message()  "expected no file, but file '#{@path}.yml' was found" end
         
         def matches?(base)
-          FileGenerated.new("#{@path}.yaml").matches?(base) do |body|
+          FileGenerated.new("#{@path}.yml").matches?(base) do |body|
             yield(YAML.load(body.to_s)) if block_given?
             return true
           end
