@@ -80,7 +80,7 @@ begin
     task :generators => spec_prereq do
       errors = ['spec:generators:extension_controller', 'spec:generators:extension_mailer', 
                 'spec:generators:extension_migration', 'spec:generators:extension_model',
-                'spec:generators:extension'].collect do |task|
+                'spec:generators:extension', 'spec:generators:instance'].collect do |task|
         begin
           Rake::Task[task].invoke
           nil
