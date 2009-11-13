@@ -31,6 +31,12 @@ Install type:   #{install_type}
     def rake(command)
       `rake #{command} RAILS_ENV=#{RAILS_ENV}`
     end
+    
+    def file_utils
+      FileUtils
+    end
+    
+    delegate :cd, :cp_r, :rm_r, :to => :file_utils
   end
 
   class Installer < Action
@@ -46,8 +52,8 @@ Install type:   #{install_type}
     end
 
     def copy_to_vendor_extensions
-      FileUtils.cp_r(self.path, File.expand_path(File.join(RAILS_ROOT, 'vendor', 'extensions', name)))
-      FileUtils.rm_r(self.path)
+      cp_r(self.path, File.expand_path(File.join(RAILS_ROOT, 'vendor', 'extensions', name)))
+      rm_r(self.path)
     end
 
     def migrate
@@ -75,7 +81,7 @@ Install type:   #{install_type}
     end
 
     def remove_extension_directory
-      FileUtils.rm_r(File.join(RAILS_ROOT, 'vendor', 'extensions', name))
+      rm_r(File.join(RAILS_ROOT, 'vendor', 'extensions', name))
     end
   end
 
@@ -95,7 +101,7 @@ Install type:   #{install_type}
 
     def checkout
       self.path = File.join(Dir.tmpdir, name)
-      FileUtils.cd(Dir.tmpdir) { system "#{checkout_command}" }
+      cd(Dir.tmpdir) { system "#{checkout_command}" }
     end
   end
 
@@ -136,12 +142,12 @@ Install type:   #{install_type}
     def checkout
       if project_in_git?
         system "git submodule add #{url} vendor/extensions/#{name}"
-        FileUtils.cd(File.join('vendor', 'extensions', name)) do
+        cd(File.join('vendor', 'extensions', name)) do
           system "git submodule init && git submodule update"
         end
       else
         super
-        FileUtils.cd(path) do
+        cd(path) do
           system "git submodule init && git submodule update"
         end
       end
@@ -171,7 +177,7 @@ Install type:   #{install_type}
 
     def unpack
       output = nil
-      FileUtils.cd(Dir.tmpdir) do
+      cd(Dir.tmpdir) do
         output = `gem unpack #{filename.split('-').first}`
       end
       self.path = output.match(/'(.*)'/)[1]
@@ -184,8 +190,8 @@ Install type:   #{install_type}
     end
 
     def unpack
-      outputs = nil
-      FileUtils.cd(Dir.tmpdir) { output = `tar xvf #{filename}` }
+      output = nil
+      cd(Dir.tmpdir) { output = `tar xvf #{filename}` }
       self.path = File.join(Dir.tmpdir, output.split(/\n/).first.split('/').first)
     end
   end
@@ -196,7 +202,7 @@ Install type:   #{install_type}
     end
 
     def unpack
-      FileUtils.cd(Dir.tmpdir) { system "gunzip #{self.filename}" }
+      cd(Dir.tmpdir) { system "gunzip #{self.filename}" }
       @unpacked = true
       super
     end
@@ -208,7 +214,7 @@ Install type:   #{install_type}
     end
 
     def unpack
-      FileUtils.cd(Dir.tmpdir) { system "bunzip2 #{self.filename}" }
+      cd(Dir.tmpdir) { system "bunzip2 #{self.filename}" }
       @unpacked = true
       super
     end
@@ -217,7 +223,7 @@ Install type:   #{install_type}
   class Zip < Download
     def unpack
       output = nil
-      FileUtils.cd(Dir.tmpdir) { output = `unzip #{filename} -d #{name}` }
+      cd(Dir.tmpdir) { output = `unzip #{filename} -d #{name}` }
       self.path = File.join(Dir.tmpdir, name)
     end
   end
