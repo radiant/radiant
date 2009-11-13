@@ -95,7 +95,7 @@ Install type:   #{install_type}
 
     def checkout
       self.path = File.join(Dir.tmpdir, name)
-      system "cd #{Dir.tmpdir}; #{checkout_command}"
+      FileUtils.cd(Dir.tmpdir) { system "#{checkout_command}" }
     end
   end
 
@@ -136,10 +136,14 @@ Install type:   #{install_type}
     def checkout
       if project_in_git?
         system "git submodule add #{url} vendor/extensions/#{name}"
-        system "cd vendor/extensions/#{name}; git submodule init && git submodule update"
+        FileUtils.cd(File.join('vendor', 'extensions', name)) do
+          system "git submodule init && git submodule update"
+        end
       else
         super
-        system "cd #{path}; git submodule init && git submodule update"
+        FileUtils.cd(path) do
+          system "git submodule init && git submodule update"
+        end
       end
     end
     
@@ -166,7 +170,10 @@ Install type:   #{install_type}
     end
 
     def unpack
-      output = `cd #{Dir.tmpdir}; gem unpack #{filename.split('-').first}`
+      output = nil
+      FileUtils.cd(Dir.tmpdir) do
+        output = `gem unpack #{filename.split('-').first}`
+      end
       self.path = output.match(/'(.*)'/)[1]
     end
   end
@@ -177,7 +184,8 @@ Install type:   #{install_type}
     end
 
     def unpack
-      output = `cd #{Dir.tmpdir}; tar xvf #{filename}`
+      outputs = nil
+      FileUtils.cd(Dir.tmpdir) { output = `tar xvf #{filename}` }
       self.path = File.join(Dir.tmpdir, output.split(/\n/).first.split('/').first)
     end
   end
@@ -188,7 +196,7 @@ Install type:   #{install_type}
     end
 
     def unpack
-      system "cd #{Dir.tmpdir}; gunzip #{self.filename}"
+      FileUtils.cd(Dir.tmpdir) { system "gunzip #{self.filename}" }
       @unpacked = true
       super
     end
@@ -200,7 +208,7 @@ Install type:   #{install_type}
     end
 
     def unpack
-      system "cd #{Dir.tmpdir}; bunzip2 #{self.filename}"
+      FileUtils.cd(Dir.tmpdir) { system "bunzip2 #{self.filename}" }
       @unpacked = true
       super
     end
@@ -208,7 +216,8 @@ Install type:   #{install_type}
 
   class Zip < Download
     def unpack
-      output = `cd #{Dir.tmpdir}; unzip #{filename} -d #{name}`
+      output = nil
+      FileUtils.cd(Dir.tmpdir) { output = `unzip #{filename} -d #{name}` }
       self.path = File.join(Dir.tmpdir, name)
     end
   end
