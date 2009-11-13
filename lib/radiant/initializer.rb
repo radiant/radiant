@@ -35,9 +35,16 @@ module Radiant
     end
     
     def all_available_extensions
-      extension_paths.map do |path|
+      # load vendorized extensions by inspecting load path(s)
+      all = extension_paths.map do |path|
         Dir["#{path}/*"].select {|f| File.directory?(f) }
-      end.flatten.map {|f| File.basename(f).sub(/^\d+_/, '') }.sort.map {|e| e.to_sym }
+      end
+      # load any gem that looks like an extension. (too informal?)
+      gems.inject(all) do |available,gem|
+        available.tap { |a| a << gem.specification.full_gem_path if gem.specification and Dir[gem.specification.full_gem_path + '/*_extension.rb' ].any? }
+      end
+      # strip version info to glean proper extension names
+      all.flatten.map {|f| File.basename(f).sub(/^\d+_|-[\d\.]+$/, '') }.sort.map {|e| e.to_sym }
     end
     
     def admin

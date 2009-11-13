@@ -73,7 +73,7 @@ module Radiant
       @observer ||= DependenciesObserver.new(configuration).observe(::ActiveSupport::Dependencies)
       self.extensions = load_extension_roots.map do |root|
         begin
-          extension_file = "#{File.basename(root).sub(/^\d+_/,'')}_extension"
+          extension_file = "#{File.basename(root).sub(/^\d+_|-[\d.]+$/,'')}_extension"
           extension = extension_file.camelize.constantize
           extension.unloadable
           extension.root = root
@@ -124,19 +124,17 @@ module Radiant
 
       def select_extension_roots
         all_roots = all_extension_roots.dup
-
         roots = configuration.extensions.map do |ext_name|
           if :all === ext_name
             :all
           else
             ext_path = all_roots.detect do |maybe_path|
-              File.basename(maybe_path).sub(/^\d+_/, '') == ext_name.to_s
+              File.basename(maybe_path).sub(/^\d+_|-[\d.]+$/, '') == ext_name.to_s
             end
             raise LoadError, "Cannot find the extension '#{ext_name}'!" if ext_path.nil?
             all_roots.delete(ext_path)
           end
         end
-
         if placeholder = roots.index(:all)
           # replace the :all symbol with any remaining paths
           roots[placeholder, 1] = all_roots
@@ -145,9 +143,16 @@ module Radiant
       end
 
       def all_extension_roots
-        @all_extension_roots ||= configuration.extension_paths.map do |path|
-          Dir["#{path}/*"].map {|f| File.expand_path(f) if File.directory?(f) }.compact.sort
-        end.flatten
+        @all_extension_roots ||= begin
+          roots = configuration.extension_paths.map do |path|
+            Dir["#{path}/*"].map {|f| File.expand_path(f) if File.directory?(f) }.compact.sort
+          end
+          configuration.gems.inject(roots) do |paths,gem|
+            paths.tap { |p| p << gem.specification.full_gem_path if gem.specification and Dir[gem.specification.full_gem_path+'/*_extension.rb'].any? }
+          end
+          roots.flatten
+        end
       end
+
   end
 end

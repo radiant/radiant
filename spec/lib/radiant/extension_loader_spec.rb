@@ -35,6 +35,13 @@ describe Radiant::ExtensionLoader do
     @instance.send(:select_extension_roots).should == [File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/01_basic")]
   end
 
+  it "should load extensions from gem paths" do
+    gem_path = File.join RADIANT_ROOT, %w(test fixtures gems gem_ext-0.0.0)
+    @configuration.should_receive(:extensions).at_least(:once).and_return([:gem_ext])
+    @instance.stub!(:all_extension_roots).and_return([File.expand_path gem_path])
+    @instance.send(:select_extension_roots).should == [gem_path]
+  end
+
   it "should select extensions in an explicit order from the configuration" do
     extensions = [:load_order_red, :load_order_blue, :load_order_green]
     extension_roots = extensions.map {|ext| File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/#{ext}") }
@@ -56,6 +63,12 @@ describe Radiant::ExtensionLoader do
     @instance.stub!(:all_extension_roots).and_return(@extension_paths)
     @configuration.should_receive(:extensions).at_least(:once).and_return(extensions)
     lambda { @instance.send(:select_extension_roots) }.should raise_error(LoadError)
+  end
+
+  it "should skip invalid gems" do
+    @configuration.stub!(:extension_paths).and_return([])
+    @configuration.stub!(:gems).and_return([Rails::GemDependency.new('bogus_gem')])
+    @instance.send(:all_extension_roots).should eql([])
   end
 
   it "should determine load paths from an extension path" do
