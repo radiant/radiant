@@ -36,7 +36,7 @@
                           %li
                             %a{:href => sub_item.url, :class => current_item?(sub_item) ? 'current' : ''}>
                               %span
-                                = t(sub_item.proper_name.downcase)
+                                = t(sub_item.proper_name.gsub(' ','_').downcase)
           #header_bottom
             %div
       #main
