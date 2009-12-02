@@ -1,0 +1,180 @@
+---
+it: 
+  account: 'Account'
+  activerecord:
+    errors:
+      messages:
+        blank: 'obbligatorio' # required
+        invalid: 'formato non valido' #invalid_format
+        not_a_number: "dev'essere un numero" # must be number
+        taken: 'già utilizzato' # name_in_use
+        too_long: '{{count}} caratteri al massimo' # character_limit
+        too_short: '{{count}} caratteri al minimo' # character_minimum
+      models:
+        page:
+          attributes:
+            slug:
+              taken: 'slug già utilizzato' # slug_in_use
+        user:
+          attributes:
+            email:
+              invalid: 'indirizzo email non valido' # invalid_email
+            login:
+              taken: 'login già utilizzato' # login already in use
+            password:
+              confirmation: 'conferma password' # password_confirmation
+  add_child: 'Aggiungi pagina figlia'
+  add_part: 'Aggiungi parte'
+  add_tab: "Aggiungi tab"   
+  admin: "Amministratore" 
+  available_tags: "Tag disponibili"
+  available_tags_for: 'Tag disponibili per'
+  body: "Body"  
+  breadcrumb: 'Traccia'
+  buttons:
+    create: "Crea {{name}}"     
+    save_and_continue: "Salva e continua"
+    save_changes: "Salva le modifiche"  
+  cancel: "Annulla"
+  change: 'Cambia'
+  close: "Chiudi"
+  content: 'Contenuto'
+  content_type: "Content-Type (tipo)"    
+  creating_status: 'Creo {{model}}&#8230;'
+  date:
+    abbr_day_names: [Do, Lu, Ma, Me, Gi, Ve, Sa]
+    abbr_month_names: [~, Gen, Feb, Mar, Apr, Mag, Giu, Lug, Ago, Set, Ott, Nov, Dic]
+    day_names: [Domenica, Lunedì, Martedì, Mercoledì, Giovedì, Venerdì, Sabato]
+    formats:
+      default: "%d.%m.%Y"
+      long: "%e. %B %Y"
+      only_day: "%e"
+      short: "%e. %b"
+    month_names: [~, Gennaio, Febbraio, Marzo, Aprile, Maggio, Giugno, Luglio, Agosto, Settembre, Ottobre, Novembre, Dicembre]
+    order: [:day, :month, :year]
+  delete_layout: "Cancella Layout"  
+  delete_pages: "Cancella {{pages}}"  
+  delete_snippet: 'Cancella Snippet'
+  delete_user: 'Cancella Utente'
+  description: 'Descrizione'
+  design: 'Design'
+  designer: 'Designer'
+  draft: "Bozza"
+  edit_layout: "Modifica Layout"
+  edit_page:  "Modifica Pagina"   
+  edit_snippet: "Modifica Snippet"
+  edit_user: "Modifica Utente"
+  email_address: 'Indirizzo Email'
+  extension: "Estensione"
+  extensions: "Estensioni" 
+  filter: "Filtro"
+  hidden: "Nascosto"
+  hide: 'Nascondi' 
+  keywords: 'Parole chiave'
+  language: "Lingua"
+  layout: "Layout"  
+  layouts: "Layout"
+  log_out: "Uscita"
+  logged_in_as: 'Accesso come'
+  login: "Login" 
+  modify: "Modifica" 
+  more: "Più"
+  name: "Nome"
+  new_layout: "Nuovo Layout"    
+  new_page: "Nuova Pagina"
+  new_password: 'Nuova Password'
+  new_snippet: "Nuovo Snippet"
+  new_user: "Nuovo Utente"  
+  no_pages: "Nessuna pagina" 
+  notes: "Note"    
+  optional: "Facoltativo"
+  or: "o"
+  page: "Pagina"     
+  page_page: 'Parte di pagina'
+  page_title: "Titolo"  
+  page_type: "Tipo di pagina"
+  pages: "Pagine"
+  pages_controller:
+    removed_many: "Le pagine sono state rimosse"   
+    removed_one: "La pagina è stata rimossa"  
+    saved: "Pagina salvata"  
+  password: "Password" 
+  password_confirmation: "Conferma password"
+  personal: 'Personale'
+  personal_preferences: 'Preferenze personali'
+  please_login: 'Prego identificarsi'
+  powered_by: 'Realizzato con'
+  preferences: "Preferenze" 
+  preferences_controller:
+    error_updating: "Errore nella modifica preferenze"   
+    updated: "Preferenze modificate"
+  published: "Pubblicato" 
+  published_at: "Pubblicato il" 
+  reference:  "Riferimento"
+  remember_me: "Memorizza informazioni"  
+  remove: 'Rimuovi'
+  remove_layout: "Rimuovi Layout" 
+  remove_page: 'Rimuovi Pagina'
+  remove_pages: "Rimuovi {{pages}}" 
+  remove_tab: "Rimuovi tab"  
+  remove_user: 'Rimuovi utente'
+  required: "Obbligatorio"  
+  resource_controller:
+    not_found: "{{humanized_model_name}} non trovato."
+    removed: "{{humanized_model_name}} rimosso."  
+    saved: "{{humanized_model_name}} salvato."
+    update_conflict: "{{humanized_model_name}} è stato modificato dopo il salvataggio, è possibile che delle modifiche siano perse." 
+    validation_errors: "Dati non validi. Prego controllare l'esattezza e completezza dei dati."
+  reviewed: "Riveduto"
+  roles: "Ruoli"    
+  saving_changes: "Salvataggio modifiche"
+  saving_preferences: "Salvataggio preferenze"
+  search_tags: 'Ricerca Tag:'
+  select:
+    inherit: "<ereditato da>"
+    none: "<nessuno>" 
+    normal: "<normale>"
+  settings: 'Opzioni'
+  slug: 'Slug'
+  snippet: "Snippet"   
+  snippets: "Snippet"
+  status: "Stato"
+    # Warnings and info text:
+  text:
+    layouts:
+      remove_warning: "Confermi la <strong class='warning'>cancellazione</strong> del layout salvato?"  
+    pages: 
+      remove_warning: "Confermi la <strong class='warning'>cancellazione</strong> delle pagine {{pages}}?" 
+    snippets:
+      remove_warning: "Confermi la <strong class='warning'>cancellazione</strong> dei frammenti (snippet) salvati?"   
+    users: 
+      remove_warning: "Vuoi <strong class='warning'>cancellare per sempre</strong> l'utente sottoelencato?"
+  this_file_language: "Italiano" 
+  time:
+    am: 'AM'
+    formats:
+      datetime:
+        formats:
+          default: "%Y-%m-%dT%H:%M:%S%Z"
+      default: "%a %b %d %H:%M:%S %Z %Y"   
+      long: "%B %d, %Y %H:%M"
+      only_second: "%S"
+      short: "%d %b %H:%M"
+      time: "%H:%M"
+      timestamp: "%I:%M <small>%p</small> on %B %d, %Y" 
+    pm: 'PM'
+  timestamp:
+    at: "alle"
+    by: "da"
+    last_updated: "Ultima modifica"
+  user: "Utente"
+  username: "Nome Utente"
+  users: "Utenti"      
+  users_controller:
+    cannot_delete_self: "Non puoi rimuovere te stesso!"  
+  version: "Versione"  
+  view_site: "Mostra sito"
+  website: "Sito Web"
+  welcome_controller:
+    invalid_user: "Utente o password non validi"   
+    logged_out: "Uscita effettuata"  

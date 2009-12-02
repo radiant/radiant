@@ -25,6 +25,7 @@ var TabControl = Class.create({
     var tab = new TabControl.Tab(page);
     this.tabs.push(tab);
     this.tabContainer.insert({bottom: tab});
+    $('page_part_index_field').setValue(this.tabs.length);
     page.hide();
   },
 
@@ -133,7 +134,7 @@ TabControl.Tab = Class.create({
   },
 
   toElement: function() {
-    this.element = $a({'class': 'tab', 'href': '#'}, $span(this.caption), $img({'src': '/images/admin/tab_close.png', 'class': 'close', 'alt': 'Remove part', 'title': 'Remove part'}));
+    this.element = $a({'href': '#'}, $span(this.caption), $img({'src': '/images/admin/tab_close.png', 'class': 'close', 'alt': 'Remove part', 'title': 'Remove part'})).addClassName('tab');
     return this.element;
   }
 });

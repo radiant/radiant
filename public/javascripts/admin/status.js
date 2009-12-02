@@ -10,10 +10,10 @@
  *  
  *    Event.addBehavior({'form': Status.FormBehavior()});
  *  
- *  And then add an "onsubmit_status" to each form that you want to display
+ *  And then add an "data-onsubmit_status" to each form that you want to display
  *  a status message on submit for:
  *  
- *    <form onsubmit_status="Saving changes" ...>
+ *    <form data-onsubmit_status="Saving changes" ...>
  *  
  *  Based on code from popup.js.
  *  
@@ -77,7 +77,7 @@ Status.preloadImages = function() {
 
 Status.FormBehavior = Behavior.create({
   initialize: function() {
-    var attr = this.element.attributes['onsubmit_status']
+    var attr = this.element.attributes['data-onsubmit_status']
     if (attr) this.status = attr.value; 
     if (this.status) this.element.observe('submit', function() { showStatus(this.status) }.bind(this));
   }

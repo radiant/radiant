@@ -4,5 +4,6 @@ class I18nNlExtension < Radiant::Extension
   url "http://yourwebsite.com/nl"
   
   def activate
+
   end
 end

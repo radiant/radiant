@@ -4,6 +4,6 @@ class I18nDeExtension < Radiant::Extension
   url "http://yourwebsite.com/de"
   
   def activate
-    
+
   end
 end

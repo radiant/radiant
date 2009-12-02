@@ -8,7 +8,7 @@ namespace :scan do
   desc 'turn the scan.rl file into a ruby file'
   file 'lib/radius/parser/scan.rb' => ['lib/radius/parser/scan.rl'] do |t|
     cd 'lib/radius/parser' do
-      sh "ragel -R scan.rl"
+      sh "ragel -R -F1 scan.rl"
     end
   end
 

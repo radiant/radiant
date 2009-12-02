@@ -1,6 +1,6 @@
 ---
 ru: 
-  account: 'Учетная Запись'
+  account: 'Account'
   activerecord:
     errors:
       messages:
@@ -23,11 +23,10 @@ ru:
               taken: 'Имя пользователя занято' # login_in_use
             password:
               confirmation: 'несоответствие подтверждению' # password_confirmation
-  add_child: 'Добавить&nbsp;Потомка'
+  add_child: 'Add Child'
   add_part: 'Добавить Часть'
   add_tab: 'Добавить вкладку'
   admin: 'Администратор'
-  assets: 'Assets'
   available_tags: 'Доступные тэги'
   available_tags_for: 'Тэги доступные для'
   body: 'Содержимое'
@@ -37,11 +36,11 @@ ru:
     save_and_continue: 'Сохранить и продолжить'
     save_changes: 'Сохранить'
   cancel: 'Отменить'
-  change: 'Изменить'
+  change: 'Change'
   close: 'Закрыть'
-  content: 'Содержимое'
+  content: 'Content'
   content_type: 'Content&#8209;Type'
-  creating_status: 'Создается {{model}}&#8230;'
+  creating_status: 'Creating {{model}}&#8230;'
   date:
     abbr_day_names: [Вск, Пнд, Втр, Срд, "Чтв", Птн, Суб]
     abbr_month_names: [~, Янв, Фев, Мар, Апр, Май, Июн, Июл, Авг, Сен, Окт, Ноя, Дек]
@@ -56,34 +55,34 @@ ru:
   delete_layout: 'Удалить Макет' #delete
   delete_pages: 'Удалить {{pages}}'  #button
   delete_snippet: 'Удалить Вставку'
-  delete_user: 'Удалить Пользователя'
-  description: 'Описание'
-  design: 'Дизайн'
-  designer: 'Дизайнер'
+  delete_user: 'Delete User'
+  description: 'Description'
+  design: 'Design'
+  designer: 'Designer'
   draft: 'Черновик'
   edit_layout: 'Редактирование Макета'
   edit_page:  'Редактирование Страницы'
   edit_snippet: 'Редактирование Вставки'
   edit_user: 'Редактирование Пользователя'
-  email_address: 'E-mail адрес'
+  email_address: 'E-mail Address'
   extension: 'Расширение'
   extensions: 'Расширения'
   filter: 'Фильтр'
   hidden: 'Скрыта'
-  hide: 'Скрыть'
-  keywords: 'Ключевые слова'
+  hide: 'Hide' 
+  keywords: 'Keywords'
   language: 'Язык'
   layout: 'Макет'
   layouts: 'Макеты'
   log_out: 'Выход'
-  logged_in_as: 'Текущий Пользователь'
+  logged_in_as: 'Logged in as'
   login: 'Войти'
   modify: 'Изменить'
   more: 'Дополнительно'
   name: 'Имя'
   new_layout: 'Новый Макет'
   new_page: 'Новая Страница'
-  new_password: 'Новый Пароль'
+  new_password: 'New Password'
   new_snippet: 'Новая Вставка'
   new_user: 'Новый Пользователь'
   no_pages: 'Нет страниц'
@@ -101,10 +100,10 @@ ru:
     saved: "Страница сохранена."
   password: 'Пароль'
   password_confirmation: 'Подтверждение Пароля'
-  personal: 'Персональное'
-  personal_preferences: 'Персональные Настройки'
+  personal: 'Personal'
+  personal_preferences: 'Personal Preferences'
   please_login: 'Вход в систему'
-  powered_by: 'Powered by'  #TODO: not translated
+  powered_by: 'Powered by'
   preferences: 'Настройки'
   preferences_controller:
     error_updating: "Ошибка при сохранении настроек."
@@ -113,35 +112,34 @@ ru:
   published_at: 'Опубликовано'
   reference:  'Справка'
   remember_me: 'Запомнить меня'
-  remove: 'Удалить'
+  remove: 'Remove'
   remove_layout: 'Удалить Макет' #remove
-  remove_page: 'Удалить страницу'
+  remove_page: 'Remove Page'
   remove_pages: 'Удалить {{pages}}'  #page title
   remove_tab: 'Удалить вкладку'
-  remove_user: 'Удалить Пользователя'
+  remove_user: 'Remove user'
   required: 'Обязательно'
   resource_controller:
-    not_found: "{{humanized_model_name}} не удалось найти."
+    not_found: "{{humanized_model_name}} could not be found."
     removed: "Объекты успешно удалены."
     saved: "Данные сохранены."
     update_conflict: "Данные были модифицированы с момента загрузки. Измененмя не могут быть сохранены т.к. возможна потеря информации."
     validation_errors: "Форма содержит ошибки. Для продолжения проверьте и исправьте пожалуйста введенные данные."
   reviewed: 'Проверена'
   roles: 'Роли'
-  saving_changes: Сохранение изменений
-  saving_preferences: Сохранение настроек
+  saving_changes: Saving Changes
+  saving_preferences: Saving preferences
   search_tags: 'Поиск по тэгам:'
   select:
     inherit: '<inherit>'
     none: '<none>'
     normal: '<normal>'
-  settings: 'Настройки'
-  slug: 'окончание URL (slug)'
+  settings: 'Settings'
+  slug: 'Slug'
   snippet: 'Вставка'
   snippets: 'Вставки'
   status: 'Статус'
     # Warnings and info text:
-  testing: Testing
   text:
     layouts:
       remove_warning: 'Вы уверены что хотите <strong class="warning">безвозвратно удалить</strong> макет'
@@ -150,7 +148,7 @@ ru:
     snippets:
       remove_warning: 'Вы уверены что хотите <strong class="warning">безвозвратно удалить</strong> эту вставку?'
     users: 
-      remove_warning: 'Вы уверены что хотите <strong class="warning">безвозвратно удалить</strong> этого пользователя?'
+      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following user?'
   this_file_language: "Русский"
   time:
     am: "am"
