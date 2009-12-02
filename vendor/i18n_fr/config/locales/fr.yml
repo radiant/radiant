@@ -1,0 +1,182 @@
+---
+fr: 
+  account: 'Account'
+  activerecord:
+    errors:
+      messages:
+        blank: 'obligatoire' # required
+        invalid: 'invalid format' #invalid_format
+        not_a_number: 'doit être un nombre' # must be number
+        taken: 'nom déjà utilisé' # name_in_use
+        too_long: '{{count}}-caractères maximum' # character_limit
+        too_short: '{{count}}-caractères minimum' # character_minimum
+      models:
+        page:
+          attributes:
+            slug:
+              taken: "jeton (slug) déjà utilisé pour l'enfant de ce parent" # slug_in_use
+        user:
+          attributes:
+            email:
+              invalid: 'adresse courriel non valide' # invalid_email
+            login:
+              taken: 'identification déjà utilisée' # login already in use
+            password:
+              confirmation: 'doit être identique à sa confirmation' # password_confirmation
+  add_child: 'Add Child'
+  add_part: 'Add Part'
+  add_tab: "Ajouter Onglet"   
+  admin: "Administrateur" 
+  assets: 'Assets'
+  available_tags: "Tags disponibles"
+  available_tags_for: 'Available Tags for'
+  body: "Body"  
+  breadcrumb: 'Breadcrumb'
+  buttons:
+    create: "Créer {{name}}"     
+    save_and_continue: "Enregistrer et continuer"
+    save_changes: "Enregistrer les modifications"  
+  cancel: "Annuler"
+  change: 'Change'
+  close: "Fermer"
+  content: 'Content'
+  content_type: "Type&#8209;Contenu"    
+  creating_status: 'Creating {{model}}&#8230;'
+  date:
+    abbr_day_names: [Di, Lu, Ma, Me, Je, Ve, Sa]
+    abbr_month_names: [~, Jan, Fev, Mar, Avr, Mai, Jun, Jul, Aou, Sep, Oct, Nov, Dec]
+    day_names: [Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi]
+    formats:
+      default: "%d.%m.%Y"
+      long: "%e. %B %Y"
+      only_day: "%e"
+      short: "%e. %b"
+    month_names: [~, Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Septembre, Octobre, Novembre, Decembre]
+    order: [:day, :month, :year]
+  delete_layout: "Supprimer Layout"  
+  delete_pages: "Supprimer {{pages}}"  
+  delete_snippet: 'Delete Snippet'
+  delete_user: 'Delete User'
+  description: 'Description'
+  design: 'Design'
+  designer: 'Designer'
+  draft: "Brouillon"
+  edit_layout: "Modifier Layout"
+  edit_page:  "Modifier Page"   
+  edit_snippet: "Modifier Snippet"
+  edit_user: "Modifier Utilisateur"
+  email_address: 'E-mail Address'
+  extension: "Extension"
+  extensions: "Extensions" 
+  filter: "Filtre"
+  hidden: "Caché"
+  hide: 'Hide' 
+  keywords: 'Keywords'
+  language: "Langage"
+  layout: "Layout"  
+  layouts: "Layouts"
+  log_out: "Déconnexion"
+  logged_in_as: 'Logged in as'
+  login: "Login" 
+  modify: "Modifier" 
+  more: "Plus"
+  name: "Nom"
+  new_layout: "Ajouter Layout"    
+  new_page: "Nouvelle Page"
+  new_password: 'New Password'
+  new_snippet: "Ajouter Snippet"
+  new_user: "Ajouter Utilisateur"  
+  no_pages: "Aucune Page" 
+  notes: "Notes"    
+  optional: "En option"
+  or: "ou"
+  page: "Page"     
+  page_page: 'Page Part'
+  page_title: "Titre"  
+  page_type: "Type Page"
+  pages: "Pages"
+  pages_controller:
+    removed_many: "Les pages ont été correctement retirées du site."   
+    removed_one: "La page a été correctement retirée du site."  
+    saved: "Votre page enregistrée ci-dessous."  
+  password: "Mot de passe" 
+  password_confirmation: "Confirmer le Mot de passe"
+  personal: 'Personal'
+  personal_preferences: 'Personal Preferences'
+  please_login: 'SVP Identifiez-vous'
+  powered_by: 'Powered by'
+  preferences: "Préférences" 
+  preferences_controller:
+    error_updating: "Une erreur a été détectée pendant la modification de vos préférences."   
+    updated: "Vos préférences ont été modifiées."
+  published: "Publié" 
+  published_at: "Publié le" 
+  reference:  "Référence"
+  remember_me: "Conserver mes informations"  
+  remove: 'Remove'
+  remove_layout: "Retirer Layout" 
+  remove_page: 'Remove Page'
+  remove_pages: "Retirer {{pages}}" 
+  remove_tab: "Supprimer Onglet"  
+  remove_user: 'Remove user'
+  required: "Obligatoire"  
+  resource_controller:
+    not_found: "{{humanized_model_name}} could not be found."
+    removed: "{{humanized_model_name}} supprimé."  
+    saved: "{{humanized_model_name}} enregistré ci-dessous."
+    update_conflict: "{{humanized_model_name}} a été modifié depuis son affichage. Toute modification ne pourra être enregistrée sans perte potentielle de donnée." 
+    validation_errors: "Erreurs de validation pendant le traitement de ce formulaire. SVP examinez son contenu et corrigez les erreurs avant de continuer."
+  reviewed: "Révisé"
+  roles: "Roles"    
+  saving_changes: Saving Changes
+  saving_preferences: Saving preferences
+  search_tags: 'Search Tags:'
+  select:
+    inherit: "<hérite de>"
+    none: "<aucun>" 
+    normal: "<normal>"
+  settings: 'Settings'
+  slug: 'Slug'
+  snippet: "Snippet"   
+  snippets: "Snippets"
+  status: "Statut"
+    # Warnings and info text:
+  testing: Testing
+  text:
+    layouts:
+      remove_warning: "Confirmez-vous la <strong class='warning'>suppression</strong> du layout suivant?"  
+    pages: 
+      remove_warning: "Confirmez-vous la <strong class='warning'>suppression</strong> des pages suivantes {{pages}}?" 
+    snippets:
+      remove_warning: "Confirmez-vous la <strong class='warning'>suppression</strong> des fragments réutilisables (snippet) suivants?"   
+    users: 
+      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following user?'
+  this_file_language: "Français" 
+  time:
+    am: 'AM'
+    formats:
+      datetime:
+        formats:
+          default: "%Y-%m-%dT%H:%M:%S%Z"
+      default: "%a %b %d %H:%M:%S %Z %Y"   
+      long: "%B %d, %Y %H:%M"
+      only_second: "%S"
+      short: "%d %b %H:%M"
+      time: "%H:%M"
+      timestamp: "%I:%M <small>%p</small> on %B %d, %Y" 
+    pm: 'PM'
+  timestamp:
+    at: "à"
+    by: "par"
+    last_updated: "Dernière modification"
+  user: "Utilisateur"
+  username: "Nom Utilisateur"
+  users: "Utilisateurs"      
+  users_controller:
+    cannot_delete_self: "Vous ne pouvez pas vous supprimer vous-même!. "  
+  version: "Version"  
+  view_site: "Afficher le site"
+  website: "Website"
+  welcome_controller:
+    invalid_user: "Nom ou mot de passe invalide."   
+    logged_out: "Vous n'êtes plus identifié(e)'"  

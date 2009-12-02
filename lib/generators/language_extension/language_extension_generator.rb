@@ -19,6 +19,7 @@ class LanguageExtensionGenerator < Rails::Generator::NamedBase
       m.template 'extension.rb',          "#{extension_path}/#{extension_file_name}.rb"
       m.template 'tasks.rake',            "#{extension_path}/lib/tasks/#{extension_file_name}_tasks.rake"
       m.template 'lang.yml',              "#{extension_path}/config/locales/#{localization_name}.yml"
+      m.template 'available_tags.yml',    "#{extension_path}/config/locales/#{localization_name}_available_tags.yml"
       
       if options[:with_test_unit]
         m.directory "#{extension_path}/test/fixtures"
@@ -44,6 +45,7 @@ class LanguageExtensionGenerator < Rails::Generator::NamedBase
         m.template 'cucumber_paths.rb',   "#{extension_path}/features/support/paths.rb"
       end
     end
+    
   end
   
   def class_name
@@ -63,5 +65,9 @@ class LanguageExtensionGenerator < Rails::Generator::NamedBase
   
   def localization_name
     file_name.split('_')[1] ? "#{file_name.split('_')[0]}-#{file_name.split('_')[1].upcase}" : file_name 
+  end
+  
+  def copy_files
+    FileUtils.cp("#{RADIANT_ROOT}/config/locales/en_available_tags.yml","#{RADIANT_ROOT}/#{extension_path}/config/locales/#{localization_name}_available_tags.yml")
   end
 end
