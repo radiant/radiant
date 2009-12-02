@@ -128,9 +128,9 @@ de:
     validation_errors: "Bei der Bearbeitung dieses Formulars sind Bestätigungsfehler aufgetreten. Bitte überprüfen und korrigieren Sie alle Eingaben."
   reviewed: 'Überprüft'
   roles: 'Rollen'
-  saving_changes: Saving Changes
-  saving_preferences: Saving preferences
-  search_tags: 'Search Tags:'
+  saving_changes: Änderungen wird gespeichert
+  saving_preferences: Preferenzen wird gespeichert
+  search_tags: 'Tags durchsuchen:'
   select:
     inherit: '<vererbt>'
     none: '<keine>' 
@@ -140,8 +140,7 @@ de:
   snippet: 'Snippet'   
   snippets: 'Snippets'          
   status: 'Status'    
-    # Warnings and info text:
-  testing: Testing
+  # Warnings and info text:
   text:
     layouts:
       remove_warning: 'Sie sind sicher, das folgende Layout <strong class="warning">dauerhaft entfernen</strong> zu wollen?'   
