@@ -6,7 +6,7 @@
   - main.edit_header do
     %h1= t('edit_page')
   - main.edit_form do
-    - form_for :page, @page, :url => admin_page_path(@page), :html => {:method => :put, :multipart => true, :id => 'edit_page'} do |fields|
+    - form_for :page, @page, :url => admin_page_path(@page), :html => {:method => :put, :multipart => true, :id => 'edit_page', 'data-onsubmit_status'=>"Saving Changes&#8230;"} do |fields|
       = render :partial => "fields", :object => fields
   - main.edit_popups do
     = render :partial => "popups"

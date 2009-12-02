@@ -774,6 +774,10 @@ module StandardTags
        page's URL
     * @selected@ specifies the state of the link when the current page matches
        is a child of the specified url
+    # @if_last@ renders its contents within a @normal@, @here@ or
+      @selected@ tag if the item is the last in the navigation elements
+    # @if_first@ renders its contents within a @normal@, @here@ or
+      @selected@ tag if the item is the first in the navigation elements
 
     The @between@ tag specifies what should be inserted in between each of the links.
 
@@ -798,11 +802,13 @@ module StandardTags
       key = parts.join(':')
       [key.strip, value.strip]
     end
-    pairs.each do |title, url|
+    pairs.each_with_index do |(title, url), i|
       compare_url = remove_trailing_slash(url)
       page_url = remove_trailing_slash(self.url)
       hash[:title] = title
       hash[:url] = url
+      tag.locals.first_child = i == 0
+      tag.locals.last_child = i == pairs.length - 1
       case page_url
       when compare_url
         result << (hash[:here] || hash[:selected] || hash[:normal]).call
@@ -826,6 +832,30 @@ module StandardTags
       hash = tag.locals.navigation
       hash[symbol]
     end
+  end
+
+  desc %{
+    Renders the containing elements if the element is the first
+    in the navigation list
+
+    *Usage:*
+
+    <pre><code><r:normal><r:if_first>...</r:if_first></r:normal></code></pre>
+  }
+  tag 'navigation:if_first' do |tag|
+    tag.expand if tag.locals.first_child
+  end
+
+  desc %{
+    Renders the containing elements if the element is the last
+    in the navigation list
+
+    *Usage:*
+
+    <pre><code><r:normal><r:if_last>...</r:if_last></r:normal></code></pre>
+  }
+  tag 'navigation:if_last' do |tag|
+    tag.expand if tag.locals.last_child
   end
 
   desc %{

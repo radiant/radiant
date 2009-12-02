@@ -244,6 +244,7 @@ describe "Registry::Checkout" do
     @methods = [:copy_to_vendor_extensions, :migrate, :update].each do |method|
       @checkout.stub!(method).and_return(true)
     end
+    @checkout.stub!(:cd).and_yield
   end
 
   it "should set the name and url" do
@@ -263,7 +264,8 @@ describe "Registry::Checkout" do
 
   it "should checkout the source" do
     @checkout.stub!(:checkout_command).and_return('echo')
-    @checkout.should_receive(:system).with(/^cd (.*); echo/)
+    @checkout.should_receive(:cd)
+    @checkout.should_receive(:system).with('echo')
     @checkout.checkout
     @checkout.path.should_not be_nil
     @checkout.path.should =~ /example/
@@ -313,6 +315,7 @@ describe "Registry::Git" do
     @extension = mock("Extension", :name => 'example', :repository_url => 'http://localhost/')
     @git = Registry::Git.new(@extension)
     @git.stub!(:system)
+    @git.stub!(:cd).and_yield
   end
 
   describe "when the Radiant project is not stored in git" do
@@ -326,15 +329,17 @@ describe "Registry::Git" do
 
     it "should initialize and update submodules" do
       Dir.stub!(:tmpdir).and_return('/tmp')
-      @git.should_receive(:system).with("cd /tmp; git clone http://localhost/ example").ordered
-      @git.should_receive(:system).with("cd /tmp/example; git submodule init && git submodule update").ordered
+      @git.should_receive(:cd).with("/tmp").ordered
+      @git.should_receive(:system).with("git clone http://localhost/ example").ordered
+      @git.should_receive(:cd).with("/tmp/example").ordered
+      @git.should_receive(:system).with("git submodule init && git submodule update").ordered
       @git.checkout
     end
 
     it "should copy the extension to vendor/extensions" do
       @git.path = "/tmp"
-      FileUtils.should_receive(:cp_r).with('/tmp', "#{RAILS_ROOT}/vendor/extensions/example")
-      FileUtils.should_receive(:rm_r).with('/tmp')
+      @git.should_receive(:cp_r).with('/tmp', "#{RAILS_ROOT}/vendor/extensions/example")
+      @git.should_receive(:rm_r).with('/tmp')
       @git.copy_to_vendor_extensions
     end
   end
@@ -346,13 +351,14 @@ describe "Registry::Git" do
 
     it "should add the extension as a submodule and initialize and update its submodules" do
       @git.should_receive(:system).with("git submodule add http://localhost/ vendor/extensions/example").ordered
-      @git.should_receive(:system).with("cd vendor/extensions/example; git submodule init && git submodule update").ordered
+      @git.should_receive(:cd).with("vendor/extensions/example").ordered
+      @git.should_receive(:system).with("git submodule init && git submodule update").ordered
       @git.checkout
     end
 
     it "should not copy the extension" do
-      FileUtils.should_not_receive(:cp_r)
-      FileUtils.should_not_receive(:rm_r)
+      @git.should_not_receive(:cp_r)
+      @git.should_not_receive(:rm_r)
       @git.copy_to_vendor_extensions
     end
   end
