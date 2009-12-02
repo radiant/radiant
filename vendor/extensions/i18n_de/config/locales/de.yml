@@ -27,7 +27,6 @@ de:
   add_part: 'Neues Part'
   add_tab: 'fügt Tab ein'   
   admin: 'Administrator' 
-  assets: 'Assets'
   available_tags: 'Available Tags'
   available_tags_for: 'Available Tags for'
   body: 'Body'  
@@ -140,7 +139,8 @@ de:
   snippet: 'Snippet'   
   snippets: 'Snippets'          
   status: 'Status'    
-  # Warnings and info text:
+    # Warnings and info text:
+  testing: Testing
   text:
     layouts:
       remove_warning: 'Sie sind sicher, das folgende Layout <strong class="warning">dauerhaft entfernen</strong> zu wollen?'   

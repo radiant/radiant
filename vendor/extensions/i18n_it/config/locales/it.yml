@@ -140,6 +140,7 @@ it:
   snippets: "Snippet"
   status: "Stato"
     # Warnings and info text:
+  testing: Testing
   text:
     layouts:
       remove_warning: "Confermi la <strong class='warning'>cancellazione</strong> del layout salvato?"  

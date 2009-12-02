@@ -140,6 +140,7 @@ ru:
   snippets: 'Вставки'
   status: 'Статус'
     # Warnings and info text:
+  testing: Testing
   text:
     layouts:
       remove_warning: 'Вы уверены что хотите <strong class="warning">безвозвратно удалить</strong> макет'
