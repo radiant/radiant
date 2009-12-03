@@ -1,7 +1,6 @@
 .popup
   %h3.title
-    Available Tags for
-    = _display_name
+    =t('available_tags_for', :name =>  _display_name)
   %p
     %label.inline{:for => "search_#{class_of_page.name.underscore}_tag_reference"} Filter Tags
     %input{:id => "search_#{class_of_page.name.underscore}_tag_reference", :type => "search", :name => "search_tag_reference"}/

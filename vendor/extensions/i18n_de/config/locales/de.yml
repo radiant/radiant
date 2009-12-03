@@ -28,7 +28,7 @@ de:
   add_tab: 'fügt Tab ein'   
   admin: 'Administrator' 
   available_tags: 'Available Tags'
-  available_tags_for: 'Available Tags for'
+  available_tags_for: 'Available Tags for {{name}}'
   body: 'Body'  
   breadcrumb: 'Breadcrumb'
   buttons:

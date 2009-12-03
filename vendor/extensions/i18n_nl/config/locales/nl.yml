@@ -28,7 +28,7 @@ nl:
   add_tab: 'Tab Toevoegen'
   admin: 'Beheerder'
   available_tags: 'Beschikbare Tags'
-  available_tags_for: 'Beschikbare Tags voor'
+  available_tags_for: 'Beschikbare Tags voor {{name}}'
   body: 'Body'
   breadcrumb: 'Breadcrumb'
   buttons:

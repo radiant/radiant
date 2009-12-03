@@ -28,7 +28,7 @@ it:
   add_tab: "Aggiungi tab"   
   admin: "Amministratore" 
   available_tags: "Tag disponibili"
-  available_tags_for: 'Tag disponibili per'
+  available_tags_for: 'Tag disponibili per {{name}}'
   body: "Body"  
   breadcrumb: 'Traccia'
   buttons:

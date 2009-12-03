@@ -28,7 +28,7 @@ fr:
   add_tab: "Ajouter Onglet"   
   admin: "Administrateur" 
   available_tags: "Tags disponibles"
-  available_tags_for: 'Available Tags for'
+  available_tags_for: 'Tags disponibles pour {{name}}'
   body: "Body"  
   breadcrumb: 'Breadcrumb'
   buttons:

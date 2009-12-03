@@ -27,7 +27,7 @@ module Admin::ReferencesHelper
     when 'filters'
       filter ? filter.filter_name : '<none>'
     when 'tags'
-      class_of_page.display_name
+      t("#{class_of_page.display_name.downcase}")
     end
   end
   
