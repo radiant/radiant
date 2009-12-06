@@ -209,6 +209,7 @@ module Radiant
           edit.form_bottom.concat %w{edit_buttons edit_timestamp}
         end
         snippet.index = RegionSet.new do |index|
+          index.top.concat %w{}
           index.thead.concat %w{title_header modify_header}
           index.tbody.concat %w{title_cell modify_cell}
           index.bottom.concat %w{new_button}
@@ -225,6 +226,7 @@ module Radiant
           edit.form_bottom.concat %w{edit_buttons edit_timestamp}
         end
         layout.index = RegionSet.new do |index|
+          index.top.concat %w{}
           index.thead.concat %w{title_header modify_header}
           index.tbody.concat %w{title_cell modify_cell}
           index.bottom.concat %w{new_button}

@@ -68,7 +68,7 @@ describe Radiant::AdminUI do
     snippet.edit.form.should == %w{edit_title edit_content edit_filter}
     snippet.edit.form_bottom.should == %w{edit_buttons edit_timestamp}
     snippet.index.should_not be_nil
-    snippet.index.top.should == %w{help_text}
+    snippet.index.top.should == %w{}
     snippet.index.thead.should == %w{title_header modify_header}
     snippet.index.tbody.should == %w{title_cell modify_cell}
     snippet.index.bottom.should == %w{new_button}
@@ -84,7 +84,7 @@ describe Radiant::AdminUI do
                                   edit_content}
     layout.edit.form_bottom.should == %w{edit_buttons edit_timestamp}
     layout.index.should_not be_nil
-    layout.index.top.should == %w{help_text}
+    layout.index.top.should == %w{}
     layout.index.thead.should == %w{title_header modify_header}
     layout.index.tbody.should == %w{title_cell modify_cell}
     layout.index.bottom.should == %w{new_button}
