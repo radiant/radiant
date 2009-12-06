@@ -3,7 +3,7 @@ require 'action_view/helpers/form_helper'
 
 module ActionView
   class Base
-    @@field_error_proc = Proc.new{ |html_tag, instance| "<div class=\"fieldWithErrors\">#{html_tag}</div>" }
+    @@field_error_proc = Proc.new{ |html_tag, instance| "<div class=\"fieldWithErrors\">#{html_tag}</div>".html_safe! }
     cattr_accessor :field_error_proc
   end
 
@@ -171,7 +171,7 @@ module ActionView
         options = params.extract_options!.symbolize_keys
 
         if object = options.delete(:object)
-          objects = [object].flatten
+          objects = Array.wrap(object)
         else
           objects = params.collect {|object_name| instance_variable_get("@#{object_name}") }.compact
         end
@@ -290,7 +290,7 @@ module ActionView
       end
 
       def error_wrapping(html_tag, has_error)
-        has_error ? Base.field_error_proc.call(html_tag, self) : html_tag
+        has_error ? Base.field_error_proc.call(html_tag, self).html_safe! : html_tag
       end
 
       def error_message

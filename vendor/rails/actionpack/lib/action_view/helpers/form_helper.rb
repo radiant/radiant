@@ -280,7 +280,7 @@ module ActionView
 
         concat(form_tag(options.delete(:url) || {}, options.delete(:html) || {}))
         fields_for(object_name, *(args << options), &proc)
-        concat('</form>')
+        concat('</form>'.html_safe!)
       end
 
       def apply_form_for_options!(object_or_array, options) #:nodoc:
@@ -442,6 +442,15 @@ module ActionView
       #           Name: <%= project_fields.text_field :name %>
       #         <% end %>
       #       <% end %>
+      #     <% end %>
+      #   <% end %>
+      #
+      # Or a collection to be used:
+      #
+      #   <% form_for @person, :url => { :action => "update" } do |person_form| %>
+      #     ...
+      #     <% person_form.fields_for :projects, @active_projects do |project_fields| %>
+      #       Name: <%= project_fields.text_field :name %>
       #     <% end %>
       #   <% end %>
       #
@@ -788,7 +797,7 @@ module ActionView
         add_default_name_and_id(options)
         hidden = tag("input", "name" => options["name"], "type" => "hidden", "value" => options['disabled'] && checked ? checked_value : unchecked_value)
         checkbox = tag("input", options)
-        hidden + checkbox
+        (hidden + checkbox).html_safe!
       end
 
       def to_boolean_select_tag(options = {})
@@ -930,7 +939,7 @@ module ActionView
         end
       end
 
-      (field_helpers - %w(label check_box radio_button fields_for)).each do |selector|
+      (field_helpers - %w(label check_box radio_button fields_for hidden_field)).each do |selector|
         src = <<-end_src
           def #{selector}(method, options = {})  # def text_field(method, options = {})
             @template.send(                      #   @template.send(
@@ -989,6 +998,11 @@ module ActionView
       def radio_button(method, tag_value, options = {})
         @template.radio_button(@object_name, method, tag_value, objectify_options(options))
       end
+      
+      def hidden_field(method, options = {})
+        @emitted_hidden_id = true if method == :id
+        @template.hidden_field(@object_name, method, objectify_options(options))
+      end
 
       def error_message_on(method, *args)
         @template.error_message_on(@object, method, *args)
@@ -1002,6 +1016,10 @@ module ActionView
         @template.submit_tag(value, options.reverse_merge(:id => "#{object_name}_submit"))
       end
 
+      def emitted_hidden_id?
+        @emitted_hidden_id
+      end
+
       private
         def objectify_options(options)
           @default_options.merge(options.merge(:object => @object))
@@ -1013,18 +1031,21 @@ module ActionView
 
         def fields_for_with_nested_attributes(association_name, args, block)
           name = "#{object_name}[#{association_name}_attributes]"
-          association = @object.send(association_name)
-          explicit_object = args.first if args.first.respond_to?(:new_record?)
+          association = args.first
+
+          if association.respond_to?(:new_record?)
+            association = [association] if @object.send(association_name).is_a?(Array)
+          elsif !association.is_a?(Array)
+            association = @object.send(association_name)
+          end
 
           if association.is_a?(Array)
-            children = explicit_object ? [explicit_object] : association
             explicit_child_index = args.last[:child_index] if args.last.is_a?(Hash)
-
-            children.map do |child|
+            association.map do |child|
               fields_for_nested_model("#{name}[#{explicit_child_index || nested_child_index(name)}]", child, args, block)
             end.join
-          else
-            fields_for_nested_model(name, explicit_object || association, args, block)
+          elsif association
+            fields_for_nested_model(name, association, args, block)
           end
         end
 
@@ -1033,8 +1054,8 @@ module ActionView
             @template.fields_for(name, object, *args, &block)
           else
             @template.fields_for(name, object, *args) do |builder|
-              @template.concat builder.hidden_field(:id)
               block.call(builder)
+              @template.concat builder.hidden_field(:id) unless builder.emitted_hidden_id?
             end
           end
         end
