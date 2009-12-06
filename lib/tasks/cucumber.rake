@@ -1,21 +1,36 @@
 $LOAD_PATH.unshift(RAILS_ROOT + '/vendor/plugins/cucumber/lib') if File.directory?(RAILS_ROOT + '/vendor/plugins/cucumber/lib')
 
-begin
-  require 'cucumber/version'
-  require 'cucumber/rake/task'
+unless ARGV.any? {|a| a =~ /^gems/}
 
-  Cucumber::Rake::Task.new(:features) do |t|
-    minor = Cucumber::VERSION::MINOR.to_i
-    tiny = Cucumber::VERSION::TINY.to_i
-    raise LoadError if (minor < 3) || (minor == 3 && tiny < 9)
-    t.fork = true
-    t.cucumber_opts = ['--format', (ENV['CUCUMBER_FORMAT'] || 'pretty')]
-    t.feature_pattern = "#{RADIANT_ROOT}/features/**/*.feature"
+begin
+  require 'cucumber/rake/task'
+  require 'cucumber/version'
+  namespace :cucumber do
+    raise LoadError if Cucumber::VERSION.to_s < '0.4.4'
+    Cucumber::Rake::Task.new({:ok => 'db:test:prepare'}, 'Run features that should pass') do |t|
+      t.fork = true # You may get faster startup if you set this to false
+      t.cucumber_opts = "--tags ~@wip --strict --format #{ENV['CUCUMBER_FORMAT'] || 'pretty'}"
+    end
+
+    Cucumber::Rake::Task.new({:wip => 'db:test:prepare'}, 'Run features that are being worked on') do |t|
+      t.fork = true # You may get faster startup if you set this to false
+      t.cucumber_opts = "--tags @wip:2 --wip --format #{ENV['CUCUMBER_FORMAT'] || 'pretty'}"
+    end
+
+    desc 'Run all features'
+    task :all => [:ok, :wip]
   end
-  task :features => 'db:test:prepare'
+  desc 'Alias for cucumber:ok'
+  task :cucumber => 'cucumber:ok'
+
+  task :features => :cucumber do
+    STDERR.puts "*** The 'features' task is deprecated. See rake -T cucumber ***"
+  end
 rescue LoadError
-  desc 'Cucumber rake task not available'
-  task :features do
-    abort 'Cucumber rake task is not available. Be sure to install cucumber version 0.3.9 as a gem or plugin'
+  desc 'cucumber rake task not available (cucumber not installed)'
+  task :cucumber do
+    abort 'Cucumber rake task is not available. Be sure to install cucumber version 0.4.4 or greater as a gem or plugin'
   end
+end
+
 end
