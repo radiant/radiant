@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Radiant CMS dev team"]
-  s.date = %q{2009-09-30}
+  s.date = %q{2009-10-09}
   s.default_executable = %q{radiant}
   s.description = %q{Radiant is a simple and powerful publishing system designed for small teams.
 It is built with Rails and is similar to Textpattern or MovableType, but is

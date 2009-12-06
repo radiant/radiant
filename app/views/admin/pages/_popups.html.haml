@@ -6,7 +6,7 @@
       %p
         %label{:for => 'part_name_field'} Name
         = f.text_field :name, :id => 'part_name_field', :maxlength => 100, :style => "width: 15em", :class => "textbox big"
-        = hidden_field_tag 'index', @page.parts.size, :id => 'page_part_index_field'
+        = hidden_field_tag 'index', 0, :id => 'page_part_index_field'
       %p.buttons
         = submit_tag "Add Part", :id => 'add_part_button', :class => "button"
         or

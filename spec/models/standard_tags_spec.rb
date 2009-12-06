@@ -656,6 +656,36 @@ describe "Standard Tags" do
       expected = %{<strong><a href="/">Home: Boy</a></strong> | <a href="/archive/">Archives</a> | <a href="/documentation/">Docs</a>}
       page(:radius).should render(tags).as(expected)
     end
+
+    it 'should render text under <r:if_first> and <r:if_last> only on the first and last item, respectively' do
+      tags = %{<r:navigation urls="Home: / | Assorted: /assorted | Parent: /parent | Radius: /radius">
+                 <r:normal><r:if_first>(</r:if_first><a href="<r:url />"><r:title /></a><r:if_last>)</r:if_last></r:normal>
+                 <r:here><r:if_first>(</r:if_first><r:title /><r:if_last>)</r:if_last></r:here>
+                 <r:selected><r:if_first>(</r:if_first><strong><a href="<r:url />"><r:title /></a></strong><r:if_last>)</r:if_last></r:selected>
+               </r:navigation>}
+      expected = %{(<strong><a href=\"/\">Home</a></strong> <a href=\"/assorted\">Assorted</a> <a href=\"/parent\">Parent</a> Radius)}
+      page(:radius).should render(tags).as(expected)
+    end
+
+    it 'should render text under <r:unless_first> on every item but the first' do
+      tags = %{<r:navigation urls="Home: / | Assorted: /assorted | Parent: /parent | Radius: /radius">
+                 <r:normal><r:unless_first>&gt; </r:unless_first><a href="<r:url />"><r:title /></a></r:normal>
+                 <r:here><r:unless_first>&gt; </r:unless_first><r:title /></r:here>
+                 <r:selected><r:unless_first>&gt; </r:unless_first><strong><a href="<r:url />"><r:title /></a></strong></r:selected>
+               </r:navigation>}
+      expected = %{<strong><a href=\"/\">Home</a></strong> &gt; <a href=\"/assorted\">Assorted</a> &gt; <a href=\"/parent\">Parent</a> &gt; Radius}
+      page(:radius).should render(tags).as(expected)
+    end
+
+    it 'should render text under <r:unless_last> on every item but the last' do
+      tags = %{<r:navigation urls="Home: / | Assorted: /assorted | Parent: /parent | Radius: /radius">
+                 <r:normal><a href="<r:url />"><r:title /></a><r:unless_last> &gt;</r:unless_last></r:normal>
+                 <r:here><r:title /><r:unless_last> &gt;</r:unless_last></r:here>
+                 <r:selected><strong><a href="<r:url />"><r:title /></a></strong><r:unless_last> &gt;</r:unless_last></r:selected>
+               </r:navigation>}
+      expected = %{<strong><a href=\"/\">Home</a></strong> &gt; <a href=\"/assorted\">Assorted</a> &gt; <a href=\"/parent\">Parent</a> &gt; Radius}
+      page(:radius).should render(tags).as(expected)
+    end
   end
 
   describe "<r:find>" do

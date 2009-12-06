@@ -4,7 +4,7 @@
   - main.edit_header do
     %h1 New Page
   - main.edit_form do
-    - form_for :page, @page, :url => admin_pages_path, :html => {:id => 'new_page', :multipart => true} do |f|
+    - form_for :page, @page, :url => admin_pages_path, :html => {:id => 'new_page', :multipart => true, 'data-onsubmit_status'=>"Creating page&#8230;"} do |f|
       = render :partial => "fields", :object => f
   - main.edit_popups do
     = render :partial => "popups"
