@@ -2,6 +2,7 @@
 
 === Edge
 
+* Properly display errors on user password changes [Jim Gay]
 * Prevent admin from removing her own admin privilege [Jim Gay]
 * Move to Rails 2.3.5 [Jim Gay]
 * Simplify admin tab API [Jim Gay, John Long, Sean Cribbs]
