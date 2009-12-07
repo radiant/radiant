@@ -18,6 +18,12 @@ class ERB
       s.to_s.gsub(/[&"><]/) { |special| HTML_ESCAPE[special] }
     end
 
+    undef :h
+    alias h html_escape
+
+    module_function :html_escape
+    module_function :h
+
     # A utility method for escaping HTML entities in JSON strings.
     # This method is also aliased as <tt>j</tt>.
     #

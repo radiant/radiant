@@ -11,15 +11,15 @@ module Radiant
     # The NavTab Class holds the structure of a navigation tab (including
     # its sub-nav items).
     class NavTab < Array
-      attr_reader :name, :proper_name, :visibility
+      attr_reader :name
 
-      def initialize(name, proper_name, visibility = [:all])
-        @name, @proper_name, @visibility = name, proper_name, Array(visibility)
+      def initialize(name)
+        @name = name
       end
 
       def [](id)
         unless id.kind_of? Fixnum
-          self.find {|subnav_item| subnav_item.name.to_s == id.to_s }
+          self.find {|subnav_item| subnav_item.name.to_s.titleize == id.to_s.titleize }
         else
           super
         end
@@ -48,28 +48,43 @@ module Radiant
       end
 
       alias :add :<<
-
-      def visible?(user)
-        visibility.include?(:all) || visibility.any? {|v| user.has_role?(v) }
+      
+      def add_item(*args)
+        options = args.extract_options!
+        options.symbolize_keys!
+        before = options.delete(:before)
+        after = options.delete(:after)
+        tab_name = before || after
+        if self[tab_name]
+          _index = index(self[tab_name])
+          _index += 1 unless before
+          insert(_index, NavSubItem.new(args.first, args.second))
+        else
+          add NavSubItem.new(args.first, args.second)
+        end
       end
 
-      def deprecated_add(name, url, caller)
+      def visible?(user)
+        any? { |sub_item| sub_item.visible?(user) }
+      end
+
+      def deprecated_add(sym_name, name, url, caller)
         ActiveSupport::Deprecation.warn("admin.tabs.add is no longer supported in Radiant 0.9.x.  Please update your code to use admin.nav", caller)
-        NavSubItem.new(name.underscore.to_sym, name, url)
+        NavSubItem.new(name, url)
       end
     end
 
     # Simple structure for storing the properties of a tab's sub items.
     class NavSubItem
-      attr_reader :name, :proper_name, :url
+      attr_reader :name, :url
       attr_accessor :tab
 
-      def initialize(name, proper_name, url = "#")
-        @name, @proper_name, @url = name, proper_name, url
+      def initialize(name, url = "#")
+        @name, @url = name, url
       end
 
       def visible?(user)
-        tab.visible?(user) && visible_by_controller?(user)
+        visible_by_controller?(user)
       end
 
       def relative_url
@@ -111,28 +126,28 @@ module Radiant
     end
 
     def initialize
-      @nav = NavTab.new(:tabs, "Tab Container")
+      @nav = NavTab.new("Tab Container")
       load_default_regions
     end
 
     def load_default_nav
-      content = nav_tab(:content, "Content")
-      content << nav_item(:pages, "Pages", "/admin/pages")
+      content = nav_tab("Content")
+      content << nav_item("Pages", "/admin/pages")
       nav << content
 
-      design = nav_tab(:design, "Design", [:designer, :admin])
-      design << nav_item(:layouts, "Layouts", "/admin/layouts")
-      design << nav_item(:snippets, "Snippets", "/admin/snippets")
+      design = nav_tab("Design")
+      design << nav_item("Layouts", "/admin/layouts")
+      design << nav_item("Snippets", "/admin/snippets")
       nav << design
 
-      # media = NavTab.new(:assets, "Assets")
-      # media << NavSubItem.new(:all, "All", "/admin/assets/")
-      # media << NavSubItem.new(:all, "Unattached", "/admin/assets/unattached/")
+      # media = nav_tab("Assets")
+      # media << nav_item("All", "/admin/assets/")
+      # media << nav_item("Unattached", "/admin/assets/unattached/")
 
-      settings = nav_tab(:settings, "Settings")
-      settings << nav_item(:general, "Personal", "/admin/preferences/edit")
-      settings << nav_item(:users, "Users", "/admin/users")
-      settings << nav_item(:extensions, "Extensions", "/admin/extensions")
+      settings = nav_tab("Settings")
+      settings << nav_item("Personal", "/admin/preferences/edit")
+      settings << nav_item("Users", "/admin/users")
+      settings << nav_item("Extensions", "/admin/extensions")
       nav << settings
     end
 
@@ -194,6 +209,7 @@ module Radiant
           edit.form_bottom.concat %w{edit_buttons edit_timestamp}
         end
         snippet.index = RegionSet.new do |index|
+          index.top.concat %w{}
           index.thead.concat %w{title_header modify_header}
           index.tbody.concat %w{title_cell modify_cell}
           index.bottom.concat %w{new_button}
@@ -210,6 +226,7 @@ module Radiant
           edit.form_bottom.concat %w{edit_buttons edit_timestamp}
         end
         layout.index = RegionSet.new do |index|
+          index.top.concat %w{}
           index.thead.concat %w{title_header modify_header}
           index.tbody.concat %w{title_cell modify_cell}
           index.bottom.concat %w{new_button}

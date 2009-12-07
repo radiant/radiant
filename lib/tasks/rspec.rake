@@ -71,10 +71,10 @@ begin
         t.spec_files = FileList["#{RADIANT_ROOT}/spec/#{sub}/**/*_spec.rb"]
       end
     end
-    Cucumber::Rake::Task.new(:integration) do |t|
-      t.cucumber_opts = ["--format","progress"]
-      t.feature_pattern = "#{RADIANT_ROOT}/features/**/*.feature"
-    end
+    Cucumber::Rake::Task.new(:integration)# do |t|
+    #   t.cucumber_opts = ["--format","progress"]
+    #   t.feature_pattern = "#{RADIANT_ROOT}/features/**/*.feature"
+    # end
   
     desc 'Run all specs in spec/generators directory'
     task :generators => spec_prereq do

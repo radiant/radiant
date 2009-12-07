@@ -9,6 +9,8 @@ class BasicExtension < Radiant::Extension
   end
   
   def activate
-    admin.nav[:content] << admin.nav_item(:basic, "Basic Extension Tab", "/admin/basic")
+    tab 'Content' do
+      add_item("Basic Extension Tab", "/admin/basic", :before => 'Pages')
+    end
   end
 end

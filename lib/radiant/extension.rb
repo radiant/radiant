@@ -38,6 +38,23 @@ module Radiant
     def admin
       AdminUI.instance
     end
+    
+    def tab(name,&block)
+      @the_tab = admin.nav[name]
+      unless @the_tab
+        @the_tab = Radiant::AdminUI::NavTab.new(name)
+        admin.nav << @the_tab
+      end
+      if block_given?
+        block.call(@the_tab)
+      end
+      return @the_tab
+    end
+    alias :add_tab :tab
+    
+    def add_item(*args)
+      @the_tab.add_item(*args)
+    end
 
     # Determine if another extension is installed and up to date.
     #

@@ -15,11 +15,11 @@ describe Radiant::AdminUI do
   end
 
   it "should create a new nav tab" do
-    @admin.nav_tab(:content, "Content").should be_kind_of(Radiant::AdminUI::NavTab)
+    @admin.nav_tab("Content").should be_kind_of(Radiant::AdminUI::NavTab)
   end
   
   it "should create a new nav item" do
-    @admin.nav_item(:foo, "Foo", "/admin/foo").should be_kind_of(Radiant::AdminUI::NavSubItem)
+    @admin.nav_item("Foo", "/admin/foo").should be_kind_of(Radiant::AdminUI::NavSubItem)
   end
   
   it "should load the default navigation tabs and sub-items" do
@@ -68,7 +68,7 @@ describe Radiant::AdminUI do
     snippet.edit.form.should == %w{edit_title edit_content edit_filter}
     snippet.edit.form_bottom.should == %w{edit_buttons edit_timestamp}
     snippet.index.should_not be_nil
-    snippet.index.top.should == %w{help_text}
+    snippet.index.top.should == %w{}
     snippet.index.thead.should == %w{title_header modify_header}
     snippet.index.tbody.should == %w{title_cell modify_cell}
     snippet.index.bottom.should == %w{new_button}
@@ -84,7 +84,7 @@ describe Radiant::AdminUI do
                                   edit_content}
     layout.edit.form_bottom.should == %w{edit_buttons edit_timestamp}
     layout.index.should_not be_nil
-    layout.index.top.should == %w{help_text}
+    layout.index.top.should == %w{}
     layout.index.thead.should == %w{title_header modify_header}
     layout.index.tbody.should == %w{title_cell modify_cell}
     layout.index.bottom.should == %w{new_button}

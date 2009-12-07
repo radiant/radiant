@@ -57,9 +57,14 @@ module ActionView #:nodoc:
     end
 
     class EagerPath < Path
+      def initialize(path)
+        super
+        @loaded = false
+      end
+
       def load!
         return if @loaded
-        
+
         @paths = {}
         templates_in_path do |template|
           template.load!
@@ -103,8 +108,9 @@ module ActionView #:nodoc:
       @@exempt_from_layout.merge(regexps)
     end
 
-    attr_accessor :template_path, :filename, :load_path, :base_path
+    attr_accessor :template_path, :load_path, :base_path
     attr_accessor :locale, :name, :format, :extension
+    attr_writer :filename
     delegate :to_s, :to => :path
 
     def initialize(template_path, load_path = nil)

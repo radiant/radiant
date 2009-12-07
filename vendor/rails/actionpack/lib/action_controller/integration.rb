@@ -1,6 +1,7 @@
 require 'stringio'
 require 'uri'
 require 'active_support/test_case'
+require 'action_controller/rack_lint_patch'
 
 module ActionController
   module Integration #:nodoc:
@@ -268,7 +269,9 @@ module ActionController
 
           env["QUERY_STRING"] ||= ""
 
-          data = data.is_a?(IO) ? data : StringIO.new(data || '')
+          data ||= ''
+          data.force_encoding(Encoding::ASCII_8BIT) if data.respond_to?(:force_encoding)
+          data = data.is_a?(IO) ? data : StringIO.new(data)
 
           env.update(
             "REQUEST_METHOD"  => method.to_s.upcase,
@@ -476,6 +479,11 @@ EOF
     end
 
     module Runner
+      def initialize(*args)
+        super
+        @integration_session = nil
+      end
+
       # Reset the current session. This is useful for testing multiple sessions
       # in a single test case.
       def reset!
@@ -543,8 +551,12 @@ EOF
       # Delegate unhandled messages to the current session instance.
       def method_missing(sym, *args, &block)
         reset! unless @integration_session
-        returning @integration_session.__send__(sym, *args, &block) do
-          copy_session_variables!
+        if @integration_session.respond_to?(sym)
+          returning @integration_session.__send__(sym, *args, &block) do
+            copy_session_variables!
+          end
+        else
+          super
         end
       end
     end

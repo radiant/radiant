@@ -25,6 +25,7 @@ var TabControl = Class.create({
     var tab = new TabControl.Tab(page);
     this.tabs.push(tab);
     this.tabContainer.insert({bottom: tab});
+    $('page_part_index_field').setValue(this.tabs.length);
     page.hide();
   },
 

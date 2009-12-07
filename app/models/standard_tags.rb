@@ -847,6 +847,30 @@ module StandardTags
   end
 
   desc %{
+    Renders the containing elements unless the element is the first
+    in the navigation list
+
+    *Usage:*
+
+    <pre><code><r:normal><r:unless_first>...</r:unless_first></r:normal></code></pre>
+  }
+  tag 'navigation:unless_first' do |tag|
+    tag.expand unless tag.locals.first_child
+  end
+
+  desc %{
+    Renders the containing elements unless the element is the last
+    in the navigation list
+
+    *Usage:*
+
+    <pre><code><r:normal><r:unless_last>...</r:unless_last></r:normal></code></pre>
+  }
+  tag 'navigation:unless_last' do |tag|
+    tag.expand unless tag.locals.last_child
+  end
+
+  desc %{
     Renders the containing elements if the element is the last
     in the navigation list
 
