@@ -63,7 +63,7 @@ describe "Standard Tags" do
     it 'should not list draft pages' do
       page.should render('<r:children:each by="title"><r:slug /> </r:children:each>').as('a b c d e f g h i j ')
     end
-    
+
     it 'should include draft pages with status="all"' do
       page.should render('<r:children:each status="all" by="slug"><r:slug /> </r:children:each>').as('a b c d draft e f g h i j ')
     end
@@ -71,12 +71,12 @@ describe "Standard Tags" do
     it "should include draft pages by default on the dev host" do
       page.should render('<r:children:each by="slug"><r:slug /> </r:children:each>').as('a b c d draft e f g h i j ').on('dev.site.com')
     end
-    
+
     it 'should not list draft pages on dev.site.com when Radiant::Config["dev.host"] is set to something else' do
       Radiant::Config['dev.host'] = 'preview.site.com'
       page.should render('<r:children:each by="title"><r:slug /> </r:children:each>').as('a b c d e f g h i j ').on('dev.site.com')
     end
-    
+
     it 'should error with invalid "limit" attribute' do
       message = "`limit' attribute of `each' tag must be a positive number between 1 and 4 digits"
       page.should render(page_children_each_tags(%{limit="a"})).with_error(message)
@@ -202,7 +202,7 @@ describe "Standard Tags" do
     it 'should render the number of children of the current page' do
       page(:parent).should render('<r:children:count />').as('3')
     end
-    
+
     it "should accept the same scoping conditions as <r:children:each>" do
       page.should render('<r:children:count />').as('10')
       page.should render('<r:children:count status="all" />').as('11')
@@ -267,6 +267,10 @@ describe "Standard Tags" do
       page(:recursive_parts).should render('<r:content part="two"/>').with_error("Recursion error: already rendering the `two' part.")
     end
 
+    it "should not prevent rendering a part more than once in sequence" do
+      page(:home).should render('<r:content /><r:content />').as('Hello world!Hello world!')
+    end
+
     describe "with inherit attribute" do
       it "missing or set to 'false' should render the current page's part" do
         page.should render('<r:content part="sidebar" />').as('')
@@ -312,7 +316,7 @@ describe "Standard Tags" do
   end
 
   describe "<r:if_content>" do
- 
+
     it "without 'part' attribute should render the contained block if the 'body' part exists" do
       page.should render('<r:if_content>true</r:if_content>').as('true')
     end
@@ -326,20 +330,20 @@ describe "Standard Tags" do
     end
 
     describe "with more than one part given (separated by comma)" do
-      
+
       it "should render the contained block only if all specified parts exist" do
         page(:home).should render('<r:if_content part="body, extended">true</r:if_content>').as('true')
       end
-    
+
       it "should not render the contained block if at least one of the specified parts does not exist" do
         page(:home).should render('<r:if_content part="body, madeup">true</r:if_content>').as('')
       end
-      
+
       describe "with inherit attribute set to 'true'" do
         it 'should render the contained block if the current or ancestor pages have the specified parts' do
           page(:guests).should render('<r:if_content part="favors, extended" inherit="true">true</r:if_content>').as('true')
         end
-      
+
         it 'should not render the contained block if the current or ancestor pages do not have all of the specified parts' do
           page(:guests).should render('<r:if_content part="favors, madeup" inherit="true">true</r:if_content>').as('')
         end
@@ -348,7 +352,7 @@ describe "Standard Tags" do
         it 'should render the contained block if the current page has the specified parts' do
           page(:guests).should render('<r:if_content part="favors, games" inherit="false">true</r:if_content>').as('')
         end
-      
+
         it 'should not render the contained block if the current or ancestor pages do not have all of the specified parts' do
           page(:guests).should render('<r:if_content part="favors, madeup" inherit="false">true</r:if_content>').as('')
         end
@@ -362,7 +366,7 @@ describe "Standard Tags" do
         it "should render the contained block if all of the specified parts exist" do
           page(:home).should render('<r:if_content part="body, sidebar" find="all">true</r:if_content>').as('true')
         end
-        
+
         it "should not render the contained block if all of the specified parts do not exist" do
           page.should render('<r:if_content part="asdf, madeup" find="all">true</r:if_content>').as('')
         end
@@ -375,7 +379,7 @@ describe "Standard Tags" do
       it 'should not render the contained block if the current or ancestor pages have the specified parts' do
         page(:guests).should render('<r:unless_content part="favors, extended" inherit="true">true</r:unless_content>').as('')
       end
-      
+
       it 'should render the contained block if the current or ancestor pages do not have the specified parts' do
         page(:guests).should render('<r:unless_content part="madeup, imaginary" inherit="true">true</r:unless_content>').as('true')
       end
@@ -384,7 +388,7 @@ describe "Standard Tags" do
         page.should render('<r:unless_content part="sidebar" inherit="true">false</r:unless_content>').as('')
       end
     end
-    
+
     it "without 'part' attribute should not render the contained block if the 'body' part exists" do
       page.should render('<r:unless_content>false</r:unless_content>').as('')
     end
@@ -400,27 +404,27 @@ describe "Standard Tags" do
     it "should render the contained block if the specified part does not exist but does exist on an ancestor" do
       page.should render('<r:unless_content part="sidebar">false</r:unless_content>').as('false')
     end
-    
+
     describe "with more than one part given (separated by comma)" do
-    
+
       it "should not render the contained block if all of the specified parts exist" do
         page(:home).should render('<r:unless_content part="body, extended">true</r:unless_content>').as('')
       end
-    
+
       it "should render the contained block if at least one of the specified parts exists" do
         page(:home).should render('<r:unless_content part="body, madeup">true</r:unless_content>').as('true')
       end
-      
+
       describe "with the 'inherit' attribute set to 'true'" do
         it "should render the contained block if the current or ancestor pages have none of the specified parts" do
           page.should render('<r:unless_content part="imaginary, madeup" inherit="true">true</r:unless_content>').as('true')
         end
-        
+
         it "should not render the contained block if all of the specified parts are present on the current or ancestor pages" do
           page(:party).should render('<r:unless_content part="favors, extended" inherit="true">true</r:unless_content>').as('')
         end
       end
-      
+
       describe "with the 'find' attribute set to 'all'" do
         it "should not render the contained block if all of the specified parts exist" do
           page(:home).should render('<r:unless_content part="body, sidebar" find="all">true</r:unless_content>').as('')
@@ -430,7 +434,7 @@ describe "Standard Tags" do
           page.should render('<r:unless_content part="body, madeup" find="all">true</r:unless_content>').as('true')
         end
       end
-      
+
       describe "with the 'find' attribute set to 'any'" do
         it "should not render the contained block if any of the specified parts exist" do
           page.should render('<r:unless_content part="body, madeup" find="any">true</r:unless_content>').as('')
@@ -553,7 +557,7 @@ describe "Standard Tags" do
       page.should render('<r:snippet name="yielding">inner</r:snippet>').
         as('Before...inner...and after')
     end
-    
+
     it "should do nothing with contents of double tag when snippet doesn't yield" do
       page.should render('<r:snippet name="first">content disappears!</r:snippet>').
         as('test')
@@ -563,12 +567,12 @@ describe "Standard Tags" do
       page.should render('<r:snippet name="div_wrap"><r:snippet name="yielding">Hello, World!</r:snippet></r:snippet>').
       as('<div>Before...Hello, World!...and after</div>')
     end
-    
+
     it "should render double-tag snippets called from within a snippet" do
       page.should render('<r:snippet name="nested_yields">the content</r:snippet>').
         as('<snippet name="div_wrap">above the content below</snippet>')
     end
-    
+
     it "should render contents each time yield is called" do
       page.should render('<r:snippet name="yielding_often">French</r:snippet>').
         as('French is Frencher than French')
@@ -582,7 +586,7 @@ describe "Standard Tags" do
   it '<r:random> should render a randomly selected contained <r:option>' do
     page.should render("<r:random> <r:option>1</r:option> <r:option>2</r:option> <r:option>3</r:option> </r:random>").matching(/^(1|2|3)$/)
   end
-  
+
   it '<r:random> should render a randomly selected, dynamically set <r:option>' do
     page(:parent).should render("<r:random:children:each:option:title />").matching(/^(Child|Child\ 2|Child\ 3)$/)
   end
@@ -905,7 +909,7 @@ describe "Standard Tags" do
       page(:parent).should render(%{<r:find url="/radius"><r:if_ancestor_or_self>true</r:if_ancestor_or_self></r:find>}).as('')
     end
   end
-  
+
   describe "<r:unless_ancestor_or_self>" do
     it "should render the tag's content when the current page is not an ancestor of tag.locals.page" do
       page(:parent).should render(%{<r:find url="/radius"><r:unless_ancestor_or_self>true</r:unless_ancestor_or_self></r:find>}).as('true')
@@ -925,7 +929,7 @@ describe "Standard Tags" do
       page(:radius).should render(%{<r:find url="/"><r:if_self>true</r:if_self></r:find>}).as('')
     end
   end
-  
+
   describe "<r:unless_self>" do
     it "should render the tag's content when the current page is not the same as the local contextual page" do
       page(:radius).should render(%{<r:find url="/"><r:unless_self>true</r:unless_self></r:find>}).as('true')
@@ -1005,7 +1009,7 @@ describe "Standard Tags" do
         @page = pages(symbol)
       end
     end
-    
+
     def page_children_each_tags(attr = nil)
       attr = ' ' + attr unless attr.nil?
       "<r:children:each#{attr}><r:slug /> </r:children:each>"
