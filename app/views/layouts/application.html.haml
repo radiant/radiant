@@ -6,8 +6,6 @@
     - @stylesheets.uniq.each do |stylesheet|
       = stylesheet_link_tag stylesheet
     = javascript_include_tag %w(admin/prototype admin/effects admin/lowpro admin/cookie admin/popup admin/status admin/utility admin/codearea admin/tabcontrol admin/ruledtable admin/sitemap admin/shortcuts admin/application), :cache => 'admin/all'
-    /[if lt IE 7]
-      = javascript_include_tag 'admin/pngfix'
     - @javascripts.uniq.each do |javascript|
       = javascript_include_tag javascript
     - if @content_for_page_scripts

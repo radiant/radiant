@@ -71,7 +71,7 @@ share_as :AllInstanceGenerators do
   
   # Check for admin javascripts
   %w(application.js controls.js dragdrop.js lowpro.js popup.js ruledtable.js sitemap.js tabcontrol.js
-    codearea.js cookie.js effects.js pngfix.js prototype.js shortcuts.js status.js utility.js).each do |file|
+    codearea.js cookie.js effects.js prototype.js shortcuts.js status.js utility.js).each do |file|
     it "should have a #{file} admin image" do
       'public/javascripts/admin'.should have_generated_file(file)
     end
