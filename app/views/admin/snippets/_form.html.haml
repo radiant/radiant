@@ -16,6 +16,12 @@
           %p
             = f.label :filter_id, "Filter"
             = f.select :filter_id, [['none', '']] + TextFilter.descendants.map { |f| f.filter_name }.sort, :id => 'snippet_filter'
+            %span.reference_links
+              Reference:
+              %span{:id => "filter_reference_link"}
+                = link_to_function "Filter", "loadFilterReference();"
+              %span{:id => "tag_reference_link"}
+                = link_to_function 'Available Tags', "loadTagReference('Page');"
   - render_region :form_bottom do |form_bottom|
     - form_bottom.edit_buttons do
       %p.buttons{:style=>"clear: left"}
