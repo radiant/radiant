@@ -44,14 +44,14 @@
  *  DEALINGS IN THE SOFTWARE.
  *  
  */
-
+if(typeof(relative_url_root) === 'undefined'){var relative_url_root = '';}
 var Popup = {
   BorderThickness: 8,
-  BorderImage: '/images/popup_border_background.png',
-  BorderTopLeftImage: '/images/popup_border_top_left.png',
-  BorderTopRightImage: '/images/popup_border_top_right.png',
-  BorderBottomLeftImage: '/images/popup_border_bottom_left.png',
-  BorderBottomRightImage: '/images/popup_border_bottom_right.png'
+  BorderImage: relative_url_root+'/images/admin/popup_border_background.png',
+  BorderTopLeftImage: relative_url_root+'/images/admin/popup_border_top_left.png',
+  BorderTopRightImage: relative_url_root+'/images/admin/popup_border_top_right.png',
+  BorderBottomLeftImage: relative_url_root+'/images/admin/popup_border_bottom_left.png',
+  BorderBottomRightImage: relative_url_root+'/images/admin/popup_border_bottom_right.png'
 };
 
 Popup.borderImages = function() {

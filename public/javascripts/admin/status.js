@@ -41,17 +41,17 @@
  *  DEALINGS IN THE SOFTWARE.
  *  
  */
-
+if(typeof(relative_url_root) === 'undefined'){var relative_url_root = '';}
 var Status = {
   CornerThickness: 12,
-  SpinnerImage: '/images/status_spinner.gif',
+  SpinnerImage: relative_url_root+'/images/admin/status_spinner.gif',
   SpinnerImageWidth: 32,
   SpinnerImageHeight: 33,
-  BackgroundImage: '/images/status_background.png',
-  TopLeftImage: '/images/status_top_left.png',
-  TopRightImage: '/images/status_top_right.png',
-  BottomLeftImage: '/images/status_bottom_left.png',
-  BottomRightImage: '/images/status_bottom_right.png'
+  BackgroundImage: relative_url_root+'/images/admin/status_background.png',
+  TopLeftImage: relative_url_root+'/images/admin/status_top_left.png',
+  TopRightImage: relative_url_root+'/images/admin/status_top_right.png',
+  BottomLeftImage: relative_url_root+'/images/admin/status_bottom_left.png',
+  BottomRightImage: relative_url_root+'/images/admin/status_bottom_right.png'
 };
 
 Status.BackgroundImages = function() {

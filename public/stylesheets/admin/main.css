@@ -108,7 +108,7 @@ body.login #content {
 
 #header {
   font-size: 90%;
-  background: #c00 url(/images/admin/navigation_background.gif) repeat-x;
+  background: #c00 url(../../images/admin/navigation_background.gif) repeat-x;
   width: 100%;
   position: relative;
   height: auto; }
@@ -126,7 +126,7 @@ body.login #content {
 
 #view_site {
   font-size: 90%;
-  background: url(/images/admin/view_site.png) no-repeat;
+  background: url(../../images/admin/view_site.png) no-repeat;
   display: block;
   position: absolute;
   right: 12px;
@@ -155,7 +155,7 @@ ul#navigation {
       -moz-border-radius-topright: 6px;
       border-top-left-radius: 6px;
       border-top-right-radius: 6px;
-      background: url(/images/admin/navigation_tabs.png) left top repeat-x;
+      background: url(../../images/admin/navigation_tabs.png) left top repeat-x;
       color: #edd;
       display: block;
       height: 30px;
@@ -173,7 +173,7 @@ ul#navigation {
     ul#navigation li.dimmed a {
       background-position: 0 -48px; }
   ul#navigation ul#nav_sub {
-    background: url(/images/admin/navigation_secondary_background.png) repeat-x;
+    background: url(../../images/admin/navigation_secondary_background.png) repeat-x;
     font-size: 95%;
     clear: both;
     left: 0;
@@ -187,7 +187,7 @@ ul#navigation {
     ul#navigation ul#nav_sub li {
       margin: 0; }
       ul#navigation ul#nav_sub li a {
-        background: url(/images/admin/navigation_secondary_background.png) repeat-x;
+        background: url(../../images/admin/navigation_secondary_background.png) repeat-x;
         color: #555;
         display: -moz-inline-stack;
         display: inline-block;
@@ -200,14 +200,14 @@ ul#navigation {
           background-position: left -40px;
           color: #444; }
         ul#navigation ul#nav_sub li a.current {
-          background: url(/images/admin/navigation_secondary_background.png) left -80px repeat-x;
+          background: url(../../images/admin/navigation_secondary_background.png) left -80px repeat-x;
           color: #333;
           font-weight: bold; }
           ul#navigation ul#nav_sub li a.current:hover {
             background-position: left -120px;
             color: #222; }
         ul#navigation ul#nav_sub li a span {
-          background: url(/images/admin/navigation_secondary_separator.gif) right bottom no-repeat;
+          background: url(../../images/admin/navigation_secondary_separator.gif) right bottom no-repeat;
           display: block;
           margin: 0;
           padding: 0 26px;
@@ -218,7 +218,7 @@ ul#navigation {
   height: 38px;
   position: relative; }
   #header_bottom div {
-    background: url(/images/admin/navigation_shadow.png) repeat-x;
+    background: url(../../images/admin/navigation_shadow.png) repeat-x;
     position: absolute;
     top: 38px;
     width: 100%;
@@ -328,11 +328,11 @@ img.avatar {
     #content form p.more_or_less a:hover, #content form p.more_or_less a:active, #content form p.more_or_less a:focus {
       text-decoration: underline; }
   #content form p.more_or_less #more_extended_metadata {
-    background: #7e7e7e url(/images/admin/metadata_toggle.png) no-repeat 90% 8px; }
+    background: #7e7e7e url(../../images/admin/metadata_toggle.png) no-repeat 90% 8px; }
   #content form p.more_or_less #less_extended_metadata {
-    background: #7e7e7e url(/images/admin/metadata_toggle.png) no-repeat 85% -22px; }
+    background: #7e7e7e url(../../images/admin/metadata_toggle.png) no-repeat 85% -22px; }
 #content form #extended_metadata {
-  background: #7e7e7e url(/images/admin/navigation_shadow.png) repeat-x;
+  background: #7e7e7e url(../../images/admin/navigation_shadow.png) repeat-x;
   border-bottom-right-radius: 6px;
   -moz-border-bottom-right-radius: 6px;
   -webkit-border-bottom-right-radius: 6px;
@@ -370,7 +370,7 @@ img.avatar {
 
 .box {
   color: #333;
-  background: #f5f1e2 url(/images/admin/vertical_tan_gradient.png) top left repeat-x;
+  background: #f5f1e2 url(../../images/admin/vertical_tan_gradient.png) top left repeat-x;
   border-radius: 10px;
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
@@ -449,7 +449,7 @@ body.reversed #content form p label {
   font-weight: bold;
   text-shadow: #666 1px 1px 0; }
 body.reversed #content form .buttons {
-  background: white url(/images/admin/buttons_background.png) bottom repeat-x;
+  background: white url(../../images/admin/buttons_background.png) bottom repeat-x;
   border-radius: 8px;
   -moz-border-radius: 8px;
   -webkit-border-radius: 8px;
@@ -464,7 +464,7 @@ body.reversed #content .box {
   -webkit-box-shadow: 1px 1px 3px #666; }
 
 body.login #content #login {
-  background: #f5f1e2 url(/images/admin/vertical_tan_gradient.png) center -15px repeat-x;
+  background: #f5f1e2 url(../../images/admin/vertical_tan_gradient.png) center -15px repeat-x;
   border: 0.35em solid #efead3;
   border-radius: 10px;
   -moz-border-radius: 10px;
@@ -487,7 +487,7 @@ body.login #content #login {
   body.login #content #login .buttons {
     margin: 1.75em 0 1em; }
 body.login #content p.version {
-  background: url(/images/admin/login_shadow.png) top center no-repeat;
+  background: url(../../images/admin/login_shadow.png) top center no-repeat;
   color: #666;
   font-size: 80%;
   padding-top: 10px;
@@ -673,7 +673,7 @@ table.index th {
   #actions li {
     display: inline; }
   #actions a {
-    background: #eee url(/images/admin/buttons_background.png) repeat-x;
+    background: #eee url(../../images/admin/buttons_background.png) repeat-x;
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -871,7 +871,7 @@ div.popup .reference table h2, div.popup .reference table h3, div.popup .referen
     clear: both; }
     #tab_control .pages .page {
       padding: 20px;
-      background: url(/images/admin/vertical_tan_gradient.png) top left repeat-x #f5f1e2; }
+      background: url(../../images/admin/vertical_tan_gradient.png) top left repeat-x #f5f1e2; }
       #tab_control .pages .page p {
         margin-top: 0; }
       #tab_control .pages .page label {

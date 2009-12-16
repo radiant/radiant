@@ -1,17 +1,18 @@
+if(typeof(relative_url_root) === 'undefined'){var relative_url_root = '';}
 // Popup Images
-Popup.BorderImage            = '/images/admin/popup_border_background.png';
-Popup.BorderTopLeftImage     = '/images/admin/popup_border_top_left.png';
-Popup.BorderTopRightImage    = '/images/admin/popup_border_top_right.png';
-Popup.BorderBottomLeftImage  = '/images/admin/popup_border_bottom_left.png';
-Popup.BorderBottomRightImage = '/images/admin/popup_border_bottom_right.png';
+Popup.BorderImage            = relative_url_root + '/images/admin/popup_border_background.png';
+Popup.BorderTopLeftImage     = relative_url_root + '/images/admin/popup_border_top_left.png';
+Popup.BorderTopRightImage    = relative_url_root + '/images/admin/popup_border_top_right.png';
+Popup.BorderBottomLeftImage  = relative_url_root + '/images/admin/popup_border_bottom_left.png';
+Popup.BorderBottomRightImage = relative_url_root + '/images/admin/popup_border_bottom_right.png';
 
 // Status Images
-Status.SpinnerImage          = '/images/admin/status_spinner.gif';
-Status.BackgroundImage       = '/images/admin/status_background.png';
-Status.TopLeftImage          = '/images/admin/status_top_left.png';
-Status.TopRightImage         = '/images/admin/status_top_right.png';
-Status.BottomLeftImage       = '/images/admin/status_bottom_left.png';
-Status.BottomRightImage      = '/images/admin/status_bottom_right.png';
+Status.SpinnerImage          = relative_url_root + '/images/admin/status_spinner.gif';
+Status.BackgroundImage       = relative_url_root + '/images/admin/status_background.png';
+Status.TopLeftImage          = relative_url_root + '/images/admin/status_top_left.png';
+Status.TopRightImage         = relative_url_root + '/images/admin/status_top_right.png';
+Status.BottomLeftImage       = relative_url_root + '/images/admin/status_bottom_left.png';
+Status.BottomRightImage      = relative_url_root + '/images/admin/status_bottom_right.png';
 
 Event.addBehavior.reassignAfterAjax = true;
 
