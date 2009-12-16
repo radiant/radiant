@@ -2,6 +2,7 @@
 
 === Edge
 
+* Handle deploying to a sub-directory [Jim Gay]
 * Ensure that generator specs actually test properly [Travis D. Warlick]
 * Properly display errors on user password changes [Jim Gay]
 * Prevent admin from removing her own admin privilege [Jim Gay]
