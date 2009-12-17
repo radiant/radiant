@@ -16,6 +16,11 @@ Status.TopRightImage         = relative_url_root + '/images/admin/status_top_rig
 Status.BottomLeftImage       = relative_url_root + '/images/admin/status_bottom_left.png';
 Status.BottomRightImage      = relative_url_root + '/images/admin/status_bottom_right.png';
 
+// Status Message Styles
+Status.MessageColor = '#e5e5e5';
+Status.MessageFontFamily = '"Lucida Grande", "Bitstream Vera Sans", Helvetica, Verdana, Arial, sans-serif';
+Status.MessageFontSize = '90%';
+
 // Use Modal Status Windows
 Status.Modal = true;
 Status.ModalOverlayColor = 'black';
