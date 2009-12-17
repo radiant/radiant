@@ -47,11 +47,11 @@
 
 var Popup = {
   BorderThickness: 8,
-  BorderImage: '/images/admin/popup_border_background.png',
-  BorderTopLeftImage: '/images/admin/popup_border_top_left.png',
-  BorderTopRightImage: '/images/admin/popup_border_top_right.png',
-  BorderBottomLeftImage: '/images/admin/popup_border_bottom_left.png',
-  BorderBottomRightImage: '/images/admin/popup_border_bottom_right.png'
+  BorderImage: '/images/popup_border_background.png',
+  BorderTopLeftImage: '/images/popup_border_top_left.png',
+  BorderTopRightImage: '/images/popup_border_top_right.png',
+  BorderBottomLeftImage: '/images/popup_border_bottom_left.png',
+  BorderBottomRightImage: '/images/popup_border_bottom_right.png'
 };
 
 Popup.borderImages = function() {
