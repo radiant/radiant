@@ -27,7 +27,7 @@ module Radiant
 
       def <<(*args)
         options = args.extract_options!
-        item = args.size > 1 ? deprecated_add(*(args << caller)) : args.first
+        item = args.size > 1 ? deprecated_add(*(args[1,2] << caller)) : args.first
         raise DuplicateTabNameError.new("duplicate tab name `#{item.name}'") if self[item.name]
         item.tab = self if item.respond_to?(:tab=)
         if options.empty?
@@ -68,7 +68,7 @@ module Radiant
         any? { |sub_item| sub_item.visible?(user) }
       end
 
-      def deprecated_add(sym_name, name, url, caller)
+      def deprecated_add(name, url, caller)
         ActiveSupport::Deprecation.warn("admin.tabs.add is no longer supported in Radiant 0.9.x.  Please update your code to use admin.nav", caller)
         NavSubItem.new(name, url)
       end
