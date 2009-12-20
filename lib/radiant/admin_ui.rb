@@ -27,7 +27,7 @@ module Radiant
 
       def <<(*args)
         options = args.extract_options!
-        item = args.size > 1 ? deprecated_add(*(args[1,2] << caller)) : args.first
+        item = args.size > 1 ? deprecated_add(*(args << caller)) : args.first
         raise DuplicateTabNameError.new("duplicate tab name `#{item.name}'") if self[item.name]
         item.tab = self if item.respond_to?(:tab=)
         if options.empty?
