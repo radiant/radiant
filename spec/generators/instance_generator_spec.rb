@@ -42,7 +42,7 @@ share_as :AllInstanceGenerators do
   
   # Check for admin sass/css
   %w(main.css _avatars.sass _footer.sass _layout.sass _reset.sass main.sass _base.sass _forms.sass 
-    _messages.sass _status.sass styles.sass _content.sass _header.sass _popup.sass _tabcontrol.sass).each do |file|
+    _messages.sass _content.sass _header.sass _popup.sass _tabcontrol.sass).each do |file|
     if file.ends_with?('.css')
       it "should have a #{file} css file" do
         'public/stylesheets/admin'.should have_generated_file(file)
