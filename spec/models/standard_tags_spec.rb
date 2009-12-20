@@ -347,7 +347,18 @@ describe "Standard Tags" do
         it 'should not render the contained block if the current or ancestor pages do not have all of the specified parts' do
           page(:guests).should render('<r:if_content part="favors, madeup" inherit="true">true</r:if_content>').as('')
         end
+        
+        describe "with find attribute set to 'any'" do
+          it 'should render the contained block if the current or ancestor pages have any of the specified parts' do
+            page(:guests).should render('<r:if_content part="favors, madeup" inherit="true" find="any">true</r:if_content>').as('true')
+          end
+          
+          it 'should still render the contained block if first of the specified parts has not been found' do
+            page(:guests).should render('<r:if_content part="madeup, favors" inherit="true" find="any">true</r:if_content>').as('true')
+          end
+        end
       end
+      
       describe "with inherit attribute set to 'false'" do
         it 'should render the contained block if the current page has the specified parts' do
           page(:guests).should render('<r:if_content part="favors, games" inherit="false">true</r:if_content>').as('')
@@ -386,6 +397,16 @@ describe "Standard Tags" do
 
       it "should not render the contained block if the specified part does not exist but does exist on an ancestor" do
         page.should render('<r:unless_content part="sidebar" inherit="true">false</r:unless_content>').as('')
+      end
+      
+      describe "with find attribute set to 'any'" do
+        it 'should not render the contained block if the current or ancestor pages have any of the specified parts' do
+          page(:guests).should render('<r:unless_content part="favors, madeup" inherit="true" find="any">true</r:unless_content>').as('')
+        end
+        
+        it 'should still not render the contained block if first of the specified parts has not been found' do
+          page(:guests).should render('<r:unless_content part="madeup, favors" inherit="true" find="any">true</r:unless_content>').as('')
+        end
       end
     end
 

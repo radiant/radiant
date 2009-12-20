@@ -390,15 +390,14 @@ module StandardTags
     <pre><code><r:if_content [part="part_name, other_part"] [inherit="true"] [find="any"]>...</r:if_content></code></pre>
   }
   tag 'if_content' do |tag|
-    page = tag.locals.page
     part_name = tag_part_name(tag)
     parts_arr = part_name.split(',')
     inherit = boolean_attr_or_error(tag, 'inherit', 'false')
     find = attr_or_error(tag, :attribute_name => 'find', :default => 'all', :values => 'any, all')
     expandable = true
     one_found = false
-    part_page = page
     parts_arr.each do |name|
+      part_page = tag.locals.page
       name.strip!
       if inherit
         while (part_page.part(name).nil? and (not part_page.parent.nil?)) do
@@ -426,14 +425,13 @@ module StandardTags
     <pre><code><r:unless_content [part="part_name, other_part"] [inherit="false"] [find="any"]>...</r:unless_content></code></pre>
   }
   tag 'unless_content' do |tag|
-    page = tag.locals.page
     part_name = tag_part_name(tag)
     parts_arr = part_name.split(',')
     inherit = boolean_attr_or_error(tag, 'inherit', false)
     find = attr_or_error(tag, :attribute_name => 'find', :default => 'all', :values => 'any, all')
     expandable, all_found = true, true
-    part_page = page
     parts_arr.each do |name|
+      part_page = tag.locals.page
       name.strip!
       if inherit
         while (part_page.part(name).nil? and (not part_page.parent.nil?)) do

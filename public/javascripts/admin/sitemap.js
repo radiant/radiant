@@ -14,7 +14,6 @@
  */
 
 var SiteMapBehavior = Behavior.create({
-  
   initialize: function() {
     this.readExpandedCookie();
   },

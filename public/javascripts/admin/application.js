@@ -1,4 +1,6 @@
-if(typeof(relative_url_root) === 'undefined'){var relative_url_root = '';}
+// Ensure that relative_url_root is defined
+if(typeof(relative_url_root) === 'undefined'){ relative_url_root = ''}
+
 // Popup Images
 Popup.BorderImage            = relative_url_root + '/images/admin/popup_border_background.png';
 Popup.BorderTopLeftImage     = relative_url_root + '/images/admin/popup_border_top_left.png';
@@ -14,10 +16,23 @@ Status.TopRightImage         = relative_url_root + '/images/admin/status_top_rig
 Status.BottomLeftImage       = relative_url_root + '/images/admin/status_bottom_left.png';
 Status.BottomRightImage      = relative_url_root + '/images/admin/status_bottom_right.png';
 
+// Status Message Styles
+Status.MessageColor = '#e5e5e5';
+Status.MessageFontFamily = '"Lucida Grande", "Bitstream Vera Sans", Helvetica, Verdana, Arial, sans-serif';
+Status.MessageFontSize = '90%';
+
+// Use Modal Status Windows
+Status.Modal = true;
+Status.ModalOverlayColor = 'black';
+Status.ModalOverlayOpacity = 0.2;
+
+// Reload behaviors for Ajax Requests
 Event.addBehavior.reassignAfterAjax = true;
 
-// Behaviors
+// Wire in Behaviors
 Event.addBehavior({
+  'body': ShortcutKeysBehavior(),
+  
   'a.popup': Popup.TriggerBehavior(),
   
   'table#site_map': SiteMapBehavior(),
@@ -47,7 +62,5 @@ Event.addBehavior({
     this.activate();
   },
   
-  'form textarea': CodeAreaBehavior(),
-  
-  'body': ShortcutKeysBehavior
+  'form textarea': CodeAreaBehavior()
 });
