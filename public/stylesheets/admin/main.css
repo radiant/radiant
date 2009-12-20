@@ -881,7 +881,7 @@ div.popup .reference table h2, div.popup .reference table h3, div.popup .referen
         text-shadow: none; }
     #tab_control .pages .reference_links {
       font-size: 85%;
-      margin-left: 10px; }
+      margin-left: 1em; }
       #tab_control .pages .reference_links a {
         color: #0066cc;
         padding-left: 6px; }
@@ -893,7 +893,7 @@ div.popup .reference table h2, div.popup .reference table h3, div.popup .referen
   padding: 3px; }
 
 .reference_links {
-  margin-left: 2em;
+  margin-left: 1em;
   font-size: 85%; }
   .reference_links span {
     padding: 0 4px; }
