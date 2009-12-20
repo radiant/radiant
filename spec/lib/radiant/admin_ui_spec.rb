@@ -82,7 +82,7 @@ describe Radiant::AdminUI do
     layout.edit.main.should == %w{edit_header edit_form}
     layout.edit.form.should == %w{edit_title edit_extended_metadata
                                   edit_content}
-    layout.edit.form_bottom.should == %w{edit_buttons edit_timestamp}
+    layout.edit.form_bottom.should == %w{reference_links edit_buttons edit_timestamp}
     layout.index.should_not be_nil
     layout.index.top.should == %w{}
     layout.index.thead.should == %w{title_header modify_header}

@@ -223,7 +223,7 @@ module Radiant
         layout.edit = RegionSet.new do |edit|
           edit.main.concat %w{edit_header edit_form}
           edit.form.concat %w{edit_title edit_extended_metadata edit_content}
-          edit.form_bottom.concat %w{edit_buttons edit_timestamp}
+          edit.form_bottom.concat %w{reference_links edit_buttons edit_timestamp}
         end
         layout.index = RegionSet.new do |index|
           index.top.concat %w{}
