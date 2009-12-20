@@ -10,7 +10,7 @@
   %p.close_link= link_to_function "Close Help", "$(this).closePopup()"
   :javascript
     var tags, searchingOn = "";
-    var found_count = 0
+    var found_count = 0;
     var popup = $('search_#{class_of_page.name.underscore}_tag_reference').up('.popup');
     new Form.Element.Observer('search_#{class_of_page.name.underscore}_tag_reference', 0.5, function(element, value) {
       if (!tags) tags = popup.select('.reference .tag_description');
