@@ -1,5 +1,9 @@
 == Change Log
 
+=== 0.8.2 Lustery
+
+* Allow rake tasks to run if a higher version of Cucumber is installed [Jim Gay]
+
 === 0.8.1 Luster
 
 * Move default cache location to tmp. [Sean Cribbs]

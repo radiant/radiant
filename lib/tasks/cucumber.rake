@@ -10,7 +10,7 @@ begin
     raise LoadError if (minor < 3) || (minor == 3 && tiny < 9)
     t.fork = true
     t.cucumber_opts = ['--format', (ENV['CUCUMBER_FORMAT'] || 'pretty')]
-    t.feature_pattern = "#{RADIANT_ROOT}/features/**/*.feature"
+    t.feature_pattern = "#{RADIANT_ROOT}/features/**/*.feature" if t.respond_to?(:feature_pattern=)
   end
   task :features => 'db:test:prepare'
 rescue LoadError

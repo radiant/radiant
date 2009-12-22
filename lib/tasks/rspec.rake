@@ -73,7 +73,7 @@ begin
     end
     Cucumber::Rake::Task.new(:integration) do |t|
       t.cucumber_opts = ["--format","progress"]
-      t.feature_pattern = "#{RADIANT_ROOT}/features/**/*.feature"
+      t.feature_pattern = "#{RADIANT_ROOT}/features/**/*.feature" if t.respond_to?(:feature_pattern=)
     end
   
     desc 'Run all specs in spec/generators directory'
