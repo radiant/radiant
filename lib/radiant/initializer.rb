@@ -223,16 +223,6 @@ end_error
       super
     end
     
-    def extensions
-      @extensions ||= all_available_extensions
-    end
-    
-    def all_available_extensions
-      extension_paths.map do |path|
-        Dir["#{path}/*"].select {|f| File.directory?(f) }
-      end.flatten.map {|f| File.basename(f).sub(/^\d+_/, '') }.sort.map(&:to_sym)
-    end
-    
     def admin
       configuration.admin
     end
