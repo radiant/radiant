@@ -44,7 +44,7 @@ module Radiant
         available.tap { |a| a << gem.specification.full_gem_path if gem.specification and Dir[gem.specification.full_gem_path + '/*_extension.rb' ].any? }
       end
       # strip version info to glean proper extension names
-      all.flatten.map {|f| File.basename(f).sub(/^\d+_|-[\d\.]+$/, '') }.sort.map {|e| e.to_sym }
+      all.flatten.map {|f| File.basename(f).gsub(/^\d+_|^radiant-|-[\d\.]+$/, '') }.sort.map {|e| e.to_sym }
     end
     
     def admin
