@@ -5,15 +5,7 @@ class <%= class_name %> < Radiant::Extension
   version "1.0"
   description "Describe your extension here"
   url "http://yourwebsite.com/<%= file_name %>"
-  
-  # extension_config do |config|
-  #   config.gem 'gem_name'
-  #   config.extension 'radiant-extension-name'
-  #   config.after_initialize do
-  #     run_something
-  #   end
-  # end
-  
+
   # define_routes do |map|
   #   map.namespace :admin, :member => { :remove => :get } do |admin|
   #     admin.resources :<%= file_name %>

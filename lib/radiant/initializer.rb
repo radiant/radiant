@@ -51,14 +51,8 @@ module Radiant
       AdminUI.instance
     end
 
-    # Declare another extension as a dependency. Does not allow for the
-    # specification of versions.
-    # class MyExtension < Radiant::Extension
-    #   extension_config do |config|
-    #     config.extension 'multisite'
-    #   end
-    # end
     def extension(ext)
+      ::ActiveSupport::Deprecation.warn("Extension dependencies have been deprecated. Extensions may be packaged as gems and use the Gem spec to declare dependencies.", caller)
       @extension_dependencies << ext unless @extension_dependencies.include?(ext)
     end
 
