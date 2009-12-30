@@ -28,6 +28,12 @@ class ProtectedPerson < ActiveRecord::Base
   set_table_name 'people'
   attr_accessor :addon
   attr_protected :first_name
+
+  def special_error
+    this_method_does_not_exist!
+  rescue
+    errors.add(:special_error, "This method does not exist")
+  end
 end
 
 class UniqueReply < Reply
@@ -169,6 +175,14 @@ class ValidationsTest < ActiveRecord::TestCase
         person = ProtectedPerson.create!
         assert_equal person.first_name, "Mary", "should be ok when no attributes are passed to create!"
       end
+    end
+  end
+
+  def test_values_are_not_retrieved_unless_needed
+    assert_nothing_raised do
+      person = ProtectedPerson.new
+      person.special_error
+      assert_equal "This method does not exist", person.errors[:special_error]
     end
   end
 
@@ -905,14 +919,18 @@ class ValidationsTest < ActiveRecord::TestCase
   end
 
   def test_validates_length_with_globally_modified_error_message
-    ActiveSupport::Deprecation.silence do
-      ActiveRecord::Errors.default_error_messages[:too_short] = 'tu est trops petit hombre {{count}}'
-    end
+    defaults = ActiveSupport::Deprecation.silence { ActiveRecord::Errors.default_error_messages }
+    original_message = defaults[:too_short]
+    defaults[:too_short] = 'tu est trops petit hombre {{count}}'
+
     Topic.validates_length_of :title, :minimum => 10
     t = Topic.create(:title => 'too short')
     assert !t.valid?
 
     assert_equal 'tu est trops petit hombre 10', t.errors['title']
+
+  ensure
+    defaults[:too_short] = original_message
   end
 
   def test_validates_size_of_association
@@ -1432,12 +1450,22 @@ class ValidationsTest < ActiveRecord::TestCase
   end
 
   def test_validation_order
-     Topic.validates_presence_of :title
-     Topic.validates_length_of :title, :minimum => 2
+    Topic.validates_presence_of :title, :author_name
+    Topic.validate {|topic| topic.errors.add('author_email_address', 'will never be valid')}
+    Topic.validates_length_of :title, :content, :minimum => 2
 
-     t = Topic.new("title" => "")
-     assert !t.valid?
-     assert_equal "can't be blank", t.errors.on("title").first
+    t = Topic.new :title => ''
+    t.valid?
+    e = t.errors.instance_variable_get '@errors'
+    assert_equal 'title', key = e.keys.first
+    assert_equal "can't be blank", t.errors.on(key).first
+    assert_equal 'is too short (minimum is 2 characters)', t.errors.on(key).second
+    assert_equal 'author_name', key = e.keys.second
+    assert_equal "can't be blank", t.errors.on(key)
+    assert_equal 'author_email_address', key = e.keys.third
+    assert_equal 'will never be valid', t.errors.on(key)
+    assert_equal 'content', key = e.keys.fourth
+    assert_equal 'is too short (minimum is 2 characters)', t.errors.on(key)
   end
 
   def test_invalid_should_be_the_opposite_of_valid

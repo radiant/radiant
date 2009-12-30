@@ -55,15 +55,15 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
   FileUtils.mkdir_p tmp_dir
 
   if defined? RADIANT_ROOT
-    RADIANT_ROOT.replace tmp_dir
+    RADIANT_ROOT.replace tmp_dir.dup
   else
-    RADIANT_ROOT = tmp_dir
+    RADIANT_ROOT = tmp_dir.dup
   end
 
   if defined? RAILS_ROOT
-    RAILS_ROOT.replace tmp_dir
+    RAILS_ROOT.replace tmp_dir.dup
   else
-    RAILS_ROOT = tmp_dir
+    RAILS_ROOT = tmp_dir.dup
   end
 
   require 'initializer'
@@ -77,30 +77,7 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
 
   require 'rails_generator'
 
-
-  share_as :AllGenerators do
-    include FileUtils
-  
-    before(:all) do
-      ActiveRecord::Base.pluralize_table_names = true
-    
-      mkdir_p "#{RADIANT_ROOT}/app"
-      mkdir_p "#{RADIANT_ROOT}/config"
-      mkdir_p "#{RADIANT_ROOT}/db"
-      mkdir_p "#{RADIANT_ROOT}/vendor/generators"
-      mkdir_p "#{RADIANT_ROOT}/vendor/extensions"
-
-      File.open("#{RADIANT_ROOT}/config/routes.rb", 'w') do |f|
-        f << "ActionController::Routing::Routes.draw do |map|\n\nend"
-      end
-    end
-  
-    after(:all) do
-      %w(app db config vendor).each do |dir|
-        rm_rf File.join(RADIANT_ROOT, dir)
-      end
-    end
-  
+  module GeneratorSpecHelperMethods
     # Instantiates the Generator.
     def build_generator(name, params)
       Rails::Generator::Base.instance(name, params)
@@ -121,6 +98,54 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
       yield if block_given?
       Rails::Generator::Base.logger = logger_original
       myout.string
+    end
+    
+    # Run the block with RADIANT_ROOT replaced with BASE_ROOT
+    def with_radiant_root_as_base_root
+      prev_radiant_root = RADIANT_ROOT.dup
+      RADIANT_ROOT.replace BASE_ROOT.dup
+      begin
+        yield
+      ensure
+        RADIANT_ROOT.replace prev_radiant_root
+      end
+    end
+     
+    # Run the block with $stdout suppressed
+    def suppress_stdout
+      original_stdout = $stdout
+      $stdout = fake = StringIO.new
+      begin
+        yield
+      ensure
+        $stdout = original_stdout
+      end
+      fake.string
+    end
+  end
+
+  share_as :AllGenerators do
+    include FileUtils
+    include GeneratorSpecHelperMethods
+  
+    before(:all) do
+      ActiveRecord::Base.pluralize_table_names = true
+    
+      mkdir_p "#{RADIANT_ROOT}/app"
+      mkdir_p "#{RADIANT_ROOT}/config"
+      mkdir_p "#{RADIANT_ROOT}/db"
+      mkdir_p "#{RADIANT_ROOT}/vendor/generators"
+      mkdir_p "#{RADIANT_ROOT}/vendor/extensions"
+
+      File.open("#{RADIANT_ROOT}/config/routes.rb", 'w') do |f|
+        f << "ActionController::Routing::Routes.draw do |map|\n\nend"
+      end
+    end
+  
+    after(:all) do
+      %w(app db config vendor).each do |dir|
+        rm_rf File.join(RADIANT_ROOT, dir)
+      end
     end
   end
   

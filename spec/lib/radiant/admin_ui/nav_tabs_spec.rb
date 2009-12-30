@@ -2,15 +2,11 @@ require File.dirname(__FILE__) + '/../../../spec_helper'
 
 describe Radiant::AdminUI::NavTab do
   before :each do
-    @tab = Radiant::AdminUI::NavTab.new(:content, "Content")
+    @tab = Radiant::AdminUI::NavTab.new("Content")
   end
 
   it "should have a name" do
-    @tab.name.should == :content
-  end
-
-  it "should have a proper name" do
-    @tab.proper_name.should == "Content"
+    @tab.name.should == "Content"
   end
 
   it "should be Enumerable" do
@@ -19,23 +15,23 @@ describe Radiant::AdminUI::NavTab do
   end
 
   it "should find contained items by name" do
-    subtab = Radiant::AdminUI::NavTab.new(:pages, "Pages")
+    subtab = Radiant::AdminUI::NavTab.new("The Pages")
     @tab << subtab
-    @tab[:pages].should == subtab
-    @tab['pages'].should == subtab
+    @tab[:the_pages].should == subtab
+    @tab['the pages'].should == subtab
   end
 
   it "should assign the tab on the sub-item when adding" do
-    subtab = Radiant::AdminUI::NavSubItem.new(:pages, "Pages", "/admin/pages")
+    subtab = Radiant::AdminUI::NavSubItem.new("Pages", "/admin/pages")
     @tab << subtab
     subtab.tab.should == @tab
   end
 
   describe "inserting sub-items in specific places" do
     before :each do
-      @pages    = Radiant::AdminUI::NavSubItem.new(:pages,    "Pages",    "/admin/pages")
-      @snippets = Radiant::AdminUI::NavSubItem.new(:snippets, "Snippets", "/admin/snippets")
-      @comments = Radiant::AdminUI::NavSubItem.new(:comments, "Comments", "/admin/comments")
+      @pages    = Radiant::AdminUI::NavSubItem.new("Pages",    "/admin/pages")
+      @snippets = Radiant::AdminUI::NavSubItem.new("Snippets", "/admin/snippets")
+      @comments = Radiant::AdminUI::NavSubItem.new("Comments", "/admin/comments")
       @tab << @pages
       @tab << @snippets
     end
@@ -64,46 +60,28 @@ describe Radiant::AdminUI::NavTab do
   describe "visibility" do
     dataset :users
     
-    it "should be visible by default" do
-      User.all.each {|user| @tab.should be_visible(user) }
-    end
-    
-    it "should restrict to a specific role" do
-      @tab.visibility.replace [:designer]
-      @tab.should be_visible(users(:designer))
-      @tab.should_not be_visible(users(:admin))
-      @tab.should_not be_visible(users(:existing))
-    end
-    
-    it "should restrict to a group of roles" do
-      @tab.visibility.replace [:designer, :admin]
-      @tab.should be_visible(users(:designer))
-      @tab.should be_visible(users(:admin))
-      @tab.should_not be_visible(users(:existing))
+    it "should not be visible by default" do
+      User.all.each {|user| @tab.should_not be_visible(user) }
     end
   end
   
   it "should warn about using the deprecated add method" do
     ActiveSupport::Deprecation.should_receive(:warn)
     @tab.add("Pages", "/admin/pages")
-    @tab[:pages].proper_name.should == "Pages"
-    @tab[:pages].url.should == "/admin/pages"
+    @tab['Pages'].name.should == "Pages"
+    @tab['Pages'].url.should == "/admin/pages"
   end
 end
 
 describe Radiant::AdminUI::NavSubItem do
   before :each do
-    @tab = Radiant::AdminUI::NavTab.new(:content, "Content")
-    @subitem = Radiant::AdminUI::NavSubItem.new(:pages, "Pages", "/admin/pages")
+    @tab = Radiant::AdminUI::NavTab.new("Content")
+    @subitem = Radiant::AdminUI::NavSubItem.new("Pages", "/admin/pages")
     @tab << @subitem
   end
 
   it "should have a name" do
-    @subitem.name.should == :pages
-  end
-
-  it "should have a proper name" do
-    @subitem.proper_name.should == "Pages"
+    @subitem.name.should == "Pages"
   end
 
   it "should have a URL" do
@@ -140,12 +118,6 @@ describe Radiant::AdminUI::NavSubItem do
     
     it "should check the visibility against the controller permissions" do
       User.all.each {|user| @subitem.should be_visible(user) }
-    end
-    
-    it "should not be visible when the parent tab is not visible to the user" do
-      @tab.visibility.replace [:admin]
-      @subitem.should_not be_visible(users(:designer))
-      @subitem.should_not be_visible(users(:existing))
     end
     
     describe "when the controller limits access to the action" do

@@ -227,9 +227,9 @@ module ActionController
       end
 
       def decode_credentials(header)
-        header.to_s.gsub(/^Digest\s+/,'').split(',').inject({}) do |hash, pair|
+        header.to_s.gsub(/^Digest\s+/,'').split(',').inject({}.with_indifferent_access) do |hash, pair|
           key, value = pair.split('=', 2)
-          hash[key.strip.to_sym] = value.to_s.gsub(/^"|"$/,'').gsub(/'/, '')
+          hash[key.strip] = value.to_s.gsub(/^"|"$/,'').gsub(/'/, '')
           hash
         end
       end
@@ -289,6 +289,7 @@ module ActionController
       # allow a user to use new nonce without prompting user again for their
       # username and password.
       def validate_nonce(request, value, seconds_to_timeout=5*60)
+        return false if value.nil?
         t = Base64.decode64(value).split(":").first.to_i
         nonce(t) == value && (t - Time.now.to_i).abs <= seconds_to_timeout
       end

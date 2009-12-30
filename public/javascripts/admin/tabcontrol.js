@@ -1,3 +1,5 @@
+if(typeof(relative_url_root) === 'undefined'){ relative_url_root = ''}
+
 var TabControlBehavior = Behavior.create({
   initialize: function() {
     new TabControl(this.element);
@@ -14,13 +16,13 @@ var TabControl = Class.create({
     this.updateTabs();
     this.autoSelect();
   },
-
+  
   updateTabs: function() {
     this.element.select('.page').each(function(page) {
       if (!this.findTabByPage(page)) this.addTab(page);
     }.bind(this));
   },
-
+  
   addTab: function(page) {
     var tab = new TabControl.Tab(page);
     this.tabs.push(tab);
@@ -28,7 +30,7 @@ var TabControl = Class.create({
     $('page_part_index_field').setValue(this.tabs.length);
     page.hide();
   },
-
+  
   removeSelected: function() {
     var tab = this.selected;
     var index = this.tabs.indexOf(tab);
@@ -41,44 +43,21 @@ var TabControl = Class.create({
     this.element.insert(idInput).insert(deleteInput);
     this.select(newSelectedTab || this.tabs.first());
   },
-
+  
   select: function(tab) {
     if (this.selected) this.selected.unselect();
     this.selected = tab;
     tab.select();
     cookie = Cookie.set('current_tab', tab.caption, 24, '/admin');
   },
-
+  
   autoSelect: function() {
     if (!this.tabs.any()) return;
     var caption = Cookie.get('current_tab');
     var tab = this.findTabByCaption(caption);
     this.select(tab || this.tabs.first());
   },
-
-  selectPreviousTab: function(){
-    var index = 0;
-    if(this.selected)
-      index = this.tabs.indexOf(this.selected);
-    if(index > 0){
-      this.select(this.tabs[index-1]);
-    }
-  },
-
-  selectNextTab: function(){
-    var index = this.tabs.length - 1;
-    if(this.selected)
-      index = this.tabs.indexOf(this.selected);
-    if(index < this.tabs.length - 1){
-      this.select(this.tabs[index+1]);
-    }
-  },
-
-  selectTabByIndex: function(index){
-    if(this.tabs[index])
-      this.select(this.tabs[index]);
-  },
-
+  
   ontabclick: function(event) {
     var e = event.findElement('.tab');
     if (e) {
@@ -98,15 +77,15 @@ var TabControl = Class.create({
       }
     }
   },
-
+  
   findTabByCaption: function(caption) {
     return this.tabs.detect(function(tab) { return tab.caption == caption });
   },
-
+  
   findTabByPage: function(page) {
     return this.tabs.detect(function(tab) { return tab.page == page });
   },
-
+  
   findTabByElement: function(element) {
     return this.tabs.detect(function(tab) { return tab.element == element });
   }
@@ -117,24 +96,24 @@ TabControl.Tab = Class.create({
     this.page = page;
     this.caption = page.readAttribute('data-caption');
   },
-
+  
   select: function() {
     this.page.show();
     this.element.addClassName('here');
   },
-
+  
   unselect: function() {
     this.page.hide();
     this.element.removeClassName('here');
   },
-
+  
   remove: function() {
     this.page.remove();
     this.element.remove();
   },
-
+  
   toElement: function() {
-    this.element = $a({'href': '#'}, $span(this.caption), $img({'src': '/images/admin/tab_close.png', 'class': 'close', 'alt': 'Remove part', 'title': 'Remove part'})).addClassName('tab');
+    this.element = $a({'href': '#'}, $span(this.caption), $img({'src': relative_url_root + '/images/admin/tab_close.png', 'class': 'close', 'alt': 'Remove part', 'title': 'Remove part'})).addClassName('tab');
     return this.element;
   }
 });

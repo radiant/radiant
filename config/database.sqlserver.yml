@@ -5,7 +5,7 @@ development:
   password:
   host:
 
-test:
+test: &TEST
   adapter: sqlserver
   database: radiant_test
   username:
@@ -18,3 +18,6 @@ production:
   username:
   password:
   host:
+    
+cucumber:
+  <<: *TEST

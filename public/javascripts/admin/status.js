@@ -1,45 +1,49 @@
 /*
- *  status.js
+ * status.js
+ * 
+ * dependencies: prototype.js, effects.js, lowpro.js
+ * 
+ * --------------------------------------------------------------------------
+ * 
+ * Allows you to display a status message when submiting a form. To use,
+ * simply add the following to application.js:
+ * 
+ *   Event.addBehavior({'form': Status.FormBehavior()});
+ * 
+ * And then add an "onsubmit_status" to each form that you want to display
+ * a status message on submit for:
+ * 
+ *   <form onsubmit_status="Saving changes" ...>
+ * 
+ * Some code taken from popup.js.
+ * 
+ * For more information, see:
+ * 
+ *   http://wiseheartdesign.com/articles/2009/12/16/statusjs-work-well-with-messages/
+ * 
+ * --------------------------------------------------------------------------
+ * 
+ * Copyright (c) 2008-2009, John W. Long
+ * Portions copyright (c) 2008, Five Points Solutions, Inc.
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
  *
- *  dependencies: prototype.js, effects.js, lowpro.js
- *  
- *  --------------------------------------------------------------------------
- *  
- *  Allows you to display a status message when submiting a form. To use,
- *  simply add the following to application.js:
- *  
- *    Event.addBehavior({'form': Status.FormBehavior()});
- *  
- *  And then add an "data-onsubmit_status" to each form that you want to display
- *  a status message on submit for:
- *  
- *    <form data-onsubmit_status="Saving changes" ...>
- *  
- *  Based on code from popup.js.
- *  
- *  --------------------------------------------------------------------------
- *  
- *  Copyright (c) 2008, John W. Long
- *  Portions copyright (c) 2008, Five Points Solutions, Inc.
- *  
- *  Permission is hereby granted, free of charge, to any person obtaining a
- *  copy of this software and associated documentation files (the "Software"),
- *  to deal in the Software without restriction, including without limitation
- *  the rights to use, copy, modify, merge, publish, distribute, sublicense,
- *  and/or sell copies of the Software, and to permit persons to whom the
- *  Software is furnished to do so, subject to the following conditions:
- *  
- *  The above copyright notice and this permission notice shall be included in
- *  all copies or substantial portions of the Software.
- *  
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- *  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- *  DEALINGS IN THE SOFTWARE.
- *  
  */
 
 var Status = {
@@ -51,8 +55,19 @@ var Status = {
   TopLeftImage: '/images/status_top_left.png',
   TopRightImage: '/images/status_top_right.png',
   BottomLeftImage: '/images/status_bottom_left.png',
-  BottomRightImage: '/images/status_bottom_right.png'
+  BottomRightImage: '/images/status_bottom_right.png',
+  MessageFontFamily: '"Trebuchet MS", Verdana, Arial, Helvetica, sans-serif',
+  MessageFontSize: '14px',
+  MessageColor: '#e5e5e5',
+  Modal: false,
+  ModalOverlayColor: 'white',
+  ModalOverlayOpacity: 0.4
 };
+
+Status.window = function() {
+  if (!this.statusWindow) this.statusWindow = new Status.Window();
+  return this.statusWindow;
+}
 
 Status.BackgroundImages = function() {
   return $A([
@@ -83,46 +98,53 @@ Status.FormBehavior = Behavior.create({
   }
 });
 
+Status.LinkBehavior = Behavior.create({
+  initialize: function() {
+    var attr = this.element.attributes['data-onclick_status']
+    if (attr) this.status = attr.value; 
+    if (this.status) this.element.observe('click', function() { showStatus(this.status) }.bind(this));
+  }
+});
+
 Status.Window = Class.create({
   initialize: function() {
     Status.preloadImages();
     this.buildWindow();
   },
-
+  
   buildWindow: function() {
-    this.element = $div({'class': 'status_window', style: 'display: none; padding: 0 ' + Status.CornerThickness + 'px; position: absolute'});
+    this.element = $table({'class': 'status_window', style: 'display: none; position: absolute; border-collapse: collapse; padding: 0px; margin: 0px; z-index: 10000'});
+    var tbody = $tbody();
+    this.element.insert(tbody)
     
-    this.top = $div({style: 'background: url(' + Status.BackgroundImage + '); height: ' + Status.CornerThickness + 'px'});
-    this.element.insert(this.top);
+    var top_row = $tr();
+    top_row.insert($td({style: 'background: url(' + Status.TopLeftImage + '); height: ' + Status.CornerThickness + 'px; width: ' + Status.CornerThickness + 'px; padding: 0px'}));
+    top_row.insert($td({style: 'background: url(' + Status.BackgroundImage + '); height: ' + Status.CornerThickness + 'px; padding: 0px'}))
+    top_row.insert($td({style: 'background: url(' + Status.TopRightImage + '); height: ' + Status.CornerThickness + 'px; width: ' + Status.CornerThickness + 'px; padding: 0px'}));
+    tbody.insert(top_row);
     
-    var outer = $div({style: 'background: url(' + Status.BackgroundImage + '); margin: 0px -' + Status.CornerThickness + 'px; padding: 0px ' + Status.CornerThickness + 'px; position: relative'});
-    this.element.insert(outer);
+    var content_row = $tr();
+    content_row.insert($td({style: 'background: url(' + Status.BackgroundImage + '); width: ' + Status.CornerThickness + 'px; padding: 0px'}, ''));
+    this.content = $td({'class': 'status_content', style: 'background: url(' + Status.BackgroundImage + '); padding: 0px ' + Status.CornerThickness + 'px'});
+    content_row.insert(this.content);
+    content_row.insert($td({style: 'background: url(' + Status.BackgroundImage + '); width: ' + Status.CornerThickness + 'px; padding: 0px'}, ''));
+    tbody.insert(content_row);
     
-    this.bottom = $div({style: 'background: url(' + Status.BackgroundImage + '); height: ' + Status.CornerThickness + 'px'});
-    this.element.insert(this.bottom);
-    
-    var topLeft = $div({style: 'background: url(' + Status.TopLeftImage + '); height: ' + Status.CornerThickness + 'px; width: ' + Status.CornerThickness + 'px; position: absolute; left: 0; top: -' + Status.CornerThickness + 'px'});
-    outer.insert(topLeft);
-    
-    var topRight = $div({style: 'background: url(' + Status.TopRightImage + '); height: ' + Status.CornerThickness + 'px; width: ' + Status.CornerThickness + 'px; position: absolute; right: 0; top: -' + Status.CornerThickness + 'px'});
-    outer.insert(topRight);
-    
-    var bottomLeft = $div({style: 'background: url(' + Status.BottomLeftImage + '); height: ' + Status.CornerThickness + 'px; width: ' + Status.CornerThickness + 'px; position: absolute; left: 0; bottom: -' + Status.CornerThickness + 'px'});
-    outer.insert(bottomLeft);
-    
-    var bottomRight = $div({style: 'background: url(' + Status.BottomRightImage + '); height: ' + Status.CornerThickness + 'px; width: ' + Status.CornerThickness + 'px; position: absolute; right: 0; bottom: -' + Status.CornerThickness + 'px'});
-    outer.insert(bottomRight);
-    
-    this.content = $div({'class': 'status_content'});
-    outer.insert(this.content);
+    var bottom_row = $tr();
+    bottom_row.insert($td({style: 'background: url(' + Status.BottomLeftImage + '); height: ' + Status.CornerThickness + 'px; width: ' + Status.CornerThickness + 'px; padding: 0px'}));
+    bottom_row.insert($td({style: 'background: url(' + Status.BackgroundImage + '); height: ' + Status.CornerThickness + 'px; padding: 0px'}))
+    bottom_row.insert($td({style: 'background: url(' + Status.BottomRightImage + '); height: ' + Status.CornerThickness + 'px; width: ' + Status.CornerThickness + 'px; padding: 0px'}));
+    tbody.insert(bottom_row);
     
     this.spinner = $img({src: Status.SpinnerImage, width: Status.SpinnerImageWidth, height: Status.SpinnerImageHeight, alt: ''});
-    this.status = $div()
+    this.status = $div({'class': 'status_message', style: 'color: ' + Status.MessageColor + '; font-family: ' + Status.MessageFontFamily + '; font-size: ' + Status.MessageFontSize});
     
-    var table = $table(
-      $tr(
-        $td(this.spinner),
-        $td({style: 'padding-left: ' + Status.CornerThickness + 'px'}, this.status)
+    var table = $table({border: 0, cellpadding: 0, cellspacing: 0, style: 'table-layout: auto'},
+      $tbody(
+        $tr(
+          $td({style: 'width: ' + Status.SpinnerImageWidth + 'px'}, this.spinner),
+          $td({style: 'padding-left: ' + Status.CornerThickness + 'px'}, this.status)
+        )
       )
     );
     this.content.insert(table);
@@ -139,18 +161,14 @@ Status.Window = Class.create({
     return this.status.innerHTML();
   },
   
-  show: function(options) {
-    if (Prototype.Browser.IE) {
-      // IE fixes
-      var width = this.element.getWidth() - (Status.CornerThickness * 2);
-      this.top.setStyle("width:" + width + "px");
-      this.bottom.setStyle("width:" + width + "px");
-    }
+  show: function(modal) {
     this.centerWindowInView();
+    if (modal || Status.Modal) this._showModalOverlay();
     this.element.show();
   },
   
   hide: function() {
+    this._hideModalOverlay();
     this.element.hide();
   },
   
@@ -172,27 +190,44 @@ Status.Window = Class.create({
       left: parseInt(offsets.left + (document.viewport.getWidth() - this.element.getWidth()) / 2) + 'px',
       top: parseInt(offsets.top + (document.viewport.getHeight() - this.element.getHeight()) / 2.2) + 'px'
     });
+  },
+  
+  _showModalOverlay: function() {
+    if (!this.overlay) {
+      this.overlay = $div({style: 'position: absolute; background-color: ' + Status.ModalOverlayColor + '; top: 0px; left: 0px; z-index: 100;'});
+      this.overlay.setStyle('position: fixed');
+      this.overlay.setOpacity(Status.ModalOverlayOpacity);
+      document.body.insert(this.overlay);
+    }
+    this.overlay.setStyle('height: ' + document.viewport.getHeight() + 'px; width: ' + document.viewport.getWidth() + 'px;');
+    this.overlay.show();
+  },
+  
+  _hideModalOverlay: function() {
+    if (this.overlay) this.overlay.hide();
   }
 });
 
-// Setup the modal status window onload
-Event.observe(window, 'load', function() {
-  Status.window = new Status.Window();
+Event.observe(document, 'dom:loaded', function() {
+  Status.preloadImages();
 });
 
 // Sets the status to string
 function setStatus(string) {
-  Status.window.setStatus(string);
-  if (Status.window.visible()) Status.window.centerWindowInView();
+  Status.window().setStatus(string);
+  if (Status.window().visible()) Status.window().centerWindowInView();
 }
 
-// Sets the status to string and shows the modal status window
-function showStatus(string) {
+// Sets the status to string and shows the status window. If modal is passed
+// as true a white transparent div that covers the entire page is positioned
+// under the status window causing a diming effect and preventing stray mouse
+// clicks.
+function showStatus(string, modal) {
   setStatus(string);
-  Status.window.show();
+  Status.window().show(modal);
 }
 
-// Hides the modal status window
+// Hides the status window
 function hideStatus() {
-  Status.window.hide();
+  Status.window().hide();
 }

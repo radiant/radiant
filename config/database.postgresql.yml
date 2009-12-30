@@ -10,7 +10,7 @@ development:
   password:
   host: localhost
   
-test:
+test: &TEST
   adapter: postgresql
   database: radiant_test
   username: root
@@ -23,3 +23,6 @@ production:
   username: root
   password:
   host: localhost
+  
+cucumber:
+  <<: *TEST

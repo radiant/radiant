@@ -77,7 +77,7 @@ module Admin::PagesHelper
     function loadTagReference(part) {
       var pageType = $F('page_class_name');
       if (!tagReferenceWindows[pageType])
-        tagReferenceWindows[pageType] = new Popup.AjaxWindow("/admin/references/tags?class_name=" + encodeURIComponent(pageType), {reload: false});
+        tagReferenceWindows[pageType] = new Popup.AjaxWindow("#{admin_reference_path('tags')}?class_name=" + encodeURIComponent(pageType), {reload: false});
       var window = tagReferenceWindows[pageType];
       if(lastPageType != pageType) {
         $('tag_reference_link_' + part).highlight();
@@ -94,7 +94,7 @@ module Admin::PagesHelper
     function loadFilterReference(part) {
       var filter = $F("part_" + part + "_filter_id");
       if (filter != "") {
-        if (!filterWindows[filter]) filterWindows[filter] = new Popup.AjaxWindow("/admin/references/filters?filter_name="+encodeURIComponent(filter), {reload: false});
+        if (!filterWindows[filter]) filterWindows[filter] = new Popup.AjaxWindow("#{admin_reference_path('filters')}?filter_name="+encodeURIComponent(filter), {reload: false});
         var window = filterWindows[filter];
         if(lastFilter != filter) {
           window.show();

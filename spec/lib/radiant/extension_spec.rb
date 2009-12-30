@@ -47,6 +47,24 @@ describe Radiant::Extension do
     end
   end
 
+  it "should allow the manipulation of tabs" do
+    BasicExtension.admin.nav['Design'].length.should == 2
+    BasicExtension.class_eval {
+      tab 'Design' do
+        add_item "Pages", "/admin/pages"
+      end
+    }
+    BasicExtension.admin.nav['Design'].length.should == 3
+  end
+  
+  it "should allow the addition of tabs" do
+    start_length = BasicExtension.admin.nav.length
+    BasicExtension.class_eval {
+      tab 'Additional'
+    }
+    BasicExtension.admin.nav.length.should == start_length + 1
+  end
+
   describe ".extension_enabled?" do
     it "should be false if extension does not exist" do
       BasicExtension.extension_enabled?(:bogus).should be_false

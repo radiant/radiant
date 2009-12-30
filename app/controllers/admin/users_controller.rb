@@ -10,6 +10,16 @@ class Admin::UsersController < Admin::ResourceController
     redirect_to edit_admin_user_path(params[:id])
   end
   
+  def update
+    user_params = params[model_symbol]
+    if user_params && user_params['admin'] == false && model == current_user
+      user_params.delete('admin')
+      annouce_cannot_remove_self_from_admin_role
+    end
+    model.update_attributes!(user_params)
+    response_for :update
+  end
+  
   def ensure_deletable
     if current_user.id.to_s == params[:id].to_s
       announce_cannot_delete_self
@@ -22,4 +32,8 @@ class Admin::UsersController < Admin::ResourceController
     def announce_cannot_delete_self
       flash[:error] = 'You cannot delete yourself.'
     end  
+    
+    def annouce_cannot_remove_self_from_admin_role
+      flash[:error] = 'You cannot remove yourself from the admin role.'
+    end
 end

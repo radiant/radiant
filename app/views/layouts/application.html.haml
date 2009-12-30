@@ -5,9 +5,8 @@
     %title= @page_title || default_page_title
     - @stylesheets.uniq.each do |stylesheet|
       = stylesheet_link_tag stylesheet
+    %script{:type=>"text/javascript"}="var relative_url_root = '#{ActionController::Base.relative_url_root}';"
     = javascript_include_tag %w(admin/prototype admin/effects admin/lowpro admin/cookie admin/popup admin/status admin/utility admin/codearea admin/tabcontrol admin/ruledtable admin/sitemap admin/shortcuts admin/application), :cache => 'admin/all'
-    /[if lt IE 7]
-      = javascript_include_tag 'admin/pngfix'
     - @javascripts.uniq.each do |javascript|
       = javascript_include_tag javascript
     - if @content_for_page_scripts
@@ -27,16 +26,16 @@
             - nav_tabs.each do |tab|
               - if tab.visible?(current_user)
                 %li{:class=>('current' if current_tab?(tab))}
-                  %a{:href=>(tab.first.url if tab.first)}
-                    = tab.proper_name
+                  %a{:href=>(tab.first.relative_url if tab.first)}
+                    = tab.name
                   - if current_tab?(tab)
                     %ul#nav_sub
                       - tab.each do |sub_item|
                         - if sub_item.visible?(current_user)
                           %li
-                            %a{:href => sub_item.url, :class => current_item?(sub_item) ? 'current' : ''}>
+                            %a{:href => sub_item.relative_url, :class => current_item?(sub_item) ? 'current' : ''}>
                               %span
-                                = sub_item.proper_name
+                                = sub_item.name
           #header_bottom
             %div
       #main

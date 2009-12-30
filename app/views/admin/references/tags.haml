@@ -5,20 +5,27 @@
   %p
     %label.inline{:for => "search_#{class_of_page.name.underscore}_tag_reference"} Filter Tags
     %input{:id => "search_#{class_of_page.name.underscore}_tag_reference", :type => "search", :name => "search_tag_reference"}/
+    %span#tag_search_found_count.info
   .reference= tag_reference
   %p.close_link= link_to_function "Close Help", "$(this).closePopup()"
   :javascript
     var tags, searchingOn = "";
+    var found_count = 0;
     var popup = $('search_#{class_of_page.name.underscore}_tag_reference').up('.popup');
     new Form.Element.Observer('search_#{class_of_page.name.underscore}_tag_reference', 0.5, function(element, value) {
       if (!tags) tags = popup.select('.reference .tag_description');
       if (value.length < 3 && searchingOn != "") {
         searchingOn = "";
+        found_count = tags.length;
         tags.invoke('show');
+        $('tag_search_found_count').update('Found '+found_count+' tags').highlight();
       } else if (value.length >= 3 && searchingOn != value) {
         searchingOn = value;
+        found_count = tags.length;
         tags.each(function(div) {
+          if (!div.hasWord(value)) found_count=--found_count;
           div[div.hasWord(value) ? 'show' : 'hide']();
         });
+        $('tag_search_found_count').update('Found '+found_count+' tags').highlight();
       }
     });

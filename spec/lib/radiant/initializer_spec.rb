@@ -70,6 +70,34 @@ describe Radiant::Configuration do
       @configuration.check_extension_dependencies
     }.should raise_error(SystemExit)
   end
+
+  describe "#all_available_extensions" do
+    before do
+      @spec = mock(Gem::Specification)
+      @gem = mock(Rails::GemDependency, :specification => @spec)
+      @configuration.gems = [@gem]
+    end
+
+    it "should include valid gems" do
+      @spec.stub!(:full_gem_path).and_return(File.join RADIANT_ROOT, %w(test fixtures gems gem_ext-0.0.0))
+      @configuration.all_available_extensions.should include(:gem_ext)
+    end
+
+    it "should not load gems that don't appear to be extensions" do
+      @spec.stub!(:full_gem_path).and_return(File.join RADIANT_ROOT, %w(test fixtures gems not_ext-0.0.0))
+      @configuration.all_available_extensions.should_not include(:not_ext)
+    end
+
+    it "should skip gems with invalid specifications" do
+      @configuration.gems = [Rails::GemDependency.new 'bogus_gem']
+      @configuration.all_available_extensions.should_not include(:bogus_gem)
+    end
+
+    it "should load gems with a radiant- prefix" do
+      @spec.stub!(:full_gem_path).and_return(File.join RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-0.0.0))
+      @configuration.all_available_extensions.should include(:gem_ext)
+    end
+  end
 end
 
 describe Radiant::Initializer do
