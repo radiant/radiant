@@ -30,6 +30,10 @@
 * Add some helpful shortcut keys. [Sean Cribbs]
 * Implemented "Blade" user-interface. [John Long, Chris Parrish, Daniel Beach, Brandon Mathis, Sean Cribbs, Ben Morrow, John Muhl]
 
+=== 0.8.2 Lustery
+
+* Allow rake tasks to run if a higher version of Cucumber is installed [Jim Gay]
+
 === 0.8.1 Luster (September 5, 2009)
 
 * Move default cache location to tmp. [Sean Cribbs]
