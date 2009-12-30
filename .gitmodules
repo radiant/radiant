@@ -1,3 +1,0 @@
-[submodule "vendor/plugins/dataset"]
-	path = vendor/plugins/dataset
-	url = git://github.com/aiwilliams/dataset.git

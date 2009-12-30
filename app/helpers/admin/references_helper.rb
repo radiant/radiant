@@ -24,7 +24,7 @@ module Admin::ReferencesHelper
   end
   
   def _display_name
-    case params[:id]
+    case params[:type]
     when 'filters'
       filter ? filter.filter_name : '<none>'
     when 'tags'

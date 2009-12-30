@@ -1,7 +1,7 @@
-- body_classes << "reversed"
-
 - render_region :main do |main|
   - main.edit_header do
     %h1= t('new_layout')
   - main.edit_form do
     = render :partial => 'form'
+
+- content_for 'page_scripts', layout_edit_javascripts

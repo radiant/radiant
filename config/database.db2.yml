@@ -7,7 +7,7 @@ development:
   username: db2inst1
   password:
   
-test:
+test: &TEST
   adapter: ibm_db
   database: rad_test
   username: db2inst1
@@ -18,3 +18,6 @@ production:
   database: radiant
   username: db2inst1
   password:
+
+cucumber:
+  <<: *TEST

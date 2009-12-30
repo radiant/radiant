@@ -8,7 +8,7 @@ describe Admin::ReferencesController do
   end
   
   it "should render the associated template on GET to show" do
-    xhr :get, :show, :id => 'tags'
+    xhr :get, :show, :type => 'tags'
     response.should be_success
     response.should render_template('tags')
   end

@@ -11,7 +11,9 @@ describe "ExtensionControllerGenerator with normal options" do
   
   it 'should generate the controller file in the correct location' do
     'vendor/extensions/example'.should have_generated_controller_for('Events') do |body|
-      body.should have_methods(*%w(show new index))
+      %w(show new index).each do |name|
+        body.should have_method(name)
+      end
     end
   end
   
@@ -28,11 +30,15 @@ describe "ExtensionControllerGenerator with normal options" do
   end
   
   it 'should generate the view files in the correct location' do
-    'vendor/extensions/example'.should have_generated_views_for('Events', %w(show new index))
+    %w(show new index).each do |action|
+      'vendor/extensions/example'.should have_generated_view_for('Events', action)
+    end
   end
   
-  it 'should generate the view spec file in the correct location' do
-    'vendor/extensions/example'.should have_generated_view_specs_for('Events', *%w(show new index))
+  it 'should generate the view spec files in the correct location' do
+    %w(show new index).each do |action|
+      'vendor/extensions/example'.should have_generated_view_spec_for('Events', action)
+    end
   end
   
   after(:each) do
@@ -58,7 +64,9 @@ describe "ExtensionControllerGenerator with test unit" do
   
   it 'should generate the controller file in the correct location' do
     'vendor/extensions/example'.should have_generated_controller_for('Events') do |body|
-      body.should have_methods(*%w(show new index))
+      %w(show new index).each do |name|
+        body.should have_method(name)
+      end
     end
   end
   
@@ -71,7 +79,9 @@ describe "ExtensionControllerGenerator with test unit" do
   end
   
   it 'should generate the view files in the correct location' do
-    'vendor/extensions/example'.should have_generated_views_for('Events', %w(show new index))
+    %w(show new index).each do |action|
+      'vendor/extensions/example'.should have_generated_view_for('Events', action)
+    end
   end
   
   after(:each) do

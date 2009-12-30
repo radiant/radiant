@@ -71,16 +71,16 @@ begin
         t.spec_files = FileList["#{RADIANT_ROOT}/spec/#{sub}/**/*_spec.rb"]
       end
     end
-    Cucumber::Rake::Task.new(:integration) do |t|
-      t.cucumber_opts = ["--format","progress"]
-      t.feature_pattern = "#{RADIANT_ROOT}/features/**/*.feature"
-    end
+    Cucumber::Rake::Task.new(:integration)# do |t|
+    #   t.cucumber_opts = ["--format","progress"]
+    #   t.feature_pattern = "#{RADIANT_ROOT}/features/**/*.feature"
+    # end
   
     desc 'Run all specs in spec/generators directory'
     task :generators => spec_prereq do
       errors = ['spec:generators:extension_controller', 'spec:generators:extension_mailer', 
                 'spec:generators:extension_migration', 'spec:generators:extension_model',
-                'spec:generators:extension'].collect do |task|
+                'spec:generators:extension', 'spec:generators:instance'].collect do |task|
         begin
           Rake::Task[task].invoke
           nil
@@ -92,7 +92,7 @@ begin
     end
   
     namespace :generators do
-      [:extension_controller, :extension_mailer, :extension_migration, :extension_model, :extension].each do |generator|
+      [:extension_controller, :extension_mailer, :extension_migration, :extension_model, :extension, :instance].each do |generator|
         desc "Run the spec at spec/geneartors/#{generator}_generator_spec.rb"
         Spec::Rake::SpecTask.new(generator => spec_prereq) do |t|
           t.spec_opts = ['--options', "\"#{RADIANT_ROOT}/spec/spec.opts\""]
@@ -194,7 +194,7 @@ rescue LoadError
     end
     
     namespace :generators do
-      [:extension_controller, :extension_mailer, :extension_migration, :extension_model, :extension].each do |t|
+      [:extension_controller, :extension_mailer, :extension_migration, :extension_model, :extension, :instance].each do |t|
         task t => :spec_prereq
       end
     end

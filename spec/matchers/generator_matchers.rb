@@ -2,236 +2,234 @@ module Spec
   module Matchers
     module GeneratorMatchers
       class DirectoryGenerated
-        def initialize(dir)
-          @dir = dir
-        end
-        
+        def initialize(dir)             @dir = dir end
+        def failure_message()           "expected directory '#{@path}' should exist but doesn't" end
+        def negative_failure_message()  "expected no directory, but directory '#{@path}' was found" end
+      
         def matches?(base)
           @base = base
           @path = File.join(RADIANT_ROOT, @base, @dir)
           File.exist?(@path) && File.directory?(@path)
         end
-        
-        def failure_message
-          "expected directory '#{@path}' should exist but doesn't"
-        end
-        
-        def negative_failure_message
-           "expected no directory, but directory '#{@path}' was found"
-        end
       end
-      
-      def have_generated_directory(dir)
-        FileGenerated.new(dir)
-      end
-      
+    
       class FileGenerated
-        def initialize(file, &block)
-          @file = file
-          @match_block = block if block_given?
-        end
-        
+        def initialize(file)            @file = file end
+        def failure_message()           "expected file '#{@path}' should exist but doesn't" end
+        def negative_failure_message()  "expected no file, but file '#{@path}' was found" end
+      
         def matches?(base)
           @base = base
           @path = File.join(RADIANT_ROOT, @base, @file)
-          if @match_block
-            contents_match = File.open(@path) do |f|
-              @match_block.call(f.read)
-            end
-            contents_match && file_exists(@path)
-          else
-            file_exists(@path)
+          if (exists = File.exist?(@path)) && block_given?  
+            File.open(@path) { |f| yield(f.read) }
           end
-        end
-        
-        def failure_message
-          "expected file '#{@path}' should exist but doesn't"
-        end
-        
-        def negative_failure_message
-           "expected no file, but file '#{@path}' was found"
-        end
-        
-        def file_exists(path)
-          File.exist?(path)
+          return exists
         end
       end
       
-      def have_generated_file(file, &block)
-        FileGenerated.new(file, &block)
+      class YamlGenerated
+        def initialize(path)            @path = path end
+        def failure_message()           "the file '#{@path}.yml' should be a YAML file" end
+        def negative_failure_message()  "expected no file, but file '#{@path}.yml' was found" end
+        
+        def matches?(base)
+          FileGenerated.new("#{@path}.yml").matches?(base) do |body|
+            yield(YAML.load(body.to_s)) if block_given?
+            return true
+          end
+          false
+        end
       end
       
-      def have_generated_class(path, parent = nil)
-        simple_matcher "directory contains generated class file" do |dir, matcher|
-          matcher.failure_message = "the file '#{path}.rb' should be a class"
-          
-          if path.split('/').size > 3
-            path =~ /\/?(\d+_)?(\w+)\/(\w+)$/
+      class ClassGenerated
+        def initialize(path, parent=nil)  @path = path; @parent = parent; end
+        def failure_message()             "the file '#{@path}.rb' should be a class" end
+        def negative_failure_message()    "expected no file, but file '#{@path}.rb' was found" end
+        
+        def matches?(base)
+          if @path.split('/').size > 3
+            @path =~ /\/?(\d+_)?(\w+)\/(\w+)$/
             class_name = "#{$2.camelize}::#{$3.camelize}"
           else
-            path =~ /\/?(\d+_)?(\w+)$/
+            @path =~ /\/?(\d+_)?(\w+)$/
             class_name = $2.camelize
           end
           
-          dir.should have_generated_file("#{path}.rb") do |body|
-            body.should match(/class #{class_name}#{parent.nil? ? '':" < #{parent}"}\n((\n|\s*.*\n)*)end/)
-            yield $1 if block_given?
+          FileGenerated.new("#{@path}.rb").matches?(base) do |body|
+            match_data = body.match(/class #{class_name}#{@parent.nil? ? '':" < #{@parent}"}\n((\n|\s*.*\n)*)end/)
+            yield(match_data[1]) if block_given? && !!match_data
+            return !!match_data
           end
+          false
         end
       end
       
-      def have_generated_module(path, parent = nil)
-        simple_matcher "directory contains generated class file" do |dir, matcher|
-          matcher.failure_message = "the file '#{path}.rb' should be a module"
-          
-          if path.split('/').size > 3
-            path =~ /\/?(\d+_)?(\w+)\/(\w+)$/
+      class ModuleGenerated
+        def initialize(path, parent=nil)  @path = path; @parent = parent; end
+        def failure_message()             "the file '#{@path}.rb' should be a module" end
+        def negative_failure_message()    "expected no file, but file '#{@path}.rb' was found" end
+        
+        def matches?(base)
+          if @path.split('/').size > 3
+            @path =~ /\/?(\d+_)?(\w+)\/(\w+)$/
             module_name = "#{$2.camelize}::#{$3.camelize}"
           else
-            path =~ /\/?(\d+_)?(\w+)$/
+            @path =~ /\/?(\d+_)?(\w+)$/
             module_name = $2.camelize
           end
           
-          dir.should have_generated_file("#{path}.rb") do |body|
-            body.should match(/module #{module_name}#{parent.nil? ? '':" < #{parent}"}\n((\n|\s*.*\n)*)end/)
-            yield $1 if block_given?
+          FileGenerated.new("#{@path}.rb").matches?(base) do |body|
+            match_data = body.match(/module #{module_name}#{@parent.nil? ? '':" < #{@parent}"}\n((\n|\s*.*\n)*)end/)
+            yield(match_data[1]) if block_given? && !!match_data
+            return !!match_data
           end
+          false
         end
+      end
+      
+      class SpecGenerated
+        def initialize(path, class_name=true) @path = path; @class_name = class_name; end
+        def failure_message()                 "the file '#{@path}.rb' should be a spec" end
+        def negative_failure_message()        "expected no file, but file '#{@path}.rb' was found" end
+        
+        def matches?(base)
+          unless @class_name == false
+            if @path.split('/').size > 3
+              @path =~ /\/?(\d+_)?(\w+)\/(\w+)$/
+              @class_name = "#{$2.camelize}::#{$3.camelize}"
+            else
+              @path =~ /\/?(\d+_)?(\w+)$/
+              @class_name = $2.camelize
+            end
+          end
+          
+          FileGenerated.new("#{@path}_spec.rb").matches?(base) do |body|
+            if @class_name
+              match_data = body.match(/describe #{@class_name} do\n((\s*.*\n)+)\s*end/)
+              yield(match_data[1]) if block_given? && !!match_data
+              return !!match_data
+            else
+              yield(body) if block_given?
+              return true
+            end
+          end
+          false
+        end
+      end
+      
+      class MigrationGenerated
+        def initialize(name, parent="ActiveRecord::Migration")  @name = name; @parent = parent; end
+        def failure_message()                                   "the file '#{@path}' should be a spec" end
+        def negative_failure_message()                          "expected no file, but file '#{@path}.rb' was found" end
+        
+        def matches?(base)
+          root_path = File.expand_path(File.join(RADIANT_ROOT, base))
+          @path = Dir.glob("#{root_path}/db/migrate/*_#{@name.to_s.underscore}.rb").first
+          return false if @path.nil?
+          @path = @path.match(/db\/migrate\/[0-9]+_\w+/).to_s
+          
+          ClassGenerated.new(@path, @parent).matches?(base) do |body|
+            yield(body) if block_given?
+            return true
+          end
+          false
+        end
+      end
+      
+      class MethodMatcher
+        def initialize(name)            @name = name end
+        def failure_message()           "the string should contain a method definition for #{@name}" end
+        def negative_failure_message()  "expected no method definition for #{@name}, but found it" end
+        
+        def matches?(actual)
+          match_data = actual.match(/^\s*def #{@name}(\(.+\))?\n((\n|\s+.*\n)*)\s*end/)
+          if !!match_data && block_given?
+            yield(match_data[2])
+          end
+          return !!match_data
+        end
+      end      
+      
+      def have_generated_directory(dir)
+        DirectoryGenerated.new(dir)
+      end
+      
+      def have_generated_file(file)
+        FileGenerated.new(file)
+      end
+      
+      def have_generated_class(path, parent = nil)
+        ClassGenerated.new(path, parent)
+      end
+      
+      def have_generated_module(path, parent = nil)
+        ModuleGenerated.new(path, parent)
       end
       
       def have_generated_spec(path, class_name = true)
-        simple_matcher "directory contains generated model spec" do |dir, matcher|
-          matcher.failure_message = "the file '#{path}.rb' should be a spec"
-          
-          if path.split('/').size > 3
-            path =~ /\/?(\d+_)?(\w+)\/(\w+)$/
-            class_name = "#{$2.camelize}::#{$3.camelize}"
-          else
-            path =~ /\/?(\d+_)?(\w+)$/
-            class_name = $2.camelize
-          end
-          
-          dir.should have_generated_file("#{path}_spec.rb") do |body|
-            if class_name
-              body.should match(/describe #{class_name} do\n((\s*.*\n)+)\nend/)
-              yield $1 if block_given?
-            else
-              yield body if block_given?
-            end
-          end
-        end
+        SpecGenerated.new(path, class_name)
       end
       
       def have_generated_controller_for(name, parent = "ApplicationController")
-        have_generated_class "app/controllers/#{name.to_s.underscore}_controller", parent do |body|
-          yield body if block_given?
-        end
+        ClassGenerated.new("app/controllers/#{name.to_s.underscore}_controller", parent)
       end
       
       def have_generated_model_for(name, parent = "ActiveRecord::Base")
-        have_generated_class "app/models/#{name.to_s.underscore}", parent do |body|
-          yield body if block_given?
-        end
+        ClassGenerated.new("app/models/#{name.to_s.underscore}", parent)
       end
       
       def have_generated_model_spec_for(name)
-        have_generated_spec "spec/models/#{name.to_s.underscore}" do |body|
-          yield body if block_given?
-        end
+        SpecGenerated.new("spec/models/#{name.to_s.underscore}")
       end
       
       def have_generated_controller_spec_for(name)
-        have_generated_spec "spec/controllers/#{name.to_s.underscore}_controller" do |body|
-          yield body if block_given?
-        end
+        SpecGenerated.new("spec/controllers/#{name.to_s.underscore}_controller")
       end
       
       def have_generated_helper_spec_for(name)
-        have_generated_spec "spec/helpers/#{name.to_s.underscore}_helper" do |body|
-          yield body if block_given?
-        end
+        SpecGenerated.new("spec/helpers/#{name.to_s.underscore}_helper")
       end
       
-      def have_generated_view_specs_for(name, *actions)
-        simple_matcher "directory should contain generated view specs" do |dir, matcher|
-          actions.each do |action|
-            dir.should have_generated_spec("spec/views/#{name.to_s.underscore}/#{action.to_s.underscore}_view", false) do |body|
-              yield body if block_given?
-            end
-          end
-        end
+      def have_generated_view_spec_for(controller, action)
+        SpecGenerated.new("spec/views/#{controller.to_s.underscore}/#{action.to_s.underscore}_view", false)
       end
       
       def have_generated_helper_for(name)
-        have_generated_module "app/helpers/#{name.to_s.underscore}_helper" do |body|
-          yield body if block_given?
-        end
+        ModuleGenerated.new("app/helpers/#{name.to_s.underscore}_helper")
       end
       
       def have_generated_functional_test_for(name, parent = "ActionController::TestCase")
-        have_generated_class "test/functional/#{name.to_s.underscore}_controller_test", parent do |body|
-          yield body if block_given?
-        end
+        ClassGenerated.new("test/functional/#{name.to_s.underscore}_controller_test", parent)
       end
       
       def have_generated_unit_test_for(name, parent = "ActiveSupport::TestCase")
-        have_generated_class "test/unit/#{name.to_s.underscore}_test", parent do |body|
-          yield body if block_given?
-        end
+        ClassGenerated.new("test/unit/#{name.to_s.underscore}_test", parent)
       end
       
       def have_generated_migration(name, parent = "ActiveRecord::Migration")
-        simple_matcher 'directory should contain migration file' do |dir, matcher|
-          root_path = File.expand_path(File.join(RADIANT_ROOT, dir))
-          file = Dir.glob("#{root_path}/db/migrate/*_#{name.to_s.underscore}.rb").first
-          file = file.match(/db\/migrate\/[0-9]+_\w+/).to_s
-          dir.should have_generated_class(file, parent) do |body|
-            yield body if block_given?
-          end
-        end
+        MigrationGenerated.new(name, parent)
       end
       
       def have_generated_yaml(path)
-        simple_matcher "directory contains generated YAML file" do |dir, matcher|
-          dir.should have_generated_file("#{path}.yml") do |body|
-            yaml = YAML.load(body.to_s)
-            yaml.should be
-            yield yaml if block_given?
-          end
-        end
+        YamlGenerated.new(path)
       end
       
       def have_generated_fixtures_for(name)
-        have_generated_yaml "test/fixtures/#{name.to_s.underscore}" do |yaml|
-          yield yaml if block_given?
-        end
+        YamlGenerated.new("test/fixtures/#{name.to_s.underscore}")
       end
       
-      def have_generated_views_for(name, actions, suffix = "html.erb")
-        simple_matcher "directory should contain generated views" do |dir, matcher|
-          actions.each do |action|
-            have_generated_file("app/views/#{name.to_s.underscore}/#{action}.#{suffix}") do |body|
-              yield body if block_given?
-            end
-          end
-        end
+      def have_generated_view_for(name, action, suffix = "html.erb")
+        FileGenerated.new("app/views/#{name.to_s.underscore}/#{action}.#{suffix}")
       end
       
-      def have_methods(*methods)
-        simple_matcher "file body contains generated method definition" do |body, matcher|
-          methods.each do |name|
-            body.should match(/^  def #{name}(\(.+\))?\n((\n|   .*\n)*)  end/)
-            yield(name, $2) if block_given?
-          end
-        end
+      def have_method(name)
+        MethodMatcher.new(name)
       end
       
       def have_generated_column(name, type)
-        simple_matcher "migration defines column" do |body, matcher|
-          body.should match(/t\.#{type.to_s} :#{name.to_s}/)
-        end
+        simple_matcher("migration defines column") { |given| given =~ /t\.#{type.to_s} :#{name.to_s}/ }
       end
-      
     end
   end
 end

@@ -14,7 +14,7 @@ describe "ExtensionMailerGenerator with normal options" do
   end
   
   it 'should generate the view file in the correct location' do
-    'vendor/extensions/example'.should have_generated_views_for('SignupNotifications', %w(thankyou), 'erb')
+    'vendor/extensions/example'.should have_generated_view_for('SignupNotifications', 'thankyou', 'erb')
   end
   
   after(:each) do
@@ -39,11 +39,11 @@ describe "ExtensionMailerGenerator with test unit" do
   end
   
   it 'should generate the view file in the correct location' do
-    'vendor/extensions/example'.should have_generated_views_for('SignupNotifications', %w(thankyou), 'erb')
+    'vendor/extensions/example'.should have_generated_view_for('SignupNotifications', 'thankyou', 'erb')
   end
   
   it 'should generate the unit test file in the correct location' do
-    'vendor/extensions/example'.should have_generated_unit_test_for('SignupNotifications')
+    'vendor/extensions/example'.should have_generated_unit_test_for('SignupNotifications', 'ActionMailer::TestCase')
   end
   
   it 'should generate the fixture file in the correct location' do

@@ -21,7 +21,7 @@
       #tabs.tabs
         #tab_toolbar
           %a.popup{:href=> '#add_part_popup', :title=>t('add_part')}
-            %img{:src=>"/images/admin/add_tab.png", :alt=>t('add_part'), :title=>""}/
+            = image('add_tab', :alt=>t('add_part'), :title=>"")
       #pages.pages
         = render :partial => 'admin/page_parts/page_part', :collection => @page.parts
     = render_region :parts_bottom

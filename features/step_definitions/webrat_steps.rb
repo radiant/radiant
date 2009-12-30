@@ -27,6 +27,23 @@ When /^I fill in "([^\"]*)" with "([^\"]*)"$/ do |field, value|
   fill_in(field, :with => value) 
 end
 
+# Use this to fill in an entire form with data from a table. Example:
+#
+#   When I fill in the following:
+#     | Account Number | 5002       |
+#     | Expiry date    | 2009-11-01 |
+#     | Note           | Nice guy   |
+#     | Wants Email?   |            |
+#
+# TODO: Add support for checkbox, select og option
+# based on naming conventions.
+#
+When /^I fill in the following:$/ do |fields|
+  fields.rows_hash.each do |name, value|
+    When %{I fill in "#{name}" with "#{value}"}
+  end
+end
+
 When /^I select "([^\"]*)" from "([^\"]*)"$/ do |value, field|
   select(value, :from => field) 
 end
@@ -99,9 +116,19 @@ Then /^I should see "([^\"]*)"$/ do |text|
   response.body.should match(Regexp.new(text))
 end
 
+Then /^I should see \/([^\/]*)\/$/ do |regexp|
+  regexp = Regexp.new(regexp)
+  response.should contain(regexp)
+end
+
 Then /^I should not see "([^\"]*)"$/ do |text|
   # response.should_not contain(text)
   response.body.should_not match(Regexp.new(text))
+end
+
+Then /^I should not see \/([^\/]*)\/$/ do |regexp|
+  regexp = Regexp.new(regexp)
+  response.should_not contain(regexp)
 end
 
 Then /^the "([^\"]*)" field should contain "([^\"]*)"$/ do |field, value|
@@ -114,6 +141,10 @@ end
     
 Then /^the "([^\"]*)" checkbox should be checked$/ do |label|
   field_labeled(label).should be_checked
+end
+
+Then /^the "([^\"]*)" checkbox should not be checked$/ do |label|
+  field_labeled(label).should_not be_checked
 end
 
 Then /^I should be on (.+)$/ do |page_name|

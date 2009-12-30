@@ -52,7 +52,7 @@ module ApplicationHelper
   end
 
   def current_item?(item)
-    if item.tab.many? {|i| current_url?(i.relative_url) }
+    if item.tab && item.tab.many? {|i| current_url?(i.relative_url) }
       # Accept only stricter URL matches if more than one matches
       current_page?(item.url)
     else

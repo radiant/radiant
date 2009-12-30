@@ -125,9 +125,9 @@ unless File.directory? "#{RAILS_ROOT}/app"
           :production   => "#{RAILS_ROOT}/config/environments/production.bak"
         }
         @warning_start = "** WARNING **
-The following files have been changed in Radiant 0.8.0. Your originals
-have been backed up with .bak extensions. Please copy your customizations
-to the new files:"
+The following files have been changed in Radiant. Your originals have 
+been backed up with .bak extensions. Please copy your customizations to 
+the new files:"
         [:env, :development, :test, :production].each do |env_type|
           File.open(tmps[env_type], 'w') do |f|
             app_name = File.basename(File.expand_path(RAILS_ROOT))
