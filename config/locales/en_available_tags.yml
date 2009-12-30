@@ -139,13 +139,13 @@ en:
       <pre><code><r:cycle values=\"first, second, third\" [reset=\"true|false\"] [name=\"cycle\"] /></code></pre>"
     date: "Renders the date based on the current page (by default when it was published or created).
       The format attribute uses the same formating codes used by the Ruby @strftime@ function. By
-      default it's set to @A, B d, Y@.  The @for@ attribute selects which date to render.  Valid
+      default it's set to @&#37;A, &#37;B &#37;d, &#37;Y@.  The @for@ attribute selects which date to render.  Valid
       options are @published_at@, @created_at@, @updated_at@, and @now@. @now@ will render the
       current date/time, regardless of the  page.
 
       *Usage:*
 
-      <pre><code><r:date [format=\"A, B d, Y\"] [for=\"published_at\"]/></code></pre>"
+      <pre><code><r:date [format=\"&#37;A, &#37;B &#37;d, &#37;Y\"] [for=\"published_at\"]/></code></pre>"
     escape_html: "Escapes angle brackets, etc. for rendering in an HTML document.
 
       *Usage:*
@@ -268,6 +268,18 @@ en:
       *Usage:*
 
       <pre><code><r:normal><r:if_last>...</r:if_last></r:normal></code></pre>"
+    navigation-unless_first: "Renders the containing elements unless the element is the first
+      in the navigation list
+
+      *Usage:*
+
+      <pre><code><r:normal><r:unless_first>...</r:unless_first></r:normal></code></pre>"
+    navigation-unless_last: "Renders the containing elements unless the element is the last
+      in the navigation list
+
+      *Usage:*
+
+      <pre><code><r:normal><r:unless_last>...</r:unless_last></r:normal></code></pre>"
     navigation: "Renders a list of links specified in the @urls@ attribute according to three
       states:
 
