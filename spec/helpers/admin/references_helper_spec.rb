@@ -45,7 +45,7 @@ describe Admin::ReferencesHelper do
     describe "when getting a filter reference" do
       before :each do
         helper.send(:instance_variable_set, :@filter, nil)
-        params[:id] = 'filters'
+        params[:type] = 'filters'
       end
 
       it "should return the name of the set filter" do
@@ -62,7 +62,7 @@ describe Admin::ReferencesHelper do
     describe "when getting a tag reference" do
       before :each do
         helper.send(:instance_variable_set, :@page_class, nil)
-        params[:id] = 'tags'
+        params[:type] = 'tags'
       end
 
       it "should return the display name of the page class" do
