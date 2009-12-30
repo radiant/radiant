@@ -29,8 +29,9 @@ namespace :radiant do
       Page.tag_descriptions.sort.each do |tag, desc|
         tag = '    ' + tag.gsub(':','-') + ':'
         desc = desc.gsub('    ','      ')
-        descriptions[tag] = desc.gsub('%','&#37;').gsub(":","&#58;") #.gsub("r&#58;","r:").gsub("n&#58;","n:")
-      end
+        descriptions[tag] = ' "' + desc.gsub("%","").gsub('"','\"').strip + '"'
+      end 
+      #.gsub(":","&#58;") #.gsub("r&#58;","r:").gsub("n&#58;","n:")
       # tag_descriptions = Hash.new
       # tag_descriptions['desc'] = descriptions
       comments = ''
