@@ -92,6 +92,11 @@ describe Radiant::Configuration do
       @configuration.gems = [Rails::GemDependency.new 'bogus_gem']
       @configuration.all_available_extensions.should_not include(:bogus_gem)
     end
+
+    it "should load gems with a radiant- prefix" do
+      @spec.stub!(:full_gem_path).and_return(File.join RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-0.0.0))
+      @configuration.all_available_extensions.should include(:gem_ext)
+    end
   end
 end
 

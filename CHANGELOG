@@ -2,6 +2,7 @@
 
 === Edge
 
+* Support packaging extensions as gems [Josh French]
 * Add tag reference to Layouts and Snippets [Jim Gay]
 * Handle deploying to a sub-directory [Jim Gay]
 * Ensure that generator specs actually test properly [Travis D. Warlick]

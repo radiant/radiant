@@ -44,21 +44,15 @@ module Radiant
         available.tap { |a| a << gem.specification.full_gem_path if gem.specification and Dir[gem.specification.full_gem_path + '/*_extension.rb' ].any? }
       end
       # strip version info to glean proper extension names
-      all.flatten.map {|f| File.basename(f).sub(/^\d+_|-[\d\.]+$/, '') }.sort.map {|e| e.to_sym }
+      all.flatten.map {|f| File.basename(f).gsub(/^\d+_|^radiant-|-[\d\.]+$/, '') }.sort.map {|e| e.to_sym }
     end
     
     def admin
       AdminUI.instance
     end
 
-    # Declare another extension as a dependency. Does not allow for the
-    # specification of versions.
-    # class MyExtension < Radiant::Extension
-    #   extension_config do |config|
-    #     config.extension 'multisite'
-    #   end
-    # end
     def extension(ext)
+      ::ActiveSupport::Deprecation.warn("Extension dependencies have been deprecated. Extensions may be packaged as gems and use the Gem spec to declare dependencies.", caller)
       @extension_dependencies << ext unless @extension_dependencies.include?(ext)
     end
 
@@ -227,16 +221,6 @@ end_error
     def initialize_routing
       extension_loader.add_controller_paths
       super
-    end
-    
-    def extensions
-      @extensions ||= all_available_extensions
-    end
-    
-    def all_available_extensions
-      extension_paths.map do |path|
-        Dir["#{path}/*"].select {|f| File.directory?(f) }
-      end.flatten.map {|f| File.basename(f).sub(/^\d+_/, '') }.sort.map(&:to_sym)
     end
     
     def admin

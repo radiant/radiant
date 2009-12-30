@@ -99,11 +99,9 @@ module Radiant
         @route_definitions ||= []
       end
 
-      # Expose the configuration object for depencencies, init hooks, &c
+      # Expose the configuration object for init hooks
       # class MyExtension < ActiveRecord::Base
       #   extension_config do |config|
-      #     config.gem 'gem_name'
-      #     config.extension 'radiant-extension-name'
       #     config.after_initialize do
       #       run_something
       #     end

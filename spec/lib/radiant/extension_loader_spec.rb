@@ -42,6 +42,13 @@ describe Radiant::ExtensionLoader do
     @instance.send(:select_extension_roots).should == [gem_path]
   end
 
+  it "should load gem extensions with a radiant- prefix" do
+    gem_path = File.join RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-0.0.0)
+    @configuration.should_receive(:extensions).at_least(:once).and_return([:gem_ext])
+    @instance.stub!(:all_extension_roots).and_return([File.expand_path gem_path])
+    @instance.send(:select_extension_roots).should == [gem_path]
+  end
+
   it "should select extensions in an explicit order from the configuration" do
     extensions = [:load_order_red, :load_order_blue, :load_order_green]
     extension_roots = extensions.map {|ext| File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/#{ext}") }
