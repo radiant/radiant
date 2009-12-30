@@ -55,6 +55,9 @@ class PagesDataset < Dataset::Base
       create_page_part "recursive_body", :name => "body", :content => "<r:content />"
       create_page_part "recursive_one", :name => "one", :content => '<r:content part="two" />'
       create_page_part "recursive_two", :name => "two", :content => '<r:content part="one" />'
+      create_page_part "repetitive_part", :name => "repeat",
+        :content => '<r:content part="beat"/><r:content part="beat"/>'
+      create_page_part "repeated_part", :name => "beat", :content => 'x'
     end
   end
   
