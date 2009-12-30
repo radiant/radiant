@@ -28,10 +28,10 @@ describe Radiant::Taggable, "when included in a class or module" do
     TaggedClass.new.send("tag:hello").should == "hello world"
   end
   
-  it "should store tag descriptions filtered with Textile" do
+  it "should store tag descriptions filtered without Textile, so that translations can be applied" do
     [TaggedClass, TaggedModule].each do |c|
       c.desc "A simple tag."
-      Radiant::Taggable.last_description.should == "<p>A simple tag.</p>"
+      Radiant::Taggable.last_description.should == "A simple tag."
     end
   end
   
@@ -46,12 +46,14 @@ describe Radiant::Taggable, "when included in a class or module" do
     end
   end
   
-  it "should normalize leading whitespace in a tag description" do
-    Radiant::Taggable::Util.should_receive(:strip_leading_whitespace).twice.with("   Blah blah\n blah blah").and_return("blah")
-    [TaggedClass, TaggedModule].each do |c|
-      c.desc "   Blah blah\n blah blah"
-    end
-  end
+  # This has been moved to the admin/references_helper
+  #
+  # it "should normalize leading whitespace in a tag description" do
+  #   Radiant::Taggable::Util.should_receive(:strip_leading_whitespace).twice.with("   Blah blah\n blah blah").and_return("blah")
+  #   [TaggedClass, TaggedModule].each do |c|
+  #     c.desc "   Blah blah\n blah blah"
+  #   end
+  # end
 end
 
 describe Radiant::Taggable, "when included in a module with defined tags" do
