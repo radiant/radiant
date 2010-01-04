@@ -147,7 +147,7 @@ describe Radiant::Initializer do
   end
 
   it "should load metal from RADIANT_ROOT and exensions" do
-    Rails::Rack::Metal.metal_paths.should == ["#{RADIANT_ROOT}/app/metal", "#{RADIANT_ROOT}/test/fixtures/extensions/02_overriding/app/metal", "#{RADIANT_ROOT}/test/fixtures/extensions/01_basic/app/metal"]
+    Rails::Rack::Metal.metal_paths.should == ["#{RADIANT_ROOT}/app/metal", "#{RADIANT_ROOT}/test/fixtures/extensions/overriding/app/metal", "#{RADIANT_ROOT}/test/fixtures/extensions/basic/app/metal"]
   end
 
   it "should check dependent extensions" do

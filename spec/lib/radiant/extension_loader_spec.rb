@@ -13,7 +13,7 @@ describe Radiant::ExtensionLoader do
     @instance = Radiant::ExtensionLoader.send(:new)
     @instance.initializer = @initializer
 
-    @extensions = %w{01_basic 02_overriding load_order_blue load_order_green load_order_red}
+    @extensions = %w{basic overriding load_order_blue load_order_green load_order_red}
     @extension_paths = @extensions.map do |ext|
       File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/#{ext}")
     end
@@ -32,7 +32,7 @@ describe Radiant::ExtensionLoader do
   it "should only load extensions specified in the configuration" do
     @configuration.should_receive(:extensions).at_least(:once).and_return([:basic])
     @instance.stub!(:all_extension_roots).and_return(@extension_paths)
-    @instance.send(:select_extension_roots).should == [File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/01_basic")]
+    @instance.send(:select_extension_roots).should == [File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/basic")]
   end
 
   it "should load extensions from gem paths" do
@@ -156,8 +156,8 @@ describe Radiant::ExtensionLoader do
     extensions = [BasicExtension, OverridingExtension]
     @instance.extensions = extensions
     @instance.view_paths.should == [
-       "#{RADIANT_ROOT}/test/fixtures/extensions/02_overriding/app/views",
-       "#{RADIANT_ROOT}/test/fixtures/extensions/01_basic/app/views"
+       "#{RADIANT_ROOT}/test/fixtures/extensions/overriding/app/views",
+       "#{RADIANT_ROOT}/test/fixtures/extensions/basic/app/views"
       ]
   end
 
@@ -166,8 +166,8 @@ describe Radiant::ExtensionLoader do
     extensions = [BasicExtension, OverridingExtension]
     @instance.extensions = extensions
     @instance.metal_paths.should == [
-       "#{RADIANT_ROOT}/test/fixtures/extensions/02_overriding/app/metal",
-       "#{RADIANT_ROOT}/test/fixtures/extensions/01_basic/app/metal"
+       "#{RADIANT_ROOT}/test/fixtures/extensions/overriding/app/metal",
+       "#{RADIANT_ROOT}/test/fixtures/extensions/basic/app/metal"
       ]
   end
   
