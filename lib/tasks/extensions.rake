@@ -70,9 +70,18 @@ namespace :spec do
 end
 
 namespace :radiant do
+  # TODO: load previously copied tasks just once.
+  # If update_all is run multiple times, previously copied tasks will be loaded twice,
+  # once from the local copy (RAILS_ROOT/lib/tasks) and once from the gem source.
+  task :extensions => :environment do
+    Radiant::ExtensionLoader.instance.extensions.each do |extension|
+      next if extension.root.starts_with? RAILS_ROOT
+      Dir[File.join extension.root, %w(lib tasks *.rake)].sort.each { |task| load task }
+    end
+  end
   namespace :extensions do
     desc "Runs update asset task for all extensions"
-    task :update_all => :environment do
+    task :update_all => [:environment, 'radiant:extensions'] do
       extension_names = Radiant::ExtensionLoader.instance.extensions.map { |f| f.to_s.underscore.sub(/_extension$/, '') }
       extension_update_tasks = extension_names.map { |n| "radiant:extensions:#{n}:update" }.select { |t| Rake::Task.task_defined?(t) }
       extension_update_tasks.each {|t| Rake::Task[t].invoke }
