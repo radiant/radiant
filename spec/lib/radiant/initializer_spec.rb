@@ -89,7 +89,7 @@ describe Radiant::Configuration do
       @configuration.all_available_extensions.should_not include(:bogus_gem)
     end
 
-    it "should load gems with a radiant- prefix" do
+    it "should load gems matching radiant-*-extension" do
       @spec.stub!(:full_gem_path).and_return(File.join RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-extension-0.0.0))
       @configuration.all_available_extensions.should include(:gem_ext)
     end

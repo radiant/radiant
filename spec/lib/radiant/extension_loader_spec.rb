@@ -168,7 +168,7 @@ describe Radiant::ExtensionLoader do
     @instance.should_receive(:load_extension_roots).and_return(@extension_paths)
     @instance.load_extensions
     @extensions.each do |ext|
-      ext_class = Object.const_get(ext.gsub(/^\d+_/, '').camelize + "Extension")
+      ext_class = Object.const_get(ext.camelize + "Extension")
       ext_class.should_not be_nil
       ext_class.root.should_not be_nil
     end
