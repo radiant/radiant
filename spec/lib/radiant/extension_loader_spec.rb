@@ -35,15 +35,8 @@ describe Radiant::ExtensionLoader do
     @instance.send(:select_extension_roots).should == [File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/basic")]
   end
 
-  it "should load extensions from gem paths" do
-    gem_path = File.join RADIANT_ROOT, %w(test fixtures gems gem_ext-0.0.0)
-    @configuration.should_receive(:extensions).at_least(:once).and_return([:gem_ext])
-    @instance.stub!(:all_extension_roots).and_return([File.expand_path gem_path])
-    @instance.send(:select_extension_roots).should == [gem_path]
-  end
-
-  it "should load gem extensions with a radiant- prefix" do
-    gem_path = File.join RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-0.0.0)
+  it "should load gem extensions with paths matching radiant-*-extension" do
+    gem_path = File.join RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-extension-0.0.0)
     @configuration.should_receive(:extensions).at_least(:once).and_return([:gem_ext])
     @instance.stub!(:all_extension_roots).and_return([File.expand_path gem_path])
     @instance.send(:select_extension_roots).should == [gem_path]
@@ -179,6 +172,16 @@ describe Radiant::ExtensionLoader do
       ext_class.should_not be_nil
       ext_class.root.should_not be_nil
     end
+  end
+
+  it "should load extensions from gem paths" do
+    # Mock gem loading
+    gem_path = File.expand_path(File.join(RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-extension-0.0.0)))
+    $: << gem_path
+    require 'gem_ext_extension'
+    @instance.should_receive(:load_extension_roots).and_return([gem_path])
+
+    @instance.load_extensions.should include(GemExtExtension)
   end
 
   it "should deactivate extensions" do

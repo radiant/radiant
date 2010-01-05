@@ -78,11 +78,6 @@ describe Radiant::Configuration do
       @configuration.gems = [@gem]
     end
 
-    it "should include valid gems" do
-      @spec.stub!(:full_gem_path).and_return(File.join RADIANT_ROOT, %w(test fixtures gems gem_ext-0.0.0))
-      @configuration.all_available_extensions.should include(:gem_ext)
-    end
-
     it "should not load gems that don't appear to be extensions" do
       @spec.stub!(:full_gem_path).and_return(File.join RADIANT_ROOT, %w(test fixtures gems not_ext-0.0.0))
       @configuration.all_available_extensions.should_not include(:not_ext)
@@ -94,7 +89,7 @@ describe Radiant::Configuration do
     end
 
     it "should load gems with a radiant- prefix" do
-      @spec.stub!(:full_gem_path).and_return(File.join RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-0.0.0))
+      @spec.stub!(:full_gem_path).and_return(File.join RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-extension-0.0.0))
       @configuration.all_available_extensions.should include(:gem_ext)
     end
   end
