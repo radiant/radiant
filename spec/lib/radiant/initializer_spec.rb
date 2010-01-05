@@ -78,9 +78,10 @@ describe Radiant::Configuration do
       @configuration.gems = [@gem]
     end
 
-    it "should not load gems that don't appear to be extensions" do
-      @spec.stub!(:full_gem_path).and_return(File.join RADIANT_ROOT, %w(test fixtures gems not_ext-0.0.0))
-      @configuration.all_available_extensions.should_not include(:not_ext)
+    it "should not load gems that don't follow extension conventions" do
+      @spec.stub!(:full_gem_path).and_return(File.join RADIANT_ROOT, %w(test fixtures gems misnamed_ext-0.0.0))
+      available_extensions = @configuration.all_available_extensions.map(&:to_s)
+      available_extensions.grep(/misnamed_ext/).should be_empty
     end
 
     it "should skip gems with invalid specifications" do
