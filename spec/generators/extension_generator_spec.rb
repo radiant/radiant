@@ -22,7 +22,7 @@ describe "ExtensionGenerator with normal options" do
   
   it "should generate extension init file" do
     'vendor/extensions/sample'.should have_generated_class('sample_extension', 'Radiant::Extension') do |body|
-      body.should match(/version "1.0"\n\s+description "Describe your extension here"\n\s+url "http:\/\/yourwebsite.com\/sample"/)
+      body.should match(/version "1.0"\n\s+description "Describe your extension here"\n\s+url "http:\/\/github.com\/extauthor\/radiant-sample-extension"/)
       body.should match(/define_routes do \|map\|((\n|\s*.*\n)*)\s+\# end/)
       body.should have_method('activate')
     end
@@ -112,6 +112,7 @@ describe "ExtensionGenerator with test-unit option" do
   it_should_behave_like AllGenerators
   
   before(:each) do
+    Git.stub!(:global_config).and_return({})
     cp_r File.join(BASE_ROOT, 'lib/generators/extension'),  File.join(RADIANT_ROOT, 'vendor/generators')
     run_generator('extension', %w(Sample --with-test-unit))
   end

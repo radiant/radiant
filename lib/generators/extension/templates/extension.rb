@@ -4,7 +4,7 @@
 class <%= class_name %> < Radiant::Extension
   version "1.0"
   description "Describe your extension here"
-  url "http://yourwebsite.com/<%= file_name %>"
+  url "<%= homepage %>"
 
   # define_routes do |map|
   #   map.namespace :admin, :member => { :remove => :get } do |admin|
