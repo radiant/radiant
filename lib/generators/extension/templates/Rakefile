@@ -5,6 +5,8 @@ require 'rake/rdoctask'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
+    # Radiant only recognizes gems as extensions if they're named according to
+    # the radiant-*-extension pattern. Please retain the prefix and suffix.
     gem.name = "radiant-<%= file_name %>-extension"
     gem.summary = %Q{<%= class_name.titleize %> for Radiant CMS}
     gem.description = %Q{Describe your extension here}
