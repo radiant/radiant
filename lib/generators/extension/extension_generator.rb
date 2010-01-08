@@ -1,3 +1,8 @@
+begin
+  require 'git'
+rescue LoadError
+end
+
 class ExtensionGenerator < Rails::Generator::NamedBase
   default_options :with_test_unit => false
   
@@ -54,6 +59,26 @@ class ExtensionGenerator < Rails::Generator::NamedBase
   
   def extension_name
     class_name.to_name('Extension')
+  end
+
+  def author_info
+    @author_info ||= begin
+      Git.global_config
+    rescue NameError
+      {}
+    end
+  end
+
+  def homepage
+    author_info['github.user'] ? "http://github.com/#{author_info['github.user']}/radiant-#{file_name}-extension" : "http://yourwebsite.com/#{file_name}"
+  end
+
+  def author_email
+    author_info['user.email'] || 'your email'
+  end
+
+  def author_name
+    author_info['user.name'] || 'Your Name'
   end
   
   def add_options!(opt)
