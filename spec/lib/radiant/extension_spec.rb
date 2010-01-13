@@ -25,7 +25,7 @@ describe Radiant::Extension do
   end
   
   it "should have a migrations path" do
-    BasicExtension.migrations_path.should == "#{RADIANT_ROOT}/test/fixtures/extensions/01_basic/db/migrate"
+    BasicExtension.migrations_path.should == "#{RADIANT_ROOT}/test/fixtures/extensions/basic/db/migrate"
   end
   
   it "should set the extension_name in subclasses" do

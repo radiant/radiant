@@ -2,9 +2,11 @@ require File.dirname(__FILE__) + "/extension_generators_spec_helper"
 
 describe "ExtensionGenerator with normal options" do
   it_should_behave_like AllGenerators
-  
+
   before(:each) do
     cp_r File.join(BASE_ROOT, 'lib/generators/extension'),  File.join(RADIANT_ROOT, 'vendor/generators')
+    git_config = {'user.name' => 'Ext Author', 'user.email' => 'ext@radiantcms.org', 'github.user' => 'extauthor'}
+    Git.should_receive(:global_config).and_return git_config
     run_generator('extension', %w(Sample))
   end
   
@@ -20,7 +22,7 @@ describe "ExtensionGenerator with normal options" do
   
   it "should generate extension init file" do
     'vendor/extensions/sample'.should have_generated_class('sample_extension', 'Radiant::Extension') do |body|
-      body.should match(/version "1.0"\n\s+description "Describe your extension here"\n\s+url "http:\/\/yourwebsite.com\/sample"/)
+      body.should match(/version "1.0"\n\s+description "Describe your extension here"\n\s+url "http:\/\/github.com\/extauthor\/radiant-sample-extension"/)
       body.should match(/define_routes do \|map\|((\n|\s*.*\n)*)\s+\# end/)
       body.should have_method('activate')
     end
@@ -34,7 +36,16 @@ describe "ExtensionGenerator with normal options" do
       tasks.should match(/task :update => :environment do\n((\n|\s*.*\n)*)\s+end/)
     end
   end
-  
+
+  it "should populate Rakefile with gem info" do
+    'vendor/extensions/sample'.should have_generated_file('Rakefile') do |body|
+      body.should match(%r(gem.name = "radiant-sample-extension"))
+      body.should match(%r(gem.email = "ext@radiantcms.org"))
+      body.should match(%r(gem.homepage = "http://github.com/extauthor/radiant-sample-extension"))
+      body.should match(%r(gem.authors = \["Ext Author"\]))
+    end
+  end
+
   it "should generate extension controllers directory" do
     'vendor/extensions/sample'.should have_generated_directory('app/controllers')
   end
@@ -101,6 +112,7 @@ describe "ExtensionGenerator with test-unit option" do
   it_should_behave_like AllGenerators
   
   before(:each) do
+    Git.stub!(:global_config).and_return({})
     cp_r File.join(BASE_ROOT, 'lib/generators/extension'),  File.join(RADIANT_ROOT, 'vendor/generators')
     run_generator('extension', %w(Sample --with-test-unit))
   end
@@ -180,5 +192,3 @@ describe "ExtensionGenerator with test-unit option" do
     rm_rf Dir["#{RADIANT_ROOT}/vendor/generators/*"]
   end
 end
-
-

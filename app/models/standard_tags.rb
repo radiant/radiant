@@ -351,11 +351,11 @@ module StandardTags
     page = tag.locals.page
     part_name = tag_part_name(tag)
     # Prevent simple and deep recursive rendering of the same page part
-    rendered_parts = (tag.locals.rendered_parts ||= Hash.new {|h,k| h[k] = []})
-    if rendered_parts[page.id].include?(part_name)
+    rendering_parts = (tag.locals.rendering_parts ||= Hash.new {|h,k| h[k] = []})
+    if rendering_parts[page.id].include?(part_name)
       raise TagError.new(%{Recursion error: already rendering the `#{part_name}' part.})
     else
-      rendered_parts[page.id] << part_name
+      rendering_parts[page.id] << part_name
     end
     boolean_attr = proc do |attribute_name, default|
       attribute = (tag.attr[attribute_name] || default).to_s
@@ -372,7 +372,9 @@ module StandardTags
     contextual = boolean_attr['contextual', true]
     part = part_page.part(part_name)
     tag.locals.page = part_page unless contextual
-    tag.globals.page.render_snippet(part) unless part.nil?
+    result = tag.globals.page.render_snippet(part) unless part.nil?
+    rendering_parts[page.id].delete(part_name)
+    result
   end
 
   desc %{
