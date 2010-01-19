@@ -1,11 +1,7 @@
 When /^I send an "([^\"]*)" header of "([^\"]*)"$/ do |key, value|
   @request_headers ||= {}
   @request_headers[key] = value
-end
-
-When /^I go to ['"](.*)['"]$/ do |url|
   set_headers
-  visit url
 end
 
 When /^I view a page$/ do

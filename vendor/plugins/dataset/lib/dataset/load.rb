@@ -34,14 +34,4 @@ module Dataset
       collector.uniq
     end
   end
-  
-  class Reload # :nodoc:
-    attr_reader :dataset_binding, :load
-    delegate :datasets, :helper_methods, :to => :load
-    
-    def initialize(load)
-      @load = load
-      @dataset_binding = SessionBinding.new(@load.dataset_binding)
-    end
-  end
 end

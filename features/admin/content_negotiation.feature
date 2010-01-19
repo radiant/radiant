@@ -6,14 +6,14 @@ Feature: Proper content negotiation
   Scenario: Default to HTML format
     Given I am logged in as "admin"
     When I send an "Accept" header of "image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/x-ms-application, application/vnd.ms-xpsdocument, application/xaml+xml, application/x-ms-xbap, application/x-shockwave-flash, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*"
-    And I go to "/admin/pages"
+    And I go to admin:pages
     Then I should not see "Missing template"
     
   Scenario: Requesting XML format via file-extension
     Given I am logged in as "admin"
     When I send an "Accept" header of "image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/x-ms-application, application/vnd.ms-xpsdocument, application/xaml+xml, application/x-ms-xbap, application/x-shockwave-flash, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*"
-    And I go to "/admin/pages.xml"
-    Then I should see "<\?xml"
+    And I go to admin:pages as xml
+    Then I should see "<?xml" when I view the page source
 
   Scenario: Requesting children via Ajax
     Given I am logged in as "admin"
@@ -21,4 +21,4 @@ Feature: Proper content negotiation
     And I send an "X-Requested-With" header of "XMLHttpRequest"
     And I request the children of page "home"
     Then I should not see "Radiant CMS"
-    And I should see "<tr"
+    And I should see "<tr" when I view the page source

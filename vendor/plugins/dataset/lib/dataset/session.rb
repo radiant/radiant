@@ -25,26 +25,10 @@ module Dataset
     
     def load_datasets_for(test_class)
       datasets = datasets_for(test_class)
-      if last_load = @load_stack.last
-        if last_load.datasets == datasets
-          current_load = Reload.new(last_load)
-        elsif last_load.datasets.subset?(datasets)
-          @database.capture(last_load.datasets)
-          current_load = Load.new(datasets, last_load.dataset_binding)
-          current_load.execute(last_load.datasets, @dataset_resolver)
-          @load_stack.push(current_load)
-        else
-          @load_stack.pop
-          last_load = @load_stack.last
-          @database.restore(last_load.datasets) if last_load
-          current_load = load_datasets_for(test_class)
-        end
-      else
-        @database.clear
-        current_load = Load.new(datasets, @database)
-        current_load.execute([], @dataset_resolver)
-        @load_stack.push(current_load)
-      end
+      @database.clear
+      current_load = Load.new(datasets, @database)
+      current_load.execute([], @dataset_resolver)
+      @load_stack.push(current_load)
       current_load
     end
   end

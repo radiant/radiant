@@ -116,7 +116,7 @@ module Radiant
     end
     
     def tabs
-      nav[:content]
+      nav
     end
 
     # Region sets

@@ -6,7 +6,8 @@ Feature: Managing snippets
     Given I am logged in as "designer"
   
   Scenario: List snippets
-    When I follow "Design" within "navigation"
+    Then show me the page
+    When I follow "Design" within "#navigation"
     And I follow "Snippets"
     Then I should see "first"
     And I should see "another"
@@ -14,7 +15,7 @@ Feature: Managing snippets
     # And a host of others
   
   Scenario: Create a snippet
-    When I follow "Design" within "navigation"
+    When I follow "Design" within "#navigation"
     And I follow "Snippets"
     And I follow "New Snippet"
     And I fill in "Name" with "Mine"
@@ -24,7 +25,7 @@ Feature: Managing snippets
     And I should see "Mine"
   
   Scenario: Display form errors
-    When I follow "Design" within "navigation"
+    When I follow "Design" within "#navigation"
     And I follow "Snippets"
     And I follow "New Snippet"
     And I fill in "Body" with "My snippet"
@@ -33,7 +34,7 @@ Feature: Managing snippets
     And I should see the form
   
   Scenario: Continue editing
-    When I follow "Design" within "navigation"
+    When I follow "Design" within "#navigation"
     And I follow "Snippets"
     And I follow "New Snippet"
     And I fill in "Name" with "Mine"
@@ -47,7 +48,7 @@ Feature: Managing snippets
     Then I should see "Edit Snippet"
   
   Scenario: Delete a snippet with confirmation
-    When I follow "Design" within "navigation"
+    When I follow "Design" within "#navigation"
     And I follow "Snippets"
     And I follow "Remove Snippet"
     Then I should see "permanently remove"
