@@ -5,20 +5,20 @@ Feature: Managing pages
   
   Scenario: Listing pages
     Given I am logged in as "existing"
-    When I go to admin:pages
+    When I go to the "pages" admin page
     Then I should see "Pages"
     And I should see "Home"
     
   Scenario: No pages
     Given I am logged in as "existing"
     Given there are no pages
-    When I go to admin:pages
+    When I go to the "pages" admin page
     Then I should see "No Pages"
     
   Scenario: Creating a homepage
     Given I am logged in as "existing"
     Given there are no pages
-    When I go to admin:pages
+    When I go to the "pages" admin page
     And I follow "New Homepage"
     Then I should see "New Page"
     And there should be a "body" part
@@ -38,7 +38,7 @@ Feature: Managing pages
   Scenario: Creating child pages
     Given I am logged in as "existing"
     And there is a homepage
-    When I go to admin:pages
+    When I go to the "pages" admin page
     And I follow "Add child"
     Then I should see "New Page"
     And there should be a "body" part
@@ -52,12 +52,12 @@ Feature: Managing pages
     And I press "Save and Continue Editing"
     Then I should see "Edit Page"
     And I should see "Under Construction"
-    When I go to my-child
+    When I go to the new child page
     Then I should see "Under Construction"
     
   Scenario: Delete page
     Given I am logged in as "existing"
-    When I go to admin:pages
+    When I go to the "pages" admin page
     And I follow "remove page"
     Then I should see "permanently remove"
     When I press "Delete Pages"

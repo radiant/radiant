@@ -5,46 +5,54 @@ module NavigationHelpers
   #
   # step definition in web_steps.rb
   #
-  def path_to(page_name)
-    case page_name
-    
+  def path_to(page_name, format=nil)
+    case normalize_page_name(page_name)
+    when /^\/(.*)/
+      $1
     when /the home\s?page/
       '/'
-    
-    # Add more mappings here.
-    # Here is an example that pulls values out of the Regexp:
-    #
-    #   when /^(.*)'s profile page$/i
-    #     user_profile_path(User.find_by_login($1))
-    when /the homepage/
-      root_path
+    when /the (\S+) (|admin )page as (\w+)/
+      path_to($1, $3)
+    when /the (\S+) ($:|admin )page/
+      path_to($1)
+    when /first/
+      '/first'
+    when /new child/
+      '/my-child'
+    when /great-grandchild/
+      '/parent/child/grandchild/great-grandchild'
     when /sitemap/i
-      admin_pages_path
+      admin_pages_path(:format => format)
     when /login/i
-      login_path
+      login_path(:format => format)
     when /preferences/i
-      edit_admin_preferences_path
+      edit_admin_preferences_path(:format => format)
     when /snippets/i
-      admin_snippets_path
+      admin_snippets_path(:format => format)
     when /login/i
-      login_path
-    when /users/
-      admin_users_path
-    when /admin:(.*) as xml/i
-      "/admin/#{$1}.xml"
-    when /admin:(.*)/i
-      "/admin/#{$1}"
-    when "my-child"
-      "/my-child"
-    when "page:parent/child/grandchild/great-grandchild"
-      "/parent/child/grandchild/great-grandchild"
-    when "page:first"
-      "/first"
-    
+      login_path(:format => format)
+    when /users/i
+      admin_users_path(:format => format)
+    when /pages/i
+      admin_pages_path(:format => format)
+    when /layouts/i
+      admin_layouts_path(:format => format)
+    when /snippets/i
+      admin_snippets_path(:format => format)
+    when /users/i
+      admin_users_path(:format => format)
+    when /extensions/i
+      admin_extensions_path(:format => format)
+    when /export/i
+      export_path(:format => format)
     else
       raise "Can't find mapping from \"#{page_name}\" to a path.\n" +
         "Now, go and add a mapping in #{__FILE__}"
     end
+  end
+  
+  def normalize_page_name(page_name)
+    page_name.gsub(/^["']+(.*?)["']+$/,'\1')
   end
 end
 

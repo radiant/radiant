@@ -6,13 +6,13 @@ Feature: Proper content negotiation
   Scenario: Default to HTML format
     Given I am logged in as "admin"
     When I send an "Accept" header of "image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/x-ms-application, application/vnd.ms-xpsdocument, application/xaml+xml, application/x-ms-xbap, application/x-shockwave-flash, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*"
-    And I go to admin:pages
+    And I go to the "pages" admin page
     Then I should not see "Missing template"
     
   Scenario: Requesting XML format via file-extension
     Given I am logged in as "admin"
     When I send an "Accept" header of "image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/x-ms-application, application/vnd.ms-xpsdocument, application/xaml+xml, application/x-ms-xbap, application/x-shockwave-flash, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*"
-    And I go to admin:pages as xml
+    And I go to the "pages" admin page as xml
     Then I should see an xml document
 
   Scenario: Requesting children via Ajax
