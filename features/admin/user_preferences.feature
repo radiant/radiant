@@ -15,4 +15,4 @@ Feature: Edit user preferences
       | another   |
       | existing  |
       | designer  |
-      | non-admin |
+      | non_admin |

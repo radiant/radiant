@@ -5,7 +5,7 @@ class UsersDataset < Dataset::Base
     create_user "Another"
     create_user "Admin", :admin => true
     create_user "Designer", :designer => true
-    create_user "Non-admin", :admin => false
+    create_user "Non_admin", :admin => false
   end
   
   helpers do
@@ -30,6 +30,16 @@ class UsersDataset < Dataset::Base
       }.merge(attributes)
       attributes[:password_confirmation] = attributes[:password]
       attributes
+    end
+    
+    def user_params(options = {})
+      {
+        :name => 'John Doe',
+        :login => 'jdoe',
+        :password => 'password',
+        :password_confirmation => 'password',
+        :email => 'jdoe@gmail.com'
+      }.merge(options)
     end
     
     def login_as(user)
