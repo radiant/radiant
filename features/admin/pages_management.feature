@@ -71,7 +71,7 @@ Feature: Managing pages
   Scenario: Change page type
     Given I am logged in as "existing"
     When I edit the "virtual" page
-    And I select "&lt;normal&gt;" from "Page type"
+    And I select "<normal>" from "Page type"
     And I press "Save and Continue Editing"
     Then I should see "Edit Page"
     And "&lt;normal&gt;" should be selected for "Page type"

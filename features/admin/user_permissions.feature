@@ -45,7 +45,7 @@ Feature: User authentication and permissions
   Scenario Outline: Admins and designers can see and edit snippets
     Given I am logged in as "<username>"
     And I should see "Design"
-    When I follow "Design" within "navigation"
+    When I follow "Design" within "#navigation"
     And I follow "Snippets"
     And I should not see "You must have designer privileges"
     And I follow "first"
@@ -59,7 +59,7 @@ Feature: User authentication and permissions
   Scenario Outline: Admins and designers can see and edit layouts
     Given I am logged in as "<username>"
     And I should see "Design"
-    When I follow "Design" within "navigation"
+    When I follow "Design" within "#navigation"
     And I follow "Layouts"
     And I should not see "You must have designer privileges"
     And I follow "Main"

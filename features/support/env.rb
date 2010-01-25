@@ -15,7 +15,6 @@ require 'cucumber/web/tableish'
 
 require 'webrat'
 require 'webrat/core/matchers'
-require 'cucumber/webrat/element_locator' # Deprecated in favor of #tableish - remove this line if you don't use #element_at or #table_at
 
 Webrat.configure do |config|
   config.mode = :rails
@@ -47,3 +46,9 @@ ActionController::Base.allow_rescue = false
 # subsequent scenarios. If you do this, we recommend you create a Before
 # block that will explicitly put your database in a known state.
 Cucumber::Rails::World.use_transactional_fixtures = true
+
+# How to clean your database when transactions are turned off. See
+# http://github.com/bmabey/database_cleaner for more info.
+require 'database_cleaner'
+DatabaseCleaner.strategy = :truncation
+
