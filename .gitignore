@@ -12,3 +12,4 @@ spec/datasets/tmp
 *.tmproj
 cache
 .idea
+rerun.txt
