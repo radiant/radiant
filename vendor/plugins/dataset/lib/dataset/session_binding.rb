@@ -170,25 +170,19 @@ module Dataset
   end
   
   class SessionBinding # :nodoc:
-    attr_reader :database, :parent_binding
+    attr_reader :database
     attr_reader :model_finders, :record_methods
     attr_reader :block_variables
     
-    def initialize(database_or_parent_binding)
+    def initialize(database)
       @id_cache = Hash.new {|h,k| h[k] = {}}
       @record_methods = new_record_methods_module
       @model_finders = new_model_finders_module
       @block_variables = Hash.new
       
-      case database_or_parent_binding
-      when Dataset::SessionBinding
-        @parent_binding = database_or_parent_binding
-        @database = parent_binding.database
-        @model_finders.module_eval { include database_or_parent_binding.model_finders }
-        @block_variables.update(database_or_parent_binding.block_variables)
-      else 
-        @database = database_or_parent_binding
-      end
+      raise "Must provide a database" if database.nil?
+      
+      @database = database
     end
     
     def copy_block_variables(dataset_block)
@@ -209,8 +203,6 @@ module Dataset
       record_meta = record_meta_for_type(record_type_or_meta)
       if local_id = @id_cache[record_meta.id_cache_key][symbolic_name]
         local_id
-      elsif !parent_binding.nil?
-        parent_binding.find_id record_meta, symbolic_name
       else
         raise RecordNotFound.new(record_meta, symbolic_name)
       end
@@ -220,8 +212,6 @@ module Dataset
       record_meta = record_meta_for_type(record_type_or_meta)
       if local_id = @id_cache[record_meta.id_cache_key][symbolic_name]
         record_meta.record_class.find local_id
-      elsif !parent_binding.nil?
-        parent_binding.find_model record_meta, symbolic_name
       else
         raise RecordNotFound.new(record_meta, symbolic_name)
       end
