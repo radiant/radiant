@@ -2,6 +2,7 @@
 
 === Edge
 
+* Fixed support for newer Cucumber version [M. Scott Ford, William Ross]
 * Fixed a bug in if/unless_content tags [Benny Degezelle]
 * Support packaging extensions as gems [Josh French]
 * Add tag reference to Layouts and Snippets [Jim Gay]
