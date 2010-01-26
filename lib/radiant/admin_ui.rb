@@ -69,7 +69,7 @@ module Radiant
       end
 
       def deprecated_add(name, url, caller)
-        ActiveSupport::Deprecation.warn("admin.tabs.add is no longer supported in Radiant 0.9.x.  Please update your code to use admin.nav", caller)
+        ActiveSupport::Deprecation.warn("admin.tabs.add is no longer supported in Radiant 0.9.x.  Please update your code to use: \ntab \"Content\" do\n\tadd_item(...)\nend", caller)
         NavSubItem.new(name, url)
       end
     end
