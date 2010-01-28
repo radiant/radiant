@@ -19,7 +19,7 @@ module Registry
 Name:           #{name}
 Description:
   #{description}
-Author:         #{author.first_name} #{author.last_name} <#{author.email}>
+Author:         #{author.name} <#{author.email}>
 Source code:    #{repository_url}
 Download:       #{download_url}
 Install type:   #{install_type}
