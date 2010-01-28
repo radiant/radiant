@@ -179,7 +179,7 @@ describe "ExtensionGenerator with test-unit option" do
   it "should generate extension test helper file" do
     'vendor/extensions/sample'.should have_generated_file('test/test_helper.rb') do |body|
       body.should match(/require 'test\/unit'/)
-      body.should match(/class Test::Unit::TestCase\n((\n|\s*.*\n)*)end/)
+      body.should match(/class ActiveSupport::TestCase\n((\n|\s*.*\n)*)end/)
     end
   end
   
