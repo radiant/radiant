@@ -171,6 +171,7 @@ end_error
       # checks for plugins within extensions:
       extension_loader.add_plugin_paths
       super
+      ActiveSupport::Dependencies.load_once_paths -= extension_loader.extension_load_paths
     end
 
     def load_plugins

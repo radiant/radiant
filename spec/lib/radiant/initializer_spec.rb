@@ -152,4 +152,10 @@ describe Radiant::Initializer do
     @initializer.after_initialize
   end
 
+  it "should remove extension gem paths from ActiveSupport::Dependencies" do
+    load_paths = [File.join(RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-extension-0.0.0 lib))]
+    @loader.stub!(:extension_load_paths).and_return(load_paths)
+    ActiveSupport::Dependencies.load_once_paths.should_receive(:-).with(load_paths)
+    @initializer.add_plugin_load_paths
+  end
 end
