@@ -35,11 +35,11 @@
         = fields.select :class_name, [['<normal>', '']] + Page.descendants.map { |p| [p.display_name, p.name] }.sort_by { |p| p.first }
       %p
         = fields.label :status_id, "Status"
-        = fields.select :status_id, Status.find_all.map { |s| [s.name, s.id] }, {}
+        = fields.select :status_id, Status.find_all.map { |s| [s.name, s.id] }, {}, :onChange => {"javascript:" =>" scheduleControl();"}
       - if @config['page.edit.published_date?']
-        %p#publication_date{:style => "display: none"}
+        %p#published_at
           = fields.label :page_published_at, "Published At"
-          = fields.datetime_select :published_at, :disabled => true
+          = fields.text_field :published_at, :class=> "date"
       = render_region :layout_row, :locals => {:f => fields}
 
 - render_region :form_bottom do |form_bottom|

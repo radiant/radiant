@@ -69,7 +69,7 @@ class ApplicationController < ActionController::Base
   
     def set_javascripts_and_stylesheets
       @stylesheets ||= []
-      @stylesheets.concat %w(admin/main)
+      @stylesheets.concat %w(admin/main admin/dateinput)
       @javascripts ||= []
     end
     
