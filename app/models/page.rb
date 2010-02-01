@@ -253,12 +253,6 @@ class Page < ActiveRecord::Base
     def attributes_protected_by_default
       super - [self.class.inheritance_column]
     end
-
-    # def update_published_at
-    #   self[:published_at] = Time.now if (published? and !published_at) 
-    #   self[:published_at] = Time.now if (self[:status_id] == 90 and published_at <= Time.now)
-    #   true
-    # end
     
     def update_status
       self[:published_at] = Time.now if self[:status_id] == 100 && self[:published_at] == nil
