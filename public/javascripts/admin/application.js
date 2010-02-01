@@ -63,5 +63,6 @@ Event.addBehavior({
   },
   
   'form textarea': CodeAreaBehavior(),
+
   'input.date': DateInputBehavior()
 });

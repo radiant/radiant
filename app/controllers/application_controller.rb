@@ -77,4 +77,5 @@ class ApplicationController < ActionController::Base
       @body_classes ||= []
       @body_classes.concat(%w(reversed))
     end
+    
 end
