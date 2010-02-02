@@ -37,6 +37,7 @@ class Page < ActiveRecord::Base
 
   set_inheritance_column :class_name
 
+
   def layout_with_inheritance
     unless layout_without_inheritance
       parent.layout if parent?
@@ -90,9 +91,14 @@ class Page < ActiveRecord::Base
   def published?
     status == Status[:published]
   end
+  
 
   def status
-    Status.find(self.status_id)
+    status = Status.find(self.status_id)
+    if status == 90
+      puts "HELLO IN HERE"
+    end
+    status
   end
   
   def status=(value)
@@ -166,6 +172,18 @@ class Page < ActiveRecord::Base
       children.find(:first, :conditions => [condition] + file_not_found_names)
     end
   end
+
+  def update_status
+    self[:published_at] = Time.now if self[:status_id] == 100 && self[:published_at] == nil
+
+    if self[:published_at] != nil
+      self[:status_id] = 90  if self[:published_at]  > Time.now
+      self[:status_id] = 100 if self[:published_at] <= Time.now
+    end
+
+    true    
+  end
+
 
   def to_xml(options={}, &block)
     super(options.reverse_merge(:include => :parts), &block)
@@ -254,16 +272,6 @@ class Page < ActiveRecord::Base
       super - [self.class.inheritance_column]
     end
     
-    def update_status
-      self[:published_at] = Time.now if self[:status_id] == 100 && self[:published_at] == nil
-
-      if self[:published_at] != nil
-        self[:status_id] = 90  if self[:published_at]  > Time.now
-        self[:status_id] = 100 if self[:published_at] <= Time.now
-      end
-
-      true
-    end
 
     def update_virtual
       unless self.class == Page.descendant_class(class_name)

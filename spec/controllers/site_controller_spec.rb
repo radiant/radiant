@@ -72,14 +72,41 @@ describe SiteController do
       response.should be_missing
     end
   end
-
+  
   it "should not require login" do
     lambda { get :show_page, :url => '/' }.should_not require_login
   end
 
+  describe "scheduling" do    
+    before do 
+      @sched_page = Page.find(103)
+    end    
+    it "should not display scheduled pages on live site" do
+      @sched_page.published_at = Time.now + 5000
+      @sched_page.save
+      request.host = 'mysite.com'      
+      get :show_page, :url => @sched_page.slug
+      response.response_code.should == 404
+      response.should render_template('site/not_found')
+    end
+    
+    it "should update status of scheduled pages on home page" do
+      @sched_page.published_at = Time.now - 50000
+      @sched_page.status_id = 90
+
+      get :show_page, :url => '/'
+      response.body.should == 'Hello world!'
+      
+      @sched_page2 = Page.find(103)
+      @sched_page2.status_id.should == 100
+    end
+    
+  end
+
+
   describe "caching" do
     it "should add a default Cache-Control header with public and max-age of 5 minutes" do
-      get :show_page, :url => '/'
+      get :show_page, :url => ''
       response.headers['Cache-Control'].should =~ /public/
       response.headers['Cache-Control'].should =~ /max-age=300/
     end
