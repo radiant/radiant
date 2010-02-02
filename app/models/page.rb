@@ -94,11 +94,7 @@ class Page < ActiveRecord::Base
   
 
   def status
-    status = Status.find(self.status_id)
-    if status == 90
-      puts "HELLO IN HERE"
-    end
-    status
+   Status.find(self.status_id)
   end
   
   def status=(value)

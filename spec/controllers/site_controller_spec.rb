@@ -106,7 +106,7 @@ describe SiteController do
 
   describe "caching" do
     it "should add a default Cache-Control header with public and max-age of 5 minutes" do
-      get :show_page, :url => ''
+      get :show_page, :url => '/'
       response.headers['Cache-Control'].should =~ /public/
       response.headers['Cache-Control'].should =~ /max-age=300/
     end
