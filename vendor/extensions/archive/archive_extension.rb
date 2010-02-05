@@ -3,7 +3,7 @@
 
 class ArchiveExtension < Radiant::Extension
   version "1.0"
-  description "Provides Archive page types behave similar to a blog or news archive."
+  description "Provides page types for news or blog archives."
   url "http://dev.radiantcms.org/"
     
   def activate
