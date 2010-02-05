@@ -2,8 +2,8 @@ begin
   require 'rdiscount'
 rescue LoadError
   # If RDiscount is not available, use packaged BlueCloth
-  $LOAD_PATH.unshift "#{File.dirname(__FILE__)}/vendor/bluecloth/lib"
-  require 'bluecloth'
+  $LOAD_PATH.unshift "#{File.dirname(__FILE__)}/vendor/kramdown/lib"
+  require 'kramdown'
 end
 
 begin
