@@ -1,0 +1,47 @@
+# -*- mode: org -*-
+#+STARTUP: nofold
+
+* Documentation
+  Redo tutorial?
+  Contribution information
+    Will be code reviewed
+    [Haml]/[Sass], punctuation
+    Don't forget docs
+  Using helpers
+    haml_concat and haml_tag in particular
+  [2.4] Syntax highlighting?
+
+* Code
+** Haml
+   Interpolation shouldn't make non-interpolated strings escaped under :escape_html
+     I think we can just wrap interpolated code with (),
+     since it's already interpolated.
+   Can also use () to wrap contents of _haml_temp so that commas throw errors when not in :ugly
+   [2.4] Allow "!!! HTML5" to set :format => :html5 ?
+     How do we deal with partials?
+   [2.4] :ugly + :html improvements
+     Ignore closing tags where we can
+       http://code.google.com/speed/articles/optimizing-html.html
+       Requires Haml parsing refactor
+     Don't quote attributes that don't require it
+       http://www.w3.org/TR/REC-html40/intro/sgmltut.html#h-3.2.2
+       http://www.w3.org/TR/html5/syntax.html#attributes
+** Sass
+   [2.4] CSS superset
+   [2.4] Classes are mixins
+     Can refer to specific property values? Syntax?
+   [2.4] Pre-parse everything possible: never call Node#interpolate
+   [2.4] Do all parsing in to_tree
+   [2.4] Pull in Compass watcher stuff
+   [2.4] Internationalization
+     Particularly word constituents in Regexps
+   [2.4] Optimization
+     http://csstidy.sourceforge.net/
+     Also comma-folding identical rules where possible
+     Multiple levels
+       0: No optimization
+       1: Nothing that changes doc structure
+         No comma-folding
+       2: Anything that keeps functionality identical to O2 (default)
+       3: Assume order of rules doesn't matter
+       Comma-fold even if there are intervening rules that might interfere
