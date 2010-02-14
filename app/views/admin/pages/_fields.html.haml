@@ -14,8 +14,8 @@
         = render :partial => "meta_row", :collection => @meta, :locals => {:f => fields}
         = render_region :extended_metadata, :locals => {:f => fields}
     %p.more_or_less
-      %a{:id=>"more_extended_metadata", :href=>"javascript: $('extended_metadata').show(); $('less_extended_metadata').show(); $('more_extended_metadata').hide(); this.stop()", :style=>(meta_errors? ? "display: none" : nil)} More
-      %a{:id=>"less_extended_metadata", :href=>"javascript: $('extended_metadata').hide(); $('more_extended_metadata').show(); $('less_extended_metadata').hide(); this.stop()", :style=>(!meta_errors? ? "display: none" : nil)} Hide
+      %a{:id=>"more_extended_metadata", :href=>"javascript: $('extended_metadata').show(); $('less_extended_metadata').show(); $('more_extended_metadata').hide(); this.stop()", :class => "rounded_bottom_right rounded_bottom_left#{(meta_errors? ? ' hidden' : '')}"} More
+      %a{:id=>"less_extended_metadata", :href=>"javascript: $('extended_metadata').hide(); $('more_extended_metadata').show(); $('less_extended_metadata').hide(); this.stop()", :class => "rounded_bottom_right rounded_bottom_left#{(meta_errors? ? '' : ' hidden')}"} Hide
   - form.edit_page_parts do
     #tab_control
       #tabs.tabs
@@ -45,7 +45,7 @@
   - form_bottom.edit_buttons do
     - @buttons_partials.each do |partial|
       = render :partial => partial, :locals => {:f => fields}
-    %p.buttons{:style=>"clear: left"}
+    %p.buttons
       = save_model_button(@page)
       = save_model_and_continue_editing_button(@page)
       or
