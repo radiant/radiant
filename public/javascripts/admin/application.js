@@ -62,5 +62,7 @@ Event.addBehavior({
     this.activate();
   },
   
-  'form textarea': CodeAreaBehavior()
+  'form textarea': CodeAreaBehavior(),
+
+  'input.date': DateInputBehavior()
 });

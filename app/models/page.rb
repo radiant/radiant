@@ -5,7 +5,7 @@ class Page < ActiveRecord::Base
   end
 
   # Callbacks
-  before_save :update_published_at, :update_virtual
+  before_save :update_virtual, :update_status
 
   # Associations
   acts_as_tree :order => 'virtual DESC, title ASC'
@@ -36,6 +36,7 @@ class Page < ActiveRecord::Base
   attr_accessor :request, :response
 
   set_inheritance_column :class_name
+
 
   def layout_with_inheritance
     unless layout_without_inheritance
@@ -90,10 +91,12 @@ class Page < ActiveRecord::Base
   def published?
     status == Status[:published]
   end
+  
 
   def status
-    Status.find(self.status_id)
+   Status.find(self.status_id)
   end
+  
   def status=(value)
     self.status_id = value.id
   end
@@ -165,6 +168,18 @@ class Page < ActiveRecord::Base
       children.find(:first, :conditions => [condition] + file_not_found_names)
     end
   end
+
+  def update_status
+    self[:published_at] = Time.now if self[:status_id] == 100 && self[:published_at] == nil
+
+    if self[:published_at] != nil
+      self[:status_id] = 90  if self[:published_at]  > Time.now
+      self[:status_id] = 100 if self[:published_at] <= Time.now
+    end
+
+    true    
+  end
+
 
   def to_xml(options={}, &block)
     super(options.reverse_merge(:include => :parts), &block)
@@ -252,11 +267,7 @@ class Page < ActiveRecord::Base
     def attributes_protected_by_default
       super - [self.class.inheritance_column]
     end
-
-    def update_published_at
-      self[:published_at] = Time.now if published? and !published_at
-      true
-    end
+    
 
     def update_virtual
       unless self.class == Page.descendant_class(class_name)

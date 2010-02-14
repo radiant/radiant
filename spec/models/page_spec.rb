@@ -177,6 +177,8 @@ describe Page do
     end
   end
 
+  # invalid, as published_at is set when form is submitted
+
   it 'should set published_at when published' do
     @page = Page.new(page_params(:status_id => '1', :published_at => nil))
     @page.published_at.should be_nil
@@ -205,7 +207,27 @@ describe Page do
     @page.status = Status[:draft]
     @page.published?.should be_false
   end
+  
+  it 'should answer false when not published but scheduled' do
+    @page.status = Status[:scheduled]
+    @page.published?.should be_false
+  end
 
+  it 'should change its status to scheduled when publishing in the future' do
+    @page = Page.new(page_params(:status_id => '100', :published_at => '2020-1-1'))
+    @page.save
+    @page.status_id.should == 90    
+  end
+  
+  it 'should be published status when published_at is in the past' do
+    #current time 01-29-2010
+    scheduled_time = '2010-1-1'
+    @page = Page.new(page_params(:status_id => '90', :published_at => scheduled_time))
+    @page.save
+    @page.status_id.should == 100
+
+  end
+  
   it "should answer the page's url" do
     @page = pages(:parent)
     @page.url.should == '/parent/'
