@@ -116,7 +116,7 @@ DateInputBehavior.Calendar = Behavior.create({
     this.date = this.selector.getDate();
     this.redraw();
     this.element.setStyle({
-      'top': this.selector.element.cumulativeOffset().top + this.selector.element.getHeight() + 2 + 'px',
+      'top': this.selector.element.cumulativeOffset().top - (this.element.getHeight() + 4) + 'px',
       'left': Math.max(this.selector.element.cumulativeOffset().left + this.selector.element.getWidth() - this.element.getWidth() - 4, this.selector.element.cumulativeOffset().left) + 'px',
       'z-index': 10001
     });
