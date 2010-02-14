@@ -55,6 +55,7 @@
         margin: 0
         margin-right: 1em
     .buttons
+      clear: both
       color: #666
       font-size: 80%
       margin-top: 2.5em
@@ -67,8 +68,6 @@
       padding: 4px 0 5px
       font-size: 80%
       a
-        +rounded_bottom_right
-        +rounded_bottom_left
         background: #7e7e7e
         text-shadow: #666 1px 1px 0
         text-decoration: none
@@ -214,9 +213,7 @@ body.reversed
     textarea
       border: 1px solid white
     .box
-      box-shadow: 4px 4px 4px black
-      -moz-box-shadow: 1px 1px 3px #666
-      -webkit-box-shadow: 1px 1px 3px #666
+      +box_shadow
 
 body.login
   #content

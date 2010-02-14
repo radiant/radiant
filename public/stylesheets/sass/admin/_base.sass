@@ -8,19 +8,17 @@ a
 a:hover
   text-decoration: none
 
+h1, h3, h4
+  font-weight: bold
+
 h1
   font-size: 180%
-  font-weight: bold
   margin: 0.75em 0
 
 h3
-  font-weight: bold
   font-size: 130%
   margin-top: 1.25em
   margin-bottom: .5em
-
-h4
-  font-weight: bold
 
 p
   margin-top: 1em
@@ -61,18 +59,14 @@ table
   border-collapse: collapse
   
 // mixins and classes: use classes wherever possible first
-=rounded
-  border-radius: 6px
-  -moz-border-radius: 6px
-  -webkit-border-radius: 6px
+=rounded(!radius=6px)
+  border-radius = !radius
+  -moz-border-radius = !radius
+  -webkit-border-radius = !radius
 =rounded_tight
-  border-radius: 3px
-  -moz-border-radius: 3px
-  -webkit-border-radius: 3px
+  +rounded(3px)
 =rounded_loose
-  border-radius: 10px
-  -moz-border-radius: 10px
-  -webkit-border-radius: 10px
+  +rounded(10px)
   
 .rounded
   +rounded
@@ -80,30 +74,36 @@ table
   +rounded_tight
 .rounded_loose
   +rounded_loose
+
+=rounded_corner(!radius=6px, !vertical_orientation="top", !horizontal_orentation="right")
+  border-#{!vertical_orientation}-#{!horizontal_orentation}-radius = !radius
+  -moz-border-radius-#{!vertical_orientation}#{!horizontal_orentation} = !radius
+  -webkit-border-#{!vertical_orientation}-#{!horizontal_orentation}-radius = !radius
   
-=rounded_top_right
-  border-top-right-radius: 6px
-  -moz-border-radius-topright: 6px
-  -webkit-border-top-right-radius: 6px
-=rounded_bottom_right
-  border-bottom-right-radius: 6px
-  -moz-border-radius-bottomright: 6px
-  -webkit-border-bottom-right-radius: 6px
-=rounded_bottom_left
-  border-bottom-left-radius: 6px
-  -moz-border-radius-bottomleft: 6px
-  -webkit-border-bottom-left-radius: 6px
-=rounded_top_left
-  border-top-left-radius: 6px
-  -moz-border-radius-topleft: 6px
-  -webkit-border-top-left-radius: 6px
+=rounded_top_right(!radius=6px)
+  +rounded_corner(!radius,"top","right")
+=rounded_bottom_right(!radius=6px)
+  +rounded_corner(!radius,"bottom","right")
+=rounded_bottom_left(!radius=6px)
+  +rounded_corner(!radius,"bottom","left")
+=rounded_top_left(!radius=6px)
+  +rounded_corner(!radius,"top","left")
   
-=shadowed
-  box-shadow: 2px 2px 22px #d9d9d9
-  -moz-box-shadow: 2px 2px 22px #d9d9d9
-  -webkit-box-shadow: 2px 2px 22px #d9d9d9
-.shadowed
-  +shadowed
+.rounded_top_right
+  +rounded_top_right
+.rounded_bottom_right
+  +rounded_bottom_right
+.rounded_bottom_left
+  +rounded_bottom_left
+.rounded_top_left
+  +rounded_top_left
+  
+=box_shadow(!horizontal_offset=1px, !vertical_offset=1px, !blur_radius=4px, !shadow_color=#666)
+  box-shadow: #{!horizontal_offset} #{!vertical_offset} #{!blur_radius} #{!shadow_color}
+  -moz-box-shadow: #{!horizontal_offset} #{!vertical_offset} #{!blur_radius} #{!shadow_color}
+  -webkit-box-shadow: #{!horizontal_offset} #{!vertical_offset} #{!blur_radius} #{!shadow_color}
+.box_shadow
+  +box_shadow
   
 =clearfix
   display: inline-block
