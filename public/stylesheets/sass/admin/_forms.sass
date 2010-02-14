@@ -1,13 +1,3 @@
-=clearfix
-  display: inline-block
-  &:after
-    content: "." 
-    height: 0
-    clear: both
-    visibility: hidden
-  * html &
-    height: 1px
-
 #content
   form
     p
@@ -77,13 +67,9 @@
       padding: 4px 0 5px
       font-size: 80%
       a
+        +rounded_bottom_right
+        +rounded_bottom_left
         background: #7e7e7e
-        border-bottom-left-radius: 6px
-        border-bottom-right-radius: 6px
-        -moz-border-radius-bottomleft: 6px
-        -moz-border-radius-bottomright: 6px
-        -webkit-border-bottom-left-radius: 6px
-        -webkit-border-bottom-right-radius: 6px
         text-shadow: #666 1px 1px 0
         text-decoration: none
         padding: 4px 21px 5px 10px        
@@ -97,10 +83,8 @@
         background: #7e7e7e url(../../images/admin/metadata_toggle.png) no-repeat 85% -22px
   
     #extended_metadata
+      +rounded_bottom_right
       background: #7e7e7e url(../../images/admin/navigation_shadow.png) repeat-x
-      border-bottom-right-radius: 6px
-      -moz-border-bottom-right-radius: 6px
-      -webkit-border-bottom-right-radius: 6px
       margin: 0
       padding-bottom: 2px
       overflow: hidden
@@ -137,11 +121,9 @@
             border-top: none
 
 .box
+  +rounded_loose
   color: #333
   background: #f5f1e2 url(../../images/admin/vertical_tan_gradient.png) top left repeat-x
-  border-radius: 10px
-  -moz-border-radius: 10px
-  -webkit-border-radius: 10px
   font-size: 90%
   padding: 1px 15px 10px
   margin: 3px 0 20px
@@ -239,11 +221,9 @@ body.reversed
 body.login
   #content
     #login
+      +rounded_loose
       background: #f5f1e2 url(../../images/admin/vertical_tan_gradient.png) center -15px repeat-x
       border: 0.35em solid #efead3
-      border-radius: 10px
-      -moz-border-radius: 10px
-      -webkit-border-radius: 10px
       padding: 0.5em 1.5em
       padding-right: 22px
       position: relative
