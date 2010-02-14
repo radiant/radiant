@@ -96,6 +96,36 @@ input.big {
 table {
   border-collapse: collapse; }
 
+.rounded {
+  border-radius: 6px;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px; }
+
+.rounded_tight {
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px; }
+
+.rounded_loose {
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px; }
+
+.shadowed {
+  box-shadow: 2px 2px 22px #d9d9d9;
+  -moz-box-shadow: 2px 2px 22px #d9d9d9;
+  -webkit-box-shadow: 2px 2px 22px #d9d9d9; }
+
+.clearfix {
+  display: inline-block; }
+  .clearfix:after {
+    content: ".";
+    height: 0;
+    clear: both;
+    visibility: hidden; }
+  * html .clearfix {
+    height: 1px; }
+
 body.reversed {
   background-color: #9e9e9e;
   color: white; }
@@ -313,13 +343,13 @@ img.avatar {
   padding: 4px 0 5px;
   font-size: 80%; }
   #content form p.more_or_less a {
-    background: #7e7e7e;
-    border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
-    -moz-border-radius-bottomleft: 6px;
     -moz-border-radius-bottomright: 6px;
-    -webkit-border-bottom-left-radius: 6px;
     -webkit-border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    -moz-border-radius-bottomleft: 6px;
+    -webkit-border-bottom-left-radius: 6px;
+    background: #7e7e7e;
     text-shadow: #666 1px 1px 0;
     text-decoration: none;
     padding: 4px 21px 5px 10px;
@@ -332,10 +362,10 @@ img.avatar {
   #content form p.more_or_less #less_extended_metadata {
     background: #7e7e7e url(../../images/admin/metadata_toggle.png) no-repeat 85% -22px; }
 #content form #extended_metadata {
-  background: #7e7e7e url(../../images/admin/navigation_shadow.png) repeat-x;
   border-bottom-right-radius: 6px;
-  -moz-border-bottom-right-radius: 6px;
+  -moz-border-radius-bottomright: 6px;
   -webkit-border-bottom-right-radius: 6px;
+  background: #7e7e7e url(../../images/admin/navigation_shadow.png) repeat-x;
   margin: 0;
   padding-bottom: 2px;
   overflow: hidden; }
@@ -369,11 +399,11 @@ img.avatar {
       border-top: none; }
 
 .box {
-  color: #333;
-  background: #f5f1e2 url(../../images/admin/vertical_tan_gradient.png) top left repeat-x;
   border-radius: 10px;
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
+  color: #333;
+  background: #f5f1e2 url(../../images/admin/vertical_tan_gradient.png) top left repeat-x;
   font-size: 90%;
   padding: 1px 15px 10px;
   margin: 3px 0 20px;
@@ -464,11 +494,11 @@ body.reversed #content .box {
   -webkit-box-shadow: 1px 1px 3px #666; }
 
 body.login #content #login {
-  background: #f5f1e2 url(../../images/admin/vertical_tan_gradient.png) center -15px repeat-x;
-  border: 0.35em solid #efead3;
   border-radius: 10px;
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
+  background: #f5f1e2 url(../../images/admin/vertical_tan_gradient.png) center -15px repeat-x;
+  border: 0.35em solid #efead3;
   padding: 0.5em 1.5em;
   padding-right: 22px;
   position: relative;
@@ -673,10 +703,10 @@ table.index th {
   #actions li {
     display: inline; }
   #actions a {
+    border-radius: 6px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
     background: #eee url(../../images/admin/buttons_background.png) repeat-x;
-    border-radius: 5px;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
     color: #222;
     font-size: 80%;
     padding: 8px 12px;
@@ -831,6 +861,12 @@ div.popup .reference table h2, div.popup .reference table h3, div.popup .referen
     width: 100%;
     margin-right: -4px; }
     #tab_control .tabs .tab {
+      border-top-left-radius: 6px;
+      -moz-border-radius-topleft: 6px;
+      -webkit-border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+      -moz-border-radius-topright: 6px;
+      -webkit-border-top-right-radius: 6px;
       background-color: #cac8c0;
       color: #7f7f7f;
       display: inline-block;
@@ -839,13 +875,7 @@ div.popup .reference table h2, div.popup .reference table h3, div.popup .referen
       margin-right: 5px;
       padding: 8px 15px 5px;
       text-decoration: none;
-      text-transform: titlecase;
-      -webkit-border-top-left-radius: 6px;
-      -webkit-border-top-right-radius: 6px;
-      -moz-border-radius-topleft: 6px;
-      -moz-border-radius-topright: 6px;
-      border-top-left-radius: 6px;
-      border-top-right-radius: 6px; }
+      text-transform: titlecase; }
       #tab_control .tabs .tab.here {
         background-color: white;
         color: black;
@@ -896,3 +926,76 @@ div.popup .reference table h2, div.popup .reference table h3, div.popup .referen
 
 body.reversed #tab_control textarea {
   border: 1px solid #ccc; }
+
+input.date {
+  background: white url(/images/admin/calendar_down.gif) right no-repeat;
+  padding-right: 26px;
+  width: 11em; }
+
+.calendar_popup {
+  box-shadow: 2px 2px 22px #d9d9d9;
+  -moz-box-shadow: 2px 2px 22px #d9d9d9;
+  -webkit-box-shadow: 2px 2px 22px #d9d9d9;
+  border-radius: 6px;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  z-index: 1000;
+  border: 1px solid #b2b2b2;
+  background-color: white;
+  padding: 5px;
+  line-height: 140%!important; }
+
+.calendar_popup a {
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px; }
+
+.calendar_popup table.calendar {
+  font-size: 90%;
+  margin: 0!important; }
+
+.calendar_popup table.calendar tr.day_header th {
+  border-top: 1px solid #e4e4e4;
+  border-bottom: 1px solid #e4e4e4;
+  color: #ccc;
+  padding: 2px; }
+
+.calendar_popup table.calendar th, .calendar_popup table.calendar td {
+  text-align: center; }
+
+.calendar_popup table.calendar th.back, .calendar_popup table.calendar th.month_year, .calendar_popup table.calendar th.forward {
+  padding-bottom: 3px; }
+
+.calendar_popup table.calendar th.forward a {
+  float: right; }
+
+.calendar_popup table.calendar td {
+  height: 1em;
+  padding: 3px!important;
+  margin: 0; }
+
+.calendar_popup table.calendar td.today {
+  border-radius: 6px;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  background-color: #e5e5e5; }
+
+.calendar_popup table.calendar td.today a {
+  background-color: white; }
+
+.calendar_popup table.calendar td.selected a {
+  color: white;
+  background-color: #d60; }
+
+.calendar_popup table.calendar a {
+  color: black;
+  display: block;
+  font-family: "Lucida Grande", Tahoma, sans-serif;
+  text-decoration: none;
+  text-align: center;
+  width: 2.25em;
+  padding: .2em 0; }
+
+.calendar_popup table.calendar a:hover {
+  color: white !important;
+  background-color: #3257f4 !important; }

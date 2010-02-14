@@ -1,0 +1,64 @@
+input.date
+  background: white url(/images/admin/calendar_down.gif) right no-repeat
+  padding-right: 26px
+  width: 11em
+
+.calendar_popup
+  +shadowed
+  +rounded
+  z-index: 1000
+  border: 1px solid #b2b2b2
+  background-color: white
+  padding: 5px
+  line-height: 140%!important
+  
+.calendar_popup a
+  +rounded_tight
+  
+.calendar_popup table.calendar
+  font-size: 90%
+  margin: 0!important
+  
+.calendar_popup table.calendar tr.day_header th
+  border-top: 1px solid #e4e4e4
+  border-bottom: 1px solid #e4e4e4
+  color: #ccc
+  padding: 2px
+  
+.calendar_popup table.calendar th, .calendar_popup table.calendar td
+  text-align: center
+  
+.calendar_popup table.calendar th.back, .calendar_popup table.calendar th.month_year, .calendar_popup table.calendar th.forward
+  padding-bottom: 3px
+  
+.calendar_popup table.calendar th.forward a
+  float: right
+  
+.calendar_popup table.calendar td
+  height: 1em
+  padding: 3px!important
+  margin: 0
+  
+.calendar_popup table.calendar td.today
+  +rounded
+  background-color: #e5e5e5
+  
+.calendar_popup table.calendar td.today a
+  background-color: white
+  
+.calendar_popup table.calendar td.selected a
+  color: white
+  background-color: #d60
+  
+.calendar_popup table.calendar a
+  color: black
+  display: block
+  font-family: "Lucida Grande", Tahoma, sans-serif
+  text-decoration: none
+  text-align: center
+  width: 2.25em
+  padding: .2em 0
+  
+.calendar_popup table.calendar a:hover
+  color: white !important
+  background-color: #3257f4 !important
