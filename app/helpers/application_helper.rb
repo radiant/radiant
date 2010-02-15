@@ -126,11 +126,15 @@ module ApplicationHelper
     when :meta, :meta_less
       meta_errors?
     end
-    v ? {} : {:style => "display:none"}
+    v ? {} : {:class => "hidden"}
   end
 
   def meta_errors?
     false
+  end
+  
+  def meta_label
+    meta_errors? ? 'Less' : 'More'
   end
 
   def toggle_javascript_for(id)

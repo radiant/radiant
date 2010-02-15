@@ -49,6 +49,15 @@ Event.addBehavior({
       oldTitle = title.value;
     });
   },
+  'p.more_or_less a': function(event){
+    $(this).observe('click', function(event){
+      if ($(this).hasClassName('more')){ $(this).update('More') }
+      else { $(this).update('Less') }
+      $(this).toggleClassName('more').toggleClassName('less');
+      $('extended_metadata').toggleClassName('hidden');
+      event.stop();
+    })
+  },
   
   'div#tab_control':        TabControlBehavior(),
   'table.index':            RuledTableBehavior(),

@@ -8,7 +8,7 @@
           = f.label :name
           = f.text_field :name, :maxlength => 100, :class => "textbox"
       - form.edit_extended_metadata do
-        #extended_metadata{:style=>(!meta_errors? ? "display: none" : nil)}
+        #extended_metadata{meta_visible(:meta)}
           %table.fieldset
             %tr
               %th.label
@@ -17,8 +17,7 @@
                 = f.text_field :content_type, :maxlength => 40, :class => "textbox"
             = render_region :extended_metadata
         %p.more_or_less
-          %a{:id=>"more_extended_metadata", :href=>"javascript: $('extended_metadata').show(); $('less_extended_metadata').show(); $('more_extended_metadata').hide(); this.stop()", :style=>(meta_errors? ? "display: none" : nil)} More
-          %a{:id=>"less_extended_metadata", :href=>"javascript: $('extended_metadata').hide(); $('more_extended_metadata').show(); $('less_extended_metadata').hide(); this.stop()", :style=>(!meta_errors? ? "display: none" : nil)} Hide
+          %a{:id=>"more_extended_metadata", :href=>'#', :class => "rounded_bottom_right rounded_bottom_left #{(meta_errors? ? 'more' : 'less')}"}= meta_label
       - form.edit_content do
         %p.content
           = f.label :layout_content, "Body"
