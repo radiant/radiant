@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_current_user
   before_filter :set_timezone
   before_filter :set_javascripts_and_stylesheets
-  before_filter :set_standard_body_style, :only => [:new, :edit]
+  before_filter :set_standard_body_style, :only => [:new, :edit, :update, :create]
   
   attr_accessor :config, :cache
   
