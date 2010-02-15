@@ -6,7 +6,7 @@
     - @stylesheets.uniq.each do |stylesheet|
       = stylesheet_link_tag stylesheet
     %script{:type=>"text/javascript"}="var relative_url_root = '#{ActionController::Base.relative_url_root}';"
-    = javascript_include_tag %w(admin/prototype admin/effects admin/lowpro admin/dateinput admin/schedulecontrol admin/cookie admin/popup admin/status admin/utility admin/codearea admin/tabcontrol admin/ruledtable admin/sitemap admin/shortcuts admin/application), :cache => 'admin/all'
+    = javascript_include_tag %w(admin/prototype admin/effects admin/lowpro admin/dateinput admin/pagestatus admin/cookie admin/popup admin/status admin/utility admin/codearea admin/tabcontrol admin/ruledtable admin/sitemap admin/shortcuts admin/application), :cache => 'admin/all'
     - @javascripts.uniq.each do |javascript|
       = javascript_include_tag javascript
     - if @content_for_page_scripts

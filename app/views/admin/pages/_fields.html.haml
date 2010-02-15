@@ -35,10 +35,10 @@
         = fields.select :class_name, [['<normal>', '']] + Page.descendants.map { |p| [p.display_name, p.name] }.sort_by { |p| p.first }
       %p
         = fields.label :status_id, "Status"
-        = fields.select :status_id, status_to_display, {}, :onChange => {"javascript:" =>" ScheduleControl();"}, :onLoad => {"javascript:" =>" scheduleControl();"}
-      %p#published_at
+        = fields.select :status_id, status_to_display
+      %p#published_at{:class => (@page.published? ? nil : 'hidden')}
         = fields.label :published_at, "Published At"
-        = fields.text_field :published_at, :class=> "date"
+        = fields.text_field :published_at, :class=> "date", :value => (@page.published_at? ? @page.published_at.to_date.to_formatted_s(:long) : nil)
       = render_region :layout_row, :locals => {:f => fields}
 
 - render_region :form_bottom do |form_bottom|
