@@ -170,11 +170,11 @@ class Page < ActiveRecord::Base
   end
 
   def update_status
-    self[:published_at] = Time.now if self[:status_id] == 100 && self[:published_at] == nil
-
-    if self[:published_at] != nil
-      self[:status_id] = 90  if self[:published_at]  > Time.now
-      self[:status_id] = 100 if self[:published_at] <= Time.now
+    self[:published_at] = Time.now if self[:status_id] == Status[:published].id && self[:published_at] == nil
+    
+    if self[:published_at] != nil && (self[:status_id] == Status[:published].id || self[:status_id] == Status[:scheduled].id)
+      self[:status_id] = Status[:scheduled].id if self[:published_at]  > Time.now
+      self[:status_id] = Status[:published].id if self[:published_at] <= Time.now
     end
 
     true    

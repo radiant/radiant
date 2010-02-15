@@ -218,6 +218,13 @@ describe Page do
     @page.save
     @page.status_id.should == 90    
   end
+
+  it 'should change its status to draft when set to draft' do
+    @page = pages(:scheduled)
+    @page.status_id = Status[:draft].id
+    @page.save
+    @page.status_id.should == 1    
+  end
   
   it 'should be published status when published_at is in the past' do
     #current time 01-29-2010

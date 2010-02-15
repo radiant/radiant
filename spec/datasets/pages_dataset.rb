@@ -40,6 +40,7 @@ class PagesDataset < Dataset::Base
     create_page "Hidden", :status_id => Status[:hidden].id
     date = Time.utc(2006, 1, 11)
     create_page "Dated", :published_at => date, :created_at => (date - 1.day), :updated_at => (date + 1.day)
+    create_page "Scheduled", :published_at => (Time.now + 1.day), :status_id => Status[:scheduled].id
 
     create_page "Devtags" do
       create_page_part "if_dev", :content => "<r:if_dev>dev</r:if_dev>"

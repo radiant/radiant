@@ -75,3 +75,11 @@ Feature: Managing pages
     And I press "Save and Continue Editing"
     Then I should see "Edit Page"
     And "&lt;normal&gt;" should be selected for "Page type"
+    
+  Scenario: Change page status from Scheduled to Draft
+    Given I am logged in as "existing"
+    When I edit the "scheduled" page
+    Then "Published" should be selected for "Status"
+    And I select "Draft" from "Status"
+    And I press "Save and Continue Editing"
+    And "Draft" should be selected for "Status"
