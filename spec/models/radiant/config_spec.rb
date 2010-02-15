@@ -38,13 +38,13 @@ describe Radiant::Config do
   
   it "should update the mtime on the cache file after a record is saved" do
     FileUtils.should_receive(:mkpath).with("#{Rails.root}/tmp").at_least(:once)
-    FileUtils.should_receive(:touch).with(Rails.cache.read('Radiant.cache_file'))
+    FileUtils.should_receive(:touch).with(Radiant::Config.cache_file)
     Radiant::Config['mtime'] = 'now'
   end
   
   it "should record the cache file mtime when the cache is initialized" do
     Radiant::Config.initialize_cache
-    Rails.cache.read('Radiant.cache_mtime').should == File.mtime(Rails.cache.fetch('Radiant.cache_file'))
+    Rails.cache.read('Radiant.cache_mtime').should == File.mtime(Radiant::Config.cache_file)
   end
   
   it "should create a cache file when initializing the cache" do
