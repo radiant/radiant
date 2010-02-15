@@ -94,20 +94,23 @@ input.big {
 table {
   border-collapse: collapse; }
 
-.rounded {
-  border-radius: 6px;
+.border_radius {
   -moz-border-radius: 6px;
-  -webkit-border-radius: 6px; }
+  -webkit-border-radius: 6px;
+  -khtml-border-radius: 6px;
+  border-radius: 6px; }
 
-.rounded_tight {
-  border-radius: 3px;
+.border_radius_tight {
   -moz-border-radius: 3px;
-  -webkit-border-radius: 3px; }
+  -webkit-border-radius: 3px;
+  -khtml-border-radius: 3px;
+  border-radius: 3px; }
 
-.rounded_loose {
-  border-radius: 10px;
+.border_radius_wide {
   -moz-border-radius: 10px;
-  -webkit-border-radius: 10px; }
+  -webkit-border-radius: 10px;
+  -khtml-border-radius: 10px;
+  border-radius: 10px; }
 
 .rounded_top_right {
   border-top-right-radius: 6px;
@@ -412,9 +415,10 @@ img.avatar {
       border-top: none; }
 
 .box {
-  border-radius: 10px;
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
+  -khtml-border-radius: 10px;
+  border-radius: 10px;
   color: #333;
   background: #f5f1e2 url(../../images/admin/vertical_tan_gradient.png) top left repeat-x;
   font-size: 90%;
@@ -507,9 +511,10 @@ body.reversed #content .box {
   -webkit-box-shadow: 1px 1px 4px #666666; }
 
 body.login #content #login {
-  border-radius: 10px;
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
+  -khtml-border-radius: 10px;
+  border-radius: 10px;
   background: #f5f1e2 url(../../images/admin/vertical_tan_gradient.png) center -15px repeat-x;
   border: 0.35em solid #efead3;
   padding: 0.5em 1.5em;
@@ -716,9 +721,10 @@ table.index th {
   #actions li {
     display: inline; }
   #actions a {
-    border-radius: 6px;
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
+    -khtml-border-radius: 6px;
+    border-radius: 6px;
     background: #eee url(../../images/admin/buttons_background.png) repeat-x;
     color: #222;
     font-size: 80%;
@@ -943,9 +949,10 @@ input.date {
   box-shadow: 1px 1px 4px #666666;
   -moz-box-shadow: 1px 1px 4px #666666;
   -webkit-box-shadow: 1px 1px 4px #666666;
-  border-radius: 6px;
   -moz-border-radius: 6px;
   -webkit-border-radius: 6px;
+  -khtml-border-radius: 6px;
+  border-radius: 6px;
   z-index: 1000;
   border: 1px solid #b2b2b2;
   background-color: white;
@@ -953,9 +960,10 @@ input.date {
   line-height: 140%!important; }
 
 .calendar_popup a {
-  border-radius: 3px;
   -moz-border-radius: 3px;
-  -webkit-border-radius: 3px; }
+  -webkit-border-radius: 3px;
+  -khtml-border-radius: 3px;
+  border-radius: 3px; }
 
 .calendar_popup table.calendar {
   font-size: 90%;
@@ -982,9 +990,10 @@ input.date {
   margin: 0; }
 
 .calendar_popup table.calendar td.today {
-  border-radius: 6px;
   -moz-border-radius: 6px;
   -webkit-border-radius: 6px;
+  -khtml-border-radius: 6px;
+  border-radius: 6px;
   background-color: #e5e5e5; }
 
 .calendar_popup table.calendar td.today a {
