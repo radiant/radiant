@@ -941,7 +941,7 @@ body.reversed #tab_control textarea {
   border: 1px solid #ccc; }
 
 input.date {
-  background: white url(../images/admin/calendar_down.gif) right no-repeat;
+  background: white url(../../images/admin/calendar_down.gif) right no-repeat;
   padding-right: 26px;
   width: 11em; }
 
