@@ -6,7 +6,6 @@ Feature: Managing snippets
     Given I am logged in as "designer"
   
   Scenario: List snippets
-    Then show me the page
     When I follow "Design" within "#navigation"
     And I follow "Snippets"
     Then I should see "first"
