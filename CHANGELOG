@@ -2,6 +2,11 @@
 
 === Edge
 
+* Refactored Sass to separate out common styles [Jim Gay]
+* Upgraded to HAML 2.2.19 [Jim Gay]
+* Add future publishing feature [Anna Billstrom, Benny Degezelle, Jim Gay]
+* Fixed support for newer Cucumber version [M. Scott Ford, William Ross]
+* Fixed a bug in if/unless_content tags [Benny Degezelle]
 * Support packaging extensions as gems [Josh French]
 * Add tag reference to Layouts and Snippets [Jim Gay]
 * Handle deploying to a sub-directory [Jim Gay]

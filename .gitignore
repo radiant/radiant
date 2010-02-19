@@ -10,7 +10,5 @@ public/tmp
 public/stylesheets/admin/styles.css
 spec/datasets/tmp
 *.tmproj
-cache
 .idea
-db/schema.rb
-*.kpf
+rerun.txt

@@ -1,12 +1,7 @@
-=clearfix
-  display: inline-block
-  &:after
-    content: "." 
-    height: 0
-    clear: both
-    visibility: hidden
-  * html &
-    height: 1px
+.less
+  background: url(../../images/admin/metadata_toggle.png) no-repeat 90% 8px
+.more
+  background: url(../../images/admin/metadata_toggle.png) no-repeat 85% -22px
 
 #content
   form
@@ -65,6 +60,7 @@
         margin: 0
         margin-right: 1em
     .buttons
+      clear: both
       color: #666
       font-size: 80%
       margin-top: 2.5em
@@ -77,13 +73,7 @@
       padding: 4px 0 5px
       font-size: 80%
       a
-        background: #7e7e7e
-        border-bottom-left-radius: 6px
-        border-bottom-right-radius: 6px
-        -moz-border-radius-bottomleft: 6px
-        -moz-border-radius-bottomright: 6px
-        -webkit-border-bottom-left-radius: 6px
-        -webkit-border-bottom-right-radius: 6px
+        background-color: #7e7e7e
         text-shadow: #666 1px 1px 0
         text-decoration: none
         padding: 4px 27px 5px 10px        
@@ -91,16 +81,10 @@
         top: -1px
         &:hover, &:active, &:focus
           text-decoration: underline
-      #more_extended_metadata
-        background: #7e7e7e url(../../images/admin/metadata_toggle.png) no-repeat 90% 8px
-      #less_extended_metadata
-        background: #7e7e7e url(../../images/admin/metadata_toggle.png) no-repeat 85% -22px
   
     #extended_metadata
+      +border_radius_bottom_right
       background: #7e7e7e url(../../images/admin/navigation_shadow.png) repeat-x
-      border-bottom-right-radius: 6px
-      -moz-border-bottom-right-radius: 6px
-      -webkit-border-bottom-right-radius: 6px
       margin: 0
       padding-bottom: 2px
       overflow: hidden
@@ -137,11 +121,9 @@
             border-top: none
 
 .box
+  +border_radius_wide
   color: #333
   background: #f5f1e2 url(../../images/admin/vertical_tan_gradient.png) top left repeat-x
-  border-radius: 10px
-  -moz-border-radius: 10px
-  -webkit-border-radius: 10px
   font-size: 90%
   padding: 1px 15px 10px
   margin: 3px 0 20px
@@ -232,18 +214,14 @@ body.reversed
     textarea
       border: 1px solid white
     .box
-      box-shadow: 4px 4px 4px black
-      -moz-box-shadow: 1px 1px 3px #666
-      -webkit-box-shadow: 1px 1px 3px #666
+      +box_shadow
 
 body.login
   #content
     #login
+      +border_radius_wide
       background: #f5f1e2 url(../../images/admin/vertical_tan_gradient.png) center -15px repeat-x
       border: 0.35em solid #efead3
-      border-radius: 10px
-      -moz-border-radius: 10px
-      -webkit-border-radius: 10px
       padding: 0.5em 1.5em
       padding-right: 22px
       position: relative

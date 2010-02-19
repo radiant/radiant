@@ -223,6 +223,25 @@ describe Admin::PagesController do
     put :update, :id => page_id(:home), :page => {:breadcrumb => 'Homepage'}
   end
 
+  describe "@body_classes" do
+    it "should return 'reversed' when the action_name is 'new'" do
+      get :new
+      assigns[:body_classes].should == ['reversed']
+    end
+    it "should return 'reversed' when the action_name is 'edit'" do
+      get :edit, :id => 1
+      assigns[:body_classes].should == ['reversed']
+    end
+    it "should return 'reversed' when the action_name is 'create'" do
+      post :create
+      assigns[:body_classes].should == ['reversed']
+    end
+    it "should return 'reversed' when the action_name is 'update'" do
+      put :update, :id => 1
+      assigns[:body_classes].should == ['reversed']
+    end
+  end
+
   protected
 
     def assert_rendered_nodes_where(&block)

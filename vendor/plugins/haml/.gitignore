@@ -1,0 +1,10 @@
+/.yardoc
+/coverage
+/doc
+/pkg
+/test/rails
+/test/haml/spec
+/.sass-cache
+/.haml
+/site
+/vendor

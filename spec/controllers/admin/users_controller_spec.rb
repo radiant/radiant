@@ -90,7 +90,7 @@ describe Admin::UsersController do
     User.find(user.id).should_not be_nil
   end 
 
-  it "should not allow admin to remove her own admin privilege" do
+  it "should not allow you to remove your own admin privilege" do
     user = users(:admin)
     login_as user
     put :update, { :id => user.id, :user => {:admin => false} }

@@ -8,12 +8,24 @@ class ActionView::Base
   end
 end
 
+module Haml::Helpers
+  def something_that_uses_haml_concat
+    haml_concat('foo').to_s
+  end
+end
+
 class HelperTest < Test::Unit::TestCase
   Post = Struct.new('Post', :body)
   
   def setup
     @base = ActionView::Base.new
     @base.controller = ActionController::Base.new
+
+    if defined?(ActionController::Response)
+      # This is needed for >=3.0.0
+      @base.controller.response = ActionController::Response.new
+    end
+
     @base.instance_variable_set('@post', Post.new("Foo bar\nbaz"))
   end
 
@@ -61,7 +73,7 @@ class HelperTest < Test::Unit::TestCase
 
     begin
       ActionView::Base.new.render(:inline => "<%= flatten('Foo\\nBar') %>")
-    rescue NoMethodError
+    rescue NoMethodError, Haml::Util.av_template_class(:Error)
       proper_behavior = true
     end
     assert(proper_behavior)
@@ -141,6 +153,10 @@ HAML
     assert_raise(Haml::Error) { render("- haml_tag :p, :/ do\n  foo") }
   end
 
+  def test_haml_tag_error_return
+    assert_raise(Haml::Error) { render("= haml_tag :p") }
+  end
+
   def test_is_haml
     assert(!ActionView::Base.new.is_haml?)
     assert_equal("true\n", render("= is_haml?"))
@@ -178,6 +194,11 @@ HAML
                  render("= find_and_preserve do\n  %pre\n    Foo\n    Bar\n  Foo\n  Bar"))
   end
 
+  def test_find_and_preserve_with_block_and_tags
+    assert_equal("<pre>Foo\nBar</pre>\nFoo\nBar\n",
+                 render("= find_and_preserve([]) do\n  %pre\n    Foo\n    Bar\n  Foo\n  Bar"))
+  end
+
   def test_preserve_with_block
     assert_equal("<pre>Foo&#x000A;Bar</pre>&#x000A;Foo&#x000A;Bar\n",
                  render("= preserve do\n  %pre\n    Foo\n    Bar\n  Foo\n  Bar"))
@@ -206,7 +227,29 @@ HAML
   def test_content_tag_nested
     assert_equal "<span><div>something</div></span>", render("= nested_tag", :action_view).strip
   end
-  
+
+  def test_error_return
+    assert_raise(Haml::Error, <<MESSAGE) {render("= haml_concat 'foo'")}
+haml_concat outputs directly to the Haml template.
+Disregard its return value and use the - operator,
+or use capture_haml to get the value as a String.
+MESSAGE
+  end
+
+  def test_error_return_line
+    render("%p foo\n= haml_concat 'foo'\n%p bar")
+    assert false, "Expected Haml::Error"
+  rescue Haml::Error => e
+    assert_equal 2, e.backtrace[0].scan(/:(\d+)/).first.first.to_i
+  end
+
+  def test_error_return_line_in_helper
+    render("- something_that_uses_haml_concat")
+    assert false, "Expected Haml::Error"
+  rescue Haml::Error => e
+    assert_equal 13, e.backtrace[0].scan(/:(\d+)/).first.first.to_i
+  end
+
   class ActsLikeTag
     # We want to be able to have people include monkeypatched ActionView helpers
     # without redefining is_haml?.
@@ -219,6 +262,21 @@ HAML
 
   def test_random_class_includes_tag_helper
     assert_equal "<p>some tag content</p>", ActsLikeTag.new.to_s
+  end
+
+  def test_capture_with_nuke_outer
+    assert_equal "<div></div>\n*<div>hi there!</div>\n", render(<<HAML)
+%div
+= precede("*") do
+  %div> hi there!
+HAML
+
+    assert_equal "<div></div>\n*<div>hi there!</div>\n", render(<<HAML)
+%div
+= precede("*") do
+  = "  "
+  %div> hi there!
+HAML
   end
 end
 

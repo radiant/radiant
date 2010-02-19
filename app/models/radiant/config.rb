@@ -59,25 +59,29 @@ module Radiant
       def initialize_cache
         Radiant::Config.ensure_cache_file
         Rails.cache.write('Radiant::Config',Radiant::Config.to_hash)
-        Rails.cache.write('Radiant.cache_mtime', File.mtime(Rails.cache.read('Radiant.cache_file')))
+        Rails.cache.write('Radiant.cache_mtime', File.mtime(cache_file))
       end
       
       def cache_file_exists?
-        return false if Rails.cache.read('Radiant.cache_file').nil?
-        File.file?(Rails.cache.read('Radiant.cache_file'))
+        File.file?(cache_file)
       end
       
       def stale_cache?
         return true unless Radiant::Config.cache_file_exists?
-        Rails.cache.read('Radiant.cache_mtime') != File.mtime(Rails.cache.read('Radiant.cache_file'))
+        Rails.cache.read('Radiant.cache_mtime') != File.mtime(cache_file)
       end
       
       def ensure_cache_file
-        cache_path = "#{Rails.root}/tmp"
-        cache_file = File.join(cache_path,'radiant_config_cache.txt')
-        Rails.cache.write('Radiant.cache_file', cache_file)
         FileUtils.mkpath(cache_path)
         FileUtils.touch(cache_file)
+      end
+      
+      def cache_path
+        "#{Rails.root}/tmp"
+      end
+      
+      def cache_file
+        cache_file = File.join(cache_path,'radiant_config_cache.txt')
       end
     end
 

@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_timezone
   before_filter :set_user_locale
   before_filter :set_javascripts_and_stylesheets
-  before_filter :set_standard_body_style, :only => [:new, :edit]
+  before_filter :set_standard_body_style, :only => [:new, :edit, :update, :create]
   
   attr_accessor :config, :cache
   
@@ -82,5 +82,5 @@ class ApplicationController < ActionController::Base
       @body_classes ||= []
       @body_classes.concat(%w(reversed))
     end
-
+    
 end

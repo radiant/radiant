@@ -8,19 +8,17 @@ a
 a:hover
   text-decoration: none
 
+h1, h3, h4
+  font-weight: bold
+
 h1
   font-size: 180%
-  font-weight: bold
   margin: 0.75em 0
 
 h3
-  font-weight: bold
   font-size: 130%
   margin-top: 1.25em
   margin-bottom: .5em
-
-h4
-  font-weight: bold
 
 p
   margin-top: 1em
@@ -59,3 +57,63 @@ input.big
 
 table
   border-collapse: collapse
+  
+// mixins and classes: use classes wherever possible first
+=border_radius(!radius=6px)
+  -moz-border-radius = !radius
+  -webkit-border-radius = !radius
+  -khtml-border-radius = !radius
+  border-radius = !radius
+=border_radius_tight
+  +border_radius(3px)
+=border_radius_wide
+  +border_radius(10px)
+  
+.border_radius
+  +border_radius
+.border_radius_tight
+  +border_radius_tight
+.border_radius_wide
+  +border_radius_wide
+
+=border_radius_corner(!radius=6px, !vertical_orientation="top", !horizontal_orentation="right")
+  border-#{!vertical_orientation}-#{!horizontal_orentation}-radius = !radius
+  -moz-border-radius-#{!vertical_orientation}#{!horizontal_orentation} = !radius
+  -webkit-border-#{!vertical_orientation}-#{!horizontal_orentation}-radius = !radius
+  
+=border_radius_top_right(!radius=6px)
+  +border_radius_corner(!radius,"top","right")
+=border_radius_bottom_right(!radius=6px)
+  +border_radius_corner(!radius,"bottom","right")
+=border_radius_bottom_left(!radius=6px)
+  +border_radius_corner(!radius,"bottom","left")
+=border_radius_top_left(!radius=6px)
+  +border_radius_corner(!radius,"top","left")
+  
+.rounded_top_right
+  +border_radius_top_right
+.rounded_bottom_right
+  +border_radius_bottom_right
+.rounded_bottom_left
+  +border_radius_bottom_left
+.rounded_top_left
+  +border_radius_top_left
+  
+=box_shadow(!horizontal_offset=1px, !vertical_offset=1px, !blur_radius=4px, !shadow_color=#666)
+  box-shadow: #{!horizontal_offset} #{!vertical_offset} #{!blur_radius} #{!shadow_color}
+  -moz-box-shadow: #{!horizontal_offset} #{!vertical_offset} #{!blur_radius} #{!shadow_color}
+  -webkit-box-shadow: #{!horizontal_offset} #{!vertical_offset} #{!blur_radius} #{!shadow_color}
+.box_shadow
+  +box_shadow
+  
+=clearfix
+  display: inline-block
+  &:after
+    content: "." 
+    height: 0
+    clear: both
+    visibility: hidden
+  * html &
+    height: 1px
+.clearfix
+  +clearfix

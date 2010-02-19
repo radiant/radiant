@@ -78,14 +78,10 @@ describe Radiant::Configuration do
       @configuration.gems = [@gem]
     end
 
-    it "should include valid gems" do
-      @spec.stub!(:full_gem_path).and_return(File.join RADIANT_ROOT, %w(test fixtures gems gem_ext-0.0.0))
-      @configuration.all_available_extensions.should include(:gem_ext)
-    end
-
-    it "should not load gems that don't appear to be extensions" do
-      @spec.stub!(:full_gem_path).and_return(File.join RADIANT_ROOT, %w(test fixtures gems not_ext-0.0.0))
-      @configuration.all_available_extensions.should_not include(:not_ext)
+    it "should not load gems that don't follow extension conventions" do
+      @spec.stub!(:full_gem_path).and_return(File.join RADIANT_ROOT, %w(test fixtures gems misnamed_ext-0.0.0))
+      available_extensions = @configuration.all_available_extensions.map(&:to_s)
+      available_extensions.grep(/misnamed_ext/).should be_empty
     end
 
     it "should skip gems with invalid specifications" do
@@ -93,8 +89,8 @@ describe Radiant::Configuration do
       @configuration.all_available_extensions.should_not include(:bogus_gem)
     end
 
-    it "should load gems with a radiant- prefix" do
-      @spec.stub!(:full_gem_path).and_return(File.join RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-0.0.0))
+    it "should load gems matching radiant-*-extension" do
+      @spec.stub!(:full_gem_path).and_return(File.join RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-extension-0.0.0))
       @configuration.all_available_extensions.should include(:gem_ext)
     end
   end
@@ -147,7 +143,7 @@ describe Radiant::Initializer do
   end
 
   it "should load metal from RADIANT_ROOT and exensions" do
-    Rails::Rack::Metal.metal_paths.should == ["#{RADIANT_ROOT}/app/metal", "#{RADIANT_ROOT}/test/fixtures/extensions/02_overriding/app/metal", "#{RADIANT_ROOT}/test/fixtures/extensions/01_basic/app/metal"]
+    Rails::Rack::Metal.metal_paths.should == ["#{RADIANT_ROOT}/app/metal", "#{RADIANT_ROOT}/test/fixtures/extensions/overriding/app/metal", "#{RADIANT_ROOT}/test/fixtures/extensions/basic/app/metal"]
   end
 
   it "should check dependent extensions" do
@@ -156,4 +152,10 @@ describe Radiant::Initializer do
     @initializer.after_initialize
   end
 
+  it "should remove extension gem paths from ActiveSupport::Dependencies" do
+    load_paths = [File.join(RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-extension-0.0.0 lib))]
+    @loader.stub!(:extension_load_paths).and_return(load_paths)
+    ActiveSupport::Dependencies.load_once_paths.should_receive(:-).with(load_paths)
+    @initializer.add_plugin_load_paths
+  end
 end

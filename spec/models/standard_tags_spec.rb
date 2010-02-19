@@ -267,6 +267,10 @@ describe "Standard Tags" do
       page(:recursive_parts).should render('<r:content part="two"/>').with_error("Recursion error: already rendering the `two' part.")
     end
 
+    it "should allow repetition" do
+      page(:recursive_parts).should render('<r:content part="repeat"/>').as('xx')
+    end
+
     it "should not prevent rendering a part more than once in sequence" do
       page(:home).should render('<r:content /><r:content />').as('Hello world!Hello world!')
     end

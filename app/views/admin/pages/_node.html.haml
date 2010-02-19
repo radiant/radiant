@@ -12,7 +12,7 @@
             = spinner
     - node.status_column do
       - unless simple
-        %td.status{:class => "#{page.status.name.downcase}_status"}= t(page.status.name.downcase)
+        %td.status{:class => "#{page.status.name.downcase}_status", :title => "#{timestamp(page.published_at) if page.published_at}"}= t(page.status.name.downcase)
     - node.add_child_column do
       - unless simple
         %td.add_child= link_to t('add_child'), new_admin_page_child_url(page)

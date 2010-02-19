@@ -81,7 +81,7 @@ module Radiant
       @observer ||= DependenciesObserver.new(configuration).observe(::ActiveSupport::Dependencies)
       self.extensions = load_extension_roots.map do |root|
         begin
-          extension_file = "#{File.basename(root).gsub(/^\d+_|^radiant-|-[\d.]+$/,'')}_extension"
+          extension_file = "#{File.basename(root).gsub(/^radiant-|-extension-[\d.]+$/,'')}_extension"
           extension = extension_file.camelize.constantize
           extension.unloadable
           extension.root = root
@@ -137,7 +137,7 @@ module Radiant
             :all
           else
             ext_path = all_roots.detect do |maybe_path|
-              File.basename(maybe_path).gsub(/^\d+_|^radiant-|-[\d.]+$/, '') == ext_name.to_s
+              File.basename(maybe_path).gsub(/^radiant-|-extension-[\d.]+$/, '') == ext_name.to_s
             end
             raise LoadError, "Cannot find the extension '#{ext_name}'!" if ext_path.nil?
             all_roots.delete(ext_path)
@@ -156,7 +156,8 @@ module Radiant
             Dir["#{path}/*"].map {|f| File.expand_path(f) if File.directory?(f) }.compact.sort
           end
           configuration.gems.inject(roots) do |paths,gem|
-            paths.tap { |p| p << gem.specification.full_gem_path if gem.specification and Dir[gem.specification.full_gem_path+'/*_extension.rb'].any? }
+            paths.tap { |p| p << gem.specification.full_gem_path if gem.specification and
+                            gem.specification.full_gem_path[/radiant-.*-extension-[\d\.]+$/] }
           end
           roots.flatten
         end

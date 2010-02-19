@@ -35,6 +35,10 @@ class DummyController
   def self.controller_path
     ''
   end
+
+  def controller_path
+    ''
+  end
 end
 
 class TemplateTest < Test::Unit::TestCase
@@ -80,8 +84,9 @@ class TemplateTest < Test::Unit::TestCase
     base
   end
 
-  def render(text)
-    Haml::Engine.new(text).to_html(@base)
+  def render(text, opts = {})
+    return @base.render(:inline => text, :type => :haml) if opts == :action_view
+    Haml::Engine.new(text, opts).to_html(@base)
   end
 
   def load_result(name)
@@ -91,7 +96,10 @@ class TemplateTest < Test::Unit::TestCase
   end
 
   def assert_renders_correctly(name, &render_method)
-    if ActionPack::VERSION::MAJOR < 2 || ActionPack::VERSION::MINOR < 2
+    old_options = Haml::Template.options.dup
+    Haml::Template.options[:escape_html] = false
+    if ActionPack::VERSION::MAJOR < 2 ||
+        (ActionPack::VERSION::MAJOR == 2 && ActionPack::VERSION::MINOR < 2)
       render_method ||= proc { |name| @base.render(name) }
     else
       render_method ||= proc { |name| @base.render(:file => name) }
@@ -101,12 +109,14 @@ class TemplateTest < Test::Unit::TestCase
       message = "template: #{name}\nline:     #{line}"
       assert_equal(pair.first, pair.last, message)
     end
-  rescue ActionView::TemplateError => e
+  rescue Haml::Util.av_template_class(:Error) => e
     if e.message =~ /Can't run [\w:]+ filter; required (one of|file) ((?:'\w+'(?: or )?)+)(, but none were found| not found)/
       puts "\nCouldn't require #{$2}; skipping a test."
     else
       raise e
     end
+  ensure
+    Haml::Template.options = old_options
   end
 
   def test_empty_render_should_remain_empty
@@ -134,9 +144,21 @@ class TemplateTest < Test::Unit::TestCase
     end
   end
 
-  def test_action_view_templates_render_correctly
-    @base.instance_variable_set("@content_for_layout", 'Lorem ipsum dolor sit amet')
-    assert_renders_correctly 'content_for_layout'
+  if ActionPack::VERSION::MAJOR < 3
+    # Rails 3.0.0 deprecates the use of yield with a layout
+    # for calls to render :file
+    def test_action_view_templates_render_correctly
+      proc = lambda do
+        @base.content_for(:layout) {'Lorem ipsum dolor sit amet'}
+        assert_renders_correctly 'content_for_layout'
+      end
+
+      if @base.respond_to?(:with_output_buffer)
+        @base.with_output_buffer("", &proc)
+      else
+        proc.call
+      end
+    end
   end
 
   def test_instance_variables_should_work_inside_templates
@@ -163,12 +185,31 @@ class TemplateTest < Test::Unit::TestCase
   end
 
   def test_haml_options
-    Haml::Template.options = { :suppress_eval => true }
-    assert_equal({ :suppress_eval => true }, Haml::Template.options)
+    old_options = Haml::Template.options.dup
+    Haml::Template.options[:suppress_eval] = true
     old_base, @base = @base, create_base
     assert_renders_correctly("eval_suppressed")
+  ensure
     @base = old_base
-    Haml::Template.options = {}
+    Haml::Template.options = old_options
+  end
+
+  def test_with_output_buffer_with_ugly
+    return unless Haml::Util.has?(:instance_method, ActionView::Base, :with_output_buffer)
+    assert_equal(<<HTML, render(<<HAML, :ugly => true))
+<p>
+foo
+baz
+</p>
+HTML
+%p
+  foo
+  - with_output_buffer do
+    bar
+    = "foo".gsub(/./) do |s|
+      - "flup"
+  baz
+HAML
   end
 
   def test_exceptions_should_work_correctly
@@ -200,5 +241,70 @@ END
     else
       assert false
     end
-  end  
+  end
+
+  ## XSS Protection Tests
+
+  # In order to enable these, either test against Rails 3.0
+  # or test against Rails 2.2.5+ with the rails_xss plugin
+  # (http://github.com/NZKoz/rails_xss) in test/plugins.
+  if Haml::Util.rails_xss_safe?
+    def test_escape_html_option_set
+      assert Haml::Template.options[:escape_html]
+    end
+
+    def test_xss_protection
+      assert_equal("Foo &amp; Bar\n", render('= "Foo & Bar"', :action_view))
+    end
+
+    def test_xss_protection_with_safe_strings
+      assert_equal("Foo & Bar\n", render('= Haml::Util.html_safe("Foo & Bar")', :action_view))
+    end
+
+    def test_xss_protection_with_bang
+      assert_equal("Foo & Bar\n", render('!= "Foo & Bar"', :action_view))
+    end
+
+    def test_xss_protection_in_interpolation
+      assert_equal("Foo &amp; Bar\n", render('Foo #{"&"} Bar', :action_view))
+    end
+
+    def test_xss_protection_with_bang_in_interpolation
+      assert_equal("Foo & Bar\n", render('! Foo #{"&"} Bar', :action_view))
+    end
+
+    def test_xss_protection_with_safe_strings_in_interpolation
+      assert_equal("Foo & Bar\n", render('Foo #{Haml::Util.html_safe("&")} Bar', :action_view))
+    end
+
+    def test_xss_protection_with_mixed_strings_in_interpolation
+      assert_equal("Foo & Bar &amp; Baz\n", render('Foo #{Haml::Util.html_safe("&")} Bar #{"&"} Baz', :action_view))
+    end
+
+    def test_rendered_string_is_html_safe
+      assert(render("Foo").html_safe?)
+    end
+
+    def test_rendered_string_is_html_safe_with_action_view
+      assert(render("Foo", :action_view).html_safe?)
+    end
+
+    def test_xss_html_escaping_with_non_strings
+      assert_equal("4\n", render("= html_escape(4)"))
+    end
+
+    def test_xss_protection_with_concat
+      assert_equal("Foo &amp; Bar", render('- concat "Foo & Bar"', :action_view))
+    end
+
+    def test_xss_protection_with_concat_with_safe_string
+      assert_equal("Foo & Bar", render('- concat(Haml::Util.html_safe("Foo & Bar"))', :action_view))
+    end
+
+    if Haml::Util.has?(:instance_method, ActionView::Helpers::TextHelper, :safe_concat)
+      def test_xss_protection_with_safe_concat
+        assert_equal("Foo & Bar", render('- safe_concat "Foo & Bar"', :action_view))
+      end
+    end
+  end
 end

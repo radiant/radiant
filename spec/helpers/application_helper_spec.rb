@@ -132,12 +132,22 @@ describe ApplicationHelper do
   
   it "should determine whether a meta area item should be visible" do
     helper.meta_visible(:meta_more).should be_empty
-    helper.meta_visible(:meta_less).should == {:style => "display:none"} 
-    helper.meta_visible(:meta).should == {:style => "display:none"} 
+    helper.meta_visible(:meta_less).should == {:class => "hidden"} 
+    helper.meta_visible(:meta).should == {:class => "hidden"} 
   end
   
   it "should not have meta errors" do
     helper.meta_errors?.should be_false
+  end
+  
+  it "should provide a meta_label of 'Less' when meta_errors? is true" do
+    helper.stub!(:meta_errors?).and_return(true)
+    helper.meta_label.should == 'Less'
+  end
+  
+  it "should provide a meta_label of 'More' when meta_errors? is false" do
+    helper.stub!(:meta_errors?).and_return(false)
+    helper.meta_label.should == 'More'
   end
   
   it "should render a Javascript snippet to toggle the meta area" do

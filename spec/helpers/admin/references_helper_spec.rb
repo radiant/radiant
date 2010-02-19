@@ -80,7 +80,7 @@ describe Admin::ReferencesHelper do
   describe "rendering the filter reference" do
     before :each do
       helper.send(:instance_variable_set, :@filter, nil)
-      params[:id] = 'filters'
+      params[:type] = 'filters'
       params[:filter_name] = 'Textile'
     end
 
@@ -102,7 +102,7 @@ describe Admin::ReferencesHelper do
   describe "rendering the tag reference" do
     before :each do
       helper.send(:instance_variable_set, :@page_class, nil)
-      params[:id] = 'tags'
+      params[:type] = 'tags'
       params[:class_name] = ''
     end
 

@@ -4,7 +4,7 @@ Feature: Managing users
   
   Background:
     Given I am logged in as "admin"
-    And I go to "/admin/users"
+    And I go to the "users" admin page
   Scenario: Listing users
     Then I should see "Admin"
     And I should see "Designer"

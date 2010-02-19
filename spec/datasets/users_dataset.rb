@@ -5,28 +5,41 @@ class UsersDataset < Dataset::Base
     create_user "Another"
     create_user "Admin", :admin => true
     create_user "Designer", :designer => true
-    create_user "Non-admin", :admin => false
+    create_user "Non_admin", :admin => false
   end
   
   helpers do
     def create_user(name, attributes={})
-      create_model :user, name.symbolize, user_attributes(attributes.update(:name => name))
+      user = create_model :user, name.downcase.to_sym, user_attributes(attributes.update(:name => name))
+      if user.nil?
+        throw "Error creating user dataset for #{name}"
+      end
     end
+    
     def user_attributes(attributes={})
-      name = attributes[:name] || "John Doe"
-      symbol = name.symbolize
+      name = attributes[:name]
+      if name.nil?
+        throw "name attribute is required"
+      end
+      
       attributes = { 
         :name => name,
-        :email => "#{symbol}@example.com", 
-        :login => symbol.to_s,
+        :email => "#{name.downcase}@example.com", 
+        :login => name.downcase,
         :password => "password"
       }.merge(attributes)
       attributes[:password_confirmation] = attributes[:password]
       attributes
     end
-    def user_params(attributes={})
-      password = attributes[:password] || "password"
-      user_attributes(attributes).update(:password => password, :password_confirmation => password)
+    
+    def user_params(options = {})
+      {
+        :name => 'John Doe',
+        :login => 'jdoe',
+        :password => 'password',
+        :password_confirmation => 'password',
+        :email => 'jdoe@gmail.com'
+      }.merge(options)
     end
     
     def login_as(user)
