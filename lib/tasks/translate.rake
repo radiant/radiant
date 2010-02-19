@@ -31,34 +31,32 @@ namespace :radiant do
         desc = desc.gsub('    ','      ')
         descriptions[tag] = ' "' + desc.gsub('%','&#37;').gsub('"','\"').strip + '"'
       end 
-      #.gsub(":","&#58;") #.gsub("r&#58;","r:").gsub("n&#58;","n:")
-      # tag_descriptions = Hash.new
-      # tag_descriptions['desc'] = descriptions
       comments = ''
       TranslationSupport.write_file("#{RADIANT_ROOT}/config/locales/en_available_tags.yml","---\nen:\n  desc",comments,descriptions)
     end 
     
-    # desc "Syncs all translations available_tags to the English master"
-    # task :sync_available_tags => :environment do
-    #   # All places Radiant can store locales 
-    #   locale_paths = Radiant::AvailableLocales.locale_paths
-    #   # The main translation root, basically where English is kept
-    #   language_root = "#{RADIANT_ROOT}/config/locales"
-    #   words = TranslationSupport.get_translation_keys(language_root,'_available_tags')
-    #   locale_paths.each do |path|
-    #     if path == language_root || path.match('i18n_')
-    #       Dir["#{path}/*.yml"].each do |filename|
-    #         next unless filename.match('_available_tags')
-    #         basename = File.basename(filename, '_available_tags.yml')
-    #         puts "Syncing #{basename}"
-    #         (comments, other) = TranslationSupport.read_file(filename, basename, "TEST")
-    #         words.each { |k,v| other[k] ||= words[k] }  # Initializing hash variable as empty if it does not exist
-    #         other.delete_if { |k,v| !words[k] }         # Remove if not defined in en.yml
-    #         TranslationSupport.write_file(filename, basename, comments, other)
-    #       end
-    #     end 
-    #   end
-    # end         
+    desc "Syncs all translations available_tags to the English master"
+    task :sync_available_tags => :environment do
+      # All places Radiant can store locales 
+      locale_paths = Radiant::AvailableLocales.locale_paths
+      # The main translation root, basically where English is kept
+      language_root = "#{RADIANT_ROOT}/config/locales"
+      words = TranslationSupport.open_available_tags("#{language_root}/en_available_tags.yml")
+      locale_paths.each do |path|
+        if path == language_root || path.match('i18n_')
+          Dir["#{path}/*.yml"].each do |filename|
+            puts filename
+            next unless filename.match('_available_tags')
+            basename = File.basename(filename, '_available_tags.yml')
+            puts "Syncing #{basename}"
+            (comments, other) = TranslationSupport.open_available_tags(filename)
+            words.each { |k,v| other[k] ||= words[k] }  # Initializing hash variable as empty if it does not exist
+            other.delete_if { |k,v| !words[k] }         # Remove if not defined in en.yml
+            TranslationSupport.write_file(filename, basename, comments, other)
+          end
+        end 
+      end
+    end         
     
   end
 end

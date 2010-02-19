@@ -1,181 +1,181 @@
----
+
 ru: 
-  account: 'Account'
+  account:Account
   activerecord:
     errors:
       messages:
-        blank: 'обязательное поле' # required
-        invalid: 'неверный формат' #invalid_format
-        not_a_number: 'должно быть числом' # must be number
-        taken: 'имя ужк существует' # name_in_use
-        too_long: 'ограничение {{count}} символов' # character_limit
-        too_short: 'минимум {{count}} символов' # character_minimum
+        blank: 'required' # required
+        invalid: 'invalid format' #invalid_format
+        not_a_number: 'must be a number' # must be number
+        taken: 'name already in use' # name_in_use
+        too_long: '{{count}}-character limit' # character_limit
+        too_short: '{{count}}-character minimum' # character_minimum
       models:
         page:
           attributes:
             slug:
-              taken: 'окончание URL (slug) уже используется в иерархии страниц' # slug_in_use
+              taken: 'slug already in use for child of parent' # slug_in_use
         user:
           attributes:
             email:
-              invalid: 'неверный адрес e-mail' # invalid_email
+              invalid: 'invalid e-mail address' # invalid_email
             login:
-              taken: 'Имя пользователя занято' # login_in_use
+              taken: 'login already in use' # login already in use
             password:
-              confirmation: 'несоответствие подтверждению' # password_confirmation
+              confirmation: 'must match confirmation' # password_confirmation
   add_child: 'Add Child'
-  add_part: 'Добавить Часть'
-  add_tab: 'Добавить вкладку'
-  admin: 'Администратор'
-  available_tags: 'Доступные тэги'
-  available_tags_for: 'Тэги доступные для'
-  body: 'Содержимое'
+  add_part: 'Add Part'
+  add_tab: 'Add Tab'
+  admin: 'Administrator' 
+  available_tags: 'Available Tags'
+  available_tags_for: 'Available Tags for {{name}}'
+  body: 'Body'  
   breadcrumb: 'Breadcrumb'
   buttons:
-    create: 'Создать' # removed {{name}} because of russian word cases problems 
-    save_and_continue: 'Сохранить и продолжить'
-    save_changes: 'Сохранить'
-  cancel: 'Отменить'
+    create: 'Create {{name}}'   
+    save_and_continue: 'Save and Continue Editing'
+    save_changes: 'Save Changes'  
+  cancel: 'Cancel'
   change: 'Change'
-  close: 'Закрыть'
+  close: 'Close'
   content: 'Content'
-  content_type: 'Content&#8209;Type'
+  content_type: 'Content&#8209;Type'    
   creating_status: 'Creating {{model}}&#8230;'
   date:
-    abbr_day_names: [Вск, Пнд, Втр, Срд, "Чтв", Птн, Суб]
-    abbr_month_names: [~, Янв, Фев, Мар, Апр, Май, Июн, Июл, Авг, Сен, Окт, Ноя, Дек]
-    day_names: [Воскресенье, Понедельник, Вторник, Среда, Четверг, Пятница, Суббота]
+    abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
+    abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+    day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
     formats:
-      default: "%D-%M-%Y"
+      default: "%Y-%m-%d"
       long: "%B %e, %Y"
       only_day: "%e"
       short: "%e %b"
-    month_names: [~, Января, Февраля, Марта, Апреля, Мая, Июня, Июля, Августа, Сентября, Октября, Ноября, Декабря]
-    order: [ :day, :month, :year ]
-  delete_layout: 'Удалить Макет' #delete
-  delete_pages: 'Удалить {{pages}}'  #button
-  delete_snippet: 'Удалить Вставку'
+    month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]   
+    order: [ :year, :month, :day ]
+  delete_layout: 'Delete Layout'
+  delete_pages: 'Delete {{pages}}'  
+  delete_snippet: 'Delete Snippet'
   delete_user: 'Delete User'
   description: 'Description'
   design: 'Design'
   designer: 'Designer'
-  draft: 'Черновик'
-  edit_layout: 'Редактирование Макета'
-  edit_page:  'Редактирование Страницы'
-  edit_snippet: 'Редактирование Вставки'
-  edit_user: 'Редактирование Пользователя'
+  draft: 'Draft'
+  edit_layout: 'Edit Layout'
+  edit_page:  'Edit Page'   
+  edit_snippet: 'Edit Snippet'
+  edit_user: 'Edit User'
   email_address: 'E-mail Address'
-  extension: 'Расширение'
-  extensions: 'Расширения'
-  filter: 'Фильтр'
-  hidden: 'Скрыта'
+  extension: 'Extension'
+  extensions: 'Extensions'
+  filter: 'Filter'
+  hidden: 'Hidden'
   hide: 'Hide' 
   keywords: 'Keywords'
-  language: 'Язык'
-  layout: 'Макет'
-  layouts: 'Макеты'
-  log_out: 'Выход'
+  language: 'Language'
+  layout: 'Layout'
+  layouts: 'Layouts'
+  log_out: 'Logout'
   logged_in_as: 'Logged in as'
-  login: 'Войти'
-  modify: 'Изменить'
-  more: 'Дополнительно'
-  name: 'Имя'
-  new_layout: 'Новый Макет'
-  new_page: 'Новая Страница'
+  login: 'Login'
+  modify: 'Modify' 
+  more: 'More'
+  name: 'Name'
+  new_layout: 'New Layout'    
+  new_page: 'New Page'
   new_password: 'New Password'
-  new_snippet: 'Новая Вставка'
-  new_user: 'Новый Пользователь'
-  no_pages: 'Нет страниц'
-  notes: 'Заметки'
-  optional: 'Опционально'
-  or: '&nbsp;&nbsp;'
-  page: 'Страница'   # Странмца vs. Страницу
+  new_snippet: 'New Snippet'
+  new_user: 'New User'  
+  no_pages: 'No Pages' 
+  notes: 'Notes'    
+  optional: 'Optional'
+  or: 'or'
+  page: 'Page'
   page_page: 'Page Part'
-  page_title: 'Заголовок'
-  page_type: 'Тип страницы'
-  pages: 'Страницы'
+  page_title: 'Page Title'  
+  page_type: 'Page Type'
+  pages: 'Pages'
   pages_controller:
-    removed_many: "Страницы успешно удалены с сайта."
-    removed_one: "Страница успешно удалена с сайта."
-    saved: "Страница сохранена."
-  password: 'Пароль'
-  password_confirmation: 'Подтверждение Пароля'
+    removed_many: "The pages were successfully removed from the site."   
+    removed_one: "The page was successfully removed from the site."  
+    saved: "Your page has been saved below."  
+  password: 'Password' 
+  password_confirmation: 'Confirm New Password'
   personal: 'Personal'
   personal_preferences: 'Personal Preferences'
-  please_login: 'Вход в систему'
+  please_login: 'Please Login'
   powered_by: 'Powered by'
-  preferences: 'Настройки'
+  preferences: 'Preferences' 
   preferences_controller:
-    error_updating: "Ошибка при сохранении настроек."
-    updated: "Ваши настройки сохранены"
-  published: 'Опубликована'
-  published_at: 'Опубликовано'
-  reference:  'Справка'
-  remember_me: 'Запомнить меня'
+    error_updating: 'There was an error updating your preferences.'      
+    updated: 'Your preferences have been updated.' 
+  published: 'Published'
+  published_at: 'Published at' 
+  reference:  'Reference'
+  remember_me: 'Remember me'
   remove: 'Remove'
-  remove_layout: 'Удалить Макет' #remove
+  remove_layout: 'Remove Layout' 
   remove_page: 'Remove Page'
-  remove_pages: 'Удалить {{pages}}'  #page title
-  remove_tab: 'Удалить вкладку'
+  remove_pages: 'Remove {{pages}}' 
+  remove_tab: 'Remove Tab'  
   remove_user: 'Remove user'
-  required: 'Обязательно'
+  required: 'Required'  
   resource_controller:
     not_found: "{{humanized_model_name}} could not be found."
-    removed: "Объекты успешно удалены."
-    saved: "Данные сохранены."
-    update_conflict: "Данные были модифицированы с момента загрузки. Измененмя не могут быть сохранены т.к. возможна потеря информации."
-    validation_errors: "Форма содержит ошибки. Для продолжения проверьте и исправьте пожалуйста введенные данные."
-  reviewed: 'Проверена'
-  roles: 'Роли'
+    removed: "{{humanized_model_name}} has been deleted."
+    saved: "{{humanized_model_name}} saved below."
+    update_conflict: "{{humanized_model_name}} has been modified since it was last loaded. Changes cannot be saved without potentially losing data." 
+    validation_errors: "Validation errors occurred while processing this form. Please take a moment to  review the form and correct any input errors before continuing."
+  reviewed: 'Reviewed'
+  roles: 'Roles'
   saving_changes: Saving Changes
   saving_preferences: Saving preferences
-  search_tags: 'Поиск по тэгам:'
+  search_tags: 'Search Tags:'
   select:
     inherit: '<inherit>'
-    none: '<none>'
+    none: '<none>' 
     normal: '<normal>'
   settings: 'Settings'
   slug: 'Slug'
-  snippet: 'Вставка'
-  snippets: 'Вставки'
-  status: 'Статус'
+  snippet: 'Snippet'   
+  snippets: 'Snippets'
+  status: 'Status'
     # Warnings and info text:
   testing: Testing
   text:
     layouts:
-      remove_warning: 'Вы уверены что хотите <strong class="warning">безвозвратно удалить</strong> макет'
+      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following layout?'   
     pages: 
-      remove_warning: 'Вы уверены что хотите <strong class="warning">безвозвратно удалить</strong> {{pages}}?'
+      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following {{pages}}?'
     snippets:
-      remove_warning: 'Вы уверены что хотите <strong class="warning">безвозвратно удалить</strong> эту вставку?'
+      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following snippet?'
     users: 
       remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following user?'
-  this_file_language: "Русский"
+  this_file_language: "English" 
   time:
-    am: "am"
+    am: 'am'
     formats:
       datetime:
         formats:
           default: "%Y-%m-%dT%H:%M:%S%Z"
-      default: "%a %b %d %H:%M:%S %Z %Y"
-      long: "%d %B %Y %H:%M"
+      default: "%a %b %d %H:%M:%S %Z %Y"   
+      long: "%B %d, %Y %H:%M"
       only_second: "%S"
       short: "%d %b %H:%M"
       time: "%H:%M"
-      timestamp: "%d %B %Y в %H:%M"
-    pm: "pm"
+      timestamp: "%I:%M %p on %B %d, %Y" 
+    pm: 'pm'
   timestamp:
-    at: ''
-    by: 'пользователем'
-    last_updated: 'Обновлено'
-  user: 'Пользователь'
-  username: 'Имя'
-  users: 'Пользователи'
+    at: 'at'
+    by: 'by'
+    last_updated: 'Last Updated'
+  user: 'User'
+  username: 'Username'
+  users: 'Users'
   users_controller:
-    cannot_delete_self: "Нельзя удалять себя."
-  version: 'Версия'
-  view_site: 'Просмотр сайта'
-  website: 'Веб сайт'
+    cannot_delete_self: 'You cannot delete yourself.'    
+  version: 'Version'
+  view_site: 'View Site'
+  website: 'Website'
   welcome_controller:
-    invalid_user: "Неверное имя либо пароль."
-    logged_out: "Вы вышли из системы."
+    invalid_user: 'Invalid username or password.' 
+    logged_out: 'You are now logged out.'  

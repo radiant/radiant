@@ -8,18 +8,18 @@ class TranslationSupport
     end
     
     #Retrieve comments, translation data in hash form
-    def read_file(filename, basename, delimiter="\n")
+    def read_file(filename, basename)
       (comments, data) = IO.read(filename).split(/\n#{basename}:\s*\n/)   #Add error checking for failed file read?
-      return comments, create_hash(data, basename, delimiter="\n")
+      return comments, create_hash(data, basename)
     end
     
     #Creates hash of translation data
-    def create_hash(data, basename, delimiter="\n")
+    def create_hash(data, basename)
       words = Hash.new
       return words if !data
       parent = Array.new
       previous_key = 'base'
-      data.split("#{delimiter}").each do |w|
+      data.split("\n").each do |w|
         next if w.strip.blank?
         (key, value) = w.split(':', 2)
         value ||= ''
@@ -31,6 +31,11 @@ class TranslationSupport
         words[parent.join(':') + ':' + key] = value unless key.blank?
       end
       words
+    end
+    
+    def open_available_tags(filename)
+      data = YAML::load(File.open("#{filename}"))
+      data
     end
     
     #Writes to file from translation data hash structure
