@@ -49,7 +49,7 @@ Feature: Managing snippets
   Scenario: Delete a snippet with confirmation
     When I follow "Design" within "#navigation"
     And I follow "Snippets"
-    And I follow "Remove Snippet"
+    And I follow "Remove"
     Then I should see "permanently remove"
     And I should see "another"
     When I press "Delete Snippet"

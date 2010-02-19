@@ -12,13 +12,13 @@
             = spinner
     - node.status_column do
       - unless simple
-        %td.status{:class => "#{page.status.name.downcase}_status", :title => "#{timestamp(page.published_at) if page.published_at}"}= page.status.name
+        %td.status{:class => "#{page.status.name.downcase}_status", :title => "#{timestamp(page.published_at) if page.published_at}"}= t(page.status.name.downcase)
     - node.add_child_column do
       - unless simple
-        %td.add_child= link_to image('add_child', :alt => 'add child'), new_admin_page_child_url(page)
+        %td.add_child= link_to t('add_child'), new_admin_page_child_url(page)
     - node.remove_column do
       - unless simple
-        %td.remove= link_to image('remove', :alt => 'remove page'), remove_admin_page_url(page)
+        %td.remove= link_to t('remove'), remove_admin_page_url(page)
 
 - if expanded
   - page.children.each do |child|

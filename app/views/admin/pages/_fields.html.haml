@@ -6,7 +6,7 @@
   - form.edit_title do
     %p.title
       %label{:for=>"page_title"}
-        Page Title
+        = t('page_title')
       = fields.text_field :title, :class => 'textbox', :maxlength => 255
   - form.edit_extended_metadata do
     #extended_metadata{meta_visible(:meta)}
@@ -14,32 +14,31 @@
         = render :partial => "meta_row", :collection => @meta, :locals => {:f => fields}
         = render_region :extended_metadata, :locals => {:f => fields}
     %p.more_or_less
-      %a{:href=>'#extended_metadata',:class => "rounded_bottom_right rounded_bottom_left #{(meta_errors? ? 'more' : 'less')}"}= meta_label
+      %a{:href=>'#extended_metadata',:class => "rounded_bottom_right rounded_bottom_left #{(meta_errors? ? t('more') : t('less'))}"}= meta_label
   - form.edit_page_parts do
     #tab_control
       #tabs.tabs
         #tab_toolbar
-          %a.popup{:href=> '#add_part_popup', :title=>"Add Part"}
-            = image('add_tab', :alt=>"Add Part", :title=>"")
+          %a.popup{:href=> '#add_part_popup', :title=>t('add_part')}
+            = image('add_tab', :alt=>t('add_part'), :title=>"")
       #pages.pages
         = render :partial => 'admin/page_parts/page_part', :collection => @page.parts
     = render_region :parts_bottom
   - form.edit_layout_and_type do
     .row
       %p
-        = fields.label :layout_id, "Layout"
-        = fields.select :layout_id, [['<inherit>', '']] + Layout.find(:all).map { |s| [s.name, s.id] }
+        = fields.label :layout_id, t('layout')
+        = fields.select :layout_id, [[t('select.inherit') , '']] + Layout.find(:all).map { |s| [s.name, s.id] }
       %p
-        = fields.label :class_name, "Page Type"
-        = fields.select :class_name, [['<normal>', '']] + Page.descendants.map { |p| [p.display_name, p.name] }.sort_by { |p| p.first }
+        = fields.label :class_name, t('page_type')  
+        = fields.select :class_name, [[t('select.normal'), '']] + Page.descendants.map { |p| [p.display_name, p.name] }.sort_by { |p| p.first }
       %p
-        = fields.label :status_id, "Status"
+        = fields.label :status_id, t('status')
         = fields.select :status_id, status_to_display
       %p#published_at{:class => (@page.published? ? nil : 'hidden')}
-        = fields.label :published_at, "Published At"
+        = fields.label :published_at, t('published_at')
         = fields.text_field :published_at, :class=> "date", :value => (@page.published_at? ? @page.published_at.to_date.to_formatted_s(:long) : nil)
       = render_region :layout_row, :locals => {:f => fields}
-
 - render_region :form_bottom do |form_bottom|
   - form_bottom.edit_buttons do
     - @buttons_partials.each do |partial|
@@ -47,8 +46,8 @@
     %p.buttons
       = save_model_button(@page)
       = save_model_and_continue_editing_button(@page)
-      or
-      = link_to 'Cancel', admin_pages_url
+      = t('or')
+      = link_to t('cancel'), admin_pages_url
   - form_bottom.edit_timestamp do
     = updated_stamp @page
-  
+    

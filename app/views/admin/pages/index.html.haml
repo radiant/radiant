@@ -1,4 +1,4 @@
-- @page_title = 'Pages - ' + default_page_title
+- @page_title = t('pages') + ' - ' + default_page_title
 
 .outset
   = render_region :top
@@ -7,17 +7,17 @@
       %tr
         - render_region :sitemap_head do |sitemap_head|
           - sitemap_head.title_column_header do
-            %th.page Page
+            %th.page= t('page') 
           - sitemap_head.status_column_header do
-            %th.status Status
+            %th.status= t('status')
           - sitemap_head.modify_column_header do
-            %th.modify{:colspan=>"2"} Modify
+            %th.modify{:colspan=>"2"}= t('modify')
     %tbody
       - if @homepage
         = render_node @homepage
       - else
         %tr
-          %td.note{:colspan => admin.page.index.node.length} No Pages
+          %td.note{:colspan => admin.page.index.node.length}= t('no_pages')
   = render_region :bottom
 
 - unless @homepage

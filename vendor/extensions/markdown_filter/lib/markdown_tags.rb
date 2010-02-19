@@ -4,11 +4,11 @@ module MarkdownTags
   desc %{
     Filters its contents with the Markdown filter.
 
-    *Usage*:
+    *Usage:*
 
     <pre><code><r:markdown>** bold text **</r:markdown></code></pre>
 
-    produces:
+    produces
 
     <pre><code><strong> bold text </strong></code></pre>
   }
@@ -19,11 +19,11 @@ module MarkdownTags
   desc %{
     Filters its contents with the SmartyPants filter.
 
-    *Usage*:
+    *Usage:*
 
     <pre><code><r:smarty_pants>"A revolutionary quotation."</r:smarty_pants></code></pre>
 
-    produces:
+    produces
 
     <pre><code>&#8220;A revolutionary quotation.&#8221;</code></pre>
   }

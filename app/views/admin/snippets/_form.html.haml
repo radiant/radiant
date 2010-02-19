@@ -5,30 +5,30 @@
     - render_region :form do |form|
       - form.edit_title do
         %p.title
-          = f.label :name
+          = f.label :name, t('name')
           = f.text_field :name, :class => 'textbox activate', :maxlength => 100
       - form.edit_content do
         %p.content
-          = f.label :content, "Body"
+          = f.label :content, t('body') 
           ~ f.text_area :content, :class => "textarea large", :style => "width: 100%"
       .row
         - form.edit_filter do
           %p
-            = f.label :filter_id, "Filter"
-            = f.select :filter_id, [['none', '']] + TextFilter.descendants.map { |f| f.filter_name }.sort, :id => 'snippet_filter'
+            = f.label :filter_id, t('filter')
+            = f.select :filter_id, [[t('select.none'), '']] + TextFilter.descendants.map { |f| f.filter_name }.sort, :id => 'snippet_filter'
             %span.reference_links
-              Reference:
+              == #{t('reference')}:
               %span{:id => "filter_reference_link"}
-                = link_to_function "Filter", "loadFilterReference();"
+                = link_to_function t('filter'), "loadFilterReference();"
               %span{:id => "tag_reference_link"}
-                = link_to_function 'Available Tags', "loadTagReference('Page');"
+                = link_to_function t('available_tags'), "loadTagReference('Page');"
   - render_region :form_bottom do |form_bottom|
     - form_bottom.edit_buttons do
       %p.buttons{:style=>"clear: left"}
         = save_model_button(@snippet)
         = save_model_and_continue_editing_button(@snippet)
-        or
-        = link_to 'Cancel', admin_snippets_url
+        = t('or')
+        = link_to t('cancel'), admin_snippets_url
     - form_bottom.edit_timestamp do
       %p.updated_line
         = updated_stamp @snippet

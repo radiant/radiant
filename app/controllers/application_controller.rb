@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   
   before_filter :set_current_user
   before_filter :set_timezone
+  before_filter :set_user_locale
   before_filter :set_javascripts_and_stylesheets
   before_filter :set_standard_body_style, :only => [:new, :edit, :update, :create]
   
@@ -61,6 +62,10 @@ class ApplicationController < ActionController::Base
   
     def set_current_user
       UserActionObserver.current_user = current_user
+    end  
+        
+    def set_user_locale      
+      I18n.locale = current_user && !current_user.locale.blank? ? current_user.locale : Radiant::Config['default_locale']
     end
 
     def set_timezone
@@ -72,7 +77,7 @@ class ApplicationController < ActionController::Base
       @stylesheets.concat %w(admin/main)
       @javascripts ||= []
     end
-    
+
     def set_standard_body_style
       @body_classes ||= []
       @body_classes.concat(%w(reversed))

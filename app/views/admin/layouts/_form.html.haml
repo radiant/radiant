@@ -5,19 +5,19 @@
     - render_region :form do |form|
       - form.edit_title do
         %p.title
-          = f.label :name
+          = f.label :name, t('name')
           = f.text_field :name, :maxlength => 100, :class => "textbox"
       - form.edit_extended_metadata do
         #extended_metadata{meta_visible(:meta)}
           %table.fieldset
             %tr
               %th.label
-                = f.label :content_type, "Content&#8209;Type"
+                = f.label :content_type, t('content_type')
               %td.field
                 = f.text_field :content_type, :maxlength => 40, :class => "textbox"
             = render_region :extended_metadata
         %p.more_or_less
-          %a{:href=>'#extended_metadata', :class => "rounded_bottom_right rounded_bottom_left #{(meta_errors? ? 'more' : 'less')}"}= meta_label
+          %a{:href=>'#extended_metadata', :class => "rounded_bottom_right rounded_bottom_left #{(meta_errors? ? t('more') : t('less'))}"}= meta_label
       - form.edit_content do
         %p.content
           = f.label :layout_content, "Body"
@@ -34,8 +34,7 @@
       %p.buttons
         = save_model_button @layout
         = save_model_and_continue_editing_button @layout
-        or
-        = link_to "Cancel", admin_layouts_url
+        = t('or') 
+        = link_to t('cancel'), admin_layouts_url
     - form_bottom.edit_timestamp do
       = updated_stamp @layout
-    

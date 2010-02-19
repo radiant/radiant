@@ -56,6 +56,11 @@ Radiant::Initializer.run do |config|
 
   # Activate observers that should always be running
   config.active_record.observers = :user_action_observer
+  
+  # The internationalization framework can be changed to have another default locale (standard is :en) or more load paths.
+  # All files from config/locales/*.rb,yml are added automatically.
+  # config.i18n.load_path << Dir[File.join(RAILS_ROOT, 'my', 'locales', '*.{rb,yml}')]
+  # config.i18n.default_locale = :'en'
 
   # Make Active Record use UTC-base instead of local time
   config.time_zone = 'UTC'
@@ -79,3 +84,4 @@ end
 
 Haml::Template.options[:format] = :html5
 Haml::Template.options[:ugly] = true if ENV['RAILS_ENV'] == 'production'
+

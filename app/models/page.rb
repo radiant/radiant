@@ -16,15 +16,15 @@ class Page < ActiveRecord::Base
   belongs_to :updated_by, :class_name => 'User'
 
   # Validations
-  validates_presence_of :title, :slug, :breadcrumb, :status_id, :message => 'required'
+  validates_presence_of :title, :slug, :breadcrumb, :status_id
 
-  validates_length_of :title, :maximum => 255, :message => '{{count}}-character limit'
-  validates_length_of :slug, :maximum => 100, :message => '{{count}}-character limit'
-  validates_length_of :breadcrumb, :maximum => 160, :message => '{{count}}-character limit'
+  validates_length_of :title, :maximum => 255
+  validates_length_of :slug, :maximum => 100
+  validates_length_of :breadcrumb, :maximum => 160
 
-  validates_format_of :slug, :with => %r{^([-_.A-Za-z0-9]*|/)$}, :message => 'invalid format'
-  validates_uniqueness_of :slug, :scope => :parent_id, :message => 'slug already in use for child of parent'
-  validates_numericality_of :id, :status_id, :parent_id, :allow_nil => true, :only_integer => true, :message => 'must be a number'
+  validates_format_of :slug, :with => %r{^([-_.A-Za-z0-9]*|/)$}
+  validates_uniqueness_of :slug, :scope => :parent_id
+  validates_numericality_of :id, :status_id, :parent_id, :allow_nil => true, :only_integer => true
 
   validate :valid_class_name
 

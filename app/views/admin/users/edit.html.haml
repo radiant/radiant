@@ -1,7 +1,8 @@
-- @page_title = @user.name + ' Account - ' + default_page_title
+- @page_title = @user.name + ' ' + t('account') + ' - ' + default_page_title
 
 - render_region :main do |main|
   - main.edit_header do
-    %h1 Edit User
+    %h1 
+      = t('edit_user')
   - main.edit_form do
     = render :partial => 'form'

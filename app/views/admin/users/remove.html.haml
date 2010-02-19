@@ -1,9 +1,7 @@
-%h1 Remove User
+%h1= t('remove_user')
 
 %p 
-  Are you sure you want to 
-  %strong.warning permanently remove
-  the following user?
+  = t('text.users.remove_warning')
 
 %table.index#users
   %tbody
@@ -13,6 +11,6 @@
 
 - form_for [:admin, @user], :html => { :method => :delete, 'data-onsubmit_status'=>"Removing user&#8230;" } do
   %p.buttons
-    %input.button{:type=>"submit", :value=>"Delete User"}/
-    or
-    = link_to 'Cancel', admin_users_path
+    %input.button{:type=>"submit", :value => t('delete_user')}/
+    = t('or')  
+    = link_to t('cancel'), admin_users_path

@@ -1,14 +1,11 @@
-- pages = pluralize(@page.children.count + 1, 'Page')
+- pages = @page.children.count > 1 ? t('pages') : t('page')
+
 %h1
-  Remove
-  = pages
+  = t('remove_pages', :pages => pages)
 
-%p
-  Are you sure you want to
-  %strong.warning permanently remove
-  the following
-  = pages.downcase + "?"
-
+%p 
+  = t('text.pages.remove_warning', :pages => pages)
+    
 .inset
   %table.index#site_map
     %tbody
@@ -16,6 +13,6 @@
 
 - form_for [:admin, @page.becomes(Page)], :html => {:method => :delete, 'data-onsubmit_status'=>"Removing pages&#8230;"} do
   %p.buttons
-    %input.button{:type=>"submit", :value=>"Delete Pages"}/
-    or
-    = link_to 'Cancel', admin_pages_url
+    %input.button{:type=>"submit", :value => t('delete_pages', :pages => pages) }/
+    = t('or')    
+    = link_to t('cancel'), admin_pages_url

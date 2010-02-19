@@ -51,6 +51,8 @@ module Radiant
     def admin
       AdminUI.instance
     end
+    
+
 
     def extension(ext)
       ::ActiveSupport::Deprecation.warn("Extension dependencies have been deprecated. Extensions may be packaged as gems and use the Gem spec to declare dependencies.", caller)
@@ -165,6 +167,13 @@ end_error
       configuration.middleware.insert_before(
         :"ActionController::ParamsParser",
         Rails::Rack::Metal, :if => Rails::Rack::Metal.metals.any?)
+    end
+    
+    def initialize_i18n
+      extension_loader.add_locale_paths
+      radiant_locale_paths = Dir[File.join(RADIANT_ROOT, 'config', 'locales', '*.{rb,yml}')]
+      configuration.i18n.load_path = radiant_locale_paths + extension_loader.configuration.i18n.load_path
+      super
     end
 
     def add_plugin_load_paths

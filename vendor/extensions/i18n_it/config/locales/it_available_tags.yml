@@ -1,0 +1,553 @@
+---
+it:
+  desc: 
+    author:
+      Renders the name of the author of the current page.
+  
+    breadcrumb:
+        Renders the @breadcrumb@ attribute of the current page.
+      
+    breadcrumbs:
+      Renders a trail of breadcrumbs to the current page. The separator attribute
+      specifies the HTML fragment that is inserted between each of the breadcrumbs. By
+      default it is set to @>@. The boolean nolinks attribute can be specified to render
+      breadcrumbs in plain text, without any links (useful when generating title tag).
+
+      *Usage&#58;*
+
+      <pre><code><r&#58;breadcrumbs [separator="separator_string"] [nolinks="true"] /></code></pre>
+  
+    children-count:
+      Renders the total number of children.
+  
+    children-each-child:
+      Page attribute tags inside of this tag refer to the current child. This is occasionally
+      useful if you are inside of another tag (like &lt;r&#58;find&gt;) and need to refer back to the
+      current child.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;children&#58;each>
+        <r&#58;child>...</r&#58;child>
+      </r&#58;children&#58;each>
+      </code></pre>
+  
+    children-each-header:
+      Renders the tag contents only if the contents do not match the previous header. This
+      is extremely useful for rendering date headers for a list of child pages.
+
+      If you would like to use several header blocks you may use the @name@ attribute to
+      name the header. When a header is named it will not restart until another header of
+      the same name is different.
+
+      Using the @restart@ attribute you can cause other named headers to restart when the
+      present header changes. Simply specify the names of the other headers in a semicolon
+      separated list.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;children&#58;each>
+        <r&#58;header [name="header_name"] [restart="name1[;name2;...]"]>
+            ...
+        </r&#58;header>
+      </r&#58;children&#58;each>
+      </code></pre>
+  
+    children-each-if_first:
+      Renders the tag contents only if the current page is the first child in the context of
+      a children&#58;each tag
+      
+      *Usage&#58;*
+      
+      <pre><code><r&#58;children&#58;each>
+        <r&#58;if_first >
+            ...
+        </r&#58;if_first>
+      </r&#58;children&#58;each>
+      </code></pre>
+      
+  
+    children-each-if_last:
+      Renders the tag contents only if the current page is the last child in the context of
+      a children&#58;each tag
+      
+      *Usage&#58;*
+      
+      <pre><code><r&#58;children&#58;each>
+        <r&#58;if_last >
+            ...
+        </r&#58;if_last>
+      </r&#58;children&#58;each>
+      </code></pre>
+      
+  
+    children-each-unless_first:
+      Renders the tag contents unless the current page is the first child in the context of
+      a children&#58;each tag
+      
+      *Usage&#58;*
+      
+      <pre><code><r&#58;children&#58;each>
+        <r&#58;unless_first >
+            ...
+        </r&#58;unless_first>
+      </r&#58;children&#58;each>
+      </code></pre>
+      
+  
+    children-each-unless_last:
+      Renders the tag contents unless the current page is the last child in the context of
+      a children&#58;each tag
+      
+      *Usage&#58;*
+      
+      <pre><code><r&#58;children&#58;each>
+        <r&#58;unless_last >
+            ...
+        </r&#58;unless_last>
+      </r&#58;children&#58;each>
+      </code></pre>
+      
+  
+    children-each:
+      Cycles through each of the children. Inside this tag all page attribute tags
+      are mapped to the current child page.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;children&#58;each [offset="number"] [limit="number"]
+       [by="published_at|updated_at|created_at|slug|title|keywords|description"]
+       [order="asc|desc"] [status="draft|reviewed|published|hidden|all"]>
+       ...
+      </r&#58;children&#58;each>
+      </code></pre>
+  
+    children-first:
+      Returns the first child. Inside this tag all page attribute tags are mapped to
+      the first child. Takes the same ordering options as @<r&#58;children&#58;each>@.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;children&#58;first>...</r&#58;children&#58;first></code></pre>
+  
+    children-last:
+      Returns the last child. Inside this tag all page attribute tags are mapped to
+      the last child. Takes the same ordering options as @<r&#58;children&#58;each>@.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;children&#58;last>...</r&#58;children&#58;last></code></pre>
+  
+    children:
+      Gives access to a page's children.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;children>...</r&#58;children></code></pre>
+  
+    comment:
+      Nothing inside a set of comment tags is rendered.
+
+      *Usage&#58;*
+
+      <pre><code><r&#58;comment>...</r&#58;comment></code></pre>
+  
+    content:
+      Renders the main content of a page. Use the @part@ attribute to select a specific
+      page part. By default the @part@ attribute is set to body. Use the @inherit@
+      attribute to specify that if a page does not have a content part by that name that
+      the tag should render the parent's content part. By default @inherit@ is set to
+      @false@. Use the @contextual@ attribute to force a part inherited from a parent
+      part to be evaluated in the context of the child page. By default 'contextual'
+      is set to true.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;content [part="part_name"] [inherit="true|false"] [contextual="true|false"] /></code></pre>
+  
+    cycle:
+      Renders one of the passed values based on a global cycle counter.  Use the @reset@
+      attribute to reset the cycle to the beginning.  Use the @name@ attribute to track
+      multiple cycles; the default is @cycle@.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;cycle values="first, second, third" [reset="true|false"] [name="cycle"] /></code></pre>
+  
+    date:
+      Renders the date based on the current page (by default when it was published or created).
+      The format attribute uses the same formating codes used by the Ruby @strftime@ function. By
+      default it's set to @&#37;A, &#37;B &#37;d, &#37;Y@.  The @for@ attribute selects which date to render.  Valid
+      options are @published_at@, @created_at@, @updated_at@, and @now@. @now@ will render the
+      current date/time, regardless of the  page.
+
+      *Usage&#58;*
+
+      <pre><code><r&#58;date [format="&#37;A, &#37;B &#37;d, &#37;Y"] [for="published_at"]/></code></pre>
+  
+    escape_html:
+      Escapes angle brackets, etc. for rendering in an HTML document.
+
+      *Usage&#58;*
+
+      <pre><code><r&#58;escape_html>...</r&#58;escape_html></code></pre>
+  
+    find:
+      Inside this tag all page related tags refer to the page found at the @url@ attribute.
+      @url@s may be relative or absolute paths.
+
+      *Usage&#58;*
+
+      <pre><code><r&#58;find url="value_to_find">...</r&#58;find></code></pre>
+  
+    if_ancestor_or_self:
+      Renders the contained elements if the current contextual page is either the actual page or one of its parents.
+
+      This is typically used inside another tag (like &lt;r&#58;children&#58;each&gt;) to add conditional mark-up if the child element is or descends from the current page.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;if_ancestor_or_self>...</r&#58;if_ancestor_or_self></code></pre>
+  
+    if_children:
+      Renders the contained elements only if the current contextual page has one or
+      more child pages.  The @status@ attribute limits the status of found child pages
+      to the given status, the default is @"published"@. @status="all"@ includes all
+      non-virtual pages regardless of status.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;if_children [status="published"]>...</r&#58;if_children></code></pre>
+  
+    if_content:
+      Renders the containing elements if all of the listed parts exist on a page.
+      By default the @part@ attribute is set to @body@, but you may list more than one
+      part by separating them with a comma. Setting the optional @inherit@ to true will
+      search ancestors independently for each part. By default @inherit@ is set to @false@.
+
+      When listing more than one part, you may optionally set the @find@ attribute to @any@
+      so that it will render the containing elements if any of the listed parts are found.
+      By default the @find@ attribute is set to @all@.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;if_content [part="part_name, other_part"] [inherit="true"] [find="any"]>...</r&#58;if_content></code></pre>
+  
+    if_dev:
+      Renders the containing elements only if Radiant in is development mode.
+
+      *Usage&#58;*
+
+      <pre><code><r&#58;if_dev>...</r&#58;if_dev></code></pre>
+  
+    if_parent:
+      Renders the contained elements only if the current contextual page has a parent, i.e.
+      is not the root page.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;if_parent>...</r&#58;if_parent></code></pre>
+  
+    if_self:
+      Renders the contained elements if the current contextual page is also the actual page.
+
+      This is typically used inside another tag (like &lt;r&#58;children&#58;each&gt;) to add conditional mark-up if the child element is the current page.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;if_self>...</r&#58;if_self></code></pre>
+  
+    if_url:
+      Renders the containing elements only if the page's url matches the regular expression
+      given in the @matches@ attribute. If the @ignore_case@ attribute is set to false, the
+      match is case sensitive. By default, @ignore_case@ is set to true.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;if_url matches="regexp" [ignore_case="true|false"]>...</r&#58;if_url></code></pre>
+  
+    link:
+      Renders a link to the page. When used as a single tag it uses the page's title
+      for the link name. When used as a double tag the part in between both tags will
+      be used as the link text. The link tag passes all attributes over to the HTML
+      @a@ tag. This is very useful for passing attributes like the @class@ attribute
+      or @id@ attribute. If the @anchor@ attribute is passed to the tag it will
+      append a pound sign (<code>#</code>) followed by the value of the attribute to
+      the @href@ attribute of the HTML @a@ tag--effectively making an HTML anchor.
+
+      *Usage&#58;*
+
+      <pre><code><r&#58;link [anchor="name"] [other attributes...] /></code></pre>
+      
+      or
+      
+      <pre><code><r&#58;link [anchor="name"] [other attributes...]>link text here</r&#58;link></code></pre>
+  
+    markdown:
+      Filters its contents with the Markdown filter.
+
+      *Usage&#58;*
+
+      <pre><code><r&#58;markdown>** bold text **</r&#58;markdown></code></pre>
+
+      produces
+
+      <pre><code><strong> bold text </strong></code></pre>
+  
+    meta-description:
+      Emits the page description field in a meta tag, unless attribute
+      'tag' is set to 'false'.
+
+      *Usage&#58;*
+
+      <pre><code> <r&#58;meta&#58;description [tag="false"] /> </code></pre>
+  
+    meta-keywords:
+      Emits the page keywords field in a meta tag, unless attribute
+      'tag' is set to 'false'.
+
+      *Usage&#58;*
+
+      <pre><code> <r&#58;meta&#58;keywords [tag="false"] /> </code></pre>
+  
+    meta:
+      The namespace for 'meta' attributes.  If used as a singleton tag, both the description
+      and keywords fields will be output as &lt;meta /&gt; tags unless the attribute 'tag' is set to 'false'.
+
+      *Usage&#58;*
+
+      <pre><code> <r&#58;meta [tag="false"] />
+       <r&#58;meta>
+         <r&#58;description [tag="false"] />
+         <r&#58;keywords [tag="false"] />
+       </r&#58;meta>
+      </code></pre>
+  
+    navigation-if_first:
+      Renders the containing elements if the element is the first
+      in the navigation list
+
+      *Usage&#58;*
+
+      <pre><code><r&#58;normal><r&#58;if_first>...</r&#58;if_first></r&#58;normal></code></pre>
+  
+    navigation-if_last:
+      Renders the containing elements if the element is the last
+      in the navigation list
+
+      *Usage&#58;*
+
+      <pre><code><r&#58;normal><r&#58;if_last>...</r&#58;if_last></r&#58;normal></code></pre>
+  
+    navigation:
+      Renders a list of links specified in the @urls@ attribute according to three
+      states&#58;
+
+      * @normal@ specifies the normal state for the link
+      * @here@ specifies the state of the link when the url matches the current
+         page's URL
+      * @selected@ specifies the state of the link when the current page matches
+         is a child of the specified url
+      # @if_last@ renders its contents within a @normal@, @here@ or
+        @selected@ tag if the item is the last in the navigation elements
+      # @if_first@ renders its contents within a @normal@, @here@ or
+        @selected@ tag if the item is the first in the navigation elements
+
+      The @between@ tag specifies what should be inserted in between each of the links.
+
+      *Usage&#58;*
+
+      <pre><code><r&#58;navigation urls="[Title&#58; url | Title&#58; url | ...]">
+        <r&#58;normal><a href="<r&#58;url />"><r&#58;title /></a></r&#58;normal>
+        <r&#58;here><strong><r&#58;title /></strong></r&#58;here>
+        <r&#58;selected><strong><a href="<r&#58;url />"><r&#58;title /></a></strong></r&#58;selected>
+        <r&#58;between> | </r&#58;between>
+      </r&#58;navigation>
+      </code></pre>
+  
+    page:
+      Causes the tags referring to a page's attributes to refer to the current page.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;page>...</r&#58;page></code></pre>
+  
+    parent:
+      Page attribute tags inside this tag refer to the parent of the current page.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;parent>...</r&#58;parent></code></pre>
+  
+    random:
+      Randomly renders one of the options specified by the @option@ tags.
+
+      *Usage&#58;*
+
+      <pre><code><r&#58;random>
+        <r&#58;option>...</r&#58;option>
+        <r&#58;option>...</r&#58;option>
+        ...
+      <r&#58;random>
+      </code></pre>
+  
+    rfc1123_date:
+      Outputs the published date using the format mandated by RFC 1123. (Ideal for RSS feeds.)
+
+      *Usage&#58;*
+
+      <pre><code><r&#58;rfc1123_date /></code></pre>
+  
+    slug:
+        Renders the @slug@ attribute of the current page.
+      
+    smarty_pants:
+      Filters its contents with the SmartyPants filter.
+
+      *Usage&#58;*
+
+      <pre><code><r&#58;smarty_pants>"A revolutionary quotation."</r&#58;smarty_pants></code></pre>
+
+      produces
+
+      <pre><code>&#8220;A revolutionary quotation.&#8221;</code></pre>
+  
+    snippet:
+      Renders the snippet specified in the @name@ attribute within the context of a page.
+
+      *Usage&#58;*
+
+      <pre><code><r&#58;snippet name="snippet_name" /></code></pre>
+
+      When used as a double tag, the part in between both tags may be used within the
+      snippet itself, being substituted in place of @<r&#58;yield/>@.
+
+      *Usage&#58;*
+
+      <pre><code><r&#58;snippet name="snippet_name">Lorem ipsum dolor...</r&#58;snippet></code></pre>
+  
+    status:
+      Prints the page's status as a string.  Optional attribute 'downcase'
+      will cause the status to be all lowercase.
+
+      *Usage&#58;*
+
+      <pre><code><r&#58;status [downcase='true'] /></code></pre>
+  
+    textile:
+      Filters its contents with the Textile filter.
+
+      *Usage*&#58;
+
+      <pre><code><r&#58;textile>
+      * First
+      * Second
+      </r&#58;textile></code></pre>
+
+      produces&#58;
+
+      <pre><code><ul>
+        <li>First</li>
+        <li>Second</li>
+      </ul></code></pre>
+  
+    title:
+        Renders the @title@ attribute of the current page.
+      
+    unless_ancestor_or_self:
+      Renders the contained elements unless the current contextual page is either the actual page or one of its parents.
+
+      This is typically used inside another tag (like &lt;r&#58;children&#58;each&gt;) to add conditional mark-up unless the child element is or descends from the current page.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;unless_ancestor_or_self>...</r&#58;unless_ancestor_or_self></code></pre>
+  
+    unless_children:
+      Renders the contained elements only if the current contextual page has no children.
+      The @status@ attribute limits the status of found child pages to the given status,
+      the default is @"published"@. @status="all"@ includes all non-virtual pages
+      regardless of status.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;unless_children [status="published"]>...</r&#58;unless_children></code></pre>
+  
+    unless_content:
+      The opposite of the @if_content@ tag. It renders the contained elements if all of the
+      specified parts do not exist. Setting the optional @inherit@ to true will search
+      ancestors independently for each part. By default @inherit@ is set to @false@.
+
+      When listing more than one part, you may optionally set the @find@ attribute to @any@
+      so that it will not render the containing elements if any of the listed parts are found.
+      By default the @find@ attribute is set to @all@.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;unless_content [part="part_name, other_part"] [inherit="false"] [find="any"]>...</r&#58;unless_content></code></pre>
+  
+    unless_dev:
+      The opposite of the @if_dev@ tag.
+
+      *Usage&#58;*
+
+      <pre><code><r&#58;unless_dev>...</r&#58;unless_dev></code></pre>
+  
+    unless_parent:
+      Renders the contained elements only if the current contextual page has no parent, i.e.
+      is the root page.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;unless_parent>...</r&#58;unless_parent></code></pre>
+  
+    unless_self:
+      Renders the contained elements unless the current contextual page is also the actual page.
+
+      This is typically used inside another tag (like &lt;r&#58;children&#58;each&gt;) to add conditional mark-up unless the child element is the current page.
+
+      *Usage&#58;*
+
+      <pre><code><r&#58;unless_self>...</r&#58;unless_self></code></pre>
+  
+    unless_url:
+      The opposite of the @if_url@ tag.
+
+      *Usage&#58;*
+      
+      <pre><code><r&#58;unless_url matches="regexp" [ignore_case="true|false"]>...</r&#58;unless_url></code></pre>
+  
+    url:
+      Renders the @url@ attribute of the current page.
+  
+    yield:
+      Used within a snippet as a placeholder for substitution of child content, when
+      the snippet is called as a double tag.
+
+      *Usage (within a snippet)&#58;*
+      
+      <pre><code>
+      <div id="outer">
+        <p>before</p>
+        <r&#58;yield/>
+        <p>after</p>
+      </div>
+      </code></pre>
+
+      If the above snippet was named "yielding", you could call it from any Page,
+      Layout or Snippet as follows&#58;
+
+      <pre><code><r&#58;snippet name="yielding">Content within</r&#58;snippet></code></pre>
+
+      Which would output the following&#58;
+
+      <pre><code>
+      <div id="outer">
+        <p>before</p>
+        Content within
+        <p>after</p>
+      </div>
+      </code></pre>
+
+      When called in the context of a Page or a Layout, @<r&#58;yield/>@ outputs nothing.
+  

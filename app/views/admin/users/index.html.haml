@@ -1,6 +1,6 @@
-- @page_title = 'Users - ' + default_page_title
+- @page_title = t('users') + ' - ' + default_page_title
 
-= render_region :top 
+= render_region :top
 
 .outset
   %table#users.index
@@ -8,11 +8,11 @@
       %tr
         - render_region :thead do |thead|
           - thead.title_header do
-            %th.user Name / Login
+            %th.user== #{t('name')} / #{t('username')}
           - thead.roles_header do
-            %th.roles Roles
+            %th.roles= t('roles')
           - thead.modify_header do
-            %th.modify Modify
+            %th.modify= t('modify')
     %tbody
       - @users.each do |user|
         %tr.node.level_1
@@ -26,12 +26,12 @@
             - tbody.modify_cell do
               %td.remove
                 - if user == current_user
-                  = image('remove_disabled', :alt => 'Remove')
+                  %span.disabled= t('remove')
                 - else
-                  = link_to(image('remove', :alt => 'Remove User'), remove_admin_user_url(user)) 
+                  = link_to t('remove'), remove_admin_user_url(user)
 
 - render_region :bottom do |bottom|
   - bottom.new_button do
     #actions
       %ul
-        %li= link_to "New User", new_admin_user_url
+        %li= link_to t('new_user'), new_admin_user_url

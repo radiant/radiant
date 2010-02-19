@@ -1,0 +1,181 @@
+---
+en: 
+  account: 'Account'
+  activerecord:
+    errors:
+      messages:
+        blank: 'required' # required
+        invalid: 'invalid format' #invalid_format
+        not_a_number: 'must be a number' # must be number
+        taken: 'name already in use' # name_in_use
+        too_long: '{{count}}-character limit' # character_limit
+        too_short: '{{count}}-character minimum' # character_minimum
+      models:
+        page:
+          attributes:
+            slug:
+              taken: 'slug already in use for child of parent' # slug_in_use
+        user:
+          attributes:
+            email:
+              invalid: 'invalid e-mail address' # invalid_email
+            login:
+              taken: 'login already in use' # login already in use
+            password:
+              confirmation: 'must match confirmation' # password_confirmation
+  add_child: 'Add Child'
+  add_part: 'Add Part'
+  add_tab: 'Add Tab'
+  admin: 'Administrator' 
+  available_tags: 'Available Tags'
+  available_tags_for: 'Available Tags for {{name}}'
+  body: 'Body'  
+  breadcrumb: 'Breadcrumb'
+  buttons:
+    create: 'Create {{name}}'   
+    save_and_continue: 'Save and Continue Editing'
+    save_changes: 'Save Changes'  
+  cancel: 'Cancel'
+  change: 'Change'
+  close: 'Close'
+  content: 'Content'
+  content_type: 'Content&#8209;Type'    
+  creating_status: 'Creating {{model}}&#8230;'
+  date:
+    abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
+    abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+    day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+    formats:
+      default: "%Y-%m-%d"
+      long: "%B %e, %Y"
+      only_day: "%e"
+      short: "%e %b"
+    month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]   
+    order: [ :year, :month, :day ]
+  delete_layout: 'Delete Layout'
+  delete_pages: 'Delete {{pages}}'  
+  delete_snippet: 'Delete Snippet'
+  delete_user: 'Delete User'
+  description: 'Description'
+  design: 'Design'
+  designer: 'Designer'
+  draft: 'Draft'
+  edit_layout: 'Edit Layout'
+  edit_page:  'Edit Page'   
+  edit_snippet: 'Edit Snippet'
+  edit_user: 'Edit User'
+  email_address: 'E-mail Address'
+  extension: 'Extension'
+  extensions: 'Extensions'
+  filter: 'Filter'
+  hidden: 'Hidden'
+  hide: 'Hide' 
+  keywords: 'Keywords'
+  language: 'Language'
+  layout: 'Layout'
+  layouts: 'Layouts'
+  log_out: 'Logout'
+  logged_in_as: 'Logged in as'
+  login: 'Login'
+  modify: 'Modify' 
+  more: 'More'
+  name: 'Name'
+  new_layout: 'New Layout'    
+  new_page: 'New Page'
+  new_password: 'New Password'
+  new_snippet: 'New Snippet'
+  new_user: 'New User'  
+  no_pages: 'No Pages' 
+  notes: 'Notes'    
+  optional: 'Optional'
+  or: 'or'
+  page: 'Page'
+  page_page: 'Page Part'
+  page_title: 'Page Title'  
+  page_type: 'Page Type'
+  pages: 'Pages'
+  pages_controller:
+    removed_many: "The pages were successfully removed from the site."   
+    removed_one: "The page was successfully removed from the site."  
+    saved: "Your page has been saved below."  
+  password: 'Password' 
+  password_confirmation: 'Confirm New Password'
+  personal: 'Personal'
+  personal_preferences: 'Personal Preferences'
+  please_login: 'Please Login'
+  powered_by: 'Powered by'
+  preferences: 'Preferences' 
+  preferences_controller:
+    error_updating: 'There was an error updating your preferences.'      
+    updated: 'Your preferences have been updated.' 
+  published: 'Published'
+  published_at: 'Published at' 
+  reference:  'Reference'
+  remember_me: 'Remember me'
+  remove: 'Remove'
+  remove_layout: 'Remove Layout' 
+  remove_page: 'Remove Page'
+  remove_pages: 'Remove {{pages}}' 
+  remove_tab: 'Remove Tab'  
+  remove_user: 'Remove user'
+  required: 'Required'  
+  resource_controller:
+    not_found: "{{humanized_model_name}} could not be found."
+    removed: "{{humanized_model_name}} has been deleted."
+    saved: "{{humanized_model_name}} saved below."
+    update_conflict: "{{humanized_model_name}} has been modified since it was last loaded. Changes cannot be saved without potentially losing data." 
+    validation_errors: "Validation errors occurred while processing this form. Please take a moment to  review the form and correct any input errors before continuing."
+  reviewed: 'Reviewed'
+  roles: 'Roles'
+  saving_changes: Saving Changes
+  saving_preferences: Saving preferences
+  search_tags: 'Search Tags:'
+  select:
+    inherit: '<inherit>'
+    none: '<none>' 
+    normal: '<normal>'
+  settings: 'Settings'
+  slug: 'Slug'
+  snippet: 'Snippet'   
+  snippets: 'Snippets'
+  status: 'Status'
+    # Warnings and info text:
+  testing: Testing
+  text:
+    layouts:
+      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following layout?'   
+    pages: 
+      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following {{pages}}?'
+    snippets:
+      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following snippet?'
+    users: 
+      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following user?'
+  this_file_language: "English" 
+  time:
+    am: 'am'
+    formats:
+      datetime:
+        formats:
+          default: "%Y-%m-%dT%H:%M:%S%Z"
+      default: "%a %b %d %H:%M:%S %Z %Y"   
+      long: "%B %d, %Y %H:%M"
+      only_second: "%S"
+      short: "%d %b %H:%M"
+      time: "%H:%M"
+      timestamp: "%I:%M %p on %B %d, %Y" 
+    pm: 'pm'
+  timestamp:
+    at: 'at'
+    by: 'by'
+    last_updated: 'Last Updated'
+  user: 'User'
+  username: 'Username'
+  users: 'Users'
+  users_controller:
+    cannot_delete_self: 'You cannot delete yourself.'    
+  version: 'Version'
+  view_site: 'View Site'
+  website: 'Website'
+  welcome_controller:
+    invalid_user: 'Invalid username or password.' 
+    logged_out: 'You are now logged out.'  

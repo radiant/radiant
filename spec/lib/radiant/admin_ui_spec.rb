@@ -97,14 +97,14 @@ describe Radiant::AdminUI do
     user.edit.should_not be_nil
     user.edit.main.should == %w{edit_header edit_form}
     user.edit.form.should == %w{edit_name edit_email edit_username
-                                edit_password edit_roles edit_notes}
+                                edit_password edit_roles edit_locale edit_notes}
     user.edit.form_bottom.should == %w{edit_buttons edit_timestamp}
     user.index.should_not be_nil
     user.index.thead.should == %w{title_header roles_header modify_header}
     user.index.tbody.should == %w{title_cell roles_cell modify_cell}
     user.index.bottom.should == %w{new_button}
     user.preferences.main.should == %w{edit_header edit_form}
-    user.preferences.form.should == %w{edit_name edit_email edit_username edit_password}
+    user.preferences.form.should == %w{edit_name edit_email edit_username edit_locale edit_password}
     user.preferences.form_bottom.should == %w{edit_buttons}
     
     user.new.should == user.edit
