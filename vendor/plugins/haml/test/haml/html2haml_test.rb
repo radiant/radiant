@@ -8,6 +8,19 @@ class Html2HamlTest < Test::Unit::TestCase
     assert_equal '', render('')
   end
 
+  def test_doctype
+    assert_equal '!!!', render("<!DOCTYPE html>")
+    assert_equal '!!! 1.1', render('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">')
+    assert_equal '!!! Strict', render('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">')
+    assert_equal '!!! Frameset', render('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">')
+    assert_equal '!!! Mobile 1.2', render('<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">')
+    assert_equal '!!! Basic 1.1', render('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">')
+    assert_equal '!!!', render('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">')
+    assert_equal '!!! Strict', render('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">')
+    assert_equal '!!! Frameset', render('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">')
+    assert_equal '!!!', render('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">')
+  end
+
   def test_id_and_class_should_be_removed_from_hash
     assert_equal '%span#foo.bar', render('<span id="foo" class="bar"> </span>')
   end
@@ -30,6 +43,14 @@ class Html2HamlTest < Test::Unit::TestCase
 
   def test_sqml_comment
     assert_equal "/\n  IE sucks", render('<!-- IE sucks -->')
+  end
+
+  def test_interpolation
+    assert_equal('Foo \#{bar} baz', render('Foo #{bar} baz'))
+  end
+
+  def test_interpolation_in_attrs
+    assert_equal('%p{ :foo => "\#{bar} baz" }', render('<p foo="#{bar} baz"></p>'))
   end
 
   def test_rhtml
@@ -64,6 +85,11 @@ class Html2HamlTest < Test::Unit::TestCase
       render_rhtml(%Q{<div class="<%= 12 %>!">Bang!</div>})
   end
   
+  def test_rhtml_in_html_escaped_attribute
+    assert_equal %(%div{ :class => "foo" }\n  Bang!),
+      render_rhtml(%Q{<div class="<%= "foo" %>">Bang!</div>})
+  end
+  
   def test_rhtml_in_attribute_to_multiple_interpolations
     assert_equal %(%div{ :class => "\#{12} + \#{13}" }\n  Math is super),
       render_rhtml(%Q{<div class="<%= 12 %> + <%= 13 %>">Math is super</div>})
@@ -72,6 +98,40 @@ class Html2HamlTest < Test::Unit::TestCase
   def test_whitespace_eating_erb_tags
     assert_equal %(- form_for),
       render_rhtml(%Q{<%- form_for -%>})
+  end
+
+  def test_cdata
+    assert_equal(<<HAML.strip, render(<<HTML))
+%p
+  :cdata
+    <a foo="bar" baz="bang">
+    <div id="foo">flop</div>
+    </a>
+HAML
+<p><![CDATA[
+  <a foo="bar" baz="bang">
+    <div id="foo">flop</div>
+  </a>
+]]></p>
+HTML
+  end
+
+  def test_interpolation_in_rhtml
+    assert_equal('= "Foo #{bar} baz"', render_rhtml('<%= "Foo #{bar} baz" %>'))
+  end
+
+  def test_interpolation_in_rhtml_attrs
+    assert_equal('%p{ :foo => "#{bar} baz" }',
+      render_rhtml('<p foo="<%= "#{bar} baz" %>"></p>'))
+  end
+
+  # Regression Tests
+
+  def test_xhtml_strict_doctype
+    assert_equal('!!! Strict', render(<<HTML))
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+HTML
   end
 
   protected

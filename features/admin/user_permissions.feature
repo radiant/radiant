@@ -4,7 +4,7 @@ Feature: User authentication and permissions
   users should be given different access permissions
   
   Scenario Outline: Authentication-login
-    When I go to "/admin/login"
+  When I go to the login page
     And I fill in "Username" with "<username>"
     And I fill in "Password" with "password"
     And I press "Login"
@@ -31,7 +31,7 @@ Feature: User authentication and permissions
   Scenario Outline: All users can edit pages
     Given I am logged in as "<username>"
     And I should see "Pages"
-    When I go to "/admin/pages"
+    When I go to the "pages" admin page
     And I follow "Home"
     Then I should see "Edit Page"
     And I should see "Pages"
@@ -45,7 +45,7 @@ Feature: User authentication and permissions
   Scenario Outline: Admins and designers can see and edit snippets
     Given I am logged in as "<username>"
     And I should see "Design"
-    When I follow "Design" within "navigation"
+    When I follow "Design" within "#navigation"
     And I follow "Snippets"
     And I should not see "You must have designer privileges"
     And I follow "first"
@@ -59,7 +59,7 @@ Feature: User authentication and permissions
   Scenario Outline: Admins and designers can see and edit layouts
     Given I am logged in as "<username>"
     And I should see "Design"
-    When I follow "Design" within "navigation"
+    When I follow "Design" within "#navigation"
     And I follow "Layouts"
     And I should not see "You must have designer privileges"
     And I follow "Main"
@@ -73,7 +73,7 @@ Feature: User authentication and permissions
   Scenario Outline: Ordinary users cannot edit layouts
     Given I am logged in as "<username>"
     And I should not see "Design"
-    When I go to "/admin/layouts"
+    When I go to the "layouts" admin page
     Then I should see "You must have designer privileges"
 
     Examples:
@@ -84,7 +84,7 @@ Feature: User authentication and permissions
   Scenario Outline: Ordinary users cannot edit snippets
     Given I am logged in as "<username>"
     And I should not see "Design"
-    When I go to "/admin/snippets"
+    When I go to the "snippets" admin page
     Then I should see "You must have designer privileges"
 
     Examples:
@@ -103,7 +103,7 @@ Feature: User authentication and permissions
   Scenario Outline: Non-admins cannot see or edit users
     Given I am logged in as "<username>"
     And I should not see "Users"
-    When I go to "/admin/users"
+    When I go to the "users" admin page
     Then I should see "You must have administrative privileges"
 
     Examples:
@@ -135,7 +135,7 @@ Feature: User authentication and permissions
     Given I am logged in as "<username>"
     When I follow "Settings"
     And I should not see "Extensions"
-    When I go to "/admin/extensions"
+    When I go to the "extensions" admin page
     Then I should see "You must have administrative privileges"
 
     Examples:
@@ -146,7 +146,7 @@ Feature: User authentication and permissions
   
   Scenario Outline: Anyone can export YAML
     Given I am logged in as "<username>"
-    When I go to "/admin/export"
+    When I go to the export page
     Then I should see "id:"
     
     Examples:

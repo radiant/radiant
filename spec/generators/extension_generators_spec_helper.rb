@@ -158,6 +158,8 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
   GENERATOR_SUPPORT_LOADED = true
 end
 
+Git = Module.new unless defined?(::Git)
+
 Spec::Runner.configure do |config|
   config.include(Spec::Matchers::GeneratorMatchers)
 end

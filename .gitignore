@@ -10,5 +10,5 @@ public/tmp
 public/stylesheets/admin/styles.css
 spec/datasets/tmp
 *.tmproj
-cache
 .idea
+rerun.txt

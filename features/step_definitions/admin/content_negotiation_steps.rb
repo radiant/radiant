@@ -1,11 +1,7 @@
 When /^I send an "([^\"]*)" header of "([^\"]*)"$/ do |key, value|
   @request_headers ||= {}
   @request_headers[key] = value
-end
-
-When /^I go to ['"](.*)['"]$/ do |url|
   set_headers
-  visit url
 end
 
 When /^I view a page$/ do
@@ -30,8 +26,21 @@ When /^I request the children of page "([^\"]*)"$/ do |page|
   visit "/admin/pages/#{parent_page.id}/children", :get, {"level" => "0"}
 end
 
+Then /^(?:|I )should see "<{0,1}([^>"]*)>{0,1}" tags in the page source$/ do |text|
+  response.body.should have_tag(text)
+end
+
+Then /^(?:|I )should see an xml document$/ do
+  webrat.adapter.xml_content_type?.should be_true
+end
+
+Then /^(?:|I )should not see an xml document$/ do
+  webrat.adapter.xml_content_type?.should_not be_true
+end
+
 def set_headers
   @request_headers.each do |k,v|
     header(k, v)
   end unless @request_headers.blank?
 end
+

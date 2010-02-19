@@ -14,8 +14,7 @@
         = render :partial => "meta_row", :collection => @meta, :locals => {:f => fields}
         = render_region :extended_metadata, :locals => {:f => fields}
     %p.more_or_less
-      %a{:id=>"more_extended_metadata", :href=>"javascript: $('extended_metadata').show(); $('less_extended_metadata').show(); $('more_extended_metadata').hide(); this.stop()", :style=>(meta_errors? ? "display: none" : nil)} More
-      %a{:id=>"less_extended_metadata", :href=>"javascript: $('extended_metadata').hide(); $('more_extended_metadata').show(); $('less_extended_metadata').hide(); this.stop()", :style=>(!meta_errors? ? "display: none" : nil)} Hide
+      %a{:href=>'#extended_metadata',:class => "rounded_bottom_right rounded_bottom_left #{(meta_errors? ? 'more' : 'less')}"}= meta_label
   - form.edit_page_parts do
     #tab_control
       #tabs.tabs
@@ -35,18 +34,17 @@
         = fields.select :class_name, [['<normal>', '']] + Page.descendants.map { |p| [p.display_name, p.name] }.sort_by { |p| p.first }
       %p
         = fields.label :status_id, "Status"
-        = fields.select :status_id, Status.find_all.map { |s| [s.name, s.id] }, {}
-      - if @config['page.edit.published_date?']
-        %p#publication_date{:style => "display: none"}
-          = fields.label :page_published_at, "Published At"
-          = fields.datetime_select :published_at, :disabled => true
+        = fields.select :status_id, status_to_display
+      %p#published_at{:class => (@page.published? ? nil : 'hidden')}
+        = fields.label :published_at, "Published At"
+        = fields.text_field :published_at, :class=> "date", :value => (@page.published_at? ? @page.published_at.to_date.to_formatted_s(:long) : nil)
       = render_region :layout_row, :locals => {:f => fields}
 
 - render_region :form_bottom do |form_bottom|
   - form_bottom.edit_buttons do
     - @buttons_partials.each do |partial|
       = render :partial => partial, :locals => {:f => fields}
-    %p.buttons{:style=>"clear: left"}
+    %p.buttons
       = save_model_button(@page)
       = save_model_and_continue_editing_button(@page)
       or

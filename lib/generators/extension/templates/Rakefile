@@ -2,6 +2,23 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gem|
+    # Radiant only recognizes gems as extensions if they're named according to
+    # the radiant-*-extension pattern. Please retain the prefix and suffix.
+    gem.name = "radiant-<%= file_name %>-extension"
+    gem.summary = %Q{<%= class_name.titleize %> for Radiant CMS}
+    gem.description = %Q{Describe your extension here}
+    gem.email = "<%= author_email %>"
+    gem.homepage = "<%= homepage %>"
+    gem.authors = ["<%= author_name %>"]
+    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+  end
+rescue LoadError
+  puts "Jeweler (or a dependency) not available. This is only required if you plan to package <%= file_name %> as a gem."
+end
+
 desc 'Default: run unit tests.'
 task :default => :test
 

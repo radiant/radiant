@@ -22,6 +22,14 @@ namespace :radiant do
           mkdir_p RAILS_ROOT + directory, :verbose => false
           cp file, RAILS_ROOT + path, :verbose => false
         end
+        unless <%= class_name %>.root.starts_with? RAILS_ROOT # don't need to copy vendored tasks
+          puts "Copying rake tasks from <%= class_name %>"
+          local_tasks_path = File.join(RAILS_ROOT, %w(lib tasks))
+          mkdir_p local_tasks_path, :verbose => false
+          Dir[File.join <%= class_name %>.root, %w(lib tasks *.rake)].each do |file|
+            cp file, local_tasks_path, :verbose => false
+          end
+        end
       end  
     end
   end

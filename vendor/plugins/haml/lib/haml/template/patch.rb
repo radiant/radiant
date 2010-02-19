@@ -9,7 +9,7 @@
 # The documentation can be found
 # here[http://rubyonrails.org/api/classes/ActionView/Base.html].
 module ActionView
-  class Base # :nodoc:
+  class Base
     def delegate_template_exists_with_haml(template_path)
       template_exists?(template_path, :haml) && [:haml]
     end
@@ -29,7 +29,7 @@ module ActionView
 
       @@template_args[render_symbol] ||= {}
       locals_keys = @@template_args[render_symbol].keys | locals
-      @@template_args[render_symbol] = locals_keys.inject({}) { |h, k| h[k] = true; h }
+      @@template_args[render_symbol] = Haml::Util.to_hash(locals_keys.map {|k| [k, true]})
 
       options = Haml::Template.options.dup
       options[:filename] = file_name || 'compiled-template'
