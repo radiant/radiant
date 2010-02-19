@@ -25,7 +25,7 @@ module Admin::PagesHelper
   def status_to_display
     @page.status_id = 100 if @page.status_id == 90
     @display_status = []
-    Status.find_all.each { |s| @display_status <<  [s.name, s.id] unless s.name == 'Scheduled' }
+    Status.find_all.each { |s| @display_status <<  [t(s.name.downcase), s.id] unless s.name == 'Scheduled' }
     return @display_status
   end
 

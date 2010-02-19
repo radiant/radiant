@@ -37,7 +37,7 @@
         = fields.select :status_id, status_to_display
       %p#published_at{:class => (@page.published? ? nil : 'hidden')}
         = fields.label :published_at, t('published_at')
-        = fields.text_field :published_at, :class=> "date", :value => (@page.published_at? ? @page.published_at.to_date.to_formatted_s(:long) : nil)
+        = fields.text_field :published_at, :class=> "date", :value => (@page.published_at? ? I18n.localize(@page.published_at.to_date, :format =>:long) : nil)
       = render_region :layout_row, :locals => {:f => fields}
 - render_region :form_bottom do |form_bottom|
   - form_bottom.edit_buttons do
