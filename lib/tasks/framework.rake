@@ -89,7 +89,7 @@ unless File.directory? "#{RAILS_ROOT}/app"
       task :javascripts do
         FileUtils.mkdir_p("#{RAILS_ROOT}/public/javascripts/admin/")
         copy_javascripts = proc do |project_dir, scripts|
-          scripts.reject!{|s| File.basename(s) == 'application.js'} if File.exists?(project_dir + 'application.js')
+          scripts.reject!{|s| File.basename(s) == 'overrides.js'} if File.exists?(project_dir + 'overrides.js')
           FileUtils.cp(scripts, project_dir)
         end
         copy_javascripts[RAILS_ROOT + '/public/javascripts/', Dir["#{File.dirname(__FILE__)}/../../public/javascripts/*.js"]]
@@ -163,8 +163,12 @@ the new files:"
       desc "Update admin stylesheets from your current radiant install"
       task :stylesheets do
         project_dir = RAILS_ROOT + '/public/stylesheets/admin/'
-        stylesheets = Dir["#{File.dirname(__FILE__)}/../../public/stylesheets/admin/*.css"]
-        FileUtils.cp(stylesheets, project_dir)
+        
+        copy_stylesheets = proc do |project_dir, styles|
+          styles.reject!{|s| File.basename(s) == 'overrides.css'} if File.exists?(project_dir + 'overrides.css')
+          FileUtils.cp(styles, project_dir)
+        end
+        copy_stylesheets[RAILS_ROOT + '/public/stylesheets/admin/',Dir["#{File.dirname(__FILE__)}/../../public/stylesheets/admin/*.css"]]
       end
     end
   end
