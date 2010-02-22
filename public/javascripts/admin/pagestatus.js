@@ -6,5 +6,5 @@ PageStatusBehavior = Behavior.create({
     } else { 
       $('published_at').addClassName('hidden');
     }
-  },
+  }
 })
