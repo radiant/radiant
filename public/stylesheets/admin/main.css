@@ -552,7 +552,7 @@ body.login #content p.version {
   line-height: 1.2em;
   padding: 20px; }
   #content .outset {
-    margin: -20px; }
+    margin: -20px -20px 0; }
   #content h1 {
     margin-top: 0.25em; }
   #content table.index {
