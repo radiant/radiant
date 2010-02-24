@@ -1,8 +1,8 @@
 - form_for [:admin, @user] do |f|
   = hidden_field 'user', 'lock_version'
-  = render_region :form_top
+  = render_region :form_top, :locals => {:f => f}
   %table.fieldset{:cellpadding=>0, :cellspacing=>0, :border=>0}
-    - render_region :form do |form|
+    - render_region :form, :locals => {:f => f} do |form|
       - form.edit_name do
         %tr
           %th.label
@@ -62,7 +62,7 @@
             ~ f.text_area "notes", :size => '40x4', :class => "textarea" 
           %td.help
             Optional.
-  - render_region :form_bottom do |form_bottom|
+  - render_region :form_bottom, :locals => {:f => f} do |form_bottom|
     - form_bottom.edit_timestamp do
       = updated_stamp @user  
     - form_bottom.edit_buttons do

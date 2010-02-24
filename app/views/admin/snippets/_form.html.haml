@@ -1,8 +1,8 @@
 - form_for [:admin, @snippet] do |f|
   = f.hidden_field :lock_version
-  = render_region :form_top
+  = render_region :form_top, :locals => {:f => f}
   .form-area
-    - render_region :form do |form|
+    - render_region :form, :locals => {:f => f} do |form|
       - form.edit_title do
         %p.title
           %label{:for=>"snippet_name"} Name
@@ -20,7 +20,7 @@
 
   = javascript_tag "$('snippet_name').activate()"
 
-  - render_region :form_bottom do |form_bottom|
+  - render_region :form_bottom, :locals => {:f => f} do |form_bottom|
     - form_bottom.edit_buttons do
       %p.buttons
         = save_model_button(@snippet)

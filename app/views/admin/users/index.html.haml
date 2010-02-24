@@ -15,7 +15,7 @@
   %tbody
     - @users.each do |user|
       %tr.node.level-1
-        - render_region :tbody do |tbody|
+        - render_region :tbody, :locals => {:user => user} do |tbody|
           - tbody.title_cell do
             %td.user
               = link_to user.name, edit_admin_user_url(user)

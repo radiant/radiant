@@ -1,5 +1,7 @@
 == Change Log
 
+* Expose important view locals for partials that hook into the admin UI [Mislav Marohnić]
+
 === 0.8.2 Lustery
 
 * Allow rake tasks to run if a higher version of Cucumber is installed [Jim Gay]
