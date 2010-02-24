@@ -14,7 +14,7 @@
       - if @snippets.any?
         - @snippets.each do |snippet|
           %tr.node.level_1
-            - render_region :tbody do |tbody|
+            - render_region :tbody, :locals => {:snippet => snippet} do |tbody|
               - tbody.title_cell do
                 %td.snippet
                   = image('snippet', :alt => '')

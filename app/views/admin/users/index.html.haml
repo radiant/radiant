@@ -16,7 +16,7 @@
     %tbody
       - @users.each do |user|
         %tr.node.level_1
-          - render_region :tbody do |tbody|
+          - render_region :tbody, :locals => {:user => user} do |tbody|
             - tbody.title_cell do
               %td.user
                 = link_to image_tag(gravatar_url(user.email, :size=>"32px"), :class=>"avatar avatar_32x32", :width=>32, :height=>32, :alt=>""), edit_admin_user_url(user)

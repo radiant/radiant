@@ -3,10 +3,9 @@
   
   = render :partial => 'avatar'
   
-  = render_region :form_top
+  = render_region :form_top, :locals => {:f => f}
   
-  - render_region :form do |form|
-    
+  - render_region :form, :locals => {:f => f} do |form|
     - form.edit_name do
       %p
         = f.label :name, t('name') 
@@ -43,7 +42,7 @@
         = f.label :notes, t('notes'), :class => "optional"
         ~ f.text_area "notes", :size => "53x4", :class => "textarea"
   
-  - render_region :form_bottom do |form_bottom|
+  - render_region :form_bottom, :locals => {:f => f} do |form_bottom|
     - form_bottom.edit_buttons do
       %p.buttons
         = save_model_button(@user)

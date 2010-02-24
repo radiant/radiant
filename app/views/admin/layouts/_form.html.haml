@@ -1,8 +1,8 @@
 - form_for [:admin, @layout], :html => {'data-onsubmit_status' => onsubmit_status(@layout)} do |f|
   = f.hidden_field :lock_version
-  = render_region :form_top
+  = render_region :form_top, :locals => {:f => f}
   .form_area
-    - render_region :form do |form|
+    - render_region :form, :locals => {:f => f} do |form|
       - form.edit_title do
         %p.title
           = f.label :name, t('name')
@@ -14,7 +14,7 @@
               %tr
                 %th.label= f.label :content_type, t('content_type')
                 %td.field= f.text_field :content_type, :maxlength => 40, :class => "textbox"
-              = render_region :extended_metadata
+              = render_region :extended_metadata, :locals => {:f => f}
           .drawer_handle
             %a.toggle{:href=>'#attributes', :rel=>"toggle[attributes]", :class=>"#{(meta_errors? ? 'less' : 'more')}"}= meta_label
       - form.edit_content do
@@ -22,7 +22,7 @@
           = f.label :layout_content, "Body"
           ~ f.text_area :content, :size => "40x20", :style => "width: 100%", :class => "textarea large"
   = javascript_tag "$('layout_name').activate()"
-  - render_region :form_bottom do |form_bottom|
+  - render_region :form_bottom, :locals => {:f => f} do |form_bottom|
     - form_bottom.reference_links do
       %p
         %span.reference_links

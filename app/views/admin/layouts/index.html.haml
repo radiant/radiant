@@ -16,7 +16,7 @@
       - if @layouts.any?
         - @layouts.each do |layout|
           %tr.node.level_1
-            - render_region :tbody do |tbody|
+            - render_region :tbody, :locals => {:layout => layout} do |tbody|
               - tbody.title_cell do
                 %td.layout
                   = image('layout', :alt => '')

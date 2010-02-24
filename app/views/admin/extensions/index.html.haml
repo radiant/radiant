@@ -27,7 +27,7 @@
     %tbody
       - @extensions.each do |extension|
         %tr.node.level_1
-          - render_region :tbody do |tbody|
+          - render_region :tbody, :locals => {:extension => extension} do |tbody|
             - tbody.title_cell do
               %td.extension
                 %h4= h extension.extension_name

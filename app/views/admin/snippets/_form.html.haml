@@ -1,8 +1,8 @@
 - form_for [:admin, @snippet], :html => {'data-onsubmit_status' => onsubmit_status(@snippet)} do |f|
   = f.hidden_field :lock_version
-  = render_region :form_top
+  = render_region :form_top, :locals => {:f => f}
   .form_area
-    - render_region :form do |form|
+    - render_region :form, :locals => {:f => f} do |form|
       - form.edit_title do
         %p.title
           = f.label :name, t('name')
@@ -22,7 +22,7 @@
                 = link_to_function t('filter'), "loadFilterReference();"
               %span{:id => "tag_reference_link"}
                 = link_to_function t('available_tags'), "loadTagReference('Page');"
-  - render_region :form_bottom do |form_bottom|
+  - render_region :form_bottom, :locals => {:f => f} do |form_bottom|
     - form_bottom.edit_buttons do
       %p.buttons{:style=>"clear: left"}
         = save_model_button(@snippet)

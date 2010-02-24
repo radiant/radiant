@@ -2,6 +2,7 @@
 
 === Edge
 
+* Exposed important view locals for partials that hook into the admin UI [Mislav Marohnić]
 * Update to cucumber-rails 0.3.0 [Jim Gay]
 * Update to Haml 2.2.24 [Jim Gay]
 
