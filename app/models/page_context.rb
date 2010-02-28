@@ -1,3 +1,5 @@
+require 'radius'
+
 class PageContext < Radius::Context
   
   attr_reader :page
