@@ -1,6 +1,6 @@
 require 'active_record'
 
-class ActiveRecord::Base
+ActiveRecord::Base.class_eval do
   def self.object_id_attr(symbol, klass)
     module_eval %{
       def #{symbol}

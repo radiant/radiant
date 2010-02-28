@@ -1,3 +1,5 @@
+require 'redcloth'
+
 module Radiant::Taggable
   mattr_accessor :last_description, :tag_descriptions
   @@tag_descriptions = {}

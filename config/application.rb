@@ -48,7 +48,7 @@ module Radiant
     #    Sets the meta store type and storage location.  We recommend you use
     #    radiant: since this will enable manual expiration and acceleration headers.
     require 'radiant/cache'
-    config.middleware.use ::Radiant::Cache
+    config.middleware.use Radiant::Cache
 
     # Configure generators values. Many other options are available, be sure to check the documentation.
     config.generators do |g|
