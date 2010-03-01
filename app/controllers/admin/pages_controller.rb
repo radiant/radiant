@@ -17,7 +17,7 @@ class Admin::PagesController < Admin::ResourceController
   end
 
   def new
-    self.model = model_class.new_with_defaults(config)
+    self.model = model_class.new_with_defaults(Radiant::Config)
     if params[:page_id].blank?
       self.model.slug = '/'
     end
