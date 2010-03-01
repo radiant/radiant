@@ -152,6 +152,7 @@ A Gemfile has been created in your application directory. If you have config.gem
       desc "Update configuration files from your current radiant install"
       task :configs do
         require 'erb'
+        FileUtils.cp("#{File.dirname(__FILE__)}/../generators/instance/templates/instance_boot.rb", Rails.root + '/config/boot.rb')
         instances = {
           :env          => "#{Rails.root}/config/environment.rb",
           :development  => "#{Rails.root}/config/environments/development.rb",
