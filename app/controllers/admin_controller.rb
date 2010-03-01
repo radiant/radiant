@@ -5,6 +5,8 @@ require 'login_system'
 class Radiant::AdminController < ApplicationController
   include LoginSystem
   
+  filter_parameter_logging :password, :password_confirmation
+  
   protect_from_forgery
 
   before_filter :set_current_user
@@ -12,7 +14,7 @@ class Radiant::AdminController < ApplicationController
   before_filter :set_user_locale
   before_filter :set_javascripts_and_stylesheets
   before_filter :set_standard_body_style, :only => [:new, :edit, :update, :create]
-
+  
   attr_reader :pagination_parameters
   helper_method :pagination_parameters
 

@@ -1,4 +1,3 @@
-require_dependency 'radiant/legacy_routes'
 require_dependency 'radiant/available_locales'
 
 module AdminHelper
