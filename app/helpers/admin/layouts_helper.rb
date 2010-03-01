@@ -1,6 +1,6 @@
 module Admin::LayoutsHelper
   def layout_edit_javascripts
-    <<-CODE
+    (<<-CODE).html_safe
     var tagReferenceWindows = {};
     function loadTagReference() {
       var pageType = 'Page';

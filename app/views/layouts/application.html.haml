@@ -20,7 +20,10 @@
       #header
         - if logged_in?
           #site_links
-            = %{#{t('logged_in_as')} #{link_to h(current_user.name), edit_admin_preferences_path} &nbsp; (#{link_to t('log_out'), logout_path})}
+            = t('logged_in_as')
+            = link_to h(current_user.name), edit_admin_preferences_path
+            &nbsp;
+            = link_to t('log_out'), logout_path
             &nbsp;
             = link_to t('view_site'), root_path, :id=>"view_site"
           %ul#navigation
