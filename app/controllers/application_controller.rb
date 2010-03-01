@@ -1,5 +1,3 @@
-require_dependency 'radiant'
-
 class ApplicationController < ActionController::Base
   include LoginSystem
   
