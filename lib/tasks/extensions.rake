@@ -37,9 +37,9 @@ namespace :test do
       if File.directory?(File.join(directory, 'test'))
         chdir directory do
           if RUBY_PLATFORM =~ /win32/
-            system "rake.cmd test RADIANT_ENV_FILE=#{RAILS_ROOT}/config/environment"
+            system "rake.cmd test RADIANT_ENV_FILE=#{Rails.root}/config/environment"
           else
-            system "rake test RADIANT_ENV_FILE=#{RAILS_ROOT}/config/environment"
+            system "rake test RADIANT_ENV_FILE=#{Rails.root}/config/environment"
           end
         end
       end
@@ -61,9 +61,9 @@ namespace :spec do
       if File.directory?(File.join(directory, 'spec'))
         chdir directory do
           if RUBY_PLATFORM =~ /win32/
-            system "rake.cmd spec RADIANT_ENV_FILE=#{RAILS_ROOT}/config/environment"
+            system "rake.cmd spec RADIANT_ENV_FILE=#{Rails.root}/config/environment"
           else
-            system "rake spec RADIANT_ENV_FILE=#{RAILS_ROOT}/config/environment"
+            system "rake spec RADIANT_ENV_FILE=#{Rails.root}/config/environment"
           end
         end
       end
@@ -74,10 +74,10 @@ end
 namespace :radiant do
   # TODO: load previously copied tasks just once.
   # If update_all is run multiple times, previously copied tasks will be loaded twice,
-  # once from the local copy (RAILS_ROOT/lib/tasks) and once from the gem source.
+  # once from the local copy (Rails.root/lib/tasks) and once from the gem source.
   task :extensions => :environment do
     Radiant::ExtensionLoader.instance.extensions.each do |extension|
-      next if extension.root.starts_with? RAILS_ROOT
+      next if extension.root.starts_with? Rails.root
       Dir[File.join extension.root, %w(lib tasks *.rake)].sort.each { |task| load task }
     end
   end
@@ -91,7 +91,4 @@ namespace :radiant do
   end
 end
 
-# Load any custom rakefiles from extensions
-[RAILS_ROOT, RADIANT_ROOT].uniq.each do |root|
-  Dir[root + '/vendor/extensions/*/lib/tasks/*.rake'].sort.each { |ext| load ext }
-end
+Dir[Rails.root + '/vendor/extensions/*/lib/tasks/*.rake'].sort.each { |ext| load ext }
