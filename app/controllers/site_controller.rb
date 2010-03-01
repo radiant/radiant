@@ -63,7 +63,7 @@ class SiteController < ApplicationController
     end
 
     def dev?
-      if dev_host = @config['dev.host']
+      if dev_host = Radiant::Config['dev.host']
         request.host == dev_host
       else
         request.host =~ /^dev\./
