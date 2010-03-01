@@ -1,5 +1,5 @@
 # Only define freeze and unfreeze tasks in instance mode
-unless File.directory? "#{RAILS_ROOT}/app"
+unless File.directory? "#{Rails.root}/app"
   namespace :radiant do
     namespace :freeze do
       desc "Lock this application to the current gems (by unpacking them into vendor/radiant)"
@@ -96,13 +96,13 @@ unless File.directory? "#{RAILS_ROOT}/app"
 
       desc "Update your javascripts from your current radiant install"
       task :javascripts do
-        FileUtils.mkdir_p("#{RAILS_ROOT}/public/javascripts/admin/")
+        FileUtils.mkdir_p("#{Rails.root}/public/javascripts/admin/")
         copy_javascripts = proc do |project_dir, scripts|
           scripts.reject!{|s| File.basename(s) == 'overrides.js'} if File.exists?(project_dir + 'overrides.js')
           FileUtils.cp(scripts, project_dir)
         end
-        copy_javascripts[RAILS_ROOT + '/public/javascripts/', Dir["#{File.dirname(__FILE__)}/../../public/javascripts/*.js"]]
-        copy_javascripts[RAILS_ROOT + '/public/javascripts/admin/', Dir["#{File.dirname(__FILE__)}/../../public/javascripts/admin/*.js"]]
+        copy_javascripts[Rails.root + '/public/javascripts/', Dir["#{File.dirname(__FILE__)}/../../public/javascripts/*.js"]]
+        copy_javascripts[Rails.root + '/public/javascripts/admin/', Dir["#{File.dirname(__FILE__)}/../../public/javascripts/admin/*.js"]]
       end
 
       desc "Update the cached assets for the admin UI"
@@ -153,18 +153,16 @@ A Gemfile has been created in your application directory. If you have config.gem
       task :configs do
         require 'erb'
         instances = {
-          :env          => "#{RAILS_ROOT}/config/environment.rb",
-          :development  => "#{RAILS_ROOT}/config/environments/development.rb",
-          :test         => "#{RAILS_ROOT}/config/environments/test.rb",
-          :cucumber     => "#{RAILS_ROOT}/config/environments/cucumber.rb",
-          :production   => "#{RAILS_ROOT}/config/environments/production.rb"
+          :env          => "#{Rails.root}/config/environment.rb",
+          :development  => "#{Rails.root}/config/environments/development.rb",
+          :test         => "#{Rails.root}/config/environments/test.rb",
+          :production   => "#{Rails.root}/config/environments/production.rb"
         }
         tmps = {
-          :env          => "#{RAILS_ROOT}/config/environment.tmp",
-          :development  => "#{RAILS_ROOT}/config/environments/development.tmp",
-          :test         => "#{RAILS_ROOT}/config/environments/test.tmp",
-          :cucumber     => "#{RAILS_ROOT}/config/environments/cucumber.rb",
-          :production   => "#{RAILS_ROOT}/config/environments/production.tmp"
+          :env          => "#{Rails.root}/config/environment.tmp",
+          :development  => "#{Rails.root}/config/environments/development.tmp",
+          :test         => "#{Rails.root}/config/environments/test.tmp",
+          :production   => "#{Rails.root}/config/environments/production.tmp"
         }
         gens = {
           :env          => "#{File.dirname(__FILE__)}/../generators/instance/templates/instance_environment.rb",
@@ -174,21 +172,19 @@ A Gemfile has been created in your application directory. If you have config.gem
           :production   => "#{File.dirname(__FILE__)}/../../config/environments/production.rb"
         }
         backups = {
-          :env          => "#{RAILS_ROOT}/config/environment.bak",
-          :development  => "#{RAILS_ROOT}/config/environments/development.bak",
-          :test         => "#{RAILS_ROOT}/config/environments/test.bak",
-          :cucumber     => "#{RAILS_ROOT}/config/environments/cucumber.bak",
-          :production   => "#{RAILS_ROOT}/config/environments/production.bak"
+          :env          => "#{Rails.root}/config/environment.bak",
+          :development  => "#{Rails.root}/config/environments/development.bak",
+          :test         => "#{Rails.root}/config/environments/test.bak",
+          :production   => "#{Rails.root}/config/environments/production.bak"
         }
-        
-        FileUtils.cp("#{File.dirname(__FILE__)}/../generators/instance/templates/instance_boot.rb", RAILS_ROOT + '/config/boot.rb')
-        FileUtils.cp("#{File.dirname(__FILE__)}/../../config/preinitializer.rb", RAILS_ROOT + '/config/preinitializer.rb')
-        warning = ""
-        [:env, :development, :test, :cucumber, :production].each do |env_file|
-          File.open(tmps[env_file], 'w') do |f|
-            app_name        = File.basename(File.expand_path(RAILS_ROOT))
-            radiant_version = Radiant::Version.to_s
-            f.write ERB.new(File.read(gens[env_file])).result(binding)
+        @warning_start = "** WARNING **
+The following files have been changed in Radiant. Your originals have 
+been backed up with .bak extensions. Please copy your customizations to 
+the new files:"
+        [:env, :development, :test, :production].each do |env_type|
+          File.open(tmps[env_type], 'w') do |f|
+            app_name = File.basename(File.expand_path(Rails.root))
+            f.write ERB.new(File.read(gens[env_type])).result(binding)
           end
           unless File.exist?(instances[env_file]) && FileUtils.compare_file(instances[env_file], tmps[env_file])
             FileUtils.cp(instances[env_file], backups[env_file]) if File.exist?(instances[env_file])
@@ -215,23 +211,20 @@ the new files: #{warning}"
 
       desc "Update admin and radiant images from your current radiant install"
       task :images do
-        %w{admin radiant}.each do |d|
-          project_dir = RAILS_ROOT + "/public/images/#{d}/"
-          FileUtils.mkdir_p(project_dir)
-          images = Dir["#{File.dirname(__FILE__)}/../../public/images/#{d}/*"]
-          FileUtils.cp_r(images, project_dir)
-        end
+        project_dir = Rails.root + '/public/images/admin/'
+        images = Dir["#{File.dirname(__FILE__)}/../../public/images/admin/*"]
+        FileUtils.cp(images, project_dir)
       end
 
       desc "Update admin stylesheets from your current radiant install"
       task :stylesheets do
-        project_dir = RAILS_ROOT + '/public/stylesheets/admin/'
+        project_dir = Rails.root + '/public/stylesheets/admin/'
         
         copy_stylesheets = proc do |project_dir, styles|
           styles.reject!{|s| File.basename(s) == 'overrides.css'} if File.exists?(project_dir + 'overrides.css')
           FileUtils.cp(styles, project_dir)
         end
-        copy_stylesheets[RAILS_ROOT + '/public/stylesheets/admin/',Dir["#{File.dirname(__FILE__)}/../../public/stylesheets/admin/*.css"]]
+        copy_stylesheets[Rails.root + '/public/stylesheets/admin/',Dir["#{File.dirname(__FILE__)}/../../public/stylesheets/admin/*.css"]]
       end
 
       desc "Update admin sass files from your current radiant install"

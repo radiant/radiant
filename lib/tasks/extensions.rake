@@ -38,9 +38,9 @@ namespace :test do
       if File.directory?(File.join(directory, 'test'))
         chdir directory do
           if RUBY_PLATFORM =~ /win32/
-            system "rake.cmd test RADIANT_ENV_FILE=#{RAILS_ROOT}/config/environment"
+            system "rake.cmd test RADIANT_ENV_FILE=#{Rails.root}/config/environment"
           else
-            system "rake test RADIANT_ENV_FILE=#{RAILS_ROOT}/config/environment"
+            system "rake test RADIANT_ENV_FILE=#{Rails.root}/config/environment"
           end
         end
       end
@@ -64,9 +64,9 @@ namespace :spec do
         puts %{\nRunning specs on #{extension} extension from #{directory}/spec\n}
         chdir directory do
           if RUBY_PLATFORM =~ /win32/
-            system "rake.cmd spec RADIANT_ENV_FILE=#{RAILS_ROOT}/config/environment"
+            system "rake.cmd spec RADIANT_ENV_FILE=#{Rails.root}/config/environment"
           else
-            system "rake spec RADIANT_ENV_FILE=#{RAILS_ROOT}/config/environment"
+            system "rake spec RADIANT_ENV_FILE=#{Rails.root}/config/environment"
           end
         end
       end
