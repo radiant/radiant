@@ -28,7 +28,7 @@ module Admin::PagesHelper
   end
 
   def page_edit_javascripts
-    <<-CODE
+    (<<-CODE).html_safe
     function addPart(form) {
        if (validPartName()) {
         new Ajax.Updater(
