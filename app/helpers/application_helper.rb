@@ -113,7 +113,7 @@ module ApplicationHelper
         html << %{#{t('timestamp.by')} <strong>#{name}</strong> } if name
         html << %{#{t('timestamp.at')} #{timestamp(time)}} if time
         html << %{</p>}
-        html
+        html.html_safe
       end
     end
   end
@@ -185,7 +185,7 @@ module ApplicationHelper
     if File.exist?("#{Rails.root}/public/javascripts/admin/overrides.js")
       overrides << javascript_include_tag('admin/overrides')
     end
-    overrides
+    overrides.html_safe
   end
   
   # Returns a Gravatar URL associated with the email parameter.

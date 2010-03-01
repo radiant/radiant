@@ -14,7 +14,7 @@ module Admin::RegionsHelper
       rescue ::ActionView::TemplateError => e # error in template
         raise e
       end
-    end.join
+    end.join.html_safe
     block_given? ? concat(output) : output
   end
 

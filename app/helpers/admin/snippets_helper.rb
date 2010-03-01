@@ -1,7 +1,6 @@
 module Admin::SnippetsHelper
   def snippet_edit_javascripts
-    <<-CODE
-    
+    (<<-CODE).html_safe
     var tagReferenceWindows = {};
     function loadTagReference() {
       var pageType = 'Page';
