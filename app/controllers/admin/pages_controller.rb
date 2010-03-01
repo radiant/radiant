@@ -24,9 +24,11 @@ class Admin::PagesController < Admin::ResourceController
   end
 
   def new
-    @page = self.model = model_class.new_with_defaults(config)
-    assign_page_attributes
-    response_for :new
+    self.model = model_class.new_with_defaults(Radiant::Config)
+    if params[:page_id].blank?
+      self.model.slug = '/'
+    end
+    response_for :singular
   end
   
   def preview
@@ -85,5 +87,7 @@ class Admin::PagesController < Admin::ResourceController
       @meta ||= []
       @meta << {:field => "slug", :type => "text_field", :args => [{:class => 'textbox', :maxlength => 100}]}
       @meta << {:field => "breadcrumb", :type => "text_field", :args => [{:class => 'textbox', :maxlength => 160}]}
+      @meta << {:field => "description", :type => "text_field", :args => [{:class => 'textbox', :maxlength => 200}]}
+      @meta << {:field => "keywords", :type => "text_field", :args => [{:class => 'textbox', :maxlength => 200}]}
     end
 end
