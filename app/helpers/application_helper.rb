@@ -134,7 +134,7 @@ module ApplicationHelper
   end
   
   def meta_errors?
-    false
+    @page and !!(@page.errors[:slug].present? or @page.errors[:breadcrumb].present?)
   end
   
   def meta_label

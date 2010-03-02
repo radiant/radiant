@@ -31,15 +31,4 @@ module Admin::ReferencesHelper
       class_of_page.display_name
     end
   end
-  
-  def filter
-    @filter ||= begin
-      filter_name = params[:filter_name]
-      (filter_name.gsub(" ", "") + "Filter").constantize unless filter_name.blank?
-    end
-  end
-
-  def class_of_page
-    @page_class ||= (params[:class_name].blank? ? 'Page' : params[:class_name]).constantize
-  end
 end
