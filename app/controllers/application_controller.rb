@@ -1,8 +1,6 @@
 class ApplicationController < ActionController::Base
   include LoginSystem
   
-  filter_parameter_logging :password, :password_confirmation
-  
   protect_from_forgery
   
   before_filter :set_current_user
