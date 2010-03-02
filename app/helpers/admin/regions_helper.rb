@@ -20,8 +20,8 @@ module Admin::RegionsHelper
 
   def lazy_initialize_region_set
     unless @region_set
-      @controller_name ||= @controller.controller_name
-      @template_name ||= @controller.template_name
+      @controller_name ||= controller.controller_name
+      @template_name ||= controller.template_name
       @region_set = admin.send(@controller_name).send(@template_name)
     end
   end
