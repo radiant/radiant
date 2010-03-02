@@ -9,10 +9,10 @@
     = javascript_include_tag %w(admin/prototype admin/effects admin/dragdrop admin/lowpro admin/dateinput admin/pagestatus admin/cookie admin/popup admin/pagefield admin/dropdown admin/status admin/utility admin/codearea admin/tabcontrol admin/ruledtable admin/sitemap admin/shortcuts admin/toggle admin/validationerror admin/application), :cache => 'admin/all'
     - @javascripts.uniq.each do |javascript|
       = javascript_include_tag javascript
-    - if @content_for_page_scripts
-      = javascript_tag @content_for_page_scripts
-    - if @content_for_page_css
-      %style{:type => "text/css"}= @content_for_page_css
+    - if yield(:page_scripts).present?
+      = javascript_tag yield(:page_scripts)
+    - if yield(:page_css).present?
+      %style{:type => "text/css"}= yield(:page_css)
     = yield :meta
     = stylesheet_and_javascript_overrides
   %body{:class=>body_classes.join(" ")}
@@ -48,6 +48,6 @@
         #content
           = find_and_preserve(yield)
 
-      - if @content_for_popups
+      - if yield(:popups).present?
         #popups
           = yield :popups
