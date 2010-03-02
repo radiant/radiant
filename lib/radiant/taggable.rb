@@ -11,12 +11,8 @@ module Radiant::Taggable
       def self.included(new_base)
         super
         new_base.class_eval do
-          include ActionController::UrlWriter
-        end
-        class << new_base
-          def default_url_options
-            {:controller => "site", :action => "show_page", :only_path => true}
-          end
+          include ActionController::UrlFor
+          default_url_options.update(:controller => "site", :action => "show_page", :only_path => true)
         end
         new_base.tag_descriptions.merge! self.tag_descriptions
       end
