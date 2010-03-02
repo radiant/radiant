@@ -15,6 +15,8 @@ class User < ActiveRecord::Base
 
   validates_confirmation_of :password, :if => :confirm_password?
 
+  after_initialize :confirm_password
+
   validates_presence_of :name, :login
   validates_presence_of :password, :password_confirmation, :if => :new_record?
 
@@ -53,7 +55,7 @@ class User < ActiveRecord::Base
     self.password == sha1(password)
   end
 
-  def after_initialize
+  def confirm_password
     @confirm_password = true
   end
 
