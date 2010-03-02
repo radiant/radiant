@@ -93,7 +93,7 @@ module Radiant
       
       private
       def visible_by_controller?(user)
-        params = ActionController::Routing::Routes.recognize_path(url, :method => :get)
+        params = Rails.application.routes.recognize_path(url, :method => :get)
         if params && params[:controller]
           klass = "#{params[:controller].camelize}Controller".constantize
           klass.user_has_access_to_action?(user, params[:action])
