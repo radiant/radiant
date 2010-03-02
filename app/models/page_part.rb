@@ -3,6 +3,8 @@ class PagePart < ActiveRecord::Base
   # Default Order
   default_scope :order => 'name'
   
+  after_initialize :set_default_filter
+  
   # Associations
   belongs_to :page
   
@@ -14,7 +16,7 @@ class PagePart < ActiveRecord::Base
   
   object_id_attr :filter, TextFilter
 
-  def after_initialize
+  def set_default_filter
     self.filter_id ||= Radiant::Config['defaults.page.filter'] if new_record?
   end
 
