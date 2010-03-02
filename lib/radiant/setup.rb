@@ -67,8 +67,7 @@ module Radiant
         end
       end
       unless filename
-        templates = find_and_load_templates("#{RADIANT_ROOT}/db/templates/*.yml")
-        templates.concat find_and_load_templates("#{RAILS_ROOT}/db/templates/*.yml") if RADIANT_ROOT != RAILS_ROOT
+        templates = find_and_load_templates("#{Rails.root}/db/templates/*.yml")
         choose do |menu|
           menu.header = "\nSelect a database template"
           menu.prompt = "[1-#{templates.size}]: "
@@ -115,10 +114,8 @@ module Radiant
       def find_template_in_path(filename)
         [
           filename,
-          "#{RADIANT_ROOT}/#{filename}",
-          "#{RADIANT_ROOT}/db/templates/#{filename}",
-          "#{RAILS_ROOT}/#{filename}",
-          "#{RAILS_ROOT}/db/templates/#{filename}",
+          "#{Rails.root}/#{filename}",
+          "#{Rails.root}/db/templates/#{filename}",
           "#{Dir.pwd}/#{filename}",
           "#{Dir.pwd}/db/templates/#{filename}",
         ].find { |name| File.file?(name) }
@@ -142,10 +139,10 @@ module Radiant
             feedback "Creating #{key.to_s.underscore.humanize}" do
               model = model(key)
               model.reset_column_information
-              record_pairs = order_by_id(records[key])
+              model_records = order_by_id(records[key])
               step do
-                record_pairs.each do |id, record|
-                  model.new(record).save
+                model_records.each do |attributes|
+                  model.create! attributes
                 end
               end
             end
@@ -158,7 +155,7 @@ module Radiant
       end
       
       def order_by_id(records)
-        records.map { |name, record| [record['id'], record] }.sort { |a, b| a[0] <=> b[0] }
+        records.values.sort_by { |attributes| attributes['id'].to_i }
       end
       
       extend Forwardable
