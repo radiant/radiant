@@ -20,7 +20,7 @@ class SiteController < ApplicationController
       batch_page_status_refresh if (url == "/" || url == "")
       process_page(@page)
       set_cache_control
-      @performed_render ||= true
+      self.response_body = response.body
     else
       render :template => 'site/not_found', :status => 404
     end
