@@ -1,39 +1,49 @@
-ActionController::Routing::Routes.draw do |map|
-
-  # Admin RESTful Routes
-  map.namespace :admin, :member => { :remove => :get } do |admin|
-    admin.resources :pages do |pages|
-      pages.resources :children, :controller => "pages"
+Radiant::Application.routes.draw do |map|
+  # The priority is based upon order of creation:
+  # first created -> highest priority.
+  
+  namespace :admin do
+    resources :pages do
+      resources :children, :controller => 'pages'
+      member do
+        get :remove
+      end
     end
-    admin.resources :layouts
-    admin.resources :snippets
-    admin.resources :users
+    resources :layouts do
+      member do
+        get :remove
+      end
+    end
+    resources :snippets do
+      member do
+        get :remove
+      end
+    end
+    resources :users do
+      member do
+        get :remove
+      end
+    end
+    
+    resource :preferences
+    resources :extensions, :only => :index
+    resources :page_parts
+    match 'reference/:type(.:format)' => 'admin/references#show', :as => :reference
   end
-
-  map.namespace :admin do |admin|
-    admin.resource :preferences
-    admin.resources :extensions, :only => :index
-    admin.resources :page_parts
-    admin.resources :page_fields
-    admin.reference '/reference/:type.:format', :controller => 'references', :action => 'show', :conditions => {:method => :get}
-  end
-
-  # Admin Routes
-  map.with_options(:controller => 'admin/welcome') do |welcome|
-    welcome.admin          'admin',                              :action => 'index'
-    welcome.welcome        'admin/welcome',                      :action => 'index'
-    welcome.login          'admin/login',                        :action => 'login'
-    welcome.logout         'admin/logout',                       :action => 'logout'
-  end
-
-  # Site URLs
-  map.with_options(:controller => 'site') do |site|
-    site.root                                                    :action => 'show_page', :url => '/'
-    site.not_found         'error/404',                          :action => 'not_found'
-    site.error             'error/500',                          :action => 'error'
-
-    # Everything else
-    site.connect           '*url',                               :action => 'show_page'
-  end
-
+  
+  match 'admin' => 'admin/welcome#index', :as => :admin
+  match 'admin/welcome' => 'admin/welcome#index', :as => :welcome
+  match 'admin/login' => 'admin/welcome#login', :as => :login
+  match 'admin/logout' => 'admin/welcome#logout', :as => :logout
+  
+  match 'admin/export' => 'admin/export#yaml', :as => :export
+  match 'admin/export/yaml' => 'admin/export#yaml', :as => :export_yaml
+  
+  root :to => 'site#show_page'
+  
+  match 'error/404' => 'site#not_found', :as => :not_found
+  match 'error/500' => 'site#error', :as => :error
+  
+  # main catch-all route
+  match '*url' => 'site#show_page'
 end
