@@ -16,7 +16,7 @@ module Admin::NodeHelper
   end
 
   def show_all?
-    @controller.action_name == 'remove'
+    controller.action_name == 'remove'
   end
 
   def expanded_rows
