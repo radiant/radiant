@@ -3,11 +3,12 @@ class Admin::PagesController < Admin::ResourceController
   before_filter :count_deleted_pages, :only => [:destroy]
 
   responses do |r|
-    r.plural.js do
-      @level = params[:level].to_i
-      @template_name = 'index'
-      response.headers['Content-Type'] = 'text/html;charset=utf-8'
-      render :action => 'children.html.haml', :layout => false
+    r.plural.html do
+      if request.xhr?
+        @level = params[:level].to_i
+        @template_name = 'index'
+        render :action => 'children', :layout => false
+      end
     end
   end
 
