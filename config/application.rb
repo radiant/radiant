@@ -27,28 +27,15 @@ module Radiant
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
     # config.i18n.default_locale = :de
-
+    
+    # This is a thin wrapper around Rack::Cache middleware.
+    #
     # Comment out this line if you want to turn off all caching, or
     # add options to modify the behavior. In the majority of deployment
     # scenarios it is desirable to leave Radiant's cache enabled and in
     # the default configuration.
-    #
-    # Additional options:
-    #  :use_x_sendfile => true
-    #    Turns on X-Sendfile support for Apache with mod_xsendfile or lighttpd.
-    #  :use_x_accel_redirect => '/some/virtual/path'
-    #    Turns on X-Accel-Redirect support for nginx. You have to provide
-    #    a path that corresponds to a virtual location in your webserver
-    #    configuration.
-    #  :entitystore => "radiant:tmp/cache/entity"
-    #    Sets the entity store type (preceding the colon) and storage
-    #   location (following the colon, relative to Rails.root).
-    #    We recommend you use radiant: since this will enable manual expiration.
-    #  :metastore => "radiant:tmp/cache/meta"
-    #    Sets the meta store type and storage location.  We recommend you use
-    #    radiant: since this will enable manual expiration and acceleration headers.
     require 'radiant/cache'
-    config.middleware.use Radiant::Cache
+    config.middleware.insert_after Rack::Sendfile, Radiant::Cache, :verbose => true
 
     # Configure generators values. Many other options are available, be sure to check the documentation.
     config.generators do |g|
