@@ -35,7 +35,7 @@ class TranslationSupport
     
     def open_available_tags(filename)
       data = YAML::load(File.open("#{filename}"))
-      data
+      data.to_s
     end
     
     #Writes to file from translation data hash structure

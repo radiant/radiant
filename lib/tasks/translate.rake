@@ -9,7 +9,7 @@ namespace :radiant do
       language_root = "#{RADIANT_ROOT}/config/locales"
       words = TranslationSupport.get_translation_keys(language_root)
       locale_paths.each do |path|
-        if path == language_root || path.match('i18n_')
+        if path == language_root || path.match('language_pack')
           Dir["#{path}/*.yml"].each do |filename|
             next if filename.match('_available_tags')
             basename = File.basename(filename, '.yml')
@@ -43,16 +43,13 @@ namespace :radiant do
       language_root = "#{RADIANT_ROOT}/config/locales"
       words = TranslationSupport.open_available_tags("#{language_root}/en_available_tags.yml")
       locale_paths.each do |path|
-        if path == language_root || path.match('i18n_')
+        if path == language_root || path.match('language_pack')
           Dir["#{path}/*.yml"].each do |filename|
-            puts filename
             next unless filename.match('_available_tags')
             basename = File.basename(filename, '_available_tags.yml')
             puts "Syncing #{basename}"
             (comments, other) = TranslationSupport.open_available_tags(filename)
-            words.each { |k,v| other[k] ||= words[k] }  # Initializing hash variable as empty if it does not exist
-            other.delete_if { |k,v| !words[k] }         # Remove if not defined in en.yml
-            TranslationSupport.write_file(filename, basename, comments, other)
+            puts other
           end
         end 
       end
