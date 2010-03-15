@@ -2,6 +2,8 @@
 
 === Edge
 
+* Dropped BlueCloth for kramdown [John Muhl]
+* Updated sample images for Textile and Markdown [Jim Gay]
 * Refactored Sass to separate out common styles [Jim Gay]
 * Upgraded to HAML 2.2.19 [Jim Gay]
 * Add future publishing feature [Anna Billstrom, Benny Degezelle, Jim Gay]
