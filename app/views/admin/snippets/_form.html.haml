@@ -16,7 +16,7 @@
           %p
             = f.label :filter_id, "Filter"
             = f.select :filter_id, [['none', '']] + TextFilter.descendants.map { |f| f.filter_name }.sort, :id => 'snippet_filter'
-            %span.reference_links
+            %span.reference_links{:style=>"margin-left: 1em"}
               Reference:
               %span{:id => "filter_reference_link"}
                 = link_to_function "Filter", "loadFilterReference();"

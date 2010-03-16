@@ -41,12 +41,6 @@ ul#navigation
     margin: 4px 0 0 8px
     white-space: nowrap
     a 
-      -webkit-border-top-left-radius: 6px
-      -webkit-border-top-right-radius: 6px
-      -moz-border-radius-topleft: 6px
-      -moz-border-radius-topright: 6px
-      border-top-left-radius: 6px
-      border-top-right-radius: 6px
       background: url(../../images/admin/navigation_tabs.png) left top repeat-x
       color: #edd
       display: block
@@ -55,6 +49,7 @@ ul#navigation
       padding: 0 20px
       position: relative
       text-decoration: none
+      +round-top-corners(6px)
     &:hover a
       background-position: left -48px
       color: white

@@ -17,7 +17,7 @@
                 = f.text_field :content_type, :maxlength => 40, :class => "textbox"
             = render_region :extended_metadata
         %p.more_or_less
-          %a{:href=>'#extended_metadata', :class => "rounded_bottom_right rounded_bottom_left #{(meta_errors? ? 'more' : 'less')}"}= meta_label
+          %a{:href=>'#extended_metadata', :class => "#{(meta_errors? ? 'less' : 'more')}"}= meta_label
       - form.edit_content do
         %p.content
           = f.label :layout_content, "Body"

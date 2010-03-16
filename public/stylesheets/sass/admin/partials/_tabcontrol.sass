@@ -14,6 +14,7 @@
       padding: 8px 15px 5px
       text-decoration: none
       text-transform: titlecase
+      +round-top-corners(6px)
       &.here
         background-color: white
         color: black
@@ -29,12 +30,14 @@
     width: 100%
     clear: both
     .page
-      padding: 20px
+      padding: 12px 20px 20px
       background: url(../../images/admin/vertical_tan_gradient.png) top left repeat-x #f5f1e2
+      +box-shadow(2px, 2px, 3px, rgba(0,0,0,0.15))
       p
         margin-top: 0
       label
         display: inline
+        color: #333
         font-weight: normal
         font-size: 80%
         text-shadow: none
@@ -43,7 +46,6 @@
       margin-left: 1em
       a
         color: #0066cc
-        padding-left: 6px
 .tabs
   #tab_toolbar
     float: right
@@ -52,10 +54,9 @@
     padding: 3px
 
 .reference_links
-  margin-left: 1em
   font-size: 85%
   span
-    padding: 0 4px
+    padding: 0 0 0 4px
     a
       color: #44e
 

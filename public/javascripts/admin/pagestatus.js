@@ -1,10 +1,17 @@
 PageStatusBehavior = Behavior.create({
-  initialize: function(options){},
+  initialize: function(options){
+    this.update();
+  },
+  
   onchange: function(event) {
-    if( this.element.value >= 90) { 
-      $('published_at').removeClassName('hidden') 
+    this.update();
+  },
+  
+  update: function() {
+    if(this.element.value >= 90) { 
+      $('published_at').show();
     } else { 
-      $('published_at').addClassName('hidden');
+      $('published_at').hide();
     }
   }
-})
+});

@@ -21,7 +21,7 @@
                   %span= link_to snippet.name, edit_admin_snippet_url(snippet)
               - tbody.modify_cell do
                 %td.remove
-                  = link_to image('remove', :alt => 'Remove Snippet'), remove_admin_snippet_url(snippet)
+                  = link_to "Remove", remove_admin_snippet_url(snippet)
       - else
         %tr
           %td.note{:colspan => admin.snippet.index.tbody.length} No Snippets

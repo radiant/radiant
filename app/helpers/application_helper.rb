@@ -126,7 +126,7 @@ module ApplicationHelper
     when :meta, :meta_less
       meta_errors?
     end
-    v ? {} : {:class => "hidden"}
+    v ? {} : {:style => "display: none"}
   end
 
   def meta_errors?
