@@ -36,7 +36,7 @@
         = fields.label :status_id, "Status"
         = fields.select :status_id, status_to_display
       %p#published_at{:class => (@page.published? ? nil : 'hidden')}
-        = fields.label :published_at, "Published At"
+        = fields.label :published_at, "Published On"
         = fields.text_field :published_at, :class=> "date", :value => (@page.published_at? ? @page.published_at.to_date.to_formatted_s(:long) : nil)
       = render_region :layout_row, :locals => {:f => fields}
 
