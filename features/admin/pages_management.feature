@@ -58,7 +58,7 @@ Feature: Managing pages
   Scenario: Delete page
     Given I am logged in as "existing"
     When I go to the "pages" admin page
-    And I follow "remove page"
+    And I follow "Remove"
     Then I should see "permanently remove"
     When I press "Delete Pages"
     Then I should see "No Pages"
