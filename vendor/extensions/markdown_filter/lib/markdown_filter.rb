@@ -5,8 +5,8 @@ class MarkdownFilter < TextFilter
       RDiscount.new(text, :smart).to_html
     else
       RubyPants.new(Kramdown::Document.new(text, {
-        :auto_ids => auto_ids || false,
-        :parse_block_html => parse_block_html || false,
+        :auto_ids => false,
+        :parse_block_html => false,
         :coderay => nil
       }).to_html).to_html
     end
