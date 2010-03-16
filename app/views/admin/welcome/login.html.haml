@@ -1,6 +1,6 @@
-- body_classes << "login"
+- body_classes << "single_form"
 
-#login
+#single_form
   %h1 Please Login
 
   - form_tag login_url do
@@ -10,10 +10,9 @@
     %p
       %label{:for=>"user_password"} Password
       = password_field "user", "password", :class => 'textbox password', :value => '', :maxlength => 40, :size => 40
-      &nbsp;
-      %span.remember_me
-        = check_box_tag :remember_me, 1, false, :class => 'checkbox'
-        %label.checkbox{:for=>"remember_me"} Remember me
+    %p.remember_me
+      = check_box_tag :remember_me, 1, false, :class => 'checkbox'
+      %label.checkbox{:for=>"remember_me"} Remember me in this browser
     %p.buttons
       %input.button{:type=>"submit", :value=>"Login"}/
 
