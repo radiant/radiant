@@ -1,3 +1,279 @@
+commit 53449309c569f774d7d3cd68bcc71d48509a4c7e
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Feb 15 10:16:18 2010 +0100
+
+    Updated benchmark data and graphs
+
+benchmark/historic-jruby-1.4.0.dat
+benchmark/historic-ruby-1.8.6.dat
+benchmark/historic-ruby-1.8.7.dat
+benchmark/historic-ruby-1.9.1p243.dat
+benchmark/historic-ruby-1.9.2dev.dat
+doc/img/graph-jruby-1.4.0.png
+doc/img/graph-ruby-1.8.6.png
+doc/img/graph-ruby-1.8.7.png
+doc/img/graph-ruby-1.9.1p243.png
+doc/img/graph-ruby-1.9.2dev.png
+
+commit 7422bb09e3df6c98b8d57335e50701bcde2c5f77
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Feb 15 10:12:22 2010 +0100
+
+    Updated release notes
+
+doc/index.page
+doc/news/release_0_5_0.page
+
+commit 127f5205559a2beac7aae87b6b2ebf203830f68e
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Feb 15 10:04:08 2010 +0100
+
+    Updated kramdown binary so that option descriptions are displayed better
+
+bin/kramdown
+
+commit d5cdc600c1e559deeac6c333fc8719aed748b1b4
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Feb 15 10:03:31 2010 +0100
+
+    Fixed small problem with parsing of Symbol options
+
+lib/kramdown/options.rb
+
+commit 366dec49d98245e392a8c472ca62438763b4e36c
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Feb 15 10:03:15 2010 +0100
+
+    Added better option descriptions
+
+lib/kramdown/options.rb
+
+commit 9dab841f7f75be1b126ff55eedd4b3a8d851b2f8
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Feb 13 09:18:19 2010 +0100
+
+    Added warning output to $stderr for kramdown binary
+
+bin/kramdown
+
+commit 3f576659ec18548c3ca24923565fbbcf285dadbc
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Feb 13 09:18:00 2010 +0100
+
+    Fixed last remaining issues with LaTeX converter
+    
+    * Local images are now included in the output
+    * Entities are correctly converted to their LaTeX equivalent
+    * Warnings have been added where approriate
+
+data/kramdown/document.latex
+lib/kramdown/converter/base.rb
+lib/kramdown/converter/latex.rb
+lib/kramdown/document.rb
+
+commit 5a14647e4f5da8595b61f03c2f80af0fc6d93d5c
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Feb 13 09:15:55 2010 +0100
+
+    Better internal support for HTML entities
+
+lib/kramdown/converter/html.rb
+lib/kramdown/parser/kramdown/html_entity.rb
+test/testcases/span/text_substitutions/entities.html
+
+commit b94ff3c15d67419f50ea3f4097a44c47f618c7f3
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Feb 12 14:05:19 2010 +0100
+
+    Implemented syntax parsing and conversion support for smart quotes
+    
+    This additional syntax support causes a small performance penalty
+    on Ruby 1.8 which is, however, acceptable.
+
+doc/syntax.page
+lib/kramdown/converter/html.rb
+lib/kramdown/converter/latex.rb
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/escaped_chars.rb
+lib/kramdown/parser/kramdown/smart_quotes.rb
+test/testcases/span/01_link/inline.html
+test/testcases/span/01_link/reference.html
+test/testcases/span/escaped_chars/normal.html
+test/testcases/span/escaped_chars/normal.text
+test/testcases/span/text_substitutions/typography.html
+test/testcases/span/text_substitutions/typography.text
+
+commit a7db5ce9d37771b2fcd8ec0ab5e3848e4d6410c4
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Feb 12 14:02:38 2010 +0100
+
+    Fixed bug in benchmark.rb: false date was shown
+
+benchmark/benchmark.rb
+
+commit 7e91476e1562495daea1d87c90e8195d6f58e59a
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Feb 12 12:20:47 2010 +0100
+
+    Performance optimization in span parser
+    
+    The span parser now uses a much smaller regexp for locating possible span
+    elements which leads to better performance.
+
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/attribute_list.rb
+lib/kramdown/parser/kramdown/autolink.rb
+lib/kramdown/parser/kramdown/codespan.rb
+lib/kramdown/parser/kramdown/emphasis.rb
+lib/kramdown/parser/kramdown/escaped_chars.rb
+lib/kramdown/parser/kramdown/footnote.rb
+lib/kramdown/parser/kramdown/html.rb
+lib/kramdown/parser/kramdown/html_entity.rb
+lib/kramdown/parser/kramdown/line_break.rb
+lib/kramdown/parser/kramdown/link.rb
+lib/kramdown/parser/kramdown/typographic_symbol.rb
+
+commit d8d372e894cdf2239d34a58517f918fc983952b3
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Feb 11 17:10:21 2010 +0100
+
+    Fixed Rakefile
+
+Rakefile
+
+commit f6e878cebd3590a253e1b177610e354e2ab37d28
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Feb 10 18:33:04 2010 +0100
+
+    Added basic support for converting a kramdown document to LaTeX
+
+bin/kramdown
+data/kramdown/document.latex
+lib/kramdown/converter.rb
+lib/kramdown/converter/latex.rb
+
+commit bb35de9db070ad5e227c0197d71fcda636b76821
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Feb 10 18:22:47 2010 +0100
+
+    Updated converter
+    
+    * Added a base class with common functionality
+    * Added support for wrapping the output of a converter in a given ERB template
+
+data/kramdown/document.html
+doc/news/release_0_5_0.page
+lib/kramdown/converter.rb
+lib/kramdown/converter/base.rb
+lib/kramdown/converter/html.rb
+lib/kramdown/document.rb
+lib/kramdown/options.rb
+
+commit 889bcc99ddae386a4cf6d81f79eb5a46be0e604d
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Feb 10 15:31:13 2010 +0100
+
+    Fixed syntax error
+
+doc/syntax.page
+
+commit e5ab07d5dbfedb71255c74495643bca5da7cc7d5
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Feb 10 15:30:50 2010 +0100
+
+    Fixed potential future problem with escape regexp in HTML converter
+
+lib/kramdown/converter/html.rb
+
+commit ab862baa4612736c64b153b9426720ce1c56205a
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Feb 8 17:15:11 2010 +0100
+
+    Enhanced the kramdown binary
+
+bin/kramdown
+doc/news/release_0_5_0.page
+lib/kramdown/options.rb
+
+commit 38e6052580225bbb42c32499c4c699dac5e0762a
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Feb 8 16:56:37 2010 +0100
+
+    Small API doc update
+
+lib/kramdown/converter/html.rb
+
+commit 6acf84b84a4eed2706888dd31364dbc5e0ed65be
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Feb 8 16:51:24 2010 +0100
+
+    Implemented better options mechanism
+    
+    Parser/converter options can now be defined easily
+
+lib/kramdown/converter/html.rb
+lib/kramdown/document.rb
+lib/kramdown/options.rb
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/extension.rb
+lib/kramdown/parser/kramdown/header.rb
+lib/kramdown/parser/kramdown/html.rb
+
+commit d2cb1882a9c4e0dd3d094a393c8c37a0631910ac
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Feb 5 18:41:09 2010 +0100
+
+    The quotation mark " is not converted to &quot; in normal text anymore
+
+doc/news/release_0_5_0.page
+lib/kramdown/converter/html.rb
+test/testcases/span/01_link/reference.html
+
+commit c2e7145bd8fa1723bb97803840f04937c092fd1f
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Feb 4 10:03:16 2010 +0100
+
+    Bumped version number
+
+doc/news/release_0_5_0.page
+lib/kramdown/version.rb
+
+commit 400283889466d95724eed6169a306d411940bbc8
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Feb 4 09:56:54 2010 +0100
+
+    Code restructurations
+    
+    * Moved default options away from Document into parser and converter classes
+    * Moved definition of Extension class to where it belongs, the kramdown parser
+    * Moved HTML converter class into lib/kramdown/converter/html.rb
+
+lib/kramdown/converter.rb
+lib/kramdown/converter/html.rb
+lib/kramdown/document.rb
+lib/kramdown/extension.rb
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/extension.rb
+lib/kramdown/parser/kramdown/header.rb
+lib/kramdown/parser/kramdown/html.rb
+
+commit 0ea859157e8f30d488a8e1f78407466c369cc717
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Feb 4 09:10:32 2010 +0100
+
+    Fixed problems with multibyte encodings in Ruby 1.9
+    
+    The StringScanner class returns positions based on bytes and not based on
+    characters. Therefore a workaround was needed sothat multibyte encoded
+    documents are parsed correctly
+
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/emphasis.rb
+lib/kramdown/parser/kramdown/html.rb
+lib/kramdown/parser/kramdown/link.rb
+test/testcases/encoding.html
+test/testcases/encoding.text
+
 commit fa3d9d59c3e912a011a26f10a74ee0858cafe4dd
 Author: Thomas Leitner <t_leitner@gmx.at>
 Date:   Fri Jan 22 17:41:32 2010 +0100

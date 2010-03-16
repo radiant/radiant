@@ -26,6 +26,50 @@ module Kramdown
   module Parser
     class Kramdown
 
+      # The base extension class.
+      #
+      # This class provides implementations for the default extensions defined in the kramdown
+      # specification.
+      #
+      # An extension is a method called <tt>parse_EXTNAME</tt> where +EXTNAME+ is the extension name.
+      # These methods are called with three parameters:
+      #
+      # [+parser+]
+      #    The parser instance from which the extension method is called.
+      # [+opts+]
+      #    A hash containing the options set in the extension.
+      # [+body+]
+      #    A string containing the body of the extension. If no body is available, this is +nil+.
+      class Extension
+
+        # Just ignore everything and do nothing.
+        def parse_comment(parser, opts, body)
+          nil
+        end
+
+        # Add the body (if available) as <tt>:raw</tt> Element to the +parser.tree+.
+        def parse_nomarkdown(parser, opts, body)
+          parser.tree.children << Element.new(:raw, body) if body.kind_of?(String)
+        end
+
+        # Update the document and parser options with the options set in +opts+.
+        def parse_options(parser, opts, body)
+          opts.select do |k,v|
+            k = k.to_sym
+            if Kramdown::Options.defined?(k)
+              parser.doc.options[k] = Kramdown::Options.parse(k, v) rescue parser.doc.options[k]
+              false
+            else
+              true
+            end
+          end.each do |k,v|
+            parser.warning("Unknown kramdown option '#{k}'")
+          end
+        end
+
+      end
+
+
       EXT_BLOCK_START_STR = "^#{OPT_SPACE}\\{::(%s):(:)?(#{ALD_ANY_CHARS}*)\\}\s*?\n"
       EXT_BLOCK_START = /#{EXT_BLOCK_START_STR % ALD_ID_NAME}/
 
@@ -38,7 +82,7 @@ module Kramdown
         body = nil
         parse_attribute_list(@src[3], opts)
 
-        if !@doc.extension.public_methods.map {|m| m.to_s}.include?("parse_#{ext}")
+        if !@extension.public_methods.map {|m| m.to_s}.include?("parse_#{ext}")
           warning("No extension named '#{ext}' found - ignoring extension block")
           body = :invalid
         end
@@ -54,7 +98,7 @@ module Kramdown
           end
         end
 
-        @doc.extension.send("parse_#{ext}", self, opts, body) if body != :invalid
+        @extension.send("parse_#{ext}", self, opts, body) if body != :invalid
 
         true
       end
