@@ -41,8 +41,11 @@ share_as :AllInstanceGenerators do
   end
   
   # Check for admin sass/css
-  %w(main.css partials/_avatars.sass partials/_footer.sass partials/_layout.sass partials/_reset.sass main.sass partials/_base.sass partials/_forms.sass 
-    partials/_messages.sass partials/_content.sass partials/_header.sass partials/_popup.sass partials/_tabcontrol.sass).each do |file|
+  %w(main.css modules/_links.sass modules/_opacity.sass modules/_rounded.sass modules/_shadow.sass 
+    partials/_avatars.sass partials/_footer.sass partials/_layout.sass partials/_reset.sass main.sass 
+    partials/_base.sass partials/_forms.sass partials/_messages.sass partials/_content.sass 
+    partials/_header.sass partials/_popup.sass partials/_tabcontrol.sass partials/_dateinput.sass 
+    partials/_toolbar.sass).each do |file|
     if file.ends_with?('.css')
       it "should have a #{file} css file" do
         'public/stylesheets/admin'.should have_generated_file(file)
@@ -55,8 +58,8 @@ share_as :AllInstanceGenerators do
   end
   
   # Check for admin images
-  %w(navigation_secondary_separator.gif add_tab.png navigation_shadow.png 
-    navigation_tabs.png snippet.png brown_bottom_line.gif new_homepage.png 
+  %w(navigation_secondary_separator.gif add_tab.png navigation_shadow.png minus_disabled.png
+    navigation_tabs.png snippet.png brown_bottom_line.gif new_homepage.png single_form_shadow.png
     spacer.gif buttons_background.png new_layout.png spinner.gif collapse.png new_snippet.png 
     status_background.png draft_page.png new_user.png status_bottom_left.png expand.png page.png 
     status_bottom_right.png layout.png plus.png status_spinner.gif login_shadow.png plus_grey.png 
