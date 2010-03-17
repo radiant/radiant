@@ -15,17 +15,10 @@
         %td.status{:class => "#{page.status.name.downcase}_status", :title => "#{timestamp(page.published_at) if page.published_at}"}= t(page.status.name.downcase)
     - node.add_child_column do
       - unless simple
-<<<<<<< HEAD
         %td.add_child= link_to t('add_child'), new_admin_page_child_url(page)
     - node.remove_column do
       - unless simple
         %td.remove= link_to t('remove'), remove_admin_page_url(page)
-=======
-        %td.add_child= link_to "Add Child", new_admin_page_child_url(page)
-    - node.remove_column do
-      - unless simple
-        %td.remove= link_to "Remove", remove_admin_page_url(page)
->>>>>>> master
 
 - if expanded
   - page.children.each do |child|
