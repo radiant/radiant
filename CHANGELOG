@@ -2,6 +2,7 @@
 
 === Edge
 
+* Support i18n [Keith Bingman, many others]
 * Only run migrate and update tasks with script/extension if they exist [John Muhl, Jim Gay]
 * Dropped BlueCloth for kramdown [John Muhl]
 * Updated sample images for Textile and Markdown [Jim Gay]
