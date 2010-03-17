@@ -1,0 +1,69 @@
+#tab_control
+  color: #333
+  .tabs
+    float: left
+    width: 100%
+    margin-right: -4px
+    .tab
+      background-color: #cac8c0
+      color: #7f7f7f
+      display: inline-block
+      font-size: 90%
+      text-align: left
+      margin-right: 5px
+      padding: 8px 15px 5px
+      text-decoration: none
+      text-transform: titlecase
+      +round-top-corners(6px)
+      &.here
+        background-color: white
+        color: black
+        font-weight: bold
+      span:hover
+        color: black
+      .close
+        margin-top: -4px
+        margin-left: 5px
+        margin-right: -5px
+  .pages
+    background: white
+    width: 100%
+    clear: both
+    .page
+      padding: 12px 20px 20px
+      background: url(../../images/admin/vertical_tan_gradient.png) top left repeat-x #f5f1e2
+      +box-shadow(2px, 2px, 3px, rgba(0,0,0,0.15))
+      p
+        margin-top: 0
+      label
+        display: inline
+        color: #333
+        font-weight: normal
+        font-size: 80%
+        text-shadow: none
+    .reference_links
+      font-size: 85%
+      margin-left: 1em
+      a
+        color: #0066cc
+.tabs
+  #tab_toolbar
+    float: right
+    overflow: hidden
+    margin-top: .2em
+    padding: 3px
+
+.reference_links
+  font-size: 85%
+  span
+    padding: 0 0 0 4px
+    a
+      color: #44e
+
+#tag_reference_link
+  margin: 0 0.5em
+
+body.reversed
+  #tab_control
+    textarea
+      border: 1px solid #ccc

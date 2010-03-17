@@ -1,6 +1,7 @@
 require 'active_resource'
 require 'tmpdir'
 require 'fileutils'
+require 'rake'
 
 module Registry
   class Extension < ActiveResource::Base
@@ -29,7 +30,22 @@ Install type:   #{install_type}
 
   class Action
     def rake(command)
-      `rake #{command} RAILS_ENV=#{RAILS_ENV}`
+      `rake #{command} RAILS_ENV=#{RAILS_ENV}` if tasks_include? command
+    end
+
+    def tasks_include?(command)
+      extension = command.split('radiant:extensions:')
+      if extension.length > 1
+        extension = extension.reject{|e| e.blank? }[0]
+      else
+        extension = extension.to_s
+      end
+      rake_file = File.join(RAILS_ROOT, 'vendor', 'extensions', extension) + '/lib/tasks/' + extension + '_extension_tasks.rake'
+      if File.exist? rake_file
+        load rake_file
+      end
+      tasks = Rake.application.tasks.map(&:name)
+      tasks.include? "#{command}"
     end
     
     def file_utils

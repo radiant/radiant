@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{lang:}" lang="{lang:}">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Thomas Leitner" />
+    <meta name="copyright" content="2009 Thomas Leitner" />
+    <meta name="description" content="kramdown is a fast, pure-Ruby Markdown-superset converter" />
+    <meta name="keywords" content="ruby, kramdown, markdown, text markup" />
+    <link href="{relocatable: default.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+    <link href="{relocatable: news.atom}" type="application/atom+xml" rel="alternate" />
+
+    <title>{title:} | kramdown</title>
+  </head>
+  <body>
+    <div id="layout">
+
+      <div id="header">
+
+        <h1 id="logo"><a href="{relocatable: /}" title="Homepage">kramdown <span class='slogan'>fast, pure-Ruby Markdown-superset converter</span></a></h1>
+        <hr class="noscreen" />
+
+      </div>
+
+      <hr class="noscreen" />
+
+      <div id="nav" class="box">
+        {menu: {max_levels: 1, used_nodes: files}}
+        <hr class="noscreen" />
+      </div>
+
+      <div id="container" class="box">
+
+        <% if context.content_node.node_info[:page].blocks.has_key?('intro') %>
+        <div id="intro">
+          <div id="intro-in">
+            <webgen:block name="intro" node="first" />
+          </div>
+        </div>
+        <% end %>
+
+        <div id="main" class="content box">
+          <div class="in">
+            <div class="shadow">
+              <webgen:block name="content" />
+            </div>
+
+            <div class="clear"></div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div id="footer" class="shadow">
+        <div class="f-left">Copyright © 2009 Thomas Leitner</div>
+        <div class="f-right">Design by <a href="http://www.davidkohout.cz" title="Original template design">David Kohout</a></div>
+      </div>
+    </div>
+
+    <!-- Start of StatCounter Code -->
+    <script type="text/javascript">
+      var sc_project=4267845;
+      var sc_invisible=1;
+      var sc_partition=46;
+      var sc_click_stat=1;
+      var sc_security="41321455";
+    </script>
+
+    <script type="text/javascript" src="http://www.statcounter.com/counter/counter_xhtml.js"></script>
+    <noscript><div class="statcounter">
+        <a title="web counter" class="statcounter" href="http://www.statcounter.com/free_hit_counter.html">
+          <img class="statcounter" src="http://c.statcounter.com/4267845/0/41321455/1/" alt="web counter" />
+        </a>
+    </div></noscript>
+    <!-- End of StatCounter Code -->
+
+  </body>
+</html>

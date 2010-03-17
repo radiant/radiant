@@ -1,3 +1,48 @@
+/*
+ * dateinput.js
+ * 
+ * dependencies: prototype.js, lowpro.js
+ * 
+ * --------------------------------------------------------------------------
+ * 
+ * Renders a date input. To use, add the following line to application.js:
+ * 
+ *   Event.addBehavior({'input.date': DateInputBehavior()});
+ * 
+ * This will effectively wire all inputs with a class of "date" to the
+ * DateInputBehavior.
+ * 
+ * This code was originally based on Dan Web's code for date_selector.js, but
+ * has been modified from its original form. You can find Dan's original
+ * code here:
+ * 
+ * http://github.com/danwrong/low-pro/blob/master/behaviours/date_selector.js
+ * 
+ * --------------------------------------------------------------------------
+ * 
+ * Copyright (c) 2007-2009, Five Points Solutions, Inc.
+ * Portions Copyright (c) 2004, Dan Web
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *
+ */
+
 DateInputBehavior = Behavior.create({
   
   initialize: function(options) {
@@ -116,7 +161,7 @@ DateInputBehavior.Calendar = Behavior.create({
     this.date = this.selector.getDate();
     this.redraw();
     this.element.setStyle({
-      'top': this.vertical_offset(this.selector.element) + 'px',
+      'top': this.getVerticalOffset(this.selector.element) + 'px',
       'left': Math.max(this.selector.element.cumulativeOffset().left + this.selector.element.getWidth() - this.element.getWidth() - 4, this.selector.element.cumulativeOffset().left) + 'px',
       'z-index': 10001
     });
@@ -124,18 +169,21 @@ DateInputBehavior.Calendar = Behavior.create({
     this.active = true;
   },
   
-  vertical_offset: function(selector){
-    default_vertical_offset = this.selector.element.cumulativeOffset().top + this.selector.element.getHeight() + 2;
-    this_height = this.element.getHeight();
-    if(document.viewport.getHeight() > default_vertical_offset + this_height) {
-      top_value = default_vertical_offset;
+  getVerticalOffset: function(selector){
+    var defaultOffset = this.selector.element.cumulativeOffset().top + this.selector.element.getHeight() + 2;
+    var height = this.element.getHeight();
+    var top = 0;
+    
+    if(document.viewport.getHeight() > defaultOffset + height) {
+      top = defaultOffset;
     } else {
-      top_value = (default_vertical_offset - this_height - selector.getHeight() - 6);
+      top = (defaultOffset - height - selector.getHeight() - 6);
     }
-    if(top_value < document.viewport.getScrollOffsets().top) {
-      top_value = document.viewport.getScrollOffsets().top;
-    }
-    return top_value;
+    
+    if (top < document.viewport.getScrollOffsets().top)
+      top = document.viewport.getScrollOffsets().top;
+    
+    return top;
   },
   
   hide: function() {

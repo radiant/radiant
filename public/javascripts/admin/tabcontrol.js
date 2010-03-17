@@ -113,7 +113,7 @@ TabControl.Tab = Class.create({
   },
   
   toElement: function() {
-    this.element = $a({'href': '#', 'class':'rounded_top_right rounded_top_left'}, $span(this.caption), $img({'src': relative_url_root + '/images/admin/tab_close.png', 'class': 'close', 'alt': 'Remove part', 'title': 'Remove part'})).addClassName('tab');
+    this.element = $a({'href': '#', 'class': 'tab'}, $span(this.caption), $img({'src': relative_url_root + '/images/admin/tab_close.png', 'class': 'close', 'alt': 'Remove part', 'title': 'Remove part'})).addClassName('tab');
     return this.element;
   }
 });

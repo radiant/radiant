@@ -1,0 +1,2624 @@
+commit 53449309c569f774d7d3cd68bcc71d48509a4c7e
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Feb 15 10:16:18 2010 +0100
+
+    Updated benchmark data and graphs
+
+benchmark/historic-jruby-1.4.0.dat
+benchmark/historic-ruby-1.8.6.dat
+benchmark/historic-ruby-1.8.7.dat
+benchmark/historic-ruby-1.9.1p243.dat
+benchmark/historic-ruby-1.9.2dev.dat
+doc/img/graph-jruby-1.4.0.png
+doc/img/graph-ruby-1.8.6.png
+doc/img/graph-ruby-1.8.7.png
+doc/img/graph-ruby-1.9.1p243.png
+doc/img/graph-ruby-1.9.2dev.png
+
+commit 7422bb09e3df6c98b8d57335e50701bcde2c5f77
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Feb 15 10:12:22 2010 +0100
+
+    Updated release notes
+
+doc/index.page
+doc/news/release_0_5_0.page
+
+commit 127f5205559a2beac7aae87b6b2ebf203830f68e
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Feb 15 10:04:08 2010 +0100
+
+    Updated kramdown binary so that option descriptions are displayed better
+
+bin/kramdown
+
+commit d5cdc600c1e559deeac6c333fc8719aed748b1b4
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Feb 15 10:03:31 2010 +0100
+
+    Fixed small problem with parsing of Symbol options
+
+lib/kramdown/options.rb
+
+commit 366dec49d98245e392a8c472ca62438763b4e36c
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Feb 15 10:03:15 2010 +0100
+
+    Added better option descriptions
+
+lib/kramdown/options.rb
+
+commit 9dab841f7f75be1b126ff55eedd4b3a8d851b2f8
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Feb 13 09:18:19 2010 +0100
+
+    Added warning output to $stderr for kramdown binary
+
+bin/kramdown
+
+commit 3f576659ec18548c3ca24923565fbbcf285dadbc
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Feb 13 09:18:00 2010 +0100
+
+    Fixed last remaining issues with LaTeX converter
+    
+    * Local images are now included in the output
+    * Entities are correctly converted to their LaTeX equivalent
+    * Warnings have been added where approriate
+
+data/kramdown/document.latex
+lib/kramdown/converter/base.rb
+lib/kramdown/converter/latex.rb
+lib/kramdown/document.rb
+
+commit 5a14647e4f5da8595b61f03c2f80af0fc6d93d5c
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Feb 13 09:15:55 2010 +0100
+
+    Better internal support for HTML entities
+
+lib/kramdown/converter/html.rb
+lib/kramdown/parser/kramdown/html_entity.rb
+test/testcases/span/text_substitutions/entities.html
+
+commit b94ff3c15d67419f50ea3f4097a44c47f618c7f3
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Feb 12 14:05:19 2010 +0100
+
+    Implemented syntax parsing and conversion support for smart quotes
+    
+    This additional syntax support causes a small performance penalty
+    on Ruby 1.8 which is, however, acceptable.
+
+doc/syntax.page
+lib/kramdown/converter/html.rb
+lib/kramdown/converter/latex.rb
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/escaped_chars.rb
+lib/kramdown/parser/kramdown/smart_quotes.rb
+test/testcases/span/01_link/inline.html
+test/testcases/span/01_link/reference.html
+test/testcases/span/escaped_chars/normal.html
+test/testcases/span/escaped_chars/normal.text
+test/testcases/span/text_substitutions/typography.html
+test/testcases/span/text_substitutions/typography.text
+
+commit a7db5ce9d37771b2fcd8ec0ab5e3848e4d6410c4
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Feb 12 14:02:38 2010 +0100
+
+    Fixed bug in benchmark.rb: false date was shown
+
+benchmark/benchmark.rb
+
+commit 7e91476e1562495daea1d87c90e8195d6f58e59a
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Feb 12 12:20:47 2010 +0100
+
+    Performance optimization in span parser
+    
+    The span parser now uses a much smaller regexp for locating possible span
+    elements which leads to better performance.
+
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/attribute_list.rb
+lib/kramdown/parser/kramdown/autolink.rb
+lib/kramdown/parser/kramdown/codespan.rb
+lib/kramdown/parser/kramdown/emphasis.rb
+lib/kramdown/parser/kramdown/escaped_chars.rb
+lib/kramdown/parser/kramdown/footnote.rb
+lib/kramdown/parser/kramdown/html.rb
+lib/kramdown/parser/kramdown/html_entity.rb
+lib/kramdown/parser/kramdown/line_break.rb
+lib/kramdown/parser/kramdown/link.rb
+lib/kramdown/parser/kramdown/typographic_symbol.rb
+
+commit d8d372e894cdf2239d34a58517f918fc983952b3
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Feb 11 17:10:21 2010 +0100
+
+    Fixed Rakefile
+
+Rakefile
+
+commit f6e878cebd3590a253e1b177610e354e2ab37d28
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Feb 10 18:33:04 2010 +0100
+
+    Added basic support for converting a kramdown document to LaTeX
+
+bin/kramdown
+data/kramdown/document.latex
+lib/kramdown/converter.rb
+lib/kramdown/converter/latex.rb
+
+commit bb35de9db070ad5e227c0197d71fcda636b76821
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Feb 10 18:22:47 2010 +0100
+
+    Updated converter
+    
+    * Added a base class with common functionality
+    * Added support for wrapping the output of a converter in a given ERB template
+
+data/kramdown/document.html
+doc/news/release_0_5_0.page
+lib/kramdown/converter.rb
+lib/kramdown/converter/base.rb
+lib/kramdown/converter/html.rb
+lib/kramdown/document.rb
+lib/kramdown/options.rb
+
+commit 889bcc99ddae386a4cf6d81f79eb5a46be0e604d
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Feb 10 15:31:13 2010 +0100
+
+    Fixed syntax error
+
+doc/syntax.page
+
+commit e5ab07d5dbfedb71255c74495643bca5da7cc7d5
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Feb 10 15:30:50 2010 +0100
+
+    Fixed potential future problem with escape regexp in HTML converter
+
+lib/kramdown/converter/html.rb
+
+commit ab862baa4612736c64b153b9426720ce1c56205a
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Feb 8 17:15:11 2010 +0100
+
+    Enhanced the kramdown binary
+
+bin/kramdown
+doc/news/release_0_5_0.page
+lib/kramdown/options.rb
+
+commit 38e6052580225bbb42c32499c4c699dac5e0762a
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Feb 8 16:56:37 2010 +0100
+
+    Small API doc update
+
+lib/kramdown/converter/html.rb
+
+commit 6acf84b84a4eed2706888dd31364dbc5e0ed65be
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Feb 8 16:51:24 2010 +0100
+
+    Implemented better options mechanism
+    
+    Parser/converter options can now be defined easily
+
+lib/kramdown/converter/html.rb
+lib/kramdown/document.rb
+lib/kramdown/options.rb
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/extension.rb
+lib/kramdown/parser/kramdown/header.rb
+lib/kramdown/parser/kramdown/html.rb
+
+commit d2cb1882a9c4e0dd3d094a393c8c37a0631910ac
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Feb 5 18:41:09 2010 +0100
+
+    The quotation mark " is not converted to &quot; in normal text anymore
+
+doc/news/release_0_5_0.page
+lib/kramdown/converter/html.rb
+test/testcases/span/01_link/reference.html
+
+commit c2e7145bd8fa1723bb97803840f04937c092fd1f
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Feb 4 10:03:16 2010 +0100
+
+    Bumped version number
+
+doc/news/release_0_5_0.page
+lib/kramdown/version.rb
+
+commit 400283889466d95724eed6169a306d411940bbc8
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Feb 4 09:56:54 2010 +0100
+
+    Code restructurations
+    
+    * Moved default options away from Document into parser and converter classes
+    * Moved definition of Extension class to where it belongs, the kramdown parser
+    * Moved HTML converter class into lib/kramdown/converter/html.rb
+
+lib/kramdown/converter.rb
+lib/kramdown/converter/html.rb
+lib/kramdown/document.rb
+lib/kramdown/extension.rb
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/extension.rb
+lib/kramdown/parser/kramdown/header.rb
+lib/kramdown/parser/kramdown/html.rb
+
+commit 0ea859157e8f30d488a8e1f78407466c369cc717
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Feb 4 09:10:32 2010 +0100
+
+    Fixed problems with multibyte encodings in Ruby 1.9
+    
+    The StringScanner class returns positions based on bytes and not based on
+    characters. Therefore a workaround was needed sothat multibyte encoded
+    documents are parsed correctly
+
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/emphasis.rb
+lib/kramdown/parser/kramdown/html.rb
+lib/kramdown/parser/kramdown/link.rb
+test/testcases/encoding.html
+test/testcases/encoding.text
+
+commit fa3d9d59c3e912a011a26f10a74ee0858cafe4dd
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Jan 22 17:41:32 2010 +0100
+
+    Small fix for testing script
+
+benchmark/testing.sh
+
+commit 8c765d5783b460a46fdd8b547eeca91e7f48f0da
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Jan 22 17:38:10 2010 +0100
+
+    Updated release file and homepage
+
+doc/index.page
+doc/news/release_0_4_0.page
+
+commit c6f7bcea913b19cc8c255f9a0358188db54cead4
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Jan 22 17:37:53 2010 +0100
+
+    Updated benchmark data
+
+benchmark/historic-jruby-1.4.0.dat
+benchmark/historic-ruby-1.8.6.dat
+benchmark/historic-ruby-1.8.7.dat
+benchmark/historic-ruby-1.9.1p243.dat
+benchmark/historic-ruby-1.9.2dev.dat
+doc/img/graph-jruby-1.4.0.png
+doc/img/graph-ruby-1.8.6.png
+doc/img/graph-ruby-1.8.7.png
+doc/img/graph-ruby-1.9.1p243.png
+doc/img/graph-ruby-1.9.2dev.png
+
+commit 2d531e0984e9db1656e1d7dbde0dbc3c96383d05
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Jan 22 16:55:48 2010 +0100
+
+    Small fix for syntax highlighting test
+
+test/testcases/block/12_extension/options3.html
+
+commit e3f053d87d85ba0c36befe489fe777b954f04079
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Jan 20 18:39:25 2010 +0100
+
+    Implemented syntax highlighting of codeblocks via CodeRay library
+
+doc/index.page
+doc/news/release_0_4_0.page
+doc/syntax.page
+lib/kramdown/converter.rb
+lib/kramdown/document.rb
+lib/kramdown/extension.rb
+lib/kramdown/parser/kramdown/attribute_list.rb
+test/testcases/block/12_extension/options3.html
+test/testcases/block/12_extension/options3.text
+
+commit 9753aa172982fe6b9766b032017a747d00b1a1b3
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Jan 20 18:37:09 2010 +0100
+
+    Various small fixes
+
+Rakefile
+doc/news/release_0_1_0.page
+doc/quickref.page
+doc/syntax.page
+
+commit 5c6215f4b8bf26801f6f4af81591ce5714e4abfc
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Jan 20 17:51:21 2010 +0100
+
+    Updated codeblock parser implementation
+    
+    Codeblock lines separated by blank lines are not parsed separately anymore
+
+lib/kramdown/parser/kramdown/codeblock.rb
+lib/kramdown/parser/kramdown/footnote.rb
+test/testcases/block/06_codeblock/with_blank_line.text
+test/testcases/block/11_ial/simple.html
+test/testcases/block/11_ial/simple.text
+
+commit b9de73dd48590e47a5753f272478f88378ada709
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Jan 20 15:46:43 2010 +0100
+
+    Clarified how options set through the options extension are used
+
+doc/syntax.page
+
+commit e371bd8ecbbfe1df200240ccd13562dcb8927940
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Jan 19 14:58:32 2010 +0100
+
+    Fixed problem with too many alignment definitions on header sep line
+
+lib/kramdown/parser/kramdown/table.rb
+test/testcases/block/14_table/header.html
+test/testcases/block/14_table/header.text
+
+commit 8360bed28e436ee621848f60b7db7c2f29ffb573
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Jan 19 14:49:19 2010 +0100
+
+    Updated table spec and implementation sothat header sep lines are a subset of sep lines
+
+doc/syntax.page
+lib/kramdown/parser/kramdown/table.rb
+test/testcases/block/14_table/header.html
+test/testcases/block/14_table/header.text
+
+commit 59cf34d9a9efd70a69b324097148199bf70b8189
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Jan 16 08:13:18 2010 +0100
+
+    Small fix in table separator line regexps
+
+lib/kramdown/parser/kramdown/table.rb
+
+commit 6e77f79a5bc37e94267da8b4a42be6da036e6f81
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Jan 15 12:14:42 2010 +0100
+
+    Fixed problem with escaped characters
+    
+    * Added colon to the list of escaped characters in the syntax document
+    * Added test cases for escaped colons and pipes
+    * Fixed bug in regexp for escaped characters
+
+doc/news/release_0_4_0.page
+doc/syntax.page
+lib/kramdown/parser/kramdown/escaped_chars.rb
+test/testcases/block/13_definition_list/no_def_list.html
+test/testcases/block/13_definition_list/no_def_list.text
+test/testcases/block/14_table/no_table.html
+test/testcases/block/14_table/no_table.text
+test/testcases/span/escaped_chars/normal.html
+test/testcases/span/escaped_chars/normal.text
+
+commit df5ac74abffb0d78ac3ed05c155c36a83e4af273
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Jan 14 12:09:55 2010 +0100
+
+    Two small doc fixes
+
+doc/syntax.page
+
+commit a1f6c3c755c1b18502403c1ac6236a5dbcd47dd8
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Jan 14 08:45:04 2010 +0100
+
+    Fixed test case for table headers
+
+test/testcases/block/14_table/header.html
+
+commit b79822c8a78729be53a1d9a9db3f783c3b22a0ae
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Jan 14 08:44:17 2010 +0100
+
+    Reimplemented HTML converter to use post- instead of pre-order iteration
+    
+    This is needed to ease the implementation of the td/th conversion.
+    It is also a little bit faster than the old version.
+
+lib/kramdown/converter.rb
+
+commit 17caef2da4cbe065e0509ca59e04daee8baca425
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Jan 13 15:36:34 2010 +0100
+
+    Changed CSS class name kramdown-footnotes to footnotes
+
+doc/news/release_0_4_0.page
+lib/kramdown/converter.rb
+test/testcases/block/12_extension/options.html
+test/testcases/block/12_extension/options2.html
+test/testcases/span/04_footnote/footnote_nr.html
+test/testcases/span/04_footnote/markers.html
+
+commit d446c6ee421e983bd4cd5a13d3f3341523a3d594
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Jan 13 15:25:46 2010 +0100
+
+    Bumped version number and added release notes file
+
+doc/news/release_0_4_0.page
+lib/kramdown/version.rb
+
+commit 0473b0c40d6a20749772042b64472c5f6514ec0b
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Jan 13 15:10:57 2010 +0100
+
+    Updated table syntax and implemented it
+
+doc/quickref.page
+doc/syntax.page
+lib/kramdown/converter.rb
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/table.rb
+test/testcases/block/14_table/errors.html
+test/testcases/block/14_table/errors.text
+test/testcases/block/14_table/footer.html
+test/testcases/block/14_table/footer.text
+test/testcases/block/14_table/header.html
+test/testcases/block/14_table/header.text
+test/testcases/block/14_table/simple.html
+test/testcases/block/14_table/simple.text
+
+commit d8d032bcb399593d77a15d8269ada8884ba14fa0
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Jan 13 10:04:57 2010 +0100
+
+    Clarified one point regarding HTML span parsing
+
+doc/syntax.page
+test/testcases/block/09_html/parse_as_span.html
+test/testcases/block/09_html/parse_as_span.text
+
+commit 423ec50ba84518d1b734c396000492da217f5b99
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Jan 4 21:52:15 2010 +0100
+
+    Third table syntax proposal
+
+doc/syntax.page
+
+commit 66427040dea52007c24ea4df0dd6484b53b11f30
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Dec 31 09:26:17 2009 +0100
+
+    Second table syntax proposal
+
+doc/syntax.page
+
+commit 4b2d39389cee746ee384e35bdfa60bf5c7313eb4
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Dec 30 08:53:15 2009 +0100
+
+    First table syntax proposal
+
+doc/syntax.page
+
+commit fff933c46a6345aca7ee2333b6c71d9466b0e297
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun Dec 20 16:20:10 2009 +0100
+
+    Small doc update before release
+
+doc/index.page
+doc/installation.page
+
+commit e1e97bcfeea51c1e3fe5afa787132e24d59fd968
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun Dec 20 16:18:54 2009 +0100
+
+    Small display fix
+
+benchmark/generate_data.rb
+
+commit d80c3782881777c246e971db4f86c7ff16241c7f
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun Dec 20 16:18:47 2009 +0100
+
+    Added kramdown 0.3.0 data to benchmark and graphs
+
+benchmark/historic-jruby-1.4.0.dat
+benchmark/historic-ruby-1.8.6.dat
+benchmark/historic-ruby-1.8.7.dat
+benchmark/historic-ruby-1.9.1p243.dat
+benchmark/historic-ruby-1.9.2dev.dat
+doc/img/graph-jruby-1.4.0.png
+doc/img/graph-ruby-1.8.6.png
+doc/img/graph-ruby-1.8.7.png
+doc/img/graph-ruby-1.9.1p243.png
+doc/img/graph-ruby-1.9.2dev.png
+
+commit 064f97f9bace384a54373f4dca168911dbccf19f
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun Dec 20 15:59:11 2009 +0100
+
+    Updated release notes
+
+doc/news/release_0_3_0.page
+
+commit 9041790eb12fedc914d6a9511640e41deeadfcd4
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Dec 15 08:02:55 2009 +0100
+
+    Updated release notes
+
+doc/news/release_0_3_0.page
+
+commit e737974d5cdd9efcf381f3cd1d47809f6a5fbeb2
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Dec 15 07:59:44 2009 +0100
+
+    Span HTML parser now uses the same semantics for invalid end tags and unclosed tags as block HTML parser
+
+doc/syntax.page
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/html.rb
+test/testcases/span/05_html/normal.html
+test/testcases/span/05_html/normal.text
+
+commit cf9330e6f27f21e9a93251d78da61cb8be549671
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Dec 15 07:35:41 2009 +0100
+
+    Updated release notes
+
+doc/news/release_0_3_0.page
+
+commit cd36641782835ddb7f32a0d83131db6193404f5e
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Dec 15 07:31:11 2009 +0100
+
+    Fixed bug in emphasis parser
+    
+    Emphasis started with an underscore at the beginning of a new line inside
+    a paragraph was not recognized.
+
+lib/kramdown/parser/kramdown/emphasis.rb
+test/testcases/span/02_emphasis/normal.html
+test/testcases/span/02_emphasis/normal.text
+
+commit 59d9be0976970cb33248c81c81d0500c2cfbb4ce
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Dec 15 07:22:39 2009 +0100
+
+    Small update to the HTML syntax documentation
+
+doc/syntax.page
+
+commit ba0d7e1dc9deb8837c95e2f1f9e0f59cdfa93d33
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Dec 14 10:56:57 2009 +0100
+
+    Fixed some flaws in the HTML parser
+    
+    * raw HTML parsing did not work as specified in the syntax documentation
+    * XML comments/PIs now have their own element type
+    * fixed a small problem with autolinks in raw HTML blocks
+    * adjusted parsing of unclosed raw HTML blocks to adhere to syntax documentation
+
+lib/kramdown/converter.rb
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/footnote.rb
+lib/kramdown/parser/kramdown/html.rb
+test/testcases/block/09_html/not_parsed.html
+test/testcases/block/09_html/not_parsed.text
+test/testcases/block/09_html/parse_as_raw.html
+test/testcases/block/09_html/parse_as_raw.text
+test/testcases/span/05_html/markdown_attr.html
+test/testcases/span/05_html/markdown_attr.text
+
+commit b85972868dd907fd102b665421d51c9bb86c3d86
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun Dec 13 19:42:45 2009 +0100
+
+    Fixed Maruku version number display
+
+benchmark/benchmark.rb
+
+commit 94e89b51cf33bae5cee929fa8ce97703f2fee6fc
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun Dec 13 19:42:28 2009 +0100
+
+    Fixed warning on Ruby 1.9
+
+lib/kramdown/parser/kramdown/list.rb
+
+commit d3df238aeb533302bafbcc3fe8246dedd74b42f7
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun Dec 13 19:42:04 2009 +0100
+
+    Implemented a new HTML block parser
+    
+    The new parser is a little bit more restrictive but the surprise factor
+    for most HTML input should be less than before.
+
+doc/syntax.page
+lib/kramdown/converter.rb
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/html.rb
+test/testcases/block/09_html/comment.html
+test/testcases/block/09_html/comment.text
+test/testcases/block/09_html/content_model/tables.text
+test/testcases/block/09_html/not_parsed.html
+test/testcases/block/09_html/not_parsed.text
+test/testcases/block/09_html/parse_as_raw.html
+test/testcases/block/09_html/parse_block_html.html
+test/testcases/block/09_html/parse_block_html.text
+test/testcases/block/09_html/processing_instruction.html
+test/testcases/block/09_html/processing_instruction.text
+test/testcases/block/09_html/simple.html
+test/testcases/block/09_html/simple.text
+
+commit cb8333118e7d70719bd25a6ef44c38e98af1d44f
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Dec 9 14:51:24 2009 +0100
+
+    Added benchmark data and graphs from this data to the tests page
+
+benchmark/generate_data.rb
+benchmark/historic-jruby-1.4.0.dat
+benchmark/historic-ruby-1.8.6.dat
+benchmark/historic-ruby-1.8.7.dat
+benchmark/historic-ruby-1.9.1p243.dat
+benchmark/historic-ruby-1.9.2dev.dat
+benchmark/static-jruby-1.4.0.dat
+benchmark/static-ruby-1.8.6.dat
+benchmark/static-ruby-1.8.7.dat
+benchmark/static-ruby-1.9.1p243.dat
+benchmark/static-ruby-1.9.2dev.dat
+doc/img/graph-jruby-1.4.0.png
+doc/img/graph-ruby-1.8.6.png
+doc/img/graph-ruby-1.8.7.png
+doc/img/graph-ruby-1.9.1p243.png
+doc/img/graph-ruby-1.9.2dev.png
+doc/tests.page
+
+commit 78d9311ef919d9467502f053f416238937fb2746
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Dec 8 09:45:56 2009 +0100
+
+    Source code restructuration
+    
+    * email obfuscation is part of conversion now since it makes more sense there
+    * block parsers can now be enabled/disabled by the parser methods
+    * parsers methods put into various files
+
+lib/kramdown/converter.rb
+lib/kramdown/parser.rb
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/attribute_list.rb
+lib/kramdown/parser/kramdown/autolink.rb
+lib/kramdown/parser/kramdown/blank_line.rb
+lib/kramdown/parser/kramdown/blockquote.rb
+lib/kramdown/parser/kramdown/codeblock.rb
+lib/kramdown/parser/kramdown/codespan.rb
+lib/kramdown/parser/kramdown/emphasis.rb
+lib/kramdown/parser/kramdown/eob.rb
+lib/kramdown/parser/kramdown/escaped_chars.rb
+lib/kramdown/parser/kramdown/extension.rb
+lib/kramdown/parser/kramdown/footnote.rb
+lib/kramdown/parser/kramdown/header.rb
+lib/kramdown/parser/kramdown/horizontal_rule.rb
+lib/kramdown/parser/kramdown/html.rb
+lib/kramdown/parser/kramdown/html_entity.rb
+lib/kramdown/parser/kramdown/line_break.rb
+lib/kramdown/parser/kramdown/link.rb
+lib/kramdown/parser/kramdown/list.rb
+lib/kramdown/parser/kramdown/paragraph.rb
+lib/kramdown/parser/kramdown/typographic_symbol.rb
+lib/kramdown/parser/registry.rb
+
+commit 13c1b5037d5ada5f661dc09ef3f1f18b437ed0f1
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Dec 8 08:35:32 2009 +0100
+
+    Added note about spelling of kramdown
+
+doc/index.page
+
+commit f8f9e65ea3e980286086b7bc25ce6126ea5a2332
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Dec 4 23:03:15 2009 +0100
+
+    Updated tested platforms and ruby versions
+
+doc/installation.page
+
+commit 06d1ff82de3a02c612b912e6384b89feb00a6e0a
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Dec 4 21:02:03 2009 +0100
+
+    Removed deprecated methods
+
+lib/kramdown/deprecated.rb
+lib/kramdown/document.rb
+
+commit 1591c98a983398b8867c9aaf5151dc3021e2eedf
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Dec 4 21:00:29 2009 +0100
+
+    Bumped version number and added release notes file
+
+doc/news/release_0_3_0.page
+lib/kramdown/version.rb
+
+commit b93f953c14e8c6c23951e5f78541f5ab69dc2b93
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Dec 4 20:56:29 2009 +0100
+
+    Added a compatibility fix so that kramdown works under Ruby 1.8.5
+
+benchmark/testing.sh
+lib/kramdown/compatibility.rb
+lib/kramdown/document.rb
+
+commit 84bbbdd91686ada39b99af5b5cdd61d212065c9a
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Dec 4 08:13:15 2009 +0100
+
+    Fixed typos in the documentation
+
+doc/quickref.page
+doc/syntax.page
+
+commit 034525fb53f178da9498e0f653c382a17549ca3a
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Dec 3 20:25:17 2009 +0100
+
+    Updated release notes
+
+doc/index.page
+doc/news/release_0_2_0.page
+
+commit 89fc586b5f70ccfc8facfae48aa0a0ce31df1d73
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Dec 3 14:25:46 2009 +0100
+
+    Documentation updates
+    
+    * Added definition list examples to quick reference
+    * Added more head lines for quicker access to syntax documentation
+
+doc/quickref.page
+doc/syntax.page
+
+commit 4272568be7c735411faf456e98066d5b51989634
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Dec 3 08:43:46 2009 +0100
+
+    Implemented definition list syntax
+
+doc/syntax.page
+lib/kramdown/converter.rb
+lib/kramdown/parser.rb
+test/testcases/block/02_eob/middle.html
+test/testcases/block/13_definition_list/definition_at_beginning.html
+test/testcases/block/13_definition_list/definition_at_beginning.text
+test/testcases/block/13_definition_list/multiple_terms.html
+test/testcases/block/13_definition_list/multiple_terms.text
+test/testcases/block/13_definition_list/para_wrapping.html
+test/testcases/block/13_definition_list/para_wrapping.text
+test/testcases/block/13_definition_list/separated_by_eob.html
+test/testcases/block/13_definition_list/separated_by_eob.text
+test/testcases/block/13_definition_list/simple.html
+test/testcases/block/13_definition_list/simple.text
+test/testcases/block/13_definition_list/styled_terms.html
+test/testcases/block/13_definition_list/styled_terms.text
+test/testcases/block/13_definition_list/too_much_space.html
+test/testcases/block/13_definition_list/too_much_space.text
+test/testcases/block/13_definition_list/with_blocks.html
+test/testcases/block/13_definition_list/with_blocks.text
+
+commit f7cdd0fa6c647b91be82184a9c4e755f8feed749
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Dec 3 08:29:30 2009 +0100
+
+    Another major update to the HTML parser
+    
+    * script tags in spans are not parsed anymore
+    * trying to fix broken HTML, for example, auto-closing br and hr tags
+    * HTML block tags in spans are now escaped
+    * updated syntax documentation regarding HTML blocks and spans
+
+doc/syntax.page
+lib/kramdown/parser.rb
+test/testcases/block/09_html/invalid_html_2.html
+test/testcases/block/09_html/parse_as_raw.html
+test/testcases/span/05_html/normal.html
+test/testcases/span/05_html/normal.text
+
+commit 70982a61b7c38d34ef7aa420cf0bb05d3b1c1e85
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Dec 2 15:02:41 2009 +0100
+
+    Fixed a problem with parsing HTML
+    
+    When opening and closing an HTML span tag on the same line as an HTML
+    block tag, the closing tag of the span tag was omitted.
+
+lib/kramdown/parser.rb
+test/testcases/block/09_html/not_parsed.html
+test/testcases/block/09_html/not_parsed.text
+
+commit ae805cfcace68d089135d20c6636f8cc74088930
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Dec 1 15:49:10 2009 +0100
+
+    Major update to the HTML block parser
+    
+    Parsing of raw HTML block tags should work much better now since HTML block
+    lines are now processed even inside raw HTML blocks
+
+doc/news/release_0_2_0.page
+doc/syntax.page
+lib/kramdown/converter.rb
+lib/kramdown/parser.rb
+test/testcases/block/09_html/markdown_attr.html
+test/testcases/block/09_html/markdown_attr.text
+test/testcases/block/09_html/not_parsed.html
+test/testcases/block/09_html/not_parsed.text
+test/testcases/block/09_html/parse_as_raw.html
+test/testcases/block/09_html/parse_as_raw.text
+test/testcases/block/09_html/simple.html
+
+commit 7058ee02758f5e66f5a4030ee987685ab0dd5f87
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Dec 1 08:06:28 2009 +0100
+
+    Fixed typo
+
+doc/syntax.page
+
+commit 6af053543fa37132b2b099792fafae364ef0aa21
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Nov 30 16:54:17 2009 +0100
+
+    Added support for setting header IDs via the syntax available in PHP Markdown Extra and Maruku
+
+doc/news/release_0_2_0.page
+doc/syntax.page
+lib/kramdown/parser.rb
+test/testcases/block/04_header/atx_header.html
+test/testcases/block/04_header/atx_header.text
+test/testcases/block/04_header/setext_header.html
+test/testcases/block/04_header/setext_header.text
+
+commit 54ee8f5d1b1f598ed7aa915b4274589652c75019
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Nov 30 16:18:23 2009 +0100
+
+    Small documentation fix
+
+doc/syntax.page
+
+commit 2e221b46b14a50d2832f3ab7817f668fd0a58dee
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Nov 30 16:13:43 2009 +0100
+
+    Four small updates
+    
+    * entities have now their own Element type :entity
+    * typographic symbols have now their own Element type :typographic_sym
+    * removed unnecessary parsing of special HTML chars
+    * small fix for parsing HTML spans
+
+lib/kramdown/converter.rb
+lib/kramdown/parser.rb
+
+commit 915bba0082cb90efa74bb16814dda7ef1bdf0afa
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Nov 30 07:40:39 2009 +0100
+
+    Renamed processing option :first_as_block to :first_is_block
+
+lib/kramdown/converter.rb
+lib/kramdown/parser.rb
+
+commit 03b00f2587f4a69292bce7d0ee3d7996966a5b24
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Nov 30 07:37:03 2009 +0100
+
+    Bug fix: horizontal rules may now also contain tabs as separator
+
+doc/news/release_0_2_0.page
+doc/syntax.page
+lib/kramdown/parser.rb
+test/testcases/block/07_horizontal_rule/sepspaces.html
+test/testcases/block/07_horizontal_rule/sepspaces.text
+test/testcases/block/07_horizontal_rule/septabs.html
+test/testcases/block/07_horizontal_rule/septabs.text
+
+commit 3a99d93b0f677bd8fa9ea3be25b65b48fa24b67a
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 28 10:45:00 2009 +0100
+
+    Clarified a point regarding text on HTML block lines
+
+doc/syntax.page
+
+commit ddbab79d82e7fad5ddfc0841ab4f1ca765b5bc7c
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 28 10:39:47 2009 +0100
+
+    Added the correct content model for parsing th and td tags
+
+lib/kramdown/parser.rb
+test/testcases/block/09_html/content_model/tables.html
+test/testcases/block/09_html/content_model/tables.options
+test/testcases/block/09_html/content_model/tables.text
+test/testcases/block/09_html/tables.html
+test/testcases/block/09_html/tables.options
+test/testcases/block/09_html/tables.text
+
+commit 4b076ad0280fa6f91e6e617ae98f82900df73fdf
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 28 10:35:00 2009 +0100
+
+    Added the correct content model for parsing dd tags
+
+lib/kramdown/parser.rb
+test/testcases/block/09_html/content_model/deflists.html
+test/testcases/block/09_html/content_model/deflists.options
+test/testcases/block/09_html/content_model/deflists.text
+
+commit 6a6f47910fc2283d0a6c83aeb311f1b4e587b300
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 28 10:22:52 2009 +0100
+
+    Small bug fix
+
+Rakefile
+
+commit b4a6faa1c087d5240ac2c5a62d8931aa9f36b830
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 28 10:22:40 2009 +0100
+
+    Made it clearer that kramdown is a Markdown-superset converter
+
+COPYING
+Rakefile
+doc/default.template
+doc/index.page
+doc/news.feed
+doc/quickref.page
+doc/tests.page
+
+commit 7329d179c7a4ff44e99c39dc19a8532d0f203315
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 28 08:59:45 2009 +0100
+
+    Renamed extensions kdoptions to options and nokramdown to nomarkdown
+
+doc/news/release_0_2_0.page
+doc/quickref.page
+doc/syntax.page
+doc/tests.page
+lib/kramdown/deprecated.rb
+lib/kramdown/document.rb
+lib/kramdown/extension.rb
+test/testcases/block/09_html/parse_as_raw.text
+test/testcases/block/12_extension/kdoptions.html
+test/testcases/block/12_extension/kdoptions.text
+test/testcases/block/12_extension/kdoptions2.html
+test/testcases/block/12_extension/kdoptions2.text
+test/testcases/block/12_extension/nokramdown.html
+test/testcases/block/12_extension/nokramdown.text
+test/testcases/block/12_extension/nomarkdown.html
+test/testcases/block/12_extension/nomarkdown.text
+test/testcases/block/12_extension/options.html
+test/testcases/block/12_extension/options.text
+test/testcases/block/12_extension/options2.html
+test/testcases/block/12_extension/options2.text
+
+commit 10188ec8d9ec197214004014e476b8ae541f30dd
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Nov 27 16:53:21 2009 +0100
+
+    Now defaulting to parsing HTML spans since this is what standard Markdown does
+
+doc/news/release_0_2_0.page
+doc/syntax.page
+lib/kramdown/document.rb
+test/testcases/span/05_html/markdown_attr.html
+
+commit 3966cac694de1a58f8472f5366da0a1eb1b60475
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Nov 27 10:15:35 2009 +0100
+
+    Updated release notes
+
+doc/news/release_0_2_0.page
+
+commit eac4769a09f226a56a731518fdfe9d0592ee17e5
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Nov 27 09:59:50 2009 +0100
+
+    Made parsing of HTML elements configurable
+    
+    * added a configuration for enabling/disabling parsing of block and/or span HTML elements
+    * parsing of block and span HTML elements is now disabled by default
+    * added support for the markdown attribute
+
+doc/quickref.page
+doc/syntax.page
+lib/kramdown/document.rb
+lib/kramdown/extension.rb
+lib/kramdown/parser.rb
+test/testcases/block/09_html/auto_parse_block_html.html
+test/testcases/block/09_html/auto_parse_block_html.options
+test/testcases/block/09_html/auto_parse_block_html.text
+test/testcases/block/09_html/html_and_codeblocks.options
+test/testcases/block/09_html/markdown_attr.html
+test/testcases/block/09_html/markdown_attr.text
+test/testcases/block/09_html/not_parsed.html
+test/testcases/block/09_html/not_parsed.text
+test/testcases/block/09_html/parse_as_raw.options
+test/testcases/block/09_html/parse_as_raw.text
+test/testcases/block/09_html/parse_as_span.options
+test/testcases/block/09_html/parse_block_html.html
+test/testcases/block/09_html/parse_block_html.options
+test/testcases/block/09_html/parse_block_html.text
+test/testcases/block/09_html/simple.options
+test/testcases/block/09_html/tables.html
+test/testcases/block/09_html/tables.options
+test/testcases/block/09_html/tables.text
+test/testcases/block/12_extension/kdoptions.html
+test/testcases/block/12_extension/kdoptions.text
+test/testcases/span/05_html/markdown_attr.html
+test/testcases/span/05_html/markdown_attr.text
+
+commit 0f63228e21f931929de590d9c7cfc4b9e03b9cef
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Nov 27 08:31:08 2009 +0100
+
+    Added version number to quickref and syntax doc
+
+doc/quickref.page
+doc/syntax.page
+
+commit e1ffeee1f23a027d307b41a385ccfbcde077b858
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Nov 26 20:49:16 2009 +0100
+
+    Updated HTML block and span parser
+    
+    * span level HTML tags may now be broken across lines
+    * better parsing of block level HTML tags
+    * clarified some points regarding HTML parsing in the syntax spec
+
+doc/syntax.page
+lib/kramdown/converter.rb
+lib/kramdown/parser.rb
+test/testcases/block/09_html/invalid_html_1.html
+test/testcases/block/09_html/parse_as_raw.html
+test/testcases/block/09_html/parse_as_raw.text
+test/testcases/block/09_html/parse_as_span.html
+test/testcases/block/09_html/simple.html
+test/testcases/block/09_html/simple.text
+test/testcases/block/12_extension/kdoptions.html
+test/testcases/span/05_html/across_lines.html
+test/testcases/span/05_html/across_lines.text
+test/testcases/span/05_html/normal.html
+test/testcases/span/05_html/normal.text
+
+commit d7bbb7efcf367b5eebbcbed80307f3c42b6ffbb3
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Nov 25 15:40:25 2009 +0100
+
+    Updated release notes
+
+doc/news/release_0_2_0.page
+
+commit caf2275e87e1de4cea7f9bf10834e052e777dfd3
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Nov 25 15:38:43 2009 +0100
+
+    Fixed bug in parsing of autolinks
+
+lib/kramdown/parser.rb
+test/testcases/span/05_html/link_with_mailto.html
+test/testcases/span/05_html/link_with_mailto.text
+
+commit fc8f8bebf47aad093a382885cb6fd8e92c93409c
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Nov 24 08:02:39 2009 +0100
+
+    Updated parsing of HTML/XML elements
+    
+    * HTML tables should now be parsed correctly
+    * Slight modification of output for HTML elements that appear entirely on one line
+    * Unknown XML/HTML elements are not parsed at all now
+
+doc/syntax.page
+lib/kramdown/converter.rb
+lib/kramdown/parser.rb
+test/testcases/block/09_html/parse_as_raw.html
+test/testcases/block/09_html/parse_as_span.html
+test/testcases/block/09_html/simple.html
+test/testcases/block/09_html/tables.html
+test/testcases/block/09_html/tables.text
+
+commit 19bd62ff33410bfe0d4b8674b7ed20191729d013
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Nov 24 07:28:41 2009 +0100
+
+    Option :auto_ids now defaults to true
+
+Rakefile
+doc/quickref.page
+doc/syntax.page
+lib/kramdown/document.rb
+test/run_tests.rb
+test/test_files.rb
+
+commit 8516e5b56008d601aa7301a9cde5d89190802be3
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Nov 24 07:25:06 2009 +0100
+
+    Bumped version number, moved VERSION const to own file and added release notes file
+
+doc/news/release_0_2_0.page
+lib/kramdown/document.rb
+lib/kramdown/version.rb
+
+commit 8adb0b65681dc7c2f24bc01edeba488ac10beecd
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Nov 24 07:18:43 2009 +0100
+
+    Fixed bug with header IDs
+    
+    When using :auto_ids=true and an IAL to assign an ID to a header,
+    two id attributes were falsely created.
+
+lib/kramdown/parser.rb
+test/testcases/block/11_ial/auto_id_and_ial.html
+test/testcases/block/11_ial/auto_id_and_ial.options
+test/testcases/block/11_ial/auto_id_and_ial.text
+
+commit 6cc1874480b565da30fbf8699df938b7d52637fe
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 21 08:44:47 2009 +0100
+
+    Fixed copy-paste issue
+
+doc/default.template
+
+commit a790a15c11924f08acd39c7f198c6c71cadc80d3
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 21 08:31:07 2009 +0100
+
+    Small fix
+
+Rakefile
+
+commit b41caafafc80ad1beb44b80b925232edd8f6372f
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 21 08:28:14 2009 +0100
+
+    Added benchmark directory files to distribution files
+
+Rakefile
+
+commit dd90da66717ffc8a64d4b80ce259c301853876b1
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 21 08:27:40 2009 +0100
+
+    Added two utility files
+
+benchmark/testing.sh
+benchmark/timing.sh
+
+commit 97ed0a61e78af3474a3a75ca491ae1ecf9e59343
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 21 08:24:52 2009 +0100
+
+    Some small fixes
+
+doc/img/image.jpg
+doc/installation.page
+doc/quickref.page
+
+commit 06c8546d1ecf8b0f61b86b5d2cc3eaec7f5cc49e
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 21 08:11:01 2009 +0100
+
+    Updated Rakefile
+    
+    * added new task for inserting copyright notices in files
+    * fixed the kramdown extension methods
+    * added README and AUTHORS files to the distribution files
+
+Rakefile
+
+commit 24290bdb38e87690e7e80e7bc7cac4b7a207638c
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 21 08:09:55 2009 +0100
+
+    Some small update to the documentation
+
+doc/index.page
+doc/installation.page
+doc/news/release_0_1_0.page
+doc/syntax.page
+
+commit 9ae16c8c44c6332c1bc107d90bda1c1ae9b12cb9
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 21 08:09:17 2009 +0100
+
+    Added AUTHORS and README files
+
+AUTHORS
+README
+
+commit 9343fb993576f58ad93bfb4fc730547399aee9f9
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 21 08:08:46 2009 +0100
+
+    Added copyright notices to files
+
+bin/kramdown
+lib/kramdown.rb
+lib/kramdown/converter.rb
+lib/kramdown/document.rb
+lib/kramdown/error.rb
+lib/kramdown/extension.rb
+lib/kramdown/parser.rb
+lib/kramdown/parser/registry.rb
+test/run_tests.rb
+test/test_files.rb
+
+commit 87f1516a4f982a7009a14861b1c42f2dd611aa5b
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Nov 20 10:45:58 2009 +0100
+
+    Some small refactorings
+    
+    * emphasis parsing redone in a not-hackish way
+    * warnings for unclosed HTML tags are now in the correct order
+    * image links can now be nested inside normal links
+    * removed whitspace checking hack in conversion of codeblocks
+    * refactored parsing of extension blocks
+
+lib/kramdown/converter.rb
+lib/kramdown/parser.rb
+test/testcases/span/01_link/image_in_a.html
+test/testcases/span/01_link/image_in_a.text
+
+commit 416a225e9933ce6621b821a765b6e862c4e4df87
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Nov 17 16:19:30 2009 +0100
+
+    Added custom error class and update error/warning messages
+
+lib/kramdown/document.rb
+lib/kramdown/error.rb
+lib/kramdown/parser.rb
+
+commit 866ed38853fc1fbed10d01655d6576daf38f47a4
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Nov 17 08:17:34 2009 +0100
+
+    Small fix for HTML element output
+
+lib/kramdown/converter.rb
+
+commit 884b957151b7c5b37f4a8e1d9c51effd5c5648c0
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Nov 17 08:17:17 2009 +0100
+
+    Updated extension mechanism
+    
+    * Needed first parameter of an extension method is now parser instance, not current tree
+    * Document instance need not be set on Extension#initialize anymore
+    * kdoptions extension updated to cover all options
+
+lib/kramdown/document.rb
+lib/kramdown/extension.rb
+lib/kramdown/parser.rb
+test/testcases/block/12_extension/kdoptions.html
+test/testcases/block/12_extension/kdoptions.text
+test/testcases/block/12_extension/kdoptions2.html
+test/testcases/block/12_extension/kdoptions2.text
+
+commit 4f3d904090b48de5525e43e6b2e4b3edd3d0c681
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Nov 17 07:44:12 2009 +0100
+
+    Fixed problem with footnote numbering: option :footnote_nr now works
+
+lib/kramdown/converter.rb
+test/testcases/span/04_footnote/footnote_nr.html
+test/testcases/span/04_footnote/footnote_nr.options
+test/testcases/span/04_footnote/footnote_nr.text
+
+commit 2596823c820e433adae373d650da89ef596034e9
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Nov 17 07:19:05 2009 +0100
+
+    Small update to test runners
+
+test/run_tests.rb
+test/test_files.rb
+
+commit 47a03717a8b9d23bc34232ed4877e943272013d3
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Nov 16 20:55:22 2009 +0100
+
+    Fixed problem with HTML tags that must have a closing tag
+
+lib/kramdown/converter.rb
+test/testcases/block/09_html/simple.html
+test/testcases/block/09_html/simple.text
+
+commit 186f4adf9a0341516e3d69e87619c5c4f9fbeb28
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Nov 16 16:51:32 2009 +0100
+
+    Updated parser and converter classes to need only  min. number of necessary arguments
+
+lib/kramdown/converter.rb
+lib/kramdown/document.rb
+lib/kramdown/parser.rb
+
+commit 937f94b677b72e960f7694fb805985f215f36f79
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Nov 16 16:44:58 2009 +0100
+
+    Updated API documentation
+
+lib/kramdown/converter.rb
+lib/kramdown/document.rb
+lib/kramdown/extension.rb
+lib/kramdown/parser.rb
+lib/kramdown/parser/registry.rb
+
+commit a6713a5d2a796907dbbe431cae5759308665cd8e
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Nov 16 08:05:59 2009 +0100
+
+    Removed old rdoc options
+
+Rakefile
+
+commit cb8be4c9ec9ab2d4ee0e9b632b7d26dae081fc86
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun Nov 15 10:15:25 2009 +0100
+
+    Finished first version of quick reference page
+
+Rakefile
+doc/quickref.page
+
+commit c302e96de735e2f473f96e3b09b6f4e2665cd4c3
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun Nov 15 09:40:29 2009 +0100
+
+    Removed sections spec from syntax document
+
+doc/syntax.page
+
+commit 592a2875f24713af89fde985c600f88c7bfc4d2c
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun Nov 15 09:39:49 2009 +0100
+
+    Fixed a problem with footnotes: parse tree was unintentionally modified
+
+lib/kramdown/converter.rb
+
+commit 892cf7893604df0d04e180564569cfd957cb70bd
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 14 18:39:13 2009 +0100
+
+    Added kdoptions extension
+
+doc/syntax.page
+lib/kramdown/document.rb
+lib/kramdown/extension.rb
+test/testcases/block/12_extension/kdoptions.html
+test/testcases/block/12_extension/kdoptions.text
+
+commit d0d13da1232c01ef2511ba87a741db16c59462ca
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 14 15:01:21 2009 +0100
+
+    Added some content to quick reference
+
+Rakefile
+doc/default.css
+doc/quickref.page
+
+commit 9e1899e811385bd3a9994bcd42b0c80fe993a5dc
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 14 14:07:38 2009 +0100
+
+    Fix for empty div tag: must have explicit closing tag
+
+lib/kramdown/converter.rb
+
+commit 16416ca4e610b2caab1d03c47e52904a8326816c
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 14 11:09:15 2009 +0100
+
+    Using string interpolation instead of concatenation bc its faster
+
+lib/kramdown/converter.rb
+
+commit 3111c48c2bfddcd4b89da25ee999242da803b866
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 14 10:24:39 2009 +0100
+
+    Moved handling of IALs from converter to parser
+
+doc/syntax.page
+lib/kramdown/converter.rb
+lib/kramdown/parser.rb
+test/testcases/block/11_ial/simple.html
+test/testcases/block/11_ial/simple.text
+
+commit 121f36cb599e985f0c9a1616c5087fc92467c709
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 14 07:51:29 2009 +0100
+
+    Implemented optional display of whitespace in code blocks
+
+doc/syntax.page
+lib/kramdown/converter.rb
+test/testcases/block/06_codeblock/whitespace.html
+test/testcases/block/06_codeblock/whitespace.text
+
+commit c4fe93fc3eff24c970e22f2971c5c56f606c0eb3
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Nov 13 12:21:41 2009 +0100
+
+    Added correct statcounter tracking code
+
+doc/default.template
+
+commit 380ab04699bb11096527e039435b17de794b15af
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Nov 13 10:46:22 2009 +0100
+
+    Added transformation of ---, --, ..., << and >> into their entity counterparts
+
+doc/syntax.page
+lib/kramdown/parser.rb
+test/testcases/block/07_horizontal_rule/error.html
+test/testcases/span/escaped_chars/normal.html
+test/testcases/span/escaped_chars/normal.text
+test/testcases/span/text_substitutions/typography.html
+test/testcases/span/text_substitutions/typography.text
+
+commit 716ffc11058736318467fb036b0f9d40cbfe1f42
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Nov 12 20:18:52 2009 +0100
+
+    Updated code and test cases to get better code coverage
+
+lib/kramdown/extension.rb
+test/testcases/block/04_header/atx_header.html
+test/testcases/block/04_header/atx_header.text
+test/testcases/block/12_extension/nokramdown.html
+test/testcases/block/12_extension/nokramdown.text
+
+commit b08d9e5d17d8ef3f04b95281827f5c73f5d22067
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Nov 12 09:00:01 2009 +0100
+
+    Small fix for link ids: multiple spaces are converted to one
+
+doc/syntax.page
+lib/kramdown/parser.rb
+test/testcases/span/01_link/reference.html
+test/testcases/span/01_link/reference.text
+
+commit d6f246053de97e1ced8abbeeca73cfda004393a2
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Nov 12 08:46:31 2009 +0100
+
+    Now allowing link URLs to be enclosed in angle brackets
+
+doc/syntax.page
+lib/kramdown/parser.rb
+test/testcases/span/01_link/link_defs.text
+test/testcases/span/01_link/links_with_angle_brackets.html
+test/testcases/span/01_link/links_with_angle_brackets.text
+
+commit 5b5ec9ccf3b64540a96f8e82d50cd9ff4a3e7dce
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Nov 12 08:16:09 2009 +0100
+
+    Now showing warnings in run_tests.rb when in verbose mode
+
+test/run_tests.rb
+
+commit 20d061f2ed6c60d6a931f8301a4c4857e3c2fd79
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Nov 12 08:15:39 2009 +0100
+
+    Some small clarifications and fixes
+
+doc/syntax.page
+
+commit c59f2a75f04a0ce0ce0a6ce78d3b371ffd1542f4
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Nov 12 08:15:22 2009 +0100
+
+    Further refactoring, footnotes work again
+
+lib/kramdown/converter.rb
+lib/kramdown/parser.rb
+
+commit d672b45029488f43819cb341aed3c2eb5f0c7a25
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Nov 11 07:13:18 2009 +0100
+
+    Refactored code and updated test cases
+
+lib/kramdown/converter.rb
+lib/kramdown/parser.rb
+test/testcases/block/08_list/mixed.html
+test/testcases/block/08_list/mixed.text
+test/testcases/block/08_list/nested.html
+test/testcases/block/08_list/nested.text
+test/testcases/block/09_html/parse_as_raw.html
+test/testcases/block/09_html/parse_as_raw.text
+test/testcases/block/09_html/raw_html.html
+test/testcases/block/09_html/raw_html.text
+test/testcases/block/09_html/simple.html
+test/testcases/block/09_html/simple.text
+test/testcases/block/12_extension/ignored.html
+test/testcases/block/12_extension/ignored.text
+test/testcases/span/01_link/link_defs.text
+test/testcases/span/04_footnote/definitions.text
+test/testcases/span/04_footnote/markers.html
+test/testcases/span/04_footnote/markers.text
+test/testcases/span/ial/simple.html
+test/testcases/span/ial/simple.text
+
+commit 6c3d5a4ff4dd8d49fc4732c78dd265394d6db47c
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Nov 9 08:16:46 2009 +0100
+
+    Removed some comments
+
+lib/kramdown/parser.rb
+
+commit 8b877bbd216da87ef7ac316ad23ddddc758c0762
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Nov 9 07:37:42 2009 +0100
+
+    Added test cases for empty span level elements
+
+test/testcases/span/01_link/empty.html
+test/testcases/span/01_link/empty.text
+test/testcases/span/02_emphasis/empty.html
+test/testcases/span/02_emphasis/empty.text
+test/testcases/span/03_codespan/empty.html
+test/testcases/span/03_codespan/empty.text
+
+commit 59e453a4db903b8a79bf30e7a651dc24a93f96bb
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun Nov 8 18:31:26 2009 +0100
+
+    Fixed warning on Ruby 1.9.2
+
+lib/kramdown/parser/registry.rb
+
+commit aa38018f78edcc06916aa8a81d5dae734295bb72
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun Nov 8 18:20:06 2009 +0100
+
+    Updated Rakefile tasks
+
+Rakefile
+
+commit 83a77a129c02a29faba980b6f557b77bd771f28a
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun Nov 8 18:19:57 2009 +0100
+
+    Corrected spelling of kramdown
+
+benchmark/benchmark.rb
+
+commit 241903b2cc74c6be037e5c247d0ea61638f92964
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun Nov 8 18:19:12 2009 +0100
+
+    Updated website for first release
+
+doc/default.css
+doc/default.template
+doc/documentation.page
+doc/img/bg.jpg
+doc/img/image.jpg
+doc/img/line.jpg
+doc/img/shadow.jpg
+doc/index.page
+doc/installation.page
+doc/news.feed
+doc/news.page
+doc/news/release_0_1_0.page
+doc/syntax.page
+doc/tests.page
+doc/virtual
+misc/default.css
+misc/default.template
+misc/htmldoc.metainfo
+misc/htmldoc.virtual
+misc/images/arrow.gif
+misc/images/error.gif
+misc/images/exclamation.gif
+misc/images/headerbg.jpg
+misc/images/information.gif
+misc/images/quote.gif
+website/src/default.template
+website/src/images/feed.gif
+website/src/index.page
+website/src/metainfo
+website/src/news/default.template
+website/src/news/index.page
+website/src/news/news.feed
+website/src/news/release_0_1_0.page
+website/src/virtual
+
+commit ef6dde9d6506f9434d0f5fbccb00fb99d2d65aea
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 7 10:50:57 2009 +0100
+
+    Small update to benchmark suite
+
+benchmark/benchmark.rb
+
+commit efa364c09d33d466dc53d5b0c25e960e90c18170
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 7 08:43:24 2009 +0100
+
+    Added the nokramdown extension
+
+doc/syntax.page
+lib/kramdown/extension.rb
+
+commit 5199da2955a5125f502ca5ca12381221d48286e9
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Nov 7 07:48:01 2009 +0100
+
+    Fixed problem with horizontal rule regexp parsing lines with mixed chars
+
+lib/kramdown/parser.rb
+test/testcases/block/07_horizontal_rule/error.html
+test/testcases/block/07_horizontal_rule/error.text
+test/testcases/block/07_horizontal_rule/normal.html
+test/testcases/block/07_horizontal_rule/normal.text
+
+commit 37201f920274b163a356888f24d4d19fbd162ef1
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Nov 6 16:14:25 2009 +0100
+
+    Updated COPYING file
+
+COPYING
+
+commit 23eadb16a12ee071415edd1877d06248d8b1f12a
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Nov 6 16:13:47 2009 +0100
+
+    Added benchmark
+
+benchmark/benchmark.rb
+benchmark/mdbasics.text
+benchmark/mdsyntax.text
+
+commit 22dcddc2026ddab3d3c386f1a8f21353d4f626b2
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Nov 6 15:06:26 2009 +0100
+
+    Added test case for escaped chars
+
+doc/syntax.page
+test/testcases/span/escaped_chars/normal.html
+test/testcases/span/escaped_chars/normal.text
+
+commit 3e51f4c41feff8fa5912b4ad93c4054183d3d5e5
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Nov 6 15:01:50 2009 +0100
+
+    Clarified what punctuation characters are
+
+doc/syntax.page
+lib/kramdown/parser.rb
+test/testcases/span/01_link/link_defs.html
+test/testcases/span/01_link/link_defs.text
+
+commit 200550d3851b57b0d3b3acd90a592881dae3c447
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Nov 5 20:53:20 2009 +0100
+
+    Removed old HTML parsing library
+
+lib/kramdown/parser/html.rb
+
+commit 4305ef80f68fac62092747a88a95f39b12cd0a9b
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Nov 5 20:51:39 2009 +0100
+
+    Now using GPL v3 as license
+
+COPYING
+GPL
+
+commit a5cb7ce5ff9c513be673f0c80db6138c25616f14
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Nov 5 20:49:45 2009 +0100
+
+    Removed dcov from Rakefile and updated tag line
+
+Rakefile
+
+commit 8d755f9fee0daf5d04b479ece5dce6a9d2d5e463
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Nov 5 09:34:30 2009 +0100
+
+    Small update to extension block spec
+
+doc/syntax.page
+
+commit 9b0888387b1e36c4243c2695b0d53b6258cd3382
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Nov 5 09:34:08 2009 +0100
+
+    Updated extension block test cases
+
+test/testcases/block/12_extension/comment.html
+test/testcases/block/12_extension/comment.text
+
+commit 08b805329452d270575e97f78239b1f0bc77b40e
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Nov 5 09:33:49 2009 +0100
+
+    Implemented extension blocks
+
+lib/kramdown/document.rb
+lib/kramdown/extension.rb
+lib/kramdown/parser.rb
+
+commit bd02049efb2ae2b270b22cb6ac1ebb6027c14f32
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Nov 5 08:41:15 2009 +0100
+
+    Fixed a problem with running kramdown on 1.8.7
+
+lib/kramdown/parser.rb
+
+commit 10fafc53b0cb291499ad4fd30ce313732a63c608
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Nov 4 17:01:28 2009 +0100
+
+    Added main file for require
+
+lib/kramdown.rb
+
+commit 7bec875aa813e10ef35ba7473a7447031d6b2020
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Nov 4 17:00:39 2009 +0100
+
+    Updated parser and converter to adhere to spec
+
+lib/kramdown/converter.rb
+lib/kramdown/document.rb
+lib/kramdown/parser.rb
+lib/kramdown/parser/registry.rb
+
+commit 2c180f53e87683622f6a8d1a76ead51e851540cb
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Nov 4 16:53:13 2009 +0100
+
+    Small update to run_tests script
+
+test/run_tests.rb
+
+commit 5d85e994fad10f8111091a5281305612f4fc8566
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Nov 4 16:45:52 2009 +0100
+
+    Small fix for link test case
+
+test/testcases/span/01_link/imagelinks.html
+
+commit ce32e8ad9863f44ddaeb90f3ad1bad58b6cdd0dc
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Nov 4 09:14:43 2009 +0100
+
+    Another bunch of updates to the syntax spec
+
+doc/syntax.page
+
+commit 484b49e6bb88ef85d7184b3672e17dcf532526d9
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Nov 4 09:12:34 2009 +0100
+
+    Updated various block test cases
+
+test/testcases/block/06_codeblock/with_blank_line.html
+test/testcases/block/06_codeblock/with_blank_line.text
+test/testcases/block/08_list/escaping.html
+test/testcases/block/08_list/escaping.text
+test/testcases/block/08_list/list_and_others.html
+test/testcases/block/08_list/list_and_others.text
+test/testcases/block/11_ial/simple.html
+test/testcases/block/11_ial/simple.text
+
+commit 2711570e47ceb56017eec3b1e668b6647c6a9cfc
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Nov 4 09:11:34 2009 +0100
+
+    Updated HTML block test cases to adhere to spec
+
+test/testcases/block/09_html/auto_parse_block_html.html
+test/testcases/block/09_html/comment.html
+test/testcases/block/09_html/comment.text
+test/testcases/block/09_html/html_and_codeblocks.html
+test/testcases/block/09_html/invalid_html_1.html
+test/testcases/block/09_html/invalid_html_2.html
+test/testcases/block/09_html/parse_as_span.html
+test/testcases/block/09_html/parse_as_span.text
+test/testcases/block/09_html/processing_instruction.html
+test/testcases/block/09_html/processing_instruction.text
+test/testcases/block/09_html/raw_html.html
+test/testcases/block/09_html/raw_html.text
+test/testcases/block/09_html/simple.html
+test/testcases/block/09_html/simple.options
+test/testcases/block/09_html/simple.text
+
+commit 858df82af083e4b9a45bf4a61990d2aebabf7072
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Nov 4 09:09:39 2009 +0100
+
+    Updated and rearranged span test cases
+
+test/testcases/attribute_lists/ial_span.html
+test/testcases/attribute_lists/ial_span.text
+test/testcases/autolinks/url_links.html
+test/testcases/autolinks/url_links.text
+test/testcases/line_breaks/normal.html
+test/testcases/line_breaks/normal.text
+test/testcases/span/02_emphasis/errors.html
+test/testcases/span/02_emphasis/errors.text
+test/testcases/span/02_emphasis/nesting.html
+test/testcases/span/02_emphasis/nesting.text
+test/testcases/span/02_emphasis/normal.html
+test/testcases/span/02_emphasis/normal.text
+test/testcases/span/03_codespan/normal.html
+test/testcases/span/03_codespan/normal.text
+test/testcases/span/04_footnote/markers.html
+test/testcases/span/05_html/normal.html
+test/testcases/span/05_html/normal.text
+test/testcases/span/autolinks/url_links.html
+test/testcases/span/autolinks/url_links.text
+test/testcases/span/ial/simple.html
+test/testcases/span/ial/simple.text
+test/testcases/span/line_breaks/normal.html
+test/testcases/span/line_breaks/normal.text
+test/testcases/span/text_substitutions/entities.html
+test/testcases/span/text_substitutions/entities.text
+test/testcases/span/text_substitutions/greaterthan.html
+test/testcases/span/text_substitutions/greaterthan.text
+test/testcases/span/text_substitutions/lowerthan.html
+test/testcases/span/text_substitutions/lowerthan.text
+test/testcases/text_substitutions/ampersands.html
+test/testcases/text_substitutions/ampersands.text
+test/testcases/text_substitutions/greaterthan.html
+test/testcases/text_substitutions/greaterthan.text
+test/testcases/text_substitutions/lowerthan.html
+test/testcases/text_substitutions/lowerthan.text
+
+commit 5a8286a877a3b9e2a868c06e78a0db57483a0e42
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Oct 24 22:24:39 2009 +0200
+
+    Small fix in footnote definition test case
+
+test/testcases/span/04_footnote/definitions.html
+
+commit a14d9a1062e8516a0a34db1ed69aa33a3a8c876e
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Oct 24 17:57:16 2009 +0200
+
+    Updated list test cases to adhere to spec
+
+test/testcases/block/08_list/list_and_others.html
+test/testcases/block/08_list/list_and_others.text
+test/testcases/block/08_list/mixed.text
+test/testcases/block/08_list/nested.text
+test/testcases/block/08_list/simple_ul.html
+test/testcases/block/08_list/simple_ul.text
+test/testcases/block/08_list/special_cases.html
+test/testcases/block/08_list/special_cases.text
+
+commit 0b80a72a1757faa6314b415751a738ff1cc78d8d
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Oct 24 17:56:25 2009 +0200
+
+    Clarified use of tabs and updated list spec
+
+doc/syntax.page
+
+commit 6c33865ed46b7d5aa7ce229c39b64a5bcb6bb0e3
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Oct 23 16:24:47 2009 +0200
+
+    Adjusted block test cases to conform to spec
+
+test/testcases/block/01_blank_line/spaces.html
+test/testcases/block/01_blank_line/tabs.html
+test/testcases/block/02_eob/beginning.html
+test/testcases/block/02_eob/end.html
+test/testcases/block/02_eob/middle.html
+test/testcases/block/03_paragraph/indented.html
+test/testcases/block/03_paragraph/indented.text
+test/testcases/block/04_header/atx_header.html
+test/testcases/block/04_header/setext_header.html
+test/testcases/block/05_blockquote/nested.html
+test/testcases/block/06_codeblock/error.html
+test/testcases/block/06_codeblock/error.text
+test/testcases/block/10_ald/simple.html
+test/testcases/block/11_ial/simple.html
+
+commit ba929f2b0274b527390b2eead0568527c0aa4316
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Oct 22 20:56:31 2009 +0200
+
+    Updated syntax doc - code blocks may be preceded directly by paragraphs
+
+doc/syntax.page
+
+commit 0d8965a57963b3e6b83bc7076d9f09b93d47fe3a
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Oct 22 20:54:58 2009 +0200
+
+    Deleted test cases for setting options via email like headers
+
+test/testcases/email_header/normal_header.html
+test/testcases/email_header/normal_header.text
+
+commit 9a6dbf97e04e048f7e0c56fa1893bbdd0d6610f5
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Oct 22 20:54:29 2009 +0200
+
+    Moved Document class to lib/kramdown/document.rb file
+
+lib/kramdown.rb
+lib/kramdown/document.rb
+
+commit 35b62cdd076fb89c7f9ef78af53ec8229ff536b5
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Oct 21 15:28:06 2009 +0200
+
+    Small updated to syntax spec
+
+doc/syntax.page
+
+commit 2da8d4841b43e8ba5633e1dee47d3da2ae28b0b0
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Oct 21 08:21:58 2009 +0200
+
+    Updated span level element testcases
+
+test/testcases/codespans/errors.html
+test/testcases/codespans/errors.text
+test/testcases/codespans/normal.html
+test/testcases/codespans/normal.text
+test/testcases/emphases/errors.html
+test/testcases/emphases/errors.text
+test/testcases/emphases/normal.html
+test/testcases/emphases/normal.text
+test/testcases/footnotes/definitions.html
+test/testcases/footnotes/definitions.text
+test/testcases/footnotes/markers.html
+test/testcases/footnotes/markers.text
+test/testcases/html_inline/normal.html
+test/testcases/html_inline/normal.text
+test/testcases/links/imagelinks.html
+test/testcases/links/imagelinks.text
+test/testcases/links/inline.html
+test/testcases/links/inline.text
+test/testcases/links/link_defs.html
+test/testcases/links/link_defs.text
+test/testcases/links/reference.html
+test/testcases/links/reference.text
+test/testcases/span/01_link/imagelinks.html
+test/testcases/span/01_link/imagelinks.text
+test/testcases/span/01_link/inline.html
+test/testcases/span/01_link/inline.text
+test/testcases/span/01_link/link_defs.html
+test/testcases/span/01_link/link_defs.text
+test/testcases/span/01_link/reference.html
+test/testcases/span/01_link/reference.text
+test/testcases/span/02_emphasis/errors.html
+test/testcases/span/02_emphasis/errors.text
+test/testcases/span/02_emphasis/normal.html
+test/testcases/span/02_emphasis/normal.text
+test/testcases/span/03_codespan/errors.html
+test/testcases/span/03_codespan/errors.text
+test/testcases/span/03_codespan/normal.html
+test/testcases/span/03_codespan/normal.text
+test/testcases/span/04_footnote/definitions.html
+test/testcases/span/04_footnote/definitions.text
+test/testcases/span/04_footnote/markers.html
+test/testcases/span/04_footnote/markers.text
+test/testcases/span/05_html/normal.html
+test/testcases/span/05_html/normal.text
+
+commit 94f5780edc4baa0e2ae7ec0924a9012675b8a1e5
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Oct 21 07:55:43 2009 +0200
+
+    Updated ALD, block IAL testcases and added simple extension block test case
+
+test/testcases/attribute_lists/ald.html
+test/testcases/attribute_lists/ald.text
+test/testcases/attribute_lists/ial_block.html
+test/testcases/attribute_lists/ial_block.text
+test/testcases/block/10_ald/simple.html
+test/testcases/block/10_ald/simple.text
+test/testcases/block/11_ial/simple.html
+test/testcases/block/11_ial/simple.text
+test/testcases/block/12_extension/comment.html
+test/testcases/block/12_extension/comment.text
+
+commit 774cefd0bc6ad28a7f1ea6c675e7e1ee5fbc2279
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Oct 21 07:41:48 2009 +0200
+
+    Some more updates to syntax spec
+    
+    * Reviewed the span level elements and slightly updated their spec
+    * Add block level element for defining extension blocks
+
+doc/syntax.page
+
+commit 2e4c49c63883dec300beaa85c5346551a398cd78
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Oct 19 18:22:19 2009 +0200
+
+    Updated paragraph test cases
+
+test/testcases/block/03_paragraph/indented.html
+test/testcases/block/03_paragraph/indented.text
+
+commit 77be09026314e7441cb9517f0d7f529532cbda4f
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Oct 19 18:21:30 2009 +0200
+
+    Updated block html test cases
+
+test/testcases/block/09_html/auto_parse_block_html.html
+test/testcases/block/09_html/auto_parse_block_html.options
+test/testcases/block/09_html/auto_parse_block_html.text
+test/testcases/block/09_html/comment.html
+test/testcases/block/09_html/comment.text
+test/testcases/block/09_html/filtered_html.html
+test/testcases/block/09_html/filtered_html.options
+test/testcases/block/09_html/filtered_html.text
+test/testcases/block/09_html/html_and_codeblocks.html
+test/testcases/block/09_html/html_and_codeblocks.options
+test/testcases/block/09_html/html_and_codeblocks.text
+test/testcases/block/09_html/invalid_html_1.html
+test/testcases/block/09_html/invalid_html_1.text
+test/testcases/block/09_html/invalid_html_2.html
+test/testcases/block/09_html/invalid_html_2.text
+test/testcases/block/09_html/processing_instruction.html
+test/testcases/block/09_html/processing_instruction.text
+test/testcases/block/09_html/simple.html
+test/testcases/block/09_html/simple.options
+test/testcases/block/09_html/simple.text
+test/testcases/html_blocks/auto_parse_block_html.html
+test/testcases/html_blocks/auto_parse_block_html.options
+test/testcases/html_blocks/auto_parse_block_html.text
+test/testcases/html_blocks/comment.html
+test/testcases/html_blocks/comment.text
+test/testcases/html_blocks/filtered_html.html
+test/testcases/html_blocks/filtered_html.options
+test/testcases/html_blocks/filtered_html.text
+test/testcases/html_blocks/html_and_codeblocks.html
+test/testcases/html_blocks/html_and_codeblocks.options
+test/testcases/html_blocks/html_and_codeblocks.text
+test/testcases/html_blocks/invalid_html_1.html
+test/testcases/html_blocks/invalid_html_1.text
+test/testcases/html_blocks/invalid_html_2.html
+test/testcases/html_blocks/invalid_html_2.text
+test/testcases/html_blocks/processing_instruction.html
+test/testcases/html_blocks/processing_instruction.text
+test/testcases/html_blocks/simple.html
+test/testcases/html_blocks/simple.options
+test/testcases/html_blocks/simple.text
+
+commit 621c4d49878b3ab7d5756b8d3eb1e1b8a1032bec
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Oct 19 18:23:15 2009 +0200
+
+    Modifications regarding paragraphs and HTML blocks
+    
+    * Code blocks cannot directly follow paragraphs anymore, there needs
+      to be a blank line between them
+    * HTML blocks are now better defined
+
+doc/syntax.page
+
+commit 5dfab8e7da0c4d6d5027277b5c7a5741ff558529
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Oct 16 21:20:21 2009 +0200
+
+    Updated test cases
+    
+    * Moved block test cases into block/ sub directory
+    * Added test cases for blank lines and EOB marker
+    * Adjusted test cases to comply to specification
+
+test/testcases/block/01_blank_line/spaces.html
+test/testcases/block/01_blank_line/spaces.text
+test/testcases/block/01_blank_line/tabs.html
+test/testcases/block/01_blank_line/tabs.text
+test/testcases/block/02_eob/beginning.html
+test/testcases/block/02_eob/beginning.text
+test/testcases/block/02_eob/end.html
+test/testcases/block/02_eob/end.text
+test/testcases/block/02_eob/middle.html
+test/testcases/block/02_eob/middle.text
+test/testcases/block/03_paragraph/indented.html
+test/testcases/block/03_paragraph/indented.text
+test/testcases/block/03_paragraph/no_newline_at_end.html
+test/testcases/block/03_paragraph/no_newline_at_end.text
+test/testcases/block/03_paragraph/one_para.html
+test/testcases/block/03_paragraph/one_para.text
+test/testcases/block/03_paragraph/two_para.html
+test/testcases/block/03_paragraph/two_para.text
+test/testcases/block/04_header/atx_header.html
+test/testcases/block/04_header/atx_header.text
+test/testcases/block/04_header/atx_header_no_newline_at_end.html
+test/testcases/block/04_header/atx_header_no_newline_at_end.text
+test/testcases/block/04_header/setext_header.html
+test/testcases/block/04_header/setext_header.text
+test/testcases/block/04_header/setext_header_no_newline_at_end.html
+test/testcases/block/04_header/setext_header_no_newline_at_end.text
+test/testcases/block/04_header/with_auto_ids.html
+test/testcases/block/04_header/with_auto_ids.options
+test/testcases/block/04_header/with_auto_ids.text
+test/testcases/block/05_blockquote/indented.html
+test/testcases/block/05_blockquote/indented.text
+test/testcases/block/05_blockquote/nested.html
+test/testcases/block/05_blockquote/nested.text
+test/testcases/block/05_blockquote/no_newline_at_end.html
+test/testcases/block/05_blockquote/no_newline_at_end.text
+test/testcases/block/05_blockquote/only_first_quoted.html
+test/testcases/block/05_blockquote/only_first_quoted.text
+test/testcases/block/05_blockquote/with_code_blocks.html
+test/testcases/block/05_blockquote/with_code_blocks.text
+test/testcases/block/06_codeblock/no_newline_at_end.html
+test/testcases/block/06_codeblock/no_newline_at_end.text
+test/testcases/block/06_codeblock/normal.html
+test/testcases/block/06_codeblock/normal.text
+test/testcases/block/06_codeblock/tilde_syntax.html
+test/testcases/block/06_codeblock/tilde_syntax.text
+test/testcases/block/06_codeblock/with_blank_line.html
+test/testcases/block/06_codeblock/with_blank_line.text
+test/testcases/block/06_codeblock/with_eob_marker.html
+test/testcases/block/06_codeblock/with_eob_marker.text
+test/testcases/block/07_horizontal_rule/normal.html
+test/testcases/block/07_horizontal_rule/normal.text
+test/testcases/block/08_list/escaping.html
+test/testcases/block/08_list/escaping.text
+test/testcases/block/08_list/list_and_hr.html
+test/testcases/block/08_list/list_and_hr.text
+test/testcases/block/08_list/list_and_others.html
+test/testcases/block/08_list/list_and_others.text
+test/testcases/block/08_list/mixed.html
+test/testcases/block/08_list/mixed.text
+test/testcases/block/08_list/nested.html
+test/testcases/block/08_list/nested.text
+test/testcases/block/08_list/other_first_element.html
+test/testcases/block/08_list/other_first_element.text
+test/testcases/block/08_list/simple_ol.html
+test/testcases/block/08_list/simple_ol.text
+test/testcases/block/08_list/simple_ul.html
+test/testcases/block/08_list/simple_ul.text
+test/testcases/block/08_list/single_item.html
+test/testcases/block/08_list/single_item.text
+test/testcases/block/08_list/special_cases.html
+test/testcases/block/08_list/special_cases.text
+test/testcases/blockquotes/indented.html
+test/testcases/blockquotes/indented.text
+test/testcases/blockquotes/nested.html
+test/testcases/blockquotes/nested.text
+test/testcases/blockquotes/no_newline_at_end.html
+test/testcases/blockquotes/no_newline_at_end.text
+test/testcases/blockquotes/only_first_quoted.html
+test/testcases/blockquotes/only_first_quoted.text
+test/testcases/blockquotes/with_code_blocks.html
+test/testcases/blockquotes/with_code_blocks.text
+test/testcases/codeblocks/no_newline_at_end.html
+test/testcases/codeblocks/no_newline_at_end.text
+test/testcases/codeblocks/normal.html
+test/testcases/codeblocks/normal.text
+test/testcases/codeblocks/tilde_syntax.html
+test/testcases/codeblocks/tilde_syntax.text
+test/testcases/codeblocks/with_blank_line.html
+test/testcases/codeblocks/with_blank_line.text
+test/testcases/codeblocks/with_eob_marker.html
+test/testcases/codeblocks/with_eob_marker.text
+test/testcases/headers/atx_header.html
+test/testcases/headers/atx_header.text
+test/testcases/headers/setext_header.html
+test/testcases/headers/setext_header.text
+test/testcases/headers/with_auto_ids.html
+test/testcases/headers/with_auto_ids.options
+test/testcases/headers/with_auto_ids.text
+test/testcases/horizontal_rules/normal.html
+test/testcases/horizontal_rules/normal.text
+test/testcases/lists/escaping.html
+test/testcases/lists/escaping.text
+test/testcases/lists/list_and_hr.html
+test/testcases/lists/list_and_hr.text
+test/testcases/lists/list_and_others.html
+test/testcases/lists/list_and_others.text
+test/testcases/lists/mixed.html
+test/testcases/lists/mixed.text
+test/testcases/lists/nested.html
+test/testcases/lists/nested.text
+test/testcases/lists/other_first_element.html
+test/testcases/lists/other_first_element.text
+test/testcases/lists/simple_ol.html
+test/testcases/lists/simple_ol.text
+test/testcases/lists/simple_ul.html
+test/testcases/lists/simple_ul.text
+test/testcases/lists/single_item.html
+test/testcases/lists/single_item.text
+test/testcases/lists/special_cases.html
+test/testcases/lists/special_cases.text
+test/testcases/paragraphs/indented.html
+test/testcases/paragraphs/indented.text
+test/testcases/paragraphs/no_newline_at_end.html
+test/testcases/paragraphs/no_newline_at_end.text
+test/testcases/paragraphs/one_para.html
+test/testcases/paragraphs/one_para.text
+test/testcases/paragraphs/two_para.html
+test/testcases/paragraphs/two_para.text
+
+commit 8145fadea1fb30db0ff9841770fea24617882172
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Oct 16 21:10:19 2009 +0200
+
+    Updated syntax page
+
+doc/syntax.page
+
+commit 8c036139cdb1af146b2d60ddcf3c02c80999545c
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Mar 3 16:25:47 2009 +0100
+
+    Restructured internals to allow adding of arbitrary block/span parsers
+
+lib/kramdown.rb
+lib/kramdown/parser.rb
+lib/kramdown/parser/html.rb
+lib/kramdown/parser/registry.rb
+
+commit 14cabf088d0543e978b81ff009a7d6d8121348b9
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Feb 23 17:33:54 2009 +0100
+
+    First version of better HTML parser
+    
+    - HTML parser now supports basic markdown in HTML block
+    - Ruby 1.9 compatible
+
+lib/kramdown.rb
+lib/kramdown/converter.rb
+lib/kramdown/parser.rb
+lib/kramdown/parser/html.rb
+test/run_tests.rb
+test/testcases/autolinks/url_links.html
+test/testcases/html_blocks/auto_parse_block_html.html
+test/testcases/html_blocks/auto_parse_block_html.options
+test/testcases/html_blocks/auto_parse_block_html.text
+test/testcases/html_blocks/filtered_html.html
+test/testcases/html_blocks/filtered_html.options
+test/testcases/html_blocks/filtered_html.text
+test/testcases/html_blocks/html_and_codeblocks.options
+test/testcases/html_blocks/processing_instruction.html
+test/testcases/html_blocks/processing_instruction.text
+test/testcases/html_blocks/simple.html
+test/testcases/html_blocks/simple.options
+test/testcases/html_blocks/simple.text
+test/testcases/html_inline/normal.html
+
+commit 3d679e402274028fa79083521ea2fa6b44236306
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Jan 14 06:25:01 2009 +0100
+
+    Small adjustment in the handling of line breaks
+
+doc/syntax.page
+lib/kramdown/parser.rb
+test/testcases/line_breaks/normal.html
+test/testcases/line_breaks/normal.text
+
+commit 022038a02a37a602835e6d41a106c4390038593d
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Dec 26 10:50:59 2008 +0100
+
+    Fixed problem with auto header ids and adjusted their format
+    
+    Adjusted format of auto header ids to be more similar to those of Pandoc.
+    
+    Fixed problem with empty IDs and with duplicate IDs.
+
+doc/syntax.page
+lib/kramdown/parser.rb
+test/testcases/headers/with_auto_ids.html
+test/testcases/headers/with_auto_ids.text
+
+commit b9c0f9ebf46dda10ba36e2a7e1ac2df7be30037d
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Dec 26 10:13:19 2008 +0100
+
+    Implemented support for footnotes
+
+doc/syntax.page
+lib/kramdown.rb
+lib/kramdown/converter.rb
+lib/kramdown/parser.rb
+misc/default.css
+test/testcases/footnotes/definitions.html
+test/testcases/footnotes/definitions.text
+test/testcases/footnotes/markers.html
+test/testcases/footnotes/markers.text
+
+commit 196ed6c9709315c976d7174d6d9fb662a082c135
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun Dec 21 09:21:53 2008 +0100
+
+    Fixed small bug in list conversion
+
+lib/kramdown/converter.rb
+test/testcases/lists/simple_ul.html
+test/testcases/lists/simple_ul.text
+
+commit ee6695d662ac923d8a1cd83470d23a329829c5a6
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Dec 19 19:47:33 2008 +0100
+
+    Implemented attribute list definitions and inline attribute lists
+
+Rakefile
+doc/syntax.page
+lib/kramdown.rb
+lib/kramdown/converter.rb
+lib/kramdown/parser.rb
+test/testcases/attribute_lists/ald.html
+test/testcases/attribute_lists/ald.text
+test/testcases/attribute_lists/ial_block.html
+test/testcases/attribute_lists/ial_block.text
+test/testcases/attribute_lists/ial_span.html
+test/testcases/attribute_lists/ial_span.text
+
+commit b5e5c5b1112d87d78c5e701e42a1ebdcc139b23f
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Dec 19 19:25:22 2008 +0100
+
+    Small update to the test cases for horizontal lines
+
+test/testcases/horizontal_rules/normal.html
+test/testcases/horizontal_rules/normal.text
+
+commit a4bbf3ab8cfc5bcf462782f9d63a0d70aa57fe3c
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Dec 17 07:20:17 2008 +0100
+
+    Small optimization
+    
+    Removed not needed regexp, now using result of #check instead
+    of second #scan
+
+lib/kramdown/parser.rb
+
+commit 439c3ad4be3bccd155cc1ca61cfc868924a026fe
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Dec 15 09:17:56 2008 +0100
+
+    Implement automatic header ID generation
+
+doc/syntax.page
+lib/kramdown/parser.rb
+test/test_files.rb
+test/testcases/headers/with_auto_ids.html
+test/testcases/headers/with_auto_ids.options
+test/testcases/headers/with_auto_ids.text
+
+commit 9b7b33d3a2a961fc07aee968af42798b110e460e
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Dec 13 09:47:40 2008 +0100
+
+    Small optimization
+
+lib/kramdown/parser.rb
+
+commit ee0449065558e02affacfe27ff94c8a00d6e9a62
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Dec 13 08:54:34 2008 +0100
+
+    Removed rdiscount from benchmark since it will always be faster
+
+Rakefile
+
+commit ff919700c1377407fe1651a1c7152a227c54da15
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Dec 12 09:15:01 2008 +0100
+
+    Small refactoring and API documentation update
+
+Rakefile
+lib/kramdown.rb
+lib/kramdown/converter.rb
+lib/kramdown/parser.rb
+test/testcases/codespans/normal.html
+test/testcases/codespans/normal.text
+test/testcases/links/inline.html
+test/testcases/links/inline.text
+
+commit f498f888af8f10dccfffd6621ce46068aab980f2
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Dec 9 07:24:55 2008 +0100
+
+    Initial import
+
+COPYING
+GPL
+Rakefile
+bin/kramdown
+doc/documentation.page
+doc/syntax.page
+doc/tests.page
+lib/kramdown.rb
+lib/kramdown/converter.rb
+lib/kramdown/parser.rb
+misc/default.css
+misc/default.template
+misc/htmldoc.metainfo
+misc/htmldoc.virtual
+misc/images/arrow.gif
+misc/images/error.gif
+misc/images/exclamation.gif
+misc/images/headerbg.jpg
+misc/images/information.gif
+misc/images/quote.gif
+setup.rb
+test/run_tests.rb
+test/test_files.rb
+test/testcases/autolinks/url_links.html
+test/testcases/autolinks/url_links.text
+test/testcases/blockquotes/indented.html
+test/testcases/blockquotes/indented.text
+test/testcases/blockquotes/nested.html
+test/testcases/blockquotes/nested.text
+test/testcases/blockquotes/no_newline_at_end.html
+test/testcases/blockquotes/no_newline_at_end.text
+test/testcases/blockquotes/only_first_quoted.html
+test/testcases/blockquotes/only_first_quoted.text
+test/testcases/blockquotes/with_code_blocks.html
+test/testcases/blockquotes/with_code_blocks.text
+test/testcases/codeblocks/no_newline_at_end.html
+test/testcases/codeblocks/no_newline_at_end.text
+test/testcases/codeblocks/normal.html
+test/testcases/codeblocks/normal.text
+test/testcases/codeblocks/tilde_syntax.html
+test/testcases/codeblocks/tilde_syntax.text
+test/testcases/codeblocks/with_blank_line.html
+test/testcases/codeblocks/with_blank_line.text
+test/testcases/codeblocks/with_eob_marker.html
+test/testcases/codeblocks/with_eob_marker.text
+test/testcases/codespans/errors.html
+test/testcases/codespans/errors.text
+test/testcases/codespans/normal.html
+test/testcases/codespans/normal.text
+test/testcases/email_header/normal_header.html
+test/testcases/email_header/normal_header.text
+test/testcases/emphases/errors.html
+test/testcases/emphases/errors.text
+test/testcases/emphases/normal.html
+test/testcases/emphases/normal.text
+test/testcases/headers/atx_header.html
+test/testcases/headers/atx_header.text
+test/testcases/headers/setext_header.html
+test/testcases/headers/setext_header.text
+test/testcases/horizontal_rules/normal.html
+test/testcases/horizontal_rules/normal.text
+test/testcases/html_blocks/comment.html
+test/testcases/html_blocks/comment.text
+test/testcases/html_blocks/html_and_codeblocks.html
+test/testcases/html_blocks/html_and_codeblocks.text
+test/testcases/html_blocks/invalid_html_1.html
+test/testcases/html_blocks/invalid_html_1.text
+test/testcases/html_blocks/invalid_html_2.html
+test/testcases/html_blocks/invalid_html_2.text
+test/testcases/html_blocks/processing_instruction.html
+test/testcases/html_blocks/processing_instruction.text
+test/testcases/html_blocks/simple.html
+test/testcases/html_blocks/simple.text
+test/testcases/html_inline/normal.html
+test/testcases/html_inline/normal.text
+test/testcases/line_breaks/normal.html
+test/testcases/line_breaks/normal.text
+test/testcases/links/imagelinks.html
+test/testcases/links/imagelinks.text
+test/testcases/links/inline.html
+test/testcases/links/inline.text
+test/testcases/links/link_defs.html
+test/testcases/links/link_defs.text
+test/testcases/links/reference.html
+test/testcases/links/reference.text
+test/testcases/lists/escaping.html
+test/testcases/lists/escaping.text
+test/testcases/lists/list_and_hr.html
+test/testcases/lists/list_and_hr.text
+test/testcases/lists/list_and_others.html
+test/testcases/lists/list_and_others.text
+test/testcases/lists/mixed.html
+test/testcases/lists/mixed.text
+test/testcases/lists/nested.html
+test/testcases/lists/nested.text
+test/testcases/lists/other_first_element.html
+test/testcases/lists/other_first_element.text
+test/testcases/lists/simple_ol.html
+test/testcases/lists/simple_ol.text
+test/testcases/lists/simple_ul.html
+test/testcases/lists/simple_ul.text
+test/testcases/lists/single_item.html
+test/testcases/lists/single_item.text
+test/testcases/lists/special_cases.html
+test/testcases/lists/special_cases.text
+test/testcases/paragraphs/indented.html
+test/testcases/paragraphs/indented.text
+test/testcases/paragraphs/no_newline_at_end.html
+test/testcases/paragraphs/no_newline_at_end.text
+test/testcases/paragraphs/one_para.html
+test/testcases/paragraphs/one_para.text
+test/testcases/paragraphs/two_para.html
+test/testcases/paragraphs/two_para.text
+test/testcases/text_substitutions/ampersands.html
+test/testcases/text_substitutions/ampersands.text
+test/testcases/text_substitutions/greaterthan.html
+test/testcases/text_substitutions/greaterthan.text
+test/testcases/text_substitutions/lowerthan.html
+test/testcases/text_substitutions/lowerthan.text
+website/src/default.template
+website/src/images/feed.gif
+website/src/index.page
+website/src/metainfo
+website/src/news/default.template
+website/src/news/index.page
+website/src/news/news.feed
+website/src/news/release_0_1_0.page
+website/src/virtual

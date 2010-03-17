@@ -1,0 +1,62 @@
+input.date
+  background: white url(../../images/admin/calendar_down.gif) right no-repeat
+  padding-right: 26px
+  width: 11em
+
+.calendar_popup
+  +box-shadow
+  +round-corners
+  z-index: 1000
+  border: 1px solid #b2b2b2
+  background-color: white
+  padding: 5px
+  line-height: 140%!important
+  
+  a
+    +round-corners
+  
+  table.calendar
+    font-size: 90%
+    margin: 0!important
+    
+    tr.day_header th
+      border-top: 1px solid #e4e4e4
+      border-bottom: 1px solid #e4e4e4
+      color: #ccc
+      padding: 2px
+    
+    th, td
+      text-align: center
+    
+    th
+      &.back, &.month_year, &.forward
+        padding-bottom: 3px
+    
+    td
+      height: 1em
+      padding: 3px !important
+      margin: 0
+      &.today
+        +round-corners
+        background-color: #e5e5e5
+      &.today a
+        background-color: white
+      &.selected a
+        color: white
+        background-color: #d60
+    
+    a
+      color: black
+      display: block
+      font-family: "Lucida Grande", Tahoma, sans-serif
+      text-decoration: none
+      text-align: center
+      width: 2.25em
+      padding: .2em 0
+      &:hover
+        color: white !important
+        background-color: #3257f4 !important
+
+body.reversed
+  .calendar_popup
+    border: 1px solid white

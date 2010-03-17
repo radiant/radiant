@@ -112,6 +112,7 @@ en:
   published_at: 'Published at' 
   reference:  'Reference'
   remember_me: 'Remember me'
+  remember_me_in_this_browser: 'Remember me in this browser'
   remove: 'Remove'
   remove_layout: 'Remove Layout' 
   remove_page: 'Remove Page'

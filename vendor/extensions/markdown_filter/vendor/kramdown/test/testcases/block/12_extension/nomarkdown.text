@@ -1,0 +1,11 @@
+This is a simple paragraph.
+{::nomarkdown:}
+This *is* not processed 
+{::nomarkdown:}
+And another paragraph
+
+{::nomarkdown:: this='is' .ignore}
+
+Paragraph
+{::nomarkdown:}
+Another paragraph

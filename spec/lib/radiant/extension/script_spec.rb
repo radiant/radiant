@@ -173,9 +173,16 @@ describe "Registry::Action" do
     @action = Registry::Action.new
   end
 
-  it "should shell out with the specified rake task" do
-    @action.should_receive(:`).with("rake sample RAILS_ENV=#{RAILS_ENV}")
-    @action.rake('sample')
+  it "should shell out with the specified rake task if it exists" do
+    rake_file = File.join(RADIANT_ROOT, 'vendor', 'rails', 'railties', 'lib', 'tasks', 'misc.rake')
+    load rake_file
+    @action.should_receive(:`).with("rake secret RAILS_ENV=#{RAILS_ENV}")
+    @action.rake('secret')
+  end
+
+  it "should not shell out with the specified rake task if it does not exist" do
+    @action.should_not_receive(:`).with("rake non_existant_task RAILS_ENV=#{RAILS_ENV}")
+    @action.rake('non_existant_task')
   end
 end
 
