@@ -109,6 +109,7 @@ en:
     error_updating: 'There was an error updating your preferences.'      
     updated: 'Your preferences have been updated.' 
   published: 'Published'
+  published_on: 'Published On'
   published_at: 'Published at' 
   reference:  'Reference'
   remember_me: 'Remember me'
