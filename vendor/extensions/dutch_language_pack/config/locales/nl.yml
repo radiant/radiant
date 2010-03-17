@@ -110,6 +110,7 @@ nl:
     updated: 'Je voorkeuren zijn bijgewerkt.'
   published: 'Gepubliceerd'
   published_at: 'Gepuliceerd op'
+  published_on: 'Gepuliceerd op'
   reference:  'Referentie'
   remember_me: 'Onthoud me'
   remove: 'Verwijderen'

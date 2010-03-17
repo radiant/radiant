@@ -110,6 +110,7 @@ fr:
     updated: "Vos préférences ont été modifiées."
   published: "Publié" 
   published_at: "Publié le" 
+  published_on: "Publié le" 
   reference:  "Référence"
   remember_me: "Conserver mes informations"  
   remove: 'Remove'

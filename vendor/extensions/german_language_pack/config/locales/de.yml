@@ -110,6 +110,7 @@ de:
     updated: 'Ihre Einstellungen wurden aktualisiert.' 
   published: 'Publiziert' 
   published_at: 'Veröffentlicht am' 
+  published_on: 'Veröffentlicht am' 
   reference:  'Referenz'
   remember_me: 'Merken'
   remove: 'Löschen'

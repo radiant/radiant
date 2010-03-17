@@ -110,6 +110,7 @@ ja:
     updated: '設定変更に終了しました。'
   published: '出版'
   published_at: '発行日：'
+  published_on: '発行日：'
   reference: 'ヘルプ'
   remember_me: '次回から自動的にログイン'
   remove: 'Remove'

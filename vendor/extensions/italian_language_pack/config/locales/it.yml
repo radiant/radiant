@@ -110,6 +110,7 @@ it:
     updated: "Preferenze modificate"
   published: "Pubblicato" 
   published_at: "Pubblicato il" 
+  published_on: "Pubblicato il" 
   reference:  "Riferimento"
   remember_me: "Memorizza informazioni"  
   remove: 'Rimuovi'

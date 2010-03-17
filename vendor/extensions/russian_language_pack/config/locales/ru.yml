@@ -110,6 +110,7 @@ ru:
     updated: 'Your preferences have been updated.' 
   published: 'Published'
   published_at: 'Published at' 
+  published_on: 'Published On' 
   reference:  'Reference'
   remember_me: 'Remember me'
   remove: 'Remove'
