@@ -14,17 +14,10 @@
       .row
         - form.edit_filter do
           %p
-<<<<<<< HEAD
             = f.label :filter_id, t('filter')
             = f.select :filter_id, [[t('select.none'), '']] + TextFilter.descendants.map { |f| f.filter_name }.sort, :id => 'snippet_filter'
             %span.reference_links
               == #{t('reference')}:
-=======
-            = f.label :filter_id, "Filter"
-            = f.select :filter_id, [['none', '']] + TextFilter.descendants.map { |f| f.filter_name }.sort, :id => 'snippet_filter'
-            %span.reference_links{:style=>"margin-left: 1em"}
-              Reference:
->>>>>>> master
               %span{:id => "filter_reference_link"}
                 = link_to_function t('filter'), "loadFilterReference();"
               %span{:id => "tag_reference_link"}
