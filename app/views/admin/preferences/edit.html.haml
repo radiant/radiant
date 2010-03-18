@@ -24,13 +24,13 @@
             = f.label :login, t("username")
             = f.text_field "login", :class => "textbox", :size => 32, :maxlength => 40
         
+        - form.edit_password do
+          = render "admin/users/password_fields", :f => f        
+        
         - form.edit_locale do
           %p
             = f.label :locale, t('language') 
             = f.select "locale", Radiant::AvailableLocales.locales.merge({'<default>'=>''})
-            
-        - form.edit_password do
-          = render "admin/users/password_fields", :f => f
       
       - render_region :form_bottom do |form_bottom|
         - form_bottom.edit_buttons do
@@ -38,4 +38,3 @@
             = save_model_button @user
             = t('or')
             = link_to t('cancel'), admin_url
-

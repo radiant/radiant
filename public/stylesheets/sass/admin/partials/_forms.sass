@@ -51,18 +51,19 @@
           &:hover
             background-color: #555
       &.title
-        margin-bottom: 0
         input.textbox
           margin-top: 4px
           font-family: Georgia, Palatino, "Times New Roman", Times, serif
           font-size: 200%
           width: 99.5%
     .set
-      +clearfix
+      float: left
+      width: 100%
+      margin-bottom: 1em
+      clear: both
       p
         float: left
-        margin: 0
-        margin-right: 1em
+        margin: 0 1em 0 0
     .buttons
       color: #666
       font-size: 80%
@@ -72,19 +73,20 @@
       a
         +alt-link
     p.more_or_less
-      margin: 0 0 1em
+      margin: -1em 0 1em
       padding: 4px 0 5px
-      font-size: 80%
+      
       a
         background: #7e7e7e
         border-bottom-left-radius: 6px
         border-bottom-right-radius: 6px
         +round-bottom-corners(6px)
-        text-shadow: #666 1px 1px 0
-        text-decoration: none
-        padding: 4px 27px 5px 10px        
+        font-size: 80%
+        padding: 4px 21px 5px 10px        
         position: relative
         top: -1px
+        text-shadow: #666 1px 1px 0
+        text-decoration: none
         &:hover, &:active, &:focus
           text-decoration: underline
       .more
@@ -95,7 +97,7 @@
     #extended_metadata
       background: #7e7e7e url(../../images/admin/navigation_shadow.png) repeat-x
       +round-corner("bottom-right", 6px)
-      margin: 0
+      margin: -1em 0 0.8em
       margin-right: 2px
       padding-bottom: 2px
       overflow: hidden
@@ -176,18 +178,6 @@
     img.avatar
       float: right
       margin: 10px 0px
-
-.row
-  clear: both
-  margin-top: 20px
-  width: 100%
-  p
-    float: left
-    margin: 0 2em 1.25em 0
-    font-size: 95%
-    label
-      display: inline
-      text-shadow: #666 1px 1px 0
 
 .error_with_field .error
   color: #f00

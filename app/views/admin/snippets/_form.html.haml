@@ -11,7 +11,7 @@
         %p.content
           = f.label :content, t('body') 
           ~ f.text_area :content, :class => "textarea large", :style => "width: 100%"
-      .row
+      .set
         - form.edit_filter do
           %p
             = f.label :filter_id, t('filter')

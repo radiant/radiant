@@ -24,10 +24,10 @@
                   = link_to t('remove'), remove_admin_snippet_url(snippet)
       - else
         %tr
-          %td.note{:colspan => admin.snippet.index.tbody.length}= t('no_snippets')
+          %td.empty{:colspan => admin.snippet.index.tbody.length}= t('no_snippets')
 
 - render_region :bottom do |bottom|
   - bottom.new_button do
     #actions
       %ul
-        %li= link_to t('new_snippet'), new_admin_snippet_url
+        %li= link_to image('plus') + " " + t('new_snippet'), new_admin_snippet_url

@@ -26,10 +26,10 @@
                   = link_to t('remove'), remove_admin_layout_url(layout)
       - else
         %tr
-          %td.note{:colspan => admin.layout.index.tbody.length} No Layouts
+          %td.empty{:colspan => admin.layout.index.tbody.length}= t('no_layouts')
 
 - render_region :bottom do |bottom|
   - bottom.new_button do
     #actions
       %ul
-        %li= link_to t('new_layout'), new_admin_layout_url
+        %li= link_to image('plus') + " " + t('new_layout'), new_admin_layout_url

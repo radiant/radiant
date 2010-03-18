@@ -25,7 +25,7 @@
         = render :partial => 'admin/page_parts/page_part', :collection => @page.parts
     = render_region :parts_bottom
   - form.edit_layout_and_type do
-    .row
+    .set
       %p
         = fields.label :layout_id, t('layout')
         = fields.select :layout_id, [[t('select.inherit') , '']] + Layout.find(:all).map { |s| [s.name, s.id] }

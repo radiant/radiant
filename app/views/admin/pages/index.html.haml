@@ -17,10 +17,10 @@
         = render_node @homepage
       - else
         %tr
-          %td.note{:colspan => admin.page.index.node.length}= t('no_pages')
+          %td.empty{:colspan => admin.page.index.node.length}= t('no_pages')
   = render_region :bottom
 
 - unless @homepage
   #actions
     %ul
-      %li= link_to "New Homepage", new_admin_page_path
+      %li= link_to image('plus') + " " + t("new_homepage"), new_admin_page_path

@@ -28,7 +28,7 @@
             color: black
           &.hidden_status
             color: #0c0
-        &.note
+        &.empty
           color: silver
           font-size: 85%
           font-style: italic
@@ -56,7 +56,7 @@
       .status
         width: 8em
       .add_child
-        width: 140px
+        width: 100px
         padding-left: 0
         a
           color: black
@@ -126,7 +126,6 @@
             padding: 3px
             padding-top: 6px
             padding-bottom: 6px
-            cursor: default
 
   #pages label
     font-size: 85%
@@ -188,31 +187,6 @@ table.index
     td.field textarea
       width: 99.5%
       margin-right: -5px
-
-#actions
-  position: fixed
-  left: 0
-  right: 0
-  bottom: 0
-  background: #777
-  ul
-    padding: 14px 8px
-  li
-    display: inline
-    margin-right: 5px
-  a
-    background: #eee url(../../images/admin/buttons_background.png) repeat-x
-    color: #333
-    font-size: 80%
-    padding: 8px 12px
-    text-decoration: none
-    text-shadow: 1px 1px 1px #eee
-    +round-corners(5px)
-    &:hover
-      background: #fff
-      color: black
-      text-shadow: 1px 1px 1px #fff
-      text-decoration: underline
 
 body.reversed
   #content
