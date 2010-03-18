@@ -166,6 +166,12 @@ module ApplicationHelper
     admin.nav
   end
   
+  def tab_name(item_name)
+    translated_name = t(item_name.gsub(' ','_').downcase)
+    name = translated_name.match('missing') ? item_name : translated_name
+    name
+  end
+  
   def stylesheet_and_javascript_overrides
     overrides = ''
     if File.exist?("#{Rails.root}/public/stylesheets/admin/overrides.css") || File.exist?("#{Rails.root}/public/stylesheets/sass/admin/overrides.sass")

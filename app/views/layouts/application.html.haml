@@ -30,7 +30,7 @@
               - if tab.visible?(current_user)
                 %li{:class=>('current ' if current_tab?(tab)).to_s}
                   %a{:href=>(tab.first.relative_url if tab.first)}
-                    = t(tab.name.downcase)
+                    = tab_name(tab.name)
                   - if current_tab?(tab)
                     %ul#nav_sub
                       - tab.each do |sub_item|
@@ -38,7 +38,8 @@
                           %li
                             %a{:href => sub_item.relative_url, :class => current_item?(sub_item) ? 'current' : ''}>
                               %span
-                                = t(sub_item.name.gsub(' ','_').downcase)
+                                = tab_name(sub_item.name)
+                                
           #header_bottom
             %div
       #main
