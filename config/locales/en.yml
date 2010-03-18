@@ -109,8 +109,8 @@ en:
     error_updating: 'There was an error updating your preferences.'      
     updated: 'Your preferences have been updated.' 
   published: 'Published'
-  published_on: 'Published On'
   published_at: 'Published at' 
+  published_on: 'Published On'
   reference:  'Reference'
   remember_me: 'Remember me'
   remember_me_in_this_browser: 'Remember me in this browser'
@@ -134,10 +134,10 @@ en:
   scheduled: "Scheduled"
   search_tags: 'Search Tags:'
   select:
+    default: '<default>'
     inherit: '<inherit>'
     none: '<none>' 
     normal: '<normal>'
-    default: '<default>'
   settings: 'Settings'
   slug: 'Slug'
   snippet: 'Snippet'   
