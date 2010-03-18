@@ -145,6 +145,13 @@ describe Radiant::ExtensionLoader do
     @instance.metal_paths.all? {|f| File.directory?(f) }.should be_true
   end
 
+  it "should have locale paths" do
+    @instance.stub!(:load_extension_roots).and_return(@extension_paths)
+    @instance.should respond_to(:locale_paths)
+    @instance.metal_paths.should be_instance_of(Array)
+    @instance.metal_paths.all? {|f| File.directory?(f) }.should be_true
+  end
+
   it "should return the view paths in inverse order to the loaded" do
     extensions = [BasicExtension, OverridingExtension]
     @instance.extensions = extensions
