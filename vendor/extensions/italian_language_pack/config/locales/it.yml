@@ -136,6 +136,7 @@ it:
     inherit: "<ereditato da>"
     none: "<nessuno>" 
     normal: "<normale>"
+    default: '<mancanza>'
   settings: 'Opzioni'
   slug: 'Slug'
   snippet: "Snippet"   

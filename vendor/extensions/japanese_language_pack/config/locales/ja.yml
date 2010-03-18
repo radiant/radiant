@@ -136,6 +136,7 @@ ja:
     inherit: '<inherit>'
     none: 'なし'
     normal: '普通'
+    default: '<default>'
   settings: 'Settings'
   slug: 'Slug'
   snippet: 'スニペッツ'

@@ -137,6 +137,7 @@ en:
     inherit: '<inherit>'
     none: '<none>' 
     normal: '<normal>'
+    default: '<default>'
   settings: 'Settings'
   slug: 'Slug'
   snippet: 'Snippet'   

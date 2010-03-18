@@ -136,6 +136,7 @@ de:
     inherit: '<vererbt>'
     none: '<keine>' 
     normal: '<normal>'
+    default: '<standardwert>'
   settings: 'Einstellungen'
   slug: 'Slug'
   snippet: 'Snippet'   

@@ -136,6 +136,7 @@ nl:
     inherit: '<erven>'
     none: '<geen>'
     normal: '<normaal>'
+    default: '<default>'
   settings: 'Instellingen'
   slug: 'Slug'
   snippet: 'Snippet'
