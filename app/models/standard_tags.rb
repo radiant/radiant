@@ -561,7 +561,7 @@ module StandardTags
     date = if time_attr
       case
       when time_attr == 'now'
-        Time.now
+        Time.zone.now
       when ['published_at', 'created_at', 'updated_at'].include?(time_attr)
         page[time_attr]
       else

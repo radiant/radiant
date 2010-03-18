@@ -492,8 +492,8 @@ describe "Standard Tags" do
     end
 
     describe "with 'for' attribute" do
-      it "set to 'now' should render the current date" do
-        page.should render('<r:date for="now" />').as(Time.now.strftime("%A, %B %d, %Y"))
+      it "set to 'now' should render the current date in the current Time.zone" do
+        page.should render('<r:date for="now" />').as(Time.zone.now.strftime("%A, %B %d, %Y"))
       end
 
       it "set to 'created_at' should render the creation date" do
