@@ -23,6 +23,7 @@ describe "ExtensionGenerator with normal options" do
   it "should generate extension init file" do
     'vendor/extensions/sample'.should have_generated_class('sample_extension', 'Radiant::Extension') do |body|
       body.should match(/version "1.0"\n\s+description "Describe your extension here"\n\s+url "http:\/\/github.com\/extauthor\/radiant-sample-extension"/)
+      body.should match(/extension_config do \|config\|((\n|\s*.*\n)*)\s+\# end/)
       body.should match(/define_routes do \|map\|((\n|\s*.*\n)*)\s+\# end/)
       body.should have_method('activate')
     end

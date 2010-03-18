@@ -5,6 +5,13 @@ class <%= class_name %> < Radiant::Extension
   version "1.0"
   description "Describe your extension here"
   url "<%= homepage %>"
+  
+  # extension_config do |config|
+  #   config.gem 'some-awesome-gem
+  #   config.after_initialize do
+  #     run_something
+  #   end
+  # end
 
   # define_routes do |map|
   #   map.namespace :admin, :member => { :remove => :get } do |admin|
