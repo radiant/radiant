@@ -18,17 +18,17 @@ describe User, "validations" do
   end
   
   
-  describe "self.protected_attributes" do
-    it "should be an array of [:name, :email, :login, :password, :password_confirmation]" do
+  describe "self.unprotected_attributes" do
+    it "should be an array of [:name, :email, :login, :password, :password_confirmation, :locale]" do
       # Make sure we clean up after anything set in another spec
-      User.instance_variable_set(:@protected_attributes, nil)
-      User.protected_attributes.should == [:name, :email, :login, :password, :password_confirmation, :locale]
+      User.instance_variable_set(:@unprotected_attributes, nil)
+      User.unprotected_attributes.should == [:name, :email, :login, :password, :password_confirmation, :locale]
     end
   end
-  describe "self.protected_attributes=" do
-    it "should set the @@protected_attributes variable to the given array" do
-      User.protected_attributes = [:password, :email, :other]
-      User.protected_attributes.should == [:password, :email, :other]
+  describe "self.unprotected_attributes=" do
+    it "should set the @@unprotected_attributes variable to the given array" do
+      User.unprotected_attributes = [:password, :email, :other]
+      User.unprotected_attributes.should == [:password, :email, :other]
     end
   end
   

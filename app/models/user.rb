@@ -28,12 +28,12 @@ class User < ActiveRecord::Base
 
   attr_writer :confirm_password
   class << self
-    def protected_attributes
-      @protected_attributes ||= [:name, :email, :login, :password, :password_confirmation, :locale]
+    def unprotected_attributes
+      @unprotected_attributes ||= [:name, :email, :login, :password, :password_confirmation, :locale]
     end
 
-    def protected_attributes=(array)
-      @protected_attributes = array.map{|att| att.to_sym }
+    def unprotected_attributes=(array)
+      @unprotected_attributes = array.map{|att| att.to_sym }
     end
   end
 
