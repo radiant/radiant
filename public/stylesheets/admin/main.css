@@ -713,7 +713,8 @@ body.edit_user #avatar, body.edit_personal_preferences #avatar {
         position: absolute;
         padding: 3px;
         padding-top: 6px;
-        padding-bottom: 6px; }
+        padding-bottom: 6px;
+        cursor: default; }
   #content #pages label {
     font-size: 85%;
     font-weight: normal !important; }
