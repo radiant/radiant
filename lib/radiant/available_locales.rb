@@ -1,7 +1,7 @@
 module Radiant::AvailableLocales
   
   def self.locale_paths
-    root_locales = [File.join(RADIANT_ROOT, 'config', 'locales'), File.join(RADIANT_ROOT, 'config', 'locales')].uniq
+    root_locales = [File.join(RADIANT_ROOT, 'config', 'locales'), File.join(RAILS_ROOT, 'config', 'locales')].uniq
     unless root_locales.empty?
       Radiant::ExtensionLoader.locale_paths.dup + root_locales
     else
