@@ -140,10 +140,6 @@ module Radiant
       design << nav_item("Snippets", "/admin/snippets")
       nav << design
 
-      # media = nav_tab("Assets")
-      # media << nav_item("All", "/admin/assets/")
-      # media << nav_item("Unattached", "/admin/assets/unattached/")
-
       settings = nav_tab("Settings")
       settings << nav_item("Personal", "/admin/preferences/edit")
       settings << nav_item("Users", "/admin/users")
@@ -164,14 +160,12 @@ module Radiant
     def load_default_page_regions
       returning OpenStruct.new do |page|
         page.edit = RegionSet.new do |edit|
-            edit.main.concat %w{edit_header edit_form edit_popups}
-            edit.form.concat %w{edit_title edit_extended_metadata
-                                  edit_page_parts edit_layout_and_type}
-            edit.form_bottom.concat %w{edit_buttons edit_timestamp}
+          edit.main.concat %w{edit_header edit_form edit_popups}
+          edit.form.concat %w{edit_title edit_extended_metadata edit_page_parts edit_layout_and_type}
+          edit.form_bottom.concat %w{edit_buttons edit_timestamp}
         end
         page.index = RegionSet.new do |index|
-          index.sitemap_head.concat %w{title_column_header status_column_header
-                                      modify_column_header}
+          index.sitemap_head.concat %w{title_column_header status_column_header modify_column_header}
           index.node.concat %w{title_column status_column add_child_column remove_column}
         end
         page.remove = page.children = page.index
