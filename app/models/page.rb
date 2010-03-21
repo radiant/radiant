@@ -228,11 +228,8 @@ class Page < ActiveRecord::Base
     end
 
     def new_with_defaults(config = Radiant::Config)
-      default_parts = config['defaults.page.parts'].to_s.strip.split(/\s*,\s*/)
       page = new
-      default_parts.each do |name|
-        page.parts << PagePart.new(:name => name, :filter_id => config['defaults.page.filter'])
-      end
+      page.parts.concat default_page_parts(config)
       default_status = config['defaults.page.status']
       page.status = Status[default_status] if default_status
       page
@@ -254,6 +251,15 @@ class Page < ActiveRecord::Base
     def missing?
       false
     end
+
+    private
+
+      def default_page_parts(config = Radiant::Config)
+        default_parts = config['defaults.page.parts'].to_s.strip.split(/\s*,\s*/)
+        default_parts.map do |name|
+          PagePart.new(:name => name, :filter_id => config['defaults.page.filter'])
+        end
+      end
   end
 
   private

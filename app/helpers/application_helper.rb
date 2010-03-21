@@ -82,9 +82,9 @@ module ApplicationHelper
 
   def nav_link_to(name, options)
     if current_url?(options)
-      %{<strong>#{ link_to name, options }</strong>}
+      %{<strong>#{ link_to tab_name(name), options }</strong>}
     else
-      link_to name, options
+      link_to tab_name(name), options
     end
   end
 
@@ -166,10 +166,10 @@ module ApplicationHelper
     admin.nav
   end
   
-  def tab_name(item_name)
-    translated_name = t(item_name.gsub(' ','_').downcase)
-    name = translated_name.match('missing') ? item_name : translated_name
-    name
+  def tab_name(name)
+    translated_name = t(name.gsub(' ','_').downcase)
+    tab_name = translated_name.match('missing') ? name : translated_name
+    tab_name
   end
   
   def stylesheet_and_javascript_overrides

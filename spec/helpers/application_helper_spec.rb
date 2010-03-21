@@ -101,7 +101,19 @@ describe ApplicationHelper do
     helper.stub!(:request).and_return(request)
     request.stub!(:request_uri).and_return("/admin/pages")
     helper.nav_link_to("Pages", "/admin/pages").should =~ /<strong>/
-    helper.nav_link_to("Snippets", "/admin/snippest").should_not =~ /<strong>/
+    helper.nav_link_to("Snippets", "/admin/snippets").should_not =~ /<strong>/
+  end
+  
+  it "should render an admin link without translation" do
+    helper.nav_link_to("Foo", "/admin/foo").should == '<a href="/admin/foo">Foo</a>'
+  end
+  
+  it "should render an admin section link with translation" do
+    helper.tab_name('Pages').should == 'Pages'
+  end
+  
+  it "should render an admin section link without translation" do
+    helper.tab_name('Foo').should == 'Foo'
   end
   
   it "should determine whether the current user is an admin" do
