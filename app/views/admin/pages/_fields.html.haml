@@ -1,20 +1,21 @@
 = fields.hidden_field :lock_version
 = fields.hidden_field :parent_id
+
 = render_region :form_top
 
 - render_region :form do |form|
   - form.edit_title do
     %p.title
-      %label{:for=>"page_title"}
-        = t('page_title')
+      %label{:for=>"page_title"}= t('page_title')
       = fields.text_field :title, :class => 'textbox', :maxlength => 255
   - form.edit_extended_metadata do
-    #extended_metadata{meta_visible(:meta)}
-      %table.fieldset
-        = render :partial => "meta_row", :collection => @meta, :locals => {:f => fields}
-        = render_region :extended_metadata, :locals => {:f => fields}
-    %p.more_or_less
-      %a{:href=>'#extended_metadata',:class => "#{(meta_errors? ? 'less' : 'more')}"}= meta_label
+    .drawer
+      .drawer_contents#attributes
+        %table.fieldset
+          = render :partial => "meta_row", :collection => @meta, :locals => {:f => fields}
+          = render_region :extended_metadata, :locals => {:f => fields}
+      .drawer_handle
+        %a.toggle{:href=>'#attributes', :rel=>"toggle[attributes]", :class=>"#{(meta_errors? ? 'less' : 'more')}"}= meta_label
   - form.edit_page_parts do
     #tab_control
       #tabs.tabs
