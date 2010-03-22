@@ -100,7 +100,7 @@ nl:
     removed_one: "De pagina is verwijderd van de site."
     saved: "Je pagina is hieronder opgeslagen."
   password: 'Wachtwoord'
-  password_confirmation: Bevestig Nieuw Wachtwoord'
+  password_confirmation: 'Bevestig Nieuw Wachtwoord'
   personal: 'Instellingen'
   personal_preferences: 'Persoonlijke Voorkeuren'
   please_login: 'Inloggen'
