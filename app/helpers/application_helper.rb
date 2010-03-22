@@ -29,7 +29,7 @@ module ApplicationHelper
   
   def save_model_button(model, options = {})
     options[:label] ||= model.new_record? ?
-      t('buttons.create', :name => tab_name(t(model.class.name.downcase))) : t('buttons.save_changes')
+      t('buttons.create', :name => check_translation(t(model.class.name.downcase))) : t('buttons.save_changes')
     options[:class] ||= "button"
     options[:accesskey] ||= 'S'
     submit_tag options.delete(:label), options
@@ -82,9 +82,9 @@ module ApplicationHelper
 
   def nav_link_to(name, options)
     if current_url?(options)
-      %{<strong>#{ link_to tab_name(name), options }</strong>}
+      %{<strong>#{ link_to check_translation(name), options }</strong>}
     else
-      link_to tab_name(name), options
+      link_to check_translation(name), options
     end
   end
 
@@ -166,10 +166,10 @@ module ApplicationHelper
     admin.nav
   end
   
-  def tab_name(name)
-    translated_name = t(name.gsub(' ','_').downcase)
-    tab_name = translated_name.match('missing') ? name : translated_name
-    tab_name
+  def check_translation(name)
+    original_name = t(name.gsub(' ','_').downcase)
+    translated_name = original_name.match('missing') ? name : original_name
+    translated_name
   end
   
   def available_locales_select

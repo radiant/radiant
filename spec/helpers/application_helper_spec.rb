@@ -109,11 +109,11 @@ describe ApplicationHelper do
   end
   
   it "should render an admin section link with translation" do
-    helper.tab_name('Pages').should == 'Pages'
+    helper.check_translation('Pages').should == 'Pages'
   end
   
   it "should render an admin section link without translation" do
-    helper.tab_name('Foo').should == 'Foo'
+    helper.check_translation('Foo').should == 'Foo'
   end
   
   it "should determine whether the current user is an admin" do
