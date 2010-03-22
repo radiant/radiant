@@ -32,7 +32,7 @@
     - form.edit_locale do
       %p
         = f.label :locale, t('language') 
-        = f.select "locale", Radiant::AvailableLocales.locales.merge({"#{t('select.default')}"=>''})
+        = f.select "locale", available_locales_select
     
     - form.edit_notes do
       %p

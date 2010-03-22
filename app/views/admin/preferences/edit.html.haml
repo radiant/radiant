@@ -30,7 +30,7 @@
         - form.edit_locale do
           %p
             = f.label :locale, t('language') 
-            = f.select "locale", Radiant::AvailableLocales.locales.merge({'<default>'=>''})
+            = f.select "locale", available_locales_select
       
       - render_region :form_bottom do |form_bottom|
         - form_bottom.edit_buttons do

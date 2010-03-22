@@ -29,7 +29,7 @@ module ApplicationHelper
   
   def save_model_button(model, options = {})
     options[:label] ||= model.new_record? ?
-      t('buttons.create', :name => t(model.class.name.downcase)) : t('buttons.save_changes')
+      t('buttons.create', :name => tab_name(t(model.class.name.downcase))) : t('buttons.save_changes')
     options[:class] ||= "button"
     options[:accesskey] ||= 'S'
     submit_tag options.delete(:label), options
@@ -170,6 +170,10 @@ module ApplicationHelper
     translated_name = t(name.gsub(' ','_').downcase)
     tab_name = translated_name.match('missing') ? name : translated_name
     tab_name
+  end
+  
+  def available_locales_select
+    [[t('select.default'),'']] + Radiant::AvailableLocales.locales
   end
   
   def stylesheet_and_javascript_overrides
