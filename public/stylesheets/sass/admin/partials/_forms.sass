@@ -72,66 +72,69 @@
         font-size: 150%
       a
         +alt-link
-    p.more_or_less
-      margin: -1em 0 1em
-      padding: 4px 0 5px
-      
-      a
-        background: #7e7e7e
-        border-bottom-left-radius: 6px
-        border-bottom-right-radius: 6px
-        +round-bottom-corners(6px)
-        font-size: 80%
-        padding: 4px 21px 5px 10px        
-        position: relative
-        top: -1px
-        text-shadow: #666 1px 1px 0
-        text-decoration: none
-        &:hover, &:active, &:focus
-          text-decoration: underline
-      .more
-        background: #7e7e7e url(../../images/admin/metadata_toggle.png) no-repeat 90% 8px
-      .less
-        background: #7e7e7e url(../../images/admin/metadata_toggle.png) no-repeat 85% -22px
-  
-    #extended_metadata
-      background: #7e7e7e url(../../images/admin/navigation_shadow.png) repeat-x
-      +round-corner("bottom-right", 6px)
-      margin: -1em 0 0.8em
-      margin-right: 2px
-      padding-bottom: 2px
-      overflow: hidden
-      table.fieldset
-        margin: 0
-        padding: 0
-        width: 100%
-        th, td
-          border-top: 1px #999 solid
-          padding: 6px
-        th
-          &.label
-            font-size: 85%
-            padding: 0 8px 0 10px
-            whitespace: nowrap
-            width: 1%
-            vertical-align: middle
-            text-align: left
-        td
-          &.field
-            padding-left: 0px
-            padding-right: 10px
-            text-align: right
-            width: auto
-            input.textbox
-              font-size: 110%
-              width: 99.5%
-          &.actions
-            width: 40px
-            text-align: left
-            vertical-align: middle
-        tr:first-child
-          td, th
-            border-top: none
+    
+.drawer
+  margin-top: -1em
+  margin-bottom: 1em
+.drawer_contents
+  background: #7e7e7e url(../../images/admin/navigation_shadow.png) repeat-x
+  +round-corner("bottom-right", 6px)
+  margin: 0
+  margin-right: 2px
+  padding-bottom: 2px
+  overflow: hidden
+  table.fieldset
+    margin: 0
+    padding: 0
+    width: 100%
+    th, td
+      border-top: 1px #999 solid
+      padding: 6px
+    th
+      &.label
+        font-size: 85%
+        padding: 0 15px 0 10px !important
+        whitespace: nowrap
+        width: 1%
+        vertical-align: middle
+        text-align: left
+    td
+      &.field
+        padding-left: 0px
+        padding-right: 10px
+        text-align: right
+        width: auto
+        input.textbox
+          font-size: 110%
+          width: 99.5%
+      &.actions
+        width: 40px
+        text-align: left
+        vertical-align: middle
+    tr:first-child
+      td, th
+        border-top: none
+.drawer_handle
+  padding: 4px 0 5px
+  margin-top: -1px
+  a
+    background: #7e7e7e
+    border-bottom-left-radius: 6px
+    border-bottom-right-radius: 6px
+    color: #f0f0f0
+    font-size: 80%
+    padding: 4px 21px 5px 10px        
+    position: relative
+    top: -1px
+    text-shadow: #666 1px 1px 0
+    text-decoration: none
+    +round-bottom-corners(6px)
+    &:hover, &:active, &:focus
+      text-decoration: underline
+    &.more
+      background: #7e7e7e url(../../images/admin/metadata_toggle.png) no-repeat 85% 8px
+    &.less
+      background: #7e7e7e url(../../images/admin/metadata_toggle.png) no-repeat 85% -21px
 
 .box
   color: #333

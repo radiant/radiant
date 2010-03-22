@@ -52,19 +52,17 @@ Event.addBehavior({
     });
   },
   
-  'p.more_or_less a': function(event){
-    var element = this;
-    element.observe('click', function(event){
-      if (element.hasClassName('more')) {
-        element.update('Less');
-      } else {
-        element.update('More');
-      }
-      element.toggleClassName('more').toggleClassName('less');
-      $('extended_metadata').toggle();
-      event.stop();
-    });
-  },
+  'a.toggle': Toggle.LinkBehavior({
+    onLoad: function(link) {
+      if (/less/i.match(link.innerHTML)) Toggle.toggle(this.toggleWrappers, this.effect);
+    },
+    afterToggle: function(link) {
+      link.toggleClassName('more');
+      link.toggleClassName('less');
+      if (/more/i.match(link.innerHTML)) { link.innerHTML = 'Less'; return; }
+      if (/less/i.match(link.innerHTML)) { link.innerHTML = 'More'; return; }
+    }
+  }),
   
   'div#tab_control': TabControlBehavior(),
   

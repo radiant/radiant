@@ -490,6 +490,13 @@ describe Page, "class" do
     end
   end
 
+  it "should expose default page parts" do
+    override = PagePart.new(:name => 'override')
+    Page.stub!(:default_page_parts).and_return([override])
+    @page = Page.new_with_defaults({})
+    @page.parts.should eql([override])
+  end
+
   it 'should allow you to get the class name of a descendant class with a string' do
     ["", nil, "Page"].each do |value|
       Page.descendant_class(value).should == Page

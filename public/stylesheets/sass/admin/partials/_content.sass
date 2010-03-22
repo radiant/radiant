@@ -135,32 +135,12 @@ table.index
   th
     text-align: left
 
-#content table
-  &.index
-    .node
-      .snippet, .user, .stylesheet, .javascript, .image, .file
-        font-size: 115%
-        font-weight: bold
-        a
-          color: black
-          text-decoration: none
-          &:visited
-            color: black
-            text-decoration: none
-            &:hover
-              color: #0066cc
-              text-decoration: underline
-          &:hover
-            color: #0066cc
-            text-decoration: underline
-      .page a:visited
-        .title
-          color: black
-          text-decoration: none
-        &:hover .title
-          color: #0066cc
-          text-decoration: underline
-      .layout a
+table.index
+  .node
+    .snippet, .user, .stylesheet, .javascript, .image, .file
+      font-size: 115%
+      font-weight: bold
+      a
         color: black
         text-decoration: none
         &:visited
@@ -172,21 +152,41 @@ table.index
         &:hover
           color: #0066cc
           text-decoration: underline
-      &.virtual .page a:visited .title
-        color: #9eb3bf
-    tr
-      &:hover, &.hover
-        background-color: #e0f0ff
-    .page .info
-      font-size: 90%
-      position: relative
-      top: 2px
-  &.fieldset
-    th
-      padding: 6px
-    td.field textarea
-      width: 99.5%
-      margin-right: -5px
+    .page a:visited
+      .title
+        color: black
+        text-decoration: none
+      &:hover .title
+        color: #0066cc
+        text-decoration: underline
+    .layout a
+      color: black
+      text-decoration: none
+      &:visited
+        color: black
+        text-decoration: none
+        &:hover
+          color: #0066cc
+          text-decoration: underline
+      &:hover
+        color: #0066cc
+        text-decoration: underline
+    &.virtual .page a:visited .title
+      color: #9eb3bf
+  tr
+    &:hover, &.hover
+      background-color: #e0f0ff
+  .page .info
+    font-size: 90%
+    position: relative
+    top: 2px
+
+table.fieldset
+  th
+    padding: 6px
+  td.field textarea
+    width: 99.5%
+    margin-right: -5px
 
 body.reversed
   #content
@@ -196,4 +196,4 @@ body.reversed
       font-size: 125%
       margin: -20px -20px 20px
       padding: 15px 20px
-      text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.1) 
+      text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.1)
