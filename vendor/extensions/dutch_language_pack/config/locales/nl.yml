@@ -23,7 +23,7 @@ nl:
               taken: 'gebruikersnaam reeds in gebruik' # login already in use
             password:
               confirmation: 'moet overeen komen' # password_confirmation
-  add_child: 'Child Toevoegen'
+  add_child: 'Pagina Toevoegen'
   add_part: 'Part Toevoegen'
   add_tab: 'Tab Toevoegen'
   admin: 'Beheerder'
@@ -74,9 +74,10 @@ nl:
   language: 'Taal'
   layout: 'Layout'
   layouts: 'Layouts'
-  log_out: 'Afmelden'
-  logged_in_as: 'Aangemeld als'
-  login: 'Aanmelden'
+  no_layouts: 'Geen layouts'
+  log_out: 'Uitloggen'
+  logged_in_as: 'Ingelogd als'
+  login: 'Inloggen'
   modify: 'Bewerken'
   more: 'Meer'
   name: 'Naam'
@@ -100,10 +101,10 @@ nl:
     saved: "Je pagina is hieronder opgeslagen."
   password: 'Wachtwoord'
   password_confirmation: Bevestig Nieuw Wachtwoord'
-  personal: 'Personlijk'
+  personal: 'Instellingen'
   personal_preferences: 'Persoonlijke Voorkeuren'
-  please_login: 'Gelieve aan te melden'
-  powered_by: 'Powered by'
+  please_login: 'Inloggen'
+  powered_by: ''
   preferences: 'Voorkeuren'
   preferences_controller:
     error_updating: 'Er is een fout opgetreden bij het opslaan van je voorkeuren.'
@@ -141,6 +142,7 @@ nl:
   slug: 'Slug'
   snippet: 'Snippet'
   snippets: 'Snippets'
+  no_snippets: 'Geen snippets'
   status: 'Status'
     # Warnings and info text:
   testing: Testing
@@ -182,3 +184,4 @@ nl:
   welcome_controller:
     invalid_user: 'Onbekende gebruikersnaam of wachtwoord.'
     logged_out: 'Je bent nu afgemeld.'
+  remember_me_in_this_browser: 'Onthoud mij'
