@@ -16,13 +16,6 @@ class Admin::PagesController < Admin::ResourceController
     response_for :plural
   end
 
-  def show
-    respond_to do |format|
-      format.xml { super }
-      format.html { redirect_to edit_admin_page_path(params[:id]) }
-    end
-  end
-
   def new
     self.model = model_class.new_with_defaults(config)
     if params[:page_id].blank?

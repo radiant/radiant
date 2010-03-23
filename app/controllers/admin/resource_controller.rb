@@ -21,6 +21,7 @@ class Admin::ResourceController < ApplicationController
     r.plural.publish(:xml, :json) { render format_symbol => models }
 
     r.singular.publish(:xml, :json) { render format_symbol => model }
+    r.singular.default { redirect_to edit_model_path if action_name == "show" }
     
     r.not_found.publish(:xml, :json) { head :not_found }
     r.not_found.default { announce_not_found; redirect_to continue_url(params) }
@@ -136,6 +137,10 @@ class Admin::ResourceController < ApplicationController
       options[:redirect_to] || (params[:continue] ? {:action => 'edit', :id => model.id} : {:action => "index"})
     end
 
+    def edit_model_path
+      method = "edit_admin_#{model_name.downcase}_path"
+      send method.to_sym, params[:id]
+    end
 
     def announce_validation_errors
       flash.now[:error] = t("resource_controller.validation_errors")
