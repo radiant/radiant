@@ -2,7 +2,7 @@ module ApplicationHelper
   include LocalTime
   include Admin::RegionsHelper
   include Radiant::LegacyRoutes
-
+  
   def config
     Radiant::Config
   end
@@ -28,8 +28,11 @@ module ApplicationHelper
   end
   
   def save_model_button(model, options = {})
+    model_name = model.class.name.underscore
+    human_model_name = model_name.humanize.titlecase
     options[:label] ||= model.new_record? ?
-      t('buttons.create', :name => check_translation(t(model.class.name.downcase))) : t('buttons.save_changes')
+      t('buttons.create', :name => t(model_name, :default => human_model_name), :default => 'Create ' + human_model_name) :
+      t('buttons.save_changes', :default => 'Save Changes')
     options[:class] ||= "button"
     options[:accesskey] ||= 'S'
     submit_tag options.delete(:label), options
@@ -82,9 +85,9 @@ module ApplicationHelper
 
   def nav_link_to(name, options)
     if current_url?(options)
-      %{<strong>#{ link_to check_translation(name), options }</strong>}
+      %{<strong>#{ link_to translate_with_default(name), options }</strong>}
     else
-      link_to check_translation(name), options
+      link_to translate_with_default(name), options
     end
   end
 
@@ -166,10 +169,8 @@ module ApplicationHelper
     admin.nav
   end
   
-  def check_translation(name)
-    original_name = t(name.gsub(' ','_').downcase)
-    translated_name = original_name.match('missing') ? name : original_name
-    translated_name
+  def translate_with_default(name)
+    t(name.underscore.downcase, :default => name)
   end
   
   def available_locales_select

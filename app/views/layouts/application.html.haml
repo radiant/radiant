@@ -28,7 +28,7 @@
               - if tab.visible?(current_user)
                 %li{:class=>('current ' if current_tab?(tab)).to_s}
                   %a{:href=>(tab.first.relative_url if tab.first)}
-                    = check_translation(tab.name)
+                    = translate_with_default(tab.name)
                   - if current_tab?(tab)
                     %ul#nav_sub
                       - tab.each do |sub_item|
@@ -36,7 +36,7 @@
                           %li
                             %a{:href => sub_item.relative_url, :class => current_item?(sub_item) ? 'current' : ''}>
                               %span
-                                = check_translation(sub_item.name)
+                                = translate_with_default(sub_item.name)
                                 
           #header_bottom
             %div
