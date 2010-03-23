@@ -7,10 +7,7 @@ describe Radiant::AvailableLocales do
   end
   
   it "should load the default locales" do
-    @locales.should == [["Deutsch", "de"], ["English", "en"], 
-                        ["Français", "fr"], ["Italiano", "it"], 
-                        ["Nederlands", "nl"], ["Русский", "ru"], 
-                        ["日本語", "ja"]]
+    @locales.should include(["English", "en"])
   end
   
 end
