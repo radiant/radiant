@@ -61,8 +61,8 @@ unless File.directory? "#{RAILS_ROOT}/app"
       rm_rf "vendor/radiant"
     end
 
-    desc "Update both configs, scripts and public/javascripts from Radiant"
-    task :update => [ "update:scripts", "update:javascripts", "update:configs", "update:images", "update:stylesheets" ]
+    desc "Update both configs, sass and public/javascripts from Radiant"
+    task :update => [ "update:scripts", "update:javascripts", "update:configs", "update:images", "update:sass" ]
 
     namespace :update do
       desc "Add new scripts to the instance script/ directory"
@@ -169,6 +169,15 @@ the new files:"
           FileUtils.cp(styles, project_dir)
         end
         copy_stylesheets[RAILS_ROOT + '/public/stylesheets/admin/',Dir["#{File.dirname(__FILE__)}/../../public/stylesheets/admin/*.css"]]
+      end
+
+      desc "Update admin sass files from your current radiant install"
+      task :sass do
+        copy_sass = proc do |project_dir, sass_files|
+          sass_files.reject!{|s| File.basename(s) == 'overrides.sass'} if File.exists?(project_dir + 'overrides.sass')
+          FileUtils.cp_r(sass_files, project_dir)
+        end
+        copy_sass[RAILS_ROOT + '/public/stylesheets/sass/admin/', Dir["#{File.dirname(__FILE__)}/../../public/stylesheets/sass/admin/*"]]
       end
     end
   end
