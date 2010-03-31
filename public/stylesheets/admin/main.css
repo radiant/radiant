@@ -161,12 +161,12 @@ ul#navigation {
       padding: 0 20px;
       position: relative;
       text-decoration: none;
-      border-top-left-radius: 6px;
       -moz-border-radius-topleft: 6px;
       -webkit-border-top-left-radius: 6px;
-      border-top-right-radius: 6px;
+      border-top-left-radius: 6px;
       -moz-border-radius-topright: 6px;
-      -webkit-border-top-right-radius: 6px; }
+      -webkit-border-top-right-radius: 6px;
+      border-top-right-radius: 6px; }
     ul#navigation li:hover a {
       background-position: left -48px;
       color: white; }
@@ -232,20 +232,20 @@ img.avatar {
   background: white;
   border: none;
   padding: 4px;
-  border-radius: !amount;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
+  border-radius: 3px;
   -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
-  -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25); }
+  -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25); }
   img.avatar.avatar_32x32 {
     padding: 2px;
-    border-radius: !amount;
     -moz-border-radius: 2px;
     -webkit-border-radius: 2px;
-    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    border-radius: 2px;
     -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); }
+    -moz-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); }
 
 #notice, #error {
   padding: 1px 1em; }
@@ -294,9 +294,9 @@ img.avatar {
     padding: 0.2em 0.5em 0.30em;
     text-decoration: none;
     text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.1);
-    border-radius: !amount;
     -moz-border-radius: 4px;
-    -webkit-border-radius: 4px; }
+    -webkit-border-radius: 4px;
+    border-radius: 4px; }
     #content form p a.action:hover {
       background-color: #555; }
 #content form p.title input.textbox {
@@ -330,9 +330,9 @@ img.avatar {
 
 .drawer_contents {
   background: #7e7e7e url(../../images/admin/navigation_shadow.png) repeat-x;
-  border-bottom-right-radius: 6px;
   -moz-border-radius-bottomright: 6px;
   -webkit-border-bottom-right-radius: 6px;
+  border-bottom-right-radius: 6px;
   margin: 0;
   margin-right: 2px;
   padding-bottom: 2px;
@@ -380,12 +380,12 @@ img.avatar {
     top: -1px;
     text-shadow: #666 1px 1px 0;
     text-decoration: none;
-    border-bottom-left-radius: 6px;
     -moz-border-radius-bottomleft: 6px;
     -webkit-border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
     -moz-border-radius-bottomright: 6px;
-    -webkit-border-bottom-right-radius: 6px; }
+    -webkit-border-bottom-right-radius: 6px;
+    border-bottom-right-radius: 6px; }
     .drawer_handle a:hover, .drawer_handle a:active, .drawer_handle a:focus {
       text-decoration: underline; }
     .drawer_handle a.more {
@@ -401,9 +401,9 @@ img.avatar {
   margin: 3px 0 20px;
   height: 1%;
   overflow-y: auto;
-  border-radius: !amount;
   -moz-border-radius: 8px;
-  -webkit-border-radius: 8px; }
+  -webkit-border-radius: 8px;
+  border-radius: 8px; }
   .box h3 {
     color: #333;
     margin: 15px 0 0;
@@ -471,23 +471,23 @@ body.reversed #content form .hint {
 body.reversed #content form .buttons {
   background: white url(../../images/admin/buttons_background.png) bottom repeat-x;
   padding: 12px 10px;
-  border-radius: !amount;
   -moz-border-radius: 8px;
   -webkit-border-radius: 8px;
-  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
   -webkit-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
-  -moz-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15); }
+  -moz-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15); }
 body.reversed #content form fieldset {
   background: #858585;
   padding: 20px 15px;
   margin-bottom: 20px;
   overflow: hidden;
-  box-shadow: 1px 1px 0 #ababab;
   -webkit-box-shadow: 1px 1px 0 #ababab;
   -moz-box-shadow: 1px 1px 0 #ababab;
-  border-radius: !amount;
+  box-shadow: 1px 1px 0 #ababab;
   -moz-border-radius: 8px;
-  -webkit-border-radius: 8px; }
+  -webkit-border-radius: 8px;
+  border-radius: 8px; }
   body.reversed #content form fieldset h3 {
     font-weight: bold;
     font-size: 120%;
@@ -501,9 +501,9 @@ body.reversed #content p.updated_line {
 body.reversed #content textarea {
   border: 1px solid white; }
 body.reversed #content .box {
-  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
   -webkit-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
-  -moz-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15); }
+  -moz-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15); }
 
 body.single_form #content #single_form {
   background: #f5f1e2 url(../../images/admin/vertical_tan_gradient.png) center -15px repeat-x;
@@ -512,9 +512,9 @@ body.single_form #content #single_form {
   padding-right: 22px;
   position: relative;
   width: 28em;
-  border-radius: !amount;
   -moz-border-radius: 6px;
-  -webkit-border-radius: 6px; }
+  -webkit-border-radius: 6px;
+  border-radius: 6px; }
   body.single_form #content #single_form h1 {
     font-size: 140%;
     margin: 0.75em 0 1.25em; }
@@ -782,9 +782,9 @@ body.reversed #content h1 {
     padding: 8px 12px;
     text-decoration: none;
     text-shadow: 1px 1px 1px #eee;
-    border-radius: !amount;
     -moz-border-radius: 5px;
-    -webkit-border-radius: 5px; }
+    -webkit-border-radius: 5px;
+    border-radius: 5px; }
     #actions a:hover {
       background: #fff;
       color: black;
@@ -942,12 +942,12 @@ div.popup .reference table h2, div.popup .reference table h3, div.popup .referen
       padding: 8px 15px 5px;
       text-decoration: none;
       text-transform: titlecase;
-      border-top-left-radius: 6px;
       -moz-border-radius-topleft: 6px;
       -webkit-border-top-left-radius: 6px;
-      border-top-right-radius: 6px;
+      border-top-left-radius: 6px;
       -moz-border-radius-topright: 6px;
-      -webkit-border-top-right-radius: 6px; }
+      -webkit-border-top-right-radius: 6px;
+      border-top-right-radius: 6px; }
       #tab_control .tabs .tab.here {
         background-color: white;
         color: black;
@@ -965,9 +965,9 @@ div.popup .reference table h2, div.popup .reference table h3, div.popup .referen
     #tab_control .pages .page {
       padding: 12px 20px 20px;
       background: url(../../images/admin/vertical_tan_gradient.png) top left repeat-x #f5f1e2;
-      box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
       -webkit-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
-      -moz-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15); }
+      -moz-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+      box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15); }
       #tab_control .pages .page p {
         margin-top: 0; }
       #tab_control .pages .page label {
@@ -1007,21 +1007,21 @@ input.date {
   width: 11em; }
 
 .calendar_popup {
-  box-shadow: 1px 1px 4px #666666;
   -webkit-box-shadow: 1px 1px 4px #666666;
   -moz-box-shadow: 1px 1px 4px #666666;
-  border-radius: !amount;
+  box-shadow: 1px 1px 4px #666666;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
+  border-radius: 5px;
   z-index: 1000;
   border: 1px solid #b2b2b2;
   background-color: white;
   padding: 5px;
   line-height: 140%!important; }
   .calendar_popup a {
-    border-radius: !amount;
     -moz-border-radius: 5px;
-    -webkit-border-radius: 5px; }
+    -webkit-border-radius: 5px;
+    border-radius: 5px; }
   .calendar_popup table.calendar {
     font-size: 90%;
     margin: 0!important; }
@@ -1039,9 +1039,9 @@ input.date {
       padding: 3px !important;
       margin: 0; }
       .calendar_popup table.calendar td.today {
-        border-radius: !amount;
         -moz-border-radius: 5px;
         -webkit-border-radius: 5px;
+        border-radius: 5px;
         background-color: #e5e5e5; }
       .calendar_popup table.calendar td.today a {
         background-color: white; }
