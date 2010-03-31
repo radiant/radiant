@@ -175,9 +175,10 @@ the new files:"
       task :sass do
         copy_sass = proc do |project_dir, sass_files|
           sass_files.reject!{|s| File.basename(s) == 'overrides.sass'} if File.exists?(project_dir + 'overrides.sass')
+          FileUtils.mkpath(project_dir)
           FileUtils.cp_r(sass_files, project_dir)
         end
-        copy_sass[RAILS_ROOT + '/public/stylesheets/sass/admin/', Dir["#{File.dirname(__FILE__)}/../../public/stylesheets/sass/admin/*"]]
+        copy_sass[RAILS_ROOT + '/public/stylesheets/sass/admin/', Dir["#{RADIANT_ROOT}/public/stylesheets/sass/admin/*"]]
       end
     end
   end
