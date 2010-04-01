@@ -61,8 +61,16 @@ unless File.directory? "#{RAILS_ROOT}/app"
       rm_rf "vendor/radiant"
     end
 
-    desc "Update both configs, sass and public/javascripts from Radiant"
-    task :update => [ "update:scripts", "update:javascripts", "update:configs", "update:images", "update:sass" ]
+    desc "Update configs, scripts, sass, stylesheets and javascripts from Radiant."
+    task :update do
+      tasks = %w{scripts javascripts configs images sass stylesheets}
+      tasks = tasks & ENV['ONLY'].split(',') if ENV['ONLY']
+      tasks = tasks - ENV['EXCEPT'].split(',') if ENV['EXCEPT']
+      tasks.each do |task| 
+        puts "* Updating #{task}"
+        Rake::Task["radiant:update:#{task}"].invoke
+      end
+    end
 
     namespace :update do
       desc "Add new scripts to the instance script/ directory"
@@ -174,7 +182,7 @@ the new files:"
       desc "Update admin sass files from your current radiant install"
       task :sass do
         copy_sass = proc do |project_dir, sass_files|
-          sass_files.reject!{|s| File.basename(s) == 'overrides.sass'} if File.exists?(project_dir + 'overrides.sass')
+          sass_files.reject!{|s| File.basename(s) == 'overrides.sass'} if File.exists?(project_dir + 'overrides.sass') || File.exists?(project_dir + '../overrides.css')
           FileUtils.mkpath(project_dir)
           FileUtils.cp_r(sass_files, project_dir)
         end
