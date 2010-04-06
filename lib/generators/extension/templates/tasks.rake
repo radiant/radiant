@@ -7,8 +7,10 @@ namespace :radiant do
         require 'radiant/extension_migrator'
         if ENV["VERSION"]
           <%= class_name %>.migrator.migrate(ENV["VERSION"].to_i)
+          Rake::Task['db:schema:dump'].invoke
         else
           <%= class_name %>.migrator.migrate
+          Rake::Task['db:schema:dump'].invoke
         end
       end
       

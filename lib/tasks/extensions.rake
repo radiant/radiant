@@ -6,6 +6,7 @@ namespace :db do
     task :extensions => :environment do
       require 'radiant/extension_migrator'
       Radiant::ExtensionMigrator.migrate_extensions
+      Rake::Task['db:schema:dump'].invoke
     end
   end
   namespace :remigrate do
@@ -16,6 +17,7 @@ namespace :db do
         require 'radiant/extension_migrator'
         Radiant::Extension.descendants.each {|ext| ext.migrator.migrate(0) }
         Rake::Task['db:migrate:extensions'].invoke
+        Rake::Task['db:schema:dump'].invoke
       end
     end
   end
