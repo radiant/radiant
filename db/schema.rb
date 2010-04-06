@@ -9,16 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091003095744) do
-
-  create_table "assets", :force => true do |t|
-    t.string   "name"
-    t.integer  "folder_id"
-    t.integer  "created_by_id"
-    t.integer  "updated_by_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
+ActiveRecord::Schema.define(:version => 20100322181527) do
 
   create_table "config", :force => true do |t|
     t.string "key",   :limit => 40, :default => "", :null => false
@@ -31,16 +22,6 @@ ActiveRecord::Schema.define(:version => 20091003095744) do
     t.string  "name"
     t.integer "schema_version", :default => 0
     t.boolean "enabled",        :default => true
-  end
-
-  create_table "folders", :force => true do |t|
-    t.string   "name"
-    t.integer  "parent_id"
-    t.integer  "created_by_id"
-    t.integer  "updated_by_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "slug"
   end
 
   create_table "layouts", :force => true do |t|
