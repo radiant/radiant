@@ -63,7 +63,7 @@ unless File.directory? "#{RAILS_ROOT}/app"
 
     desc "Update configs, scripts, sass, stylesheets and javascripts from Radiant."
     task :update do
-      tasks = %w{scripts javascripts configs images sass stylesheets}
+      tasks = %w{scripts javascripts configs images sass stylesheets cached_assets}
       tasks = tasks & ENV['ONLY'].split(',') if ENV['ONLY']
       tasks = tasks - ENV['EXCEPT'].split(',') if ENV['EXCEPT']
       tasks.each do |task| 
@@ -102,6 +102,12 @@ unless File.directory? "#{RAILS_ROOT}/app"
         end
         copy_javascripts[RAILS_ROOT + '/public/javascripts/', Dir["#{File.dirname(__FILE__)}/../../public/javascripts/*.js"]]
         copy_javascripts[RAILS_ROOT + '/public/javascripts/admin/', Dir["#{File.dirname(__FILE__)}/../../public/javascripts/admin/*.js"]]
+      end
+
+      desc "Update the cached assets for the admin UI"
+      task :cached_assets do
+        dir = File.join(Rails.root, 'public', 'javascripts', 'admin')
+        TaskSupport.cache_files(dir, TaskSupport.find_admin_js, 'all.js')
       end
 
       desc "Update config/boot.rb from your current radiant install"

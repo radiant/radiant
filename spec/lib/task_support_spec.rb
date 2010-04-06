@@ -39,4 +39,35 @@ describe TaskSupport do
       Radiant::Config.to_hash.should == YAML.load(YAML.load_file(@yaml_file))
     end
   end
+
+  describe "self.cache_files" do
+    before do
+      @files = [ 'a.txt', 'b.txt' ]
+      @dir = "#{Rails.root}/tmp/cache_files_test"
+      @cache_file = 'all.txt'
+
+      FileUtils.mkdir_p(@dir)
+      FileUtils.rm_rf(File.join(@dir, '*.txt'))
+      @files.each do |f_name|
+        File.open(File.join(@dir, f_name), "w+") do |f|
+          f.write("Contents of '#{f_name}'")
+        end
+      end
+    end
+
+    it "should create a cache file containing the contents of the specified files" do
+      TaskSupport.cache_files(@dir, @files, @cache_file)
+      cache_path = File.join(@dir, @cache_file)
+      File.should exist(cache_path)
+      File.read(cache_path).should == "Contents of 'a.txt'\n\nContents of 'b.txt'"
+    end
+  end
+
+  describe "self.find_admin_js" do
+    it "should return an array of JS files" do
+      js_files = TaskSupport.find_admin_js
+      js_files.should_not be_empty
+      js_files.each { |f| f.should =~ /^[^\/]+.js$/ }
+    end
+  end
 end

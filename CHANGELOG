@@ -2,6 +2,7 @@
 
 === Edge
 
+* Cache admin.js in update task [Janne Asmala]
 * Finally rename User.protected_attributes to unprotected_attributes [Jim Gay]
 * Support i18n [Keith Bingman, many others]
 * Only run migrate and update tasks with script/extension if they exist [John Muhl, Jim Gay]
