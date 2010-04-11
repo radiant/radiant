@@ -13,11 +13,7 @@ class <%= class_name %> < Radiant::Extension
   #   end
   # end
 
-  # define_routes do |map|
-  #   map.namespace :admin, :member => { :remove => :get } do |admin|
-  #     admin.resources :<%= file_name %>
-  #   end
-  # end
+  # See your config/routes.rb file in this extension to define custom routes
   
   def activate
     # tab 'Content' do

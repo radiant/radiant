@@ -2,6 +2,7 @@
 
 === Edge
 
+* Allow loading extension routes from the extension's config/routes.rb [Jim Gay]
 * Cache admin.js in update task [Janne Asmala]
 * Finally rename User.protected_attributes to unprotected_attributes [Jim Gay]
 * Support i18n [Keith Bingman, many others]

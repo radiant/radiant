@@ -95,6 +95,22 @@ describe "ExtensionGenerator with normal options" do
     'vendor/extensions/sample'.should have_generated_file('cucumber.yml')
   end
   
+  it "should generate extension config directory" do
+    'vendor/extensions/sample'.should have_generated_directory('config')
+  end
+  
+  it "should generate extension routes.rb file" do
+    'vendor/extensions/sample'.should have_generated_file('config/routes.rb')
+  end
+  
+  it "should generate extension locales directory" do
+    'vendor/extensions/sample'.should have_generated_directory('config/locales')
+  end
+  
+  it "should generate extension en.yml file" do
+    'vendor/extensions/sample'.should have_generated_file('config/locales/en.yml')
+  end
+  
   it "should generate extension features support directory" do
     'vendor/extensions/sample'.should have_generated_directory('features/support')
   end

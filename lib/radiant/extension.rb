@@ -23,8 +23,17 @@ module Radiant
       active? and migrated?
     end
     
+    # Conventional plugin-like routing
+    def routed?
+      File.exist?(routing_file)
+    end
+    
     def migrations_path
       File.join(self.root, 'db', 'migrate')
+    end
+    
+    def routing_file
+      File.join(self.root, 'config', 'routes.rb')
     end
     
     def migrator
@@ -75,6 +84,7 @@ module Radiant
       def activate_extension
         return if instance.active?
         instance.activate if instance.respond_to? :activate
+        ActionController::Routing::Routes.add_configuration_file(instance.routing_file) if instance.routed?
         ActionController::Routing::Routes.reload
         instance.active = true
       end
@@ -88,6 +98,7 @@ module Radiant
       alias :deactivate :deactivate_extension
 
       def define_routes(&block)
+        ActiveSupport::Deprecation.warn("define_routes has been deprecated in favor of your extension's config/routes.rb",caller)
         route_definitions << block
       end
 
