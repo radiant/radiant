@@ -474,16 +474,6 @@ describe "Standard Tags" do
     end
   end
 
-  describe "<r:author>" do
-    it "should render the author of the current page" do
-      page.should render('<r:author />').as('Admin')
-    end
-
-    it "should render nothing when the page has no author" do
-      page(:no_user).should render('<r:author />').as('')
-    end
-  end
-
   describe "<r:date>" do
     before :each do
       page(:dated)

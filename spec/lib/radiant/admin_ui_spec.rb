@@ -27,11 +27,11 @@ describe Radiant::AdminUI do
     @admin.nav.should have(3).items
     @admin.nav[:content].should have(1).items
     @admin.nav[:design].should have(2).items
-    @admin.nav[:settings].should have(3).items
+    @admin.nav[:settings].should have_at_least(1).items
   end
 
   it "should have collections of Region Sets for every controller" do
-    %w{page snippet layout user}.each do |collection|
+    %w{page snippet layout}.each do |collection|
       @admin.should respond_to(collection)
       @admin.should respond_to(collection.pluralize)
       @admin.send(collection).should_not be_nil
@@ -90,24 +90,6 @@ describe Radiant::AdminUI do
     layout.index.bottom.should == %w{new_button}
     
     layout.new.should == layout.edit
-  end
-
-  it "should load the default user regions" do
-    user = @admin.user
-    user.edit.should_not be_nil
-    user.edit.main.should == %w{edit_header edit_form}
-    user.edit.form.should == %w{edit_name edit_email edit_username
-                                edit_password edit_roles edit_locale edit_notes}
-    user.edit.form_bottom.should == %w{edit_buttons edit_timestamp}
-    user.index.should_not be_nil
-    user.index.thead.should == %w{title_header roles_header modify_header}
-    user.index.tbody.should == %w{title_cell roles_cell modify_cell}
-    user.index.bottom.should == %w{new_button}
-    user.preferences.main.should == %w{edit_header edit_form}
-    user.preferences.form.should == %w{edit_name edit_email edit_username edit_password edit_locale}
-    user.preferences.form_bottom.should == %w{edit_buttons}
-    
-    user.new.should == user.edit
   end
   
   it "should load the default extension regions" do
