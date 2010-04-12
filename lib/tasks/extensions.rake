@@ -62,8 +62,10 @@ namespace :spec do
         chdir directory do
           if RUBY_PLATFORM =~ /win32/
             system "rake.cmd spec RADIANT_ENV_FILE=#{RAILS_ROOT}/config/environment"
+            system "rake.cmd features RADIANT_ENV_FILE=#{RAILS_ROOT}/config/environment"
           else
             system "rake spec RADIANT_ENV_FILE=#{RAILS_ROOT}/config/environment"
+            system "rake features RADIANT_ENV_FILE=#{RAILS_ROOT}/config/environment"
           end
         end
       end
