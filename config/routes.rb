@@ -17,14 +17,6 @@ ActionController::Routing::Routes.draw do |map|
     admin.reference '/reference/:type.:format', :controller => 'references', :action => 'show', :conditions => {:method => :get}
   end
 
-  # Admin Routes
-  map.with_options(:controller => 'admin/welcome') do |welcome|
-    welcome.admin          'admin',                              :action => 'index'
-    welcome.welcome        'admin/welcome',                      :action => 'index'
-    welcome.login          'admin/login',                        :action => 'login'
-    welcome.logout         'admin/logout',                       :action => 'logout'
-  end
-
   # Export Routes
   map.with_options(:controller => 'admin/export') do |export|
     export.export          'admin/export',                             :action => 'yaml'

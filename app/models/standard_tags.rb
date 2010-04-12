@@ -534,16 +534,6 @@ module StandardTags
   end
 
   desc %{
-    Renders the name of the author of the current page.
-  }
-  tag 'author' do |tag|
-    page = tag.locals.page
-    if author = page.created_by
-      author.name
-    end
-  end
-
-  desc %{
     Renders the date based on the current page (by default when it was published or created).
     The format attribute uses the same formating codes used by the Ruby @strftime@ function. By
     default it's set to @%A, %B %d, %Y@.  The @for@ attribute selects which date to render.  Valid

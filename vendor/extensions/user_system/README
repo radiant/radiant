@@ -1,0 +1,31 @@
+# User System
+
+This is the standard login system for users in Radiant.
+You may provide your own login system by creating an extension with the necessary features (listed below) and replace this on with:
+
+  config.extensions = [:my_login_replacement, :all]
+  config.extensions -= [:login_system]
+  
+## Assumptions
+
+Radiant assumes that certain features will exist. You should provide these methods or override standard behavior accordingly.
+
+### Routes
+
+Radiant expects to find these route paths (and their accompanying _url methods)
+
+  * admin_path
+  * welcome_path
+  * login_path
+  * logout_path
+  * edit_admin_preferences_path (used to link to the currently logged in user)
+  
+Additionally this extension provides these route paths.
+  
+  * admin_users_path
+  * new_admin_user_path
+  * edit_admin_user_path
+  * remove_admin_user_path
+  * admin_user_path
+  * new_admin_preferences_path
+  * admin_preferences_path
