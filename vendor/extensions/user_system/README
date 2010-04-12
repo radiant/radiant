@@ -29,3 +29,7 @@ Additionally this extension provides these route paths.
   * admin_user_path
   * new_admin_preferences_path
   * admin_preferences_path
+  
+## Radius Tags
+
+The `<r:author />` tag now lives in this extension.

@@ -1,11 +1,11 @@
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "radiant-login_system-extension"
-    gem.summary = %Q{Login System Extension for Radiant CMS}
-    gem.description = %Q{Describe your extension here}
+    gem.name = "radiant-user_system-extension"
+    gem.summary = %Q{User System Extension for Radiant CMS}
+    gem.description = %Q{This is the standard login system for users in Radiant.}
     gem.email = "jim@saturnflyer.com"
-    gem.homepage = "http://github.com/saturnflyer/radiant-login_system-extension"
+    gem.homepage = "http://github.com/radiant/radiant"
     gem.authors = ["Jim Gay"]
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
