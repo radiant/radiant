@@ -1,5 +1,5 @@
 class UserActionObserver < ActiveRecord::Observer
-  observe User, Page, Layout, Snippet
+  observe Page, Layout, Snippet
   
   cattr_accessor :current_user
   
