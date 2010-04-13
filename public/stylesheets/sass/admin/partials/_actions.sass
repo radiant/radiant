@@ -23,3 +23,21 @@
       text-shadow: 1px 1px 1px #fff
     img
       vertical-align: -20%
+  .pagination 
+    :float right
+    :padding 14px 8px
+    span.current, span.disabled
+      :background #eee url(../../images/admin/buttons_background.png) repeat-x
+      :color #333
+      :font-size 80%
+      :padding 8px 12px
+      :text-decoration none
+      :text-shadow 1px 1px 1px #eee
+      +round-corners(5px)
+    span.disabled
+      +opacity(0.5)
+    span.current
+      :font-weight bold
+      :color #999
+      :border 1px solid #999
+

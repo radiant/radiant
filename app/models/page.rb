@@ -33,10 +33,9 @@ class Page < ActiveRecord::Base
   include Annotatable
 
   annotate :description
-  attr_accessor :request, :response
+  attr_accessor :request, :response, :pagination_parameters
 
   set_inheritance_column :class_name
-
 
   def layout_with_inheritance
     unless layout_without_inheritance
@@ -92,7 +91,6 @@ class Page < ActiveRecord::Base
     status == Status[:published]
   end
   
-
   def status
    Status.find(self.status_id)
   end

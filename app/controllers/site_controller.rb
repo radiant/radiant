@@ -14,8 +14,6 @@ class SiteController < ApplicationController
     else
       url = url.to_s
     end
-    
-
     if @page = find_page(url)
       batch_page_status_refresh if (url == "/" || url == "")
       process_page(@page)
@@ -58,6 +56,7 @@ class SiteController < ApplicationController
     end
 
     def process_page(page)
+      page.pagination_parameters = pagination_parameters
       page.process(request, response)
    end
 

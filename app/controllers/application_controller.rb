@@ -11,10 +11,13 @@ class ApplicationController < ActionController::Base
   before_filter :set_current_user
   before_filter :set_timezone
   before_filter :set_user_locale
+  before_filter :set_pagination_parameters
   before_filter :set_javascripts_and_stylesheets
   before_filter :set_standard_body_style, :only => [:new, :edit, :update, :create]
   
   attr_accessor :config, :cache
+  attr_reader :pagination_parameters
+  helper_method :pagination_parameters
   
   def initialize
     super
@@ -48,7 +51,7 @@ class ApplicationController < ActionController::Base
       self.action_name
     end
   end
-  
+    
   def rescue_action_in_public(exception)
     case exception
       when ActiveRecord::RecordNotFound, ActionController::UnknownController, ActionController::UnknownAction, ActionController::RoutingError
@@ -82,5 +85,21 @@ class ApplicationController < ActionController::Base
       @body_classes ||= []
       @body_classes.concat(%w(reversed))
     end
+    
+    def set_pagination_parameters
+      param_name = WillPaginate::ViewHelpers.pagination_options[:param_name]
+      options = pagination_defaults
+      options[:page] = params.delete(param_name.intern) if params[param_name.intern]
+      options[:per_page] = params.delete(:per_page) if params[:per_page]
+      @pagination_parameters = options
+    end
+
+    def pagination_defaults
+      {
+        :page => 1, 
+        :per_page => Radiant::Config['pagination.per_page'] || 20
+      }
+    end
+    
     
 end

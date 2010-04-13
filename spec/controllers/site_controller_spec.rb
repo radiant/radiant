@@ -32,6 +32,18 @@ describe SiteController do
     get :show_page, :url => '/'
     response.should redirect_to(welcome_url)
   end
+  
+  it "should pass pagination parameters to the page" do
+    page = pages(:first)
+    param_name = WillPaginate::ViewHelpers.pagination_options[:param_name] || 'p'
+    pagination_parameters = {param_name.intern => 3, :per_page => 100}
+    controller.stub!(:pagination_parameters).and_return(pagination_parameters)
+    controller.stub!(:find_page).and_return(page)
+    
+    get :show_page, :url => 'first/'
+    
+    page.pagination_parameters.should == pagination_parameters
+  end
 
   it "should parse pages with Radius" do
     get :show_page, :url => 'radius'
@@ -102,7 +114,6 @@ describe SiteController do
     end
     
   end
-
 
   describe "caching" do
     it "should add a default Cache-Control header with public and max-age of 5 minutes" do

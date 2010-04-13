@@ -39,6 +39,16 @@ describe ApplicationController do
     controller.include_javascript('test').should include('test')
   end
   
+  it "should set the pagination parameters" do
+    ApplicationController.filter_chain.find(:set_pagination_parameters).should_not be_nil
+    param_name = WillPaginate::ViewHelpers.pagination_options[:param_name].intern
+    controller.stub!(:params).and_return({param_name => 3, :per_page => 100, :next_link => 'ha'})
+    controller.send :set_pagination_parameters
+    controller.pagination_parameters[:page].should == 3
+    controller.pagination_parameters[:per_page].should == 100
+    controller.pagination_parameters[:next_link].should be_nil
+  end
+  
   describe 'self.template_name' do
     it "should return 'index' when the controller action_name is 'index'" do
       controller.stub!(:action_name).and_return('index')

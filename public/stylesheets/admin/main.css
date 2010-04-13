@@ -791,6 +791,30 @@ body.reversed #content h1 {
       text-shadow: 1px 1px 1px #fff; }
     #actions a img {
       vertical-align: -20%; }
+  #actions .pagination {
+    float: right;
+    padding: 14px 8px; }
+    #actions .pagination span.current, #actions .pagination span.disabled {
+      background: #eee url(../../images/admin/buttons_background.png) repeat-x;
+      color: #333;
+      font-size: 80%;
+      padding: 8px 12px;
+      text-decoration: none;
+      text-shadow: 1px 1px 1px #eee;
+      -moz-border-radius: 5px;
+      -webkit-border-radius: 5px;
+      border-radius: 5px; }
+    #actions .pagination span.disabled {
+      -moz-opacity: 0.5;
+      -khtml-opacity: 0.5;
+      -webkit-opacity: 0.5;
+      filter: alpha(opacity=50);
+      -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
+      opacity: 0.5; }
+    #actions .pagination span.current {
+      font-weight: bold;
+      color: #999;
+      border: 1px solid #999; }
 
 #footer {
   color: #999;

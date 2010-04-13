@@ -77,6 +77,12 @@ describe "Standard Tags" do
       page.should render('<r:children:each by="title"><r:slug /> </r:children:each>').as('a b c d e f g h i j ').on('dev.site.com')
     end
 
+    it 'should paginate results when "paginated" attribute is "true"' do
+      page.pagination_parameters = {:page => 1, :per_page => 10}
+      page.should render('<r:children:each paginated="true" per_page="10"><r:slug /> </r:children:each>').as('a b c d e f g h i j ')
+      page.should render('<r:children:each paginated="true" per_page="2"><r:slug /> </r:children:each>').matching(/div class="pagination"/)
+    end
+
     it 'should error with invalid "limit" attribute' do
       message = "`limit' attribute of `each' tag must be a positive number between 1 and 4 digits"
       page.should render(page_children_each_tags(%{limit="a"})).with_error(message)
