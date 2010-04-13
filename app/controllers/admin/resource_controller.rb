@@ -4,7 +4,7 @@ class Admin::ResourceController < ApplicationController
   helper_method :model, :current_object, :models, :current_objects, :model_symbol, :plural_model_symbol, :model_class, :model_name, :plural_model_name
   before_filter :populate_format
   before_filter :load_models, :only => :index
-  before_filter :load_model, :only => [:new, :create, :show, :edit, :update, :remove, :destroy]
+  before_filter :load_model, :only => [:new, :create, :edit, :update, :remove, :destroy]
   after_filter :clear_model_cache, :only => [:create, :update, :destroy]
 
   def self.model_class(model_class = nil)
