@@ -5,11 +5,11 @@
 
   - form_tag login_url do
     %p
-      %label{:for=>"user_login"}= t('username')  
-      = text_field "user", "login", :class => 'textbox activate', :value => '', :maxlength => 40, :size => 40
+      %label{:for=>"username_or_email"}= t('username_or_email')  
+      = text_field_tag "username_or_email", @username_or_email, :class => 'textbox activate', :maxlength => 40, :size => 40
     %p
-      %label{:for=>"user_password"}= t('password') 
-      = password_field "user", "password", :class => 'textbox password', :value => '', :maxlength => 40, :size => 40
+      %label{:for=>"password"}= t('password') 
+      = password_field_tag "password", '', :class => 'textbox password', :maxlength => 40, :size => 40
     %p.remember_me
       = check_box_tag :remember_me, 1, false, :class => 'checkbox'
       %label.checkbox{:for=>"remember_me"}= t('remember_me_in_this_browser')

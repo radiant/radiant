@@ -175,6 +175,12 @@ describe User, "class methods" do
     user.should == expected
   end
   
+  it 'should authenticate with correct email and password' do
+    expected = users(:existing)
+    user = User.authenticate('existing@example.com', 'password')
+    user.should == expected
+  end
+  
   it 'should not authenticate with bad password' do
     User.authenticate('existing', 'bad password').should be_nil
   end
