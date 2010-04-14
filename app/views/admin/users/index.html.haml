@@ -19,6 +19,7 @@
           - render_region :tbody do |tbody|
             - tbody.title_cell do
               %td.user
+                = link_to image_tag(gravatar_url(user.email, :size=>"32px"), :class=>"avatar avatar_32x32", :width=>32, :height=>32, :alt=>""), edit_admin_user_url(user)
                 = link_to user.name, edit_admin_user_url(user)
                 %span.login= h user.login
             - tbody.roles_cell do

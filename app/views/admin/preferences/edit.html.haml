@@ -1,4 +1,5 @@
 - @page_title = @user.name + ' ' + t('preferences') + ' - ' + default_page_title
+- body_classes << 'edit_personal_preferences'
 
 - render_region :main do |main|
   - main.edit_header do
@@ -6,6 +7,9 @@
 
   - main.edit_form do
     - form_for @user, :url => admin_preferences_url, :html => { :method => :put, 'data-onsubmit_status' => "#{t('saving_preferences')}&#8230;" } do |f|
+      
+      = render :partial => 'admin/users/avatar'
+      
       = render_region :form_top
       
       - render_region :form do |form|
