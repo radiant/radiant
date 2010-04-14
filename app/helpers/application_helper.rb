@@ -199,15 +199,20 @@ module ApplicationHelper
     
     # Default image url to be used when no gravatar is found
     # or when an image exceeds the rating parameter.
-    options[:default] ||= "#{request.protocol}#{request.host_with_port}/images/admin/avatar_#{([options[:size].to_i] * 2).join('x')}.png"
+    default_avatar_url = "#{request.protocol}#{request.host_with_port}/images/admin/avatar_#{([options[:size].to_i] * 2).join('x')}.png"
+    options[:default] ||= default_avatar_url
     
-    # Build the Gravatar url.
-    url = 'http://www.gravatar.com/avatar.php?'
-    url << "gravatar_id=#{Digest::MD5.new.update(email)}" 
-    url << "&rating=#{options[:rating]}" if options[:rating]
-    url << "&size=#{options[:size]}" if options[:size]
-    url << "&default=#{options[:default]}" if options[:default]
-    url
+    unless email.blank?
+      # Build the Gravatar url.
+      url = 'http://www.gravatar.com/avatar.php?'
+      url << "gravatar_id=#{Digest::MD5.new.update(email)}" 
+      url << "&rating=#{options[:rating]}" if options[:rating]
+      url << "&size=#{options[:size]}" if options[:size]
+      url << "&default=#{options[:default]}" if options[:default]
+      url
+    else
+      default_avatar_url
+    end
   end
   
   private
