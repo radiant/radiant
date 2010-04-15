@@ -92,4 +92,3 @@ end
 
 Haml::Template.options[:format] = :html5
 Haml::Template.options[:ugly] = true if ENV['RAILS_ENV'] == 'production'
-WillPaginate::ViewHelpers.pagination_options[:param_name] = 'p'
