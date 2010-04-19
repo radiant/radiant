@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + "/extension_generators_spec_helper"
 
 share_as :AllInstanceGenerators do
   # Check for directories
-  %w(config config/environments db log script vendor/plugins vendor/extensions
+  %w(config config/environments config/initializers db log script vendor/plugins vendor/extensions
     public public/images public/stylesheets public/images/admin public/stylesheets/admin public/stylesheets/sass
     public/stylesheets/sass/admin script/performance script/process).each do |dir|
     it "should have a #{dir} directory" do
@@ -77,6 +77,13 @@ share_as :AllInstanceGenerators do
     codearea.js cookie.js effects.js prototype.js shortcuts.js status.js utility.js).each do |file|
     it "should have a #{file} admin image" do
       'public/javascripts/admin'.should have_generated_file(file)
+    end
+  end
+
+  # Check for initializers
+  %w(pagination.rb).each do |file|
+    it "should have a #{file} initializer" do
+      'config/initializers'.should have_generated_file(file)
     end
   end
 end
