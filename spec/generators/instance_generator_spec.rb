@@ -81,7 +81,7 @@ share_as :AllInstanceGenerators do
   end
 
   # Check for initializers
-  %w(pagination.rb).each do |file|
+  %w(pagination.rb haml.rb).each do |file|
     it "should have a #{file} initializer" do
       'config/initializers'.should have_generated_file(file)
     end

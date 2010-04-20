@@ -87,8 +87,4 @@ Radiant::Initializer.run do |config|
   end
   
   config.gem 'will_paginate', :version => '~> 2.3.11', :source => 'http://gemcutter.org'
-
 end
-
-Haml::Template.options[:format] = :html5
-Haml::Template.options[:ugly] = true if ENV['RAILS_ENV'] == 'production'
