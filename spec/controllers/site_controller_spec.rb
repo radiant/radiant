@@ -35,8 +35,8 @@ describe SiteController do
   
   it "should pass pagination parameters to the page" do
     page = pages(:first)
-    param_name = WillPaginate::ViewHelpers.pagination_options[:param_name] || 'p'
-    pagination_parameters = {param_name.intern => 3, :per_page => 100}
+    param_name = WillPaginate::ViewHelpers.pagination_options[:param_name] || :p
+    pagination_parameters = {param_name => 3, :per_page => 100}
     controller.stub!(:pagination_parameters).and_return(pagination_parameters)
     controller.stub!(:find_page).and_return(page)
     

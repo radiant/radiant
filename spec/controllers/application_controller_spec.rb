@@ -41,7 +41,7 @@ describe ApplicationController do
   
   it "should set the pagination parameters" do
     ApplicationController.filter_chain.find(:set_pagination_parameters).should_not be_nil
-    param_name = WillPaginate::ViewHelpers.pagination_options[:param_name].intern
+    param_name = WillPaginate::ViewHelpers.pagination_options[:param_name].to_sym
     controller.stub!(:params).and_return({param_name => 3, :per_page => 100, :next_link => 'ha'})
     controller.send :set_pagination_parameters
     controller.pagination_parameters[:page].should == 3

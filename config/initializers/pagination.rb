@@ -1,1 +1,1 @@
-WillPaginate::ViewHelpers.pagination_options[:param_name] = 'p'
+WillPaginate::ViewHelpers.pagination_options[:param_name] = :p

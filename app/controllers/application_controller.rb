@@ -89,7 +89,7 @@ class ApplicationController < ActionController::Base
     def set_pagination_parameters
       param_name = WillPaginate::ViewHelpers.pagination_options[:param_name]
       options = pagination_defaults
-      options[:page] = params.delete(param_name.intern) if params[param_name.intern]
+      options[:page] = params.delete(param_name) if params[param_name]
       options[:per_page] = params.delete(:per_page) if params[:per_page]
       @pagination_parameters = options
     end
