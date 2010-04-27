@@ -6,10 +6,11 @@ unless defined? Radiant::Version
       Major = '0'
       Minor = '9'
       Tiny  = '0'
+      Patch = 'rc2' # set to nil for normal release
 
       class << self
         def to_s
-          [Major, Minor, Tiny].join('.')
+          [Major, Minor, Tiny, Patch].join('.')
         end
         alias :to_str :to_s
       end
