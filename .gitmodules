@@ -10,3 +10,6 @@
 [submodule "vendor/extensions/italian_language_pack"]
 	path = vendor/extensions/italian_language_pack
 	url = git://github.com/radiant/radiant-italian_language_pack-extension.git
+[submodule "vendor/extensions/japanese_language_pack"]
+	path = vendor/extensions/japanese_language_pack
+	url = git://github.com/radiant/radiant-japanese_language_pack-extension.git
