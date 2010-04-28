@@ -1,0 +1,3 @@
+[submodule "vendor/extensions/german_language_pack"]
+	path = vendor/extensions/german_language_pack
+	url = git://github.com/radiant/radiant-german_language_pack-extension.git
