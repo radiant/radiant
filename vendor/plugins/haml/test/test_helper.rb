@@ -24,12 +24,27 @@ class Test::Unit::TestCase
   def assert_warning(message)
     the_real_stderr, $stderr = $stderr, StringIO.new
     yield
-    assert_equal message.strip, $stderr.string.strip
+
+    if message.is_a?(Regexp)
+      assert_match message, $stderr.string.strip
+    else
+      assert_equal message.strip, $stderr.string.strip
+    end
   ensure
     $stderr = the_real_stderr
   end
 
   def silence_warnings(&block)
     Haml::Util.silence_warnings(&block)
+  end
+
+  def rails_block_helper_char
+    return '=' if Haml::Util.ap_geq_3?
+    return '-'
+  end
+
+  def form_for_calling_convention(name)
+    return "@#{name}, :as => :#{name}, :html => {:class => nil, :id => nil}" if Haml::Util.ap_geq_3_beta_3?
+    return ":#{name}, @#{name}"
   end
 end

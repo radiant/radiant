@@ -85,7 +85,15 @@ If you really need #{filename}.css, import it explicitly.
 END
         return filename + '.css'
       end
-      raise SyntaxError.new("File to import not found or unreadable: #{original_filename}.", @line)
+
+      message = "File to import not found or unreadable: #{original_filename}.\n"
+      if load_paths.size == 1
+        message << "Load path: #{load_paths.first}"
+      else
+        message << "Load paths:\n  " << load_paths.join("\n  ")
+      end
+
+      raise SyntaxError.new(message, @line)
     end
 
     private
@@ -104,7 +112,7 @@ END
         return unless f.readline("\n").strip == sha
         return Marshal.load(f.read)
       end
-    rescue TypeError, ArgumentError => e
+    rescue EOFError, TypeError, ArgumentError => e
       warn "Warning. Error encountered while reading cache #{compiled_filename}: #{e}"
     end
 

@@ -15,7 +15,18 @@ module Haml::Helpers
 end
 
 class HelperTest < Test::Unit::TestCase
-  Post = Struct.new('Post', :body)
+  Post = Struct.new('Post', :body, :error_field, :errors)
+  class PostErrors
+    def on(name)
+      return unless name == 'error_field'
+      ["Really bad error"]
+    end
+    alias_method :full_messages, :on
+
+    def [](name)
+      on(name) || []
+    end
+  end
   
   def setup
     @base = ActionView::Base.new
@@ -26,7 +37,7 @@ class HelperTest < Test::Unit::TestCase
       @base.controller.response = ActionController::Response.new
     end
 
-    @base.instance_variable_set('@post', Post.new("Foo bar\nbaz"))
+    @base.instance_variable_set('@post', Post.new("Foo bar\nbaz", nil, PostErrors.new))
   end
 
   def render(text, options = {})
@@ -65,7 +76,21 @@ class HelperTest < Test::Unit::TestCase
     assert_equal("foo\n  bar\nbaz\n", render("foo\n- tab_up\nbar\n- tab_down\nbaz"))
     assert_equal("          <p>tabbed</p>\n", render("- buffer.tabulation=5\n%p tabbed"))
   end
-  
+
+  def test_with_tabs
+    assert_equal(<<HTML, render(<<HAML))
+Foo
+    Bar
+    Baz
+Baz
+HTML
+Foo
+- with_tabs 2 do
+  = "Bar\\nBaz"
+Baz
+HAML
+  end
+
   def test_helpers_dont_leak
     # Haml helpers shouldn't be accessible from ERB
     render("foo")
@@ -93,9 +118,16 @@ class HelperTest < Test::Unit::TestCase
   def test_form_tag
     # This is usually provided by ActionController::Base.
     def @base.protect_against_forgery?; false; end
-    result = render("- form_tag 'foo' do\n  %p bar\n  %strong baz", :action_view)
-    should_be = "<form action=\"foo\" method=\"post\">\n  <p>bar</p>\n  <strong>baz</strong>\n</form>\n"
-    assert_equal(should_be, result)
+    assert_equal(<<HTML, render(<<HAML, :action_view))
+<form action="foo" method="post">
+  <p>bar</p>
+  <strong>baz</strong>
+</form>
+HTML
+#{rails_block_helper_char} form_tag 'foo' do
+  %p bar
+  %strong baz
+HAML
   end
 
   def test_text_area
@@ -110,18 +142,37 @@ class HelperTest < Test::Unit::TestCase
   end
   
   def test_capture_haml
-    assert_equal("\"<p>13</p>\\n\"\n", render("- foo = capture_haml(13) do |a|\n  %p= a\n= foo.dump"))
+    assert_equal(<<HTML, render(<<HAML))
+"<p>13</p>\\n"
+HTML
+- (foo = capture_haml(13) do |a|
+  %p= a
+- end; nil)
+= foo.dump
+HAML
   end
 
   def test_content_tag_block
-    assert_equal(<<HTML.strip, render(<<HAML, :action_view))
+    assert_equal(<<HTML.strip, render(<<HAML, :action_view).strip)
 <div><p>bar</p>
 <strong>bar</strong>
 </div>
 HTML
-- content_tag :div do
+#{rails_block_helper_char} content_tag :div do
   %p bar
   %strong bar
+HAML
+  end
+
+  def test_content_tag_error_wrapping
+    def @base.protect_against_forgery?; false; end
+    assert_equal(<<HTML, render(<<HAML, :action_view))
+<form action="" method="post">
+  <div class="fieldWithErrors"><label for="post_error_field">Error field</label></div>
+</form>
+HTML
+#{rails_block_helper_char} form_for #{form_for_calling_convention('post')}, :url => '' do |f|
+  = f.label 'error_field'
 HAML
   end
 

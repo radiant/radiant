@@ -3,8 +3,11 @@
 
 module Haml
   class Plugin < Haml::Util.av_template_class(:Handler)
-    if defined?(ActionView::TemplateHandlers::Compilable) ||
-        defined?(ActionView::Template::Handlers::Compilable)
+    if (defined?(ActionView::TemplateHandlers) &&
+        defined?(ActionView::TemplateHandlers::Compilable)) ||
+       (defined?(ActionView::Template) &&
+        defined?(ActionView::Template::Handlers) &&
+        defined?(ActionView::Template::Handlers::Compilable))
       include Haml::Util.av_template_class(:Handlers)::Compilable
     end
 
@@ -27,6 +30,38 @@ module Haml
     def cache_fragment(block, name = {}, options = nil)
       @view.fragment_for(block, name, options) do
         eval("_hamlout.buffer", block.binding)
+      end
+    end
+  end
+
+  # Rails 3.0 prints a deprecation warning when block helpers
+  # return strings that go unused.
+  # We want to print the same deprecation warning,
+  # so we have to compile in a method call to check for it.
+  #
+  # I don't like having this in the precompiler pipeline,
+  # and I'd like to get rid of it once Rails 3.1 is well-established.
+  if defined?(ActionView::OutputBuffer) &&
+      Haml::Util.has?(:instance_method, ActionView::OutputBuffer, :append_if_string=)
+    module Precompiler
+      def push_silent_with_haml_block_deprecation(text, can_suppress = false)
+        unless can_suppress && block_opened? && !mid_block_keyword?("- #{text}") &&
+            text =~ ActionView::Template::Handlers::Erubis::BLOCK_EXPR
+          return push_silent_without_haml_block_deprecation(text, can_suppress)
+        end
+
+        push_silent_without_haml_block_deprecation("_hamlout.append_if_string= #{text}", can_suppress)
+      end
+      alias_method :push_silent_without_haml_block_deprecation, :push_silent
+      alias_method :push_silent, :push_silent_with_haml_block_deprecation
+    end
+
+    class Buffer
+      def append_if_string=(value)
+        if value.is_a?(String) && !value.is_a?(ActionView::NonConcattingString)
+          ActiveSupport::Deprecation.warn("- style block helpers are deprecated. Please use =", caller)
+          buffer << value
+        end
       end
     end
   end

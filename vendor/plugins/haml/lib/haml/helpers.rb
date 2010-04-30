@@ -1,8 +1,3 @@
-if defined?(ActionView)
-  require 'haml/helpers/action_view_mods'
-  require 'haml/helpers/action_view_extensions'
-end
-
 module Haml
   # This module contains various helpful methods to make it easier to do various tasks.
   # {Haml::Helpers} is automatically included in the context
@@ -52,8 +47,7 @@ MESSAGE
 
     self.extend self
 
-    @@action_view_defined = defined?(ActionView)
-    @@force_no_action_view = false
+    @@action_view_defined = false
 
     # @return [Boolean] Whether or not ActionView is loaded
     def self.action_view?
@@ -232,6 +226,33 @@ MESSAGE
     # @see #tab_up
     def tab_down(i = 1)
       haml_buffer.tabulation -= i
+    end
+
+    # Sets the number of tabs the buffer automatically adds
+    # to the lines of the template,
+    # but only for the duration of the block.
+    # For example:
+    #
+    #     %h1 foo
+    #     - with_tabs(2) do
+    #       %p bar
+    #     %strong baz
+    #
+    # Produces:
+    #
+    #     <h1>foo</h1>
+    #         <p>bar</p>
+    #     <strong>baz</strong>
+    #
+    #
+    # @param i [Fixnum] The number of tabs to use
+    # @yield A block in which the indentation will be `i` spaces
+    def with_tabs(i)
+      old_tabs = haml_buffer.tabulation
+      haml_buffer.tabulation = i
+      yield
+    ensure
+      haml_buffer.tabulation = old_tabs
     end
 
     # Surrounds a block of Haml code with strings,
@@ -475,7 +496,7 @@ END
     # @param text [String] The string to sanitize
     # @return [String] The sanitized string
     def html_escape(text)
-      text.to_s.gsub(/[\"><&]/n) {|s| HTML_ESCAPE[s]}
+      Haml::Util.silence_warnings {text.to_s.gsub(/[\"><&]/n) {|s| HTML_ESCAPE[s]}}
     end
 
     # Escapes HTML entities in `text`, but without escaping an ampersand
@@ -519,12 +540,12 @@ END
     # @yield A block in which the given buffer should be used
     def with_haml_buffer(buffer)
       @haml_buffer, old_buffer = buffer, @haml_buffer
-      old_buffer.active, was_active = false, old_buffer.active? if old_buffer
-      @haml_buffer.active = true
+      old_buffer.active, old_was_active = false, old_buffer.active? if old_buffer
+      @haml_buffer.active, was_active = true, @haml_buffer.active?
       yield
     ensure
-      @haml_buffer.active = false
-      old_buffer.active = was_active if old_buffer
+      @haml_buffer.active = was_active
+      old_buffer.active = old_was_active if old_buffer
       @haml_buffer = old_buffer
     end
 
@@ -545,11 +566,10 @@ END
       _erbout = _hamlout.buffer
       proc { |*args| proc.call(*args) }
     end
-
-    include ActionViewExtensions if self.const_defined? "ActionViewExtensions"
   end
 end
 
+# @private
 class Object
   # Haml overrides various `ActionView` helpers,
   # which call an \{#is\_haml?} method

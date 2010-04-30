@@ -3,6 +3,83 @@
 * Table of contents
 {:toc}
 
+## 2.2.24
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/2.2.24).
+
+* Don't prevent ActiveModel form elements from having error formatting applied.
+
+* Make sure `form_for` blocks are properly indented under Rails 3.0.0.beta.3.
+
+* Don't activate a bug in the `dynamic_form` plugin under Rails 3.0.0.beta.3
+  that would cause its methods not to be loaded.
+
+## 2.2.23
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/2.2.23).
+
+* Don't crash when `rake gems` is run in Rails with Haml installed.
+  Thanks to [Florian Frank](http://github.com/flori).
+
+* Don't remove `\n` in filters with interpolation.
+
+* Silence those annoying `"regexp match /.../n against to UTF-8 string"` warnings.
+
+## 2.2.22
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/2.2.22).
+
+* Add a railtie so Haml and Sass will be automatically loaded in Rails 3.
+  Thanks to [Daniel Neighman](http://pancakestacks.wordpress.com/).
+
+* Add a deprecation message for using `-` with methods like `form_for`
+  that return strings in Rails 3.
+  This is [the same deprecation that exists in Rails 3](http://github.com/rails/rails/commit/9de83050d3a4b260d4aeb5d09ec4eb64f913ba64).
+
+* Make sure line numbers are reported correctly when filters are being used.
+
+* Make loading the gemspec not crash on read-only filesystems like Heroku's.
+
+* Don't crash when methods like `form_for` return `nil` in, for example, Rails 3 beta.
+
+* Compatibility with Rails 3 beta's RJS facilities.
+
+## 2.2.21
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/2.2.21).
+
+* Fix a few bugs in the git-revision-reporting in {Haml::Version#version}.
+  In particular, it will still work if `git gc` has been called recently,
+  or if various files are missing.
+
+* Always use `__FILE__` when reading files within the Haml repo in the `Rakefile`.
+  According to [this bug report](http://github.com/carlhuda/bundler/issues/issue/44),
+  this should make Haml work better with Bundler.
+
+* Make the error message for `- end` a little more intuitive based on user feedback.
+
+* Compatibility with methods like `form_for`
+  that return strings rather than concatenate to the template in Rails 3.
+
+* Add a {Haml::Helpers#with_tabs with_tabs} helper,
+  which sets the indentation level for the duration of a block.
+
+## 2.2.20
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/2.2.20).
+
+* The `form_tag` Rails helper is now properly marked as HTML-safe
+  when using Rails' XSS protection with Rails 2.3.5.
+
+* Calls to `defined?` shouldn't interfere with Rails' autoloading
+  in very old versions (1.2.x).
+
+* Fix a bug where calls to ActionView's `render` method
+  with blocks and layouts wouldn't work under the Rails 3.0 beta.
+
+* Fix a bug where the closing tags of nested calls to \{Haml::Helpers#haml\_concat}
+  were improperly escaped under the Rails 3.0 beta.
+
 ## 2.2.19
 
 [Tagged on GitHub](http://github.com/nex3/haml/commit/2.2.19).
