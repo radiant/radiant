@@ -2,6 +2,7 @@
 
 === Edge
 
+* Moved user related code into vendor/extensions/user_system [Jim Gay]
 * Update to cucumber-rails 0.3.0 [Jim Gay]
 * Update to Haml 2.2.24 [Jim Gay]
 

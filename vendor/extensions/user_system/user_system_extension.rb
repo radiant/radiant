@@ -38,5 +38,6 @@ class UserSystemExtension < Radiant::Extension
       end
     }
     admin.user = Radiant::AdminUI.load_default_user_regions
+    UserActionObserver.instance.send :add_observer!, User
   end
 end
