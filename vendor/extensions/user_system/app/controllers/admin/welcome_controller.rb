@@ -8,9 +8,9 @@ class Admin::WelcomeController < ApplicationController
   
   def login
     if request.post?
-      login = params[:user][:login]
-      password = params[:user][:password]
-      announce_invalid_user unless self.current_user = User.authenticate(login, password)
+      @username_or_email = params[:username_or_email]
+      password = params[:password]
+      announce_invalid_user unless self.current_user = User.authenticate(@username_or_email, password)
     end
     if current_user
       if params[:remember_me]

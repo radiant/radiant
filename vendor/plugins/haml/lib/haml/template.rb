@@ -1,4 +1,6 @@
 require 'haml/engine'
+require 'haml/helpers/action_view_mods'
+require 'haml/helpers/action_view_extensions'
 
 module Haml
   # The class that keeps track of the global options for Haml within Rails.
@@ -17,7 +19,11 @@ module Haml
     #
     # @return [Boolean] Whether the XSS integration was enabled.
     def try_enabling_xss_integration
-      return false unless ActionView::Base.respond_to?(:xss_safe?) && ActionView::Base.xss_safe?
+      return false unless (ActionView::Base.respond_to?(:xss_safe?) && ActionView::Base.xss_safe?) ||
+        # We check for ActiveSupport#on_load here because if we're loading Haml that way, it means:
+        # A) we're in Rails 3 so XSS support is always on, and
+        # B) we might be in Rails 3 beta 3 where the load order is broken and xss_safe? is undefined
+        (defined?(ActiveSupport) && Haml::Util.has?(:public_method, ActiveSupport, :on_load))
 
       Haml::Template.options[:escape_html] = true
 
@@ -46,16 +52,21 @@ end
 # Decide how we want to load Haml into Rails.
 # Patching was necessary for versions <= 2.0.1,
 # but we can make it a normal handler for higher versions.
-if defined?(ActionView::TemplateHandler) || defined?(ActionView::Template::Handler)
+if defined?(ActionView::TemplateHandler) ||
+    (defined?(ActionView::Template) && defined?(ActionView::Template::Handler))
   require 'haml/template/plugin'
 else
   require 'haml/template/patch'
 end
 
-# Enable XSS integration. Use Rails' after_initialize method if possible
+# Enable XSS integration. Use Rails' after_initialize method
 # so that integration will be checked after the rails_xss plugin is loaded
 # (for Rails 2.3.* where it's not enabled by default).
-if defined?(Rails.configuration.after_initialize)
+#
+# If we're running under Rails 3, though, we don't want to use after_intialize,
+# since Haml loading has already been deferred via ActiveSupport.on_load.
+if defined?(Rails.configuration.after_initialize) &&
+    !(defined?(ActiveSupport) && Haml::Util.has?(:public_method, ActiveSupport, :on_load))
   Rails.configuration.after_initialize {Haml::Template.try_enabling_xss_integration}
 else
   Haml::Template.try_enabling_xss_integration

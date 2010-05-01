@@ -250,11 +250,21 @@ Then /^the "([^\"]*)" checkbox should not be checked$/ do |label|
 end
 
 Then /^(?:|I )should be on (.+)$/ do |page_name|
-  current_path = URI.parse(current_url).select(:path, :query).compact.join('?')
   if defined?(Spec::Rails::Matchers)
-    current_path.should == path_to(page_name)
+    URI.parse(current_url).path.should == path_to(page_name)
   else
-    assert_equal path_to(page_name), current_path
+    assert_equal path_to(page_name), URI.parse(current_url).path
+  end
+end
+
+Then /^(?:|I )should have the following query string:$/ do |expected_pairs|
+  actual_params   = CGI.parse(URI.parse(current_url).query)
+  expected_params = Hash[expected_pairs.rows_hash.map{|k,v| [k,[v]]}]
+ 
+  if defined?(Spec::Rails::Matchers)
+    actual_params.should == expected_params
+  else
+    assert_equal expected_params, actual_params
   end
 end
 

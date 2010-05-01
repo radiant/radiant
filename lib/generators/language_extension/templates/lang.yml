@@ -169,6 +169,7 @@
     last_updated: 'Last Updated'
   user: 'User'
   username: 'Username'
+  username_or_email: 'Username or E-mail Address'
   users: 'Users'
   users_controller:
     cannot_delete_self: 'You cannot delete yourself.'    
@@ -176,5 +177,5 @@
   view_site: 'View Site'
   website: 'Website'
   welcome_controller:
-    invalid_user: 'Invalid username or password.' 
+    invalid_user: 'Invalid username, e-mail address, or password.' 
     logged_out: 'You are now logged out.'  

@@ -100,8 +100,14 @@ module Haml
           if contains_interpolation?(text)
             return if options[:suppress_eval]
 
-            push_script <<RUBY, :escape_html => false
-find_and_preserve(#{filter.inspect}.render_with_options(#{unescape_interpolation(text)}, _hamlout.options))
+            text = unescape_interpolation(text).gsub(/(\\+)n/) do |s|
+              escapes = $1.size
+              next s if escapes % 2 == 0
+              ("\\" * (escapes - 1)) + "\n"
+            end
+            newline if text.gsub!(/\n"\Z/, "\\n\"")
+            push_script <<RUBY.strip, :escape_html => false
+find_and_preserve(#{filter.inspect}.render_with_options(#{text}, _hamlout.options))
 RUBY
             return
           end
@@ -113,6 +119,10 @@ RUBY
           else
             push_text(rendered.rstrip)
           end
+
+          (text.count("\n") - 1).times {newline}
+          resolve_newlines
+          newline
         end
       end
 
@@ -298,6 +308,8 @@ END
         ::RedCloth.new(text).to_html(:textile)
       end
     end
+    # An alias for the Textile filter,
+    # since the only available Textile parser is RedCloth.
     RedCloth = Textile
     Filters.defined['redcloth'] = RedCloth
 

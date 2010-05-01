@@ -3,6 +3,66 @@
 * Table of contents
 {:toc}
 
+## 2.2.24
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/2.2.24).
+
+* Parent references -- the `&` character --
+  may only be placed at the beginning of simple selector sequences in Sass 3.
+  Placing them elsewhere is deprecated in 2.2.24 and will print a warning.
+  For example, `foo &.bar` is allowed, but `foo .bar&` is not.
+
+## 2.2.23
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/2.2.23).
+
+* Don't crash when `rake gems` is run in Rails with Sass installed.
+  Thanks to [Florian Frank](http://github.com/flori).
+
+* When raising a file-not-found error,
+  add a list of load paths that were checked.
+
+* If an import isn't found for a cached Sass file and the
+  {file:SASS_REFERENCE.md#full_exception `:full_exception option`} is enabled,
+  print the full exception rather than raising it.
+
+* Fix a bug with a weird interaction with Haml, DataMapper, and Rails 3
+  that caused some tag helpers to go into infinite recursion.
+
+## 2.2.22
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/2.2.22).
+
+* Add a railtie so Haml and Sass will be automatically loaded in Rails 3.
+  Thanks to [Daniel Neighman](http://pancakestacks.wordpress.com/).
+
+* Make loading the gemspec not crash on read-only filesystems like Heroku's.
+
+## 2.2.21
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/2.2.21).
+
+* Fix a few bugs in the git-revision-reporting in {Haml::Version#version}.
+  In particular, it will still work if `git gc` has been called recently,
+  or if various files are missing.
+
+* Always use `__FILE__` when reading files within the Haml repo in the `Rakefile`.
+  According to [this bug report](http://github.com/carlhuda/bundler/issues/issue/44),
+  this should make Sass work better with Bundler.
+
+## 2.2.20
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/2.2.20).
+
+* If the cache file for a given Sass file is corrupt
+  because it doesn't have enough content,
+  produce a warning and read the Sass file
+  rather than letting the exception bubble up.
+  This is consistent with other sorts of sassc corruption handling.
+
+* Calls to `defined?` shouldn't interfere with Rails' autoloading
+  in very old versions (1.2.x).
+
 ## 2.2.19
 
 [Tagged on GitHub](http://github.com/nex3/haml/commit/2.2.18).

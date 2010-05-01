@@ -36,7 +36,14 @@ class EngineTest < Test::Unit::TestCase
     "%p{:a => 'b',\n:c => 'd',\n:e => raise('foo')}" => ["foo", 3],
     " %p foo" => "Indenting at the beginning of the document is illegal.",
     "  %p foo" => "Indenting at the beginning of the document is illegal.",
-    "- end" => "You don't need to use \"- end\" in Haml. Use indentation instead:\n- if foo?\n  %strong Foo!\n- else\n  Not foo.",
+    "- end" => <<MESSAGE.rstrip,
+You don't need to use "- end" in Haml. Un-indent to close a block:
+- if foo?
+  %strong Foo!
+- else
+  Not foo.
+%p This line is un-indented, so it isn't part of the "if" block
+MESSAGE
     " \n\t\n %p foo" => ["Indenting at the beginning of the document is illegal.", 3],
     "\n\n %p foo" => ["Indenting at the beginning of the document is illegal.", 3],
     "%p\n  foo\n foo" => ["Inconsistent indentation: 1 space was used for indentation, but the rest of the document was indented using 2 spaces.", 3],
@@ -73,6 +80,11 @@ class EngineTest < Test::Unit::TestCase
     "!!!\n\n  bar" => ["Illegal nesting: nesting within a header command is illegal.", 3],
     "foo\n:ruby\n  1\n  2\n  3\n- raise 'foo'" => ["foo", 6],
     "foo\n:erb\n  1\n  2\n  3\n- raise 'foo'" => ["foo", 6],
+    "foo\n:plain\n  1\n  2\n  3\n- raise 'foo'" => ["foo", 6],
+    "foo\n:plain\n  1\n  2\n  3\n4\n- raise 'foo'" => ["foo", 7],
+    "foo\n:plain\n  1\n  2\n  3\#{''}\n- raise 'foo'" => ["foo", 6],
+    "foo\n:plain\n  1\n  2\n  3\#{''}\n4\n- raise 'foo'" => ["foo", 7],
+    "foo\n:plain\n  1\n  2\n  \#{raise 'foo'}" => ["foo", 5],
     "= raise 'foo'\nfoo\nbar\nbaz\nbang" => ["foo", 1],
   }
 
@@ -592,8 +604,9 @@ HAML
 <p>foo-end</p>
 <p>bar-end</p>
 HTML
-- "foo-end-bar-end".gsub(/\\w+-end/) do |s|
+- ("foo-end-bar-end".gsub(/\\w+-end/) do |s|
   %p= s
+- end; nil)
 HAML
   end
 
@@ -614,6 +627,15 @@ HAML
       render('%a(href="#") #{"Foo"}'))
 
     assert_equal("<a href='#\"'></a>\n", render('%a(href="#\\"")'))
+  end
+
+  def test_filter_with_newline_and_interp
+    assert_equal(<<HTML, render(<<HAML))
+\\n
+HTML
+:plain
+  \\n\#{""}
+HAML
   end
 
   # HTML escaping tests

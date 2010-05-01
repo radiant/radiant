@@ -63,7 +63,7 @@ unless File.directory? "#{RAILS_ROOT}/app"
 
     desc "Update configs, scripts, sass, stylesheets and javascripts from Radiant."
     task :update do
-      tasks = %w{scripts javascripts configs images sass stylesheets cached_assets}
+      tasks = %w{scripts javascripts configs initializers images sass stylesheets cached_assets}
       tasks = tasks & ENV['ONLY'].split(',') if ENV['ONLY']
       tasks = tasks - ENV['EXCEPT'].split(',') if ENV['EXCEPT']
       tasks.each do |task| 
@@ -193,6 +193,14 @@ the new files:"
           FileUtils.cp_r(sass_files, project_dir)
         end
         copy_sass[RAILS_ROOT + '/public/stylesheets/sass/admin/', Dir["#{RADIANT_ROOT}/public/stylesheets/sass/admin/*"]]
+      end
+
+      desc "Update initializers from your current radiant install"
+      task :initializers do
+        project_dir = RAILS_ROOT + '/config/initializers/'
+        FileUtils.mkpath project_dir
+        initializers = Dir["#{File.dirname(__FILE__)}/../../config/initializers/*.rb"]
+        FileUtils.cp(initializers, project_dir)
       end
     end
   end

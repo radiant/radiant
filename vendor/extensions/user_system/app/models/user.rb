@@ -45,8 +45,8 @@ class User < ActiveRecord::Base
     Digest::SHA1.hexdigest("--#{salt}--#{phrase}--")
   end
 
-  def self.authenticate(login, password)
-    user = find_by_login(login)
+  def self.authenticate(login_or_email, password)
+    user = find(:first, :conditions => ["login = ? OR email = ?", login_or_email, login_or_email])
     user if user && user.authenticated?(password)
   end
 

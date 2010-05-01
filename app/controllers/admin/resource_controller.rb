@@ -110,7 +110,7 @@ class Admin::ResourceController < ApplicationController
       instance_variable_set("@#{plural_model_symbol}", objects)
     end
     def load_models
-      self.models = model_class.all
+      self.models = model_class.paginate(pagination_parameters)
     end
 
     def model_name

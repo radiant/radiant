@@ -1,8 +1,12 @@
 - form_for [:admin, @user] do |f|
   = hidden_field "user", "lock_version"
+  
+  = render :partial => 'avatar'
+  
   = render_region :form_top
   
   - render_region :form do |form|
+    
     - form.edit_name do
       %p
         = f.label :name, t('name') 

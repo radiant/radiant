@@ -16,7 +16,7 @@ describe Admin::WelcomeController do
   end
   
   it "should set the current user and redirect when login was successful" do
-    post :login, :user => {:login => "admin", :password => "password"}
+    post :login, :username_or_email => "admin", :password => "password"
     controller.send(:current_user).should == users(:admin)
     response.should be_redirect
     response.should redirect_to(welcome_url)
@@ -37,7 +37,7 @@ describe Admin::WelcomeController do
     end
 
     after do
-      post :login, :user => {:login => "admin", :password => "password"}, :remember_me => 1
+      post :login, :username_or_email => "admin", :password => "password", :remember_me => 1
     end
 
     it "should remember user" do
@@ -74,7 +74,7 @@ describe Admin::WelcomeController do
     describe "and a stored location" do
       before do
         session[:return_to] = '/stored/path'
-        post :login, :user => {:login => "admin", :password => "password"}
+        post :login, :username_or_email => "admin", :password => "password"
       end
 
       it "should redirect" do

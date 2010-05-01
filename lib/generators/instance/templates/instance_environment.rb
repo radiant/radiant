@@ -74,6 +74,8 @@ Radiant::Initializer.run do |config|
     end
   end
 
+  config.gem 'will_paginate', :version => '~> 2.3.11', :source => 'http://gemcutter.org'
+
   config.after_initialize do
     # Add new inflection rules using the following format:
     ActiveSupport::Inflector.inflections do |inflect|

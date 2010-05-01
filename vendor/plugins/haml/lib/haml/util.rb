@@ -157,6 +157,55 @@ module Haml
       return nil
     end
 
+    # Returns whether this environment is using ActionPack
+    # version 3.0.0 or greater.
+    #
+    # @return [Boolean]
+    def ap_geq_3?
+      # The ActionPack module is always loaded automatically in Rails >= 3
+      return false unless defined?(ActionPack) && defined?(ActionPack::VERSION)
+
+      version =
+        if defined?(ActionPack::VERSION::MAJOR)
+          ActionPack::VERSION::MAJOR
+        else
+          # Rails 1.2
+          ActionPack::VERSION::Major
+        end
+
+      # 3.0.0.beta1 acts more like ActionPack 2
+      # for purposes of this method
+      # (checking whether block helpers require = or -).
+      # This extra check can be removed when beta2 is out.
+      version >= 3 &&
+        !(defined?(ActionPack::VERSION::TINY) &&
+          ActionPack::VERSION::TINY == "0.beta")
+    end
+
+    # Returns whether this environment is using ActionPack
+    # version 3.0.0.beta.3 or greater.
+    #
+    # @return [Boolean]
+    def ap_geq_3_beta_3?
+      # The ActionPack module is always loaded automatically in Rails >= 3
+      return false unless defined?(ActionPack) && defined?(ActionPack::VERSION)
+
+      version =
+        if defined?(ActionPack::VERSION::MAJOR)
+          ActionPack::VERSION::MAJOR
+        else
+          # Rails 1.2
+          ActionPack::VERSION::Major
+        end
+      version >= 3 &&
+        ((defined?(ActionPack::VERSION::TINY) &&
+          ActionPack::VERSION::TINY.is_a?(Fixnum) &&
+          ActionPack::VERSION::TINY >= 1) ||
+         (defined?(ActionPack::VERSION::BUILD) &&
+          ActionPack::VERSION::BUILD =~ /beta(\d+)/ &&
+          $1.to_i >= 3))
+    end
+
     # Returns an ActionView::Template* class.
     # In pre-3.0 versions of Rails, most of these classes
     # were of the form `ActionView::TemplateFoo`,
@@ -185,9 +234,10 @@ module Haml
     # With older versions of the Rails XSS-safety mechanism,
     # this destructively modifies the HTML-safety of `text`.
     #
-    # @param text [String]
-    # @return [String] `text`, marked as HTML-safe
+    # @param text [String, nil]
+    # @return [String, nil] `text`, marked as HTML-safe
     def html_safe(text)
+      return unless text
       return text.html_safe if defined?(ActiveSupport::SafeBuffer)
       text.html_safe!
     end
@@ -201,6 +251,10 @@ module Haml
       raise Haml::Error.new("Expected #{text.inspect} to be HTML-safe.")
     end
 
+    # The class for the Rails SafeBuffer XSS protection class.
+    # This varies depending on Rails version.
+    #
+    # @return [Class]
     def rails_safe_buffer_class
       return ActionView::SafeBuffer if defined?(ActionView::SafeBuffer)
       ActiveSupport::SafeBuffer
