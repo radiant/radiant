@@ -16,3 +16,6 @@
 [submodule "vendor/extensions/russian_language_pack"]
 	path = vendor/extensions/russian_language_pack
 	url = git://github.com/radiant/radiant-russian_language_pack-extension.git
+[submodule "vendor/extensions/archive"]
+	path = vendor/extensions/archive
+	url = git://github.com/radiant/radiant-archive-extension.git
