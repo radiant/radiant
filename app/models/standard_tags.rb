@@ -573,6 +573,36 @@ module StandardTags
   end
 
   desc %{
+    Renders the Gravatar of the author of the current page or the named user.
+
+    *Usage:*
+
+    <pre><code><r:gravatar /></code></pre>
+
+    or
+
+    <pre><code><r:gravatar [name="User Name"]
+        [rating="G | PG | R | X"]
+        [size="32px"] /></code></pre>
+  }
+  tag 'gravatar' do |tag|
+    page = tag.locals.page
+    name = (tag.attr['name'] || page.created_by.name)
+    rating = (tag.attr['rating'] || 'G')
+    size = (tag.attr['size'] || '32px')
+    email = User.find_by_name(name).email
+    if email != ''
+      url = 'http://www.gravatar.com/avatar.php?'
+      url << "gravatar_id=#{Digest::MD5.new.update(email)}"
+      url << "&rating=#{rating}"
+      url << "&size=#{size.to_i}"
+      url
+    else
+      "#{request.protocol}#{request.host_with_port}/images/admin/avatar_#{([size.to_i] * 2).join('x')}.png"
+    end
+  end
+
+  desc %{
     Renders the date based on the current page (by default when it was published or created).
     The format attribute uses the same formating codes used by the Ruby @strftime@ function. By
     default it's set to @%A, %B %d, %Y@.  The @for@ attribute selects which date to render.  Valid
