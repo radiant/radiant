@@ -272,6 +272,10 @@ module Radiant
           extension_paths.any? {|p| p =~ path_match }
         end
 
+        def registered?
+          self.extension
+        end
+
         def extension_paths
           [RAILS_ROOT, RADIANT_ROOT].uniq.map { |p| Dir["#{p}/vendor/extensions/*"] }.flatten
         end
@@ -294,9 +298,14 @@ module Radiant
           if installed?
             puts "#{extension_name} is already installed."
           else
-            find_extension && extension.install
+            find_extension
           end
-        end
+          if registered?
+            extension.install
+          else
+            raise ArgumentError, "#{extension_name} is not available in the registry."
+          end
+         end
       end
 
       class Uninstall

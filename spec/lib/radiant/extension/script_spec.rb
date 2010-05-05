@@ -88,6 +88,10 @@ describe "Radiant::Extension::Script::Install" do
     @install = Radiant::Extension::Script::Install.new ['page_attachments']
   end
 
+  it "should fail if the extension is not found" do
+    lambda { Radiant::Extension::Script::Install.new ['non_existent_extension'] }.should raise_error
+  end
+
   it "should fail if an extension name is not given" do
     lambda { Radiant::Extension::Script::Install.new []}.should raise_error
   end
