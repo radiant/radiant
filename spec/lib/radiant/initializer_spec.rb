@@ -94,6 +94,13 @@ describe Radiant::Configuration do
       @configuration.all_available_extensions.should include(:gem_ext)
     end
   end
+
+  describe "#gem" do
+    it "should add an extension gem to extensions array" do
+      @configuration.gem 'radiant-gem_ext-extension'
+      @configuration.extensions.should include(:gem_ext)
+    end
+  end
 end
 
 describe Radiant::Initializer do

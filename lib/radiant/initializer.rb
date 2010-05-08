@@ -51,12 +51,16 @@ module Radiant
     def admin
       AdminUI.instance
     end
-    
 
 
     def extension(ext)
       ::ActiveSupport::Deprecation.warn("Extension dependencies have been deprecated. Extensions may be packaged as gems and use the Gem spec to declare dependencies.", caller)
       @extension_dependencies << ext unless @extension_dependencies.include?(ext)
+    end
+
+    def gem(name, options = {})
+      super
+      extensions << $1.intern if gems.last.name =~ /^radiant-(.*)-extension$/
     end
 
     def check_extension_dependencies
@@ -241,6 +245,7 @@ end_error
     def extension_loader
       ExtensionLoader.instance {|l| l.initializer = self }
     end
+
   end
 
 end
