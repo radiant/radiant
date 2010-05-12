@@ -34,34 +34,34 @@ describe Page, 'validations' do
       :slug => 100,
       :breadcrumb => 160
     }.each do |field, max|
-      assert_invalid field, ('%d-character limit' % max), 'x' * (max + 1)
+      assert_invalid field, ('this must not be longer than %d characters' % max), 'x' * (max + 1)
       assert_valid field, 'x' * max
     end
   end
 
   it 'should validate presence of' do
     [:title, :slug, :breadcrumb].each do |field|
-      assert_invalid field, 'required', '', ' ', nil
+      assert_invalid field, 'this must not be blank', '', ' ', nil
     end
   end
 
   it 'should validate format of' do
     @page.parent = pages(:home)
     assert_valid :slug, 'abc', 'abcd-efg', 'abcd_efg', 'abc.html', '/', '123'
-    assert_invalid :slug, 'invalid format', 'abcd efg', ' abcd', 'abcd/efg'
+    assert_invalid :slug, 'this does not match the expected format', 'abcd efg', ' abcd', 'abcd/efg'
   end
 
   it 'should validate numericality of' do
-    assert_invalid :status_id, 'required', '', nil
+    assert_invalid :status_id, 'this must not be blank', '', nil
     [:id, :status_id, :parent_id].each do |field|
       assert_valid field, '1', '2'
-      assert_invalid field, 'must be a number', 'abcd', '1,2', '1.3'
+      assert_invalid field, 'this must be a number', 'abcd', '1,2', '1.3'
     end
   end
 
   it 'should validate uniqueness of' do
     @page.parent = pages(:parent)
-    assert_invalid :slug, 'slug already in use for child of parent', 'child', 'child-2', 'child-3'
+    assert_invalid :slug, 'this slug is already in use by a sibling of this page', 'child', 'child-2', 'child-3'
     assert_valid :slug, 'child-4'
   end
 

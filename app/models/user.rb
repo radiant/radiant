@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
 
   validates_confirmation_of :password, :if => :confirm_password?
 
-  validates_presence_of :name, :login, :message => 'required'
+  validates_presence_of :name, :login
   validates_presence_of :password, :password_confirmation, :if => :new_record?
 
   validates_format_of :email, :allow_nil => true, :with => /^$|^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i
@@ -24,7 +24,7 @@ class User < ActiveRecord::Base
   validates_length_of :password, :within => 5..40, :allow_nil => true, :if => :validate_length_of_password?
   validates_length_of :email, :maximum => 255, :allow_nil => true
 
-  validates_numericality_of :id, :only_integer => true, :allow_nil => true, :message => 'must be a number'
+  validates_numericality_of :id, :only_integer => true, :allow_nil => true
 
   attr_writer :confirm_password
   class << self

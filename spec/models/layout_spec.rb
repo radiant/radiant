@@ -10,11 +10,11 @@ describe Layout do
   
   it 'should validate presence of' do
     assert_valid :name, 'Just a Test'
-    assert_invalid :name, 'required', nil, '', '  '
+    assert_invalid :name, 'this must not be blank', nil, '', '  '
   end
   
   it 'should validate uniqueness of' do
-    assert_invalid :name, 'name already in use', 'Main'
+    assert_invalid :name, 'this name is already in use', 'Main'
     assert_valid :name, 'Something Else'
   end
   
@@ -22,7 +22,7 @@ describe Layout do
     {
       :name => 100
     }.each do |field, max|
-      assert_invalid field, ('%d-character limit' % max), 'x' * (max + 1)
+      assert_invalid field, ('this must not be longer than %d characters' % max), 'x' * (max + 1)
       assert_valid field, 'x' * max
     end
   end

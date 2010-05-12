@@ -14,15 +14,15 @@ en:
         page:
           attributes:
             slug:
-              taken: 'slug already in use for child of parent' # slug_in_use
+              taken: 'this slug is already in use by a sibling of this page' # slug_in_use
         user:
           attributes:
             email:
-              invalid: 'invalid e-mail address' # invalid_email
+              invalid: 'this is not a valid e-mail address' # invalid_email
             login:
-              taken: 'login already in use' # login already in use
+              taken: 'this login is already in use' # login already in use
             password:
-              confirmation: 'must match confirmation' # password_confirmation
+              confirmation: 'this must match confirmation' # password_confirmation
   add_child: 'Add Child'
   add_part: 'Add Part'
   add_tab: 'Add Tab'

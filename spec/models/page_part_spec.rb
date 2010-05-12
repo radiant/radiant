@@ -32,21 +32,21 @@ describe PagePart do
       :name => 100,
       :filter_id => 25
     }.each do |field, max|
-      assert_invalid field, ('%d-character limit' % max), 'x' * (max + 1)
+      assert_invalid field, ('this must not be longer than %d characters' % max), 'x' * (max + 1)
       assert_valid field, 'x' * max
     end
   end
   
   it 'should validate presence of' do
     [:name].each do |field|
-      assert_invalid field, 'required', '', ' ', nil
+      assert_invalid field, 'this must not be blank', '', ' ', nil
     end
   end
   
   it 'should validate numericality of' do
     [:id, :page_id].each do |field|
       assert_valid field, '1', '2'
-      assert_invalid field, 'must be a number', 'abcd', '1,2', '1.3'
+      assert_invalid field, 'this must be a number', 'abcd', '1,2', '1.3'
     end
   end
 end

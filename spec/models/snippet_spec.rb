@@ -13,19 +13,19 @@ describe Snippet do
       :name => 100,
       :filter_id => 25
     }.each do |field, max|
-      assert_invalid field, ('%d-character limit' % max), 'x' * (max + 1)
+      assert_invalid field, ('this must not be longer than %d characters' % max), 'x' * (max + 1)
       assert_valid field, 'x' * max
     end
   end
   
   it 'should validate presence of' do
     [:name].each do |field|
-      assert_invalid field, 'required', '', ' ', nil
+      assert_invalid field, 'this must not be blank', '', ' ', nil
     end
   end
   
   it 'should validate uniqueness of' do
-    assert_invalid :name, 'name already in use', 'first', 'another', 'markdown'
+    assert_invalid :name, 'this name is already in use', 'first', 'another', 'markdown'
     assert_valid :name, 'just-a-test'
   end
   

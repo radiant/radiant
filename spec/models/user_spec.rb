@@ -10,10 +10,10 @@ describe User, "validations" do
   end
   
   it 'should validate length of' do
-    assert_invalid :name, '100-character limit', 'x' * 101
+    assert_invalid :name, 'this must not be longer than 100 characters', 'x' * 101
     assert_valid :name, 'x' * 100
     
-    assert_invalid :email, '255-character limit', ('x' * 247) + '@test.com'
+    assert_invalid :email, 'this must not be longer than 255 characters', ('x' * 247) + '@test.com'
     assert_valid :email, ('x' * 246) + '@test.com'
   end
   
@@ -41,8 +41,8 @@ describe User, "validations" do
       min = 'x' * range.min
       one_over = 'x' + max
       one_under = min[1..-1]
-      assert_invalid field, ('%d-character limit' % range.max), one_over
-      assert_invalid field, ('%d-character minimum' % range.min), one_under
+      assert_invalid field, ('this must not be longer than %d characters' % range.max), one_over
+      assert_invalid field, ('this must be at least %d characters long' % range.min), one_under
       assert_valid field, max, min
     end
   end
@@ -56,36 +56,36 @@ describe User, "validations" do
       min = 'x' * range.min
       one_over = 'x' + max
       one_under = min[1..-1]
-      assert_invalid field, ('%d-character limit' % range.max), one_over
-      assert_invalid field, ('%d-character minimum' % range.min), one_under
+      assert_invalid field, ('this must not be longer than %d characters' % range.max), one_over
+      assert_invalid field, ('this must be at least %d characters long' % range.min), one_under
       assert_valid field, max, min
     end
   end
   
   it 'should validate presence' do
     [:name, :login, :password, :password_confirmation].each do |field|
-      assert_invalid field, 'required', '', ' ', nil
+      assert_invalid field, 'this must not be blank', '', ' ', nil
     end
   end
   
   it 'should validate numericality' do
     [:id].each do |field|
       assert_valid field, '1', '0'
-      assert_invalid field, 'must be a number', 'abcd', '1,2', '1.3'
+      assert_invalid field, 'this must be a number', 'abcd', '1,2', '1.3'
     end
   end
   
   it 'should validate confirmation' do
     @user.confirm_password = true
-    assert_invalid :password, 'must match confirmation', 'test'
+    assert_invalid :password, 'this must match confirmation', 'test'
   end
   
   it 'should validate uniqueness' do
-    assert_invalid :login, 'login already in use', 'existing'
+    assert_invalid :login, 'this login is already in use', 'existing'
   end
   
   it 'should validate format' do
-    assert_invalid :email, 'invalid e-mail address', '@test.com', 'test@', 'testtest.com',
+    assert_invalid :email, 'this is not a valid e-mail address', '@test.com', 'test@', 'testtest.com',
       'test@test', 'test me@test.com', 'test@me.c'
     assert_valid :email, '', 'test@test.com'
   end

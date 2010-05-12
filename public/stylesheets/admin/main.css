@@ -1120,6 +1120,29 @@ div.textarea_toolbar {
     background-color: #ffffff;
     padding: 1px 0; }
 
+#content form p span.error-with-field input {
+  border-color: #c00;
+  border-width: 1px;
+  border-style: solid; }
+#content form p span.error-with-field span.error {
+  line-height: 1.4;
+  background-color: #c00;
+  color: white;
+  padding: 4px;
+  margin: 0 0 0 6px;
+  background-color: #c00;
+  cursor: pointer;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 1px 1px 4px #666666;
+  -moz-box-shadow: 1px 1px 4px #666666;
+  box-shadow: 1px 1px 4px #666666; }
+  #content form p span.error-with-field span.error a.closer {
+    margin-left: 10px;
+    color: #fcc;
+    text-decoration: none; }
+
 table.index td.note {
   color: silver;
   font-size: 85%;
