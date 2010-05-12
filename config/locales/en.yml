@@ -4,12 +4,12 @@ en:
   activerecord:
     errors:
       messages:
-        blank: 'required' # required
-        invalid: 'invalid format' #invalid_format
-        not_a_number: 'must be a number' # must be number
-        taken: 'name already in use' # name_in_use
-        too_long: '{{count}}-character limit' # character_limit
-        too_short: '{{count}}-character minimum' # character_minimum
+        blank: 'this must not be blank' # required
+        invalid: 'this does not match the expected format' #invalid_format
+        not_a_number: 'this must be a number' # must be number
+        taken: 'this name is already in use' # name_in_use
+        too_long: 'this must not be longer than {{count}} characters' # character_limit
+        too_short: 'this must be at least {{count}} characters long' # character_minimum
       models:
         page:
           attributes:

@@ -1,0 +1,56 @@
+!width = 100%
+!grid = 12
+!margin = 1%
+!box = !width / !grid
+
+=grid(!count)
+  :width = (!count * !box) - (2 * !margin)
+  :display inline
+  :float left
+  :position relative
+  :margin-left = !margin
+  :margin-right = !margin
+=prefix(!count)
+  :padding-left = !count * !box
+=suffix(!count)
+  :padding-right = !count * !box
+=push(!count)
+  :left = !count * !box
+=pull(!count)
+  :left = !count * !box * -1
+=flush_left
+  :margin-left 0
+=flush_right
+  :margin-right 0
+=flush
+  :margin-left 0
+  :margin-right 0
+=clear
+  :clear left
+
+.container_#{!grid}
+  :width = !width
+  :position relative
+  :margin-left auto
+  :margin-right auto
+  :overflow hidden
+  @for !marker from 1 through !grid
+    .grid_#{!marker}
+      +grid(!marker)
+    .prefix_#{!marker}
+      +prefix(!marker)
+    .suffix_#{!marker}
+      +suffix(!marker)
+    .push_#{!marker}
+      +push(!marker)
+    .pull_#{!marker}
+      +pull(!marker)
+  .flush_left, .alpha
+    +flush_left
+  .flush_right, .omega
+    +flush_right
+  .flush
+    +flush
+  .row, .newline
+    +clear
+

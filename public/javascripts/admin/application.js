@@ -78,5 +78,8 @@ Event.addBehavior({
   
   'input.date': DateInputBehavior(),
   
-  'select#page_status_id':  PageStatusBehavior()
+  'select#page_status_id':  PageStatusBehavior(),
+  
+  'span.error':  ValidationErrorBehavior()
+  
 });
