@@ -139,17 +139,12 @@ module Radiant
       design << nav_item("Layouts", "/admin/layouts")
       design << nav_item("Snippets", "/admin/snippets")
       nav << design
-
-      settings = nav_tab("Settings")
-      settings << nav_item("Extensions", "/admin/extensions")
-      nav << settings
     end
 
     def load_default_regions
       @page = load_default_page_regions
       @snippet = load_default_snippet_regions
       @layout = load_default_layout_regions
-      @extension = load_default_extension_regions
     end
 
     private
@@ -204,13 +199,5 @@ module Radiant
       end
     end
 
-    def load_default_extension_regions
-      returning OpenStruct.new do |extension|
-        extension.index = RegionSet.new do |index|
-          index.thead.concat %w{title_header website_header version_header}
-          index.tbody.concat %w{title_cell website_cell version_cell}
-        end
-      end
-    end
   end
 end
