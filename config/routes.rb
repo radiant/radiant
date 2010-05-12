@@ -7,12 +7,10 @@ ActionController::Routing::Routes.draw do |map|
     end
     admin.resources :layouts
     admin.resources :snippets
-    admin.resources :users
   end
 
   map.namespace :admin do |admin|
     admin.resource :preferences
-    admin.resources :extensions, :only => :index
     admin.resources :page_parts
     admin.reference '/reference/:type.:format', :controller => 'references', :action => 'show', :conditions => {:method => :get}
   end
