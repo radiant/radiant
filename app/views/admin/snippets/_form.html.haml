@@ -11,8 +11,8 @@
         %p.content
           = f.label :content, t('body') 
           ~ f.text_area :content, :class => "textarea large", :style => "width: 100%"
-      .set
-        - form.edit_filter do
+      - form.edit_filter do
+        .set
           %p
             = f.label :filter_id, t('filter')
             = f.select :filter_id, [[t('select.none'), '']] + TextFilter.descendants.map { |f| f.filter_name }.sort, :id => 'snippet_filter'
