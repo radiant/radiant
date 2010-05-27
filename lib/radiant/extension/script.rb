@@ -24,6 +24,7 @@ Author:         #{author.name} <#{author.email}>
 Source code:    #{repository_url}
 Download:       #{download_url}
 Install type:   #{install_type}
+Supports:       Radiant #{supports_radiant_version}
 }.strip
     end
   end
