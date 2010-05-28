@@ -4,7 +4,7 @@ class PagePart < ActiveRecord::Base
   default_scope :order => 'name'
   
   # Associations
-  belongs_to :page, :touch => true
+  belongs_to :page
   
   # Validations
   validates_presence_of :name
