@@ -17,6 +17,7 @@ module Spec
             when @expected_error_message: false
             when @expected: @actual == @expected
             when @matching: @actual =~ @matching
+            when @not_matching: @actual !~ @not_matching
             else true
           end
         rescue => @actual_error
@@ -29,7 +30,14 @@ module Spec
         end
         
         def failure_message
-          action = @expected.nil? ? "render and match #{@matching.inspect}" : "render as #{@expected.inspect}"
+          action = case 
+          when @expected
+            "render as #{@expected.inspect}"
+          when @not_matching          
+            "render but not match #{@not_matching.inspect}"
+          else
+            "render and match #{@matching.inspect}"
+          end
           unless @error_thrown
             unless @expected_error_message
               if @content
@@ -60,6 +68,11 @@ module Spec
         
         def matching(regexp)
           @matching = regexp
+          self
+        end
+        
+        def not_matching(regexp)
+          @not_matching = regexp
           self
         end
         

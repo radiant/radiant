@@ -93,8 +93,9 @@ module StandardTags
     Cycles through each of the children. Inside this tag all page attribute tags
     are mapped to the current child page.
     
-    Supply @paginated="true"@ to display a paginated list. Most will_paginate options
-    can also be specified, including @per_page@, @previous_label@ and @next_label@.
+    Supply @paginated="true"@ to display a paginated list. The will_paginate options
+    can also be specified, including @per_page@, @previous_label@, @next_label@,
+    @separator@, @inner_window@ and @outer_window@.
 
     *Usage:*
     
@@ -110,11 +111,11 @@ module StandardTags
     </code></pre>
   }
   tag 'children:each' do |tag|
-    options = children_find_options(tag)
     paging = pagination_control(tag)
+    options = children_find_options(tag)
     result = []
     tag.locals.previous_headers = {}
-    displayed_children = paging ? tag.locals.children.paginate(options.merge(paging)) : tag.locals.children.all(options)
+    displayed_children = paging ? tag.locals.children.paginate(options.merge(paging.slice(:page, :per_page))) : tag.locals.children.all(options)
     displayed_children.each_with_index do |item, i|
       tag.locals.child = item
       tag.locals.page = item
@@ -141,8 +142,10 @@ module StandardTags
     </code></pre>
   }
   tag 'pagination' do |tag|
-    if tag.locals.paginated_list.respond_to? :next_page
-      will_paginate(tag.locals.paginated_list, :renderer => Radiant::Pagination::LinkRenderer.new(tag))
+    if tag.locals.paginated_list
+      options = tag.locals.pagination_parameters || pagination_control(tag)
+      options[:renderer] = Radiant::Pagination::LinkRenderer.new(tag)
+      will_paginate(tag.locals.paginated_list, options)
     end
   end
 
@@ -1041,7 +1044,7 @@ module StandardTags
       attr = tag.attr.symbolize_keys
       if attr[:paginated] == 'true'
         tag.locals.paginating_page = tag.globals.page
-        pagination_parameters.merge(attr.slice(:previous_label, :next_label, :inner_window, :outer_window, :separator, :per_page))  # tag attributes can't be overridden by input parameters
+        tag.locals.pagination_parameters = pagination_parameters.merge(attr.slice(:previous_label, :next_label, :inner_window, :outer_window, :separator, :per_page))  # tag attributes take precedence over input parameters
       else
         false
       end

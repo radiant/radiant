@@ -92,6 +92,14 @@ describe "Standard Tags" do
         page.pagination_parameters = {:page => 1, :per_page => 1}
         page.should render('<r:find url="/assorted"><r:children:each paginated="true"><r:slug /> </r:children:each></r:find>').matching(%r{href="/another})
       end
+      it 'should pass through selected will_paginate parameters' do
+        page(:assorted)
+        page.pagination_parameters = {:page => 5, :per_page => 1}
+        page.should render('<r:children:each paginated="true" separator="not that likely a choice"><r:slug /> </r:children:each>').matching(/not that likely a choice/)
+        page.should render('<r:children:each paginated="true" previous_label="before"><r:slug /> </r:children:each>').matching(/before/)
+        page.should render('<r:children:each paginated="true" next_label="after"><r:slug /> </r:children:each>').matching(/after/)
+        page.should render('<r:children:each paginated="true" inner_window="1" outer_window="0"><r:slug /> </r:children:each>').not_matching(/\?p=2/)
+      end
     end
     
     it 'should error with invalid "limit" attribute' do
