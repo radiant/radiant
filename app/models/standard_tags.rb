@@ -1040,6 +1040,7 @@ module StandardTags
     def pagination_control(tag)
       attr = tag.attr.symbolize_keys
       if attr[:paginated] == 'true'
+        tag.locals.paginating_page = tag.globals.page
         pagination_parameters.merge(attr.slice(:previous_label, :next_label, :inner_window, :outer_window, :separator, :per_page))  # tag attributes can't be overridden by input parameters
       else
         false

@@ -6,7 +6,7 @@ module Radiant
   module Pagination
     class LinkRenderer < WillPaginate::LinkRenderer
       def initialize(tag)
-        @tag = tag
+        @url_stem = tag.locals.paginating_page.url if tag.locals.paginating_page
       end
   
       def to_html
@@ -20,7 +20,7 @@ module Radiant
       def page_link(page, text, attributes = {})
         linkclass = %{ class="#{attributes[:class]}"} if attributes[:class]
         linkrel = %{ rel="#{attributes[:rel]}"} if attributes[:rel]
-        %Q{<a href="#{@tag.locals.page.url}?p=#{page}"#{linkrel}#{linkclass}>#{text}</a>}
+        %Q{<a href="#{@url_stem}?p=#{page}"#{linkrel}#{linkclass}>#{text}</a>}
       end
 
       def page_span(page, text, attributes = {})

@@ -77,12 +77,23 @@ describe "Standard Tags" do
       page.should render('<r:children:each by="title"><r:slug /> </r:children:each>').as('a b c d e f g h i j ').on('dev.site.com')
     end
 
-    it 'should paginate results when "paginated" attribute is "true"' do
-      page.pagination_parameters = {:page => 1, :per_page => 10}
-      page.should render('<r:children:each paginated="true" per_page="10"><r:slug /> </r:children:each>').as('a b c d e f g h i j ')
-      page.should render('<r:children:each paginated="true" per_page="2"><r:slug /> </r:children:each>').matching(/div class="pagination"/)
+    describe 'with paginated="true"' do
+      it 'should limit correctly the result set' do
+        page.pagination_parameters = {:page => 1, :per_page => 10}
+        page.should render('<r:children:each paginated="true" per_page="10"><r:slug /> </r:children:each>').as('a b c d e f g h i j ')
+        page.should render('<r:children:each paginated="true" per_page="2"><r:slug /> </r:children:each>').matching(/a b [^c]/)
+      end
+      it 'should display a pagination control block' do
+        page.pagination_parameters = {:page => 1, :per_page => 1}
+        page.should render('<r:children:each paginated="true"><r:slug /> </r:children:each>').matching(/div class="pagination"/)
+      end
+      it 'should link to the correct paginated page' do
+        page(:another)
+        page.pagination_parameters = {:page => 1, :per_page => 1}
+        page.should render('<r:find url="/assorted"><r:children:each paginated="true"><r:slug /> </r:children:each></r:find>').matching(%r{href="/another})
+      end
     end
-
+    
     it 'should error with invalid "limit" attribute' do
       message = "`limit' attribute of `each' tag must be a positive number between 1 and 4 digits"
       page.should render(page_children_each_tags(%{limit="a"})).with_error(message)
