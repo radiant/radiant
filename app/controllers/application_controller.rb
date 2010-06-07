@@ -11,7 +11,6 @@ class ApplicationController < ActionController::Base
   before_filter :set_current_user
   before_filter :set_timezone
   before_filter :set_user_locale
-  before_filter :set_pagination_parameters
   before_filter :set_javascripts_and_stylesheets
   before_filter :set_standard_body_style, :only => [:new, :edit, :update, :create]
   
@@ -85,21 +84,5 @@ class ApplicationController < ActionController::Base
       @body_classes ||= []
       @body_classes.concat(%w(reversed))
     end
-    
-    def set_pagination_parameters
-      param_name = WillPaginate::ViewHelpers.pagination_options[:param_name]
-      options = pagination_defaults
-      options[:page] = params.delete(param_name) if params[param_name]
-      options[:per_page] = params.delete(:per_page) if params[:per_page]
-      @pagination_parameters = options
-    end
-
-    def pagination_defaults
-      {
-        :page => 1, 
-        :per_page => Radiant::Config['pagination.per_page'] || 20
-      }
-    end
-    
     
 end

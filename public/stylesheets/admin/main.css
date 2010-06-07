@@ -769,52 +769,102 @@ body.reversed #content h1 {
   left: 0;
   right: 0;
   bottom: 0;
-  background: #777; }
+  background: #777 url(../../images/admin/shadow_grey.png) repeat-x; }
   #actions ul {
     padding: 14px 8px; }
-  #actions li {
-    display: inline;
-    margin-right: 5px; }
-  #actions a {
-    background: #eee url(../../images/admin/buttons_background.png) repeat-x;
-    color: #333;
-    font-size: 80%;
-    padding: 8px 12px;
-    text-decoration: none;
-    text-shadow: 1px 1px 1px #eee;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    border-radius: 5px; }
-    #actions a:hover {
-      background: #fff;
-      color: black;
-      text-shadow: 1px 1px 1px #fff; }
-    #actions a img {
-      vertical-align: -20%; }
+    #actions ul li {
+      display: inline;
+      margin-right: 5px; }
+      #actions ul li a {
+        background: #eee url(../../images/admin/buttons_background.png) repeat-x;
+        color: #333;
+        font-size: 80%;
+        padding: 8px 12px;
+        text-decoration: none;
+        text-shadow: 1px 1px 1px #eee;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        -webkit-box-shadow: 1px 2px 4px #333333;
+        -moz-box-shadow: 1px 2px 4px #333333;
+        box-shadow: 1px 2px 4px #333333; }
+        #actions ul li a:hover {
+          background: #fff;
+          color: #06c;
+          text-shadow: 1px 1px 1px #fff; }
+        #actions ul li a:active {
+          background: #fff url(../../images/admin/shadow.png) repeat-x;
+          color: #000;
+          -webkit-box-shadow: none;
+          -moz-box-shadow: none;
+          box-shadow: none; }
+        #actions ul li a img {
+          vertical-align: -20%; }
   #actions .pagination {
+    position: relative;
+    overflow: hidden;
     float: right;
-    padding: 14px 8px; }
-    #actions .pagination span.current, #actions .pagination span.disabled {
-      background: #eee url(../../images/admin/buttons_background.png) repeat-x;
-      color: #333;
+    margin-right: 24px;
+    padding: 0 5px 5px 0; }
+    #actions .pagination a, #actions .pagination span.current, #actions .pagination span.disabled {
+      display: block;
+      float: left;
+      background: #fff url(../../images/admin/shadow.png) repeat-x;
+      color: #999;
       font-size: 80%;
-      padding: 8px 12px;
+      padding: 6px 12px 6px 12px;
+      margin-right: 1px;
       text-decoration: none;
       text-shadow: 1px 1px 1px #eee;
-      -moz-border-radius: 5px;
-      -webkit-border-radius: 5px;
-      border-radius: 5px; }
+      -moz-border-radius-bottomleft: 5px;
+      -webkit-border-bottom-left-radius: 5px;
+      border-bottom-left-radius: 5px;
+      -moz-border-radius-bottomright: 5px;
+      -webkit-border-bottom-right-radius: 5px;
+      border-bottom-right-radius: 5px; }
+    #actions .pagination a:hover {
+      background: #fff url(../../images/admin/buttons_background.png) repeat-x;
+      color: #06c;
+      text-shadow: none;
+      -webkit-box-shadow: 1px 2px 4px #333333;
+      -moz-box-shadow: 1px 2px 4px #333333;
+      box-shadow: 1px 2px 4px #333333; }
+    #actions .pagination a:active {
+      background: #fff url(../../images/admin/shadow.png) repeat-x;
+      color: #000;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none; }
     #actions .pagination span.disabled {
-      -moz-opacity: 0.5;
-      -khtml-opacity: 0.5;
-      -webkit-opacity: 0.5;
-      filter: alpha(opacity=50);
-      -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
-      opacity: 0.5; }
+      -moz-opacity: 0.3;
+      -khtml-opacity: 0.3;
+      -webkit-opacity: 0.3;
+      filter: alpha(opacity=30);
+      -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=30);
+      opacity: 0.3; }
     #actions .pagination span.current {
+      color: #000;
       font-weight: bold;
-      color: #999;
-      border: 1px solid #999; }
+      background-image: none;
+      -webkit-box-shadow: 1px 2px 4px #333333;
+      -moz-box-shadow: 1px 2px 4px #333333;
+      box-shadow: 1px 2px 4px #333333; }
+    #actions .pagination span.gap {
+      display: block;
+      float: left;
+      padding: 6px;
+      color: #ccc; }
+  #actions .depaginate {
+    float: right;
+    padding: 6px 12px; }
+    #actions .depaginate a {
+      background: none;
+      font-size: 80%;
+      color: #eee;
+      text-shadow: none;
+      text-decoration: none; }
+      #actions .depaginate a:hover {
+        color: #fff; }
 
 #footer {
   color: #999;

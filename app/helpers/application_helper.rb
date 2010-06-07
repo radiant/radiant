@@ -215,6 +215,21 @@ module ApplicationHelper
     end
   end
   
+  # returns the usual set of pagination links.
+  # optionsa are passed through to will_paginate 
+  # and a 'show all' depagination link is shown if relevant.
+  def pagination_for(list, options=will_paginate_options)
+    if list.respond_to? :total_pages
+      html = will_paginate(list, options)
+      if list.total_pages > 1
+        html << %{<div class="depaginate">}
+        html << link_to("show all", :pp => list.total_entries)
+        html << %{</div>}
+      end
+      html
+    end
+  end
+  
   private
   
     def append_image_extension(name)

@@ -93,9 +93,9 @@ module StandardTags
     Cycles through each of the children. Inside this tag all page attribute tags
     are mapped to the current child page.
     
-    Supply @paginated="true"@ to display a paginated list. The will_paginate options
-    can also be specified, including @per_page@, @previous_label@, @next_label@,
-    @separator@, @inner_window@ and @outer_window@.
+    Supply @paginated="true"@ to paginate the displayed list. will_paginate view helper
+    options can also be specified, including @per_page@, @previous_label@, @next_label@,
+    @class@, @separator@, @inner_window@ and @outer_window@.
 
     *Usage:*
     
@@ -111,11 +111,11 @@ module StandardTags
     </code></pre>
   }
   tag 'children:each' do |tag|
-    paging = pagination_control(tag)
     options = children_find_options(tag)
+    paging = pagination_find_options(tag)
     result = []
     tag.locals.previous_headers = {}
-    displayed_children = paging ? tag.locals.children.paginate(options.merge(paging.slice(:page, :per_page))) : tag.locals.children.all(options)
+    displayed_children = paging ? tag.locals.children.paginate(options.merge(paging)) : tag.locals.children.all(options)
     displayed_children.each_with_index do |item, i|
       tag.locals.child = item
       tag.locals.page = item
@@ -125,25 +125,25 @@ module StandardTags
     end
     if paging && displayed_children.total_pages > 1
       tag.locals.paginated_list = displayed_children
-      result << tag.render('pagination')
+      result << tag.render('pagination', tag.attr.dup)
     end
     result
   end
 
   desc %{
     The pagination tag is not usually called directly. Supply paginated="true" when you display a list and it will
-    be paginated automatically.
+    be automatically display only the current page of results, with pagination controls at the bottom.
 
     *Usage:*
     
-    <pre><code><r:children:each paginated="true" per_page="50">
+    <pre><code><r:children:each paginated="true" per_page="50" container="false" previous_label="foo" next_label="bar">
       <r:child>...</r:child>
     </r:children:each>
     </code></pre>
   }
   tag 'pagination' do |tag|
     if tag.locals.paginated_list
-      options = tag.locals.pagination_parameters || pagination_control(tag)
+      options = will_paginate_options(tag)
       options[:renderer] = Radiant::Pagination::LinkRenderer.new(tag)
       will_paginate(tag.locals.paginated_list, options)
     end
@@ -1039,17 +1039,6 @@ module StandardTags
   end
 
   private
-
-    def pagination_control(tag)
-      attr = tag.attr.symbolize_keys
-      if attr[:paginated] == 'true'
-        tag.locals.paginating_page = tag.globals.page
-        tag.locals.pagination_parameters = pagination_parameters.merge(attr.slice(:previous_label, :next_label, :inner_window, :outer_window, :separator, :per_page))  # tag attributes take precedence over input parameters
-      else
-        false
-      end
-    end
-
     def children_find_options(tag)
       attr = tag.attr.symbolize_keys
 
@@ -1092,6 +1081,25 @@ module StandardTags
         options[:conditions] = ["virtual = ?", false]
       end
       options
+    end
+    
+    def pagination_find_options(tag)
+      attr = tag.attr.symbolize_keys
+      if attr[:paginated] == 'true'
+        pagination_parameters.merge(attr.slice(:per_page))
+      else
+        false
+      end
+    end
+    
+    def will_paginate_options(tag)
+      attr = tag.attr.symbolize_keys
+      if attr[:paginated] == 'true'
+        tag.locals.paginating_page = tag.globals.page
+        attr.slice(:class, :previous_label, :next_label, :inner_window, :outer_window, :separator, :per_page)
+      else
+        {}
+      end
     end
 
     def remove_trailing_slash(string)
@@ -1150,4 +1158,5 @@ module StandardTags
         request.host =~ /^dev\./
       end
     end
+    
 end

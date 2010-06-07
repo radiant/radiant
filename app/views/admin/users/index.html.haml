@@ -34,5 +34,6 @@
 - render_region :bottom do |bottom|
   - bottom.new_button do
     #actions
+      = pagination_for(@users)
       %ul
         %li= link_to image('plus') + " " + t('new_user'), new_admin_user_url

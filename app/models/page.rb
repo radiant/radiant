@@ -35,6 +35,10 @@ class Page < ActiveRecord::Base
   annotate :description
   attr_accessor :request, :response, :pagination_parameters
 
+  def pagination_parameters=(pp)
+    @pagination_parameters = pp
+  end
+
   set_inheritance_column :class_name
 
   def layout_with_inheritance

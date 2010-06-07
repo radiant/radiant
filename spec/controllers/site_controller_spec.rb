@@ -170,4 +170,13 @@ describe SiteController do
       response.headers['Cache-Control'].should =~ /max-age=600/
     end
   end
+  
+  describe "pagination" do
+    it "should pass through pagination parameters to the page" do
+      @page = pages(:home)
+      Page.stub!(:find_by_url).and_return(@page)
+      @page.should_receive(:pagination_parameters=).with({:page => '3', :per_page => '12'})
+      get :show_page, :url => '/', :page => '3', :per_page => '12'
+    end
+  end
 end

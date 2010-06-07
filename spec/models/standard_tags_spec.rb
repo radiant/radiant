@@ -81,7 +81,7 @@ describe "Standard Tags" do
       it 'should limit correctly the result set' do
         page.pagination_parameters = {:page => 1, :per_page => 10}
         page.should render('<r:children:each paginated="true" per_page="10"><r:slug /> </r:children:each>').as('a b c d e f g h i j ')
-        page.should render('<r:children:each paginated="true" per_page="2"><r:slug /> </r:children:each>').matching(/a b [^c]/)
+        page.should render('<r:children:each paginated="true" per_page="2"><r:slug /> </r:children:each>').not_matching(/a b c/)
       end
       it 'should display a pagination control block' do
         page.pagination_parameters = {:page => 1, :per_page => 1}

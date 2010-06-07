@@ -7,10 +7,9 @@ class Admin::ResourceController < ApplicationController
   before_filter :load_model, :only => [:new, :create, :edit, :update, :remove, :destroy]
   after_filter :clear_model_cache, :only => [:create, :update, :destroy]
 
-  def self.model_class(model_class = nil)
-    @model_class ||= (model_class || self.controller_name).to_s.singularize.camelize.constantize
-  end
-
+  cattr_reader :paginated
+  cattr_accessor :default_per_page, :will_paginate_options
+  
   responses do |r|
     # Equivalent respond_to block for :plural responses:
     # respond_to do |wants|
@@ -24,10 +23,10 @@ class Admin::ResourceController < ApplicationController
     r.singular.default { redirect_to edit_model_path if action_name == "show" }
     
     r.not_found.publish(:xml, :json) { head :not_found }
-    r.not_found.default { announce_not_found; redirect_to continue_url(params) }
+    r.not_found.default { announce_not_found; redirect_to :action => "index" }
 
     r.invalid.publish(:xml, :json) { render format_symbol => model.errors, :status => :unprocessable_entity }
-    r.invalid.default {  announce_validation_errors; render :action => template_name }
+    r.invalid.default { announce_validation_errors; render :action => template_name }
 
     r.stale.publish(:xml, :json) { head :conflict }
     r.stale.default { announce_update_conflict; render :action => template_name }
@@ -66,6 +65,50 @@ class Admin::ResourceController < ApplicationController
   def destroy
     model.destroy
     response_for :destroy
+  end
+  
+  def self.model_class(model_class = nil)
+    @model_class ||= (model_class || self.controller_name).to_s.singularize.camelize.constantize
+  end
+
+  # call paginate_models to declare that will_paginate should be used in the index view
+  # options specified here are accessible in the view by calling will_paginate_options
+  # eg.
+  #
+  # Class MyController < Admin::ResourceController
+  #   paginate_models :per_page => 100
+
+  def self.paginate_models(options={})
+    @@paginated = true
+    @@will_paginate_options = options.slice(:class, :previous_label, :next_label, :inner_window, :outer_window, :separator, :container).merge(:param_name => :p)
+    @@default_per_page = options[:per_page]
+  end
+
+  # returns a hash of options that can be passed to will_paginate
+  # the @pagination_for@ helper method calls @will_paginate_options@ unless other options are supplied.
+  #
+  # pagination_for(@events)
+  
+  def will_paginate_options
+    self.class.will_paginate_options || {}
+  end
+  helper_method :will_paginate_options
+
+  # a convenience method that returns true if paginate_models has been called on this controller class
+  # and can be used to make display decisions in controller and view
+  def paginated?
+    self.class.paginated == true
+  end
+  helper_method :paginated?
+
+  # return a hash of page and per_page that can be used to build a will_paginate collection
+  # the per_page figure can be set in several ways:
+  # request parameter > declared by paginate_models > default set in config entry @admin.pagination.per_page@ > overall default of 50
+  def pagination_parameters
+    {
+      :page => (params[:p] || 1).to_i, 
+      :per_page => (params[:pp] || self.class.default_per_page || Radiant::Config['admin.pagination.per_page'] || 50).to_i
+    }
   end
 
   protected
@@ -110,7 +153,7 @@ class Admin::ResourceController < ApplicationController
       instance_variable_set("@#{plural_model_symbol}", objects)
     end
     def load_models
-      self.models = model_class.paginate(pagination_parameters)
+      self.models = paginated? ? model_class.paginate(pagination_parameters) : model_class.all
     end
 
     def model_name
@@ -134,7 +177,16 @@ class Admin::ResourceController < ApplicationController
     end
 
     def continue_url(options)
-      options[:redirect_to] || (params[:continue] ? {:action => 'edit', :id => model.id} : {:action => "index"})
+      options[:redirect_to] || (params[:continue] ? {:action => 'edit', :id => model.id} : index_page_for_model)
+    end
+    
+    def index_page_for_model
+      parts = {:action => "index"}
+      if paginated? && model && index = model_class.all.index(model)
+        page = (index + 1 / pagination_parameters[:per_page]).to_i
+        parts[:page] = page if page && page > 0
+      end
+      parts
     end
 
     def edit_model_path
@@ -176,4 +228,6 @@ class Admin::ResourceController < ApplicationController
     def populate_format
       params[:format] ||= 'html' unless request.xhr?
     end
+    
+    
 end

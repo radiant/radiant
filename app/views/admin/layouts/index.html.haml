@@ -31,6 +31,6 @@
 - render_region :bottom do |bottom|
   - bottom.new_button do
     #actions
-      = will_paginate(@layouts)
+      = pagination_for(@layouts)
       %ul
         %li= link_to image('plus') + " " + t('new_layout'), new_admin_layout_url
