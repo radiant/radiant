@@ -34,6 +34,15 @@ configure and run it the way you would a normal Rails application.
 
 See the INSTALL file for more details.
 
+== Installation of 0.9 Prerelease
+
+Radiant 0.9 is nearing release. In the meantime, you can experiment with the prerelease version, currently Release Candidate 2.
+
+Install the prerelease gem with the following command:
+
+    $ gem install radiant --prerelease
+
+This will install the gem as ‘radiant-0.9.0.rc2’.
 
 == Development Requirements
 
