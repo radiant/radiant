@@ -44,6 +44,18 @@ Install the prerelease gem with the following command:
 
 This will install the gem as ‘radiant-0.9.0.rc2’.
 
+== Upgrading an Existing Project to 0.9
+
+1. Update the Radiant assets from in your project:
+
+    $ rake radiant:update
+
+2. Migrate the database:
+
+    $ rake production db:migrate
+
+3. Restart the web server
+
 == Development Requirements
 
 To run tests you will need to have the following gems installed:
