@@ -81,7 +81,7 @@ class SiteController < ApplicationController
 
       # will_paginate view options can be overridden by tag attributes
       [:class, :previous_label, :next_label, :inner_window, :outer_window, :separator, :container].each do |opt|
-        WillPaginate::ViewHelpers.pagination_options[opt] = Radiant::Config["pagination.#{p}"] unless Radiant::Config["pagination.#{p}"].blank?
+        WillPaginate::ViewHelpers.pagination_options[opt] = Radiant::Config["pagination.#{opt}"] unless Radiant::Config["pagination.#{opt}"].blank?
       end
     end
 
