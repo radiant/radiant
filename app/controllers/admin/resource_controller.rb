@@ -182,9 +182,9 @@ class Admin::ResourceController < ApplicationController
     
     def index_page_for_model
       parts = {:action => "index"}
-      if paginated? && model && index = model_class.all.index(model)
-        page = (index + 1 / pagination_parameters[:per_page]).to_i
-        parts[:page] = page if page && page > 0
+      if paginated? && model && i = model_class.all.index(model)
+        p = ((i + 1) / pagination_parameters[:per_page].to_i) + 1
+        parts[:p] = p if p && p > 1
       end
       parts
     end
