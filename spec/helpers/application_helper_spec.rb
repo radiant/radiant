@@ -217,4 +217,42 @@ describe ApplicationHelper do
       helper.stylesheet_and_javascript_overrides.should_not have_tag('script[src*=?][type=?]','/javascripts/admin/overrides.js', 'text/javascript')
     end
   end
+  
+  # describe "pagination" do
+  #   before do
+  #     @collection = WillPaginate::Collection.new(1, 10, 100)
+  #     request = mock("request")
+  #     helper.stub!(:request).and_return(request)
+  #     helper.stub!(:will_paginate_options).and_return({})
+  #     helper.stub!(:will_paginate).and_return("pagination of some kind")
+  #     helper.stub!(:link_to).and_return("link")
+  #   end
+  #   
+  #   it "should render pagination controls for a supplied list" do
+  #     helper.pagination_for(@collection).should have_tag('div.pagination').with_tag('span.current', :text => '1')
+  #   end
+  #   
+  #   it "should include a depagination link by default" do
+  #     helper.pagination_for(@collection).should have_tag('div.depaginate')
+  #   end
+  #   
+  #   it "should omit the depagination link when :depaginate is false" do
+  #     helper.pagination_for(@collection, :depaginate => false).should_not have_tag('div.depaginate')
+  #   end
+  #   
+  #   it "should omit the depagination link when the :max_list_length is exceeded" do
+  #     helper.pagination_for(@collection, :depaginate => true, :max_list_length => 5).should_not have_tag('div.depaginate')
+  #   end
+  # 
+  #   it "should use the max_list_length config item when no other value is specified" do
+  #     Radiant::Config['pagination.max_list_length'] = 50
+  #     helper.pagination_for(@collection).should_not have_tag('div.depaginate')
+  #   end
+  # 
+  #   it "should disregard list length when max_list_length is false" do
+  #     Radiant::Config['pagination.max_list_length'] = 50
+  #     helper.pagination_for(@collection, :max_list_length => false).should_not have_tag('div.depaginate')
+  #   end
+  #   
+  # end
 end

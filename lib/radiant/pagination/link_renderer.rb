@@ -5,8 +5,8 @@
 module Radiant
   module Pagination
     class LinkRenderer < WillPaginate::LinkRenderer
-      def initialize(tag)
-        @url_stem = tag.locals.paginating_page.url if tag.locals.paginating_page
+      def initialize(url_stem)
+        @url_stem = url_stem
       end
   
       def to_html

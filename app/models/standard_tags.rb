@@ -143,9 +143,7 @@ module StandardTags
   }
   tag 'pagination' do |tag|
     if tag.locals.paginated_list
-      options = will_paginate_options(tag)
-      options[:renderer] = Radiant::Pagination::LinkRenderer.new(tag)
-      will_paginate(tag.locals.paginated_list, options)
+      will_paginate(tag.locals.paginated_list, will_paginate_options(tag))
     end
   end
 
@@ -1095,8 +1093,7 @@ module StandardTags
     def will_paginate_options(tag)
       attr = tag.attr.symbolize_keys
       if attr[:paginated] == 'true'
-        tag.locals.paginating_page = tag.globals.page
-        attr.slice(:class, :previous_label, :next_label, :inner_window, :outer_window, :separator, :per_page)
+        attr.slice(:class, :previous_label, :next_label, :inner_window, :outer_window, :separator, :per_page).merge({:renderer => Radiant::Pagination::LinkRenderer.new(tag.globals.page.url)})
       else
         {}
       end

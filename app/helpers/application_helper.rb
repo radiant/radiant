@@ -216,12 +216,18 @@ module ApplicationHelper
   end
   
   # returns the usual set of pagination links.
-  # optionsa are passed through to will_paginate 
-  # and a 'show all' depagination link is shown if relevant.
-  def pagination_for(list, options=will_paginate_options)
+  # options are passed through to will_paginate 
+  # and a 'show all' depagination link is added if relevant.
+  def pagination_for(list, options={})
     if list.respond_to? :total_pages
-      html = will_paginate(list, options)
-      if list.total_pages > 1
+      options = {
+        :max_per_page => config['pagination.max_per_page'] || 500,
+        :depaginate => true
+      }.merge(options.symbolize_keys)
+      depaginate = options.delete(:depaginate)                                     # supply :depaginate => false to omit the 'show all' link
+      depagination_limit = options.delete(:max_per_page)                           # supply :max_per_page => false to include the 'show all' link no matter how large the collection
+      html = will_paginate(list, will_paginate_options.merge(options))
+      if depaginate && list.total_pages > 1 && (!depagination_limit || list.total_entries <= depagination_limit)
         html << %{<div class="depaginate">}
         html << link_to("show all", :pp => list.total_entries)
         html << %{</div>}
