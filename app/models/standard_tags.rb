@@ -595,8 +595,8 @@ module StandardTags
     if email != ''
       url = 'http://www.gravatar.com/avatar.php?'
       url << "gravatar_id=#{Digest::MD5.new.update(email)}"
-      url << "&amp;rating=#{rating}"
-      url << "&amp;size=#{size.to_i}"
+      url << "&rating=#{rating}"
+      url << "&size=#{size.to_i}"
       url
     else
       "#{request.protocol}#{request.host_with_port}/images/admin/avatar_#{([size.to_i] * 2).join('x')}.png"
