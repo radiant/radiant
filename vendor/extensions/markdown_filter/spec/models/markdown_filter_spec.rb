@@ -17,6 +17,6 @@ end
 describe "<r:markdown>" do
   dataset :pages
   it "should filter its contents with Markdown" do
-    pages(:home).should render("<r:markdown>* item</r:markdown>").matching(%r{<ul>\n<li>item</li>\n</ul>})
+    pages(:home).should render("<r:markdown>* item</r:markdown>").matching(%r{<ul>\n(\s+)?<li>item<\/li>\n<\/ul>\n(\n)?})
   end
 end
