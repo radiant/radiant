@@ -1,14 +1,8 @@
-module Radius
-  module Version
-    Major = '0'
-    Minor = '6'
-    Tiny  = '1'
-    
-    class << self
-      def to_s
-        [Major, Minor, Tiny].join('.')
-      end
-      alias :to_str :to_s
+module Radius #:nodoc:
+  def self.version
+    @version ||= begin
+      filename = File.join(File.dirname(__FILE__), '..', '..', 'VERSION')
+      IO.read(filename).strip
     end
   end
 end

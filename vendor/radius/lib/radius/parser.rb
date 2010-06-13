@@ -7,11 +7,11 @@ module Radius
   class Parser
     # The Context object used to expand template tags.
     attr_accessor :context
-  
+    
     # The string that prefixes all tags that are expanded by a parser
     # (the part in the tag name before the first colon).
     attr_accessor :tag_prefix
-  
+    
     # Creates a new parser object initialized with a Context.
     def initialize(context = Context.new, options = {})
       if context.kind_of?(Hash) and options.empty?
@@ -22,7 +22,7 @@ module Radius
       @context = context
       @tag_prefix = options[:tag_prefix] || 'radius'
     end
-
+    
     # Parses string for tags, expands them, and returns the result.
     def parse(string)
       @stack = [ParseContainerTag.new { |t| t.contents.to_s }]
@@ -30,7 +30,7 @@ module Radius
       stack_up
       @stack.last.to_s
     end
-
+    
     protected
     # Convert the string into a list of text blocks and scanners (tokens)
     def tokenize(string)

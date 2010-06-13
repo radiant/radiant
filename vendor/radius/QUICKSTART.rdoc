@@ -256,8 +256,8 @@ tags to redefine variables. This is valuable when defining context sensitive tag
   parser.parse('<r:name />') # raises a Radius::UndefinedTagError exception
 
 Notice how TagBinding#locals enables intelligent nesting. "<r:jill:name />" evaluates to
-"Jill", but "<r:jill:friend:name />" evaluates to "Jack". Locals loose scope as soon as
-the tag they were defined in closes. Globals on the other hand, never loose scope.
+"Jill", but "<r:jill:friend:name />" evaluates to "Jack". Locals lose scope as soon as
+the tag they were defined in closes. Globals on the other hand, never lose scope.
 
 The final line in the example above demonstrates that calling "<r:name />" raises a
 TagMissing error. This is because of the way the name tag was defined:
@@ -315,8 +315,8 @@ specificity a tag could be assigned would be:
 
 One point for each of the levels.
 
-A deep understanding of tag specificity is not necessary to be effective with
-Radius. For the most part you will find that Radius resolves tags precisely the
-way that you would expect. If you find this section confusing forget about it and
-refer back to it if you find that tags are resolving differently from the way that
-you expected.
+In practice, you don't need to understand this topic to be effective with Radius.
+For the most part you will find that Radius resolves tags precisely the way that
+you would expect. If you find this section confusing forget about it and refer
+back to it if you find that tags are resolving differently from the way that you
+expected.

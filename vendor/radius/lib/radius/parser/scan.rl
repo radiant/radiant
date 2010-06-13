@@ -5,7 +5,8 @@
 	action _prefix { mark_pfx = p }
 	action prefix {
 	  if data[mark_pfx..p-1] != @prefix
-      @nodes.last << data[mark_pfx-1..p]
+	    closing = data[mark_pfx-1,1] == '/'
+	    @nodes.last << data[mark_pfx-(closing ? 2 : 1)..p]
 	    fbreak;
     end
 	}
