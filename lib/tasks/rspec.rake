@@ -19,7 +19,7 @@ begin
 
   desc 'Run all specs in spec directory (excluding plugin & generator specs)'
   task :spec => spec_prereq do
-    errors = %w(spec:integration spec:models spec:controllers spec:views spec:helpers spec:lib spec:generators).collect do |task|
+    errors = %w(spec:integration spec:models spec:controllers spec:views spec:helpers spec:lib spec:generators spec:extensions).collect do |task|
       begin
         puts %{\nRunning #{task.gsub('spec:', '').titlecase} Spec Task}
         Rake::Task[task].invoke
