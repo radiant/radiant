@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #--
-# Copyright (C) 2009 Thomas Leitner <t_leitner@gmx.at>
+# Copyright (C) 2009-2010 Thomas Leitner <t_leitner@gmx.at>
 #
 # This file is part of kramdown.
 #
@@ -20,6 +20,8 @@
 #++
 #
 
+require 'set'
+
 module Kramdown
 
   module Converter
@@ -35,7 +37,7 @@ module Kramdown
         super
         #TODO: set the footnote counter at the beginning of the document
         @doc.options[:footnote_nr]
-        @doc.conversion_infos[:packages] = []
+        @doc.conversion_infos[:packages] = Set.new
       end
 
       def convert(el, opts = {})
@@ -71,6 +73,10 @@ module Kramdown
       end
 
       def convert_codeblock(el, opts)
+        if !el.value
+          @doc.warnings << "Cannot convert codeblock with entity references"
+          return ''
+        end
         show_whitespace = el.options[:attr] && el.options[:attr]['class'].to_s =~ /\bshow-whitespaces\b/
         lang = el.options[:attr] && el.options[:attr]['lang']
         if show_whitespace || lang
@@ -101,8 +107,9 @@ module Kramdown
       }
       def convert_header(el, opts)
         type = HEADER_TYPES[el.options[:level]]
-        if el.options[:attr] && (id = el.options[:attr]['id'])
-          "\\hypertarget{#{id}}{}\\#{type}*{#{inner(el, opts)}}\\label{#{id}}\n\n"
+        if (el.options[:attr] && (id = el.options[:attr]['id'])) ||
+            (@doc.options[:auto_ids] && (id = generate_id(el.options[:raw_text])))
+          "\\hypertarget{#{id}}{}\\#{type}{#{inner(el, opts)}}\\label{#{id}}\n\n"
         else
           "\\#{type}*{#{inner(el, opts)}}\n\n"
         end
@@ -113,12 +120,14 @@ module Kramdown
       end
 
       def convert_ul(el, opts)
-        latex_environment('itemize', inner(el, opts))
+        if !@doc.conversion_infos[:has_toc] && (el.options[:ial][:refs].include?('toc') rescue nil)
+          @doc.conversion_infos[:has_toc] = true
+          '\tableofcontents'
+        else
+          latex_environment(el.type == :ul ? 'itemize' : 'enumerate', inner(el, opts))
+        end
       end
-
-      def convert_ol(el, opts)
-        latex_environment('enumerate', inner(el, opts))
-      end
+      alias :convert_ol :convert_ul
 
       def convert_dl(el, opts)
         latex_environment('description', inner(el, opts))
@@ -137,17 +146,25 @@ module Kramdown
       end
 
       def convert_html_element(el, opts)
-        @doc.warnings << "Can't convert HTML element"
-      end
-
-      def convert_html_text(el, opts)
-        @doc.warnings << "Can't convert HTML text"
+        if el.value == 'i'
+          "\\emph{#{inner(el, opts)}}"
+        elsif el.value == 'b'
+          "\\emph{#{inner(el, opts)}}"
+        else
+          @doc.warnings << "Can't convert HTML element"
+          ''
+        end
       end
 
       def convert_xml_comment(el, opts)
+        el.value.split(/\n/).map {|l| "% #{l}"}.join("\n") + "\n"
+      end
+
+      def convert_xml_pi(el, opts)
+        @doc.warnings << "Can't convert XML PI/HTML document type"
         ''
       end
-      alias :convert_xml_pi :convert_xml_comment
+      alias :convert_html_doctype :convert_xml_pi
 
       TABLE_ALIGNMENT_CHAR = {:default => 'l', :left => 'l', :center => 'c', :right => 'r'}
 
@@ -175,6 +192,7 @@ module Kramdown
       def convert_td(el, opts)
         inner(el, opts)
       end
+      alias :convert_th :convert_td
 
       def convert_br(el, opts)
         "\\newline\n"
@@ -193,18 +211,22 @@ module Kramdown
         if el.options[:attr]['src'] =~ /^(https?|ftps?):\/\//
           @doc.warnings << "Cannot include non-local image"
           ''
-        else
+        elsif !el.options[:attr]['src'].empty?
           @doc.conversion_infos[:packages] << 'graphicx'
           "\\includegraphics{#{el.options[:attr]['src']}}"
+        else
+          @doc.warnings << "Cannot include image with empty path"
+          ''
         end
       end
 
       def convert_codespan(el, opts)
-        "{\\tt #{escape(el.value)}}"
+        "{\\tt #{el.value ? escape(el.value) : inner(el, opts)}}"
       end
 
       def convert_footnote(el, opts)
-        "\\footnote{#{inner(@doc.parse_infos[:footnotes][el.options[:name]])}}"
+        @doc.conversion_infos[:packages] << 'fancyvrb'
+        "\\footnote{#{inner(@doc.parse_infos[:footnotes][el.options[:name]][:content], opts)}}"
       end
 
       def convert_raw(el, opts)
@@ -483,7 +505,7 @@ EOF
       end
 
       TYPOGRAPHIC_SYMS = {
-        :mdash => '---', :ndash => '--', :ellipsis => '\ldots{}',
+        :mdash => '---', :ndash => '--', :hellip => '\ldots{}',
         :laquo_space => '\guillemotleft{}~', :raquo_space => '~\guillemotright{}',
         :laquo => '\guillemotleft{}', :raquo => '\guillemotright{}'
       }
@@ -494,6 +516,23 @@ EOF
       SMART_QUOTE_SYMS = {:lsquo => '`', :rsquo => '\'', :ldquo => '``', :rdquo => '\'\''}
       def convert_smart_quote(el, opts)
         SMART_QUOTE_SYMS[el.value]
+      end
+
+      def convert_math(el, opts)
+        @doc.conversion_infos[:packages] += %w[amssymb amsmath amsthm amsfonts]
+        if el.options[:category] == :block
+          if el.value =~ /\A\s*\\begin\{/
+            el.value
+          else
+            latex_environment('displaymath', el.value)
+          end
+        else
+          "$#{el.value}$"
+        end
+      end
+
+      def convert_abbreviation(el, opts)
+        el.value
       end
 
       ESCAPE_MAP = {

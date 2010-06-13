@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #--
-# Copyright (C) 2009 Thomas Leitner <t_leitner@gmx.at>
+# Copyright (C) 2009-2010 Thomas Leitner <t_leitner@gmx.at>
 #
 # This file is part of kramdown.
 #
@@ -29,7 +29,7 @@ module Kramdown
       # Parse the EOB marker at the current location.
       def parse_eob_marker
         @src.pos += @src.matched_size
-        @tree.children << Element.new(:eob)
+        @tree.children << new_block_el(:eob)
         true
       end
       define_parser(:eob_marker, EOB_MARKER)

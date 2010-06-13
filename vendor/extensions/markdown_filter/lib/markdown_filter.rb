@@ -4,11 +4,11 @@ class MarkdownFilter < TextFilter
     if defined? RDiscount
       RDiscount.new(text, :smart).to_html
     else
-      RubyPants.new(Kramdown::Document.new(text, {
+      Kramdown::Document.new(text, {
         :auto_ids => false,
-        :parse_block_html => false,
-        :coderay => nil
-      }).to_html).to_html
+        :coderay_line_numbers => nil,
+        :coderay_css => :class
+      }).to_html
     end
   end
 end

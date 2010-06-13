@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #--
-# Copyright (C) 2009 Thomas Leitner <t_leitner@gmx.at>
+# Copyright (C) 2009-2010 Thomas Leitner <t_leitner@gmx.at>
 #
 # This file is part of kramdown.
 #
@@ -74,6 +74,8 @@ module Kramdown
         @src.pos += @src.matched_size
         if @tree.children.last && @tree.children.last.type != :blank && @tree.children.last.type != :eob
           parse_attribute_list(@src[1], @tree.children.last.options[:ial] ||= {})
+        else
+          parse_attribute_list(@src[1], @block_ial = {})
         end
         true
       end
@@ -92,7 +94,6 @@ module Kramdown
           update_attr_with_ial(@tree.children.last.options[:attr] ||= {}, attr)
         else
           warning("Ignoring span IAL because preceding element is just text")
-          add_text(@src.matched)
         end
       end
       define_parser(:span_ial, IAL_SPAN_START, '\{:')

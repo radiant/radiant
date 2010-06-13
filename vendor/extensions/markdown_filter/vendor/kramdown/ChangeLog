@@ -1,3 +1,1335 @@
+commit 824d854f2aa176664528d51e7ec98d91d7944b39
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Jun 8 15:45:02 2010 +0200
+
+    Fixed type in Rakefile
+
+Rakefile
+
+commit 54d5a8ebf100d4a810d48445f76f409fe6755831
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Jun 8 15:42:09 2010 +0200
+
+    Fixed Kernel.warn output in document.latex template
+
+data/kramdown/document.latex
+
+commit b69e946ad3bbd4e4b010968cb6a42eb49d06f337
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Jun 8 15:37:08 2010 +0200
+
+    Fixed LaTeX conversion test to always have an assert statement
+
+test/test_files.rb
+
+commit d2f817b24c50c7f9cb9c941a9b8c154cb291e4fa
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Jun 8 15:30:16 2010 +0200
+
+    Updated documentation
+
+doc/documentation.page
+doc/index.page
+doc/links.markdown
+doc/news/release_0_8_0.page
+doc/parser/html.page
+doc/parser/kramdown.page
+doc/tests.page
+
+commit ec1c9ad74873e06f786837708ef5361d7714328f
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Jun 8 11:55:43 2010 +0200
+
+    Deprecated filter_html option
+    
+    There exists better facilities for performinig this kind of task.
+
+doc/news/release_0_8_0.page
+lib/kramdown/converter/html.rb
+lib/kramdown/options.rb
+
+commit d7dda4bd0aec08414feb24ce9983f0ccff34dde1
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Jun 8 11:13:27 2010 +0200
+
+    Converting <i> and <b> html elements in LaTeX converter
+
+lib/kramdown/converter/latex.rb
+
+commit 1d48a55b26040a777d2ac29cf906e17ac92ce0ed
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Jun 8 10:35:47 2010 +0200
+
+    Fixed problem with image links in LaTeX converter
+    
+    Not outputting image links with empty source URL anymore
+
+lib/kramdown/converter/latex.rb
+
+commit 6bbff48b73abdbfa27d08c0b269850edaaccedcf
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Jun 7 19:07:24 2010 +0200
+
+    Merged element :text and :raw_text element types
+    
+    The element type :raw_text may not appear in the element tree after
+    parsing is done, only :text elements are supported by the converters.
+    The kramdown parser still uses :raw_text elements internally - these
+    elements are the ones that get parsed with the span level parser.
+
+lib/kramdown/converter/html.rb
+lib/kramdown/converter/latex.rb
+lib/kramdown/parser/html.rb
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/html.rb
+lib/kramdown/parser/kramdown/list.rb
+lib/kramdown/parser/kramdown/table.rb
+
+commit cb51bf3f60e492f7c6467eaced4520e35bb33489
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Jun 7 15:20:59 2010 +0200
+
+    Updated README with information regarding kramdown development
+
+README
+
+commit 99ba359b97924b0a2527b8a255fb68d9ae049218
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Jun 7 08:28:20 2010 +0200
+
+    Added latex compilation tests
+    
+    Each .text testcase is now additionally converted to LaTeX with the
+    default template and then processed by the latex executable to find
+    compilation errors.
+
+test/test_files.rb
+
+commit 7ec5a1ce19a6de7732e2666836b81c8d452a725a
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Jun 7 08:27:03 2010 +0200
+
+    Fixed copy-paste error in LaTeX converter
+
+lib/kramdown/converter/latex.rb
+
+commit 22fcb3a34f831c1366022ade40e805a59dd905e3
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Jun 7 08:26:30 2010 +0200
+
+    Changed binding when evaluating template after conversion
+    
+    Now creating a new object that is used as binding object. This avoids
+    cluttering the global namespace. Now one needs to use instance variables
+    instead of locals, i.e. @doc/@body instead of doc/body.
+
+data/kramdown/document.html
+data/kramdown/document.latex
+lib/kramdown/converter/base.rb
+
+commit 15a692c6db428c1c48ced1eb460ce0fc3c8428f2
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Jun 4 20:32:40 2010 +0200
+
+    Fixed HTML converter problem
+
+lib/kramdown/converter/html.rb
+
+commit b1ccf1616053ceeb00ede70ff81014ac1e6c054b
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Jun 4 20:29:29 2010 +0200
+
+    Fixed bug in html-to-native processing of xml comments/PIs and html doctypes
+
+lib/kramdown/parser/html.rb
+
+commit eb5e1cf55486470ebbf3ac61148ecf1f52332eba
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Jun 4 20:27:10 2010 +0200
+
+    Added html-to-html conversion tests
+
+test/test_files.rb
+
+commit 6b55fd5b2cdd4a6e7a9159f9cb8677bbdafd6306
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Jun 4 19:34:28 2010 +0200
+
+    Fixed parsing of HTML script tags
+
+lib/kramdown/parser/html.rb
+test/testcases/block/09_html/parse_as_raw.html
+test/testcases/block/09_html/parse_as_raw.text
+
+commit 6e91ba34c2aae401b08efa2e5d63a85fb1bf3451
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Jun 4 18:10:31 2010 +0200
+
+    Fixed a warning on Ruby 1.8.7
+
+lib/kramdown/parser/html.rb
+
+commit 13f3bf1986f9b125dc2b821c351a4324f72eb976
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Jun 4 11:18:44 2010 +0200
+
+    Fixed HTML-to-native conversion of not-simple tables
+
+lib/kramdown/parser/html.rb
+test/testcases/block/09_html/html_to_native/table.html
+test/testcases/block/09_html/html_to_native/table.text
+test/testcases/block/09_html/html_to_native/table_normal.html
+test/testcases/block/09_html/html_to_native/table_normal.text
+test/testcases/block/09_html/html_to_native/table_simple.html
+test/testcases/block/09_html/html_to_native/table_simple.text
+
+commit 4e314534abcaf11816c10a03b607ce0d2c1300f3
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Jun 4 10:43:44 2010 +0200
+
+    Added conversion of xml comments to LaTeX comments
+
+lib/kramdown/converter/latex.rb
+
+commit 3a9041f03862be83c78aa6ac8eacbb096760df7e
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Jun 4 10:28:16 2010 +0200
+
+    Many HTML parsing related changes
+    
+    * Created standalone HTML parser, using the implementation of the
+      kramdown HTML parser. The kramdown HTML parser is now based on the
+      standalone version
+    * Added support for parsing an HTML doctype and for converting it
+    * HTML-to-native support is now encapsulated in own class and enhanced
+      to work better/across more HTML tags
+
+lib/kramdown/converter/html.rb
+lib/kramdown/converter/latex.rb
+lib/kramdown/parser.rb
+lib/kramdown/parser/html.rb
+lib/kramdown/parser/kramdown/html.rb
+lib/kramdown/parser/kramdown/html_entity.rb
+test/testcases/block/09_html/html_to_native/comment.html
+test/testcases/block/09_html/html_to_native/paragraph.html
+test/testcases/block/09_html/html_to_native/paragraph.text
+
+commit 5ce9de5b0d3ab0438375895463d6341374185c81
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Jun 4 10:20:43 2010 +0200
+
+    Fixed standalone test runner to load directory options file
+
+test/run_tests.rb
+
+commit e094110f79c52f5950e855bb85b3624b8df315fd
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Jun 4 10:20:05 2010 +0200
+
+    Added base class for parsers
+
+lib/kramdown/parser.rb
+lib/kramdown/parser/base.rb
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/link.rb
+
+commit e1be06b37b680248bd276407ae4c2dcbad702b1b
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Jun 4 10:17:52 2010 +0200
+
+    Fixed spelling error
+
+lib/kramdown/converter/base.rb
+
+commit 47eef4efb25f8f0f046d3b39aadd5f661b9797ee
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Jun 4 09:27:45 2010 +0200
+
+    Changed content model of th from block to span (in conformance to HTML5 spec)
+
+doc/syntax.page
+test/testcases/block/09_html/content_model/tables.html
+
+commit 482de59507d569dc7668e9334a3a82ab44f439e0
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Jun 1 20:43:47 2010 +0200
+
+    Completed list of HTML elements that have no body
+
+lib/kramdown/parser/kramdown/html.rb
+
+commit 2330fe56b311ce0fa607897461d95cf12d6ca54e
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon May 31 16:43:27 2010 +0200
+
+    Better whitespace handling when using html_to_native
+    
+    * :raw_text elements containing only whitespace and appearing between
+      block elements are converted to :blank elements
+    * one or more whitespace characters are compressed to a single space
+    * leading/trailing whitespace in block HTML elements is removed
+
+lib/kramdown/parser/kramdown/html.rb
+test/testcases/block/09_html/html_to_native/list_ul.html
+test/testcases/block/09_html/html_to_native/paragraph.html
+test/testcases/block/09_html/html_to_native/paragraph.text
+test/testcases/block/09_html/html_to_native/table.html
+
+commit 9d65fb05c9dca26c131047bf502a95fd4bcb9a3c
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon May 31 16:20:22 2010 +0200
+
+    Fixed problem with test runner
+    
+    Test assertion files with a file extension that refer to an unknown converter are ignored
+
+test/test_files.rb
+
+commit 7b0a882e99be1dc986a2c7e15e01b4ddf706726f
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon May 31 07:41:54 2010 +0200
+
+    Fixed problems with xml comment/pi parsing
+    
+    * Parsing is now done even if inside a raw HTML tag
+    * HTML converter was modified to handle the above case
+
+lib/kramdown/converter/html.rb
+lib/kramdown/parser/kramdown/html.rb
+test/testcases/block/09_html/comment.html
+test/testcases/block/09_html/comment.text
+test/testcases/block/09_html/html_to_native/comment.html
+test/testcases/block/09_html/html_to_native/comment.text
+
+commit 109ef4e24d9d87c71f02f33dbe3054ff34bb0b1c
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat May 29 17:24:27 2010 +0200
+
+    Converted lambdas used for html-to-native functionality to real methods and fixed pre/code conversion
+
+lib/kramdown/parser/kramdown/html.rb
+test/testcases/block/09_html/html_to_native/code.html
+test/testcases/block/09_html/html_to_native/code.text
+
+commit 858ea7053ac81993a787688e444a71655dd9b989
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri May 28 15:37:24 2010 +0200
+
+    Using the fancyvrb package to support code blocks in footnotes when using the LaTeX converter
+
+data/kramdown/document.latex
+doc/converter/latex.page
+lib/kramdown/converter/latex.rb
+
+commit 9b4f8fd4eac03885bbdfbe1008321e5c33a7045a
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu May 27 21:26:39 2010 +0200
+
+    Added rake task for generating CONTRIBUTERS file from git history
+
+Rakefile
+
+commit 939c1a8790d2cb8b5043c667e4f9f78d9ada07d1
+Author: Ben Armston <ben.armston@googlemail.com>
+Date:   Tue May 25 22:25:09 2010 +0100
+
+    Fix generation of latex footnotes
+    
+    - Passing `opts` removed an `ArgumentError: wrong number of arguments (1
+      for 2)`.
+    - Adding `[:content]` removed a `NoMethodError: undefined method
+      `children' for #<Hash:...>`
+
+lib/kramdown/converter/latex.rb
+test/testcases/span/04_footnote/definitions.latex
+test/testcases/span/04_footnote/footnote_nr.latex
+test/testcases/span/04_footnote/markers.latex
+
+commit 6ccd690dbf80fc4644c0d060d05008afc82423f7
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu May 27 21:00:11 2010 +0200
+
+    Updated test runner to be able to run tests on any conversion format
+
+test/test_files.rb
+
+commit 5a1eb15335d1d6179a7f7041786f52837686e588
+Author: Ben Armston <ben.armston@googlemail.com>
+Date:   Tue May 25 22:20:53 2010 +0100
+
+    Run latex tests if they exist
+
+test/test_files.rb
+
+commit 720c2b0aa6a47d9ee12689909aa6b22cf5a32538
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu May 27 20:41:22 2010 +0200
+
+    Updated the Rakefile to prohibit releases if not all development deps are installed
+
+Rakefile
+
+commit a0ddab1e1be5e6fc05112e318e48f328add40d5c
+Author: Ben Armston <ben.armston@googlemail.com>
+Date:   Tue May 25 22:10:39 2010 +0100
+
+    Only define rdoc task if rdoc is installed
+
+Rakefile
+
+commit a156853b721be10a85f6de661bf05c410613a853
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu May 27 15:25:46 2010 +0200
+
+    Better html-to-native processing for li and dd tags
+
+doc/parser/kramdown.page
+lib/kramdown/parser/kramdown/html.rb
+test/testcases/block/09_html/html_to_native/list_ol.html
+test/testcases/block/09_html/html_to_native/list_ul.html
+
+commit 2b8c1b4e6001bd9bacc2f24941e832eeec846c49
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu May 27 15:23:48 2010 +0200
+
+    Added gitignore file
+
+.gitignore
+
+commit 903f22ee1d367c5771325ea6ef77d975398d1f76
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu May 27 07:46:28 2010 +0200
+
+    Modified list handling to use :category key instead of special :first_is_block key
+
+lib/kramdown/converter/html.rb
+lib/kramdown/parser/kramdown/list.rb
+
+commit 6e9c777e15bd55494281b30a81eb472de75fcd4b
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu May 27 07:43:08 2010 +0200
+
+    Formalized how to set the category of an element
+    
+    The category of element (:block or :span) can now be set via the special
+    options key :category.
+
+lib/kramdown/converter/html.rb
+lib/kramdown/converter/latex.rb
+lib/kramdown/document.rb
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/extension.rb
+lib/kramdown/parser/kramdown/html.rb
+lib/kramdown/parser/kramdown/math.rb
+
+commit ef6c7683312966b16e7c9b1921e73fa3424797bd
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed May 26 16:44:07 2010 +0200
+
+    Better html-to-native processing for ul, ol and dl tags
+
+doc/parser/kramdown.page
+lib/kramdown/parser/kramdown/html.rb
+test/testcases/block/09_html/html_to_native/list_dl.html
+test/testcases/block/09_html/html_to_native/list_dl.text
+test/testcases/block/09_html/html_to_native/list_ol.html
+test/testcases/block/09_html/html_to_native/list_ol.text
+test/testcases/block/09_html/html_to_native/list_ul.html
+test/testcases/block/09_html/html_to_native/list_ul.text
+
+commit 16c3cd2fd2028fc14bcd3cdba6cf25d84a359941
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed May 26 16:42:31 2010 +0200
+
+    Fixed problem with accumulating raw text in HTML parser
+    
+    Needed to add :codeblock and :codespan elements to the list of elements
+    from which the raw text may be extracted because they may have been
+    processed already.
+
+lib/kramdown/parser/kramdown/html.rb
+test/testcases/block/09_html/html_to_native/code.html
+test/testcases/block/09_html/html_to_native/code.text
+
+commit dfa48c97a2b7964fedc400299c1d7b18c16939a3
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun May 23 06:15:30 2010 +0200
+
+    Added the ability to convert HTML tags to native elements
+    
+    This is directly implemented in the HTML parser and controlled with the
+    new html_to_native option.
+
+doc/news/release_0_8_0.page
+doc/parser/kramdown.page
+lib/kramdown/converter/html.rb
+lib/kramdown/converter/latex.rb
+lib/kramdown/options.rb
+lib/kramdown/parser/kramdown/html.rb
+test/testcases/block/09_html/html_to_native/code.html
+test/testcases/block/09_html/html_to_native/code.text
+test/testcases/block/09_html/html_to_native/emphasis.html
+test/testcases/block/09_html/html_to_native/emphasis.text
+test/testcases/block/09_html/html_to_native/entity.html
+test/testcases/block/09_html/html_to_native/entity.text
+test/testcases/block/09_html/html_to_native/header.html
+test/testcases/block/09_html/html_to_native/header.options
+test/testcases/block/09_html/html_to_native/header.text
+test/testcases/block/09_html/html_to_native/options
+test/testcases/block/09_html/html_to_native/paragraph.html
+test/testcases/block/09_html/html_to_native/paragraph.text
+test/testcases/block/09_html/html_to_native/table.html
+test/testcases/block/09_html/html_to_native/table.text
+test/testcases/block/09_html/html_to_native/typography.html
+test/testcases/block/09_html/html_to_native/typography.text
+
+commit 14233a850d51edb543abd85157a2016bf79dacfe
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun May 23 06:16:12 2010 +0200
+
+    Test file now supports loading a common directory options file
+
+test/test_files.rb
+
+commit 0a7ebd0623e21eddd1a4a83bcc845dd7107c50ec
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat May 22 08:43:32 2010 +0200
+
+    HTML tags inside raw HTML span tags are now parsed as raw HTML tags
+
+doc/news/release_0_8_0.page
+lib/kramdown/parser/kramdown/html.rb
+
+commit 27bef199e798d26b29d42864bbbbd278f241a168
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat May 22 08:41:35 2010 +0200
+
+    HTML code and pre tags are now parsed as raw HTML tags
+
+doc/news/release_0_8_0.page
+lib/kramdown/parser/kramdown/html.rb
+
+commit 595a29f4fa8a0e943c15f0029267b02ef49a4054
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat May 22 08:32:47 2010 +0200
+
+    Fixed problem with HTML span parsing
+    
+    Some text was not added to the correct element when the end tag was not
+    found.
+
+doc/news/release_0_8_0.page
+lib/kramdown/parser/kramdown/html.rb
+test/testcases/span/05_html/invalid.html
+test/testcases/span/05_html/invalid.text
+
+commit 936564a194e81469fb0d95607b4ecbe1c0dc9cd7
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat May 22 08:22:21 2010 +0200
+
+    Renamed element type :html_text to :raw_text
+    
+    This type of text element is basically the same as the :text element
+    but it is not parsed with the span level parser.
+
+lib/kramdown/converter/html.rb
+lib/kramdown/converter/latex.rb
+lib/kramdown/parser/kramdown/html.rb
+
+commit c4b87346c193065282a7c3aec4d5f12baf0f18ef
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat May 22 07:37:35 2010 +0200
+
+    Two fixes in typographic sym parser
+    
+    * Entities were added as string and not as entity elements which is now
+      corrected.
+    * Renamed :ellipsis to :hellip
+
+doc/news/release_0_8_0.page
+lib/kramdown/converter/html.rb
+lib/kramdown/converter/latex.rb
+lib/kramdown/parser/kramdown/typographic_symbol.rb
+
+commit f9041fc4b7e5284d6a30b389519b9ebf562d6431
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri May 21 18:49:53 2010 +0200
+
+    Table header cells are now represented by their own element type
+
+doc/news/release_0_8_0.page
+lib/kramdown/converter/html.rb
+lib/kramdown/converter/latex.rb
+lib/kramdown/parser/kramdown/table.rb
+
+commit bc060c1db0badbcf6c19797c338c945f45f4b94e
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu May 20 17:46:16 2010 +0200
+
+    Bumped version number and added release notes file
+
+doc/news/release_0_8_0.page
+lib/kramdown/version.rb
+
+commit 3975435056216bbe0c19fbbad4b9985e04f78d68
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu May 20 17:42:11 2010 +0200
+
+    Removed support for old extension syntax and custom extensions
+
+lib/kramdown/options.rb
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/extension.rb
+
+commit 4e2e24907f0e16f2e6f7755fa3cc4f8c3615e62d
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu May 20 08:35:03 2010 +0200
+
+    Updated API documentation
+
+lib/kramdown/converter.rb
+lib/kramdown/converter/base.rb
+lib/kramdown/document.rb
+lib/kramdown/options.rb
+lib/kramdown/parser.rb
+
+commit 50d4b0607abfbe26f590096129471ff149da6593
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu May 20 08:14:49 2010 +0200
+
+    Small fix for determining the converter class to use when using the doc.to_ shortcut
+
+lib/kramdown/document.rb
+
+commit 03e15d86ca11ca327d22b6a8b43e8d77337fd34c
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu May 20 07:32:46 2010 +0200
+
+    Attributes assigned to TOC list are now applied to generated TOC list
+
+doc/converter/html.page
+lib/kramdown/converter/html.rb
+
+commit be2d2abef64a8d10ad0ad13f7fbee3fb485cd115
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed May 19 07:50:03 2010 +0200
+
+    Updated copyright notice task and copyright notices
+
+Rakefile
+lib/kramdown.rb
+lib/kramdown/compatibility.rb
+lib/kramdown/converter.rb
+lib/kramdown/converter/base.rb
+lib/kramdown/converter/html.rb
+lib/kramdown/converter/latex.rb
+lib/kramdown/document.rb
+lib/kramdown/error.rb
+lib/kramdown/options.rb
+lib/kramdown/parser.rb
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/attribute_list.rb
+lib/kramdown/parser/kramdown/autolink.rb
+lib/kramdown/parser/kramdown/blank_line.rb
+lib/kramdown/parser/kramdown/blockquote.rb
+lib/kramdown/parser/kramdown/codeblock.rb
+lib/kramdown/parser/kramdown/codespan.rb
+lib/kramdown/parser/kramdown/emphasis.rb
+lib/kramdown/parser/kramdown/eob.rb
+lib/kramdown/parser/kramdown/escaped_chars.rb
+lib/kramdown/parser/kramdown/extension.rb
+lib/kramdown/parser/kramdown/footnote.rb
+lib/kramdown/parser/kramdown/header.rb
+lib/kramdown/parser/kramdown/horizontal_rule.rb
+lib/kramdown/parser/kramdown/html.rb
+lib/kramdown/parser/kramdown/html_entity.rb
+lib/kramdown/parser/kramdown/line_break.rb
+lib/kramdown/parser/kramdown/link.rb
+lib/kramdown/parser/kramdown/list.rb
+lib/kramdown/parser/kramdown/math.rb
+lib/kramdown/parser/kramdown/paragraph.rb
+lib/kramdown/parser/kramdown/smart_quotes.rb
+lib/kramdown/parser/kramdown/table.rb
+lib/kramdown/parser/kramdown/typographic_symbol.rb
+lib/kramdown/version.rb
+
+commit 3590129a6ad01161ee8f03a25f4d93d14fd6f4b1
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed May 19 07:20:20 2010 +0200
+
+    Updated documentation content and structure
+
+Rakefile
+doc/default.less.css
+doc/default.template
+doc/documentation.page
+doc/index.page
+doc/installation.page
+doc/parser/kramdown.page
+doc/quickref.page
+doc/syntax.page
+
+commit 0e73d548e89a77b0318efa151aa1c6279d7f1c00
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri May 7 12:17:58 2010 +0200
+
+    Last changes before release
+
+doc/index.page
+doc/news/release_0_7_0.page
+
+commit c83af0ac96ea60aeb5d90afdfe31746106e0de9f
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu May 6 20:20:20 2010 +0200
+
+    Fixed small problem with :input document option
+
+lib/kramdown/document.rb
+
+commit 4c6261dad0dc80235a76866a54ed5a9bf55d6174
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu May 6 20:19:30 2010 +0200
+
+    Made kramdown parser class better subclass-able and added example subclass
+
+lib/kramdown/parser/kramdown.rb
+
+commit 1cb4d538ff62cfb78c88fdf858283c1902b8cd7d
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu May 6 16:53:11 2010 +0200
+
+    Modified block IAL syntax so that placing an IAL before an element is possible
+
+doc/news/release_0_7_0.page
+doc/syntax.page
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/attribute_list.rb
+lib/kramdown/parser/kramdown/blank_line.rb
+lib/kramdown/parser/kramdown/blockquote.rb
+lib/kramdown/parser/kramdown/codeblock.rb
+lib/kramdown/parser/kramdown/eob.rb
+lib/kramdown/parser/kramdown/header.rb
+lib/kramdown/parser/kramdown/horizontal_rule.rb
+lib/kramdown/parser/kramdown/list.rb
+lib/kramdown/parser/kramdown/math.rb
+lib/kramdown/parser/kramdown/paragraph.rb
+lib/kramdown/parser/kramdown/table.rb
+test/testcases/block/11_ial/simple.html
+test/testcases/block/11_ial/simple.text
+
+commit d63445c83d7ccb545e649763454e0a5a2619295d
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu May 6 08:01:21 2010 +0200
+
+    Fixed problem with invalid IDs on news page
+
+doc/news.page
+
+commit eb9d114114f0a2333d149e4554805063689dac5a
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu May 6 08:00:24 2010 +0200
+
+    Updated HTML ToC generation to either create ordered or unordered lists
+
+doc/converter/html.page
+lib/kramdown/converter/html.rb
+
+commit 6fe31bd9900390ae389e884edc85f9f4bdd3070e
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed May 5 08:27:50 2010 +0200
+
+    Added option for prefixing auto_ids with a string
+
+doc/news/release_0_7_0.page
+lib/kramdown/converter/base.rb
+lib/kramdown/options.rb
+test/testcases/block/04_header/with_auto_id_prefix.html
+test/testcases/block/04_header/with_auto_id_prefix.options
+test/testcases/block/04_header/with_auto_id_prefix.text
+
+commit e39be57de665f72d83c38c05ac243cb13f316516
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed May 5 08:08:52 2010 +0200
+
+    Implemented support for applying an IAL to a list item
+
+doc/news/release_0_7_0.page
+doc/syntax.page
+lib/kramdown/parser/kramdown/list.rb
+test/testcases/block/08_list/item_ial.html
+test/testcases/block/08_list/item_ial.text
+
+commit 598478881b809a6f76121ce5741d1105483e3276
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed May 5 08:03:32 2010 +0200
+
+    Fixed unnecessary recursions when replacing abbreviations
+
+lib/kramdown/parser/kramdown.rb
+
+commit 1994f6f62e2317d1a302668b7e237e8554eff47e
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed May 5 07:56:30 2010 +0200
+
+    Invalid span IALs are now removed from the output
+
+doc/news/release_0_7_0.page
+doc/syntax.page
+lib/kramdown/parser/kramdown/attribute_list.rb
+test/testcases/span/ial/simple.html
+test/testcases/span/ial/simple.text
+
+commit c5a7ce9ca428258f275a9ad82277e8c430f0fd55
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed May 5 07:29:07 2010 +0200
+
+    Fixed problem with invalid error message
+
+lib/kramdown/document.rb
+
+commit 7da28a8abd9fa16dd5c8fc165b02d49af57e6cb8
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue May 4 20:12:55 2010 +0200
+
+    Added support for automatic generation of ToC
+
+doc/converter/html.page
+doc/converter/latex.page
+doc/news/release_0_7_0.page
+lib/kramdown/converter/html.rb
+lib/kramdown/converter/latex.rb
+
+commit 9c3272eaf95e11d655b3f49fe4c097e5b245c949
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon May 3 16:22:38 2010 +0200
+
+    Updated testing script to use all available rvm ruby versions
+
+benchmark/testing.sh
+
+commit 6776bfccbc1dd82a8dd54109d7dc61b5f6eba1b5
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon May 3 16:21:58 2010 +0200
+
+    Removed leading colon from option names
+
+doc/news/release_0_2_0.page
+doc/news/release_0_7_0.page
+
+commit 4c32df245a179a338b4295e1f84e8b7fb0b09c59
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon May 3 16:20:41 2010 +0200
+
+    Fixed ambiguity problem of new extension syntax
+    
+    The sequence {:comment} could mean an IAL with a reference to the comment ALD
+    or the beginning of the extension named comment. To resolve this problem,
+    extensions now have to begin with two colons
+
+doc/syntax.page
+lib/kramdown/parser/kramdown/extension.rb
+test/testcases/block/12_extension/comment.text
+test/testcases/block/12_extension/ignored.text
+test/testcases/block/12_extension/nomarkdown.text
+test/testcases/block/12_extension/options.text
+test/testcases/block/12_extension/options2.text
+test/testcases/block/12_extension/options3.text
+test/testcases/span/extension/comment.text
+test/testcases/span/extension/ignored.text
+test/testcases/span/extension/nomarkdown.text
+test/testcases/span/extension/options.text
+
+commit b48f6ede0237db9bf30cf79a4abd6841a1d70f49
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Apr 22 20:52:15 2010 +0200
+
+    Restructured syntax documentation
+
+doc/syntax.page
+
+commit 2c0d469ee9365a19b0a79752532e727310cfbe79
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Apr 22 07:41:26 2010 +0200
+
+    Updated documentation
+    
+    * Option names are now always used without the leading colon
+    * All converter specific options are now described on their respective
+      documentation page and not on the kramdown syntax page anymore
+
+Rakefile
+doc/converter/html.page
+doc/converter/latex.page
+doc/links.markdown
+doc/news/release_0_4_0.page
+doc/parser/kramdown.page
+doc/syntax.page
+
+commit c61f553f181f6bda2bcdb3e5e01a3716513e38db
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Apr 21 19:34:38 2010 +0200
+
+    Re-implemented custom extensions for docu as webgen tags
+
+Rakefile
+doc/quickref.page
+
+commit 210d61a1ddf5cceb89f5f29b7df4dd57d871cb76
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Apr 21 19:01:13 2010 +0200
+
+    Updated block extension code to use new syntax
+    
+    The old code is still available and will be removed in a future
+    version of kramdown.
+
+doc/news/release_0_7_0.page
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/extension.rb
+test/testcases/block/12_extension/comment.text
+test/testcases/block/12_extension/ignored.html
+test/testcases/block/12_extension/ignored.text
+test/testcases/block/12_extension/nomarkdown.text
+test/testcases/block/12_extension/options.text
+test/testcases/block/12_extension/options2.text
+test/testcases/block/12_extension/options3.text
+
+commit 2f7b852c80a185f63f8ea77bf56833c345669264
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Apr 21 08:44:00 2010 +0200
+
+    Implemented support for span extension using the new syntax
+
+doc/news/release_0_7_0.page
+doc/quickref.page
+doc/syntax.page
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/extension.rb
+test/testcases/span/extension/comment.html
+test/testcases/span/extension/comment.text
+test/testcases/span/extension/ignored.html
+test/testcases/span/extension/ignored.text
+test/testcases/span/extension/nomarkdown.html
+test/testcases/span/extension/nomarkdown.text
+test/testcases/span/extension/options.html
+test/testcases/span/extension/options.text
+
+commit 4bc26bba49b53259c5bea118459298aaf0eca663
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Apr 20 17:44:45 2010 +0200
+
+    Added deprecation warning for old extension parser
+
+doc/news/release_0_7_0.page
+lib/kramdown/parser/kramdown/extension.rb
+
+commit 6ffc5f341f26637391c669c9f47b59cffde88adc
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun Apr 18 08:33:34 2010 +0200
+
+    Fixed check-in of invalid file
+
+test/testcases/span/abbreviations/.abbrev.html.swp
+
+commit f0d4f182db8b04d631da27fe2ec1fb8347f6b50b
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun Apr 18 08:32:59 2010 +0200
+
+    Moved option :auto_ids from parser to converters
+
+doc/news/release_0_7_0.page
+doc/quickref.page
+lib/kramdown/converter/base.rb
+lib/kramdown/converter/html.rb
+lib/kramdown/converter/latex.rb
+lib/kramdown/options.rb
+lib/kramdown/parser/kramdown/header.rb
+test/testcases/block/11_ial/auto_id_and_ial.html
+test/testcases/block/11_ial/auto_id_and_ial.text
+test/testcases/block/12_extension/options.html
+test/testcases/block/12_extension/options.text
+
+commit e846fd69fe278880c1bb2559f0378c31e64b1cfe
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Apr 16 11:58:12 2010 +0200
+
+    Added syntax support for abbreviations
+
+doc/news/release_0_7_0.page
+doc/quickref.page
+doc/syntax.page
+lib/kramdown/converter/html.rb
+lib/kramdown/converter/latex.rb
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/abbreviation.rb
+test/testcases/span/abbreviations/.abbrev.html.swp
+test/testcases/span/abbreviations/abbrev.html
+test/testcases/span/abbreviations/abbrev.text
+test/testcases/span/abbreviations/abbrev_defs.html
+test/testcases/span/abbreviations/abbrev_defs.text
+
+commit 719f35ee0046328f661581915d10899ba21cd39b
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Apr 9 10:26:04 2010 +0200
+
+    Fixed special case of smart quotes parsing
+
+doc/news/release_0_7_0.page
+lib/kramdown/parser/kramdown/smart_quotes.rb
+test/testcases/span/text_substitutions/typography.html
+test/testcases/span/text_substitutions/typography.text
+
+commit 6e9dd27242cb193900c975822d534a20a5754144
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Apr 9 10:25:29 2010 +0200
+
+    Fixed dependency problem in Rakefile
+    
+    Rakefile should always load fine even if webgen is not installed.
+
+Rakefile
+
+commit d6c22539b6c8513f059f27e5560831dc49a5b578
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Apr 9 10:18:57 2010 +0200
+
+    Fixed problem with invalid error reporting
+
+lib/kramdown/document.rb
+
+commit 6a957f7a635b26677e80efb68538238eaba07fd6
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Apr 7 17:39:44 2010 +0200
+
+    Removed deprecated CLI option -f
+
+bin/kramdown
+doc/news/release_0_7_0.page
+
+commit 7a20c25cf1490f84a4ddca12431d4df282326d6f
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Apr 7 09:44:49 2010 +0200
+
+    Bumped version number and added news file
+
+doc/news/release_0_7_0.page
+lib/kramdown/version.rb
+
+commit 01986057b7e458aaf352f7d8fddb587ae2fcc16e
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Apr 6 12:13:36 2010 +0200
+
+    Added benchmark data for 0.6.0 release and updated graphs
+
+benchmark/historic-jruby-1.4.0.dat
+benchmark/historic-ruby-1.8.6.dat
+benchmark/historic-ruby-1.8.7.dat
+benchmark/historic-ruby-1.9.1p243.dat
+benchmark/historic-ruby-1.9.2dev.dat
+doc/img/graph-jruby-1.4.0.png
+doc/img/graph-ruby-1.8.6.png
+doc/img/graph-ruby-1.8.7.png
+doc/img/graph-ruby-1.9.1p243.png
+doc/img/graph-ruby-1.9.2dev.png
+doc/tests.page
+
+commit 712aed9b546e75458e030606c6f5c60cbee45629
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Apr 6 12:12:50 2010 +0200
+
+    Now only showing kramdown performance in graphs
+
+benchmark/generate_data.rb
+
+commit d3f3426ce66aeaf2ca317efc59ecc42a78a1d3ad
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Apr 6 11:41:19 2010 +0200
+
+    Removed old benchmark data
+
+benchmark/historic-jruby-1.4.0.dat
+benchmark/historic-ruby-1.8.6.dat
+benchmark/historic-ruby-1.8.7.dat
+benchmark/historic-ruby-1.9.1p243.dat
+benchmark/historic-ruby-1.9.2dev.dat
+
+commit acde8528e26f40af2192b25dc939b62ff20b27fb
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Apr 6 11:27:09 2010 +0200
+
+    Small credit fix
+
+doc/default.template
+
+commit 7152ad65def87001ec8b2b61955d38c8ded064cb
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Mar 18 20:44:57 2010 +0100
+
+    Updated release date and front matter
+
+doc/index.page
+doc/news/release_0_6_0.page
+
+commit 8b99bc030f7c97ddb78f6d8b9b5a161bf5cd4aa2
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Mar 18 20:43:37 2010 +0100
+
+    Fixed some style issues
+
+doc/default.less.css
+doc/news.page
+
+commit a82a70715298bee2659e387ea4622b4e87285b2f
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Mar 18 20:42:46 2010 +0100
+
+    Updated release notes
+
+doc/news/release_0_6_0.page
+
+commit dc64a5fa47202f01eb829d5fc5f389f35014ea69
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Mar 17 18:27:59 2010 +0100
+
+    Updated documentation
+    
+    Moved HTML/LaTeX specific parts of the syntax document to the converter
+    documents.
+
+doc/converter/html.page
+doc/converter/latex.page
+doc/syntax.page
+
+commit 397dafe8664affaa7ca0e3895b683bc32f73d637
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Mar 17 18:27:11 2010 +0100
+
+    Updated styling of homepage
+
+doc/default.css
+doc/default.less.css
+doc/default.template
+doc/index.page
+
+commit ad6b4a2c203a2728c8564312ede3b3b6aef9cf07
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Mar 16 14:18:16 2010 +0100
+
+    Small syntax change for the last list item
+    
+    It is now also wrapped in a paragraph if all other list items are
+    also wrapped in a paragraph.
+
+doc/news/release_0_6_0.page
+doc/syntax.page
+lib/kramdown/parser/kramdown/list.rb
+test/testcases/block/08_list/mixed.html
+test/testcases/block/08_list/special_cases.html
+test/testcases/block/08_list/special_cases.text
+
+commit 52441c4c0eea53f8f8af699c799bf4459a2baff2
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sun Mar 14 19:42:22 2010 +0100
+
+    Fixed typo in manual page
+
+man/man1/kramdown.1.erb
+
+commit 5b5bf7f100cb99ee2f8f95ad30201220f22607b1
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Mar 12 13:10:40 2010 +0100
+
+    Fixed problem with missing data files
+
+Rakefile
+doc/news/release_0_6_0.page
+
+commit 7e579fdcb40f68aaf0219e6fe3d2f34192900d87
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Mar 2 14:45:49 2010 +0100
+
+    Fixed performance problem with emphasis parsing
+    
+    Backtracking in the emphasis parser lead to poor performance. Nesting
+    em or strong emphasis is now forbidden to prevent this.
+
+doc/news/release_0_6_0.page
+doc/syntax.page
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/emphasis.rb
+test/testcases/span/02_emphasis/errors.html
+test/testcases/span/02_emphasis/nesting.html
+test/testcases/span/02_emphasis/nesting.text
+
+commit 07b1bd5156d7c6c1f627bdf3d94bad886bc5ac5f
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Tue Feb 23 16:30:04 2010 +0100
+
+    Added a new CLI option -i and changed -f to -o with deprecation
+    
+    The option -i can be used to select the input format. The Document class has
+    been adjusted to take care of the special key :input.
+
+bin/kramdown
+doc/news/release_0_6_0.page
+lib/kramdown/document.rb
+
+commit 74754c6cc3032aed6583ae77d6b68aac4296eb6e
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Feb 20 21:39:33 2010 +0100
+
+    Small fix for LaTeX converter
+
+lib/kramdown/converter/latex.rb
+
+commit 51d2021527d6ac6be6c4e9ec19b3522546fb8e7b
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Feb 20 21:38:40 2010 +0100
+
+    Added documentation on available parsers and converters
+
+Rakefile
+doc/converter/html.page
+doc/converter/latex.page
+doc/index.page
+doc/parser/kramdown.page
+
+commit 39e8750b0a1b36dfc390815c55b591da77f08783
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Sat Feb 20 09:33:36 2010 +0100
+
+    Added man page for kramdown binary
+
+Rakefile
+doc/news/release_0_6_0.page
+man/man1/kramdown.1.erb
+
+commit a77e52be4d08c46dbb152cc1a9480c13de9b6da6
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Feb 19 12:12:39 2010 +0100
+
+    Added jsMath package to documentation
+
+doc/default.template
+doc/js/jsMath/COPYING.txt
+doc/js/jsMath/blank.gif
+doc/js/jsMath/easy/load.js
+doc/js/jsMath/extensions/AMSmath.js
+doc/js/jsMath/extensions/AMSsymbols.js
+doc/js/jsMath/extensions/HTML.js
+doc/js/jsMath/extensions/autobold.js
+doc/js/jsMath/extensions/bbox.js
+doc/js/jsMath/extensions/boldsymbol.js
+doc/js/jsMath/extensions/double-click.js
+doc/js/jsMath/extensions/eqn-number.js
+doc/js/jsMath/extensions/fbox.js
+doc/js/jsMath/extensions/font.js
+doc/js/jsMath/extensions/leaders.js
+doc/js/jsMath/extensions/mathchoice.js
+doc/js/jsMath/extensions/mimeTeX.js
+doc/js/jsMath/extensions/moreArrows.js
+doc/js/jsMath/extensions/newcommand.js
+doc/js/jsMath/extensions/underset-overset.js
+doc/js/jsMath/extensions/verb.js
+doc/js/jsMath/jsMath-BaKoMa-fonts.js
+doc/js/jsMath/jsMath-autoload.html
+doc/js/jsMath/jsMath-controls.html
+doc/js/jsMath/jsMath-easy-load.js
+doc/js/jsMath/jsMath-fallback-mac-mozilla.js
+doc/js/jsMath/jsMath-fallback-mac-msie.js
+doc/js/jsMath/jsMath-fallback-mac.js
+doc/js/jsMath/jsMath-fallback-pc.js
+doc/js/jsMath/jsMath-fallback-symbols.js
+doc/js/jsMath/jsMath-fallback-unix.js
+doc/js/jsMath/jsMath-global-controls.html
+doc/js/jsMath/jsMath-global.html
+doc/js/jsMath/jsMath-loader-omniweb4.js
+doc/js/jsMath/jsMath-loader-post.html
+doc/js/jsMath/jsMath-loader.html
+doc/js/jsMath/jsMath-msie-mac.js
+doc/js/jsMath/jsMath-old-browsers.js
+doc/js/jsMath/jsMath.js
+doc/js/jsMath/local/macros.js
+doc/js/jsMath/plugins/CHMmode.js
+doc/js/jsMath/plugins/autoload.js
+doc/js/jsMath/plugins/global.js
+doc/js/jsMath/plugins/mimeTeX.js
+doc/js/jsMath/plugins/noCache.js
+doc/js/jsMath/plugins/noGlobal.js
+doc/js/jsMath/plugins/noImageFonts.js
+doc/js/jsMath/plugins/smallFonts.js
+doc/js/jsMath/plugins/spriteImageFonts.js
+doc/js/jsMath/plugins/tex2math.js
+doc/js/jsMath/test/index-images.html
+doc/js/jsMath/test/index.html
+doc/js/jsMath/test/jsMath40.jpg
+doc/js/jsMath/test/sample.html
+
+commit 3c8e605c3f64bee57067ecc923b273f95f12ae02
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Fri Feb 19 12:11:15 2010 +0100
+
+    Added syntax support for block/inline LaTeX math
+
+doc/syntax.page
+lib/kramdown/converter/html.rb
+lib/kramdown/converter/latex.rb
+lib/kramdown/parser/kramdown.rb
+lib/kramdown/parser/kramdown/escaped_chars.rb
+lib/kramdown/parser/kramdown/math.rb
+test/testcases/block/15_math/normal.html
+test/testcases/block/15_math/normal.text
+test/testcases/span/math/normal.html
+test/testcases/span/math/normal.text
+
+commit c0da60ad7b3331100056e6c3d01d1e5ec99f0a27
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Feb 18 08:08:16 2010 +0100
+
+    Fixed bug regarding the inclusion of the same LaTeX packages multiple times
+
+data/kramdown/document.latex
+lib/kramdown/converter/latex.rb
+
+commit 846c0a5c9d42da5bb22a83b3a46cd20c9eafca44
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Thu Feb 18 07:17:07 2010 +0100
+
+    Added documentation for autolinks
+
+doc/news/release_0_6_0.page
+doc/syntax.page
+
+commit 21c81f6e98b871caac569ef8d76a7024a35141e6
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Feb 17 15:45:31 2010 +0100
+
+    Bumped version number and added release notes file
+
+doc/news/release_0_6_0.page
+lib/kramdown/version.rb
+
+commit 339345a78869bb483a7eb70007d868e53eb6e9b9
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Wed Feb 17 15:43:43 2010 +0100
+
+    Fixed problem with email autolinks
+    
+    The used regexps were too relaxed and matched invalid email adresses.
+
+lib/kramdown/converter/html.rb
+lib/kramdown/parser/kramdown/autolink.rb
+test/testcases/span/autolinks/url_links.html
+test/testcases/span/autolinks/url_links.text
+
+commit abac8ea1b2aebc98a4b46f27d57b366d2f20be86
+Author: Thomas Leitner <t_leitner@gmx.at>
+Date:   Mon Feb 15 10:46:56 2010 +0100
+
+    Added pushing gems to gemcutter
+
+Rakefile
+
 commit 53449309c569f774d7d3cd68bcc71d48509a4c7e
 Author: Thomas Leitner <t_leitner@gmx.at>
 Date:   Mon Feb 15 10:16:18 2010 +0100

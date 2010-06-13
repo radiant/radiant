@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #--
-# Copyright (C) 2009 Thomas Leitner <t_leitner@gmx.at>
+# Copyright (C) 2009-2010 Thomas Leitner <t_leitner@gmx.at>
 #
 # This file is part of kramdown.
 #
@@ -22,7 +22,8 @@
 
 module Kramdown
 
-  # This module defines all options that are used by parsers and/or converters.
+  # This module defines all options that are used by parsers and/or converters as well as providing
+  # methods to deal with the options.
   module Options
 
     # Helper class introducing a boolean type for specifying boolean values (+true+ and +false+) as
@@ -39,13 +40,13 @@ module Kramdown
     # ----------------------------
     # :section: Option definitions
     #
-    # This sections informs about the methods that can be used on the Options class.
+    # This sections informs describes the methods that can be used on the Options module.
     # ----------------------------
 
     # Contains the definition of an option.
     Definition = Struct.new(:name, :type, :default, :desc)
 
-    # Allowed option types
+    # Allowed option types.
     ALLOWED_TYPES = [String, Integer, Float, Symbol, Boolean, Array, Object]
 
     @options = {}
@@ -54,7 +55,7 @@ module Kramdown
     # Symbol, Boolean, Array, Object), default value +default+ and the description +desc+.
     #
     # The type 'Object' should only be used if none of the other types suffices because such an
-    # option will be opaque!
+    # option will be opaque and cannot be used, for example, by CLI command!
     def self.define(name, type, default, desc)
       raise ArgumentError, "Option name #{name} is already used" if @options.has_key?(name)
       raise ArgumentError, "Invalid option type #{type} specified" if !ALLOWED_TYPES.include?(type)
@@ -67,7 +68,7 @@ module Kramdown
       @options
     end
 
-    # Return +true+ if an option +name+ is defined.
+    # Return +true+ if an option called +name+ is defined.
     def self.defined?(name)
       @options.has_key?(name)
     end
@@ -79,7 +80,8 @@ module Kramdown
       temp
     end
 
-    # Merge the #defaults Hash with the parsed options from the given Hash.
+    # Merge the #defaults Hash with the *parsed* options from the given Hash, i.e. only valid option
+    # names are considered and their value is run through the #parse method.
     def self.merge(hash)
       temp = defaults
       hash.each do |k,v|
@@ -148,7 +150,19 @@ If this option is `true`, ID values for all headers are automatically
 generated if no ID is explicitly specified.
 
 Default: true
-Used by: kramdown parser
+Used by: HTML/Latex converter
+EOF
+
+    define(:auto_id_prefix, String, '', <<EOF)
+Prefix used for automatically generated heaer IDs
+
+This option can be used to set a prefix for the automatically generated
+header IDs so that there is no conflict when rendering multiple kramdown
+documents into one output file separately. The prefix should only
+contain characters that are valid in an ID!
+
+Default: ''
+Used by: HTML/Latex converter
 EOF
 
     define(:parse_block_html, Boolean, false, <<EOF)
@@ -173,14 +187,18 @@ Default: true
 Used by: kramdown parser
 EOF
 
-    define(:extension, Object, nil, <<EOF)
-An object for handling the extensions
+    define(:html_to_native, Boolean, false, <<EOF)
+Convert HTML elements to native elements
 
-The value for this option needs to be an object that can handle the
-extensions found in a kramdown document. If this option is `nil`, the
-default extension object is used.
+If this option is `true`, the parser converts HTML elements to native
+elements. For example, when parsing `<em>hallo</em>` the emphasis tag
+would normally be converted to an `:html` element with tag type `:em`.
+If `html_to_native` is `true`, then the emphasis would be converted to a
+native `:em` element.
 
-Default: nil
+This is useful for converters that cannot deal with HTML elements.
+
+Default: false
 Used by: kramdown parser
 EOF
 
@@ -195,6 +213,8 @@ Used by: HTML converter
 EOF
 
     define(:filter_html, Array, [], <<EOF)
+NOTE: This option is deprecated and will be removed in a future release!
+
 An array of HTML tags that should be filtered from the output
 
 The value can either be specified as array or as a space separated

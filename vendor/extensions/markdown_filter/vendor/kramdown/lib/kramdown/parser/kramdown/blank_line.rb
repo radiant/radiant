@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #--
-# Copyright (C) 2009 Thomas Leitner <t_leitner@gmx.at>
+# Copyright (C) 2009-2010 Thomas Leitner <t_leitner@gmx.at>
 #
 # This file is part of kramdown.
 #
@@ -32,7 +32,7 @@ module Kramdown
         if @tree.children.last && @tree.children.last.type == :blank
           @tree.children.last.value += @src.matched
         else
-          @tree.children << Element.new(:blank, @src.matched)
+          @tree.children << new_block_el(:blank, @src.matched)
         end
         true
       end

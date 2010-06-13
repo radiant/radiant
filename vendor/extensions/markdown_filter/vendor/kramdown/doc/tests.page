@@ -23,7 +23,6 @@ If you believe you have found a bug in the implementation, please follow these s
   fashion, please open a bug report and attach two files: one with the text and one with the HTML
   conversion you think is correct.
 
-^
 
 # Benchmark
 
@@ -31,7 +30,7 @@ kramdown comes with a small benchmark to test how fast it is in regard to four o
 implementations: Maruku, BlueFeather, BlueCloth and RDiscount. The first two are written using only
 Ruby, the latter two use the C discount library for the actual hard work (which makes them really
 fast but they do not provide additional syntax elements). As one can see below, kramdown is
-currently (December 2009) ~5x faster than Maruku, ~10x faster than BlueFeather but ~30x slower than
+currently (June 2010) ~4x faster than Maruku, ~9x faster than BlueFeather but ~30x slower than
 BlueCloth and rdiscount:
 
 <pre><code>
@@ -39,7 +38,8 @@ BlueCloth and rdiscount:
 </code>
 </pre>
 
-And here are some graphs which show the execution times on different Ruby interpreters:
+And here are some graphs which show the execution times of the various kramdown releases on
+different Ruby interpreters:
 
 ![ruby 1.8.6]({relocatable: img/graph-ruby-1.8.6.png})
 ![ruby 1.8.7]({relocatable: img/graph-ruby-1.8.7.png})

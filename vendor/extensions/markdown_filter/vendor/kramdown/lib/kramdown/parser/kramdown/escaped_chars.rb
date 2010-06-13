@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #--
-# Copyright (C) 2009 Thomas Leitner <t_leitner@gmx.at>
+# Copyright (C) 2009-2010 Thomas Leitner <t_leitner@gmx.at>
 #
 # This file is part of kramdown.
 #
@@ -24,7 +24,7 @@ module Kramdown
   module Parser
     class Kramdown
 
-      ESCAPED_CHARS = /\\([\\.*_+`()\[\]{}#!:|"'-])/
+      ESCAPED_CHARS = /\\([\\.*_+`()\[\]{}#!:|"'\$-])/
 
       # Parse the backslash-escaped character at the current location.
       def parse_escaped_chars

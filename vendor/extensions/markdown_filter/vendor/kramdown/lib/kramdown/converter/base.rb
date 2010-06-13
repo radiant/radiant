@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #--
-# Copyright (C) 2009 Thomas Leitner <t_leitner@gmx.at>
+# Copyright (C) 2009-2010 Thomas Leitner <t_leitner@gmx.at>
 #
 # This file is part of kramdown.
 #
@@ -26,7 +26,26 @@ module Kramdown
 
   module Converter
 
-    # This class servers as base class for all converters.
+    # == Base class for converters
+    #
+    # This class serves as base class for all converters. It provides methods that can/should be
+    # used by all converters (like #generate_id) as well as common functionality that is
+    # automatically applied to the result (for example, embedding the output into a template).
+    #
+    # == Implementing a converter
+    #
+    # Implementing a new converter is rather easy: just create a new sub class from this class and
+    # put it in the Kramdown::Converter module (the latter is only needed if auto-detection should
+    # work properly). Then you need to implement the #convert(tree) method which takes a document
+    # tree and should return the converted output.
+    #
+    # The document instance is automatically set as @doc in Base#initialize. Furthermore, the
+    # document instance provides a hash called `conversion_infos` that is also automatically cleared
+    # and can be used to store information about the conversion process.
+    #
+    # The actual transformation of the document tree can be done in any way. However, writing one
+    # method per tree element type is a straight forward way to do it - this is how the Html and
+    # Latex converters do the transformation.
     class Base
 
       # Initialize the converter with the given Kramdown document +doc+.
@@ -50,13 +69,16 @@ module Kramdown
       # Apply the template specified in the +doc+ options, using +body+ as the body string.
       def self.apply_template(doc, body)
         erb = ERB.new(get_template(doc.options[:template]))
-        erb.result(binding)
+        obj = Object.new
+        obj.instance_variable_set(:@doc, doc)
+        obj.instance_variable_set(:@body, body)
+        erb.result(obj.instance_eval{binding})
       end
 
       # Return the template specified by +template+.
       def self.get_template(template)
         format_ext = '.' + self.name.split(/::/).last.downcase
-        shipped = File.join(Kramdown.data_dir, template + format_ext)
+        shipped = File.join(::Kramdown.data_dir, template + format_ext)
         if File.exist?(template)
           File.read(template)
         elsif File.exist?(template + format_ext)
@@ -66,6 +88,20 @@ module Kramdown
         else
           raise "The specified template file #{template} does not exist"
         end
+      end
+
+
+      # Generate an unique alpha-numeric ID from the the string +str+ for use as header ID.
+      def generate_id(str)
+        gen_id = str.gsub(/[^a-zA-Z0-9 -]/, '').gsub(/^[^a-zA-Z]*/, '').gsub(' ', '-').downcase
+        gen_id = 'section' if gen_id.length == 0
+        @used_ids ||= {}
+        if @used_ids.has_key?(gen_id)
+          gen_id += '-' + (@used_ids[gen_id] += 1).to_s
+        else
+          @used_ids[gen_id] = 0
+        end
+        @doc.options[:auto_id_prefix] + gen_id
       end
 
     end
