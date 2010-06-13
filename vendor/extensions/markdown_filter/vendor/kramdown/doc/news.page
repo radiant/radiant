@@ -13,12 +13,13 @@ sort_info: 30
 --- name:newsdata pipeline:erb
 <%
 context.content_node.tree.node_access[:alcn].select do |na,no|
-   na =~ /\/news\/.+/ && no.is_file?
+  na =~ /\/news\/.+/ && no.is_file?
 end.collect {|na,no| no}.sort.reverse.each do |node|
+  context.options['contentprocessor.kramdown.options'] = {:auto_id_prefix => node.lcn.tr('.', '-')}
 %>
 
 <div class='news-item'>
-<div class="news-date f-right">
+<div class="news-date float-right">
   Published on <%= node['created_at'].strftime("%A, %d %B %Y") %>
 </div>
 <%= context.render_block(:name => 'content', :chain => [node]) %>

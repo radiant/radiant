@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #--
-# Copyright (C) 2010 Thomas Leitner <t_leitner@gmx.at>
+# Copyright (C) 2009-2010 Thomas Leitner <t_leitner@gmx.at>
 #
 # This file is part of kramdown.
 #
@@ -37,7 +37,7 @@ module Kramdown
       # Parse the table at the current location.
       def parse_table
         orig_pos = @src.pos
-        table = Element.new(:table, nil, :alignment => [])
+        table = new_block_el(:table, nil, :alignment => [])
 
         @src.scan(TABLE_SEP_LINE)
 
@@ -82,7 +82,7 @@ module Kramdown
             cells.pop if cells.last.strip.empty?
             cells.each do |cell_text|
               tcell = Element.new(:td)
-              tcell.children << Element.new(:text, cell_text.strip)
+              tcell.children << Element.new(:raw_text, cell_text.strip)
               trow.children << tcell
             end
             columns = [columns, cells.length].max
@@ -106,6 +106,7 @@ module Kramdown
             (columns - row.children.length).times do
               row.children << Element.new(:td)
             end
+            row.children.each {|el| el.type = :th} if kind.type == :thead
           end
         end
         if table.options[:alignment].length > columns

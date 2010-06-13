@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #--
-# Copyright (C) 2009 Thomas Leitner <t_leitner@gmx.at>
+# Copyright (C) 2009-2010 Thomas Leitner <t_leitner@gmx.at>
 #
 # This file is part of kramdown.
 #
@@ -17,8 +17,9 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#++
 #
-#
+#--
 # Parts of this file are based on code from Maruku by Andrea Censi.
 # The needed license statements follow:
 #
@@ -178,8 +179,8 @@ module Kramdown
                   # Special case for e.g. "<i>Custer</i>'s Last Stand."
                   [/("|')(\s|s\b|$)/, [:rquote1, 2]],
                   # Any remaining single quotes should be opening ones:
-                  [/(.?)'/, [1, :lsquo]],
-                  [/(.?)"/, [1, :ldquo]],
+                  [/(.?)'/m, [1, :lsquo]],
+                  [/(.?)"/m, [1, :ldquo]],
                  ] #'"
 
       SQ_SUBSTS = {

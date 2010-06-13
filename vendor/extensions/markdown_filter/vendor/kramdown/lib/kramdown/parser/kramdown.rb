@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #--
-# Copyright (C) 2009 Thomas Leitner <t_leitner@gmx.at>
+# Copyright (C) 2009-2010 Thomas Leitner <t_leitner@gmx.at>
 #
 # This file is part of kramdown.
 #
@@ -31,7 +31,45 @@ module Kramdown
   module Parser
 
     # Used for parsing a document in kramdown format.
-    class Kramdown
+    #
+    # If you want to extend the functionality of the parser, you need to the following:
+    #
+    # * Create a new subclass
+    # * add the needed parser methods
+    # * modify the @block_parsers and @span_parsers variables and add the names of your parser
+    #   methods
+    #
+    # Here is a small example for an extended parser class that parses ERB style tags as raw text if
+    # they are used as span level elements (an equivalent block level parser should probably also be
+    # made to handle the block case):
+    #
+    #   require 'kramdown/parser/kramdown'
+    #
+    #   class Kramdown::Parser::ERBKramdown < Kramdown::Parser::Kramdown
+    #
+    #      def initialize(doc)
+    #        super(doc)
+    #        @span_parsers.unshift(:erb_tags)
+    #      end
+    #
+    #      ERB_TAGS_START = /<%.*?%>/
+    #
+    #      def parse_erb_tags
+    #        @src.pos += @src.matched_size
+    #        @tree.children << Element.new(:raw, @src.matched)
+    #      end
+    #      define_parser(:erb_tags, ERB_TAGS_START, '<%')
+    #
+    #   end
+    #
+    # The new parser can be used like this:
+    #
+    #   require 'kramdown/document'
+    #   # require the file with the above parser class
+    #
+    #   Kramdown::Document.new(input_text, :input => 'ERBKramdown').to_html
+    #
+    class Kramdown < Base
 
       include ::Kramdown
 
@@ -41,25 +79,29 @@ module Kramdown
 
       # Create a new Kramdown parser object for the Kramdown::Document +doc+.
       def initialize(doc)
-        @doc = doc
-        @extension = @doc.options[:extension] || Kramdown::Parser::Kramdown::Extension.new
+        super(doc)
 
         @src = nil
         @tree = nil
         @stack = []
-        @text_type = :text
+        @text_type = :raw_text
+        @block_ial = nil
 
         @doc.parse_infos[:ald] = {}
         @doc.parse_infos[:link_defs] = {}
+        @doc.parse_infos[:abbrev_defs] = {}
         @doc.parse_infos[:footnotes] = {}
+
+        @block_parsers = [:blank_line, :codeblock, :codeblock_fenced, :blockquote, :table, :atx_header,
+                          :setext_header, :horizontal_rule, :list, :definition_list, :link_definition, :block_html,
+                          :footnote_definition, :abbrev_definition, :ald, :block_math,
+                          :block_extension, :block_ial, :eob_marker, :paragraph]
+        @span_parsers =  [:emphasis, :codespan, :autolink, :span_html, :footnote_marker, :link, :smart_quotes, :inline_math,
+                         :span_extension, :span_ial, :html_entity, :typographic_syms, :line_break, :escaped_chars]
+
       end
       private_class_method(:new, :allocate)
 
-
-      # Parse the string +source+ using the Kramdown::Document +doc+ and return the parse tree.
-      def self.parse(source, doc)
-        new(doc).parse(source)
-      end
 
       # The source string provided on initialization is parsed and the created +tree+ is returned.
       def parse(source)
@@ -67,32 +109,21 @@ module Kramdown
         tree = Element.new(:root)
         parse_blocks(tree, adapt_source(source))
         update_tree(tree)
+        replace_abbreviations(tree)
         @doc.parse_infos[:footnotes].each do |name, data|
           update_tree(data[:content])
         end
         tree
       end
 
-      # Add the given warning +text+ to the warning array of the Kramdown document.
-      def warning(text)
-        @doc.warnings << text
-        #TODO: add position information
-      end
-
       #######
-      private
+      protected
       #######
-
-      BLOCK_PARSERS = [:blank_line, :codeblock, :codeblock_fenced, :blockquote, :table, :atx_header,
-                       :setext_header, :horizontal_rule, :list, :definition_list, :link_definition, :block_html,
-                       :footnote_definition, :ald, :block_ial, :extension_block, :eob_marker, :paragraph]
-      SPAN_PARSERS =  [:emphasis, :codespan, :autolink, :span_html, :footnote_marker, :link, :smart_quotes,
-                       :span_ial, :html_entity, :typographic_syms, :line_break, :escaped_chars]
 
       # Adapt the object to allow parsing like specified in the options.
       def configure_parser
         @parsers = {}
-        (BLOCK_PARSERS + SPAN_PARSERS).each do |name|
+        (@block_parsers + @span_parsers).each do |name|
           if self.class.has_parser?(name)
             @parsers[name] = self.class.parser(name)
           else
@@ -103,7 +134,7 @@ module Kramdown
       end
 
       # Create the needed span parser regexps.
-      def span_parser_regexps(parsers = SPAN_PARSERS)
+      def span_parser_regexps(parsers = @span_parsers)
         span_start = /#{parsers.map {|name| @parsers[name].span_start}.join('|')}/
         [span_start, /(?=#{span_start})/]
       end
@@ -115,7 +146,8 @@ module Kramdown
 
         status = catch(:stop_block_parsing) do
           while !@src.eos?
-            BLOCK_PARSERS.any? do |name|
+            block_ial_set = @block_ial
+            @block_parsers.any? do |name|
               if @src.check(@parsers[name].start_re)
                 send(@parsers[name].method)
               else
@@ -125,6 +157,7 @@ module Kramdown
               warning('Warning: this should not occur - no block parser handled the line')
               add_text(@src.scan(/.*\n/))
             end
+            @block_ial = nil if block_ial_set
           end
         end
 
@@ -132,12 +165,12 @@ module Kramdown
         status
       end
 
-      # Update the tree by parsing all <tt>:text</tt> elements with the span level parser (resets
-      # +@tree+, +@src+ and the +@stack+) and by updating the attributes from the IALs.
+      # Update the tree by parsing all <tt>:raw_text</tt> elements with the span level parser
+      # (resets +@tree+, +@src+ and the +@stack+) and by updating the attributes from the IALs.
       def update_tree(element)
         element.children.map! do |child|
-          if child.type == :text
-            @stack, @tree = [], nil
+          if child.type == :raw_text
+            @stack, @tree, @text_type = [], nil, :text
             @src = StringScanner.new(child.value)
             parse_spans(child)
             child.children
@@ -150,14 +183,14 @@ module Kramdown
       end
 
       # Parse all span level elements in the source string.
-      def parse_spans(el, stop_re = nil, parsers = nil, text_type = :text)
-        @stack.push([@tree, @text_type])
+      def parse_spans(el, stop_re = nil, parsers = nil, text_type = @text_type)
+        @stack.push([@tree, @text_type]) unless @tree.nil?
         @tree, @text_type = el, text_type
 
         span_start = @span_start
         span_start_re = @span_start_re
         span_start, span_start_re = span_parser_regexps(parsers) if parsers
-        parsers = parsers || SPAN_PARSERS
+        parsers = parsers || @span_parsers
 
         used_re = (stop_re.nil? ? span_start_re : /(?=#{Regexp.union(stop_re, span_start)})/)
         stop_re_found = false
@@ -187,21 +220,6 @@ module Kramdown
         stop_re_found
       end
 
-      # Modify the string +source+ to be usable by the parser.
-      def adapt_source(source)
-        source.gsub(/\r\n?/, "\n").chomp + "\n"
-      end
-
-      # This helper method adds the given +text+ either to the last element in the +tree+ if it is a
-      # +type+ element or creates a new text element with the given +type+.
-      def add_text(text, tree = @tree, type = @text_type)
-        if tree.children.last && tree.children.last.type == type
-          tree.children.last.value << text
-        elsif !text.empty?
-          tree.children << Element.new(type, text)
-        end
-      end
-
       # Update the attributes with the information from the inline attribute list and all referenced ALDs.
       def update_attr_with_ial(attr, ial)
         ial[:refs].each do |ref|
@@ -211,24 +229,13 @@ module Kramdown
         ial.each {|k,v| attr[k] = v if k.kind_of?(String) && k != 'class' }
       end
 
-      # Extract the part of the StringScanner backed string specified by the +range+. This method
-      # also works correctly under Ruby 1.9.
-      def extract_string(range)
-        result = nil
-        if RUBY_VERSION >= '1.9'
-          begin
-            enc = @src.string.encoding
-            @src.string.force_encoding('ASCII-8BIT')
-            result = @src.string[range].force_encoding(enc)
-          ensure
-            @src.string.force_encoding(enc)
-          end
-        else
-          result = @src.string[range]
-        end
-        result
+      # Create a new block level element, taking care of applying a preceding block IAL if it exists.
+      def new_block_el(*args)
+        el = Element.new(*args)
+        el.options[:category] ||= :block
+        el.options[:ial] = @block_ial if @block_ial && el.type != :blank && el.type != :eob
+        el
       end
-
 
       @@parsers = {}
 
@@ -284,6 +291,8 @@ module Kramdown
       require 'kramdown/parser/kramdown/codespan'
       require 'kramdown/parser/kramdown/emphasis'
       require 'kramdown/parser/kramdown/smart_quotes'
+      require 'kramdown/parser/kramdown/math'
+      require 'kramdown/parser/kramdown/abbreviation'
 
     end
 

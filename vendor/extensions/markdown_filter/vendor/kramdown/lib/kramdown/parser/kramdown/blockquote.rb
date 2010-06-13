@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #--
-# Copyright (C) 2009 Thomas Leitner <t_leitner@gmx.at>
+# Copyright (C) 2009-2010 Thomas Leitner <t_leitner@gmx.at>
 #
 # This file is part of kramdown.
 #
@@ -30,7 +30,7 @@ module Kramdown
       # Parse the blockquote at the current location.
       def parse_blockquote
         result = @src.scan(BLOCKQUOTE_MATCH).gsub(BLOCKQUOTE_START, '')
-        el = Element.new(:blockquote)
+        el = new_block_el(:blockquote)
         @tree.children << el
         parse_blocks(el, result)
         true

@@ -10,12 +10,15 @@ end
 begin
   require 'webgen/webgentask'
   require 'webgen/page'
+  require 'webgen/website'
 rescue LoadError
 end
 
-require 'rdoc/task'
-require 'rdoc/rdoc'
-
+begin
+  require 'rdoc/task'
+  require 'rdoc/rdoc'
+rescue LoadError
+end
 
 begin
   require 'rubyforge'
@@ -31,6 +34,7 @@ require 'fileutils'
 require 'rake/clean'
 require 'rake/testtask'
 require 'rake/packagetask'
+require 'erb'
 
 $:.unshift('lib')
 require 'kramdown'
@@ -59,22 +63,30 @@ if defined? Webgen
       config['sources'] = [['/', "Webgen::Source::FileSystem", 'doc']]
       config['output'] = ['Webgen::Output::FileSystem', 'htmldoc']
       config.default_processing_pipeline('Page' => 'erb,tags,kramdown,blocks,fragments')
+      config.optionsdisplay.items [], :mandatory => 'default'
+      config.kdlink.oid nil, :mandatory => true
+      config.kdlink.part nil, :mandatory => true
+      config['contentprocessor.tags.map']['options'] = 'OptionsDisplay'
+      config['contentprocessor.tags.map']['kdexample'] = 'KDExample'
+      config['contentprocessor.tags.map']['kdlink'] = 'KDLink'
     end
   end
-
-  task :doc => :htmldoc
 end
 
-rd = Rake::RDocTask.new do |rdoc|
-  rdoc.rdoc_dir = 'htmldoc/rdoc'
-  rdoc.title = 'kramdown'
-  rdoc.main = 'Kramdown'
-  rdoc.options << '--line-numbers'
-  rdoc.rdoc_files.include('lib/**/*.rb')
+if defined? Rake::RDocTask
+  rd = Rake::RDocTask.new do |rdoc|
+    rdoc.rdoc_dir = 'htmldoc/rdoc'
+    rdoc.title = 'kramdown'
+    rdoc.main = 'Kramdown'
+    rdoc.options << '--line-numbers'
+    rdoc.rdoc_files.include('lib/**/*.rb')
+  end
 end
 
-desc "Build the whole user documentation"
-task :doc => :rdoc
+if defined?(Webgen) && defined?(Rake::RDocTask)
+  desc "Build the whole user documentation"
+  task :doc => [:rdoc, 'htmldoc']
+end
 
 tt = Rake::TestTask.new do |test|
   test.warning = true
@@ -101,10 +113,12 @@ EOF
                             'Rakefile',
                             'setup.rb',
                             'COPYING', 'GPL', 'README', 'AUTHORS',
-                            'VERSION', 'ChangeLog',
+                            'VERSION', 'ChangeLog', 'CONTRIBUTERS',
                             'bin/*',
                             'benchmark/*',
                             'lib/**/*.rb',
+                            'man/man1/kramdown.1',
+                            'data/**/*',
                             'doc/**',
                             'test/**/*'
                            ])
@@ -119,6 +133,22 @@ EOF
   file 'ChangeLog' do
     puts "Generating ChangeLog file"
     `git log --name-only > ChangeLog`
+  end
+
+  CLOBBER << 'CONTRIBUTERS'
+  file 'CONTRIBUTERS' do
+    puts "Generating CONTRIBUTERS file"
+    `echo "  Count Name" > CONTRIBUTERS`
+    `echo "======= ====" >> CONTRIBUTERS`
+    `git log | grep ^Author: | sed 's/^Author: //' | sort | uniq -c | sort -nr >> CONTRIBUTERS`
+  end
+
+  CLOBBER << "man/man1/kramdown.1"
+  file 'man/man1/kramdown.1' => ['man/man1/kramdown.1.erb'] do
+    puts "Generating kramdown man page"
+    File.open('man/man1/kramdown.1', 'w+') do |file|
+      file.write(ERB.new(File.read('man/man1/kramdown.1.erb')).result(binding))
+    end
   end
 
   Rake::PackageTask.new('kramdown', Kramdown::VERSION) do |pkg|
@@ -163,8 +193,10 @@ EOF
 
   end
 
-  desc 'Release Kramdown version ' + Kramdown::VERSION
-  task :release => [:clobber, :package, :publish_files, :publish_website, :post_news]
+  if defined?(RubyForge) && defined?(Webgen) && defined?(Gem) && defined?(Rake::RDocTask)
+    desc 'Release Kramdown version ' + Kramdown::VERSION
+    task :release => [:clobber, :package, :publish_files, :publish_website, :post_news]
+  end
 
   if defined? RubyForge
     desc "Upload the release to Rubyforge"
@@ -182,6 +214,8 @@ EOF
       files = %w[.gem .tgz .zip].collect {|ext| "pkg/kramdown-#{Kramdown::VERSION}" + ext}
 
       rf.add_release('kramdown', 'kramdown', Kramdown::VERSION, *files)
+
+      sh "gem push pkg/kramdown-#{Kramdown::VERSION}.gem"
       puts 'done'
     end
 
@@ -212,8 +246,8 @@ EOF
     end
   end
 
+  CODING_LINE = "# -*- coding: utf-8 -*-\n"
   COPYRIGHT=<<EOF
-# -*- coding: utf-8 -*-
 #
 #--
 # Copyright (C) 2009-2010 Thomas Leitner <t_leitner@gmx.at>
@@ -236,15 +270,18 @@ EOF
 #
 EOF
 
-  desc "Insert copyright notice"
-  task :insert_copyright do
+  desc "Insert/Update copyright notice"
+  task :update_copyright do
     inserted = false
     Dir["lib/**/*.rb"].each do |file|
-      if !File.read(file).start_with?(COPYRIGHT)
+      if !File.read(file).start_with?(CODING_LINE + COPYRIGHT)
         inserted = true
         puts "Updating file #{file}"
-        data = COPYRIGHT + "\n" + File.read(file)
-        File.open(file, 'w+') {|f| f.puts(data)}
+        old = File.read(file)
+        if !(result = old.gsub!(/\A#{Regexp.escape(CODING_LINE)}#\n#--.*?\n#\+\+\n#\n/m, CODING_LINE + COPYRIGHT))
+          old.gsub!(/\A(#{Regexp.escape(CODING_LINE)})?/, CODING_LINE + COPYRIGHT + "\n")
+        end
+        File.open(file, 'w+') {|f| f.puts(old)}
       end
     end
     puts "Look through the above mentioned files and correct all problems" if inserted
@@ -256,26 +293,48 @@ task :clobber => ['dev:clobber']
 
 # Helper methods and misc  ###################################################################
 
-module Kramdown
+if defined? Webgen
 
-  class Parser::Kramdown::Extension
+  class OptionsDisplay
 
-    def parse_kdexample(parser, opts, body)
-      wrap = Element.new(:html_element, 'div', :attr => {'class' => 'kdexample'})
-      wrap.children << Element.new(:codeblock, body, :attr => {'class' => 'kdexample-before'})
-      doc = ::Kramdown::Document.new(body)
-      wrap.children << Element.new(:codeblock, doc.to_html,  :attr => {'class' => 'kdexample-after-source'})
-      wrap.children << Element.new(:html_element, 'div', :attr => {'class' => 'kdexample-after-live'})
-      wrap.children.last.children << Element.new(:raw, doc.to_html)
-      parser.tree.children << wrap
-      parser.tree.children << Element.new(:html_element, 'div', :attr => {'class' => 'clear'})
+    include Webgen::Tag::Base
+
+    def call(tag, body, context)
+      param('optionsdisplay.items').collect do |opt|
+        Kramdown::Options.definitions[opt]
+      end.collect do |term|
+        lines = term.desc.split(/\n/)
+        first = lines.shift
+        rest = lines[0..-2].collect {|l| "  " + l}.join("\n")
+        "`#{term.name}`\n: #{first}\n#{rest}"
+      end.join("\n")
     end
 
-    def parse_kdlink(parser, opts, body)
-      wrap = Element.new(:html_element, 'div', :attr => {'class' => 'kdsyntaxlink'})
-      wrap.children << Element.new(:a, nil, :attr => {'href' => "syntax.html##{opts['id']}"})
-      wrap.children.last.children << Element.new(:text, "&rarr; Syntax for #{opts['part']}")
-      parser.tree.children << wrap
+  end
+
+  require 'cgi'
+
+  class KDExample
+
+    include Webgen::Tag::Base
+
+    def call(tag, body, context)
+      result = ::Kramdown::Document.new(body, :auto_ids => false).to_html
+      before = "<pre class='kdexample-before'>#{body}<code>\n</code></pre>"
+      after = "<pre class='kdexample-after-source'>#{CGI::escapeHTML(result)}<code>\n</code></pre>"
+      afterhtml = "<div class='kdexample-after-live'>#{result}</div>"
+      "<div class='kdexample'>#{before}#{after}#{afterhtml}\n</div><div class='clear'></div>"
+    end
+
+  end
+
+  class KDLink
+
+    include Webgen::Tag::Base
+
+    def call(tag, body, context)
+      link = "<a href='syntax.html##{param('kdlink.oid')}'>&rarr; Syntax for #{param('kdlink.part')}</a>"
+      "<div class='kdsyntaxlink'>#{link}\n</div>"
     end
 
   end

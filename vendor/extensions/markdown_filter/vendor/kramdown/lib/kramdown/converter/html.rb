@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #--
-# Copyright (C) 2009 Thomas Leitner <t_leitner@gmx.at>
+# Copyright (C) 2009-2010 Thomas Leitner <t_leitner@gmx.at>
 #
 # This file is part of kramdown.
 #
@@ -48,6 +48,8 @@ module Kramdown
         super
         @footnote_counter = @footnote_start = @doc.options[:footnote_nr]
         @footnotes = []
+        @toc = []
+        @toc_code = nil
       end
 
       def convert(el, indent = -INDENTATION, opts = {})
@@ -80,7 +82,7 @@ module Kramdown
       end
 
       def convert_codeblock(el, indent, opts)
-        if el.options[:attr] && el.options[:attr]['lang'] && HIGHLIGHTING_AVAILABLE
+        if el.value && el.options[:attr] && el.options[:attr]['lang'] && HIGHLIGHTING_AVAILABLE
           el = Marshal.load(Marshal.dump(el)) # so that the original is not changed
           opts = {:wrap => @doc.options[:coderay_wrap], :line_numbers => @doc.options[:coderay_line_numbers],
             :line_number_start => @doc.options[:coderay_line_number_start], :tab_width => @doc.options[:coderay_tab_width],
@@ -88,7 +90,7 @@ module Kramdown
           result = CodeRay.scan(el.value, el.options[:attr].delete('lang').to_sym).html(opts).chomp + "\n"
           "#{' '*indent}<div#{options_for_element(el)}>#{result}#{' '*indent}</div>\n"
         else
-          result = escape_html(el.value)
+          result = (el.value ? escape_html(el.value) : inner(el, indent, opts))
           if el.options[:attr] && el.options[:attr].has_key?('class') && el.options[:attr]['class'] =~ /\bshow-whitespaces\b/
             result.gsub!(/(?:(^[ \t]+)|([ \t]+$)|([ \t]+))/) do |m|
               suffix = ($1 ? '-l' : ($2 ? '-r' : ''))
@@ -109,6 +111,11 @@ module Kramdown
       end
 
       def convert_header(el, indent, opts)
+        el = Marshal.load(Marshal.dump(el)) # so that the original is not changed
+        if @doc.options[:auto_ids] && !(el.options[:attr] && el.options[:attr]['id'])
+          (el.options[:attr] ||= {})['id'] = generate_id(el.options[:raw_text])
+        end
+        @toc << [el.options[:level], el.options[:attr]['id'], el.children] if el.options[:attr] && el.options[:attr]['id']
         "#{' '*indent}<h#{el.options[:level]}#{options_for_element(el)}>#{inner(el, indent, opts)}</h#{el.options[:level]}>\n"
       end
 
@@ -117,7 +124,12 @@ module Kramdown
       end
 
       def convert_ul(el, indent, opts)
-        "#{' '*indent}<#{el.type}#{options_for_element(el)}>\n#{inner(el, indent, opts)}#{' '*indent}</#{el.type}>\n"
+        if !@toc_code && (el.options[:ial][:refs].include?('toc') rescue nil) && (el.type == :ul || el.type == :ol)
+          @toc_code = [el.type, el.options[:attr], (0..128).to_a.map{|a| rand(36).to_s(36)}.join]
+          @toc_code.last
+        else
+          "#{' '*indent}<#{el.type}#{options_for_element(el)}>\n#{inner(el, indent, opts)}#{' '*indent}</#{el.type}>\n"
+        end
       end
       alias :convert_ol :convert_ul
       alias :convert_dl :convert_ul
@@ -125,10 +137,10 @@ module Kramdown
       def convert_li(el, indent, opts)
         output = ' '*indent << "<#{el.type}" << options_for_element(el) << ">"
         res = inner(el, indent, opts)
-        if el.options[:first_is_block]
-          output << "\n" << res << ' '*indent
-        else
+        if el.children.empty? || el.children.first.options[:category] != :block
           output << res << (res =~ /\n\Z/ ? ' '*indent : '')
+        else
+          output << "\n" << res << ' '*indent
         end
         output << "</#{el.type}>\n"
       end
@@ -143,12 +155,13 @@ module Kramdown
       def convert_html_element(el, indent, opts)
         res = inner(el, indent, opts)
         if @doc.options[:filter_html].include?(el.value)
-          res.chomp + (el.options[:type] == :block ? "\n" : '')
-        elsif el.options[:type] == :span
+          warn("The filter_html option is deprecated and will be removed in the next release")
+          res.chomp + (el.options[:category] == :block ? "\n" : '')
+        elsif el.options[:category] == :span
           "<#{el.value}#{options_for_element(el)}" << (!res.empty? ? ">#{res}</#{el.value}>" : " />")
         else
           output = ''
-          output << ' '*indent if el.options[:parse_type] != :raw && !el.options[:parent_is_raw]
+          output << ' '*indent if !el.options[:parent_is_raw]
           output << "<#{el.value}#{options_for_element(el)}"
           if !res.empty? && el.options[:parse_type] != :block
             output << ">#{res}</#{el.value}>"
@@ -159,19 +172,20 @@ module Kramdown
           else
             output << " />"
           end
-          output << "\n" if el.options[:outer_element] || (el.options[:parse_type] != :raw && !el.options[:parent_is_raw])
+          output << "\n" if el.options[:outer_element] || !el.options[:parent_is_raw]
           output
         end
       end
 
-      def convert_html_text(el, indent, opts)
-        escape_html(el.value, :text)
-      end
-
       def convert_xml_comment(el, indent, opts)
-        el.value + (el.options[:type] == :block ? "\n" : '')
+        if el.options[:category] == :block && !el.options[:parent_is_raw]
+          ' '*indent + el.value + "\n"
+        else
+          el.value
+        end
       end
       alias :convert_xml_pi :convert_xml_comment
+      alias :convert_html_doctype :convert_xml_comment
 
       def convert_table(el, indent, opts)
         if el.options[:alignment].all? {|a| a == :default}
@@ -185,11 +199,6 @@ module Kramdown
       end
 
       def convert_thead(el, indent, opts)
-        opts[:cell_type] = case el.type
-                           when :thead then 'th'
-                           when :tbody, :tfoot then 'td'
-                           else opts[:cell_type]
-                           end
         "#{' '*indent}<#{el.type}#{options_for_element(el)}>\n#{inner(el, indent, opts)}#{' '*indent}</#{el.type}>\n"
       end
       alias :convert_tbody :convert_thead
@@ -198,22 +207,24 @@ module Kramdown
 
       def convert_td(el, indent, opts)
         res = inner(el, indent, opts)
-        "#{' '*indent}<#{opts[:cell_type]}#{options_for_element(el)}>#{res.empty? ? "&nbsp;" : res}</#{opts[:cell_type]}>\n"
+        "#{' '*indent}<#{el.type}#{options_for_element(el)}>#{res.empty? ? "&nbsp;" : res}</#{el.type}>\n"
       end
+      alias :convert_th :convert_td
 
       def convert_br(el, indent, opts)
         "<br />"
       end
 
       def convert_a(el, indent, opts)
-        if el.options[:attr]['href'] =~ /^mailto:/
+        do_obfuscation = el.options[:attr]['href'] =~ /^mailto:/
+        if do_obfuscation
           el = Marshal.load(Marshal.dump(el)) # so that the original is not changed
           href = obfuscate(el.options[:attr]['href'].sub(/^mailto:/, ''))
           mailto = obfuscate('mailto')
           el.options[:attr]['href'] = "#{mailto}:#{href}"
         end
         res = inner(el, indent, opts)
-        res = obfuscate(res) if el.options[:obfuscate_text]
+        res = obfuscate(res) if do_obfuscation
         "<a#{options_for_element(el)}>#{res}</a>"
       end
 
@@ -222,7 +233,7 @@ module Kramdown
       end
 
       def convert_codespan(el, indent, opts)
-        "<code#{options_for_element(el)}>#{escape_html(el.value)}</code>"
+        "<code#{options_for_element(el)}>#{el.value ? escape_html(el.value) : inner(el, indent, opts)}</code>"
       end
 
       def convert_footnote(el, indent, opts)
@@ -246,7 +257,7 @@ module Kramdown
       end
 
       TYPOGRAPHIC_SYMS = {
-        :mdash => '&mdash;', :ndash => '&ndash;', :ellipsis => '&hellip;',
+        :mdash => '&mdash;', :ndash => '&ndash;', :hellip => '&hellip;',
         :laquo_space => '&laquo;&nbsp;', :raquo_space => '&nbsp;&raquo;',
         :laquo => '&laquo;', :raquo => '&raquo;'
       }
@@ -258,8 +269,68 @@ module Kramdown
         "&#{el.value};"
       end
 
+      def convert_math(el, indent, opts)
+        el = Marshal.load(Marshal.dump(el)) # so that the original is not changed
+        el.options[:attr] ||= {}
+        el.options[:attr]['class'] ||= ''
+        el.options[:attr]['class'] += (el.options[:attr]['class'].empty? ? '' : ' ') + 'math'
+        type = 'span'
+        type = 'div' if el.options[:category] == :block
+        "<#{type}#{options_for_element(el)}>#{escape_html(el.value, :text)}</#{type}>#{type == 'div' ? "\n" : ''}"
+      end
+
+      def convert_abbreviation(el, indent, opts)
+        title = @doc.parse_infos[:abbrev_defs][el.value]
+        title = nil if title.empty?
+        "<abbr#{title ? " title=\"#{title}\"" : ''}>#{el.value}</abbr>"
+      end
+
       def convert_root(el, indent, opts)
-        inner(el, indent, opts) << footnote_content
+        result = inner(el, indent, opts)
+        result << footnote_content
+        if @toc_code
+          toc_tree = generate_toc_tree(@toc, @toc_code[0], @toc_code[1] || {})
+          text = if toc_tree.children.size > 0
+                   convert(toc_tree, 0)
+                 else
+                   ''
+                 end
+          result.sub!(/#{@toc_code.last}/, text)
+        end
+        result
+      end
+
+      def generate_toc_tree(toc, type, attr)
+        sections = Element.new(type, nil, {:attr => {'id' => 'markdown-toc'}.merge(attr)})
+        stack = []
+        toc.each do |level, id, children|
+          li = Element.new(:li, nil, {:level => level})
+          a = Element.new(:a, nil, {:attr => {:href => "##{id}"}})
+          a.children += children
+          li.children << a
+          li.children << Element.new(type)
+
+          success = false
+          while !success
+            if stack.empty?
+              sections.children << li
+              stack << li
+              success = true
+            elsif stack.last.options[:level] < li.options[:level]
+              stack.last.children.last.children << li
+              stack << li
+              success = true
+            else
+              item = stack.pop
+              item.children.pop unless item.children.last.children.size > 0
+            end
+          end
+        end
+        while !stack.empty?
+          item = stack.pop
+          item.children.pop unless item.children.last.children.size > 0
+        end
+        sections
       end
 
       # Helper method for obfuscating the +text+ by using HTML entities.
@@ -268,6 +339,7 @@ module Kramdown
         text.each_byte do |b|
           result += (b > 128 ? b.chr : "&#%03d;" % b)
         end
+        result.force_encoding(text.encoding) if RUBY_VERSION >= '1.9'
         result
       end
 

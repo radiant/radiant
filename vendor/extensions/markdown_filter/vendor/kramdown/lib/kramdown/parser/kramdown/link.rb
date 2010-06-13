@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #--
-# Copyright (C) 2009 Thomas Leitner <t_leitner@gmx.at>
+# Copyright (C) 2009-2010 Thomas Leitner <t_leitner@gmx.at>
 #
 # This file is part of kramdown.
 #
@@ -91,7 +91,7 @@ module Kramdown
           add_text(result)
           return
         end
-        alt_text = extract_string(reset_pos...@src.pos)
+        alt_text = extract_string(reset_pos...@src.pos, @src)
         conv_link_id = alt_text.gsub(/(\s|\n)+/m, ' ').gsub(LINK_ID_NON_CHARS, '').downcase
         @src.scan(stop_re)
 

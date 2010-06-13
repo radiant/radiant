@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #--
-# Copyright (C) 2009 Thomas Leitner <t_leitner@gmx.at>
+# Copyright (C) 2009-2010 Thomas Leitner <t_leitner@gmx.at>
 #
 # This file is part of kramdown.
 #
@@ -29,7 +29,7 @@ module Kramdown
       # Parse the horizontal rule at the current location.
       def parse_horizontal_rule
         @src.pos += @src.matched_size
-        @tree.children << Element.new(:hr)
+        @tree.children << new_block_el(:hr)
         true
       end
       define_parser(:horizontal_rule, HR_START)

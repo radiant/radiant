@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #--
-# Copyright (C) 2009 Thomas Leitner <t_leitner@gmx.at>
+# Copyright (C) 2009-2010 Thomas Leitner <t_leitner@gmx.at>
 #
 # This file is part of kramdown.
 #
@@ -22,11 +22,17 @@
 
 module Kramdown
 
-  # This module contains all available parsers. Currently, there is only one parser for parsing
-  # documents in kramdown format.
+  # == Parser Module
+  #
+  # This module contains all available parsers. Currently, there two parsers:
+  #
+  # * Kramdown for parsing documents in kramdown format
+  # * Html for parsing HTML documents
   module Parser
 
+    autoload :Base, 'kramdown/parser/base'
     autoload :Kramdown, 'kramdown/parser/kramdown'
+    autoload :Html, 'kramdown/parser/html'
 
   end
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #--
-# Copyright (C) 2009 Thomas Leitner <t_leitner@gmx.at>
+# Copyright (C) 2009-2010 Thomas Leitner <t_leitner@gmx.at>
 #
 # This file is part of kramdown.
 #
@@ -54,7 +54,7 @@ module Kramdown
   # The #to_html method is a shortcut for using the Converter::Html class.
   #
   # The second argument to the #new method is an options hash for customizing the behaviour of the
-  # kramdown parser and the converters.
+  # used parser and the converter. See Document#new for more information!
   class Document
 
     # The element tree of the document. It is immediately available after the #new method has been
@@ -63,38 +63,52 @@ module Kramdown
 
     # The options hash which holds the options for parsing/converting the Kramdown document. It is
     # possible that these values get changed during the parsing phase.
-    attr_accessor :options
+    attr_reader :options
 
     # An array of warning messages. It is filled with warnings during the parsing phase (i.e. in
     # #new) and the conversion phase.
     attr_reader :warnings
 
-    # Holds needed parse information like ALDs, link definitions and so on.
+    # Holds needed parse information which is dependent on the used parser, like ALDs, link
+    # definitions and so on. This information may be used by converters afterwards.
     attr_reader :parse_infos
 
     # Holds conversion information which is dependent on the used converter. A converter clears this
-    # variable before duing the conversion.
+    # variable before doing the conversion.
     attr_reader :conversion_infos
 
 
     # Create a new Kramdown document from the string +source+ and use the provided +options+. The
-    # +source+ is immediately parsed by the kramdown parser sothat after this call the output can be
-    # generated.
+    # options that can be used are defined in the Options module.
+    #
+    # The special options key <tt>:input</tt> can be used to select the parser that should parse the
+    # +source+. It has to be the name of a class in the Kramdown::Parser module. For example, to
+    # select the kramdown parser, one would set the <tt>:input</tt> key to +Kramdown+. If this key
+    # is not set, it defaults to +Kramdown+.
+    #
+    # The +source+ is immediately parsed by the selected parser so that the document tree is
+    # immediately available and the output can be generated.
     def initialize(source, options = {})
       @options = Options.merge(options)
       @warnings = []
       @parse_infos = {}
       @conversion_infos = {}
-      @tree = Parser::Kramdown.parse(source, self)
+      parser = (options[:input] || 'kramdown').to_s
+      parser = parser[0..0].upcase + parser[1..-1]
+      if Parser.const_defined?(parser)
+        @tree = Parser.const_get(parser).parse(source, self)
+      else
+        raise Kramdown::Error.new("kramdown has no parser to handle the specified input format: #{options[:input]}")
+      end
     end
 
     # Check if a method is invoked that begins with +to_+ and if so, try to instantiate a converter
-    # class and use it for converting the document.
+    # class (i.e. a class in the Kramdown::Converter module) and use it for converting the document.
     #
-    # For example, +to_html+ would instantiate the Converter::Html class.
+    # For example, +to_html+ would instantiate the Kramdown::Converter::Html class.
     def method_missing(id, *attr, &block)
       if id.to_s =~ /^to_(\w+)$/
-        Converter.const_get($1.capitalize).convert(self)
+        Converter.const_get($1[0..0].upcase + $1[1..-1]).convert(self)
       else
         super
       end
@@ -113,7 +127,7 @@ module Kramdown
   # (paragraphs, headers, emphasis, ...). The type of element can be set via the #type accessor.
   class Element
 
-    # A symbol representing the element type. For example, +:p+ or +:blockquote+.
+    # A symbol representing the element type. For example, <tt>:p</tt> or <tt>:blockquote</tt>.
     attr_accessor :type
 
     # The value of the element. The interpretation of this field depends on the type of the element.
@@ -121,7 +135,12 @@ module Kramdown
     attr_accessor :value
 
     # The options hash for the element. It is used for storing arbitray options as well as the
-    # *attributes* of the element under the <tt>:attr</tt> key.
+    # following special contents:
+    #
+    # - *Attributes* of the element under the <tt>:attr</tt> key
+    # - Category of the element, either <tt>:block</tt> or <tt>:span</tt>, under the
+    #   <tt>:category</tt> key. If this key is absent, it can be assumed that the element is in the
+    #   <tt>:span</tt> category.
     attr_accessor :options
 
     # The child elements of this element.

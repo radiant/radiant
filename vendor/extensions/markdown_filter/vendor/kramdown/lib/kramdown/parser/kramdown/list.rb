@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #--
-# Copyright (C) 2009 Thomas Leitner <t_leitner@gmx.at>
+# Copyright (C) 2009-2010 Thomas Leitner <t_leitner@gmx.at>
 #
 # This file is part of kramdown.
 #
@@ -23,6 +23,7 @@
 require 'kramdown/parser/kramdown/blank_line'
 require 'kramdown/parser/kramdown/eob'
 require 'kramdown/parser/kramdown/horizontal_rule'
+require 'kramdown/parser/kramdown/attribute_list'
 
 module Kramdown
   module Parser
@@ -59,7 +60,7 @@ module Kramdown
         end
 
         type, list_start_re = (@src.check(LIST_START_UL) ? [:ul, LIST_START_UL] : [:ol, LIST_START_OL])
-        list = Element.new(type)
+        list = new_block_el(type)
 
         item = nil
         indent_re = nil
@@ -73,6 +74,11 @@ module Kramdown
             item = Element.new(:li)
             item.value, indentation, content_re, indent_re = parse_first_list_line(@src[1].length, @src[2])
             list.children << item
+
+            item.value.sub!(/^#{IAL_SPAN_START}/) do |match|
+              parse_attribute_list($~[1], item.options[:ial] ||= {})
+              ''
+            end
 
             list_start_re = (type == :ul ? /^( {0,#{[3, indentation - 1].min}}[+*-])([\t| ].*?\n)/ :
                              /^( {0,#{[3, indentation - 1].min}}\d+\.)([\t| ].*?\n)/)
@@ -112,12 +118,11 @@ module Kramdown
           next if it.children.size == 0
 
           if it.children.first.type == :p && (it.children.length < 2 || it.children[1].type != :blank ||
-                                                (it == list.children.last && it.children.length == 2 && !eob_found))
+                                              (it == list.children.last && it.children.length == 2 && !eob_found)) &&
+              (list.children.last != it || list.children.size == 1 || list.children[0..-2].any? {|cit| cit.children.first.type != :p})
             text = it.children.shift.children.first
             text.value += "\n" if !it.children.empty? && it.children[0].type != :blank
             it.children.unshift(text)
-          else
-            it.options[:first_is_block] = true
           end
 
           if it.children.last.type == :blank
@@ -145,7 +150,7 @@ module Kramdown
         end
 
         first_as_para = false
-        deflist = Element.new(:dl)
+        deflist = new_block_el(:dl)
         para = @tree.children.pop
         if para.type == :blank
           para = @tree.children.pop
@@ -153,7 +158,7 @@ module Kramdown
         end
         para.children.first.value.split("\n").each do |term|
           el = Element.new(:dt)
-          el.children << Element.new(:text, term)
+          el.children << Element.new(:raw_text, term)
           deflist.children << el
         end
 
@@ -200,8 +205,6 @@ module Kramdown
             text = it.children.shift.children.first
             text.value += "\n" if !it.children.empty?
             it.children.unshift(text)
-          else
-            it.options[:first_is_block] = true
           end
         end
 
