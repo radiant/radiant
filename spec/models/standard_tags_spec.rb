@@ -922,6 +922,10 @@ describe "Standard Tags" do
     it "should not render the contained block when not on the dev site" do
       page.should render('-<r:if_dev>dev</r:if_dev>-').as('--')
     end
+    
+    it "should not render the contained block when no request is present" do
+      page(:devtags).render_part('if_dev').should_not have_text('dev')
+    end
 
     describe "on an included page" do
       it "should render the contained block when on the dev site" do
@@ -941,6 +945,10 @@ describe "Standard Tags" do
 
     it "should render the contained block when not on the dev site" do
       page.should render('-<r:unless_dev>not dev</r:unless_dev>-').as('-not dev-')
+    end
+
+    it "should render the contained block when no request is present" do
+      page(:devtags).render_part('unless_dev').should have_text('not dev')
     end
 
     describe "on an included page" do
