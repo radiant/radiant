@@ -41,8 +41,9 @@ module Radiant
       end
       # load any gem that follows extension rules
       gems.inject(all) do |available,gem|
-        available.tap { |a| a << gem.specification.full_gem_path if gem.specification and
-                            gem.specification.full_gem_path[/radiant-.*-extension-[\d\.]+$/] }
+        available << gem.specification.full_gem_path if gem.specification and
+          gem.specification.full_gem_path[/radiant-.*-extension-[\d\.]+$/]
+        available
       end
       # strip version info to glean proper extension names
       all.flatten.map {|f| File.basename(f).gsub(/^radiant-|-extension-[\d\.]+$/, '') }.sort.map {|e| e.to_sym }

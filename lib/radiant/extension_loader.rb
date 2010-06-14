@@ -132,7 +132,7 @@ module Radiant
 
       def select_extension_roots
         all_roots = all_extension_roots.dup
-        roots = configuration.extensions.map do |ext_name|
+        roots = configuration.extensions.uniq.map do |ext_name|
           if :all === ext_name
             :all
           else
