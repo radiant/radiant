@@ -16,11 +16,14 @@ module Radiant
         html = links.join(@options[:separator])
         @options[:container] ? %{<div class="pagination">#{html}</div>} : html
       end
-  
+      
+      # this is rather crude compared to the WillPaginate link-builder,
+      # but it can get by without much context to draw on
       def page_link(page, text, attributes = {})
         linkclass = %{ class="#{attributes[:class]}"} if attributes[:class]
         linkrel = %{ rel="#{attributes[:rel]}"} if attributes[:rel]
-        %Q{<a href="#{@url_stem}?p=#{page}"#{linkrel}#{linkclass}>#{text}</a>}
+        param_name = WillPaginate::ViewHelpers.pagination_options[:param_name]
+        %Q{<a href="#{@url_stem}?#{param_name}=#{page}"#{linkrel}#{linkclass}>#{text}</a>}
       end
 
       def page_span(page, text, attributes = {})
