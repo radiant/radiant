@@ -33,7 +33,8 @@ namespace 'radiant' do
     s.bindir = 'bin'
     s.executables = (Dir['bin/*'] + Dir['scripts/*']).map { |file| File.basename(file) } 
     s.add_dependency 'rake', '>= 0.8.3'
-    s.add_dependency 'rack', '~> 1.0.1' # No longer bundled in actionpack
+    s.add_dependency 'rack', '~> 1.1.0' # No longer bundled in actionpack
+    s.add_dependency 'will_paginate', '~> 2.3.11'
     s.add_dependency 'RedCloth', '>=4.0.0'
     s.has_rdoc = true
     s.rdoc_options << '--title' << RDOC_TITLE << '--line-numbers' << '--main' << 'README'
