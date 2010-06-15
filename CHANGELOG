@@ -2,7 +2,10 @@
 
 === Edge
 
-* Add <r:gravatar/> radius tag [John Muhl]
+* Updated to Rails 2.3.8 [Jim Gay]
+* Added admin and Radius tag pagination [William Ross]
+* Added will_paginate dependency [William Ross, Jim Gay]
+* Added <r:gravatar/> radius tag [John Muhl]
 * Exposed important view locals for partials that hook into the admin UI [Mislav Marohnić]
 * Update to cucumber-rails 0.3.0 [Jim Gay]
 * Update to Haml 2.2.24 [Jim Gay]
