@@ -57,6 +57,7 @@ module ActiveRecord
           @target = (AssociationProxy === obj ? obj.target : obj)
         end
 
+        set_inverse_instance(obj, @owner)
         @loaded = true
 
         unless @owner.new_record? or obj.nil? or dont_save
@@ -77,13 +78,15 @@ module ActiveRecord
 
       private
         def find_target
-          @reflection.klass.find(:first, 
+          the_target = @reflection.klass.find(:first,
             :conditions => @finder_sql,
             :select     => @reflection.options[:select],
             :order      => @reflection.options[:order], 
             :include    => @reflection.options[:include],
             :readonly   => @reflection.options[:readonly]
           )
+          set_inverse_instance(the_target, @owner)
+          the_target
         end
 
         def construct_sql
@@ -118,6 +121,7 @@ module ActiveRecord
           else
             record[@reflection.primary_key_name] = @owner.id unless @owner.new_record?
             self.target = record
+            set_inverse_instance(record, @owner)
           end
 
           record
@@ -127,6 +131,11 @@ module ActiveRecord
           attrs ||= {}
           attrs.update(@reflection.options[:conditions]) if @reflection.options[:conditions].is_a?(Hash)
           attrs
+        end
+
+        def we_can_set_the_inverse_on_this?(record)
+          inverse = @reflection.inverse_of
+          return !inverse.nil?
         end
     end
   end

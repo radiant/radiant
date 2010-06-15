@@ -1,9 +1,9 @@
 require 'rubygems'
 require 'test/unit'
 
-$:.unshift "#{File.dirname(__FILE__)}/../lib"
-$:.unshift "#{File.dirname(__FILE__)}/../../activesupport/lib"
-$:.unshift "#{File.dirname(__FILE__)}/../../actionpack/lib"
+$:.unshift File.expand_path('../../lib', __FILE__)
+$:.unshift File.expand_path('../../../activesupport/lib', __FILE__)
+$:.unshift File.expand_path('../../../actionpack/lib', __FILE__)
 require 'action_mailer'
 require 'action_mailer/test_case'
 
@@ -17,7 +17,7 @@ ActionView::Template.register_template_handler :bak, lambda { |template| "Lame b
 $:.unshift "#{File.dirname(__FILE__)}/fixtures/helpers"
 
 ActionView::Base.cache_template_loading = true
-FIXTURE_LOAD_PATH = File.join(File.dirname(__FILE__), 'fixtures')
+FIXTURE_LOAD_PATH = File.expand_path(File.join(File.dirname(__FILE__), 'fixtures'))
 ActionMailer::Base.template_root = FIXTURE_LOAD_PATH
 
 class MockSMTP

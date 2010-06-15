@@ -156,38 +156,42 @@ module ActiveRecord
 
       # Adds a validate and save callback for the association as specified by
       # the +reflection+.
+      #
+      # For performance reasons, we don't check whether to validate at runtime,
+      # but instead only define the method and callback when needed. However,
+      # this can change, for instance, when using nested attributes, which is
+      # called _after_ the association has been defined. Since we don't want
+      # the callbacks to get defined multiple times, there are guards that
+      # check if the save or validation methods have already been defined
+      # before actually defining them.
       def add_autosave_association_callbacks(reflection)
-        save_method = "autosave_associated_records_for_#{reflection.name}"
-        validation_method = "validate_associated_records_for_#{reflection.name}"
-        force_validation = (reflection.options[:validate] == true || reflection.options[:autosave] == true)
+        save_method = :"autosave_associated_records_for_#{reflection.name}"
+        validation_method = :"validate_associated_records_for_#{reflection.name}"
+        collection = reflection.collection?
 
-        case reflection.macro
-        when :has_many, :has_and_belongs_to_many
-          before_save :before_save_collection_association
+        unless method_defined?(save_method)
+          if collection
+            before_save :before_save_collection_association
 
-          define_method(save_method) { save_collection_association(reflection) }
-          # Doesn't use after_save as that would save associations added in after_create/after_update twice
-          after_create save_method
-          after_update save_method
-
-          if force_validation || (reflection.macro == :has_many && reflection.options[:validate] != false)
-            define_method(validation_method) { validate_collection_association(reflection) }
-            validate validation_method
+            define_method(save_method) { save_collection_association(reflection) }
+            # Doesn't use after_save as that would save associations added in after_create/after_update twice
+            after_create save_method
+            after_update save_method
+          else
+            if reflection.macro == :has_one
+              define_method(save_method) { save_has_one_association(reflection) }
+              after_save save_method
+            else
+              define_method(save_method) { save_belongs_to_association(reflection) }
+              before_save save_method
+            end
           end
-        else
-          case reflection.macro
-          when :has_one
-            define_method(save_method) { save_has_one_association(reflection) }
-            after_save save_method
-          when :belongs_to
-            define_method(save_method) { save_belongs_to_association(reflection) }
-            before_save save_method
-          end
+        end
 
-          if force_validation
-            define_method(validation_method) { validate_single_association(reflection) }
-            validate validation_method
-          end
+        if reflection.validate? && !method_defined?(validation_method)
+          method = (collection ? :validate_collection_association : :validate_single_association)
+          define_method(validation_method) { send(method, reflection) }
+          validate validation_method
         end
       end
     end
@@ -213,6 +217,12 @@ module ActiveRecord
       @marked_for_destruction
     end
 
+    # Returns whether or not this record has been changed in any way (including whether
+    # any of its nested autosave associations are likewise changed)
+    def changed_for_autosave?
+      new_record? || changed? || marked_for_destruction? || nested_records_changed_for_autosave?
+    end
+    
     private
 
     # Returns the record for an association collection that should be validated
@@ -221,13 +231,28 @@ module ActiveRecord
     def associated_records_to_validate_or_save(association, new_record, autosave)
       if new_record
         association
-      elsif association.loaded?
-        autosave ? association : association.select { |record| record.new_record? }
+      elsif autosave
+        association.target.select { |record| record.changed_for_autosave? }
       else
-        autosave ? association.target : association.target.select { |record| record.new_record? }
+        association.target.select { |record| record.new_record? }
       end
     end
-
+    
+    # go through nested autosave associations that are loaded in memory (without loading
+    # any new ones), and return true if is changed for autosave
+    def nested_records_changed_for_autosave?
+      self.class.reflect_on_all_autosave_associations.each do |reflection|
+        if association = association_instance_get(reflection.name)
+          if [:belongs_to, :has_one].include?(reflection.macro)
+            return true if association.target && association.target.changed_for_autosave?
+          else
+            association.target.each {|record| return true if record.changed_for_autosave? }
+          end
+        end
+      end
+      false
+    end
+    
     # Validate the association if <tt>:validate</tt> or <tt>:autosave</tt> is
     # turned on for the association specified by +reflection+.
     def validate_single_association(reflection)
@@ -293,13 +318,15 @@ module ActiveRecord
               association.destroy(record)
             elsif autosave != false && (@new_record_before_save || record.new_record?)
               if autosave
-                association.send(:insert_record, record, false, false)
+                saved = association.send(:insert_record, record, false, false)
               else
                 association.send(:insert_record, record)
               end
             elsif autosave
-              record.save(false)
+              saved = record.save(false)
             end
+
+            raise ActiveRecord::Rollback if saved == false
           end
         end
 
@@ -326,7 +353,9 @@ module ActiveRecord
           key = reflection.options[:primary_key] ? send(reflection.options[:primary_key]) : id
           if autosave != false && (new_record? || association.new_record? || association[reflection.primary_key_name] != key || autosave)
             association[reflection.primary_key_name] = key
-            association.save(!autosave)
+            saved = association.save(!autosave)
+            raise ActiveRecord::Rollback if !saved && autosave
+            saved
           end
         end
       end
@@ -347,7 +376,7 @@ module ActiveRecord
         if autosave && association.marked_for_destruction?
           association.destroy
         elsif autosave != false
-          association.save(!autosave) if association.new_record? || autosave
+          saved = association.save(!autosave) if association.new_record? || autosave
 
           if association.updated?
             association_id = association.send(reflection.options[:primary_key] || :id)
@@ -357,6 +386,8 @@ module ActiveRecord
               self[reflection.options[:foreign_type]] = association.class.base_class.name.to_s
             end
           end
+
+          saved if autosave
         end
       end
     end

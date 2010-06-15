@@ -58,4 +58,24 @@ class EachTest < ActiveRecord::TestCase
       Post.find_in_batches(:batch_size => post_count + 1) {|batch| assert_kind_of Array, batch }
     end
   end
+
+  def test_find_in_batches_doesnt_clog_conditions
+    Post.find_in_batches(:conditions => {:id => posts(:welcome).id}) do
+      assert_nothing_raised { Post.find(posts(:thinking).id) }
+    end
+  end
+  
+  def test_each_should_raise_if_select_is_set_without_id
+    assert_raise(RuntimeError) do
+      Post.find_each(:select => :title, :batch_size => 1) { |post| post }
+    end
+  end
+
+  def test_each_should_execute_if_id_is_in_select
+    assert_queries(4) do
+      Post.find_each(:select => "id, title, type", :batch_size => 2) do |post|
+        assert_kind_of Post, post
+      end
+    end
+  end
 end

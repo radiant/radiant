@@ -78,6 +78,9 @@ module ActionView
       #   #    <option>Paris</option><option>Rome</option></select>
       def select_tag(name, option_tags = nil, options = {})
         html_name = (options[:multiple] == true && !name.to_s.ends_with?("[]")) ? "#{name}[]" : name
+        if Array === option_tags
+          ActiveSupport::Deprecation.warn 'Passing an array of option_tags to select_tag implicitly joins them without marking them as HTML-safe. Pass option_tags.join.html_safe instead.', caller
+        end
         content_tag :select, option_tags, { "name" => html_name, "id" => sanitize_to_id(name) }.update(options.stringify_keys)
       end
 
@@ -262,7 +265,7 @@ module ActionView
         escape = options.key?("escape") ? options.delete("escape") : true
         content = html_escape(content) if escape
 
-        content_tag :textarea, content, { "name" => name, "id" => sanitize_to_id(name) }.update(options.stringify_keys)
+        content_tag :textarea, content.to_s.html_safe, { "name" => name, "id" => sanitize_to_id(name) }.update(options.stringify_keys)
       end
 
       # Creates a check box form input tag.
@@ -432,7 +435,7 @@ module ActionView
         concat(tag(:fieldset, options, true))
         concat(content_tag(:legend, legend)) unless legend.blank?
         concat(content)
-        concat("</fieldset>".html_safe!)
+        concat("</fieldset>".html_safe)
       end
 
       private
@@ -459,14 +462,14 @@ module ActionView
 
         def form_tag_html(html_options)
           extra_tags = extra_tags_for_form(html_options)
-          (tag(:form, html_options, true) + extra_tags).html_safe!
+          (tag(:form, html_options, true) + extra_tags).html_safe
         end
 
         def form_tag_in_block(html_options, &block)
           content = capture(&block)
           concat(form_tag_html(html_options))
           concat(content)
-          concat("</form>".html_safe!)
+          concat("</form>".html_safe)
         end
 
         def token_tag

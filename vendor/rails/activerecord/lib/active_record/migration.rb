@@ -381,6 +381,7 @@ module ActiveRecord
       def migrate(migrations_path, target_version = nil)
         case
           when target_version.nil?              then up(migrations_path, target_version)
+          when current_version == 0 && target_version == 0 then # noop
           when current_version > target_version then down(migrations_path, target_version)
           else                                       up(migrations_path, target_version)
         end
@@ -406,6 +407,10 @@ module ActiveRecord
       
       def run(direction, migrations_path, target_version)
         self.new(direction, migrations_path, target_version).run
+      end
+
+      def migrations_path
+        'db/migrate'
       end
 
       def schema_migrations_table_name

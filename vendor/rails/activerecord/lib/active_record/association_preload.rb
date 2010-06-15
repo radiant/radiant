@@ -126,6 +126,7 @@ module ActiveRecord
           association_proxy = parent_record.send(reflection_name)
           association_proxy.loaded
           association_proxy.target.push(*[associated_record].flatten)
+          association_proxy.__send__(:set_inverse_instance, associated_record, parent_record)
         end
       end
 
@@ -152,8 +153,14 @@ module ActiveRecord
           seen_keys[associated_record[key].to_s] = true
           mapped_records = id_to_record_map[associated_record[key].to_s]
           mapped_records.each do |mapped_record|
-            mapped_record.send("set_#{reflection_name}_target", associated_record)
+            association_proxy = mapped_record.send("set_#{reflection_name}_target", associated_record)
+            association_proxy.__send__(:set_inverse_instance, associated_record, mapped_record)
           end
+        end
+
+        id_to_record_map.each do |id, records|
+          next if seen_keys.include?(id.to_s)
+          records.each {|record| record.send("set_#{reflection_name}_target", nil) }            
         end
       end
 
@@ -321,7 +328,7 @@ module ActiveRecord
           klass = klass_name.constantize
 
           table_name = klass.quoted_table_name
-          primary_key = klass.primary_key
+          primary_key = reflection.options[:primary_key] || klass.primary_key
           column_type = klass.columns.detect{|c| c.name == primary_key}.type
           ids = id_map.keys.map do |id|
             if column_type == :integer

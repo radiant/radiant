@@ -158,7 +158,7 @@ module ActiveRecord
     # If +message+ is a Symbol, it will be translated, using the appropriate scope (see translate_error).
     #
     def add(attribute, message = nil, options = {})
-      options[:message] = options.delete(:default) if options.has_key?(:default)
+      options[:message] = options.delete(:default) if options[:default].is_a?(Symbol)
       error, message = message, nil if message.is_a?(Error)
 
       @errors[attribute.to_s] ||= []
@@ -239,6 +239,18 @@ module ActiveRecord
       @errors.each_key { |attr| @errors[attr].each { |error| yield attr, error.message } }
     end
 
+    # Yields each attribute and associated error per error added.
+    #
+    #   class Company < ActiveRecord::Base
+    #     validates_presence_of :name, :address, :email
+    #     validates_length_of :name, :in => 5..30
+    #   end
+    #
+    #   company = Company.create(:address => '123 First St.')
+    #   company.errors.each_error{|attr,err| puts "#{attr} - #{err.type}" }
+    #   # => name - :too_short
+    #   #    name - :blank
+    #   #    address - :blank
     def each_error
       @errors.each_key { |attr| @errors[attr].each { |error| yield attr, error } }
     end

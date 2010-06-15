@@ -604,7 +604,7 @@ class FragmentCachingTest < ActionController::TestCase
     @store.write('views/expensive', 'fragment content')
     fragment_computed = false
 
-    buffer = 'generated till now -> '
+    buffer = 'generated till now -> '.html_safe
     @controller.fragment_for(buffer, 'expensive') { fragment_computed = true }
 
     assert fragment_computed
@@ -615,11 +615,25 @@ class FragmentCachingTest < ActionController::TestCase
     @store.write('views/expensive', 'fragment content')
     fragment_computed = false
 
-    buffer = 'generated till now -> '
+    buffer = 'generated till now -> '.html_safe
     @controller.fragment_for(buffer, 'expensive') { fragment_computed = true }
 
     assert !fragment_computed
     assert_equal 'generated till now -> fragment content', buffer
+  end
+
+  def test_html_safety
+    assert_nil @store.read('views/name')
+    content = 'value'.html_safe
+    assert_equal content, @controller.write_fragment('name', content)
+
+    cached = @store.read('views/name')
+    assert_equal content, cached
+    assert_equal String, cached.class
+
+    html_safe = @controller.read_fragment('name')
+    assert_equal content, html_safe
+    assert html_safe.html_safe?
   end
 end
 

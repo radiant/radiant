@@ -323,7 +323,9 @@ module ActionController
 
           @headers = Rack::Utils::HeaderHash.new(headers)
 
-          (@headers['Set-Cookie'] || "").split("\n").each do |cookie|
+          cookies = @headers['Set-Cookie']
+          cookies = cookies.to_s.split("\n") unless cookies.is_a?(Array)
+          cookies.each do |cookie|
             name, value = cookie.match(/^([^=]*)=([^;]*);/)[1,2]
             @cookies[name] = value
           end
@@ -352,6 +354,8 @@ module ActionController
           # TestResponse so that things like assert_response can be
           # used in integration tests.
           @response.extend(TestResponseBehavior)
+
+          body.close if body.respond_to?(:close)
 
           return @status
         rescue MultiPartNeededException

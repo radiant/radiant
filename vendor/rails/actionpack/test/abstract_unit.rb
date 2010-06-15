@@ -1,7 +1,7 @@
-$:.unshift(File.dirname(__FILE__) + '/../lib')
-$:.unshift(File.dirname(__FILE__) + '/../../activesupport/lib')
-$:.unshift(File.dirname(__FILE__) + '/fixtures/helpers')
-$:.unshift(File.dirname(__FILE__) + '/fixtures/alternate_helpers')
+$:.unshift File.expand_path('../../lib', __FILE__)
+$:.unshift File.expand_path('../../../activesupport/lib', __FILE__)
+$:.unshift File.expand_path('../fixtures/helpers', __FILE__)
+$:.unshift File.expand_path('../fixtures/alternate_helpers', __FILE__)
 
 require 'rubygems'
 require 'yaml'
@@ -32,9 +32,9 @@ ActionController::Routing::Routes.reload rescue nil
 
 ActionController::Base.session_store = nil
 
-# Register danish language for testing
-I18n.backend.store_translations 'da', {}
-I18n.backend.store_translations 'pt-BR', {}
+# Register languages for testing
+I18n.backend.store_translations 'da', "da" => {}
+I18n.backend.store_translations 'pt-BR', "pt-BR" => {}
 ORIGINAL_LOCALES = I18n.available_locales.map(&:to_s).sort
 
 FIXTURE_LOAD_PATH = File.join(File.dirname(__FILE__), 'fixtures')

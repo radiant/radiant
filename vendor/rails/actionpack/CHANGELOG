@@ -1,3 +1,58 @@
+*2.3.8 (May 24, 2010)*
+
+* HTML safety: fix compatibility *without* the optional rails_xss plugin.
+
+
+*2.3.7 (May 24, 2010)*
+
+* HTML safety: fix compatibility with the optional rails_xss plugin.  [Nathan Weizenbaum, Santiago Pastorino]
+
+
+*2.3.6 (May 23, 2010)*
+
+* JSON: set Base.include_root_in_json = true to include a root value in the JSON: {"post": {"title": ...}}. Mirrors the Active Record option.  #2584 [Matthew Moore, Joe Martinez, Elad Meidar, Santiago Pastorino]
+
+* Ruby 1.9: ERB template encoding using a magic comment at the top of the file.  [Jeremy Kemper]
+    <%# encoding: utf-8 %>
+
+* Fixed that default locale templates should be used if the current locale template is missing [DHH]
+
+* Fixed that PrototypeHelper#update_page should return html_safe [DHH]
+
+* Fixed that much of DateHelper wouldn't return html_safe? strings [DHH]
+
+* Fixed that fragment caching should return a cache hit as html_safe (or it would all just get escaped) [DHH]
+
+* Introduce String#html_safe for rails_xss plugin and forward-compatibility with Rails 3.  [Michael Koziarski, Santiago Pastorino, José Ignacio Costa]
+
+* Added :alert, :notice, and :flash as options to ActionController::Base#redirect_to that'll automatically set the proper flash before the redirection [DHH]. Examples:
+
+    flash[:notice] = 'Post was created'
+    redirect_to(@post)
+  
+  ...becomes:
+  
+    redirect_to(@post, :notice => 'Post was created')
+
+* Added ActionController::Base#notice/= and ActionController::Base#alert/= as a convenience accessors in both the controller and the view for flash[:notice]/= and flash[:alert]/= [DHH]
+
+* Added cookies.permanent, cookies.signed, and cookies.permanent.signed accessor for common cookie actions [DHH]. Examples:
+
+    cookies.permanent[:prefers_open_id] = true
+    # => Set-Cookie: prefers_open_id=true; path=/; expires=Sun, 16-Dec-2029 03:24:16 GMT
+
+    cookies.signed[:discount] = 45
+    # => Set-Cookie: discount=BAhpMg==--2c1c6906c90a3bc4fd54a51ffb41dffa4bf6b5f7; path=/
+
+    cookies.signed[:discount]
+    # => 45 (if the cookie was changed, you'll get a InvalidSignature exception)
+
+    cookies.permanent.signed[:remember_me] = current_user.id
+    # => Set-Cookie: discount=BAhU--848956038e692d7046deab32b7131856ab20e14e; path=/; expires=Sun, 16-Dec-2029 03:24:16 GMT
+    
+  ...to use the signed cookies, you need to set a secret to ActionController::Base.cookie_verifier_secret (automatically done in config/initializers/cookie_verification_secret.rb for new Rails applications).
+
+
 *2.3.5 (November 25, 2009)*
 
 * Minor Bug Fixes and deprecation warnings

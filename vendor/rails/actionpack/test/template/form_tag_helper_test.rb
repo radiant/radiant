@@ -113,19 +113,19 @@ class FormTagHelperTest < ActionView::TestCase
   end
 
   def test_select_tag
-    actual = select_tag "people", "<option>david</option>"
+    actual = select_tag "people", "<option>david</option>".html_safe
     expected = %(<select id="people" name="people"><option>david</option></select>)
     assert_dom_equal expected, actual
   end
 
   def test_select_tag_with_multiple
-    actual = select_tag "colors", "<option>Red</option><option>Blue</option><option>Green</option>", :multiple => :true
+    actual = select_tag "colors", "<option>Red</option><option>Blue</option><option>Green</option>".html_safe, :multiple => :true
     expected = %(<select id="colors" multiple="multiple" name="colors"><option>Red</option><option>Blue</option><option>Green</option></select>)
     assert_dom_equal expected, actual
   end
 
   def test_select_tag_disabled
-    actual = select_tag "places", "<option>Home</option><option>Work</option><option>Pub</option>", :disabled => :true
+    actual = select_tag "places", "<option>Home</option><option>Work</option><option>Pub</option>".html_safe, :disabled => :true
     expected = %(<select id="places" disabled="disabled" name="places"><option>Home</option><option>Work</option><option>Pub</option></select>)
     assert_dom_equal expected, actual
   end
@@ -133,6 +133,12 @@ class FormTagHelperTest < ActionView::TestCase
   def test_select_tag_id_sanitized
     input_elem = root_elem(select_tag("project[1]people", "<option>david</option>"))
     assert_match VALID_HTML_ID, input_elem['id']
+  end
+
+  def test_select_tag_with_array_options
+    assert_deprecated /array/ do
+      select_tag "people", ["<option>david</option>"]
+    end
   end
 
   def test_text_area_tag_size_string
@@ -167,6 +173,12 @@ class FormTagHelperTest < ActionView::TestCase
   def test_text_area_tag_unescaped_content
     actual = text_area_tag "body", "<b>hello world</b>", :size => "20x40", :escape => false
     expected = %(<textarea cols="20" id="body" name="body" rows="40"><b>hello world</b></textarea>)
+    assert_dom_equal expected, actual
+  end
+
+  def test_text_area_tag_unescaped_nil_content
+    actual = text_area_tag "body", nil, :escape => false
+    expected = %(<textarea id="body" name="body"></textarea>)
     assert_dom_equal expected, actual
   end
 
@@ -256,9 +268,9 @@ class FormTagHelperTest < ActionView::TestCase
     assert_dom_equal %(<input checked="checked" disabled="disabled" id="admin" name="admin" readonly="readonly" type="checkbox" value="1" />), check_box_tag("admin", 1, true, 'disabled' => true, :readonly => "yes")
     assert_dom_equal %(<input checked="checked" id="admin" name="admin" type="checkbox" value="1" />), check_box_tag("admin", 1, true, :disabled => false, :readonly => nil)
     assert_dom_equal %(<input type="checkbox" />), tag(:input, :type => "checkbox", :checked => false)
-    assert_dom_equal %(<select id="people" multiple="multiple" name="people[]"><option>david</option></select>), select_tag("people", "<option>david</option>", :multiple => true)
-    assert_dom_equal %(<select id="people_" multiple="multiple" name="people[]"><option>david</option></select>), select_tag("people[]", "<option>david</option>", :multiple => true)
-    assert_dom_equal %(<select id="people" name="people"><option>david</option></select>), select_tag("people", "<option>david</option>", :multiple => nil)
+    assert_dom_equal %(<select id="people" multiple="multiple" name="people[]"><option>david</option></select>), select_tag("people", "<option>david</option>".html_safe, :multiple => true)
+    assert_dom_equal %(<select id="people_" multiple="multiple" name="people[]"><option>david</option></select>), select_tag("people[]", "<option>david</option>".html_safe, :multiple => true)
+    assert_dom_equal %(<select id="people" name="people"><option>david</option></select>), select_tag("people", "<option>david</option>".html_safe, :multiple => nil)
   end
 
   def test_stringify_symbol_keys
@@ -313,19 +325,19 @@ class FormTagHelperTest < ActionView::TestCase
     expected = %(<fieldset><legend>Your details</legend>Hello world!</fieldset>)
     assert_dom_equal expected, output_buffer
 
-    self.output_buffer = ''
+    self.output_buffer = ''.html_safe
     field_set_tag { concat "Hello world!" }
 
     expected = %(<fieldset>Hello world!</fieldset>)
     assert_dom_equal expected, output_buffer
 
-    self.output_buffer = ''
+    self.output_buffer = ''.html_safe
     field_set_tag('') { concat "Hello world!" }
 
     expected = %(<fieldset>Hello world!</fieldset>)
     assert_dom_equal expected, output_buffer
 
-    self.output_buffer = ''
+    self.output_buffer = ''.html_safe
     field_set_tag('', :class => 'format') { concat "Hello world!" }
 
     expected = %(<fieldset class="format">Hello world!</fieldset>)

@@ -92,6 +92,19 @@ class FormHelperTest < ActionView::TestCase
   tests ActionView::Helpers::FormHelper
 
   def setup
+    super
+
+    # Create "label" locale for testing I18n label helpers
+    I18n.backend.store_translations 'label', {
+      :helpers => {
+        :label => {
+          :post => {
+            :body => "Write entire text here"
+          }
+        }
+      }
+    }
+
     @post = Post.new
     @comment = Comment.new
     def @post.errors()
@@ -111,6 +124,10 @@ class FormHelperTest < ActionView::TestCase
     @post.body        = "Back to the hill and over it again!"
     @post.secret      = 1
     @post.written_on  = Date.new(2004, 6, 15)
+
+    def Post.human_attribute_name(attribute)
+      attribute.to_s == "cost" ? "Total cost" : attribute.to_s.humanize
+    end
 
     @controller = Class.new do
       attr_reader :url_for_options
@@ -135,6 +152,27 @@ class FormHelperTest < ActionView::TestCase
   def test_label_with_symbols
     assert_dom_equal('<label for="post_title">Title</label>', label(:post, :title))
     assert_dom_equal('<label for="post_secret">Secret?</label>', label(:post, :secret?))
+  end
+
+  def test_label_with_locales_strings
+    old_locale, I18n.locale = I18n.locale, :label
+    assert_dom_equal('<label for="post_body">Write entire text here</label>', label("post", "body"))
+  ensure
+    I18n.locale = old_locale
+  end
+
+  def test_label_with_human_attribute_name
+    old_locale, I18n.locale = I18n.locale, :label
+    assert_dom_equal('<label for="post_cost">Total cost</label>', label(:post, :cost))
+  ensure
+    I18n.locale = old_locale
+  end
+
+  def test_label_with_locales_symbols
+    old_locale, I18n.locale = I18n.locale, :label
+    assert_dom_equal('<label for="post_body">Write entire text here</label>', label(:post, :body))
+  ensure
+    I18n.locale = old_locale
   end
 
   def test_label_with_for_attribute_as_symbol
@@ -1102,12 +1140,12 @@ class FormHelperTest < ActionView::TestCase
 
   class LabelledFormBuilder < ActionView::Helpers::FormBuilder
     (field_helpers - %w(hidden_field)).each do |selector|
-      src = <<-END_SRC
+      src, line = <<-END_SRC, __LINE__ + 1
         def #{selector}(field, *args, &proc)
-          ("<label for='\#{field}'>\#{field.to_s.humanize}:</label> " + super + "<br/>").html_safe!
+          ("<label for='\#{field}'>\#{field.to_s.humanize}:</label> " + super + "<br/>").html_safe
         end
       END_SRC
-      class_eval src, __FILE__, __LINE__
+      class_eval src, __FILE__, line
     end
   end
 
@@ -1170,6 +1208,22 @@ class FormHelperTest < ActionView::TestCase
     @post = nil
 
     form_for(:post, post) do |f|
+       concat f.error_message_on('author_name')
+       concat f.error_messages
+    end
+
+    expected = %(<form action='http://www.example.com' method='post'>) +
+               %(<div class='formError'>can't be empty</div>) +
+               %(<div class="errorExplanation" id="errorExplanation"><h2>1 error prohibited this post from being saved</h2><p>There were problems with the following fields:</p><ul><li>Author name can't be empty</li></ul></div>) +
+               %(</form>)
+
+    assert_dom_equal expected, output_buffer
+
+  end
+  
+  def test_default_form_builder_without_object
+
+    form_for(:post) do |f|
        concat f.error_message_on('author_name')
        concat f.error_messages
     end

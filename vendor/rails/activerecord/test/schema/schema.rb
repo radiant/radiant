@@ -58,6 +58,7 @@ ActiveRecord::Schema.define do
 
   create_table :birds, :force => true do |t|
     t.string :name
+    t.string :color
     t.integer :pirate_id
   end
 
@@ -174,6 +175,12 @@ ActiveRecord::Schema.define do
 
   create_table :events, :force => true do |t|
     t.string :title, :limit => 5
+    t.datetime :ends_on
+  end
+
+  create_table :event_authors, :force => true do |t|
+    t.integer :event_id
+    t.integer :author_id
   end
 
   create_table :funny_jokes, :force => true do |t|
@@ -183,6 +190,11 @@ ActiveRecord::Schema.define do
   create_table :goofy_string_id, :force => true, :id => false do |t|
     t.string :id, :null => false
     t.string :info
+  end
+
+  create_table :invoices, :force => true do |t|
+    t.integer :balance
+    t.datetime :updated_at
   end
 
   create_table :items, :force => true do |t|
@@ -208,6 +220,11 @@ ActiveRecord::Schema.define do
   create_table :legacy_things, :force => true do |t|
     t.integer :tps_report_number
     t.integer :version, :null => false, :default => 0
+  end
+
+  create_table :line_items, :force => true do |t|
+    t.integer :invoice_id
+    t.integer :amount
   end
 
   create_table :lock_without_defaults, :force => true do |t|
@@ -477,6 +494,30 @@ ActiveRecord::Schema.define do
     (1..8).each do |i|
       t.integer :"c_int_#{i}", :limit => i
     end
+  end
+
+  # NOTE - the following 4 tables are used by models that have :inverse_of options on the associations
+  create_table :men, :force => true do |t|
+    t.string  :name
+  end
+
+  create_table :faces, :force => true do |t|
+    t.string  :description
+    t.integer :man_id
+    t.integer :polymorphic_man_id
+    t.string :polymorphic_man_type
+  end
+
+  create_table :interests, :force => true do |t|
+    t.string :topic
+    t.integer :man_id
+    t.integer :polymorphic_man_id
+    t.string :polymorphic_man_type
+    t.integer :zine_id
+  end
+
+  create_table :zines, :force => true do |t|
+    t.string :title
   end
 
   except 'SQLite' do

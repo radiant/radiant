@@ -88,6 +88,10 @@ class UrlHelperTest < ActionView::TestCase
     )
   end
 
+  def test_button_to_returns_an_html_safe_string
+    assert button_to("Hello", "http://www.example.com").html_safe?
+  end
+
   def test_link_tag_with_straight_url
     assert_dom_equal "<a href=\"http://www.example.com\">Hello</a>", link_to("Hello", "http://www.example.com")
   end
@@ -344,7 +348,7 @@ class UrlHelperTest < ActionView::TestCase
   end
 
   def test_mail_to_with_img
-    assert_dom_equal %(<a href="mailto:feedback@example.com"><img src="/feedback.png" /></a>), mail_to('feedback@example.com', '<img src="/feedback.png" />')
+    assert_dom_equal %(<a href="mailto:feedback@example.com"><img src="/feedback.png" /></a>), mail_to('feedback@example.com', '<img src="/feedback.png" />'.html_safe)
   end
 
   def test_mail_to_with_hex
@@ -562,6 +566,10 @@ class PolymorphicControllerTest < ActionView::TestCase
       render :inline => "<%= url_for([@workshop, @session]) %>\n<%= link_to('Session', [@workshop, @session]) %>"
     end
 
+    def show_workshop_of_nil_sessions
+      render :inline => "<%= workshop_sessions_path(nil) %>"
+    end
+
     def rescue_action(e) raise e end
   end
 
@@ -608,6 +616,16 @@ class PolymorphicControllerTest < ActionView::TestCase
     end
   end
 
+  def test_existing_nested_resource_with_nil_id
+    @controller = SessionsController.new
+
+    with_restful_routing do
+      assert_raise ActionController::RoutingError do
+        get :show_workshop_of_nil_sessions
+      end
+    end
+  end
+
   protected
     def with_restful_routing
       with_routing do |set|
@@ -615,6 +633,7 @@ class PolymorphicControllerTest < ActionView::TestCase
           map.resources :workshops do |w|
             w.resources :sessions
           end
+          map.show_workshop_of_nil_sessions 'sessions/show_workshop_of_nil_sessions', :controller => 'sessions', :action => 'show_workshop_of_nil_sessions'
         end
         yield
       end

@@ -9,6 +9,8 @@ require 'models/guid'
 require 'models/owner'
 require 'models/pet'
 require 'models/event'
+require 'models/man'
+require 'models/interest'
 
 # The following methods in Topic are used in test_conditional_validation_*
 class Topic
@@ -186,7 +188,7 @@ class ValidationsTest < ActiveRecord::TestCase
     end
   end
 
-  def test_single_error_per_attr_iteration
+  def test_single_error_string_per_attr_iteration
     r = Reply.new
     r.save
 
@@ -195,6 +197,17 @@ class ValidationsTest < ActiveRecord::TestCase
 
     assert errors.include?(["title", "Empty"])
     assert errors.include?(["content", "Empty"])
+  end
+
+  def test_single_error_object_per_attr_iteration
+    r = Reply.new
+    r.save
+
+    errors = []
+    r.errors.each_error { |attr, error| errors << [attr, error.attribute] }
+
+    assert errors.include?(["title", "title"])
+    assert errors.include?(["content", "content"])
   end
 
   def test_multiple_errors_per_attr_iteration_with_full_error_composition
@@ -354,6 +367,25 @@ class ValidationsTest < ActiveRecord::TestCase
     t.content = "like stuff"
 
     assert t.save
+  end
+
+  def test_validates_presence_of_belongs_to_association__parent_is_new_record
+    repair_validations(Interest) do
+      # Note that Interest and Man have the :inverse_of option set
+      Interest.validates_presence_of(:man)
+      man = Man.new(:name => 'John')
+      interest = man.interests.build(:topic => 'Airplanes')
+      assert interest.valid?, "Expected interest to be valid, but was not. Interest should have a man object associated"
+    end
+  end
+
+  def test_validates_presence_of_belongs_to_association__existing_parent
+    repair_validations(Interest) do
+      Interest.validates_presence_of(:man)
+      man = Man.create!(:name => 'John')
+      interest = man.interests.build(:topic => 'Airplanes')
+      assert interest.valid?, "Expected interest to be valid, but was not. Interest should have a man object associated"
+    end
   end
 
   def test_validate_uniqueness

@@ -400,11 +400,24 @@ module ActiveRecord
               find(:all)
             end
 
-          @reflection.options[:uniq] ? uniq(records) : records
+          records = @reflection.options[:uniq] ? uniq(records) : records
+          records.each do |record|
+            set_inverse_instance(record, @owner)
+          end
+          records
+        end
+
+        def add_record_to_target_with_callbacks(record)
+          callback(:before_add, record)
+          yield(record) if block_given?
+          @target ||= [] unless loaded?
+          @target << record unless @reflection.options[:uniq] && @target.include?(record)
+          callback(:after_add, record)
+          set_inverse_instance(record, @owner)
+          record
         end
 
       private
-
         def create_record(attrs)
           attrs.update(@reflection.options[:conditions]) if @reflection.options[:conditions].is_a?(Hash)
           ensure_owner_is_not_new
@@ -426,15 +439,6 @@ module ActiveRecord
           else
             add_record_to_target_with_callbacks(record)
           end
-        end
-
-        def add_record_to_target_with_callbacks(record)
-          callback(:before_add, record)
-          yield(record) if block_given?
-          @target ||= [] unless loaded?
-          @target << record unless @reflection.options[:uniq] && @target.include?(record)
-          callback(:after_add, record)
-          record
         end
 
         def remove_records(*records)

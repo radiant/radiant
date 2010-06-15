@@ -1,6 +1,7 @@
 require "cases/helper"
 require 'models/post'
 require 'models/author'
+require 'models/event_author'
 require 'models/topic'
 require 'models/reply'
 require 'models/category'
@@ -627,6 +628,16 @@ class BasicsTest < ActiveRecord::TestCase
     assert_equal -2, Topic.find(2).replies_count
   end
 
+  def test_reset_counters
+    assert_equal 1, Topic.find(1).replies_count
+
+    Topic.increment_counter("replies_count", 1)
+    assert_equal 2, Topic.find(1).replies_count
+
+    Topic.reset_counters(1, :replies)
+    assert_equal 1, Topic.find(1).replies_count
+  end
+
   def test_update_counter
     category = categories(:general)
     assert_nil category.categorizations_count
@@ -1003,6 +1014,18 @@ class BasicsTest < ActiveRecord::TestCase
     post.reload
     assert_equal "cannot change this", post.title
     assert_equal "changed", post.body
+  end
+
+  def test_multiparameter_attribute_assignment_via_association_proxy
+    multiparameter_date_attribute = {
+      "ends_on(1i)" => "2004", "ends_on(2i)" => "6", "ends_on(3i)" => "24",
+      "ends_on(4i)" => "16", "ends_on(5i)" => "24", "ends_on(6i)" => "00"
+    }
+
+    author = Author.create(:name => "dhh")
+    event  = author.events.create(multiparameter_date_attribute)
+    
+    assert_equal Time.local(2004,6,24,16,24,0),event.ends_on
   end
 
   def test_multiparameter_attributes_on_date
@@ -1620,6 +1643,12 @@ class BasicsTest < ActiveRecord::TestCase
     t1.save
     t2.reload
     assert_equal t1.title, t2.title
+  end
+
+  def test_reload_with_exclusive_scope
+    dev = DeveloperCalledDavid.first
+    dev.update_attributes!( :name => "NotDavid" )
+    assert_equal dev, dev.reload
   end
 
   def test_define_attr_method_with_value

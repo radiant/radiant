@@ -1,3 +1,45 @@
+*2.3.8 (May 24, 2010)*
+
+* Version bump.
+
+
+*2.3.7 (May 24, 2010)*
+
+* Version bump.
+
+
+*2.3.6 (May 23, 2010)*
+
+* Add index length support for MySQL. #1852 [Emili Parreno, Pratik Naik]
+
+  Example:
+
+    add_index(:accounts, :name, :name => 'by_name', :length => 10)
+    => CREATE INDEX by_name ON accounts(name(10))
+
+    add_index(:accounts, [:name, :surname], :name => 'by_name_surname', :length => {:name => 10, :surname => 15})
+    => CREATE INDEX by_name_surname ON accounts(name(10), surname(15))
+
+* find_or_create_by_attr(value, ...) works when attr is protected.  #4457 [Santiago Pastorino, Marc-André Lafortune]
+
+* JSON supports a custom root option: to_json(:root => 'custom')  #4515 [Jatinder Singh]
+
+* Destroy uses optimistic locking. If lock_version on the record you're destroying doesn't match lock_version in the database, a StaleObjectError is raised.  #1966 [Curtis Hawthorne]
+
+* To prefix the table names of all models in a module, define self.table_name_prefix on the module.  #4032 [Andrew White]
+
+* Association inverses for belongs_to, has_one, and has_many. Optimization to reduce database queries.  #3533 [Murray Steele]
+
+    # post.comments sets each comment's post without needing to :include
+    class Post < ActiveRecord::Base
+      has_many :comments, :inverse_of => :post
+    end
+
+* MySQL: add_ and change_column support positioning.  #3286 [Ben Marini]
+
+* Reset your Active Record counter caches with the reset_counter_cache class method.  #1211 [Mike Breen, Gabe da Silveira]
+
+
 *2.3.5 (November 25, 2009)*
 
 * Minor Bug Fixes and deprecation warnings
@@ -5,6 +47,7 @@
 * 1.9 Compatibility
 
 * Numerous fixes to the nested attributes functionality
+
 
 *2.3.4 (September 4, 2009)*
 

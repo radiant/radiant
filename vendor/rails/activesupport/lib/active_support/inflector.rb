@@ -1,6 +1,7 @@
 # encoding: utf-8
 require 'singleton'
 require 'iconv'
+require 'kconv'
 
 module ActiveSupport
   # The Inflector transforms words from singular to plural, class names to table names, modularized class names to ones without,
@@ -157,7 +158,7 @@ module ActiveSupport
     def singularize(word)
       result = word.to_s.dup
 
-      if inflections.uncountables.include?(result.downcase)
+      if inflections.uncountables.any? { |inflection| result =~ /#{inflection}\Z/i }
         result
       else
         inflections.singulars.each { |(rule, replacement)| break if result.gsub!(rule, replacement) }
@@ -257,10 +258,12 @@ module ActiveSupport
     #   <%= link_to(@person.name, person_path(@person)) %>
     #   # => <a href="/person/1-donald-e-knuth">Donald E. Knuth</a>
     def parameterize(string, sep = '-')
+      # remove malformed utf8 characters
+      string = string.toutf8 unless string.is_utf8?
       # replace accented chars with ther ascii equivalents
       parameterized_string = transliterate(string)
       # Turn unwanted chars into the seperator
-      parameterized_string.gsub!(/[^a-z0-9\-_\+]+/i, sep)
+      parameterized_string.gsub!(/[^a-z0-9\-_]+/i, sep)
       unless sep.blank?
         re_sep = Regexp.escape(sep)
         # No more than one of the separator in a row.

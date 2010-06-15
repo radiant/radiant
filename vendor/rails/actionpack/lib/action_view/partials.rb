@@ -218,10 +218,11 @@ module ActionView
             ActionController::RecordIdentifier.partial_path(object, controller.class.controller_path)
           template = _pick_partial_template(_partial_path)
           local_assigns[template.counter_name] = index
+          local_assigns["#{as.to_s}_counter".to_sym] = local_assigns[template.counter_name] if as
           result = template.render_partial(self, object, local_assigns.dup, as)
           index += 1
           result
-        end.join(spacer).html_safe!
+        end.join(spacer).html_safe
       end
 
       def _pick_partial_template(partial_path) #:nodoc:
