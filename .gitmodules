@@ -19,3 +19,6 @@
 [submodule "vendor/extensions/archive"]
 	path = vendor/extensions/archive
 	url = git://github.com/radiant/radiant-archive-extension.git
+[submodule "vendor/extensions/smarty_pants_filter"]
+	path = vendor/extensions/smarty_pants_filter
+	url = git://github.com/radiant/radiant-smarty_pants_filter-extension.git
