@@ -33,8 +33,3 @@ install Radiant:
 When using Radiant on a production system you may also need to set permissions
 on the public and cache directories so that your Web server can access those
 directories with the user that it runs under.
-
-Once you've installed Radiant on your own Web site, be sure to add your name
-and Web site to the list of radiant users:
-
-http://wiki.github.com/radiant/radiant/radiant-users
