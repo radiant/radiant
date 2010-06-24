@@ -70,4 +70,18 @@ describe TaskSupport do
       js_files.each { |f| f.should =~ /^[^\/]+.js$/ }
     end
   end
+
+  describe "self.cache_admin_js" do
+    before do
+      @js_files = [ 'a.js','b.js' ]
+      TaskSupport.stub!(:find_admin_js).and_return(@js_files)
+      TaskSupport.stub!(:cache_files)
+    end
+
+    it "should cache all admin JS files as 'all.js'" do
+      TaskSupport.should_receive(:cache_files).with(
+        "#{Rails.root}/public/javascripts/admin", @js_files, 'all.js')
+      TaskSupport.cache_admin_js
+    end
+  end
 end
