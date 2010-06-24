@@ -97,6 +97,13 @@ namespace 'radiant' do
     end
   end
 
+  task :gem => [ :generate_cached_assets ]
+
+  desc "Generates cached assets from source files"
+  task :generate_cached_assets do
+    TaskSupport.cache_admin_js
+  end
+
   desc "Publish the release files to RubyForge."
   task :release => [:gem, :package] do
     files = ["gem", "tgz", "zip"].map { |ext| "pkg/#{PKG_FILE_NAME}.#{ext}" }

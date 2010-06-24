@@ -106,8 +106,7 @@ unless File.directory? "#{RAILS_ROOT}/app"
 
       desc "Update the cached assets for the admin UI"
       task :cached_assets do
-        dir = File.join(Rails.root, 'public', 'javascripts', 'admin')
-        TaskSupport.cache_files(dir, TaskSupport.find_admin_js, 'all.js')
+        TaskSupport.cache_admin_js
       end
 
       desc "Update config/boot.rb from your current radiant install"
