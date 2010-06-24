@@ -26,7 +26,7 @@ module NavigationHelpers
     when /login/i
       login_path(:format => format)
     when /preferences/i
-      edit_admin_preferences_path(:format => format)
+      admin_preferences_path(:format => format)
     when /snippets/i
       admin_snippets_path(:format => format)
     when /login/i

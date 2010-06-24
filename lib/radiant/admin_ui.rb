@@ -141,7 +141,7 @@ module Radiant
       nav << design
 
       settings = nav_tab("Settings")
-      settings << nav_item("Personal", "/admin/preferences/edit")
+      settings << nav_item("Personal", "/admin/preferences")
       settings << nav_item("Users", "/admin/users")
       settings << nav_item("Extensions", "/admin/extensions")
       nav << settings

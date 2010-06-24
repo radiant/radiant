@@ -2,6 +2,7 @@
 
 === Edge
 
+* Fixed a bug which could cause the preferences submenu to dissapear [Mario Visic, Jim Gay]
 * Fixed a bug PostgreSQL for creating pages with nested attributes [Andrew Cates]
 * Updated to Rails 2.3.8 [Jim Gay]
 * Added admin and Radius tag pagination [William Ross]

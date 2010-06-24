@@ -7,7 +7,7 @@ class Admin::PreferencesController < ApplicationController
   end
 
   def show
-    redirect_to :action => 'edit'
+    render :edit
   end
 
   def edit
@@ -20,11 +20,11 @@ class Admin::PreferencesController < ApplicationController
         redirect_to :action => 'show'
       else
         flash[:error] = t('preferences_controller.error_updating')
-        render :action => 'edit'
+        render :edit
       end
     else
       announce_bad_data
-      render :action => 'edit'
+      render :edit
     end
   end
 

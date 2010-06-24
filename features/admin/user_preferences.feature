@@ -16,3 +16,20 @@ Feature: Edit user preferences
       | existing  |
       | designer  |
       | non_admin |
+  
+  Scenario Outline: Save invalid preferences
+    Given I am logged in as "<username>"
+    When I open my preferences
+    And I fill in "Username" with ""
+    And I press "Save Changes"
+    Then I should be on the preferences screen
+    And I should see "this must not be blank"
+    And I should see "Personal"
+    
+    Examples:
+      | username  |
+      | admin     |
+      | another   |
+      | existing  |
+      | designer  |
+      | non_admin |
