@@ -25,6 +25,6 @@ describe Radiant::Version do
   
   it "should join the revisions into the version number" do
     Radiant::Version.to_s.should be_kind_of(String)
-    Radiant::Version.to_s.should == [Radiant::Version::Major, Radiant::Version::Minor, Radiant::Version::Tiny, Radiant::Version::Patch].join(".") 
+    Radiant::Version.to_s.should == [Radiant::Version::Major, Radiant::Version::Minor, Radiant::Version::Tiny, Radiant::Version::Patch].delete_if{|v| v.nil?}.join(".") 
   end
 end
