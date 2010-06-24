@@ -58,7 +58,7 @@ Cookie = {
   accept: function() {
     Cookie.set('b49f729efde9b2578ea9f00563d06e57', 'true');
     if (Cookie.get('b49f729efde9b2578ea9f00563d06e57') == 'true') {
-      Cookie.unset('b49f729efde9b2578ea9f00563d06e57');
+      Cookie.erase('b49f729efde9b2578ea9f00563d06e57');
       return true;
     }
     return false;
