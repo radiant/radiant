@@ -398,7 +398,7 @@ describe "Registry::Gem" do
     File.should_receive(:open).with(/example-1.0.0\.gem/, 'w').and_yield(@file)
     @gem.should_receive(:open).and_return(StringIO.new('test'))
     @file.should_receive(:write).with('test')
-    @gem.should_receive(:`).with("gem install example-1.0.0.gem")
+    @gem.should_receive(:`).with("gem install example")
     @gem.download
   end
 
