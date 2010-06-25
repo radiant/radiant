@@ -2,6 +2,7 @@
 
 === Edge
 
+* Pull in aggregate tags from the aggregation extension [John Muhl, Sean Cribbs, Jim Gay]
 * Fixed a bug which could cause the preferences submenu to dissapear [Mario Visic, Jim Gay]
 * Fixed a bug PostgreSQL for creating pages with nested attributes [Andrew Cates]
 * Updated to Rails 2.3.8 [Jim Gay]
