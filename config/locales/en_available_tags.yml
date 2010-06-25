@@ -2,6 +2,57 @@
 ---
 en:
   desc: 
+    aggregate-children-count: "Renders the total count of children of the aggregated pages.  Accepts the
+      same options as @<r:children:each />@.
+
+      *Usage*:
+      
+      <pre><code><r:aggregate urls=\"/section1; /section2; /section3\">
+        <r:children:count />
+      </r:aggregate></code></pre>"
+    aggregate-children-each: "Renders the contained block for each child of the aggregated pages.  Accepts the
+      same options as the plain @<r:children:each />@.
+
+      *Usage*:
+      
+      <pre><code><r:aggregate urls=\"/section1; /section2; /section3\">
+        <r:children:each>
+            ...
+        </r:children:each>
+      </r:aggregate></code></pre>"
+    aggregate-children-first: "Renders the first child of the aggregated pages.  Accepts the
+      same options as @<r:children:each />@.
+
+      *Usage*:
+      
+      <pre><code><r:aggregate urls=\"/section1; /section2; /section3\">
+        <r:children:first>
+            ...
+        </r:children:first>
+      </r:aggregate></code></pre>"
+    aggregate-children-last: "Renders the last child of the aggregated pages.  Accepts the
+      same options as @<r:children:each />@.
+
+      *Usage*:
+      
+      <pre><code><r:aggregate urls=\"/section1; /section2; /section3\">
+        <r:children:last>
+            ...
+        </r:children:last>
+      </r:aggregate></code></pre>"
+    aggregate-each: "Sets the scope to the individual aggregated page allowing you to
+      iterate through each of the listed urls.
+      
+      *Usage*:
+      
+      <pre><code><r:aggregate:each urls=\"/section1; /section2; /section3\"> ... </r:aggregate:each></code></pre>"
+    aggregate: "Aggregates the children of multiple URLs using the @urls@ attribute.
+      Useful for combining many different sections/categories into a single
+      feed or listing.
+      
+      *Usage*:
+      
+      <pre><code><r:aggregate urls=\"/section1; /section2; /section3\"> ... </r:aggregate></code></pre>"
     author: "Renders the name of the author of the current page."
     breadcrumb: "Renders the @breadcrumb@ attribute of the current page."
     breadcrumbs: "Renders a trail of breadcrumbs to the current page. The separator attribute
@@ -88,12 +139,20 @@ en:
       </code></pre>"
     children-each: "Cycles through each of the children. Inside this tag all page attribute tags
       are mapped to the current child page.
+      
+      Supply @paginated=\"true\"@ to paginate the displayed list. will_paginate view helper
+      options can also be specified, including @per_page@, @previous_label@, @next_label@,
+      @class@, @separator@, @inner_window@ and @outer_window@.
 
       *Usage:*
       
       <pre><code><r:children:each [offset=\"number\"] [limit=\"number\"]
        [by=\"published_at|updated_at|created_at|slug|title|keywords|description\"]
-       [order=\"asc|desc\"] [status=\"draft|reviewed|published|hidden|all\"]>
+       [order=\"asc|desc\"] 
+       [status=\"draft|reviewed|published|hidden|all\"]
+       [paginated=\"true\"]
+       [per_page=\"number\"]
+       >
        ...
       </r:children:each>
       </code></pre>"
@@ -157,6 +216,17 @@ en:
       *Usage:*
 
       <pre><code><r:find url=\"value_to_find\">...</r:find></code></pre>"
+    gravatar: "Renders the Gravatar of the author of the current page or the named user.
+
+      *Usage:*
+
+      <pre><code><r:gravatar /></code></pre>
+
+      or
+
+      <pre><code><r:gravatar [name=\"User Name\"]
+            [rating=\"G | PG | R | X\"]
+            [size=\"32px\"] /></code></pre>"
     if_ancestor_or_self: "Renders the contained elements if the current contextual page is either the actual page or one of its parents.
 
       This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is or descends from the current page.
@@ -309,6 +379,15 @@ en:
       *Usage:*
       
       <pre><code><r:page>...</r:page></code></pre>"
+    pagination: "The pagination tag is not usually called directly. Supply paginated=\"true\" when you display a list and it will
+      be automatically display only the current page of results, with pagination controls at the bottom.
+
+      *Usage:*
+      
+      <pre><code><r:children:each paginated=\"true\" per_page=\"50\" container=\"false\" previous_label=\"foo\" next_label=\"bar\">
+        <r:child>...</r:child>
+      </r:children:each>
+      </code></pre>"
     parent: "Page attribute tags inside this tag refer to the parent of the current page.
 
       *Usage:*
