@@ -229,10 +229,9 @@ describe Page do
   it 'should be published status when published_at is in the past' do
     #current time 01-29-2010
     scheduled_time = '2010-1-1'
-    @page = Page.new(page_params(:status_id => '90', :published_at => scheduled_time))
+    @page = Page.new(page_params(:status_id => Status[:scheduled].id, :published_at => scheduled_time))
     @page.save
-    @page.status_id.should == 100
-
+    @page.status_id.should == Status[:published].id
   end
   
   it "should answer the page's url" do
