@@ -1,6 +1,6 @@
 == Change Log
 
-=== Edge
+=== 0.9.0 (June 25, 2010)
 
 * Pull in aggregate tags from the aggregation extension [John Muhl, Sean Cribbs, Jim Gay]
 * Fixed a bug which could cause the preferences submenu to dissapear [Mario Visic, Jim Gay]
@@ -12,9 +12,6 @@
 * Exposed important view locals for partials that hook into the admin UI [Mislav Marohnić]
 * Update to cucumber-rails 0.3.0 [Jim Gay]
 * Update to Haml 2.2.24 [Jim Gay]
-
-=== 0.9.0 RC2 (April 27, 2010)
-
 * Allow loading extension routes from the extension's config/routes.rb [Jim Gay]
 * Cache admin.js in update task [Janne Asmala]
 * Finally rename User.protected_attributes to unprotected_attributes [Jim Gay]
@@ -35,9 +32,6 @@
 * Prevent admin from removing her own admin privilege [Jim Gay]
 * Move to Rails 2.3.5 [Jim Gay]
 * Simplify admin tab API [Jim Gay, John Long, Sean Cribbs]
-
-=== 0.9.0 RC1 (October 9, 2009)
-
 * Turned on HAML's "ugly" whitespace mode in production [John Muhl]
 * Use HTML 5 doctype. [John Muhl]
 * Miscellaneous HTML standards improvements [John Muhl]
