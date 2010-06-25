@@ -40,4 +40,18 @@ describe Admin::PreferencesController do
     login_as :non_admin
     put :update, { :user => { :password => 'funtimes', :password_confirmation => 'funtimes' } }
   end
+  
+  describe "@body_classes" do
+    before do
+      login_as(:non_admin)
+    end
+    it "should return 'reversed' when the action_name is 'edit'" do
+      get :edit
+      assigns[:body_classes].should == ['reversed']
+    end
+    it "should return 'reversed' when the action_name is 'show'" do
+      get :show
+      assigns[:body_classes].should == ['reversed']
+    end
+  end
 end
