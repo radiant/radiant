@@ -5,8 +5,8 @@ unless defined? Radiant::Version
     module Version
       Major = '0'
       Minor = '9'
-      Tiny  = '0'
-      Patch = nil # set to nil for normal release
+      Tiny  = '1'
+      Patch = 'a' # set to nil for normal release
 
       class << self
         def to_s
