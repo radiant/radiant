@@ -83,7 +83,7 @@ namespace 'radiant' do
   namespace :gem do
     desc "Uninstall Gem"
     task :uninstall do
-      sudo = "sudo " unless RUBY_PLATFORM =~ /mswin|mingw/
+      sudo = "sudo " if ENV['SUDO'] == 'true'
       sh "#{sudo}gem uninstall #{PKG_NAME}" rescue nil
     end
 
@@ -91,7 +91,7 @@ namespace 'radiant' do
     task :install => [:gemspec, :package, :uninstall] do
       chdir("#{RADIANT_ROOT}/pkg") do
         latest = Dir["#{PKG_NAME}-*.gem"].last
-        sudo = "sudo " unless RUBY_PLATFORM =~ /mswin|mingw/
+        sudo = "sudo " if ENV['SUDO'] == 'true'
         sh "#{sudo}gem install #{latest}"
       end
     end
