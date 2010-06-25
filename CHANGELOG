@@ -2,6 +2,8 @@
 
 === Edge
 
+* Fixed a bug with status_id PostgreSQL [Jim Gay]
+
 === Refraction 0.9.0 (June 25, 2010)
 
 * Pull in aggregate tags from the aggregation extension [John Muhl, Sean Cribbs, Jim Gay]
