@@ -1,7 +1,8 @@
 == Change Log
 
-=== Edge
+=== Refraction 0.9.1 (June 27, 2010)
 
+* Added missing i18n translations for aggregate tages [Jim Gay]
 * Fixed a bug with status_id PostgreSQL [Jim Gay]
 
 === Refraction 0.9.0 (June 25, 2010)
