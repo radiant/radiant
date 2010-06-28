@@ -1,6 +1,7 @@
-require 'login_system'
+require_dependency 'login_system'
+require_dependency 'radiant/legacy_routes'
 
-class Radiant::AdminController < ApplicationController
+class ApplicationController < ActionController::Base
   include LoginSystem
   
   protect_from_forgery
