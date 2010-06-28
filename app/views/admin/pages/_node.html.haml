@@ -22,5 +22,4 @@
 
 - if expanded
   - page.children.each do |child|
-    - child.becomes(child.class_name.constantize) if child.class_name.present?
     = render_node child, :level => level + 1, :simple => simple
