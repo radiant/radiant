@@ -1,3 +1,6 @@
+require_dependency 'login_system'
+require_dependency 'radiant/legacy_routes'
+
 class ApplicationController < ActionController::Base
   include LoginSystem
   

@@ -1,3 +1,6 @@
+require_dependency 'radiant/pagination/link_renderer'
+require_dependency 'radiant/pagination/controller'
+
 class SiteController < ApplicationController
   include Radiant::Pagination::Controller
 

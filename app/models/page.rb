@@ -1,5 +1,8 @@
 require 'acts_as_tree'
 
+require_dependency 'radiant/taggable'
+require_dependency 'annotatable'
+
 class Page < ActiveRecord::Base
 
   class MissingRootPageError < StandardError
@@ -35,7 +38,6 @@ class Page < ActiveRecord::Base
 
   include Radiant::Taggable
   include StandardTags
-  include DeprecatedTags
   include Annotatable
 
   annotate :description
@@ -69,7 +71,6 @@ class Page < ActiveRecord::Base
   def child_path(child)
     clean_path(path + '/' + child.slug)
   end
-  alias_method :child_url, :child_path
 
   def headers
     # Return a blank hash that child classes can override or merge
@@ -127,7 +128,6 @@ class Page < ActiveRecord::Base
       clean_path(slug)
     end
   end
-  alias_method :url, :path
 
   def process(request, response)
     @request, @response = request, response
@@ -188,7 +188,6 @@ class Page < ActiveRecord::Base
       children.find(:first, :conditions => [condition] + file_not_found_names)
     end
   end
-  alias_method :find_by_url, :find_by_path
 
   def update_status
     self.published_at = Time.zone.now if published? && self.published_at == nil
@@ -226,10 +225,6 @@ class Page < ActiveRecord::Base
     def find_by_path(path, live = true)
       raise MissingRootPageError unless root
       root.find_by_path(path, live)
-    end
-    def find_by_url(*args)
-      ActiveSupport::Deprecation.warn("`find_by_url' has been deprecated; use `find_by_path' instead.", caller)
-      find_by_path(*args)
     end
 
     def date_column_names
@@ -340,7 +335,6 @@ class Page < ActiveRecord::Base
     def clean_path(path)
       "/#{ path.to_s.strip }/".gsub(%r{//+}, '/')
     end
-    alias_method :clean_url, :clean_path
 
     def parent?
       !parent.nil?
