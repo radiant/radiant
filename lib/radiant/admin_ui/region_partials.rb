@@ -16,6 +16,7 @@ class Radiant::AdminUI::RegionPartials
         raise "You can only pass a proc ('Proc.new') or a lambda that takes exactly one arg (for self) to Radiant::AdminUI::RegionPartials' method_missing."
       end
       @partials[method.to_s] = @template.capture(&block)
+      nil
     else
       @partials[method.to_s]
     end
