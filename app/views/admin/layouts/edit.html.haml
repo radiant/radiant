@@ -1,6 +1,6 @@
 - @page_title = @layout.name + ' ' + t('layout') + ' - ' + default_page_title
 
-- render_region :main do |main|
+= render_region :main do |main|
   - main.edit_header do
     %h1= t('edit_layout')       
   - main.edit_form do
