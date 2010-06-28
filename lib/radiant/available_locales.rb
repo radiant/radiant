@@ -1,3 +1,5 @@
+# require_dependency 'radiant/extension_loader'
+
 module Radiant::AvailableLocales
   
   # Returns the list of available locale files in options_for_select format.
