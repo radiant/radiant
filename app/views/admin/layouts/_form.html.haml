@@ -2,7 +2,7 @@
   = f.hidden_field :lock_version
   = render_region :form_top, :locals => {:f => f}
   .form_area
-    - render_region :form, :locals => {:f => f} do |form|
+    = render_region :form, :locals => {:f => f} do |form|
       - form.edit_title do
         %p.title
           = f.label :name, t('name')
@@ -22,7 +22,7 @@
           = f.label :layout_content, "Body"
           ~ f.text_area :content, :size => "40x20", :style => "width: 100%", :class => "textarea large"
   = javascript_tag "$('layout_name').activate()"
-  - render_region :form_bottom, :locals => {:f => f} do |form_bottom|
+  = render_region :form_bottom, :locals => {:f => f} do |form_bottom|
     - form_bottom.reference_links do
       %p
         %span.reference_links

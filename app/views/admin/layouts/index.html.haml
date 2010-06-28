@@ -5,7 +5,7 @@
   %table#layouts.index
     %thead
       %tr
-        - render_region :thead do |thead|
+        = render_region :thead do |thead|
           - thead.title_header do
             %th.layout
               = t('layout')
@@ -16,7 +16,7 @@
       - if @layouts.any?
         - @layouts.each do |layout|
           %tr.node.level_1
-            - render_region :tbody, :locals => {:layout => layout} do |tbody|
+            = render_region :tbody, :locals => {:layout => layout} do |tbody|
               - tbody.title_cell do
                 %td.layout
                   = image('layout', :alt => '')
@@ -28,7 +28,7 @@
         %tr
           %td.empty{:colspan => admin.layout.index.tbody.length}= t('no_layouts')
 
-- render_region :bottom do |bottom|
+= render_region :bottom do |bottom|
   - bottom.new_button do
     #actions
       = pagination_for(@layouts)
