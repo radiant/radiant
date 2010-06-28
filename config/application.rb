@@ -62,6 +62,23 @@ module Radiant
       AdminUI.instance.load_default_nav
     end
 
+    # FIXME: remove this after the extension system works again
+    config.autoload_paths += %W(
+      #{config.root}/vendor/extensions/archive/app/models
+      #{config.root}/vendor/extensions/archive/lib
+      #{config.root}/vendor/extensions/textile_filter/lib
+    )
+    config.to_prepare do
+      FileNotFoundPage
+      EnvDumpPage
+      ArchivePage
+      ArchiveYearIndexPage
+      ArchiveMonthIndexPage
+      ArchiveDayIndexPage
+      TextileFilter
+      Page.send(:include, TextileTags)
+    end
+
     config.secret_token = "4ac217d6512aae25ea83a25d58c30bed06520ac20ff8040da552f88d3046cf9103c1a7ca21254c9fc64a6f3dd59e00e206e7c410d612390be23d834b48f7b1e8"
 
     config.action_view.field_error_proc = Proc.new do |html, instance|
