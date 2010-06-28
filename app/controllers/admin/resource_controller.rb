@@ -1,3 +1,5 @@
+require_dependency 'radiant/resource_responses'
+
 class Admin::ResourceController < ApplicationController
   extend Radiant::ResourceResponses
   

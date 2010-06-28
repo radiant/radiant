@@ -1,3 +1,5 @@
+require_dependency 'local_time'
+
 module StandardTags
 
   include Radiant::Taggable

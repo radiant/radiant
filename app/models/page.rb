@@ -1,3 +1,6 @@
+require_dependency 'radiant/taggable'
+require_dependency 'annotatable'
+
 class Page < ActiveRecord::Base
 
   class MissingRootPageError < StandardError
