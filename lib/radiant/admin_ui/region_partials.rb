@@ -11,6 +11,7 @@ class Radiant::AdminUI::RegionPartials
   def method_missing(method, *args, &block)
     if block_given?
       @partials[method.to_s] = @template.capture(&block)
+      nil
     else
       @partials[method.to_s]
     end

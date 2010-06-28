@@ -8,7 +8,7 @@ module Admin::RegionsHelper
       block.call(default_partials)
       (options[:locals] ||= {}).merge!(:defaults => default_partials)
     end
-    output = @region_set[region].compact.map do |partial|
+    @region_set[region].compact.map do |partial|
       begin
         render options.merge(:partial => partial)
       rescue ::ActionView::MissingTemplate # couldn't find template
@@ -17,7 +17,6 @@ module Admin::RegionsHelper
         raise e
       end
     end.join.html_safe
-    block_given? ? concat(output) : output
   end
 
   def lazy_initialize_region_set
