@@ -5,7 +5,7 @@
   %table.index#pages{:summary=>t('page_hierarchy')}
     %thead
       %tr
-        - render_region :sitemap_head do |sitemap_head|
+        = render_region :sitemap_head do |sitemap_head|
           - sitemap_head.title_column_header do
             %th.name= t('page') 
           - sitemap_head.status_column_header do

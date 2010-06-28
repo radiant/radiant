@@ -5,7 +5,7 @@
 
 = render_region :form_top, :locals => {:f => fields}
 
-- render_region :form, :locals => {:f => fields} do |form|
+= render_region :form, :locals => {:f => fields} do |form|
   - form.edit_title do
     %p.title
       %label{:for=>"page_title"}= t('page_title')
@@ -49,7 +49,7 @@
         = fields.text_field :published_at, :class=> "date", :value => (@page.published_at? ? I18n.localize(@page.published_at.to_date, :format =>:long) : nil)
     = render_region :layout_row, :locals => {:f => fields}
 
-- render_region :form_bottom, :locals => {:f => fields} do |form_bottom|
+= render_region :form_bottom, :locals => {:f => fields} do |form_bottom|
   - form_bottom.edit_buttons do
     - @buttons_partials.each do |partial|
       = render :partial => partial, :locals => {:f => fields}

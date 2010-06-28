@@ -5,7 +5,7 @@
   %table.index#layouts
     %thead
       %tr
-        - render_region :thead do |thead|
+        = render_region :thead do |thead|
           - thead.title_header do
             %th.name
               = t('layout')
@@ -15,8 +15,8 @@
     %tbody
       - if @layouts.any?
         - @layouts.each do |layout|
-          %tr[layout]
-            - render_region :tbody, :locals => {:layout => layout} do |tbody|
+          %tr.node.level_1
+            = render_region :tbody, :locals => {:layout => layout} do |tbody|
               - tbody.title_cell do
                 %td.name
                   = link_to image('layout', :alt => '') + ' ' + layout.name, edit_admin_layout_url(layout)
@@ -27,7 +27,7 @@
         %tr
           %td.empty{:colspan => admin.layout.index.tbody.length}= t('no_layouts')
 
-- render_region :bottom do |bottom|
+= render_region :bottom do |bottom|
   - bottom.new_button do
     #actions
       = pagination_for(@layouts)
