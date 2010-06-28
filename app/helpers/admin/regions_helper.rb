@@ -1,3 +1,5 @@
+require_dependency 'radiant/admin_ui/region_partials'
+
 module Admin::RegionsHelper
   def render_region(region, options={}, &block)
     lazy_initialize_region_set
