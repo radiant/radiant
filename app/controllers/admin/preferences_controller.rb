@@ -8,7 +8,7 @@ class Admin::PreferencesController < ApplicationController
 
   def show
     set_standard_body_style
-    render :edit
+    render :edit, :layout => 'application'
   end
 
   def edit
