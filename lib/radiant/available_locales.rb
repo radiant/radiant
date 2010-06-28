@@ -2,8 +2,15 @@
 
 module Radiant::AvailableLocales
   
-  # Returns the list of available locale files in options_for_select format.
-  #
+  def self.locale_paths
+    root_locales = [ Rails.root + 'config/locales' ]
+    # unless root_locales.empty?
+    #   Radiant::ExtensionLoader.locale_paths.dup + root_locales
+    # else
+    #   Radiant::ExtensionLoader.locale_paths
+    # end
+  end
+    
   def self.locales
     available_locales = {}
     Radiant.configuration.i18n.load_path.each do |path|
