@@ -65,7 +65,7 @@ module ApplicationHelper
     else
       options.to_s
     end
-    request.request_uri =~ Regexp.new('^' + Regexp.quote(clean(url)))
+    request.fullpath =~ Regexp.new('^' + Regexp.quote(clean(url)))
   end
   
   def clean(url)
