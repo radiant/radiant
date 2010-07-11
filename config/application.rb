@@ -6,6 +6,8 @@ Bundler.require(:default, Rails.env) if defined?(Bundler)
 
 module Radiant
   class Application < Rails::Application
+    require 'radiant/core_ext'
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
@@ -62,21 +64,16 @@ module Radiant
       AdminUI.instance.load_default_nav
     end
 
-    # FIXME: remove this after the extension system works again
-    config.autoload_paths += %W(
-      #{config.root}/vendor/extensions/archive/app/models
-      #{config.root}/vendor/extensions/archive/lib
-      #{config.root}/vendor/extensions/textile_filter/lib
-    )
+    require 'radiant/extension'
+    Dir["#{config.root}/vendor/extensions/*/*_extension.rb"].each do |extension|
+      require extension
+    end
+
     config.to_prepare do
-      FileNotFoundPage
-      EnvDumpPage
-      ArchivePage
-      ArchiveYearIndexPage
-      ArchiveMonthIndexPage
-      ArchiveDayIndexPage
-      TextileFilter
-      Page.send(:include, TextileTags)
+      extensions = Radiant::Application.railties.engines.select { |e| e.is_a? Radiant::Extension }
+      extensions.each do |ext|
+        ext.activate if ext.respond_to? :activate
+      end
     end
 
     config.secret_token = "4ac217d6512aae25ea83a25d58c30bed06520ac20ff8040da552f88d3046cf9103c1a7ca21254c9fc64a6f3dd59e00e206e7c410d612390be23d834b48f7b1e8"
