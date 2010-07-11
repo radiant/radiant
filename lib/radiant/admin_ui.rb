@@ -88,7 +88,7 @@ module Radiant
       end
       
       def relative_url
-        File.join(ActionController::Base.relative_url_root || '', url)
+        File.join('', url)
       end
       
       private
