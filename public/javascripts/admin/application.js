@@ -68,8 +68,6 @@ Event.addBehavior({
   
   'table.index': RuledTableBehavior(),
   
-  'form': Status.FormBehavior(),
-  
   'form input.activate': function() {
     this.activate();
   },
