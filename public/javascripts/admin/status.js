@@ -162,9 +162,9 @@ Status.Window = Class.create({
   },
   
   show: function(modal) {
-    this.centerWindowInView();
     if (modal || Status.Modal) this._showModalOverlay();
     this.element.show();
+    this.centerWindowInView();
   },
   
   hide: function() {
