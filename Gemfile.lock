@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: git://github.com/rails/rails.git
-  revision: f33ee69
+  revision: 060ca6a
   specs:
     actionmailer (3.0.0.beta4)
       actionpack (= 3.0.0.beta4)
@@ -62,6 +62,13 @@ GEM
     arel (0.4.0)
       activesupport (>= 3.0.0.beta)
     builder (2.1.2)
+    capybara (0.3.9)
+      culerity (>= 0.2.4)
+      mime-types (>= 1.16)
+      nokogiri (>= 1.3.3)
+      rack (>= 1.0.0)
+      rack-test (>= 0.5.4)
+      selenium-webdriver (>= 0.0.3)
     cgi_multipart_eof_fix (2.5.0)
     cucumber (0.8.3)
       builder (~> 2.1.2)
@@ -71,6 +78,7 @@ GEM
       term-ansicolor (~> 1.0.4)
     cucumber-rails (0.3.2)
       cucumber (>= 0.8.0)
+    culerity (0.2.10)
     daemons (1.1.0)
     database_cleaner (0.5.2)
     dataset (1.3.2)
@@ -80,6 +88,8 @@ GEM
     erubis (2.6.6)
       abstract (>= 1.0.0)
     fastthread (1.0.7)
+    ffi (0.6.3)
+      rake (>= 0.8.7)
     gem_plugin (0.2.3)
     gherkin (2.0.2)
       trollop (~> 1.16.2)
@@ -107,11 +117,21 @@ GEM
       rack (>= 1.0)
     rake (0.8.7)
     rdiscount (1.5.8.1)
-    rspec (1.3.0)
-    rspec-rails (1.3.2)
-      rack (>= 1.0.0)
-      rspec (>= 1.3.0)
+    rspec (2.0.0.beta.17)
+      rspec-core (= 2.0.0.beta.17)
+      rspec-expectations (= 2.0.0.beta.17)
+      rspec-mocks (= 2.0.0.beta.17)
+    rspec-core (2.0.0.beta.17)
+    rspec-expectations (2.0.0.beta.17)
+      diff-lcs (>= 1.1.2)
+    rspec-mocks (2.0.0.beta.17)
+    rspec-rails (2.0.0.beta.17)
+      rspec (>= 2.0.0.beta.14)
+      webrat (>= 0.7.0)
     rubypants (0.2.0)
+    selenium-webdriver (0.0.24)
+      ffi (>= 0.6.1)
+      json_pure
     sqlite3-ruby (1.2.5)
     term-ansicolor (1.0.5)
     thor (0.13.7)
@@ -130,6 +150,7 @@ PLATFORMS
 DEPENDENCIES
   RedCloth (~> 4.2.2)
   acts_as_tree (~> 0.1.1)
+  capybara (~> 0.3.9)
   cucumber-rails (~> 0.3.0)
   database_cleaner (~> 0.5.0)
   dataset (~> 1.3.1)
@@ -141,8 +162,7 @@ DEPENDENCIES
   radius (= 0.7.0.prerelease)!
   rails (= 3.0.0.beta4)!
   rdiscount (~> 1.5.8)
-  rspec-rails (~> 1.3.2)
+  rspec-rails (~> 2.0.0.beta.8)
   rubypants (~> 0.2.0)
   sqlite3-ruby (~> 1.2.5)
-  webrat (~> 0.7.0)
   will_paginate (= 3.0.pre)!
