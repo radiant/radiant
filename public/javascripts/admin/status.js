@@ -212,27 +212,3 @@ Status.Window = Class.create({
     if (this.overlay) this.overlay.hide();
   }
 });
-
-Event.observe(document, 'dom:loaded', function() {
-  Status.preloadImages();
-});
-
-// Sets the status to string
-function setStatus(string) {
-  Status.window().setStatus(string);
-  if (Status.window().visible()) Status.window().centerWindowInView();
-}
-
-// Sets the status to string and shows the status window. If modal is passed
-// as true a white transparent div that covers the entire page is positioned
-// under the status window causing a diming effect and preventing stray mouse
-// clicks.
-function showStatus(string, modal) {
-  setStatus(string);
-  Status.window().show(modal);
-}
-
-// Hides the status window
-function hideStatus() {
-  Status.window().hide();
-}
