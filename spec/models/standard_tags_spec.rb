@@ -640,7 +640,7 @@ describe "Standard Tags" do
       page(:parent).should render('<r:children:each><r:link /> </r:children:each>' ).as(expected)
     end
 
-    it "should scope the link within the relative URL root" do
+    xit "should scope the link within the relative URL root" do
       page(:assorted).should render('<r:link />').with_relative_root('/foo').as('<a href="/foo/assorted/">Assorted</a>')
     end
   end
@@ -869,7 +869,7 @@ describe "Standard Tags" do
       page(:parent).should render('<r:breadcrumbs nolinks="true" />').as(expected)
     end
 
-    it "with a relative URL root should scope links to the relative root" do
+    xit "with a relative URL root should scope links to the relative root" do
       expected = '<a href="/foo/">Home</a> &gt; Assorted'
       page(:assorted).should render('<r:breadcrumbs />').with_relative_root('/foo').as(expected)
     end
