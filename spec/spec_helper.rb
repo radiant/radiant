@@ -3,72 +3,31 @@ unless defined? SPEC_ROOT
 
   SPEC_ROOT = File.expand_path(File.dirname(__FILE__))
 
-  unless defined? RADIANT_ROOT
-    if env_file = ENV["RADIANT_ENV_FILE"]
-      require env_file
-    else
-      require File.expand_path(SPEC_ROOT + "/../config/environment")
-    end
-  end
-  require 'spec'
-  require 'spec/rails'
+  require File.expand_path("../../config/environment", __FILE__)
+  require 'rspec/rails'
   require 'dataset'
+  require 'dataset/extensions/rspec'
 
-  module Kernel
-    def rputs(*args)
-      puts *["<pre>", args.collect {|a| CGI.escapeHTML(a.inspect)}, "</pre>"]
-    end
-  end
+  Dir["#{Rails.root}/spec/support/**/*.rb"].each {|f| require f}
 
-  class ActiveSupport::TestCase
-    include Dataset
-    datasets_directory "#{RADIANT_ROOT}/spec/datasets"
-    Dataset::ContextClassMethods.datasets_database_dump_path = File.expand_path(RAILS_ROOT + '/tmp/dataset')
+  RSpec.configure do |config|
+    include Spec::Rails::Matchers
+    
+    # == Mock Framework
+    #
+    # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
+    #
+    # config.mock_with :mocha
+    # config.mock_with :flexmock
+    # config.mock_with :rr
+    config.mock_with :rspec
 
-    class << self
-      # Class method for test helpers
-      def test_helper(*names)
-        names.each do |name|
-          name = name.to_s
-          name = $1 if name =~ /^(.*?)_test_helper$/i
-          name = name.singularize
-          first_time = true
-          begin
-            constant = (name.camelize + 'TestHelper').constantize
-            self.class_eval { include constant }
-          rescue NameError
-            filename = File.expand_path(SPEC_ROOT + '/../test/helpers/' + name + '_test_helper.rb')
-            require filename if first_time
-            first_time = false
-            retry
-          end
-        end
-      end
-      alias :test_helpers :test_helper
-    end
-  end
+    config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
-  Dir[RADIANT_ROOT + '/spec/matchers/*_matcher.rb'].each do |matcher|
-    require matcher
-  end
-
-  module Spec
-    module Application
-      module ExampleExtensions
-        def rails_log
-          log = IO.read(RAILS_ROOT + '/log/test.log')
-          log.should_not be_nil
-          log
-        end
-      end
-    end
-  end
-
-  Spec::Runner.configure do |config|
-    config.include Spec::Application::ExampleExtensions
-
+    # If you're not using ActiveRecord, or you'd prefer not to run each of your
+    # examples within a transaction, comment the following line or assign false
+    # instead of true.
     config.use_transactional_fixtures = true
     config.use_instantiated_fixtures  = false
-    config.fixture_path = RAILS_ROOT + '/spec/fixtures/'
   end
 end

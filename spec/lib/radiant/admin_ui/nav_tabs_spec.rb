@@ -90,11 +90,11 @@ describe Radiant::AdminUI::NavSubItem do
   
   describe "generating a relative url" do
     # TODO: provide an equivalent in Rails 3
-    xit "should return the original url when no relative_url_root is set" do
+    pending "should return the original url when no relative_url_root is set" do
       @subitem.relative_url.should == "/admin/pages"
     end
     
-    xit "should make the url relative to the relative_url_root when set" do
+    pending "should make the url relative to the relative_url_root when set" do
       ActionController::Base.relative_url_root = '/radiant'
       @subitem.relative_url.should == "/radiant/admin/pages"
     end

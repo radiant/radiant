@@ -16,12 +16,12 @@ describe "Standard Tags" do
     end
   end
 
-  xit "<r:url> with a nil relative URL root should scope to the relative root of /" do
+  pending "<r:url> with a nil relative URL root should scope to the relative root of /" do
     ActionController::Base.relative_url_root = nil
     page(:home).should render("<r:url />").as("/")
   end
 
-  xit '<r:url> with a relative URL root should scope to the relative root' do
+  pending '<r:url> with a relative URL root should scope to the relative root' do
     page(:home).should render("<r:url />").with_relative_root("/foo").as("/foo/")
   end
 
@@ -636,7 +636,7 @@ describe "Standard Tags" do
       page(:parent).should render('<r:children:each><r:link /> </r:children:each>' ).as(expected)
     end
 
-    xit "should scope the link within the relative URL root" do
+    pending "should scope the link within the relative URL root" do
       page(:assorted).should render('<r:link />').with_relative_root('/foo').as('<a href="/foo/assorted/">Assorted</a>')
     end
   end
@@ -859,7 +859,7 @@ describe "Standard Tags" do
       page(:parent).should render('<r:breadcrumbs nolinks="true" />').as(expected)
     end
 
-    xit "with a relative URL root should scope links to the relative root" do
+    pending "with a relative URL root should scope links to the relative root" do
       expected = '<a href="/foo/">Home</a> &gt; Assorted'
       page(:assorted).should render('<r:breadcrumbs />').with_relative_root('/foo').as(expected)
     end
