@@ -12,7 +12,7 @@ class Admin::PreferencesController < ApplicationController
   end
 
   def edit
-    render
+    render :layout => 'application'
   end
 
   def update
@@ -21,11 +21,11 @@ class Admin::PreferencesController < ApplicationController
         redirect_to admin_configuration_path
       else
         flash[:error] = t('preferences_controller.error_updating')
-        render :edit
+        render :edit, :layout => 'application'
       end
     else
       announce_bad_data
-      render :edit
+      render :edit, :layout => 'application'
     end
   end
 
