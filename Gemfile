@@ -1,6 +1,6 @@
 source :rubygems
 
-gem 'rails', '3.0.0.beta4', :require => nil, :git => 'git://github.com/rails/rails.git'
+gem 'rails', '3.0.0.beta4', :git => 'git://github.com/rails/rails.git'
 gem 'radius', '0.7.0.prerelease', :path => 'vendor/radius'
 
 gem 'RedCloth', '~> 4.2.2', :require => 'redcloth'
@@ -21,8 +21,8 @@ end
 group :test do
   gem 'cucumber-rails', '~> 0.3.0', :require => nil
   gem 'database_cleaner', '~> 0.5.0', :require => nil
-  gem 'webrat', '~> 0.7.0', :require => nil
-  gem 'rspec-rails', '~> 1.3.2', :require => 'spec/rails'
+  gem 'capybara', '~> 0.3.9', :require => nil
+  gem 'rspec-rails', '~> 2.0.0.beta.8'
   gem 'dataset', '~> 1.3.1', :require => nil
   # gem 'ruby-debug', '~> 0.10.3', :require => nil
 end
