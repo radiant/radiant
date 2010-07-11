@@ -60,7 +60,7 @@ describe Admin::PagesController do
   end
 
   describe "viewing the sitemap" do
-    integrate_views
+    render_views
 
     it "should render when the homepage is present" do
       get :index
@@ -229,7 +229,7 @@ describe Admin::PagesController do
   end
 
   describe "prompting page removal" do
-    integrate_views
+    render_views
 
     # TODO: This should be in a view or integration spec
     it "should render the expanded descendants of the page being removed" do

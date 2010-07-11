@@ -4,4 +4,6 @@
 require File.expand_path('../config/application', __FILE__)
 require 'rake'
 
+require 'dataset/tasks'
+
 Radiant::Application.load_tasks
