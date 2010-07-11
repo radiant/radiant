@@ -6,21 +6,16 @@
  * --------------------------------------------------------------------------
  * 
  * Allows you to display a status message when submiting a form. To use,
- * simply add the following to application.js:
+ * simply add the "data-onsubmit_status" attribute to a form:
  * 
- *   Event.addBehavior({'form': Status.FormBehavior()});
- * 
- * And then add an "onsubmit_status" to each form that you want to display
- * a status message on submit for:
- * 
- *   <form onsubmit_status="Saving changes" ...>
- * 
- * Some code taken from popup.js.
+ *   <form data-onsubmit_status="Saving changes" ...>
  * 
  * For more information, see:
  * 
  *   http://wiseheartdesign.com/articles/2009/12/16/statusjs-work-well-with-messages/
  * 
+ * Some code taken from popup.js.
+ *
  * --------------------------------------------------------------------------
  * 
  * Copyright (c) 2008-2009, John W. Long
@@ -69,6 +64,28 @@ Status.window = function() {
   return this.statusWindow;
 };
 
+// Sets the status to string and shows the status window. If modal is passed
+// as true a white transparent div that covers the entire page is positioned
+// under the status window causing a diming effect and preventing stray mouse
+// clicks.
+Status.show = function(string, modal) {
+  Status.window().setStatus(string);
+  Status.window().show(modal);
+};
+
+// Hides the status window
+Status.hide = function() {
+  Status.window().hide();
+};
+
+document.on('submit', 'form[data-onsubmit_status]', function(e, form) {
+  Status.show(form.readAttribute('data-onsubmit_status'));
+});
+
+document.on('click', 'a[data-onclick_status]', function(e, link) {
+  Status.show(link.readAttribute('data-onclick_status'));
+});
+
 Status.BackgroundImages = function() {
   return $A([
     Status.SpinnerImage,
@@ -90,20 +107,8 @@ Status.preloadImages = function() {
   }
 };
 
-Status.FormBehavior = Behavior.create({
-  initialize: function() {
-    var attr = this.element.attributes['data-onsubmit_status'];
-    if (attr) this.status = attr.value; 
-    if (this.status) this.element.observe('submit', function() { showStatus(this.status); }.bind(this));
-  }
-});
-
-Status.LinkBehavior = Behavior.create({
-  initialize: function() {
-    var attr = this.element.attributes['data-onclick_status'];
-    if (attr) this.status = attr.value; 
-    if (this.status) this.element.observe('click', function() { showStatus(this.status); }.bind(this));
-  }
+document.on('dom:loaded', function() {
+  Status.preloadImages();
 });
 
 Status.Window = Class.create({
