@@ -41,6 +41,26 @@ module Radiant
     def active?
       @active
     end
+    
+    def migrated?
+      migrator.new(:up, migrations_path).pending_migrations.empty?
+    end
+    
+    def enabled?
+      active? and migrated?
+    end
+    
+    def migrations_path
+      File.join(self.root, 'db', 'migrate')
+    end
+    
+    def migrator
+      unless @migrator
+        extension = self
+        @migrator = Class.new(ExtensionMigrator){ self.extension = extension }
+      end
+      @migrator
+    end
 
     def admin
       AdminUI.instance
@@ -92,17 +112,16 @@ module Radiant
       # def activate_extension
       #   return if instance.active?
       #   instance.activate if instance.respond_to? :activate
-      #   ActionController::Routing::Routes.add_configuration_file(instance.routing_file) if instance.routed?
-      #   ActionController::Routing::Routes.reload
       #   instance.active = true
       # end
       # alias :activate :activate_extension
-
+      #
       # def deactivate_extension
       #   return unless instance.active?
       #   instance.active = false
       #   instance.deactivate if instance.respond_to? :deactivate
       # end
+      # alias :deactivate :deactivate_extension
 
       def inherited(subclass)
         super
@@ -114,16 +133,23 @@ module Radiant
         superclass.subclasses
       end
 
-      def migrated?
-        migrator.new(:up, migrations_path).pending_migrations.empty?
-      end
+      # override the original method to compensate for some extensions
+      # not having a "lib" directory. also, don't traverse upwards beyond
+      # the "vendor/extensions" directory
+      def find_root_with_flag(flag, default = nil)
+        path = File.dirname(self.called_from)
+        default ||= path
 
-      def enabled?
-        active? and migrated?
-      end
+        while path && !File.exist?("#{path}/#{flag}") && !path.ends_with?('vendor/extensions')
+          parent_dir = File.dirname(path)
+          path = parent_dir != path && parent_dir
+        end
 
-      def migrations_path
-        File.join(self.root, 'db', 'migrate')
+        root = File.exist?("#{path}/#{flag}") ? path : default
+        raise "Could not find root path for #{self}" unless root
+
+        Config::CONFIG['host_os'] =~ /mswin|mingw/ ?
+          Pathname.new(root).expand_path : Pathname.new(root).realpath
       end
 
       def migrator
