@@ -83,7 +83,7 @@ module Radiant
     
     config.action_view.field_error_proc = Proc.new do |html, instance|
       if html !~ /label/
-        %{<span class="error-with-field">#{html} <span class="error">&bull; #{[instance.error_message].flatten.first}</span></span>}
+        %{<span class="error-with-field">#{html} <span class="error">&bull; #{[instance.error_message].flatten.first}</span></span>}.html_safe
       else
         html
       end
