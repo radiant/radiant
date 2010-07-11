@@ -89,12 +89,12 @@ module Spec
           @host = uri.host
           self
         end
-        
+
         private
           def render_content_with_page(tag_content, page)
             page.request = ActionController::TestRequest.new
             page.request.params[:sample_param] = 'data'
-            page.request.fullpath = @request_uri || page.url
+            page.request.request_uri = @request_uri || page.url
             page.request.host = @host || test_host
             page.response = ActionController::TestResponse.new
             if tag_content.nil?
