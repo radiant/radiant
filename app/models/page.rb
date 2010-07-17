@@ -246,17 +246,22 @@ class Page < ActiveRecord::Base
     end
 
     def load_subclasses
-      ([RADIANT_ROOT] + Radiant::Extension.descendants.map(&:root)).each do |path|
-        Dir["#{path}/app/models/*_page.rb"].each do |page|
-          $1.camelize.constantize if page =~ %r{/([^/]+)\.rb}
+      unless Radiant::Application.config.cache_classes
+        ActiveSupport::Dependencies.autoload_paths.grep(/\bmodels$/).each do |path|
+          Dir["#{path}/*_page.rb"].each do |file|
+            require file.sub("#{path}/", '')
+          end
         end
       end
-      if ActiveRecord::Base.connection.tables.include?('pages') && Page.column_names.include?('class_name') # Assume that we have bootstrapped
-        Page.connection.select_values("SELECT DISTINCT class_name FROM pages WHERE class_name <> '' AND class_name IS NOT NULL").each do |p|
+      if ActiveRecord::Base.connection.tables.include?('pages') && Page.column_names.include?('class_name')
+        # Assume that we have bootstrapped
+        Page.connection.select_values("SELECT DISTINCT class_name FROM pages WHERE class_name <> '' AND class_name IS NOT NULL").each do |page_klass|
           begin
-            p.constantize
+            page_klass.constantize
           rescue NameError, LoadError
-            eval(%Q{class #{p} < Page; def self.missing?; true end end}, TOPLEVEL_BINDING)
+            Object.const_set page_klass, Class.new(Page) {
+              def self.missing?() true end
+            }
           end
         end
       end
