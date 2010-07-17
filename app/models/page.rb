@@ -174,11 +174,11 @@ class Page < ActiveRecord::Base
     elsif (path =~ /^#{Regexp.quote(my_path)}([^\/]*)/)
       slug_child = children.find_by_slug($1)
       if slug_child
-        found = slug_child.find_by_url(path, live, clean) # TODO: set to find_by_path after deprecation
+        found = slug_child.find_by_path(path, live, clean)
         return found if found
       end
       children.each do |child|
-        found = child.find_by_url(path, live, clean) # TODO: set to find_by_path after deprecation
+        found = child.find_by_path(path, live, clean)
         return found if found
       end
       file_not_found_types = ([FileNotFoundPage] + FileNotFoundPage.descendants)
@@ -251,17 +251,22 @@ class Page < ActiveRecord::Base
     end
 
     def load_subclasses
-      ([RADIANT_ROOT] + Radiant::Extension.descendants.map(&:root)).each do |path|
-        Dir["#{path}/app/models/*_page.rb"].each do |page|
-          $1.camelize.constantize if page =~ %r{/([^/]+)\.rb}
+      unless Radiant::Application.config.cache_classes
+        ActiveSupport::Dependencies.autoload_paths.grep(/\bmodels$/).each do |path|
+          Dir["#{path}/*_page.rb"].each do |file|
+            require file.sub("#{path}/", '')
+          end
         end
       end
-      if ActiveRecord::Base.connection.tables.include?('pages') && Page.column_names.include?('class_name') # Assume that we have bootstrapped
-        Page.connection.select_values("SELECT DISTINCT class_name FROM pages WHERE class_name <> '' AND class_name IS NOT NULL").each do |p|
+      if ActiveRecord::Base.connection.tables.include?('pages') && Page.column_names.include?('class_name')
+        # Assume that we have bootstrapped
+        Page.connection.select_values("SELECT DISTINCT class_name FROM pages WHERE class_name <> '' AND class_name IS NOT NULL").each do |page_klass|
           begin
-            p.constantize
+            page_klass.constantize
           rescue NameError, LoadError
-            eval(%Q{class #{p} < Page; acts_as_tree; def self.missing?; true end end}, TOPLEVEL_BINDING)
+            Object.const_set page_klass, Class.new(Page) {
+              def self.missing?() true end
+            }
           end
         end
       end
