@@ -35,6 +35,8 @@ Event.addBehavior({
   
   'a.popup': Popup.TriggerBehavior(),
   
+  'a.dropdown': Dropdown.TriggerBehavior(),
+  
   'table#site_map': SiteMapBehavior(),
   
   'input#page_title': function() {
