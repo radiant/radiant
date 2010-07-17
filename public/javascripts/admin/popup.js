@@ -51,7 +51,8 @@ var Popup = {
   BorderTopLeftImage: '/images/popup_border_top_left.png',
   BorderTopRightImage: '/images/popup_border_top_right.png',
   BorderBottomLeftImage: '/images/popup_border_bottom_left.png',
-  BorderBottomRightImage: '/images/popup_border_bottom_right.png'
+  BorderBottomRightImage: '/images/popup_border_bottom_right.png',
+  Windows: []
 };
 
 Popup.borderImages = function() {
@@ -76,12 +77,11 @@ Popup.preloadImages = function() {
 
 Popup.TriggerBehavior = Behavior.create({
   initialize: function() {
-    var matches = this.element.href.match(/\#(.+)$/);
-    if (matches) {
-      this.window = new Popup.Window($(matches[1]));
-    } else {
-     this.window = new Popup.AjaxWindow(this.element.href);
-    }
+    if (!Popup.Windows[this.element.href]) {
+      var matches = this.element.href.match(/\#(.+)$/);
+      Popup.Windows[this.element.href] = (matches ? new Popup.Window($(matches[1])) : new Popup.AjaxWindow(this.element.href));
+    };
+    this.window = Popup.Windows[this.element.href];
   },
   
   onclick: function(event) {

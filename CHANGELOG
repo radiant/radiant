@@ -1,5 +1,9 @@
 == Change Log
 
+=== Edge
+
+* Popup.js fix for multiple control instances [Josh French]
+
 === Refraction 0.9.1 (June 27, 2010)
 
 * Added missing i18n translations for aggregate tages [Jim Gay]
