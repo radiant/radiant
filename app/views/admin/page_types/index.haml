@@ -1,0 +1,5 @@
+%li
+  = link_to 'Normal Page', new_admin_page_child_url(@page)
+%li.separator
+= list_of @options do |option|
+  = link_to option.name.to_name('Page'), new_admin_page_child_url(@page)
