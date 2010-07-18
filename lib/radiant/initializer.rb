@@ -4,13 +4,8 @@ $LOAD_PATH.unshift "#{RADIANT_ROOT}/vendor/rails/railties/lib"
 require 'initializer'
 require 'radiant/admin_ui'
 require 'radiant/extension_loader'
-require 'rails/plugin'
-
-class Rails::Plugin
-  def engine?
-    has_app_directory? and not @name =~ /^radiant-.*-extension$/
-  end
-end
+require 'radiant/extension_locator'
+require 'radiant/gem_locator'
 
 module Radiant
   autoload :Cache, 'radiant/cache'
@@ -35,6 +30,13 @@ module Radiant
       # TODO: Should figure out how to include this extension path only for the tests that need it
       paths.unshift(RADIANT_ROOT + "/test/fixtures/extensions") if env == "test"
       paths
+    end
+
+    def default_plugin_locators
+      locators = []
+      locators << Radiant::ExtensionLocator if defined? Gem
+      locators << Radiant::GemLocator if defined? Gem
+      locators << Rails::Plugin::FileSystemLocator
     end
     
     def extensions
