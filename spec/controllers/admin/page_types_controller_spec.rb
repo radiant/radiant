@@ -6,7 +6,7 @@ describe Admin::PageTypesController do
   describe "index" do
     before do
       login_as :admin
-      get :index, :page_id => pages(:home).id
+      get :index, :page_id => page_id(:home)
     end
 
     it "should assign @page object" do

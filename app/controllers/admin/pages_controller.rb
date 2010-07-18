@@ -18,6 +18,7 @@ class Admin::PagesController < Admin::ResourceController
 
   def new
     self.model = model_class.new_with_defaults(config)
+    initialize_page_class
     if params[:page_id].blank?
       self.model.slug = '/'
     end
@@ -44,5 +45,13 @@ class Admin::PagesController < Admin::ResourceController
       @meta << {:field => "breadcrumb", :type => "text_field", :args => [{:class => 'textbox', :maxlength => 160}]}
       @meta << {:field => "description", :type => "text_field", :args => [{:class => 'textbox', :maxlength => 200}]}
       @meta << {:field => "keywords", :type => "text_field", :args => [{:class => 'textbox', :maxlength => 200}]}
+    end
+
+    def initialize_page_class
+      if params[:page_class] && params[:page_class].constantize <= Page
+        self.model.class_name = params[:page_class]
+      end
+    rescue NameError => e
+      logger.warn "Wrong page class given in Pages#create: #{e.message}"
     end
 end
