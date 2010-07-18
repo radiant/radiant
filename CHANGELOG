@@ -2,6 +2,7 @@
 
 === Edge
 
+* Page-type select menu moved to Pages#index [Josh French]
 * Allow gem-extensions to override core views [Josh French]
 * Popup.js fix for multiple control instances [Josh French]
 
