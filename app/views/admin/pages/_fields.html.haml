@@ -1,5 +1,6 @@
 = fields.hidden_field :lock_version
 = fields.hidden_field :parent_id
+= fields.hidden_field :class_name
 
 = render_region :form_top, :locals => {:f => fields}
 
@@ -30,9 +31,6 @@
       %p
         = fields.label :layout_id, t('layout')
         = fields.select :layout_id, [[t('select.inherit') , '']] + Layout.find(:all).map { |s| [s.name, s.id] }
-      %p
-        = fields.label :class_name, t('page_type')  
-        = fields.select :class_name, [[t('select.normal'), '']] + Page.descendants.map { |p| [p.display_name, p.name] }.sort_by { |p| p.first }
       %p
         = fields.label :status_id, t('status')
         = fields.select :status_id, status_to_display
