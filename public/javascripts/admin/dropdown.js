@@ -67,12 +67,12 @@ Dropdown.TriggerBehavior = Behavior.create({
     this.options = options;
     
     var matches = this.element.href.match(/\#(.+)$/);
-    if (matches) this.menu = Dropdown.Menu.findOrCreate(matches[1]);
+    this.menu = (matches ? Dropdown.Menu.findOrCreate(matches[1]) : new Dropdown.AjaxMenu(this.element.href));
   },
   
   onclick: function(event) {
-    if (this.menu) this.menu.toggle(this.element, this.options);
     event.stop();
+    if (this.menu) this.menu.toggle(this.element, this.options);
   }
 });
 
@@ -152,6 +152,20 @@ Dropdown.Menu = Class.create({
     return this.wrapper.visible();
   }
   
+});
+
+Dropdown.AjaxMenu = Class.create(Dropdown.Menu, {
+  initialize: function(url) {
+    this.url = url;
+    this.element = $ul({'class': 'menu'});
+    this.wrapper = $div({'class': 'dropdown_wrapper', 'style': 'position: absolute; display: none'}, this.element);
+    document.body.insert(this.wrapper);
+  },
+
+  open: function($super, trigger, options) {
+    new Ajax.Updater(this.element, this.url, {asynchronous: false, method: "get", evalScripts: true, onComplete: $super});
+    $super(trigger, options);
+  },
 });
 
 Dropdown.Menu.findOrCreate = function(element) {
