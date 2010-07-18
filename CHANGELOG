@@ -2,6 +2,7 @@
 
 === Edge
 
+* Allow gem-extensions to override core views [Josh French]
 * Popup.js fix for multiple control instances [Josh French]
 
 === Refraction 0.9.1 (June 27, 2010)
