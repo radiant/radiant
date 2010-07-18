@@ -163,7 +163,10 @@ Dropdown.AjaxMenu = Class.create(Dropdown.Menu, {
   },
 
   open: function($super, trigger, options) {
-    new Ajax.Updater(this.element, this.url, {asynchronous: false, method: "get", evalScripts: true, onComplete: $super});
+    if (!this.loaded) {
+      new Ajax.Updater(this.element, this.url, {asynchronous: false, method: "get", evalScripts: true, onComplete: $super});
+      this.loaded = true;
+    };
     $super(trigger, options);
   },
 });
