@@ -4,6 +4,13 @@ $LOAD_PATH.unshift "#{RADIANT_ROOT}/vendor/rails/railties/lib"
 require 'initializer'
 require 'radiant/admin_ui'
 require 'radiant/extension_loader'
+require 'rails/plugin'
+
+class Rails::Plugin
+  def engine?
+    has_app_directory? and not @name =~ /^radiant-.*-extension$/
+  end
+end
 
 module Radiant
   autoload :Cache, 'radiant/cache'
