@@ -9,9 +9,8 @@ module Radiant
     def plugins
       gem_index = initializer.configuration.gems.inject({}) { |memo, gem| memo.update gem.specification => gem }
       specs = gem_index.keys.select do |spec|
-        spec.loaded_from && spec.name =~ /^radiant-.*-extension$/
-      end
-      specs.compact!
+        spec && spec.loaded_from && spec.name =~ /^radiant-.*-extension$/
+      end.compact
 
       require "rubygems/dependency_list"
 
