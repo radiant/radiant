@@ -2,16 +2,16 @@
 
 .outset
   = render_region :top
-  %table#site_map.index{:summary=>"Page hierarchy of the current site"}
+  %table.index#pages{:summary=>"Page hierarchy of the current site"}
     %thead
       %tr
         - render_region :sitemap_head do |sitemap_head|
           - sitemap_head.title_column_header do
             %th.page= t('page') 
           - sitemap_head.status_column_header do
-            %th.status= t('status')
-          - sitemap_head.modify_column_header do
-            %th.modify{:colspan=>"2"}= t('modify')
+            %th.status{:style=>"width: 8em"}= t('status')
+          - sitemap_head.actions_column_header do
+            %th.actions{:style=>"width: 18em"}= t('modify')
     %tbody
       - if @homepage
         = render_node @homepage

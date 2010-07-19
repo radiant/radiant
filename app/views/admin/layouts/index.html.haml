@@ -2,28 +2,28 @@
 
 .outset
   = render_region :top
-  %table#layouts.index
+  %table.index#layouts
     %thead
       %tr
         - render_region :thead do |thead|
           - thead.title_header do
-            %th.layout
+            %th.name
               = t('layout')
-          - thead.modify_header do
-            %th.modify
+          - thead.actions_header do
+            %th.actions{:style=>"width:9em"}
               = t('modify')
     %tbody
       - if @layouts.any?
         - @layouts.each do |layout|
-          %tr.node.level_1
+          %tr[layout]
             - render_region :tbody, :locals => {:layout => layout} do |tbody|
               - tbody.title_cell do
-                %td.layout
+                %td.name
                   = image('layout', :alt => '')
                   = link_to layout.name, edit_admin_layout_url(layout)
-              - tbody.modify_cell do
-                %td.remove
-                  = link_to t('remove'), remove_admin_layout_url(layout)
+              - tbody.actions_cell do
+                %td.actions
+                  = link_to image('minus') + ' ' + t('remove'), remove_admin_layout_url(layout), :class => "action"
       - else
         %tr
           %td.empty{:colspan => admin.layout.index.tbody.length}= t('no_layouts')

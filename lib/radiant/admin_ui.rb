@@ -165,8 +165,8 @@ module Radiant
           edit.form_bottom.concat %w{edit_buttons edit_timestamp}
         end
         page.index = RegionSet.new do |index|
-          index.sitemap_head.concat %w{title_column_header status_column_header modify_column_header}
-          index.node.concat %w{title_column status_column add_child_column remove_column}
+          index.sitemap_head.concat %w{title_column_header status_column_header actions_column_header}
+          index.node.concat %w{title_column status_column actions_column}
         end
         page.remove = page.children = page.index
         page.new = page._part = page.edit
@@ -187,8 +187,8 @@ module Radiant
           edit.form_bottom.concat %w{edit_buttons edit_timestamp}
         end
         user.index = RegionSet.new do |index|
-          index.thead.concat %w{title_header roles_header modify_header}
-          index.tbody.concat %w{title_cell roles_cell modify_cell}
+          index.thead.concat %w{title_header roles_header actions_header}
+          index.tbody.concat %w{title_cell roles_cell actions_cell}
           index.bottom.concat %w{new_button}
         end
         user.new = user.edit
@@ -204,8 +204,8 @@ module Radiant
         end
         snippet.index = RegionSet.new do |index|
           index.top.concat %w{}
-          index.thead.concat %w{title_header modify_header}
-          index.tbody.concat %w{title_cell modify_cell}
+          index.thead.concat %w{title_header actions_header}
+          index.tbody.concat %w{title_cell actions_cell}
           index.bottom.concat %w{new_button}
         end
         snippet.new = snippet.edit
@@ -221,8 +221,8 @@ module Radiant
         end
         layout.index = RegionSet.new do |index|
           index.top.concat %w{}
-          index.thead.concat %w{title_header modify_header}
-          index.tbody.concat %w{title_cell modify_cell}
+          index.thead.concat %w{title_header actions_header}
+          index.tbody.concat %w{title_cell actions_cell}
           index.bottom.concat %w{new_button}
         end
         layout.new = layout.edit

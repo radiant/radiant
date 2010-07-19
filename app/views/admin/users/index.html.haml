@@ -3,7 +3,7 @@
 = render_region :top
 
 .outset
-  %table#users.index
+  %table.index#users
     %thead
       %tr
         - render_region :thead do |thead|
@@ -11,25 +11,25 @@
             %th.user== #{t('name')} / #{t('username')}
           - thead.roles_header do
             %th.roles= t('roles')
-          - thead.modify_header do
-            %th.modify= t('modify')
+          - thead.actions_header do
+            %th.actions{:style=>"width:9em"}= t('modify')
     %tbody
       - @users.each do |user|
-        %tr.node.level_1
+        %tr[user]
           - render_region :tbody, :locals => {:user => user} do |tbody|
             - tbody.title_cell do
-              %td.user
+              %td.name
                 = link_to image_tag(gravatar_url(user.email, :size=>"32px"), :class=>"avatar avatar_32x32", :width=>32, :height=>32, :alt=>""), edit_admin_user_url(user)
                 = link_to user.name, edit_admin_user_url(user)
-                %span.login= h user.login
+                %span.login (#{h user.login})
             - tbody.roles_cell do
               %td.roles= roles(user)
-            - tbody.modify_cell do
-              %td.remove
+            - tbody.actions_cell do
+              %td.actions
                 - if user == current_user
-                  %span.disabled= t('remove')
+                  %span.action.disabled= image('minus_disabled') + ' ' + t('remove')
                 - else
-                  = link_to t('remove'), remove_admin_user_url(user)
+                  = link_to image('minus') + ' ' + t('remove'), remove_admin_user_url(user), :class => "action"
 
 - render_region :bottom do |bottom|
   - bottom.new_button do

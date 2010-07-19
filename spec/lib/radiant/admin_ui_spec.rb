@@ -52,7 +52,7 @@ describe Radiant::AdminUI do
     page.edit.form_bottom.should == %w{edit_buttons edit_timestamp}
     page.index.sitemap_head.should == %w{title_column_header
                                         status_column_header
-                                        modify_column_header}
+                                        actions_column_header}
     page.index.node.should == %w{title_column status_column add_child_column
                                   remove_column}
     page.remove.should === page.index
@@ -69,8 +69,8 @@ describe Radiant::AdminUI do
     snippet.edit.form_bottom.should == %w{edit_buttons edit_timestamp}
     snippet.index.should_not be_nil
     snippet.index.top.should == %w{}
-    snippet.index.thead.should == %w{title_header modify_header}
-    snippet.index.tbody.should == %w{title_cell modify_cell}
+    snippet.index.thead.should == %w{title_header actions_header}
+    snippet.index.tbody.should == %w{title_cell actions_cell}
     snippet.index.bottom.should == %w{new_button}
 
     snippet.new.should == snippet.edit
@@ -85,8 +85,8 @@ describe Radiant::AdminUI do
     layout.edit.form_bottom.should == %w{reference_links edit_buttons edit_timestamp}
     layout.index.should_not be_nil
     layout.index.top.should == %w{}
-    layout.index.thead.should == %w{title_header modify_header}
-    layout.index.tbody.should == %w{title_cell modify_cell}
+    layout.index.thead.should == %w{title_header actions_header}
+    layout.index.tbody.should == %w{title_cell actions_cell}
     layout.index.bottom.should == %w{new_button}
     
     layout.new.should == layout.edit
@@ -100,8 +100,8 @@ describe Radiant::AdminUI do
                                 edit_password edit_roles edit_locale edit_notes}
     user.edit.form_bottom.should == %w{edit_buttons edit_timestamp}
     user.index.should_not be_nil
-    user.index.thead.should == %w{title_header roles_header modify_header}
-    user.index.tbody.should == %w{title_cell roles_cell modify_cell}
+    user.index.thead.should == %w{title_header roles_header actions_header}
+    user.index.tbody.should == %w{title_cell roles_cell actions_cell}
     user.index.bottom.should == %w{new_button}
     user.preferences.main.should == %w{edit_header edit_form}
     user.preferences.form.should == %w{edit_name edit_email edit_username edit_password edit_locale}

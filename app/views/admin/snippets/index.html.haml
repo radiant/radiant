@@ -2,26 +2,26 @@
 
 .outset
   = render_region :top
-  %table#snippets.index
+  %table.index#snippets
     %thead
       %tr
         - render_region :thead do |thead|
           - thead.title_header do
             %th.snippet= t('snippet')
-          - thead.modify_header do
-            %th.modify= t('modify')
+          - thead.actions_header do
+            %th.actions{:style=>"width:9em"}= t('modify')
     %tbody
       - if @snippets.any?
         - @snippets.each do |snippet|
-          %tr.node.level_1
+          %tr[snippet]
             - render_region :tbody, :locals => {:snippet => snippet} do |tbody|
               - tbody.title_cell do
-                %td.snippet
+                %td.name
                   = image('snippet', :alt => '')
-                  %span= link_to snippet.name, edit_admin_snippet_url(snippet)
-              - tbody.modify_cell do
-                %td.remove
-                  = link_to t('remove'), remove_admin_snippet_url(snippet)
+                  = link_to snippet.name, edit_admin_snippet_url(snippet)
+              - tbody.actions_cell do
+                %td.actions
+                  = link_to image('minus') + ' ' + t('remove'), remove_admin_snippet_url(snippet), :class => "action"
       - else
         %tr
           %td.empty{:colspan => admin.snippet.index.tbody.length}= t('no_snippets')

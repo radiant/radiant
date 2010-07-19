@@ -39,7 +39,7 @@ end
 
 Then /^I should see all the snippets$/ do
   Snippet.all.each do |snippet|
-    response.body.should have_tag('tr.node') do
+    response.body.should have_tag('tr.snippet') do
       with_tag("a", :text => snippet.name)
     end
   end

@@ -1,0 +1,138 @@
+=status-badge($background, $color: white, $width: 4.5em)
+  color: $color
+  background: $background
+  display: block
+  padding: 0 6px
+  width: $width
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.25)
+  text-align: center
+  +round-corners(100px)
+
+table.index
+  font-size: 90%
+  margin-bottom: 2em
+  width: 100%
+  border-bottom: 1px solid white
+  th
+    text-align: left
+    background-color: #9e9e9e
+    color: white
+    font-size: 90%
+    font-weight: normal
+    padding: 2px 9px
+    &.actions
+      padding-left: 15px
+  td
+    text-align: left
+    padding: 4px 9px
+    border-top: 1px solid #f0f0f0
+    a.action, span.action.disabled
+      padding: 6px
+      margin: 0 25px 0 1px
+      img
+        vertical-align: -18%
+    a.action
+      color: black
+      text-decoration: none
+      &:hover
+        background: #eee url(../../images/admin/buttons_background.png) repeat-x
+        border: 1px solid #a5c9df
+        margin: 0 24px 0 0
+        +round-corners
+      &.selected
+        background: #c5e0f5
+        +v-gradient(#e5f5ff, #c5e0ff)
+        border: 1px solid #a5c9df
+        margin: 0 24px 0 0
+        +round-top-corners
+        +round-bottom-corners(0)
+    span.action.disabled
+      color: #ccc
+    &.empty
+      color: silver
+      font-size: 85%
+      font-style: italic
+      padding: 3em
+      text-align: center
+    &.name
+      font-size: 115%
+      font-weight: bold
+      img
+        vertical-align: center
+      a
+        color: black
+        text-decoration: none
+        &:hover
+          color: #0066cc
+          text-decoration: underline
+    &.actions
+      font-size: 85%
+  tr
+    &:first-child
+      border-top: 1px solid white
+    &.hover, &:hover
+      td
+        background: #c5dff5 url(../../images/admin/row_highlight.png) repeat-x center top
+        border-top: 1px solid #d5f0ff
+        border-bottom: 1px solid #c5dff5
+        +v-gradient(#e5f5ff, #c5dff5)
+
+table.index#pages
+  tr.page
+    &.level_0 td.name
+      font-size: 120%
+      font-weight: bold
+    &.level_1 td.name
+      font-size: 115%
+      font-weight: bold
+    &.level_2 td.name
+      font-size: 115%
+    &.level_3 td.name
+      font-size: 105%
+  td.name
+    font-size: 105%
+    a
+      text-decoration: none
+      .title
+        color: black
+        text-decoration: none
+      &:hover .title
+        color: #0066cc
+        text-decoration: underline
+    .info
+      color: #9eb3bf
+      font-style: italic
+      font-weight: normal
+      font-size: 90%
+  tr.page.virtual td.name a .title
+    color: #9eb3bf
+  td.name
+    .w1
+      position: relative
+      img.expander
+        left: -25px
+        position: absolute
+        padding: 6px 3px
+  td.status
+    font-size: 85%
+    .status
+      &.draft_status
+        +status-badge(#cc494c)
+      &.published_status
+        color: #666
+        font-size: 110%
+      &.hidden_status
+        +status-badge(#9eb3bf)
+
+table.index#users
+  td.name
+    padding-top: 8px
+    padding-bottom: 8px
+    img.avatar
+      margin-right: 4px
+      vertical-align: center
+    .login
+      color: #9eb3bf
+      font-size: 90%
+      font-style: italic
+      font-weight: normal

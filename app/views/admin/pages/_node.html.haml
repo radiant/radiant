@@ -1,7 +1,7 @@
-%tr.node.page{:class =>"level_#{level}#{children_class}#{virtual_class}", :id => "page_#{page.id}"}
+%tr.page{:class =>"level_#{level}#{children_class}#{virtual_class}", :id => "page_#{page.id}"}
   - render_region :node, :locals => {:page => page, :level => level, :simple => simple} do |node|
     - node.title_column do
-      %td.page{:style => "padding-left: #{padding_left(level)}px"}
+      %td.name{:style => "padding-left: #{padding_left(level)}px"}
         %span.w1
           - if simple
             = icon
@@ -12,13 +12,13 @@
             = spinner
     - node.status_column do
       - unless simple
-        %td.status{:class => "#{page.status.name.downcase}_status", :title => "#{timestamp(page.published_at) if page.published_at}"}= t(page.status.name.downcase)
-    - node.add_child_column do
+        %td.status
+          %span.status{:class => "#{page.status.name.downcase}_status", :title => "#{timestamp(page.published_at) if page.published_at}"}= t(page.status.name.downcase)
+    - node.actions_column do
       - unless simple
-        %td.add_child= link_to t('add_child'), admin_page_types_url(page), :class=>"action dropdown"
-    - node.remove_column do
-      - unless simple
-        %td.remove= link_to t('remove'), remove_admin_page_url(page)
+        %td.actions
+          = link_to image('plus') + ' ' + t('add_child'), admin_page_types_url(page), :class => "action dropdown"
+          = link_to image('minus') + ' ' + t('remove'), remove_admin_page_url(page), :class => "action"
 
 - if expanded
   - page.children.each do |child|

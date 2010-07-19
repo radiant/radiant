@@ -1,83 +1,25 @@
-=button-shadow
-  +box-shadow(1px, 2px, 4px, #333)
-  
 #actions
   position: fixed
   left: 0
   right: 0
   bottom: 0
-  background: #777 url(../../images/admin/shadow_grey.png) repeat-x
+  background: #777
   ul
     padding: 14px 8px
-    li
-      display: inline
-      margin-right: 5px
-      a
-        background: #eee url(../../images/admin/buttons_background.png) repeat-x
-        color: #333
-        font-size: 80%
-        padding: 8px 12px
-        text-decoration: none
-        text-shadow: 1px 1px 1px #eee
-        +round-corners(5px)
-        +button-shadow
-        &:hover
-          background: #fff
-          color: #06c
-          text-shadow: 1px 1px 1px #fff
-        &:active
-          background: #fff url(../../images/admin/shadow.png) repeat-x
-          color: #000
-          +no-box-shadow
-        img
-          vertical-align: -20%
-  .pagination
-    position: relative
-    overflow: hidden
-    float: right
-    margin-right: 24px
-    padding: 0 5px 5px 0
-    a, span.current, span.disabled
-      display: block
-      float: left
-      background: #fff url(../../images/admin/shadow.png) repeat-x
-      color: #999
-      font-size: 80%
-      padding: 6px 12px 6px 12px
-      margin-right: 1px
-      text-decoration: none
-      text-shadow: 1px 1px 1px #eee
-      +round-bottom-corners(5px)
-    a
-      &:hover
-        background: #fff url(../../images/admin/buttons_background.png) repeat-x
-        color: #06c
-        text-shadow: none
-        +button-shadow
-      &:active
-        background: #fff url(../../images/admin/shadow.png) repeat-x
-        color: #000
-        +no-box-shadow
-    span.disabled
-      +opacity(0.3)
-    span.current
-      color: #000
-      font-weight: bold
-      background-image: none
-      +button-shadow
-    span.gap
-      display: block
-      float: left
-      padding: 6px
-      color: #ccc
-  .depaginate
-    float: right
-    padding: 6px 12px
-    a
-      background: none
-      font-size: 80%
-      color: #eee
-      text-shadow: none
-      text-decoration: none
-      &:hover
-        color: #fff
+  li
+    display: inline
+    margin-right: 5px
+  a
+    background: #eee url(../../images/admin/buttons_background.png) repeat-x
+    color: #333
+    font-size: 80%
+    padding: 8px 12px
+    text-decoration: none
+    text-shadow: 1px 1px 1px #eee
+    +round-corners(5px)
+    &:hover
+      background: #fff
+      color: black
+      text-shadow: 1px 1px 1px #fff
+    img
+      vertical-align: -20%

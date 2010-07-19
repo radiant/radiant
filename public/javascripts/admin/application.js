@@ -37,7 +37,7 @@ Event.addBehavior({
   
   'a.dropdown': Dropdown.TriggerBehavior(),
   
-  'table#site_map': SiteMapBehavior(),
+  'table#pages': SiteMapBehavior(),
   
   'input#page_title': function() {
     var title = this;

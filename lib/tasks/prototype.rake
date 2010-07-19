@@ -8,19 +8,19 @@ namespace :radiant do
       desc "Import images from prototype"
       task :images do
         FileUtils.mkpath "public/images/admin"
-        FileUtils.cp_r "../prototype/images/admin", "public/images"
+        FileUtils.cp_r "../prototype/public/images/admin", "public/images"
       end
       
       desc "Import javascripts from prototype"
       task :javascripts do
         FileUtils.mkpath "public/javascripts/admin"
-        FileUtils.cp_r "../prototype/javascripts/admin", "public/javascripts"
+        FileUtils.cp_r "../prototype/public/javascripts/admin", "public/javascripts"
       end
       
       desc "Import styles from prototype"
       task :styles do
         FileUtils.mkpath "public/stylesheets/sass/admin"
-        FileUtils.cp_r "../prototype/stylesheets/admin", "public/stylesheets/sass"
+        FileUtils.cp_r "../prototype/views/stylesheets/admin", "public/stylesheets/sass"
         filename = 'public/stylesheets/sass/admin/main.sass'
         content = IO.read(filename)
         File.open(filename, "w") do |f|
