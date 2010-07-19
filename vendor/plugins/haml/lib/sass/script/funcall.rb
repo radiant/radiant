@@ -17,11 +17,21 @@ module Sass
       # @return [Array<Script::Node>]
       attr_reader :args
 
+      # Don't set the context for child nodes if this is `url()`,
+      # since `url()` allows quoted strings.
+      #
+      # @param context [Symbol]
+      # @see Node#context=
+      def context=(context)
+        super unless @name == "url"
+      end
+
       # @param name [String] See \{#name}
       # @param name [Array<Script::Node>] See \{#args}
       def initialize(name, args)
         @name = name
         @args = args
+        super()
       end
 
       # @return [String] A string representation of the function call
@@ -29,18 +39,36 @@ module Sass
         "#{name}(#{args.map {|a| a.inspect}.join(', ')})"
       end
 
+      # @see Node#to_sass
+      def to_sass(opts = {})
+        "#{dasherize(name, opts)}(#{args.map {|a| a.to_sass(opts)}.join(', ')})"
+      end
+
+      # Returns the arguments to the function.
+      #
+      # @return [Array<Node>]
+      # @see Node#children
+      def children
+        @args
+      end
+
+      protected
+
       # Evaluates the function call.
       #
       # @param environment [Sass::Environment] The environment in which to evaluate the SassScript
       # @return [Literal] The SassScript object that is the value of the function call
       # @raise [Sass::SyntaxError] if the function call raises an ArgumentError
-      def perform(environment)
+      def _perform(environment)
         args = self.args.map {|a| a.perform(environment)}
-        unless Haml::Util.has?(:public_instance_method, Functions, name) && name !~ /^__/
+        ruby_name = name.gsub('-', '_')
+        unless Haml::Util.has?(:public_instance_method, Functions, ruby_name) && ruby_name !~ /^__/
           return Script::String.new("#{name}(#{args.map {|a| a.perform(environment)}.join(', ')})")
         end
 
-        return Functions::EvaluationContext.new(environment.options).send(name, *args)
+        result = Functions::EvaluationContext.new(environment.options).send(ruby_name, *args)
+        result.options = environment.options
+        return result
       rescue ArgumentError => e
         raise e unless e.backtrace.any? {|t| t =~ /:in `(block in )?(#{name}|perform)'$/}
         raise Sass::SyntaxError.new("#{e.message} for `#{name}'")

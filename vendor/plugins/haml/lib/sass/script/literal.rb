@@ -21,14 +21,32 @@ module Sass::Script
     # @param value [Object] The object for \{#value}
     def initialize(value = nil)
       @value = value
+      super()
     end
 
-    # Evaluates the literal.
+    # Returns an empty array.
     #
-    # @param environment [Sass::Environment] The environment in which to evaluate the SassScript
-    # @return [Literal] This literal
-    def perform(environment)
-      self
+    # @return [Array<Node>] empty
+    # @see Node#children
+    def children
+      []
+    end
+
+    # Returns the options hash for this node.
+    #
+    # @return [{Symbol => Object}]
+    # @raise [Sass::SyntaxError] if the options hash hasn't been set.
+    #   This should only happen when the literal was created
+    #   outside of the parser and \{#to\_s} was called on it
+    def options
+      opts = super
+      return opts if opts
+      raise Sass::SyntaxError.new(<<MSG)
+The #options attribute is not set on this #{self.class}.
+  This error is probably occurring because #to_s was called
+  on this literal within a custom Sass function without first
+  setting the #option attribute.
+MSG
     end
 
     # The SassScript `and` operation.
@@ -84,7 +102,7 @@ module Sass::Script
       Sass::Script::Bool.new(!to_bool)
     end
 
-    # The SassScript default operation (e.g. `!a !b`, `"foo" "bar"`).
+    # The SassScript default operation (e.g. `$a $b`, `"foo" "bar"`).
     #
     # @param other [Literal] The right-hand side of the operator
     # @return [Script::String] A string containing both literals
@@ -93,7 +111,7 @@ module Sass::Script
       Sass::Script::String.new("#{self.to_s} #{other.to_s}")
     end
 
-    # The SassScript `,` operation (e.g. `!a, !b`, `"foo", "bar"`).
+    # The SassScript `,` operation (e.g. `$a, $b`, `"foo", "bar"`).
     #
     # @param other [Literal] The right-hand side of the operator
     # @return [Script::String] A string containing both literals
@@ -102,12 +120,25 @@ module Sass::Script
       Sass::Script::String.new("#{self.to_s}, #{other.to_s}")
     end
 
+    # The SassScript `=` operation
+    # (used for proprietary MS syntax like `alpha(opacity=20)`).
+    #
+    # @param other [Literal] The right-hand side of the operator
+    # @return [Script::String] A string containing both literals
+    #   separated by `"="`
+    def single_eq(other)
+      Sass::Script::String.new("#{self.to_s}=#{other.to_s}")
+    end
+
     # The SassScript `+` operation.
     #
     # @param other [Literal] The right-hand side of the operator
     # @return [Script::String] A string containing both literals
     #   without any separation
     def plus(other)
+      if other.is_a?(Sass::Script::String)
+        return Sass::Script::String.new(self.to_s + other.value, other.type)
+      end
       Sass::Script::String.new(self.to_s + other.to_s)
     end
 
@@ -129,7 +160,16 @@ module Sass::Script
       Sass::Script::String.new("#{self.to_s}/#{other.to_s}")
     end
 
-    # The SassScript unary `-` operation (e.g. `-!a`).
+    # The SassScript unary `+` operation (e.g. `+$a`).
+    #
+    # @param other [Literal] The right-hand side of the operator
+    # @return [Script::String] A string containing the literal
+    #   preceded by `"+"`
+    def unary_plus
+      Sass::Script::String.new("+#{self.to_s}")
+    end
+
+    # The SassScript unary `-` operation (e.g. `-$a`).
     #
     # @param other [Literal] The right-hand side of the operator
     # @return [Script::String] A string containing the literal
@@ -138,7 +178,7 @@ module Sass::Script
       Sass::Script::String.new("-#{self.to_s}")
     end
 
-    # The SassScript unary `/` operation (e.g. `/!a`).
+    # The SassScript unary `/` operation (e.g. `/$a`).
     #
     # @param other [Literal] The right-hand side of the operator
     # @return [Script::String] A string containing the literal
@@ -173,5 +213,24 @@ module Sass::Script
 
     # @raise [Sass::SyntaxError] if this literal isn't an integer
     def assert_int!; to_i; end
+
+    # Returns the string representation of this literal
+    # as it would be output to the CSS document.
+    #
+    # @return [String]
+    def to_s(opts = {})
+      raise Sass::SyntaxError.new("[BUG] All subclasses of Sass::Literal must implement #to_s.")
+    end
+    alias_method :to_sass, :to_s
+
+    protected
+
+    # Evaluates the literal.
+    #
+    # @param environment [Sass::Environment] The environment in which to evaluate the SassScript
+    # @return [Literal] This literal
+    def _perform(environment)
+      self
+    end
   end
 end

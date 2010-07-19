@@ -14,6 +14,7 @@ unless defined?(Sass::MERB_LOADED)
                               :css_location      => root + '/public/stylesheets',
                               :cache_location    => root + '/tmp/sass-cache',
                               :always_check      => env != "production",
+                              :quiet             => env != "production",
                               :full_exception    => env != "production")
   config = Merb::Plugins.config[:sass] || Merb::Plugins.config["sass"] || {}
 
@@ -23,27 +24,14 @@ unless defined?(Sass::MERB_LOADED)
 
   Sass::Plugin.options.merge!(config)
 
-  if version[0] > 0 || version[1] >= 9
+  require 'sass/plugin/rack'
+  class Sass::Plugin::MerbBootLoader < Merb::BootLoader
+    after Merb::BootLoader::RackUpApplication
 
-    class Merb::Rack::Application
-      def call_with_sass(env)
-        Sass::Plugin.check_for_updates
-        call_without_sass(env)
-      end
-      alias_method :call_without_sass, :call
-      alias_method :call, :call_with_sass
+    def self.run
+      # Apparently there's no better way than this to add Sass
+      # to Merb's Rack stack.
+      Merb::Config[:app] = Sass::Plugin::Rack.new(Merb::Config[:app])
     end
-
-  else
-
-    class MerbHandler
-      def process_with_sass(request, response)
-        Sass::Plugin.check_for_updates
-        process_without_sass(request, response)
-      end
-      alias_method :process_without_sass, :process
-      alias_method :process, :process_with_sass
-    end
-
   end
 end

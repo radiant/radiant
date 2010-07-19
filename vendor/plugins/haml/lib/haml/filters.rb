@@ -210,6 +210,23 @@ END
       end
     end
 
+    # Surrounds the filtered text with `<style>` and CDATA tags.
+    # Useful for including inline CSS.
+    module Css
+      include Base
+
+      # @see Base#render_with_options
+      def render_with_options(text, options)
+        <<END
+<style type=#{options[:attr_wrapper]}text/css#{options[:attr_wrapper]}>
+  /*<![CDATA[*/
+    #{text.rstrip.gsub("\n", "\n    ")}
+  /*]]>*/
+</style>
+END
+      end
+    end
+
     # Surrounds the filtered text with CDATA tags.
     module Cdata
       include Base
@@ -281,7 +298,7 @@ END
       end
     end
 
-    # Parses the filtered text with ERB, like an RHTML template.
+    # Parses the filtered text with ERB.
     # Not available if the {file:HAML_REFERENCE.md#suppress_eval-option `:suppress_eval`} option is set to true.
     # Embedded Ruby code is evaluated in the same context as the Haml template.
     module ERB
@@ -310,6 +327,7 @@ END
     end
     # An alias for the Textile filter,
     # since the only available Textile parser is RedCloth.
+    # @api public
     RedCloth = Textile
     Filters.defined['redcloth'] = RedCloth
 

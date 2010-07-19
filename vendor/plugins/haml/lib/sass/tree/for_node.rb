@@ -20,6 +20,13 @@ module Sass::Tree
 
     protected
 
+    # @see Node#to_src
+    def to_src(tabs, opts, fmt)
+      to = @exclusive ? "to" : "through"
+      "#{'  ' * tabs}@for $#{dasherize(@var, opts)} from #{@from.to_sass(opts)} #{to} #{@to.to_sass(opts)}" +
+        children_to_src(tabs, opts, fmt)
+    end
+
     # Runs the child nodes once for each time through the loop,
     # varying the variable each time.
     #
@@ -43,6 +50,18 @@ module Sass::Tree
         children += perform_children(environment)
       end
       children
+    end
+
+    # Returns an error message if the given child node is invalid,
+    # and false otherwise.
+    #
+    # {ExtendNode}s are valid within {ForNode}s.
+    #
+    # @param child [Tree::Node] A potential child node.
+    # @return [Boolean, String] Whether or not the child node is valid,
+    #   as well as the error message to display if it is invalid
+    def invalid_child?(child)
+      super unless child.is_a?(ExtendNode)
     end
   end
 end

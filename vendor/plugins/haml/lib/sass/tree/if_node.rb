@@ -38,6 +38,20 @@ module Sass::Tree
 
     protected
 
+    # @see Node#to_src
+    def to_src(tabs, opts, fmt, is_else = false)
+      name =
+        if !is_else; "if"
+        elsif @expr; "else if"
+        else; "else"
+        end
+      str = "#{'  ' * tabs}@#{name}"
+      str << " #{@expr.to_sass(opts)}" if @expr
+      str << children_to_src(tabs, opts, fmt)
+      str << @else.send(:to_src, tabs, opts, fmt, true) if @else
+      str
+    end
+
     # Runs the child nodes if the conditional expression is true;
     # otherwise, tries the \{#else} nodes.
     #
@@ -50,6 +64,18 @@ module Sass::Tree
       return perform_children(environment) if @expr.nil? || @expr.perform(environment).to_bool
       return @else.perform(environment) if @else
       []
+    end
+
+    # Returns an error message if the given child node is invalid,
+    # and false otherwise.
+    #
+    # {ExtendNode}s are valid within {IfNode}s.
+    #
+    # @param child [Tree::Node] A potential child node.
+    # @return [Boolean, String] Whether or not the child node is valid,
+    #   as well as the error message to display if it is invalid
+    def invalid_child?(child)
+      super unless child.is_a?(ExtendNode)
     end
   end
 end

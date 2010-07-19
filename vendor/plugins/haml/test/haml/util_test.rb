@@ -54,9 +54,70 @@ class UtilTest < Test::Unit::TestCase
       powerset([1, 2, 3]))
   end
 
+  def test_restrict
+    assert_equal(0.5, restrict(0.5, 0..1))
+    assert_equal(1, restrict(2, 0..1))
+    assert_equal(1.3, restrict(2, 0..1.3))
+    assert_equal(0, restrict(-1, 0..1))
+  end
+
   def test_merge_adjacent_strings
     assert_equal(["foo bar baz", :bang, "biz bop", 12],
       merge_adjacent_strings(["foo ", "bar ", "baz", :bang, "biz", " bop", 12]))
+    str = "foo"
+    assert_equal(["foo foo foo", :bang, "foo foo", 12],
+      merge_adjacent_strings([str, " ", str, " ", str, :bang, str, " ", str, 12]))
+  end
+
+  def test_intersperse
+    assert_equal(["foo", " ", "bar", " ", "baz"],
+      intersperse(%w[foo bar baz], " "))
+    assert_equal([], intersperse([], " "))
+  end
+
+  def test_substitute
+    assert_equal(["foo", "bar", "baz", 3, 4],
+      substitute([1, 2, 3, 4], [1, 2], ["foo", "bar", "baz"]))
+    assert_equal([1, "foo", "bar", "baz", 4],
+      substitute([1, 2, 3, 4], [2, 3], ["foo", "bar", "baz"]))
+    assert_equal([1, 2, "foo", "bar", "baz"],
+      substitute([1, 2, 3, 4], [3, 4], ["foo", "bar", "baz"]))
+
+    assert_equal([1, "foo", "bar", "baz", 2, 3, 4],
+      substitute([1, 2, 2, 2, 3, 4], [2, 2], ["foo", "bar", "baz"]))
+  end
+
+  def test_strip_string_array
+    assert_equal(["foo ", " bar ", " baz"],
+      strip_string_array([" foo ", " bar ", " baz "]))
+    assert_equal([:foo, " bar ", " baz"],
+      strip_string_array([:foo, " bar ", " baz "]))
+    assert_equal(["foo ", " bar ", :baz],
+      strip_string_array([" foo ", " bar ", :baz]))
+  end
+
+  def test_paths
+    assert_equal([[1, 3, 5], [2, 3, 5], [1, 4, 5], [2, 4, 5]],
+      paths([[1, 2], [3, 4], [5]]))
+    assert_equal([[]], paths([]))
+    assert_equal([[1, 2, 3]], paths([[1], [2], [3]]))
+  end
+
+  def test_lcs
+    assert_equal([1, 2, 3], lcs([1, 2, 3], [1, 2, 3]))
+    assert_equal([], lcs([], [1, 2, 3]))
+    assert_equal([], lcs([1, 2, 3], []))
+    assert_equal([1, 2, 3], lcs([5, 1, 4, 2, 3, 17], [0, 0, 1, 2, 6, 3]))
+
+    assert_equal([1], lcs([1, 2, 3, 4], [4, 3, 2, 1]))
+    assert_equal([1, 2], lcs([1, 2, 3, 4], [3, 4, 1, 2]))
+  end
+
+  def test_lcs_with_block
+    assert_equal(["1", "2", "3"],
+      lcs([1, 4, 2, 5, 3], [1, 2, 3]) {|a, b| a == b && a.to_s})
+    assert_equal([-4, 2, 8],
+      lcs([-5, 3, 2, 8], [-4, 1, 8]) {|a, b| (a - b).abs <= 1 && [a, b].max})
   end
 
   def test_silence_warnings
@@ -64,6 +125,20 @@ class UtilTest < Test::Unit::TestCase
     warn "Out"
     assert_equal("Out\n", $stderr.string)
     silence_warnings {warn "In"}
+    assert_equal("Out\n", $stderr.string)
+  ensure
+    $stderr = old_stderr
+  end
+
+  def test_haml_warn
+    assert_warning("Foo!") {haml_warn "Foo!"}
+  end
+
+  def test_silence_haml_warnings
+    old_stderr, $stderr = $stderr, StringIO.new
+    silence_haml_warnings {warn "Out"}
+    assert_equal("Out\n", $stderr.string)
+    silence_haml_warnings {haml_warn "In"}
     assert_equal("Out\n", $stderr.string)
   ensure
     $stderr = old_stderr
@@ -77,6 +152,69 @@ class UtilTest < Test::Unit::TestCase
   def test_enum_with_index
     assert_equal(%w[foo0 bar1 baz2],
       enum_with_index(%w[foo bar baz]).map {|s, i| "#{s}#{i}"})
+  end
+
+  def test_enum_cons
+    assert_equal(%w[foobar barbaz],
+      enum_cons(%w[foo bar baz], 2).map {|s1, s2| "#{s1}#{s2}"})
+  end
+
+  def test_ord
+    assert_equal(102, ord("f"))
+    assert_equal(98, ord("bar"))
+  end
+
+  def test_flatten
+    assert_equal([1, 2, 3], flatten([1, 2, 3], 0))
+    assert_equal([1, 2, 3], flatten([1, 2, 3], 1))
+    assert_equal([1, 2, 3], flatten([1, 2, 3], 2))
+
+    assert_equal([[1, 2], 3], flatten([[1, 2], 3], 0))
+    assert_equal([1, 2, 3], flatten([[1, 2], 3], 1))
+    assert_equal([1, 2, 3], flatten([[1, 2], 3], 2))
+
+    assert_equal([[[1], 2], [3], 4], flatten([[[1], 2], [3], 4], 0))
+    assert_equal([[1], 2, 3, 4], flatten([[[1], 2], [3], 4], 1))
+    assert_equal([1, 2, 3, 4], flatten([[[1], 2], [3], 4], 2))
+  end
+
+  def test_set_hash
+    assert(set_hash(Set[1, 2, 3]) == set_hash(Set[3, 2, 1]))
+    assert(set_hash(Set[1, 2, 3]) == set_hash(Set[1, 2, 3]))
+
+    s1 = Set[]
+    s1 << 1
+    s1 << 2
+    s1 << 3
+    s2 = Set[]
+    s2 << 3
+    s2 << 2
+    s2 << 1
+    assert(set_hash(s1) == set_hash(s2))
+  end
+
+  def test_set_eql
+    assert(set_eql?(Set[1, 2, 3], Set[3, 2, 1]))
+    assert(set_eql?(Set[1, 2, 3], Set[1, 2, 3]))
+
+    s1 = Set[]
+    s1 << 1
+    s1 << 2
+    s1 << 3
+    s2 = Set[]
+    s2 << 3
+    s2 << 2
+    s2 << 1
+    assert(set_eql?(s1, s2))
+  end
+
+  def test_caller_info
+    assert_equal(["/tmp/foo.rb", 12, "fizzle"], caller_info("/tmp/foo.rb:12: in `fizzle'"))
+    assert_equal(["/tmp/foo.rb", 12, nil], caller_info("/tmp/foo.rb:12"))
+    assert_equal(["(haml)", 12, "blah"], caller_info("(haml):12: in `blah'"))
+    assert_equal(["", 12, "boop"], caller_info(":12: in `boop'"))
+    assert_equal(["/tmp/foo.rb", -12, "fizzle"], caller_info("/tmp/foo.rb:-12: in `fizzle'"))
+    assert_equal(["/tmp/foo.rb", 12, "fizzle"], caller_info("/tmp/foo.rb:12: in `fizzle {}'"))
   end
 
   def test_def_static_method

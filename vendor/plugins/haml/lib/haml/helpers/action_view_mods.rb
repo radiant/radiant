@@ -85,7 +85,9 @@ module ActionView
       module CaptureHelper
         def capture_with_haml(*args, &block)
           if Haml::Helpers.block_is_haml?(block)
-            capture_haml(*args, &block)
+            str = capture_haml(*args, &block)
+            return ActionView::NonConcattingString.new(str) if defined?(ActionView::NonConcattingString)
+            return str
           else
             capture_without_haml(*args, &block)
           end
@@ -169,6 +171,22 @@ module ActionView
         alias_method :form_for_without_haml, :form_for
         alias_method :form_for, :form_for_with_haml
       end
+
+      module CacheHelper
+        # This is a workaround for a Rails 3 bug
+        # that's present at least through beta 3.
+        # Their fragment_for assumes that the block
+        # will return its contents as a string,
+        # which is not always the case.
+        # Luckily, it only makes this assumption if caching is disabled,
+        # so we only override that case.
+        def fragment_for_with_haml(*args, &block)
+          return fragment_for_without_haml(*args, &block) if controller.perform_caching
+          capture(&block)
+        end
+        alias_method :fragment_for_without_haml, :fragment_for
+        alias_method :fragment_for, :fragment_for_with_haml
+      end
     else
       module FormTagHelper
         def form_tag_with_haml(url_for_options = {}, options = {}, *parameters_for_url, &proc)
@@ -185,7 +203,10 @@ module ActionView
               concat haml_indent
             end
             res = form_tag_without_haml(url_for_options, options, *parameters_for_url, &proc) + "\n"
-            concat "\n" if block_given?
+            if block_given?
+              concat "\n"
+              return Haml::Helpers::ErrorReturn.new("form_tag")
+            end
             res
           else
             form_tag_without_haml(url_for_options, options, *parameters_for_url, &proc)
@@ -209,6 +230,7 @@ module ActionView
           end
           form_for_without_haml(object_name, *args, &proc)
           concat "\n" if block_given? && is_haml?
+          Haml::Helpers::ErrorReturn.new("form_for") if is_haml?
         end
         alias_method :form_for_without_haml, :form_for
         alias_method :form_for, :form_for_with_haml

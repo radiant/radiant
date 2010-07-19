@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 require File.dirname(__FILE__) + '/../test_helper'
+require File.dirname(__FILE__) + '/html2haml/erb_tests'
 require 'haml/html'
 
 class Html2HamlTest < Test::Unit::TestCase
-
   def test_empty_render_should_remain_empty
     assert_equal '', render('')
   end
@@ -35,14 +35,21 @@ class Html2HamlTest < Test::Unit::TestCase
   end
 
   def test_should_have_pretty_attributes
-    assert_equal_attributes('%input{ :type => "text", :name => "login" }',
+    assert_equal('%input{:name => "login", :type => "text"}/',
       render('<input type="text" name="login" />'))
-    assert_equal_attributes('%meta{ "http-equiv" => "Content-Type", :content => "text/html" }',
+    assert_equal('%meta{:content => "text/html", "http-equiv" => "Content-Type"}/',
       render('<meta http-equiv="Content-Type" content="text/html" />'))
   end
 
-  def test_sqml_comment
-    assert_equal "/\n  IE sucks", render('<!-- IE sucks -->')
+  def test_class_with_dot_and_hash
+    assert_equal('%div{:class => "foo.bar"}', render("<div class='foo.bar'></div>"))
+    assert_equal('%div{:class => "foo#bar"}', render("<div class='foo#bar'></div>"))
+    assert_equal('.foo.bar{:class => "foo#bar foo.bar"}', render("<div class='foo foo#bar bar foo.bar'></div>"))
+  end
+
+  def test_id_with_dot_and_hash
+    assert_equal('%div{:id => "foo.bar"}', render("<div id='foo.bar'></div>"))
+    assert_equal('%div{:id => "foo#bar"}', render("<div id='foo#bar'></div>"))
   end
 
   def test_interpolation
@@ -50,54 +57,7 @@ class Html2HamlTest < Test::Unit::TestCase
   end
 
   def test_interpolation_in_attrs
-    assert_equal('%p{ :foo => "\#{bar} baz" }', render('<p foo="#{bar} baz"></p>'))
-  end
-
-  def test_rhtml
-    assert_equal '- foo = bar', render_rhtml('<% foo = bar %>')
-    assert_equal '- foo = bar', render_rhtml('<% foo = bar -%>')
-    assert_equal '= h @item.title', render_rhtml('<%=h @item.title %>')
-    assert_equal '= h @item.title', render_rhtml('<%=h @item.title -%>')
-  end
-  
-  def test_rhtml_with_html_special_chars
-    assert_equal '= 3 < 5 ? "OK" : "Your computer is b0rken"',
-      render_rhtml(%Q{<%= 3 < 5 ? "OK" : "Your computer is b0rken" %>})
-  end
-  
-  def test_rhtml_in_class_attribute
-    assert_equal "%div{ :class => dyna_class }\n  I have a dynamic attribute",
-      render_rhtml(%Q{<div class="<%= dyna_class %>">I have a dynamic attribute</div>})
-  end
-  
-  def test_rhtml_in_id_attribute
-    assert_equal "%div{ :id => dyna_id }\n  I have a dynamic attribute",
-      render_rhtml(%Q{<div id="<%= dyna_id %>">I have a dynamic attribute</div>})
-  end
-  
-  def test_rhtml_in_attribute_results_in_string_interpolation
-    assert_equal %(%div{ :id => "item_\#{i}" }\n  Ruby string interpolation FTW),
-      render_rhtml(%Q{<div id="item_<%= i %>">Ruby string interpolation FTW</div>})
-  end
-  
-  def test_rhtml_in_attribute_with_trailing_content
-    assert_equal %(%div{ :class => "\#{12}!" }\n  Bang!),
-      render_rhtml(%Q{<div class="<%= 12 %>!">Bang!</div>})
-  end
-  
-  def test_rhtml_in_html_escaped_attribute
-    assert_equal %(%div{ :class => "foo" }\n  Bang!),
-      render_rhtml(%Q{<div class="<%= "foo" %>">Bang!</div>})
-  end
-  
-  def test_rhtml_in_attribute_to_multiple_interpolations
-    assert_equal %(%div{ :class => "\#{12} + \#{13}" }\n  Math is super),
-      render_rhtml(%Q{<div class="<%= 12 %> + <%= 13 %>">Math is super</div>})
-  end
-  
-  def test_whitespace_eating_erb_tags
-    assert_equal %(- form_for),
-      render_rhtml(%Q{<%- form_for -%>})
+    assert_equal('%p{:foo => "\#{bar} baz"}', render('<p foo="#{bar} baz"></p>'))
   end
 
   def test_cdata
@@ -116,13 +76,243 @@ HAML
 HTML
   end
 
-  def test_interpolation_in_rhtml
-    assert_equal('= "Foo #{bar} baz"', render_rhtml('<%= "Foo #{bar} baz" %>'))
+  def test_self_closing_tag
+    assert_equal("%foo/", render("<foo />"))
   end
 
-  def test_interpolation_in_rhtml_attrs
-    assert_equal('%p{ :foo => "#{bar} baz" }',
-      render_rhtml('<p foo="<%= "#{bar} baz" %>"></p>'))
+  def test_inline_text
+    assert_equal("%p foo", render("<p>foo</p>"))
+  end
+
+  def test_inline_comment
+    assert_equal("/ foo", render("<!-- foo -->"))
+    assert_equal(<<HAML.strip, render(<<HTML))
+/ foo
+%p bar
+HAML
+<!-- foo -->
+<p>bar</p>
+HTML
+  end
+
+  def test_non_inline_comment
+    assert_equal(<<HAML.rstrip, render(<<HTML))
+/
+  Foo
+  Bar
+HAML
+<!-- Foo
+Bar -->
+HTML
+  end
+
+  def test_non_inline_text
+    assert_equal(<<HAML.rstrip, render(<<HTML))
+%p
+  foo
+HAML
+<p>
+  foo
+</p>
+HTML
+    assert_equal(<<HAML.rstrip, render(<<HTML))
+%p
+  foo
+HAML
+<p>
+  foo</p>
+HTML
+    assert_equal(<<HAML.rstrip, render(<<HTML))
+%p
+  foo
+HAML
+<p>foo
+</p>
+HTML
+  end
+
+  def test_script_tag
+    assert_equal(<<HAML.rstrip, render(<<HTML))
+:javascript
+  function foo() {
+      return "12" & "13";
+  }
+HAML
+<script type="text/javascript">
+    function foo() {
+        return "12" &amp; "13";
+    }
+</script>
+HTML
+  end
+
+  def test_script_tag_with_cdata
+    assert_equal(<<HAML.rstrip, render(<<HTML))
+:javascript
+  function foo() {
+    return "&amp;";
+  }
+HAML
+<script type="text/javascript">
+  <![CDATA[
+    function foo() {
+      return "&amp;";
+    }
+  ]]>
+</script>
+HTML
+  end
+
+  def test_pre
+    assert_equal(<<HAML.rstrip, render(<<HTML))
+%pre
+  :preserve
+    foo
+      bar
+    baz
+HAML
+<pre>foo
+  bar
+baz</pre>
+HTML
+  end
+
+  def test_pre_code
+    assert_equal(<<HAML.rstrip, render(<<HTML))
+%pre
+  %code
+    :preserve
+      foo
+        bar
+      baz
+HAML
+<pre><code>foo
+  bar
+baz</code></pre>
+HTML
+  end
+
+  def test_code_without_pre
+    assert_equal(<<HAML.rstrip, render(<<HTML))
+%code
+  foo
+  bar
+  baz
+HAML
+<code>foo
+  bar
+baz</code>
+HTML
+  end
+
+  def test_conditional_comment
+    assert_equal(<<HAML.rstrip, render(<<HTML))
+/[if foo]
+  bar
+  baz
+HAML
+<!--[if foo]>
+  bar
+  baz
+<![endif]-->
+HTML
+  end
+
+  def test_style_to_css_filter
+    assert_equal(<<HAML.rstrip, render_erb(<<HTML))
+:css
+  foo {
+      bar: baz;
+  }
+HAML
+<style type="text/css">
+    foo {
+        bar: baz;
+    }
+</style>
+HTML
+  end
+
+  def test_inline_conditional_comment
+    assert_equal(<<HAML.rstrip, render(<<HTML))
+/[if foo] bar baz
+HAML
+<!--[if foo]> bar baz <![endif]-->
+HTML
+  end
+
+  def test_minus_in_tag
+    assert_equal("%p - foo bar -", render("<p>- foo bar -</p>"))
+  end
+
+  def test_equals_in_tag
+    assert_equal("%p = foo bar =", render("<p>= foo bar =</p>"))
+  end
+
+  def test_hash_in_tag
+    assert_equal("%p # foo bar #", render("<p># foo bar #</p>"))
+  end
+
+  def test_comma_post_tag
+    assert_equal(<<HAML.rstrip, render(<<HTML))
+#foo
+  %span> Foo
+  ,
+  %span bar
+  Foo
+  %span> bar
+  ,
+  %span baz
+HAML
+<div id="foo">
+  <span>Foo</span>, <span>bar</span>
+  Foo<span>bar</span>, <span>baz</span>
+</div>
+HTML
+  end
+
+  def test_comma_post_tag_with_text_before
+    assert_equal(<<HAML.rstrip, render(<<HTML))
+#foo
+  Batch
+  = succeed "," do
+    %span Foo
+  %span Bar
+HAML
+<div id="foo">
+  Batch
+  <span>Foo</span>, <span>Bar</span>
+</div>
+HTML
+  end
+
+  begin
+    require 'haml/html/erb'
+    include ErbTests
+  rescue LoadError => e
+    puts "\n** Couldn't require #{e.message[/-- (.*)$/, 1]}, skipping some tests"
+  end
+
+  # Encodings
+
+  unless Haml::Util.ruby1_8?
+    def test_encoding_error
+      render("foo\nbar\nb\xFEaz".force_encoding("utf-8"))
+      assert(false, "Expected exception")
+    rescue Haml::Error => e
+      assert_equal(3, e.line)
+      assert_equal('Invalid UTF-8 character "\xFE"', e.message)
+    end
+
+    def test_ascii_incompatible_encoding_error
+      template = "foo\nbar\nb_z".encode("utf-16le")
+      template[9] = "\xFE".force_encoding("utf-16le")
+      render(template)
+      assert(false, "Expected exception")
+    rescue Haml::Error => e
+      assert_equal(3, e.line)
+      assert_equal('Invalid UTF-16LE character "\xFE"', e.message)
+    end
   end
 
   # Regression Tests
@@ -140,13 +330,7 @@ HTML
     Haml::HTML.new(text, options).render.rstrip
   end
 
-  def render_rhtml(text)
-    render(text, :rhtml => true)
-  end
-
-  def assert_equal_attributes(expected, result)
-    expected_attr, result_attr = [expected, result].map { |s| s.gsub!(/\{ (.+) \}/, ''); $1.split(', ').sort }
-    assert_equal expected_attr, result_attr
-    assert_equal expected, result
+  def render_erb(text)
+    render(text, :erb => true)
   end
 end

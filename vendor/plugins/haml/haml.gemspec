@@ -10,7 +10,7 @@ HAML_GEMSPEC = Gem::Specification.new do |spec|
   spec.name = File.exist?(File.dirname(__FILE__) + '/EDGE_GEM_VERSION') ? 'haml-edge' : 'haml'
   spec.summary = "An elegant, structured XHTML/XML templating engine.\nComes with Sass, a similar CSS templating engine."
   spec.version = File.read(File.dirname(__FILE__) + '/VERSION').strip
-  spec.authors = ['Nathan Weizenbaum', 'Hampton Catlin']
+  spec.authors = ['Nathan Weizenbaum', 'Chris Eppstein', 'Hampton Catlin']
   spec.email = 'haml@googlegroups.com'
   spec.description = <<-END
       Haml (HTML Abstraction Markup Language) is a layer on top of XHTML or XML
@@ -25,27 +25,15 @@ HAML_GEMSPEC = Gem::Specification.new do |spec|
   spec.add_development_dependency 'yard', '>= 0.5.3'
   spec.add_development_dependency 'maruku', '>= 0.5.9'
 
-  have_revision = true
-  unless File.exist?('REVISION')
-    begin
-      # We need the revision file to exist,
-      # so we just create it if it doesn't.
-      # It'll usually just get overwritten, though.
-      File.open('REVISION', 'w') { |f| f.puts "(unknown)" }
-    rescue
-      # If the file can't be created (e.g. on Heroku) continue without it
-      have_revision = false
-    end
-  end
-
   readmes = FileList.new('*') do |list|
     list.exclude(/(^|[^.a-z])[a-z]+/)
     list.exclude('TODO')
-    list.include('REVISION') if have_revision
+    list.include('REVISION') if File.exist?('REVISION')
   end.to_a
-  spec.executables = ['haml', 'html2haml', 'sass', 'css2sass']
-  spec.files = FileList['rails/init.rb', 'lib/**/*', 'bin/*', 'test/**/*',
-    'extra/**/*', 'Rakefile', 'init.rb', '.yardopts'].to_a + readmes
+  spec.executables = ['haml', 'html2haml', 'sass', 'css2sass', 'sass-convert']
+  spec.files = FileList['rails/init.rb', 'lib/**/*', 'vendor/**/*',
+    'bin/*', 'test/**/*', 'extra/**/*', 'Rakefile', 'init.rb',
+    '.yardopts'].to_a + readmes
   spec.homepage = 'http://haml-lang.com/'
   spec.has_rdoc = true
   spec.extra_rdoc_files = readmes

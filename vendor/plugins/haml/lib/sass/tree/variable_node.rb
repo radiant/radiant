@@ -16,17 +16,22 @@ module Sass
 
       protected
 
+      # @see Node#to_src
+      def to_src(tabs, opts, fmt)
+        "#{'  ' * tabs}$#{dasherize(@name, opts)}: #{@expr.to_sass(opts)}#{' !default' if @guarded}#{semi fmt}\n"
+      end
+
       # Loads the new variable value into the environment.
       #
       # @param environment [Sass::Environment] The lexical environment containing
       #   variable and mixin values
       def _perform(environment)
-        if @guarded && environment.var(@name).nil?
-          environment.set_var(@name, @expr.perform(environment))
-        elsif !@guarded
-          environment.set_var(@name, @expr.perform(environment))
+        return [] if @guarded && !environment.var(@name).nil?
+        val = @expr.perform(environment)
+        if @expr.context == :equals && val.is_a?(Sass::Script::String)
+          val = Sass::Script::String.new(val.value)
         end
-
+        environment.set_var(@name, val)
         []
       end
     end

@@ -92,6 +92,13 @@ module Haml
         html_escape(text)
       end
     end
+
+    class ErrorReturn
+      # Any attempt to treat ErrorReturn as a string should cause it to blow up.
+      alias_method :html_safe, :to_s
+      alias_method :html_safe?, :to_s
+      alias_method :html_safe!, :to_s
+    end
   end
 end
 
@@ -112,7 +119,9 @@ module ActionView
 
     module FormTagHelper
       def form_tag_with_haml_xss(*args, &block)
-        Haml::Util.html_safe(form_tag_without_haml_xss(*args, &block))
+        res = form_tag_without_haml_xss(*args, &block)
+        res = Haml::Util.html_safe(res) unless block_given?
+        res
       end
       alias_method :form_tag_without_haml_xss, :form_tag
       alias_method :form_tag, :form_tag_with_haml_xss
@@ -120,7 +129,9 @@ module ActionView
 
     module FormHelper
       def form_for_with_haml_xss(*args, &block)
-        Haml::Util.html_safe(form_for_without_haml_xss(*args, &block))
+        res = form_for_without_haml_xss(*args, &block)
+        return Haml::Util.html_safe(res) if res.is_a?(String)
+        return res
       end
       alias_method :form_for_without_haml_xss, :form_for
       alias_method :form_for, :form_for_with_haml_xss

@@ -1,6 +1,3 @@
-require 'rubygems'
-require 'rake'
-
 # ----- Utility Functions -----
 
 def scope(path)
@@ -42,15 +39,19 @@ END
 
 # ----- Packaging -----
 
-require 'rake/gempackagetask'
-load scope('haml.gemspec')
+# Don't use Rake::GemPackageTast because we want prerequisites to run
+# before we load the gemspec.
+desc "Build all the packages."
+task :package => [:revision_file, :submodules] do
+  load scope('haml.gemspec')
+  Gem::Builder.new(HAML_GEMSPEC).build
+  pkg = "#{HAML_GEMSPEC.name}-#{HAML_GEMSPEC.version}"
+  mkdir_p "pkg"
+  verbose(true) {mv "#{pkg}.gem", "pkg/#{pkg}.gem"}
 
-Rake::GemPackageTask.new(HAML_GEMSPEC) do |pkg|
-  if Rake.application.top_level_tasks.include?('release')
-    pkg.need_tar_gz  = true
-    pkg.need_tar_bz2 = true
-    pkg.need_zip     = true
-  end
+  sh %{rm -f pkg/#{pkg}.tar.gz}
+  verbose(false) {HAML_GEMSPEC.files.each {|f| sh %{tar rf pkg/#{pkg}.tar #{f}}}}
+  sh %{gzip pkg/#{pkg}.tar}
 end
 
 task :revision_file do
@@ -65,16 +66,14 @@ task :revision_file do
     File.open(scope('REVISION'), 'w') { |f| f.puts "(unknown)" }
   end
 end
-Rake::Task[:package].prerequisites.insert(0, :revision_file)
 
 # We also need to get rid of this file after packaging.
 at_exit { File.delete(scope('REVISION')) rescue nil }
 
-desc "Install Haml as a gem."
+desc "Install Haml as a gem. Use SUDO=1 to install with sudo."
 task :install => [:package] do
-  sudo = RUBY_PLATFORM =~ /win32|mingw/ ? '' : 'sudo'
   gem  = RUBY_PLATFORM =~ /java/  ? 'jgem' : 'gem' 
-  sh %{#{sudo} #{gem} install --no-ri pkg/haml-#{File.read(scope('VERSION')).strip}}
+  sh %{#{'sudo ' if ENV["SUDO"]}#{gem} install --no-ri pkg/haml-#{File.read(scope('VERSION')).strip}}
 end
 
 desc "Release a new Haml package to Rubyforge."
@@ -83,8 +82,6 @@ task :release => [:check_release, :release_elpa, :package] do
   version = File.read(scope("VERSION")).strip
   sh %{rubyforge add_release haml haml "#{name} (v#{version})" pkg/haml-#{version}.gem}
   sh %{rubyforge add_file    haml haml "#{name} (v#{version})" pkg/haml-#{version}.tar.gz}
-  sh %{rubyforge add_file    haml haml "#{name} (v#{version})" pkg/haml-#{version}.tar.bz2}
-  sh %{rubyforge add_file    haml haml "#{name} (v#{version})" pkg/haml-#{version}.zip}
   sh %{gem push pkg/haml-#{version}.gem}
 end
 
@@ -94,12 +91,13 @@ task :release_elpa do
   require 'time'
   require scope('lib/haml')
 
+  next if Haml.version[:prerelease]
   version = Haml.version[:number]
 
   haml_unchanged = mode_unchanged?(:haml, version)
   sass_unchanged = mode_unchanged?(:sass, version)
   next if haml_unchanged && sass_unchanged
-  raise "haml-mode.el and sass-mode.el are out of sync." if haml_unchanged ^ sass_unchanged
+  raise "haml-mode.el and sass-mode.el are out of sync." if (!!haml_unchanged) ^ (!!sass_unchanged)
 
   if sass_unchanged && File.read(scope("extra/sass-mode.el")).
       include?(";; Package-Requires: ((haml-mode #{sass_unchanged.inspect}))")
@@ -171,6 +169,18 @@ def mode_unchanged?(mode, version)
   return false
 end
 
+task :submodules do
+  if File.exist?(File.dirname(__FILE__) + "/.git")
+    sh %{git submodule sync}
+    sh %{git submodule update --init}
+  elsif !File.exist?(File.dirname(__FILE__) + "/vendor/fssm/lib")
+    warn <<WARN
+WARNING: vendor/fssm doesn't exist, and this isn't a git repository so
+I can't get it automatically!
+WARN
+  end
+end
+
 task :release_edge do
   ensure_git_cleanup do
     puts "#{'=' * 50} Running rake release_edge"
@@ -180,14 +190,16 @@ task :release_edge do
     sh %{git merge origin/master}
 
     # Get the current master branch version
-    version = File.read(scope('VERSION')).strip.split('.').map {|n| n.to_i}
-    unless version[1] % 2 == 1 && version[2] == 0
+    version = File.read(scope('VERSION')).strip.split('.')
+    pr = version[3]
+    version = version.map {|n| n.to_i}
+    unless pr || (version[1] % 2 == 1 && version[2] == 0)
       raise "#{version.join('.')} is not a development version" 
     end
 
     # Bump the edge gem version
     edge_version = File.read(scope('EDGE_GEM_VERSION')).strip.split('.').map {|n| n.to_i}
-    if edge_version[0..1] != version[0..1]
+    if !pr && (edge_version[0..1] != version[0..1])
       # A new master branch version was released, reset the edge gem version
       edge_version[0..1] = version[0..1]
       edge_version[2] = 0
@@ -205,8 +217,8 @@ task :release_edge do
     sh %{rake package}
     sh %{git checkout VERSION}
 
-    sh %{rubyforge login}
     sh %{rubyforge add_release haml haml-edge "Bleeding Edge (v#{edge_version})" pkg/haml-edge-#{edge_version}.gem}
+    sh %{gem push pkg/haml-edge-#{edge_version}.gem}
   end
 end
 
@@ -250,12 +262,14 @@ OPTS
 
   YARD::Rake::YardocTask.new do |t|
     t.files = FileList.new(scope('lib/**/*.rb')) do |list|
-      list.exclude('lib/haml/template/*.rb')
+      list.exclude('lib/haml/template/patch.rb')
+      list.exclude('lib/haml/template/plugin.rb')
       list.exclude('lib/haml/railtie.rb')
       list.exclude('lib/haml/helpers/action_view_mods.rb')
       list.exclude('lib/haml/helpers/xss_mods.rb')
       list.exclude('lib/sass/plugin/merb.rb')
       list.exclude('lib/sass/plugin/rails.rb')
+      list.exclude('lib/sass/less.rb')
     end.to_a
     t.options << '--incremental' if Rake.application.top_level_tasks.include?('redoc')
     t.options += FileList.new(scope('yard/*.rb')).to_a.map {|f| ['-e', f]}.flatten
@@ -290,8 +304,18 @@ task :pages do
     sh %{git checkout #{proj}-pages}
     sh %{git reset --hard origin/#{proj}-pages}
 
-    sh %{rake build --trace}
-    sh %{rsync -av --delete site/ /var/www/#{proj}-pages}
+    Dir.chdir("/var/www/#{proj}-pages") do
+      sh %{git fetch origin}
+
+      sh %{git checkout stable}
+      sh %{git reset --hard origin/stable}
+
+      sh %{git checkout #{proj}-pages}
+      sh %{git reset --hard origin/#{proj}-pages}
+      sh %{rake build --trace}
+      sh %{mkdir -p tmp}
+      sh %{touch tmp/restart.txt}
+    end
   end
 end
 
@@ -358,7 +382,7 @@ rails_versions << "v2.0.5" if RUBY_VERSION =~ /^1\.8/
 
 def test_rails_version(version)
   Dir.chdir "test/rails" do
-    `git checkout #{version}`
+    sh %{git checkout #{version}}
   end
   puts "Testing Rails #{version}"
   Rake::Task['test'].reenable
@@ -368,14 +392,14 @@ end
 namespace :test do
   desc "Test all supported versions of rails. This takes a while."
   task :rails_compatibility do
-    `rm -rf test/rails`
+    sh %{rm -rf test/rails}
     puts "Checking out rails. Please wait."
-    system("git clone git://github.com/rails/rails.git test/rails") rescue nil
+    sh %{git clone git://github.com/rails/rails.git test/rails}
     begin
       rails_versions.each {|version| test_rails_version version}
 
       puts "Checking out rails_xss. Please wait."
-      system("git clone git://github.com/NZKoz/rails_xss.git test/plugins/rails_xss")
+      sh %{git clone git://github.com/NZKoz/rails_xss.git test/plugins/rails_xss}
       test_rails_version(rails_versions.find {|s| s =~ /^v2\.3/})
     ensure
       `rm -rf test/rails`
@@ -386,8 +410,22 @@ end
 
 # ----- Handling Updates -----
 
-def ensure_git_cleanup
+def email_on_error
   yield
+rescue Exception => e
+  IO.popen("sendmail nex342@gmail.com", "w") do |sm|
+    sm << "From: nex3@nex-3.com\n" <<
+      "To: nex342@gmail.com\n" <<
+      "Subject: Exception when running rake #{Rake.application.top_level_tasks.join(', ')}\n" <<
+      e.message << "\n\n" <<
+      e.backtrace.join("\n")
+  end
+ensure
+  raise e if e
+end
+
+def ensure_git_cleanup
+  email_on_error {yield}
 ensure
   sh %{git reset --hard HEAD}
   sh %{git clean -xdf}
@@ -395,29 +433,34 @@ ensure
 end
 
 task :handle_update do
-  unless ENV["REF"] =~ %r{^refs/heads/(master|(?:haml|sass)-pages)$}
-    puts "#{'=' * 20} Ignoring rake handle_update REF=#{ENV["REF"].inspect}"
-    next
+  email_on_error do
+    unless ENV["REF"] =~ %r{^refs/heads/(master|stable|(?:haml|sass)-pages)$}
+      puts "#{'=' * 20} Ignoring rake handle_update REF=#{ENV["REF"].inspect}"
+      next
+    end
+    branch = $1
+
+    puts
+    puts
+    puts '=' * 150
+    puts "Running rake handle_update REF=#{ENV["REF"].inspect}"
+
+    sh %{git fetch origin}
+    sh %{git checkout stable}
+    sh %{git reset --hard origin/stable}
+    sh %{git checkout master}
+    sh %{git reset --hard origin/master}
+
+    if branch == "master"
+      sh %{rake release_edge --trace}
+    elsif branch == "stable"
+      sh %{rake pages --trace PROJ=haml}
+      sh %{rake pages --trace PROJ=sass}
+    elsif branch =~ /^(haml|sass)-pages$/
+      sh %{rake pages --trace PROJ=#{$1}}
+    end
+
+    puts 'Done running handle_update'
+    puts '=' * 150
   end
-  branch = $1
-
-  puts
-  puts
-  puts '=' * 150
-  puts "Running rake handle_update REF=#{ENV["REF"].inspect}"
-
-  sh %{git checkout master}
-  sh %{git fetch origin}
-  sh %{git reset --hard origin/master}
-
-  if branch == "master"
-    sh %{rake release_edge --trace}
-    sh %{rake pages --trace PROJ=haml}
-    sh %{rake pages --trace PROJ=sass}
-  elsif branch =~ /^(haml|sass)-pages$/
-    sh %{rake pages --trace PROJ=#{$1}}
-  end
-
-  puts 'Done running handle_update'
-  puts '=' * 150
 end

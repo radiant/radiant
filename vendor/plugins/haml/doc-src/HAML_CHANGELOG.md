@@ -3,6 +3,447 @@
 * Table of contents
 {:toc}
 
+## 3.0.13
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.12).
+
+## Rails 3 Support
+
+Support for Rails 3 versions prior to beta 4 has been removed.
+Upgrade to Rails 3.0.0.beta4 if you haven't already.
+
+### Minor Improvements
+
+* Properly process frozen strings with encoding declarations.
+
+## 3.0.12
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.12).
+
+## Rails 3 Support
+
+Apparently the last version broke in new and exciting ways under Rails 3,
+due to the inconsistent load order caused by certain combinations of gems.
+3.0.12 hacks around that inconsistency, and *should* be fully Rails 3-compatible.
+
+### Deprecated: Rails 3 Beta 3
+
+Haml's support for Rails 3.0.0.beta.3 has been deprecated.
+Haml 3.0.13 will only support 3.0.0.beta.4.
+
+## 3.0.11
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.11).
+
+## 3.0.10
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.10).
+
+### Appengine-JRuby Support
+
+The way we determine the location of the Haml installation
+no longer breaks the version of JRuby
+used by [`appengine-jruby`](http://code.google.com/p/appengine-jruby/).
+
+### Bug Fixes
+
+* Single-line comments are now handled properly by `html2haml`.
+
+## 3.0.9
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.9).
+
+There were no changes made to Haml between versions 3.0.8 and 3.0.9.
+A bug in Gemcutter caused the gem to be uploaded improperly.
+
+## 3.0.8
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.8).
+
+* Fix a bug with Rails versions prior to Rails 3.
+
+## 3.0.7
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.7).
+
+### Encoding Support
+
+Haml 3.0.7 adds support for Ruby-style `-# coding:` comments
+for declaring the encoding of a template.
+For details see {file:HAML_REFERENCE.md#encodings the reference}.
+
+This also slightly changes the behavior of Haml when the
+{file:HAML_REFERENCE.md#encoding-option `:encoding` option} is not set.
+Rather than defaulting to `"utf-8"`,
+it defaults to the encoding of the source document,
+and only falls back to `"utf-8"` if this encoding is `"us-ascii"`.
+
+The `haml` executable also now takes an `-E` option for specifying encoding,
+which works the same way as Ruby's `-E` option.
+
+### Other Changes
+
+* Default to the {file:HAML_REFERENCE.md#format-option `:html5` format}
+  when running under Rails 3,
+  since it defaults to HTML5 as well.
+
+### Bug Fixes
+
+* When generating Haml for something like `<span>foo</span>,`,
+  use `= succeed` rather than `- succeed` (which doesn't work).
+
+## 3.0.6
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.6).
+
+### Rails 2.3.7 Support
+
+This release fully supports Rails 2.3.7.
+
+### Rails 2.3.6 Support Removed
+
+Rails 2.3.6 was released with various bugs related to XSS-protection
+and interfacing with Haml.
+Rails 2.3.7 was released shortly after with fixes for these bugs.
+Thus, Haml no longer supports Rails 2.3.6,
+and anyone using it should upgrade to 2.3.7.
+
+Attempting to use Haml with Rails 2.3.6 will cause an error.
+
+## 3.0.5
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.5).
+
+### Rails 2.3.6 Support
+
+This release hacks around various bugs in Rails 2.3.6,
+bringing Haml up to full compatibility.
+
+### Rails 3 Support
+
+Make sure the `#capture` helper in Rails 3
+doesn't print its value directly to the template.
+
+## 3.0.4
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.4).
+
+There were no changes made to Haml between versions 3.0.3 and 3.0.4.
+
+## 3.0.3
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.3).
+
+### Rails 3 Support
+
+In order to make some Rails loading errors easier to debug,
+Sass will now raise an error if `Rails.root` is `nil` when Sass is loading.
+Previously, this would just cause the paths to be mis-set.
+
+## 3.0.2
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.2).
+
+There were no changes made to Haml between versions 3.0.1 and 3.0.2.
+
+## 3.0.1
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.1).
+
+### Installation in Rails
+
+`haml --rails` is no longer necessary for installing Haml in Rails.
+Now all you need to do is add `gem "haml"` to the Gemfile for Rails 3,
+or add `config.gem "haml"` to `config/environment.rb` for previous versions.
+
+`haml --rails` will still work,
+but it has been deprecated and will print an error message.
+It will not work in the next version of Haml.
+
+### Rails Test Speed
+
+The {file:HAML_REFERENCE.md#ugly-option `:ugly` option} is now on by default
+in the testing environment in Rails to help tests run faster.
+
+## 3.0.0
+{#3-0-0}
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.0).
+
+### Backwards Incompatibilities: Must Read!
+
+* The `puts` helper has been removed.
+  Use {Haml::Helpers#haml\_concat} instead.
+
+### More Useful Multiline
+
+Ruby code can now be wrapped across multiple lines
+as long as each line but the last ends in a comma.
+For example:
+
+    = link_to_remote "Add to cart",
+        :url => { :action => "add", :id => product.id },
+        :update => { :success => "cart", :failure => "error" }
+
+### `haml_tag` and `haml_concat` Improvements
+
+#### `haml_tag` with CSS Selectors
+
+The {Haml::Helpers#haml_tag haml\_tag} helper can now take a string
+using the same class/id shorthand as in standard Haml code.
+Manually-specified class and id attributes are merged,
+again as in standard Haml code.
+For example:
+
+    haml_tag('#foo') #=> <div id='foo' />
+    haml_tag('.bar') #=> <div class='bar' />
+    haml_tag('span#foo.bar') #=> <span class='bar' id='foo' />
+    haml_tag('span#foo.bar', :class => 'abc') #=> <span class='abc bar' id='foo' />
+    haml_tag('span#foo.bar', :id => 'abc') #=> <span class='bar' id='abc_foo' />
+
+Cheers, [S. Burkhard](http://github.com/hasclass/).
+
+#### `haml_tag` with Multiple Lines of Content
+
+The {Haml::Helpers#haml_tag haml\_tag} helper also does a better job
+of formatting tags with multiple lines of content.
+If a tag has multiple levels of content,
+that content is indented beneath the tag.
+For example:
+
+    haml_tag(:p, "foo\nbar") #=>
+      # <p>
+      #   foo
+      #   bar
+      # </p>
+
+#### `haml_tag` with Multiple Lines of Content
+
+Similarly, the {Haml::Helpers#haml_concat haml\_concat} helper
+will properly indent multiple lines of content.
+For example:
+
+    haml_tag(:p) {haml_concat "foo\nbar"} #=>
+      # <p>
+      #   foo
+      #   bar
+      # </p>
+
+#### `haml_tag` and `haml_concat` with `:ugly`
+
+When the {file:HAML_REFERENCE.md#ugly-option `:ugly` option} is enabled,
+{Haml::Helpers#haml_tag haml\_tag} and {Haml::Helpers#haml_concat haml\_concat}
+won't do any indentation of their arguments.
+
+### Basic Tag Improvements
+
+* It's now possible to customize the name used for {file:HAML_REFERENCE.md#object_reference_ object reference}
+  for a given object by implementing the `haml_object_ref` method on that object.
+  This method should return a string that will be used in place of the class name of the object
+  in the generated class and id.
+  Thanks to [Tim Carey-Smith](http://twitter.com/halorgium).
+
+* All attribute values may be non-String types.
+  Their `#to_s` method will be called to convert them to strings.
+  Previously, this only worked for attributes other than `class`.
+  
+### `:class` and `:id` Attributes Accept Ruby Arrays
+
+In an attribute hash, the `:class` attribute now accepts an Array
+whose elements will be converted to strings and joined with <nobr>`" "`</nobr>.
+Likewise, the `:id` attribute now accepts an Array
+whose elements will be converted to strings and joined with `"_"`.
+The array will first be flattened and any elements that do not test as true
+will be stripped out. For example:
+
+    .column{:class => [@item.type, @item == @sortcol && [:sort, @sortdir]] }
+
+could render as any of:
+
+    class="column numeric sort ascending"
+    class="column numeric"
+    class="column sort descending"
+    class="column"
+
+depending on whether `@item.type` is `"numeric"` or `nil`,
+whether `@item == @sortcol`,
+and whether `@sortdir` is `"ascending"` or `"descending"`.
+
+A single value can still be specified.
+If that value evaluates to false it is ignored;
+otherwise it gets converted to a string.
+For example:
+
+    .item{:class => @item.is_empty? && "empty"}
+
+could render as either of:
+
+    class="item"
+    class="item empty"
+
+Thanks to [Ronen Barzel](http://www.ronenbarzel.org/).
+
+### HTML5 Custom Data Attributes
+
+Creating an attribute named `:data` with a Hash value
+will generate [HTML5 custom data attributes](http://www.whatwg.org/specs/web-apps/current-work/multipage/elements.html#embedding-custom-non-visible-data).
+For example:
+
+    %div{:data => {:author_id => 123, :post_id => 234}}
+
+Will compile to:
+
+    <div data-author_id='123' data-post_id='234'></div>
+
+Thanks to [John Reilly](http://twitter.com/johnreilly).
+
+### More Powerful `:autoclose` Option
+
+The {file:HAML_REFERENCE.md#attributes_option `:attributes`} option
+can now take regular expressions that specify which tags to make self-closing.
+
+### `--double-quote-attributes` Option
+
+The Haml executable now has a `--double-quote-attributes` option (short form: `-q`)
+that causes attributes to use a double-quote mark rather than single-quote.
+Thanks to [Charles Roper](http://charlesroper.com/).
+
+### `:css` Filter
+
+Haml now supports a {file:HAML_REFERENCE.md#css-filter `:css` filter}
+that surrounds the filtered text with `<style>` and CDATA tags.
+
+### `haml-spec` Integration
+
+We've added the cross-implementation tests from the [haml-spec](http://github.com/norman/haml-spec) project
+to the standard Haml test suite, to be sure we remain compatible with the base functionality
+of the many and varied [Haml implementations](http://en.wikipedia.org/wiki/Haml#Implementations).
+
+### Ruby 1.9 Support
+
+* Haml and `html2haml` now produce more descriptive errors
+  when given a template with invalid byte sequences for that template's encoding,
+  including the line number and the offending character.
+
+* Haml and `html2haml` now accept Unicode documents with a
+  [byte-order-mark](http://en.wikipedia.org/wiki/Byte_order_mark).
+
+### Rails Support
+
+* When `form_for` is used with `=`, or `form_tag` is used with `=` and a block,
+  they will now raise errors explaining that they should be used with `-`.
+  This is similar to how {Haml::Helpers#haml\_concat} behaves,
+  and will hopefully clear up some difficult bugs for some users.
+
+### Rip Support
+
+Haml is now compatible with the [Rip](http://hellorip.com/) package management system.
+Thanks to [Josh Peek](http://joshpeek.com/).
+
+### `html2haml` Improvements
+
+* Ruby blocks within ERB are now supported.
+  The Haml code is properly indented and the `end`s are removed.
+  This includes methods with blocks and all language constructs
+  such as `if`, `begin`, and `case`.
+  For example:
+
+      <% content_for :footer do %>
+        <p>Hi there!</p>
+      <% end %>
+
+  is now transformed into:
+
+      - content_for :footer do
+        %p Hi there!
+
+  Thanks to [Jack Chen](http://chendo.net) and [Dr. Nic Williams](http://drnicwilliams)
+  for inspiring this and creating the first draft of the code.
+
+* Inline HTML text nodes are now transformed into inline Haml text.
+  For example, `<p>foo</p>` now becomes `%p foo`, whereas before it became:
+
+      %p
+        foo
+
+  The same is true for inline comments,
+  and inline ERB when running in ERB mode:
+  `<p><%= foo %></p>` will now become `%p= foo`.
+
+* ERB included within text is now transformed into Ruby interpolation.
+  For example:
+
+      <p>
+        Foo <%= bar %> baz!
+        Flip <%= bang %>.
+      </p>
+
+  is now transformed into:
+
+      %p
+        Foo #{bar} baz!
+        Flip #{bang}.
+
+* `<script>` tags are now transformed into `:javascript` filters,
+  and `<style>` tags into `:css` filters.
+  and indentation is preserved.
+  For example:
+
+      <script type="text/javascript">
+        function foo() {
+          return 12;
+        }
+      </script>
+
+  is now transformed into:
+
+      :javascript
+        function foo() {
+          return 12;
+        }
+
+* `<pre>` and `<textarea>` tags are now transformed into the `:preserve` filter.
+  For example:
+
+      <pre>Foo
+        bar
+          baz</pre>
+
+  is now transformed into:
+
+      %pre
+        :preserve
+          Foo
+            bar
+              baz
+
+* Self-closing tags (such as `<br />`) are now transformed into
+  self-closing Haml tags (like `%br/`).
+
+* IE conditional comments are now properly parsed.
+
+* Attributes are now output in a more-standard format,
+  without spaces within the curly braces
+  (e.g. `%p{:foo => "bar"}` as opposed to `%p{ :foo => "bar" }`).
+
+* IDs and classes containing `#` and `.` are now output as string attributes
+  (e.g. `%p{:class => "foo.bar"}`).
+
+* Attributes are now sorted, to maintain a deterministic order.
+
+* `>` or {Haml::Helpers#succeed #succeed} are inserted where necessary
+  when inline formatting is used.
+
+* Multi-line ERB statements are now properly indented,
+  and those without any content are removed.
+
+### Minor Improvements
+
+* {Haml::Helpers#capture_haml capture\_haml} is now faster when using `:ugly`.
+  Thanks to [Alf Mikula](http://alfmikula.blogspot.com/).
+
+* Add an `RDFa` doctype shortcut.
+
 ## 2.2.24
 
 [Tagged on GitHub](http://github.com/nex3/haml/commit/2.2.24).
@@ -473,7 +914,7 @@ encoding errors when dealing with non-ASCII input data.
 This helper is being deprecated for the obvious reason
 that it conflicts with the `Kernel#puts` method.
 I'm ashamed I ever chose this name.
-Use `haml_tag` instead and spare me the embarrassment.
+Use `haml_concat` instead and spare me the embarrassment.
 
 #### `= haml_tag`
 

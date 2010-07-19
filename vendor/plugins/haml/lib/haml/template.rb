@@ -1,19 +1,16 @@
+require 'haml/template/options'
 require 'haml/engine'
 require 'haml/helpers/action_view_mods'
 require 'haml/helpers/action_view_extensions'
 
+if defined?(ActionPack::VERSION::STRING) &&
+    ActionPack::VERSION::STRING == "2.3.6"
+  raise "Haml does not support Rails 2.3.6. Please upgrade to 2.3.7 or later."
+end
+
 module Haml
   # The class that keeps track of the global options for Haml within Rails.
   module Template
-    extend self
-
-    @options = {}
-    # The options hash for Haml when used within Rails.
-    # See {file:HAML_REFERENCE.md#haml_options the Haml options documentation}.
-    #
-    # @return [{Symbol => Object}]
-    attr_accessor :options
-
     # Enables integration with the Rails 2.2.5+ XSS protection,
     # if it's available and enabled.
     #
@@ -45,8 +42,12 @@ module Haml
   end
 end
 
-if Haml::Util.rails_env == "production"
-  Haml::Template.options[:ugly] = true
+unless Haml::Util.rails_env == "development"
+  Haml::Template.options[:ugly] ||= true
+end
+
+if Haml::Util.ap_geq_3?
+  Haml::Template.options[:format] ||= :html5
 end
 
 # Decide how we want to load Haml into Rails.
@@ -87,7 +88,7 @@ if Haml::Util.rails_root
       FileUtils.cp(haml_init_file, rails_init_file) unless FileUtils.cmp(rails_init_file, haml_init_file)
     end
   rescue SystemCallError
-    warn <<END
+    Haml::Util.haml_warn <<END
 HAML WARNING:
 #{rails_init_file} is out of date and couldn't be automatically updated.
 Please run `haml --rails #{File.expand_path(Haml::Util.rails_root)}' to update it.

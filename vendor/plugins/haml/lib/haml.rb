@@ -17,6 +17,7 @@ module Haml
 
   # A string representing the version of Haml.
   # A more fine-grained representation is available from Haml.version.
+  # @api public
   VERSION = version[:string] unless defined?(Haml::VERSION)
 
   # Initializes Haml for Rails.
@@ -37,5 +38,7 @@ module Haml
 end
 
 require 'haml/util'
-require 'haml/engine'
-require 'haml/railtie'
+unless $0 =~ /sass(-convert)?$/
+  require 'haml/engine'
+  require 'haml/railtie'
+end
