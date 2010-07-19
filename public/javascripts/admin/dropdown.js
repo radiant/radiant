@@ -186,3 +186,7 @@ Event.observe(window, 'resize', function(event) {
     if (menu.visible()) menu.reposition();
   }
 });
+
+Event.addBehavior({
+  'a.dropdown': Dropdown.TriggerBehavior(),
+});
