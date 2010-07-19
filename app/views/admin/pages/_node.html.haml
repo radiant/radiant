@@ -17,7 +17,7 @@
     - node.actions_column do
       - unless simple
         %td.actions
-          = link_to image('plus') + ' ' + t('add_child'), admin_page_types_url(page), :class => "action dropdown"
+          = link_to image('plus') + ' ' + t('add_child'), new_admin_page_child_url(page), :class => "action"
           = link_to image('minus') + ' ' + t('remove'), remove_admin_page_url(page), :class => "action"
 
 - if expanded

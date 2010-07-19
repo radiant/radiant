@@ -4,7 +4,6 @@ ActionController::Routing::Routes.draw do |map|
   map.namespace :admin, :member => { :remove => :get } do |admin|
     admin.resources :pages do |pages|
       pages.resources :children, :controller => "pages"
-      pages.resources :types, :controller => "page_types", :only => :index
     end
     admin.resources :layouts
     admin.resources :snippets
