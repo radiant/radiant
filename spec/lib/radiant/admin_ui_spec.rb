@@ -53,8 +53,7 @@ describe Radiant::AdminUI do
     page.index.sitemap_head.should == %w{title_column_header
                                         status_column_header
                                         actions_column_header}
-    page.index.node.should == %w{title_column status_column add_child_column
-                                  remove_column}
+    page.index.node.should == %w{title_column status_column actions_column}
     page.remove.should === page.index
     page.children.should === page.index
     page._part.should === page.edit
