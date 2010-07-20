@@ -21,7 +21,7 @@ class Admin::PagesController < Admin::ResourceController
     if params[:page_id].blank?
       self.model.slug = '/'
     end
-    response_for :singular
+    response_for :new
   end
 
   private
