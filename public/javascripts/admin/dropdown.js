@@ -183,7 +183,7 @@ Dropdown.AjaxMenu = Class.create(Dropdown.Menu, {
     } else {
       $super(trigger, options);
     }
-  },
+  }
 });
 
 Dropdown.Menu.findOrCreate = function(element) {
