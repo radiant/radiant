@@ -34,6 +34,8 @@ class Page < ActiveRecord::Base
 
   annotate :description
   attr_accessor :request, :response, :pagination_parameters
+  class_inheritable_accessor :in_menu
+  self.in_menu = true
 
   set_inheritance_column :class_name
 
@@ -184,6 +186,9 @@ class Page < ActiveRecord::Base
   end
 
   class << self
+    alias_method :in_menu?, :in_menu
+    alias_method :in_menu, :in_menu=
+
     def find_by_url(url, live = true)
       root = find_by_parent_id(nil)
       raise MissingRootPageError unless root

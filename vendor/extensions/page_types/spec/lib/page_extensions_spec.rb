@@ -11,4 +11,9 @@ describe Page do
     children.should include(Page)
     children.should include(FileNotFoundPage)
   end
+
+  it "should reject pages that don't belong in the menu" do
+    FileNotFoundPage.in_menu false
+    @page.allowed_children.should_not include(FileNotFoundPage)
+  end
 end
