@@ -4,7 +4,7 @@ module PageTypesHelper
   end
 
   def child_link_for(page)
-    case page.allowed_children.flatten.compact.size
+    case children_for(page).size
     when 0
       content_tag :span, image('plus_disabled') + ' ' + t('add_child'), :class => 'action disabled'
     when 1
