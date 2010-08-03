@@ -1,4 +1,5 @@
 - include_javascript 'admin/dropdown'
 %td.actions
-  = link_to image('plus') + ' ' + t('add_child'), admin_page_types_url(page), :class => "action dropdown"
+  = child_link_for(page)
   = link_to image('minus') + ' ' + t('remove'), remove_admin_page_url(page), :class => "action"
+  = child_menu_for(page)
