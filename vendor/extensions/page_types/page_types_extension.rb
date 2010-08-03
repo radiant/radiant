@@ -7,5 +7,7 @@ class PageTypesExtension < Radiant::Extension
   
   def activate
     Admin::PagesController.send :include, PagesControllerExtensions
+    Admin::PagesController.helper :page_types
+    Page.send :include, PageExtensions
   end
 end

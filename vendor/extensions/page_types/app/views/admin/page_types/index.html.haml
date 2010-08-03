@@ -1,6 +1,0 @@
-%li
-  = link_to t('normal page'), new_admin_page_child_url(@page)
-- if @options.any?
-  %li.separator
-  = list_of @options do |option|
-    = link_to option.name.to_name('Page'), new_admin_page_child_url(@page, :page_class => option.name)
