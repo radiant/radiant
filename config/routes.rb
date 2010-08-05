@@ -14,6 +14,7 @@ ActionController::Routing::Routes.draw do |map|
     admin.resource :preferences
     admin.resources :extensions, :only => :index
     admin.resources :page_parts
+    admin.resources :page_fields
     admin.reference '/reference/:type.:format', :controller => 'references', :action => 'show', :conditions => {:method => :get}
   end
 

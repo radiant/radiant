@@ -24,6 +24,7 @@ en:
             password:
               confirmation: 'this must match confirmation' # password_confirmation
   add_child: 'Add Child'
+  add_field: 'Add Field'
   add_part: 'Add Part'
   add_tab: 'Add Tab'
   admin: 'Administrator' 
@@ -118,6 +119,7 @@ en:
   remember_me: 'Remember me'
   remember_me_in_this_browser: 'Remember me in this browser'
   remove: 'Remove'
+  remove_field: 'Remove Field'
   remove_layout: 'Remove Layout'
   remove_page: 'Remove Page'
   remove_pages: 'Remove {{pages}}'
@@ -176,6 +178,7 @@ en:
     at: 'at'
     by: 'by'
     last_updated: 'Last Updated'
+  type: 'Type'
   user: 'User'
   username: 'Username'
   username_or_email: 'Username or E-mail Address'

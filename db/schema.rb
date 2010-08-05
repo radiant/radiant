@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091003095744) do
+ActiveRecord::Schema.define(:version => 20100805155020) do
 
   create_table "config", :force => true do |t|
     t.string "key",   :limit => 40, :default => "", :null => false
@@ -35,6 +35,14 @@ ActiveRecord::Schema.define(:version => 20091003095744) do
     t.integer  "lock_version",                 :default => 0
   end
 
+  create_table "page_fields", :force => true do |t|
+    t.integer "page_id"
+    t.string  "name"
+    t.string  "content"
+  end
+
+  add_index "page_fields", ["page_id"], :name => "index_page_fields_on_page_id"
+
   create_table "page_parts", :force => true do |t|
     t.string  "name",      :limit => 100
     t.string  "filter_id", :limit => 25
@@ -59,14 +67,12 @@ ActiveRecord::Schema.define(:version => 20091003095744) do
     t.integer  "updated_by_id"
     t.boolean  "virtual",                      :default => false, :null => false
     t.integer  "lock_version",                 :default => 0
-    t.string   "description"
-    t.string   "keywords"
   end
 
-  add_index "pages", ["class_name"], :name => "pages_class_name"
-  add_index "pages", ["parent_id"], :name => "pages_parent_id"
-  add_index "pages", ["slug", "parent_id"], :name => "pages_child_slug"
-  add_index "pages", ["virtual", "status_id"], :name => "pages_published"
+  add_index "pages", ["class_name"], :name => "altered_pages_class_name"
+  add_index "pages", ["parent_id"], :name => "altered_pages_parent_id"
+  add_index "pages", ["slug", "parent_id"], :name => "altered_pages_child_slug"
+  add_index "pages", ["virtual", "status_id"], :name => "altered_pages_published"
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id"

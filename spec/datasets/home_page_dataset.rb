@@ -1,9 +1,7 @@
 class HomePageDataset < Dataset::Base
   
   def load
-    create_page "Home", :slug => "/", :parent_id => nil, 
-                        :description => "The homepage", 
-                        :keywords => "Home, Page" do
+    create_page "Home", :slug => "/", :parent_id => nil do
       create_page_part "body", :content => "Hello world!"
       create_page_part "sidebar", :content => "<r:title /> sidebar."
       create_page_part "extended", :content => "Just a test."
