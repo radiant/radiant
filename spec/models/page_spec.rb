@@ -120,6 +120,8 @@ end
 
 describe Page do
   dataset :pages
+  
+  let(:page){ pages(:first )}
 
   before :each do
     @page = pages(:first)
@@ -197,20 +199,27 @@ describe Page do
     @page.save
     @page.published_at.should == expected
   end
-
-  it 'should answer true when published' do
-    @page.status = Status[:published]
-    @page.published?.should == true
-  end
-
-  it 'should answer false when not published' do
-    @page.status = Status[:draft]
-    @page.published?.should be_false
+  
+  describe '#published?' do
+    it "should be true when the status is Status[:published]" do
+      page.status = Status[:published]
+      page.published?.should be_true
+    end
+    it "should be false when the status is not Status[:published]" do
+      page.status = Status[:draft]
+      page.published?.should be_false
+    end
   end
   
-  it 'should answer false when not published but scheduled' do
-    @page.status = Status[:scheduled]
-    @page.published?.should be_false
+  describe '#scheduled?' do
+    it "should be true when the status is Status[:scheduled]" do
+      page.status = Status[:scheduled]
+      page.scheduled?.should be_true
+    end
+    it "should be false when the status is not Status[:scheduled]" do
+      page.status = Status[:published]
+      page.scheduled?.should be_false
+    end
   end
 
   it 'should change its status to scheduled when publishing in the future' do

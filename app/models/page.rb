@@ -91,6 +91,10 @@ class Page < ActiveRecord::Base
     status == Status[:published]
   end
   
+  def scheduled?
+    status == Status[:scheduled]
+  end
+  
   def status
    Status.find(self.status_id)
   end
@@ -168,11 +172,11 @@ class Page < ActiveRecord::Base
   end
 
   def update_status
-    self[:published_at] = Time.now if self[:status_id] == Status[:published].id && self[:published_at] == nil
+    self.published_at = Time.zone.now if published? && self.published_at == nil
     
-    if self[:published_at] != nil && (self[:status_id] == Status[:published].id || self[:status_id] == Status[:scheduled].id)
-      self[:status_id] = Status[:scheduled].id if self[:published_at]  > Time.now
-      self[:status_id] = Status[:published].id if self[:published_at] <= Time.now
+    if self.published_at != nil && (published? || scheduled?)
+      self[:status_id] = Status[:scheduled].id if self.published_at  > Time.zone.now
+      self[:status_id] = Status[:published].id if self.published_at <= Time.zone.now
     end
 
     true    
