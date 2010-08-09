@@ -1121,61 +1121,57 @@ module StandardTags
     status
   end
 
-  desc %{
-    The namespace for 'meta' attributes.  If used as a singleton tag, both the description
-    and keywords fields will be output as &lt;meta /&gt; tags unless the attribute 'tag' is set to 'false'.
+  desc %(
+    Renders the content of the field given in the @name@ attribute.
 
     *Usage:*
 
-    <pre><code> <r:meta [tag="false"] />
-     <r:meta>
-       <r:description [tag="false"] />
-       <r:keywords [tag="false"] />
-     </r:meta>
-    </code></pre>
-  }
-  tag 'meta' do |tag|
-    if tag.double?
-      tag.expand
-    else
-      tag.render('description', tag.attr) +
-      tag.render('keywords', tag.attr)
+    <pre><code><r:field name="Keywords" /></code></pre>
+  )
+  tag 'field' do |tag|
+    raise TagError.new("`field' tag must contain a `name' attribute.") unless tag.attr.has_key?('name')
+    tag.locals.page.fields[tag.attr['name']].try :content
+  end
+
+  desc %(
+    Renders the contained elements if the field given in the @name@ attribute
+    exists. The tag also takes an optional @equals@ or @matches@ attribute;
+    these will expand the tag if the field's content equals or matches the
+    given string or regex.
+
+    *Usage:*
+
+    <pre><code><r:if_field name="author" [equals|matches="John"] [ignore_case="true|false"]>...</r:if_field></code></pre>
+  )
+  tag 'if_field' do |tag|
+    raise TagError.new("`field' tag must contain a `name' attribute.") unless tag.attr.has_key?('name')
+    field = tag.locals.page.fields[tag.attr['name']]
+    tag.expand if case
+      when (tag.attr['equals'] and tag.attr['ignore_case'] == 'false') : field.content == tag.attr['equals']
+      when tag.attr['equals'] : field.content.downcase == tag.attr['equals'].downcase
+      when tag.attr['matches'] : field.content =~ build_regexp_for(tag, 'matches')
+      else field
     end
   end
 
-  desc %{
-    Emits the page description field in a meta tag, unless attribute
-    'tag' is set to 'false'.
+  desc %(
+    The opposite of @if_field@. Renders the contained elements unless the field
+    given in the @name@ attribute exists. The tag also takes an optional
+    @equals@ or @matches@ attribute; these will expand the tag unless the
+    field's content equals or matches the given string or regex.
 
     *Usage:*
 
-    <pre><code> <r:meta:description [tag="false"] /> </code></pre>
-  }
-  tag 'meta:description' do |tag|
-    show_tag = tag.attr['tag'] != 'false' || false
-    description = CGI.escapeHTML(tag.locals.page.description)
-    if show_tag
-      "<meta name=\"description\" content=\"#{description}\" />"
-    else
-      description
-    end
-  end
-
-  desc %{
-    Emits the page keywords field in a meta tag, unless attribute
-    'tag' is set to 'false'.
-
-    *Usage:*
-
-    <pre><code> <r:meta:keywords [tag="false"] /> </code></pre>
-  }
-  tag 'meta:keywords' do |tag|
-    show_tag = tag.attr['tag'] != 'false' || false
-    keywords = CGI.escapeHTML(tag.locals.page.keywords)
-    if show_tag
-      "<meta name=\"keywords\" content=\"#{keywords}\" />"
-    else
-      keywords
+    <pre><code><r:unless_field name="author" [equals|matches="John"] [ignore_case="true|false"]>...</r:unless_field></code></pre>
+  )
+  tag 'unless_field' do |tag|
+    raise TagError.new("`field' tag must contain a `name' attribute.") unless tag.attr.has_key?('name')
+    field = tag.locals.page.fields[tag.attr['name']]
+    tag.expand unless case
+      when (tag.attr['equals'] and tag.attr['ignore_case'] == 'false') : field.content == tag.attr['equals']
+      when tag.attr['equals'] : field.content.downcase == tag.attr['equals'].downcase
+      when tag.attr['matches'] : field.content =~ build_regexp_for(tag, 'matches')
+      else field
     end
   end
 

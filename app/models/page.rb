@@ -11,6 +11,12 @@ class Page < ActiveRecord::Base
   acts_as_tree :order => 'virtual DESC, title ASC'
   has_many :parts, :class_name => 'PagePart', :order => 'id', :dependent => :destroy
   accepts_nested_attributes_for :parts, :allow_destroy => true
+  has_many :fields, :class_name => 'PageField', :order => 'id', :dependent => :destroy do
+    def [](name)
+      detect { |m| m.name.downcase == name.downcase }
+    end
+  end
+  accepts_nested_attributes_for :fields, :allow_destroy => true
   belongs_to :layout
   belongs_to :created_by, :class_name => 'User'
   belongs_to :updated_by, :class_name => 'User'
@@ -30,10 +36,13 @@ class Page < ActiveRecord::Base
 
   include Radiant::Taggable
   include StandardTags
+  include DeprecatedTags
   include Annotatable
 
   annotate :description
   attr_accessor :request, :response, :pagination_parameters
+  class_inheritable_accessor :in_menu
+  self.in_menu = true
 
   set_inheritance_column :class_name
 
@@ -188,6 +197,9 @@ class Page < ActiveRecord::Base
   end
 
   class << self
+    alias_method :in_menu?, :in_menu
+    alias_method :in_menu, :in_menu=
+
     def find_by_url(url, live = true)
       root = find_by_parent_id(nil)
       raise MissingRootPageError unless root
@@ -232,6 +244,7 @@ class Page < ActiveRecord::Base
     def new_with_defaults(config = Radiant::Config)
       page = new
       page.parts.concat default_page_parts(config)
+      page.fields.concat default_page_fields(config)
       default_status = config['defaults.page.status']
       page.status = Status[default_status] if default_status
       page
@@ -260,6 +273,13 @@ class Page < ActiveRecord::Base
         default_parts = config['defaults.page.parts'].to_s.strip.split(/\s*,\s*/)
         default_parts.map do |name|
           PagePart.new(:name => name, :filter_id => config['defaults.page.filter'])
+        end
+      end
+
+      def default_page_fields(config = Radiant::Config)
+        default_fields = config['defaults.page.fields'].to_s.strip.split(/\s*,\s*/)
+        default_fields.map do |name|
+          PageField.new(:name => name)
         end
       end
   end

@@ -18,7 +18,7 @@ module PageTypesHelper
     children = children_for(page)
     return nil if children.size < 2
     children.unshift(children.delete(page.default_child), :separator) if children.include?(page.default_child)
-    name_for = proc { |p| (name = p.name.to_name('Page')).blank? ? 'Page' : name }
+    name_for = proc { |p| (name = p.name.to_name('Page')).blank? ? t('normal_page') : name }
     content_tag :ul, :class => 'menu', :id => "allowed_children_#{page.id}" do
       children.map do |child|
         if child == :separator

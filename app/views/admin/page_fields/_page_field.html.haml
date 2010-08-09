@@ -1,0 +1,12 @@
+%tr
+  %th.label
+    %label{:for=>"page_#{page_field.name}"}= page_field.name
+  %td.field
+    = hidden_field_tag "page[fields_attributes][#{page_field_counter}][id]", page_field.id, :id => "page_fields_attributes_#{page_field_counter}_id" unless page_field.new_record?
+    = hidden_field_tag "page[fields_attributes][#{page_field_counter}][name]", page_field.name, :id => "page_fields_attributes_#{page_field_counter}_name", :class => "page_field_name"
+    = hidden_field_tag "page[fields_attributes][#{page_field_counter}][_destroy]", page_field._destroy, :class => 'delete_input'
+    ~ text_field_tag "page[fields_attributes][#{page_field_counter}][content]", page_field.content, :id => "page_fields_attributes_#{page_field_counter}_content", :class => "textbox", :maxlength => 200
+  %td.actions
+    - link_to '#add_field_popup', :class=>'popup', :alt => t('add_field') do
+      = image 'plus_grey'
+    = link_to_function image('minus_grey', :alt => t('remove_field')), "event.stop(); window.removeField(this)", :title => t('remove_field')
