@@ -147,18 +147,18 @@ describe Page do
   let(:child){ pages(:child) }
   let(:part){ page.parts(:body) }
 
-  it 'should have parts' do
-    page.parts.count.should == 1
-    home.parts.count.should == 4
+  describe '#parts' do
+    it 'should return PageParts with a page_id of the page id' do
+      home.parts.sort_by{|p| p.name }.should == PagePart.find_all_by_page_id(home.id).sort_by{|p| p.name }
+    end
   end
 
   it 'should destroy dependant parts' do
-    page.parts.create(page_part_params(:name => 'test', :page_id => nil))
-    page.parts.find_by_name('test').should be_kind_of(PagePart)
-
+    page.parts.create(page_part_params(:name => 'test'))
+    page.parts.find_by_name('test').should_not be_nil
     id = page.id
     page.destroy
-    PagePart.find_by_page_id_and_name(id, 'test').should be_nil
+    PagePart.find_by_page_id(id).should be_nil
   end
   
   describe '#part' do
