@@ -25,3 +25,6 @@
 [submodule "vendor/extensions/sheets"]
 	path = vendor/extensions/sheets
 	url = git://github.com/radiant/radiant-sheets-extension.git
+[submodule "vendor/extensions/page_menu"]
+	path = vendor/extensions/page_menu
+	url = git://github.com/radiant/radiant-page_menu-extension.git
