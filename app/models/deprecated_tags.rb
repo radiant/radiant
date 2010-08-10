@@ -35,7 +35,7 @@ module DeprecatedTags
   tag 'meta:description' do |tag|
     ActiveSupport::Deprecation.warn('r:meta:description is deprecated. Please use r:field name="Description" instead.', caller)
     show_tag = tag.attr['tag'] != 'false' || false
-    description = CGI.escapeHTML(tag.locals.page.fields['Description'].try(:content))
+    description = CGI.escapeHTML(tag.locals.page.field(:description).try(:content))
     if show_tag
       "<meta name=\"description\" content=\"#{description}\" />"
     else
@@ -54,7 +54,7 @@ module DeprecatedTags
   tag 'meta:keywords' do |tag|
     ActiveSupport::Deprecation.warn('r:meta:keywords is deprecated. Please use r:field name="Keywords" instead.', caller)
     show_tag = tag.attr['tag'] != 'false' || false
-    keywords = CGI.escapeHTML(tag.locals.page.fields['Keywords'].try(:content))
+    keywords = CGI.escapeHTML(tag.locals.page.field(:keywords).try(:content))
     if show_tag
       "<meta name=\"keywords\" content=\"#{keywords}\" />"
     else

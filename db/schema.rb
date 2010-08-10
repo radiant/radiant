@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100805155020) do
+ActiveRecord::Schema.define(:version => 20100810151922) do
 
   create_table "config", :force => true do |t|
     t.string "key",   :limit => 40, :default => "", :null => false
@@ -41,7 +41,7 @@ ActiveRecord::Schema.define(:version => 20100805155020) do
     t.string  "content"
   end
 
-  add_index "page_fields", ["page_id"], :name => "index_page_fields_on_page_id"
+  add_index "page_fields", ["page_id", "name", "content"], :name => "index_page_fields_on_page_id_and_name_and_content"
 
   create_table "page_parts", :force => true do |t|
     t.string  "name",      :limit => 100

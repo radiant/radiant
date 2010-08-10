@@ -178,6 +178,19 @@ describe Page do
       page.part('not-real').should be_nil
     end
   end
+
+  describe '#field' do
+    it "should find a field" do
+      page.fields.create(:name => 'keywords', :content => 'radiant')
+      page.field(:keywords).should == page.fields.find_by_name('keywords')
+    end
+
+    it "should find an unsaved field" do
+      field = PageField.new(:name => 'description', :content => 'radiant')
+      page.fields << field
+      page.field(:description).should == field
+    end
+  end
   
   describe '#has_part?' do
     it 'should return true for a valid part' do
@@ -534,26 +547,6 @@ describe Page, "class" do
     end
     Page.is_descendant_class_name?("InvalidPage").should == false
   end
-
-  describe "#fields[]" do
-    before do
-      @page = Page.new
-      @page.fields << PageField.new(:name => 'Field', :content => 'sweet harmonious biscuit')
-    end
-
-    it "should find field by name" do
-      @page.fields['Field'].content.should eql('sweet harmonious biscuit')
-    end
-
-    it "should be case insensitive" do
-      @page.fields['Field'].content.should eql('sweet harmonious biscuit')
-    end
-
-    it "should return nil if meta not found" do
-      @page.fields['Bogus'].should be_nil
-    end
-  end
-
 end
 
 describe Page, "loading subclasses before bootstrap" do

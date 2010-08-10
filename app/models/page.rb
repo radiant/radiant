@@ -11,11 +11,7 @@ class Page < ActiveRecord::Base
   acts_as_tree :order => 'virtual DESC, title ASC'
   has_many :parts, :class_name => 'PagePart', :order => 'id', :dependent => :destroy
   accepts_nested_attributes_for :parts, :allow_destroy => true
-  has_many :fields, :class_name => 'PageField', :order => 'id', :dependent => :destroy do
-    def [](name)
-      detect { |m| m.name.downcase == name.downcase }
-    end
-  end
+  has_many :fields, :class_name => 'PageField', :order => 'id', :dependent => :destroy
   accepts_nested_attributes_for :fields, :allow_destroy => true
   belongs_to :layout
   belongs_to :created_by, :class_name => 'User'
@@ -94,6 +90,14 @@ class Page < ActiveRecord::Base
 
   def inherits_part?(name)
     !has_part?(name) && self.ancestors.any? { |page| page.has_part?(name) }
+  end
+
+  def field(name)
+    if new_record? or fields.any?(&:new_record?)
+      fields.detect { |f| f.name.downcase == name.to_s.downcase }
+    else
+      fields.find_by_name name.to_s
+    end
   end
 
   def published?

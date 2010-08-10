@@ -1130,7 +1130,7 @@ module StandardTags
   )
   tag 'field' do |tag|
     raise TagError.new("`field' tag must contain a `name' attribute.") unless tag.attr.has_key?('name')
-    tag.locals.page.fields[tag.attr['name']].try :content
+    tag.locals.page.field(tag.attr['name']).try(:content)
   end
 
   desc %(
@@ -1145,7 +1145,7 @@ module StandardTags
   )
   tag 'if_field' do |tag|
     raise TagError.new("`field' tag must contain a `name' attribute.") unless tag.attr.has_key?('name')
-    field = tag.locals.page.fields[tag.attr['name']]
+    field = tag.locals.page.field(tag.attr['name'])
     tag.expand if case
       when (tag.attr['equals'] and tag.attr['ignore_case'] == 'false') : field.content == tag.attr['equals']
       when tag.attr['equals'] : field.content.downcase == tag.attr['equals'].downcase
@@ -1166,7 +1166,7 @@ module StandardTags
   )
   tag 'unless_field' do |tag|
     raise TagError.new("`field' tag must contain a `name' attribute.") unless tag.attr.has_key?('name')
-    field = tag.locals.page.fields[tag.attr['name']]
+    field = tag.locals.page.field(tag.attr['name'])
     tag.expand unless case
       when (tag.attr['equals'] and tag.attr['ignore_case'] == 'false') : field.content == tag.attr['equals']
       when tag.attr['equals'] : field.content.downcase == tag.attr['equals'].downcase
