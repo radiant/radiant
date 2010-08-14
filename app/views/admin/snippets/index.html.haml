@@ -29,6 +29,6 @@
 - render_region :bottom do |bottom|
   - bottom.new_button do
     #actions
-      = pagination_for(@snippets)
       %ul
         %li= link_to image('plus') + " " + t('new_snippet'), new_admin_snippet_url
+        %li{:style=>"float:right"}= pagination_for(@snippets)
