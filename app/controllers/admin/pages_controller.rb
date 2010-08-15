@@ -18,13 +18,17 @@ class Admin::PagesController < Admin::ResourceController
 
   def new
     self.model = model_class.new_with_defaults(config)
-    if params[:page_id].blank?
-      self.model.slug = '/'
-    end
+    assign_page_attributes
     response_for :new
   end
 
   private
+    def assign_page_attributes
+      if params[:page_id].blank?
+        self.model.slug = '/'
+      end
+    end
+
     def model_class
       if params[:page_id]
         Page.find(params[:page_id]).children
