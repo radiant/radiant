@@ -229,7 +229,7 @@ module ApplicationHelper
       html = will_paginate(list, will_paginate_options.merge(options))
       if depaginate && list.total_pages > 1 && (!depagination_limit.blank? || list.total_entries <= depagination_limit.to_i)
         html.insert(html.index("</div>"), content_tag(:span, link_to("show all", :pp => list.total_entries), :class => 'depaginate', :style=>"padding-left:8px"))
-      else
+      elsif list.total_pages > 1
         html = content_tag(:div, link_to("paginate", :p => 1), :class => 'depaginate', :style=>"padding-left:8px")
       end
       html
