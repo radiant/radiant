@@ -442,7 +442,7 @@ module StandardTags
     options = aggregate_children(tag)
     children = Page.find(:all, options)
     tag.locals.previous_headers = {}
-    returning String.new do |output|
+    String.new.tap do |output|
       children.each do |child|
         tag.locals.page = child
         tag.locals.child = child
