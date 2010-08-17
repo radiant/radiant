@@ -38,7 +38,6 @@ module StandardTags
   tag 'path' do |tag|
     relative_url_for(tag.locals.page.path, tag.globals.page.request)
   end
-  deprecated_tag 'url', :substitute => 'path', :deadline => '1.2'
 
   desc %{
     Gives access to a page's children.
@@ -423,7 +422,16 @@ module StandardTags
     </r:aggregate></code></pre>
   }
   tag "aggregate:children:each" do |tag|
-    render_children_with_pagination(tag, :aggregate => true)
+    options = aggregate_children(tag)
+    children = Page.find(:all, options)
+    tag.locals.previous_headers = {}
+    String.new.tap do |output|
+      children.each do |child|
+        tag.locals.page = child
+        tag.locals.child = child
+        output << tag.expand
+      end
+    end
   end
   
   desc %{
@@ -635,7 +643,6 @@ module StandardTags
        tag.expand
     end
   end
-  deprecated_tag 'if_url', :substitute => 'if_path', :deadline => '1.2'
 
   desc %{
     The opposite of the @if_path@ tag.
@@ -651,7 +658,6 @@ module StandardTags
         tag.expand
     end
   end
-  deprecated_tag 'unless_url', :substitute => 'unless_path', :deadline => '1.2'
 
   desc %{
     Renders the contained elements if the current contextual page is either the actual page or one of its parents.
@@ -942,9 +948,8 @@ module StandardTags
     hash = tag.locals.navigation = {}
     tag.expand
     raise TagError.new("`navigation' tag must include a `normal' tag") unless hash.has_key? :normal
-    ActiveSupport::Deprecation.warn("The 'urls' attribute of the r:navigation tag has been deprecated in favour of 'paths'. Please update your site.") if tag.attr['urls']
     result = []
-    pairs = (tag.attr['paths']||tag.attr['urls']).to_s.split('|').map do |pair|
+    pairs = (tag.attr['paths']).to_s.split('|').map do |pair|
       parts = pair.split(':')
       value = parts.pop
       key = parts.join(':')
@@ -980,11 +985,6 @@ module StandardTags
       hash = tag.locals.navigation
       hash[symbol]
     end
-  end
-  tag "navigation:url" do |tag|
-    hash = tag.locals.navigation
-    ActiveSupport::Deprecation.warn("The 'r:navigation:url' tag has been deprecated in favour of 'r:navigation:path'. Please update your site.")
-    hash[:path]
   end
 
   desc %{

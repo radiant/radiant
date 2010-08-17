@@ -182,19 +182,6 @@ module Radiant
         end
       end
     end
-        
-    # Old extension-dependency mechanism now deprecated
-    #
-    def extension(ext)
-      ::ActiveSupport::Deprecation.warn("Extension dependencies have been deprecated and are no longer supported in radiant 1.0. Extensions with dependencies should be packaged as gems and use the .gemspec to declare them.", caller)
-    end
-
-    # Old gem-invogation method now deprecated
-    #
-    def gem(name, options = {})
-      ::ActiveSupport::Deprecation.warn("Please declare gem dependencies in your Gemfile (or for an extension, in the .gemspec file).", caller)
-      super
-    end
 
     # Returns the AdminUI singleton, giving get-and-set access to the tabs and partial-sets it defines.
     # More commonly accessed in the initializer via its call to +configuration.admin+.
@@ -386,9 +373,15 @@ module Radiant
     # so that new extension paths are noticed without a restart.
     #
     def initialize_framework_views
-      view_paths = extension_loader.paths(:view).push(configuration.view_path)
-      if ActionController::Base.view_paths.blank? || !ActionView::Base.cache_template_loading?
-        ActionController::Base.view_paths = ActionView::Base.process_view_paths(view_paths)
+      view_paths = [].tap do |arr|
+        # Add the singular view path if it's not in the list
+        arr << configuration.view_path if !configuration.view_paths.include?(configuration.view_path)
+        # Add the default view paths
+        arr.concat configuration.view_paths
+        # Add the extension view paths
+        arr.concat extension_loader.view_paths
+        # Reverse the list so extensions come first
+        arr.reverse!
       end
       if configuration.frameworks.include?(:action_mailer) && ActionMailer::Base.view_paths.blank? || !ActionView::Base.cache_template_loading?
         ActionMailer::Base.view_paths = ActionView::Base.process_view_paths(view_paths) if configuration.frameworks.include?(:action_mailer)
