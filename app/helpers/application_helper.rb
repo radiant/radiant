@@ -228,9 +228,9 @@ module ApplicationHelper
       depagination_limit = options.delete(:max_per_page)                           # supply :max_per_page => false to include the 'show all' link no matter how large the collection
       html = will_paginate(list, will_paginate_options.merge(options))
       if depaginate && list.total_pages > 1 && (!depagination_limit.blank? || list.total_entries <= depagination_limit.to_i)
-        html.insert(html.index("</div>"), content_tag(:span, link_to("show all", :pp => list.total_entries), :class => 'depaginate', :style=>"padding-left:8px"))
-      elsif list.total_pages > 1
-        html = content_tag(:div, link_to("paginate", :p => 1), :class => 'depaginate', :style=>"padding-left:8px")
+        html.insert(html.index("</div>"), content_tag(:span, link_to("show all", :pp => list.total_entries), :class => 'toggle'))
+      elsif list.total_entries > depagination_limit.to_i
+        html = content_tag(:div, link_to("paginate", :p => 1), :class => 'pagination')
       end
       html
     end

@@ -23,3 +23,45 @@
       text-shadow: 1px 1px 1px #fff
     img
       vertical-align: -20%
+  .pagination
+    position: relative
+    overflow: hidden
+    float: right
+    margin: 0 12px 0 0
+    padding: 0px 5px 5px 0
+    a, span.current, span.disabled
+      display: block
+      float: left
+      background: #fff url(../../images/admin/shadow.png) repeat-x
+      color: #999
+      font-size: 80%
+      padding: 6px 12px 6px 12px
+      margin-right: 1px
+      text-decoration: none
+      text-shadow: 1px 1px 1px #eee
+      +round-bottom-corners(5px)
+    a
+      &:hover
+        background: #fff url(../../images/admin/buttons_background.png) repeat-x
+        color: #06c
+        text-shadow: none
+        +button-shadow
+      &:active
+        background: #fff url(../../images/admin/shadow.png) repeat-x
+        color: #000
+        +no-box-shadow
+    span.toggle
+      margin: 0
+      padding: 0
+    span.disabled
+      +opacity(0.3)
+    span.current
+      color: #000
+      font-weight: bold
+      background-image: none
+      +button-shadow
+    span.gap
+      display: block
+      float: left
+      padding: 6px
+      color: #ccc
