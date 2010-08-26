@@ -835,6 +835,63 @@ body.reversed #content h1 {
       text-shadow: 1px 1px 1px white; }
     #actions a img {
       vertical-align: -20%; }
+  #actions .pagination {
+    position: relative;
+    overflow: hidden;
+    float: right;
+    margin: 0 12px 0 0;
+    padding: 0px 5px 5px 0; }
+    #actions .pagination a, #actions .pagination span.current, #actions .pagination span.disabled {
+      display: block;
+      float: left;
+      background: white url(../../images/admin/shadow.png) repeat-x;
+      color: #999999;
+      font-size: 80%;
+      padding: 6px 12px 6px 12px;
+      margin-right: 1px;
+      text-decoration: none;
+      text-shadow: 1px 1px 1px #eeeeee;
+      border-bottom-left-radius: 5px;
+      -moz-border-radius-bottomleft: 5px;
+      -webkit-border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+      -moz-border-radius-bottomright: 5px;
+      -webkit-border-bottom-right-radius: 5px; }
+    #actions .pagination a:hover {
+      background: white url(../../images/admin/buttons_background.png) repeat-x;
+      color: #0066cc;
+      text-shadow: none;
+      box-shadow: 1px 2px 4px #333333;
+      -webkit-box-shadow: 1px 2px 4px #333333;
+      -moz-box-shadow: 1px 2px 4px #333333; }
+    #actions .pagination a:active {
+      background: white url(../../images/admin/shadow.png) repeat-x;
+      color: black;
+      box-shadow: none;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none; }
+    #actions .pagination span.toggle {
+      margin: 0;
+      padding: 0; }
+    #actions .pagination span.disabled {
+      opacity: 0.3;
+      -moz-opacity: 0.3;
+      -khtml-opacity: 0.3;
+      -webkit-opacity: 0.3;
+      filter: alpha(opacity=30);
+      -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=30); }
+    #actions .pagination span.current {
+      color: black;
+      font-weight: bold;
+      background-image: none;
+      box-shadow: 1px 2px 4px #333333;
+      -webkit-box-shadow: 1px 2px 4px #333333;
+      -moz-box-shadow: 1px 2px 4px #333333; }
+    #actions .pagination span.gap {
+      display: block;
+      float: left;
+      padding: 6px;
+      color: #cccccc; }
 
 #footer {
   color: #999999;
