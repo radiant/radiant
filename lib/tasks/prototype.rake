@@ -20,7 +20,7 @@ namespace :radiant do
       desc "Import styles from prototype"
       task :styles do
         FileUtils.mkpath "public/stylesheets/sass/admin"
-        FileUtils.cp_r "../prototype/views/stylesheets/admin", "public/stylesheets/sass"
+        FileUtils.cp_r "../prototype/sass/admin", "public/stylesheets/sass"
         filename = 'public/stylesheets/sass/admin/main.sass'
         content = IO.read(filename)
         File.open(filename, "w") do |f|
