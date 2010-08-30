@@ -1,16 +1,16 @@
 .dropdown_wrapper
   border: 1px solid #b3b3b3
   border-top: 1px solid #c3c3c3
-  +box-shadow(0px, 8px, 25px, rgba(0,0,0,0.35))
-  +round-corner("top-right")
-  +round-bottom-corners
+  +box-shadow(rgba(0,0,0,0.35), 0px, 8px, 25px)
+  +border-top-right-radius
+  +border-bottom-radius
 
 ul.menu
   background: white
   font-size: 80%
   padding: 5px 20px
-  +round-corner("top-right")
-  +round-bottom-corners
+  +border-top-right-radius
+  +border-bottom-radius
   li
     margin: 0 -20px
     &.separator
@@ -23,6 +23,6 @@ ul.menu
     text-decoration: none
     border-top: 1px solid white
     &:hover
-      background: #e0f0ff url(../../images/admin/menu_highlight.png) top center repeat-x
+      background: #e0f0ff image_url('admin/menu_highlight.png') top center repeat-x
       border-top: 1px solid #d5f0ff
-      +v-gradient(#e5f5ff, #b5d0f5)
+      +linear-gradient(color_stops(#e5f5ff, #b5d0f5))

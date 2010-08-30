@@ -1,12 +1,11 @@
-=status-badge($background, $color: white, $width: 4.5em)
+=status-badge($background, $color: white, $width: 5em)
   color: $color
   background: $background
   display: block
   padding: 0 6px
   width: $width
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.25)
   text-align: center
-  +round-corners(100px)
+  +border-radius(100px)
 
 table.index
   font-size: 90%
@@ -35,17 +34,17 @@ table.index
       color: black
       text-decoration: none
       &:hover
-        background: #eee url(../../images/admin/buttons_background.png) repeat-x
+        background: #eee image_url('admin/buttons_background.png') repeat-x
         border: 1px solid #a5c9df
         margin: 0 24px 0 0
-        +round-corners
+        +border-radius
       &.selected
         background: #c5e0f5
-        +v-gradient(#e5f5ff, #c5e0ff)
+        +linear-gradient(color_stops(#e5f5ff, #c5e0ff))
         border: 1px solid #a5c9df
         margin: 0 24px 0 0
-        +round-top-corners
-        +round-bottom-corners(0)
+        +border-top-radius
+        +border-bottom-radius(0)
     span.action.disabled
       color: #ccc
     &.empty
@@ -72,10 +71,10 @@ table.index
       border-top: 1px solid white
     &.hover, &:hover
       td
-        background: #c5dff5 url(../../images/admin/row_highlight.png) repeat-x center top
         border-top: 1px solid #d5f0ff
         border-bottom: 1px solid #c5dff5
-        +v-gradient(#e5f5ff, #c5dff5)
+        background: #c5dff5 image_url('admin/row_highlight.png') repeat-x center top
+        +linear-gradient(color_stops(#e5f5ff, #c5dff5))
 
 table.index#pages
   tr.page
@@ -114,15 +113,15 @@ table.index#pages
         position: absolute
         padding: 6px 3px
   td.status
-    font-size: 85%
-    .status
-      &.draft_status
-        +status-badge(#cc494c)
-      &.published_status
-        color: #666
-        font-size: 110%
-      &.hidden_status
-        +status-badge(#9eb3bf)
+    font-size: 80%
+    
+.status
+  a
+    +plain-link
+.draft_status
+  +status-badge(#cc494c)
+.hidden_status
+  +status-badge(#9eb3bf)
 
 table.index#users
   td.name

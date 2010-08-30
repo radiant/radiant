@@ -86,5 +86,6 @@ Radiant::Initializer.run do |config|
     end
   end
   
-  config.gem 'will_paginate', :version => '~> 2.3.11', :source => 'http://gemcutter.org'
+  config.gem 'will_paginate', :version => '~> 2.3.11'
+  # config.gem 'compass', :version => '~> 0.10.4'
 end
