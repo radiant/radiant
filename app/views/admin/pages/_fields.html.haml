@@ -27,18 +27,26 @@
       #pages.pages
         = render :partial => 'admin/page_parts/page_part', :collection => @page.parts
     = render_region :parts_bottom, :locals => {:f => fields}
-  - form.edit_layout_and_type do
-    .set
+
+.set
+  - render_region :layout, :locals => {:f => fields} do |layout|
+    - layout.edit_layout do
       %p
         = fields.label :layout_id, t('layout')
         = fields.select :layout_id, [[t('select.inherit') , '']] + Layout.find(:all).map { |s| [s.name, s.id] }
+    - layout.edit_type do
+      %p
+        = fields.label :class_name, t('page_type')
+        = fields.select :class_name, [[t('select.normal'), '']] + Page.descendants.map { |p| [p.display_name, p.name] }.sort_by { |p| p.first }
+    - layout.edit_status do
       %p
         = fields.label :status_id, t('status')
         = fields.select :status_id, status_to_display
+    - layout.edit_published_at do
       %p#published_at{:class => (@page.published? ? nil : 'hidden')}
         = fields.label :published_at, t('published_on')
         = fields.text_field :published_at, :class=> "date", :value => (@page.published_at? ? I18n.localize(@page.published_at.to_date, :format =>:long) : nil)
-      = render_region :layout_row, :locals => {:f => fields}
+    = render_region :layout_row, :locals => {:f => fields}
 
 - render_region :form_bottom, :locals => {:f => fields} do |form_bottom|
   - form_bottom.edit_buttons do

@@ -47,7 +47,9 @@ describe Radiant::AdminUI do
     end
     page.edit.main.should == %w{edit_header edit_form edit_popups}
     page.edit.form.should == %w{edit_title edit_extended_metadata
-                                edit_page_parts edit_layout_and_type}
+                                edit_page_parts}
+    page.edit.layout.should == %w{edit_layout edit_type edit_status
+                                  edit_published_at}
     page.edit.parts_bottom.should == %w{}
     page.edit.form_bottom.should == %w{edit_buttons edit_timestamp}
     page.index.sitemap_head.should == %w{title_column_header

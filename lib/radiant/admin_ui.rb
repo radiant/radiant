@@ -161,7 +161,8 @@ module Radiant
       returning OpenStruct.new do |page|
         page.edit = RegionSet.new do |edit|
           edit.main.concat %w{edit_header edit_form edit_popups}
-          edit.form.concat %w{edit_title edit_extended_metadata edit_page_parts edit_layout_and_type}
+          edit.form.concat %w{edit_title edit_extended_metadata edit_page_parts}
+          edit.layout.concat %w{edit_layout edit_type edit_status edit_published_at}
           edit.form_bottom.concat %w{edit_buttons edit_timestamp}
         end
         page.index = RegionSet.new do |index|
