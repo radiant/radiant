@@ -139,13 +139,11 @@ records:
       breadcrumb: New location opening tonight
       lock_version: 16
       id: 5
-      description: ""
       published_at: 2006-06-09 00:00:00 Z
       status_id: 100
       layout_id: 
       parent_id: 4
       created_at: 2008-12-24 01:08:45 Z
-      keywords: ""
     11: 
       class_name: Page
       slug: sitemap
@@ -155,13 +153,11 @@ records:
       breadcrumb: Site Map
       lock_version: 11
       id: 11
-      description: ""
       published_at: 2009-01-01 16:49:07 Z
       status_id: 100
       layout_id: 
       parent_id: 1
       created_at: 2009-01-01 23:49:07 Z
-      keywords: ""
     6: 
       class_name: Page
       slug: grass-fed-foam-from-jersey
@@ -171,13 +167,11 @@ records:
       breadcrumb: Grass-fed foam from Jersey
       lock_version: 8
       id: 6
-      description: ""
       published_at: 2006-06-10 00:00:00 Z
       status_id: 100
       layout_id: 
       parent_id: 4
       created_at: 2008-12-24 01:08:45 Z
-      keywords: ""
     1: 
       class_name: Page
       slug: /
@@ -187,13 +181,11 @@ records:
       breadcrumb: Home
       lock_version: 78
       id: 1
-      description: ""
       published_at: 2008-12-23 18:08:45 Z
       status_id: 100
       layout_id: 1
       parent_id: 
       created_at: 2008-12-24 01:08:45 Z
-      keywords: ""
     7: 
       class_name: Page
       slug: styles.css
@@ -203,13 +195,11 @@ records:
       breadcrumb: Styles
       lock_version: 5
       id: 7
-      description: ""
       published_at: 2008-12-23 18:08:45 Z
       status_id: 100
       layout_id: 2
       parent_id: 1
       created_at: 2008-12-24 01:08:45 Z
-      keywords: ""
     2: 
       class_name: FileNotFoundPage
       slug: file-not-found
@@ -219,13 +209,11 @@ records:
       breadcrumb: File Not Found
       lock_version: 0
       id: 2
-      description: 
       published_at: 2008-12-23 18:08:45 Z
       status_id: 100
       layout_id: 
       parent_id: 1
       created_at: 2008-12-24 01:08:45 Z
-      keywords: 
     13: 
       class_name: Page
       slug: locations
@@ -235,13 +223,11 @@ records:
       breadcrumb: Locations
       lock_version: 8
       id: 12
-      description: ""
       published_at: 2009-01-01 19:11:32 Z
       status_id: 100
       layout_id: 
       parent_id: 1
       created_at: 2009-01-02 02:11:32 Z
-      keywords: ""
     8: 
       class_name: Page
       slug: the-finest-grind
@@ -251,13 +237,11 @@ records:
       breadcrumb: The Finest grind
       lock_version: 11
       id: 8
-      description: ""
       published_at: 2008-12-23 18:08:45 Z
       status_id: 100
       layout_id: 
       parent_id: 4
       created_at: 2008-12-24 01:08:45 Z
-      keywords: ""
     3: 
       class_name: 
       slug: rss
@@ -267,13 +251,11 @@ records:
       breadcrumb: RSS Feed
       lock_version: 0
       id: 3
-      description: 
       published_at: 2008-12-23 18:08:45 Z
       status_id: 100
       layout_id: 3
       parent_id: 1
       created_at: 2008-12-24 01:08:45 Z
-      keywords: 
     14: 
       class_name: Page
       slug: tour
@@ -283,13 +265,11 @@ records:
       breadcrumb: Tour
       lock_version: 25
       id: 13
-      description: ""
       published_at: 2009-01-02 00:49:40 Z
       status_id: 100
       layout_id: 
       parent_id: 1
       created_at: 2009-01-02 07:36:32 Z
-      keywords: ""
     9: 
       class_name: Page
       slug: about
@@ -299,13 +279,11 @@ records:
       breadcrumb: About
       lock_version: 9
       id: 9
-      description: ""
       published_at: 2008-12-23 18:08:45 Z
       status_id: 100
       layout_id: 
       parent_id: 1
       created_at: 2008-12-24 01:08:45 Z
-      keywords: ""
     4: 
       class_name: ArchivePage
       slug: news
@@ -315,13 +293,11 @@ records:
       breadcrumb: News
       lock_version: 18
       id: 4
-      description: ""
       published_at: 2008-12-23 18:08:45 Z
       status_id: 100
       layout_id: 
       parent_id: 1
       created_at: 2008-12-24 01:08:45 Z
-      keywords: ""
     15: 
       class_name: Page
       slug: reset.css
@@ -331,13 +307,11 @@ records:
       breadcrumb: Reset
       lock_version: 2
       id: 14
-      description: ""
       published_at: 2009-01-02 03:06:13 Z
       status_id: 100
       layout_id: 2
       parent_id: 1
       created_at: 2009-01-02 10:00:27 Z
-      keywords: ""
     10: 
       class_name: ArchiveMonthIndexPage
       slug: monthly-archives
@@ -347,13 +321,11 @@ records:
       breadcrumb: Monthly Archives
       lock_version: 9
       id: 10
-      description: ""
       published_at: 2008-12-23 18:08:45 Z
       status_id: 100
       layout_id: 
       parent_id: 4
       created_at: 2008-12-24 01:08:45 Z
-      keywords: ""
   Layouts: 
     1: 
       content_type: ""
@@ -1207,4 +1179,145 @@ records:
       page_id: 7
       id: 21
       content: ""
+  PageFields: 
+    27: 
+      name: Keywords
+      page_id: 13
+      id: 27
+      content: 
+    16: 
+      name: Description
+      page_id: 7
+      id: 16
+      content: 
+    5: 
+      name: Keywords
+      page_id: 2
+      id: 5
+      content: 
+    22: 
+      name: Description
+      page_id: 10
+      id: 22
+      content: 
+    11: 
+      name: Keywords
+      page_id: 5
+      id: 11
+      content: 
+    28: 
+      name: Description
+      page_id: 13
+      id: 28
+      content: 
+    17: 
+      name: Keywords
+      page_id: 8
+      id: 17
+      content: 
+    6: 
+      name: Description
+      page_id: 2
+      id: 6
+      content: 
+    23: 
+      name: Keywords
+      page_id: 11
+      id: 23
+      content: 
+    12: 
+      name: Description
+      page_id: 5
+      id: 12
+      content: 
+    29: 
+      name: Keywords
+      page_id: 14
+      id: 29
+      content: 
+    18: 
+      name: Description
+      page_id: 8
+      id: 18
+      content: 
+    7: 
+      name: Keywords
+      page_id: 3
+      id: 7
+      content: 
+    24: 
+      name: Description
+      page_id: 11
+      id: 24
+      content: 
+    13: 
+      name: Keywords
+      page_id: 6
+      id: 13
+      content: 
+    30: 
+      name: Description
+      page_id: 14
+      id: 30
+      content: 
+    19: 
+      name: Keywords
+      page_id: 9
+      id: 19
+      content: 
+    8: 
+      name: Description
+      page_id: 3
+      id: 8
+      content: 
+    25: 
+      name: Keywords
+      page_id: 12
+      id: 25
+      content: 
+    14: 
+      name: Description
+      page_id: 6
+      id: 14
+      content: 
+    3: 
+      name: Keywords
+      page_id: 1
+      id: 3
+      content: 
+    20: 
+      name: Description
+      page_id: 9
+      id: 20
+      content: 
+    9: 
+      name: Keywords
+      page_id: 4
+      id: 9
+      content: 
+    26: 
+      name: Description
+      page_id: 12
+      id: 26
+      content: 
+    15: 
+      name: Keywords
+      page_id: 7
+      id: 15
+      content: 
+    4: 
+      name: Description
+      page_id: 1
+      id: 4
+      content: 
+    21: 
+      name: Keywords
+      page_id: 10
+      id: 21
+      content: 
+    10: 
+      name: Description
+      page_id: 4
+      id: 10
+      content: 
 description: A highly-caffeinated template by Paul du Coudray.

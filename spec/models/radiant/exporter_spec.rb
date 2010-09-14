@@ -7,7 +7,7 @@ describe Radiant::Exporter do
     @exporter = Radiant::Exporter
     @output = @exporter.export
     @hash = YAML::load(@output)
-    @classes  = ['Radiant::Configs', 'Users', 'Pages', 'PageParts', 'Snippets', 'Layouts']
+    @classes  = ['Radiant::Configs', 'Users', 'Pages', 'PageParts', 'Snippets', 'Layouts', 'PageFields']
   end
   
   it "should output a string" do
