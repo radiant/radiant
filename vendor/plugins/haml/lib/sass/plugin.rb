@@ -1,5 +1,4 @@
 require 'fileutils'
-require 'rbconfig'
 
 require 'sass'
 require 'sass/plugin/configuration'
@@ -76,7 +75,7 @@ module Sass
 
       template_location_array.each do |template_location, css_location|
 
-        Dir.glob(File.join(template_location, "**", "*.s[ca]ss")).each do |file|
+        Dir.glob(File.join(template_location, "**", "*.s[ca]ss")).sort.each do |file|
           # Get the relative path to the file
           name = file.sub(template_location.sub(/\/*$/, '/'), "")
           css = css_filename(name, css_location)
@@ -228,7 +227,7 @@ module Sass
 
       # Finally, write the file
       flag = 'w'
-      flag = 'wb' if RbConfig::CONFIG['host_os'] =~ /mswin|windows/i && options[:unix_newlines]
+      flag = 'wb' if Haml::Util.windows? && options[:unix_newlines]
       File.open(css, flag) {|file| file.print(result)}
     end
 

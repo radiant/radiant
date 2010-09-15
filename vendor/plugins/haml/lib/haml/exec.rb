@@ -1,6 +1,5 @@
 require 'optparse'
 require 'fileutils'
-require 'rbconfig'
 
 module Haml
   # This module handles the various Haml executables (`haml`, `sass`, `sass-convert`, etc).
@@ -80,7 +79,7 @@ module Haml
           @options[:trace] = true
         end
 
-        if RbConfig::CONFIG['host_os'] =~ /mswin|windows/i
+        if ::Haml::Util.windows?
           opts.on('--unix-newlines', 'Use Unix-style newlines in written files.') do
             @options[:unix_newlines] = true
           end
@@ -162,7 +161,7 @@ module Haml
         raise err if @options[:trace] || dep.nil? || dep.empty?
         $stderr.puts <<MESSAGE
 Required dependency #{dep} not found!
-  Run "gem install #{dep}" to get it.
+    Run "gem install #{dep}" to get it.
   Use --trace for backtrace.
 MESSAGE
         exit 1
@@ -208,7 +207,7 @@ END
               "haml --rails will no longer work in the next version of #{@name}.", "")
           elsif File.exists?(env) && File.open(env) {|env| env.grep(/config\.gem/)}
             puts("haml --rails isn't needed for Rails 2.1 or greater.",
-              "Add 'gem \"haml\"' to config/environment.rb instead.", "",
+              "Add 'config.gem \"haml\"' to config/environment.rb instead.", "",
               "haml --rails will no longer work in the next version of #{@name}.", "")
           end
 
@@ -295,6 +294,10 @@ END
                             'Locations are set like --watch.') do
           @options[:update] = true
         end
+        opts.on('--stop-on-error', 'If a file fails to compile, exit immediately.',
+                                   'Only meaningful for --watch and --update.') do
+          @options[:stop_on_error] = true
+        end
         opts.on('-t', '--style NAME',
                 'Output style. Can be nested (default), compact, compressed, or expanded.') do |name|
           @options[:for_engine][:style] = name.to_sym
@@ -338,9 +341,9 @@ END
       # and runs the Sass compiler appropriately.
       def process_result
         if !@options[:update] && !@options[:watch] &&
-            @args.first && @args.first.include?(':')
+            @args.first && colon_path?(@args.first)
           if @args.size == 1
-            @args = @args.first.split(':', 2)
+            @args = split_colon_path(@args.first)
           else
             @options[:update] = true
           end
@@ -389,7 +392,13 @@ END
         ::Sass::Plugin.options.merge! @options[:for_engine]
         ::Sass::Plugin.options[:unix_newlines] = @options[:unix_newlines]
 
-        if @args[1] && !@args[0].include?(':')
+        raise <<MSG if @args.empty?
+What files should I watch? Did you mean something like:
+    sass --watch input.sass:output.css
+    sass --watch input-dir:output-dir
+MSG
+
+        if !colon_path?(@args[0]) && probably_dest_dir?(@args[1])
           flag = @options[:update] ? "--update" : "--watch"
           err =
             if !File.exist?(@args[1])
@@ -399,11 +408,11 @@ END
             end
           raise <<MSG if err
 File #{@args[1]} #{err}.
-  Did you mean: sass #{flag} #{@args[0]}:#{@args[1]}
+    Did you mean: sass #{flag} #{@args[0]}:#{@args[1]}
 MSG
         end
 
-        dirs, files = @args.map {|name| name.split(':', 2)}.
+        dirs, files = @args.map {|name| split_colon_path(name)}.
           partition {|i, _| File.directory? i}
         files.map! {|from, to| [from, to || from.gsub(/\..*?$/, '.css')]}
         dirs.map! {|from, to| [from, to || from]}
@@ -417,15 +426,18 @@ MSG
           end
         end
 
+        had_error = false
         ::Sass::Plugin.on_creating_directory {|dirname| puts_action :directory, :green, dirname}
         ::Sass::Plugin.on_deleting_css {|filename| puts_action :delete, :yellow, filename}
         ::Sass::Plugin.on_compilation_error do |error, _, _|
-          raise error unless error.is_a?(::Sass::SyntaxError)
+          raise error unless error.is_a?(::Sass::SyntaxError) && !@options[:stop_on_error]
+          had_error = true
           puts_action :error, :red, "#{error.sass_filename} (Line #{error.sass_line}: #{error.message})"
         end
 
         if @options[:update]
           ::Sass::Plugin.update_stylesheets(files)
+          exit 1 if had_error
           return
         end
 
@@ -436,6 +448,30 @@ MSG
         ::Sass::Plugin.on_template_deleted {|template| puts ">>> Deleted template detected: #{template}"}
 
         ::Sass::Plugin.watch(files)
+      end
+
+      def colon_path?(path)
+        !split_colon_path(path)[1].nil?
+      end
+
+      def split_colon_path(path)
+        one, two = path.split(':', 2)
+        if one && two && ::Haml::Util.windows? &&
+            one =~ /\A[A-Za-z]\Z/ && two =~ /\A[\/\\]/
+          # If we're on Windows and we were passed a drive letter path,
+          # don't split on that colon.
+          one2, two = two.split(':', 2)
+          one = one + ':' + one2
+        end
+        return one, two
+      end
+
+      # Whether path is likely to be meant as the destination
+      # in a source:dest pair.
+      def probably_dest_dir?(path)
+        return false unless path
+        return false if colon_path?(path)
+        return Dir.glob(File.join(path, "*.s[ca]ss")).empty?
       end
     end
 
