@@ -20,9 +20,10 @@ Radiant::Initializer.run do |config|
   # config.extensions = [ :all ]
   
   # By default, only English translations are loaded. Remove any of these from
-  # the list below if you'd like to provide any of the supported languages
+  # the list below if you'd like to provide any of the additional options
   config.extensions -= [:dutch_language_pack, :french_language_pack, :german_language_pack,
-                        :italian_language_pack, :japanese_language_pack, :russian_language_pack]
+                        :italian_language_pack, :japanese_language_pack, :russian_language_pack,
+                        :debug]
 
   # Your secret key for verifying cookie session data integrity.
   # If you change this key, all old sessions will become invalid!
