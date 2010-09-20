@@ -8,7 +8,7 @@ module Radiant
   class ExtensionLocator < Rails::Plugin::GemLocator
     def plugins
       all_gems = initializer.configuration.gems
-      all_gems += Bundler.load.dependencies_for(:default).map{|dep| Rails::GemDependency.new(dep.name, :requirement => (dep.requirement))} if Object.const_defined?(:Bundler)
+      all_gems += Bundler.load.dependencies_for(:default, Rails.env).map{|dep| Rails::GemDependency.new(dep.name, :requirement => dep.requirement)} if defined?(Bundler)
       gem_index = all_gems.inject({}) { |memo, gem| memo.update gem.specification => gem }
 
       specs = gem_index.keys.select do |spec|

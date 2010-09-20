@@ -160,8 +160,8 @@ module Radiant
             paths.tap { |p| p << gem.specification.full_gem_path if gem.specification and
                             gem.specification.full_gem_path[/radiant-.*-extension-[\d\.]+$/] }
           end
-          if Object.const_defined?(:Bundler)
-            Bundler.load.dependencies_for(:default).select{|dep| dep.name =~ /radiant-.*-extension/}.inject(roots) do |paths,dep|
+          if defined?(Bundler)
+            Bundler.load.dependencies_for(:default, Rails.env).select{|dep| dep.name =~ /radiant-.*-extension/}.inject(roots) do |paths,dep|
               paths.tap { |p| p << spec = Rails::GemDependency.new(dep.name, :requirement => (dep.requirement)).specification.full_gem_path }
             end
           end
