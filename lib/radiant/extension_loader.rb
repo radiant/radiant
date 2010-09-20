@@ -132,6 +132,7 @@ module Radiant
 
       def select_extension_roots
         all_roots = all_extension_roots.dup
+
         roots = configuration.extensions.uniq.map do |ext_name|
           if :all === ext_name
             :all
@@ -158,6 +159,11 @@ module Radiant
           configuration.gems.inject(roots) do |paths,gem|
             paths.tap { |p| p << gem.specification.full_gem_path if gem.specification and
                             gem.specification.full_gem_path[/radiant-.*-extension-[\d\.]+$/] }
+          end
+          if Object.const_defined?(:Bundler)
+            Bundler.load.dependencies_for(:default).select{|dep| dep.name =~ /radiant-.*-extension/}.inject(roots) do |paths,dep|
+              paths.tap { |p| p << spec = Rails::GemDependency.new(dep.name, :requirement => (dep.requirement)).specification.full_gem_path }
+            end
           end
           roots.flatten
         end

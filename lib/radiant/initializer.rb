@@ -43,6 +43,7 @@ module Radiant
       @extensions ||= all_available_extensions
     end
     
+    #todo: include Bundler paths, make regex less specific to gem conventions: Bunder allows arbitrary :path
     def all_available_extensions
       # load vendorized extensions by inspecting load path(s)
       all = extension_paths.map do |path|
