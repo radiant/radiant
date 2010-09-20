@@ -163,7 +163,7 @@ module Radiant
           end
           if defined?(Bundler)
             Bundler.load.dependencies_for(:default, Rails.env).select{|dep| dep.name =~ /radiant-.*-extension/}.inject(roots) do |paths,dep|
-              paths.tap { |p| p << spec = Rails::GemDependency.new(dep.name, :requirement => (dep.requirement)).specification.full_gem_path }
+              paths.tap { |p| p << spec = Rails::GemDependency.new(dep.name, :requirement => dep.requirement).specification.full_gem_path }
             end
           end
           roots.flatten
