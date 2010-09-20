@@ -137,6 +137,7 @@ module Radiant
           if :all === ext_name
             :all
           else
+            #todo: make this work with arbitrary bundler paths
             ext_path = all_roots.detect do |maybe_path|
               File.basename(maybe_path).gsub(/^radiant-|-extension-[\d.]+$/, '') == ext_name.to_s
             end
