@@ -808,16 +808,19 @@ module StandardTags
     Renders a trail of breadcrumbs to the current page. The separator attribute
     specifies the HTML fragment that is inserted between each of the breadcrumbs. By
     default it is set to @>@. The boolean nolinks attribute can be specified to render
-    breadcrumbs in plain text, without any links (useful when generating title tag).
+    breadcrumbs in plain text, without any links (useful when generating title tag). 
+    Set the noself attribute to 'true' to omit the present page (useful in page headers).
 
     *Usage:*
 
-    <pre><code><r:breadcrumbs [separator="separator_string"] [nolinks="true"] /></code></pre>
+    <pre><code><r:breadcrumbs [separator="separator_string"] [nolinks="true"] [noself="true"]/></code></pre>
   }
   tag 'breadcrumbs' do |tag|
     page = tag.locals.page
-    breadcrumbs = [page.breadcrumb]
     nolinks = (tag.attr['nolinks'] == 'true')
+    noself = (tag.attr['noself'] == 'true')
+    breadcrumbs = []
+    breadcrumbs << (noself) ? '' : page.breadcrumb
     page.ancestors.each do |ancestor|
       tag.locals.page = ancestor
       if nolinks
