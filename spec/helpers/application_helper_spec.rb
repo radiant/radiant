@@ -179,7 +179,12 @@ describe ApplicationHelper do
   it "should provide the admin object" do
     helper.admin.should == Radiant::AdminUI.instance
   end
-  
+
+  it "should return filter options for select" do
+    helper.filter_options_for_select.should =~ %r{<option value=\"\">&lt;none&gt;</option>}
+    helper.filter_options_for_select.should =~ %r{<option value=\"Markdown\">Markdown</option>}
+  end 
+
   it "should include the regions helper" do
     ApplicationHelper.included_modules.should include(Admin::RegionsHelper)
   end
