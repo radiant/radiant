@@ -21,6 +21,10 @@ describe TextFilter do
     CustomFilter.description.should == File.read(File.dirname(__FILE__) + "/../fixtures/sample.txt")
   end
 
+  it 'should descendant_names' do
+    TextFilter.descendant_names.should include("Markdown", "Really Custom", "Reverse", "SmartyPants", "Textile")
+  end
+
   it 'should filter text with base filter' do
     filter = TextFilter.new
     filter.filter('test').should == 'test'

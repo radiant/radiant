@@ -34,8 +34,7 @@ module Admin::ReferencesHelper
   
   def filter
     @filter ||= begin
-      filter_name = params[:filter_name]
-      (filter_name.gsub(" ", "") + "Filter").constantize unless filter_name.blank?
+      TextFilter.find_descendant(params[:filter_name])
     end
   end
 
