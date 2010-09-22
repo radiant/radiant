@@ -820,7 +820,7 @@ module StandardTags
     nolinks = (tag.attr['nolinks'] == 'true')
     noself = (tag.attr['noself'] == 'true')
     breadcrumbs = []
-    breadcrumbs << (noself) ? '' : page.breadcrumb
+    breadcrumbs << (noself ? '' : page.breadcrumb)
     page.ancestors.each do |ancestor|
       tag.locals.page = ancestor
       if nolinks
