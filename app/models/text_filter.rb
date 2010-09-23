@@ -22,7 +22,7 @@ class TextFilter
       self.description text
     end
 
-    def descendant_names
+    def descendants_names
       descendants.map { |s| s.filter_name }.sort
     end
 
