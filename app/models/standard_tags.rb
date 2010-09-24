@@ -1151,6 +1151,7 @@ module StandardTags
   tag 'if_field' do |tag|
     raise TagError.new("`field' tag must contain a `name' attribute.") unless tag.attr.has_key?('name')
     field = tag.locals.page.field(tag.attr['name'])
+    return '' if field.nil?
     tag.expand if case
       when (tag.attr['equals'] and tag.attr['ignore_case'] == 'false') : field.content == tag.attr['equals']
       when tag.attr['equals'] : field.content.downcase == tag.attr['equals'].downcase
@@ -1173,9 +1174,9 @@ module StandardTags
     raise TagError.new("`field' tag must contain a `name' attribute.") unless tag.attr.has_key?('name')
     field = tag.locals.page.field(tag.attr['name'])
     tag.expand unless case
-      when (tag.attr['equals'] and tag.attr['ignore_case'] == 'false') : field.content == tag.attr['equals']
-      when tag.attr['equals'] : field.content.downcase == tag.attr['equals'].downcase
-      when tag.attr['matches'] : field.content =~ build_regexp_for(tag, 'matches')
+      when (field and (tag.attr['equals'] and tag.attr['ignore_case'] == 'false')) : field.content == tag.attr['equals']
+      when (field and tag.attr['equals']) : field.content.downcase == tag.attr['equals'].downcase
+      when (field and tag.attr['matches']) : field.content =~ build_regexp_for(tag, 'matches')
       else field
     end
   end
