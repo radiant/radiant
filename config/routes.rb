@@ -26,12 +26,6 @@ ActionController::Routing::Routes.draw do |map|
     welcome.logout         'admin/logout',                       :action => 'logout'
   end
 
-  # Export Routes
-  map.with_options(:controller => 'admin/export') do |export|
-    export.export          'admin/export',                             :action => 'yaml'
-    export.export_yaml     'admin/export/yaml',                        :action => 'yaml'
-  end
-
   # Site URLs
   map.with_options(:controller => 'site') do |site|
     site.root                                                    :action => 'show_page', :url => '/'
