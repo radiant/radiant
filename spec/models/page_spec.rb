@@ -174,7 +174,7 @@ describe Page do
       page.part('test').should == part
       page.part(:test).should == part
     end
-    it 'should return nil string for an invalid part name' do
+    it 'should return nil for an invalid part name' do
       page.part('not-real').should be_nil
     end
   end
@@ -362,7 +362,7 @@ describe Page, "before save filter" do
     @page.send(:read_attribute, :virtual).should == true
 
    # turn a virtual page into a non-virtual one
-   ["", nil, "Page", "EnvDumpPage"].each do |value|
+   ["", nil, "Page", "PageSpecTestPage"].each do |value|
       @page = ArchiveYearIndexPage.create(page_params)
       @page.class_name = value
       @page.save.should == true
