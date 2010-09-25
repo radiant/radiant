@@ -17,7 +17,7 @@ class Admin::PagesController < Admin::ResourceController
   end
 
   def new
-    self.model ||= model_class.new_with_defaults(config)
+    self.model = model_class.new_with_defaults(config)
     assign_page_attributes
     response_for :new
   end

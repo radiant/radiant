@@ -210,16 +210,6 @@ describe Admin::PagesController do
     assigns(:meta).should be_kind_of(Array)
     assigns(:buttons_partials).should be_kind_of(Array)
   end
-  
-  describe '#new' do
-    it "should not override a pre-assigned model" do
-      pending "Need to test ||= operator for pre-assigning the model"
-      @new_page = Page.new(:title => 'Pre-Assigned!')
-      controller.stub(:model).and_return(@new_page)
-      get :new, :page_id => page_id(:home)
-      assigns(:page).title.should == 'Pre-Assigned!'
-    end
-  end
 
   it "should initialize meta and buttons_partials in edit action" do
     get :edit, :id => page_id(:home)
