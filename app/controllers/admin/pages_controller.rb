@@ -27,6 +27,7 @@ class Admin::PagesController < Admin::ResourceController
       if params[:page_id].blank?
         self.model.slug = '/'
       end
+      self.model.parent_id = params[:page_id]
     end
 
     def model_class

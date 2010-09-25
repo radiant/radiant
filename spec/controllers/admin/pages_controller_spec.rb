@@ -210,6 +210,11 @@ describe Admin::PagesController do
     assigns(:meta).should be_kind_of(Array)
     assigns(:buttons_partials).should be_kind_of(Array)
   end
+  
+  it "should set the parent_id from the parameters" do
+    get :new, :page_id => page_id(:home)
+    assigns(:page).parent_id.should == page_id(:home)
+  end
 
   it "should initialize meta and buttons_partials in edit action" do
     get :edit, :id => page_id(:home)
