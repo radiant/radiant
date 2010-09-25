@@ -204,16 +204,27 @@ describe Admin::PagesController do
     end
   end
 
-  it "should initialize meta and buttons_partials in new action" do
-    get :new, :page_id => page_id(:home)
-    response.should be_success
-    assigns(:meta).should be_kind_of(Array)
-    assigns(:buttons_partials).should be_kind_of(Array)
-  end
+  describe '#new' do
+    it "should initialize meta and buttons_partials in new action" do
+      get :new, :page_id => page_id(:home)
+      response.should be_success
+      assigns(:meta).should be_kind_of(Array)
+      assigns(:buttons_partials).should be_kind_of(Array)
+    end
   
-  it "should set the parent_id from the parameters" do
-    get :new, :page_id => page_id(:home)
-    assigns(:page).parent_id.should == page_id(:home)
+    it "should set the parent_id from the parameters" do
+      get :new, :page_id => page_id(:home)
+      assigns(:page).parent_id.should == page_id(:home)
+    end
+  
+    it "should set the @page variable" do
+      home = pages(:home)
+      new_page = home.class.new_with_defaults
+      new_page.parent_id = home.id
+      Page.stub!(:new_with_defaults).and_return(new_page)
+      get :new, :page_id => home.id
+      assigns(:page).should == new_page
+    end
   end
 
   it "should initialize meta and buttons_partials in edit action" do
