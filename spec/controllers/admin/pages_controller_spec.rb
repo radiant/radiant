@@ -227,6 +227,18 @@ describe Admin::PagesController do
     end
   end
 
+  describe '#update' do
+    it 'should update the page updated_at on every update' do
+      start_updated_at = pages(:home).updated_at
+      put :update, :id => page_id(:home), :page => {:breadcrumb => 'Homepage'} and sleep(1)
+      next_updated_at = pages(:home).updated_at
+      lambda{ start_updated_at <=> next_updated_at }.should be_true
+      put :update, :id => page_id(:home), :page => {:breadcrumb => 'Homepage'} and sleep(1)
+      final_updated_at = pages(:home).updated_at
+      lambda{ next_updated_at <=> final_updated_at }.should be_true
+    end
+  end
+  
   it "should initialize meta and buttons_partials in edit action" do
     get :edit, :id => page_id(:home)
     response.should be_success
