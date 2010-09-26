@@ -8,6 +8,7 @@ describe Admin::NodeHelper do
     helper.stub!(:cookies).and_return(@cookies)
     helper.stub!(:homepage).and_return(nil)
     @page = mock_model(Page)
+    @page.stub!(:sheet?).and_return(false) # core extension alters the behavior
   end
 
   it "should render a sitemap node" do
