@@ -711,6 +711,12 @@ describe "Standard Tags" do
   it '<r:comment> should render nothing it contains' do
     page.should render('just a <r:comment>small </r:comment>test').as('just a test')
   end
+  
+  describe '<r:hide>' do
+    it "should not display it's contents" do
+      page.should render('just a <r:hide>small </r:hide>test').as('just a test')
+    end
+  end
 
   describe "<r:navigation>" do
     it "should render the nested <r:normal> tag by default" do

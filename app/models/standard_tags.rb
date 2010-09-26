@@ -939,6 +939,7 @@ module StandardTags
   end
 
   desc %{
+    This is deprecated and will be removed. Plase use @<r:hide>@
     Nothing inside a set of comment tags is rendered.
 
     *Usage:*
@@ -946,6 +947,17 @@ module StandardTags
     <pre><code><r:comment>...</r:comment></code></pre>
   }
   tag 'comment' do |tag|
+    ActiveSupport::Deprecation.warn("the <r:comment> tag is no longer encouraged in Radiant 0.9.2+.", caller)
+  end
+
+  desc %{
+    Nothing inside a set of hide tags is rendered.
+
+    *Usage:*
+
+    <pre><code><r:hide>...</r:hide></code></pre>
+  }
+  tag 'hide' do |tag|
   end
 
   desc %{
