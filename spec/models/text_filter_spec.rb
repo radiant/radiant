@@ -17,12 +17,12 @@ describe TextFilter do
     ReverseFilter.description.should == %{Reverses text.}
   end
   
-  it 'should description_file annotation' do
+  it 'should allow description_file annotation' do
     CustomFilter.description.should == File.read(File.dirname(__FILE__) + "/../fixtures/sample.txt")
   end
 
-  it 'should descendant_names' do
-    TextFilter.descendant_names.should include("Markdown", "Really Custom", "Reverse", "SmartyPants", "Textile")
+  it 'should return an array of filter_names of all available filters' do
+    TextFilter.descendants_names.should include("Markdown", "Really Custom", "Reverse", "SmartyPants", "Textile")
   end
 
   it 'should filter text with base filter' do
