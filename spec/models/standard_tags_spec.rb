@@ -965,6 +965,66 @@ describe "Standard Tags" do
     end
   end
 
+  describe '<r:index>' do
+    context 'invalid call' do
+      before :each do
+        @tag = %{<r:index />}
+      end
+      it 'should raise an exception' do
+        pages(:home).should render(@tag).with_error("`index' tag must contain an `array' attribute.")
+      end
+    end
+    
+    context 'single array' do
+      before :each do
+        @tag = %{<r:index array='items' />}
+      end
+      context 'one call' do
+        it 'should render 0' do
+          pages(:home).should render(@tag).as(%{0})
+        end
+      end
+      context 'multiple calls' do
+        it 'should render incrementing indexes' do
+          tag = ''
+          4.times { tag << @tag }
+          pages(:home).should render(tag).as(%{0123})
+        end
+      end
+    end
+    
+    context 'multiple arrays' do
+      before :each do
+        @tag = %{<r:index array='items' /><r:index array='widgets' />}
+      end
+      context 'one call' do
+        it 'should render 0 for each' do
+          pages(:home).should render(@tag).as(%{00})
+        end
+      end
+      context 'multiple calls' do
+        it 'should render indexes simultaneously' do
+          tag = ''
+          4.times { tag << @tag }
+          pages(:home).should render(tag).as(%{00112233})
+        end
+      end
+    end
+    
+    context 'unbalanced multiple arrays' do
+      before :each do
+        @tag = %{<r:index array='items' /><r:index array='widgets' /><r:index array='items' />}
+      end
+      context 'multiple calls' do
+        it 'should render indexes simultaneously' do
+          tag = ''
+          4.times { tag << @tag }
+          pages(:home).should render(tag).as(%{001213425637})
+        end
+      end
+    end
+  end
+
   describe "<r:if_dev>" do
     it "should render the contained block when on the dev site" do
       page.should render('-<r:if_dev>dev</r:if_dev>-').as('-dev-').on('dev.site.com')

@@ -508,6 +508,32 @@ module StandardTags
     cycle[cycle_name] = (current_index + 1) % values.size
     values[current_index]
   end
+  
+  desc %{
+    Renders the numeric index value of an arbitrary array name incrementing this 
+    value after every call.
+    
+    *Usage:* _The following would render '0012'
+    
+    <pre><code><r:index array="items" /><r:index array="widgets" /><r:index array="items" /><r:index array="items" /></code></pre>
+  }
+  tag 'index' do |tag|
+    raise TagError, "`index' tag must contain an `array' attribute." unless tag.attr['array']
+    key = tag.attr['array']
+
+    if tag.globals.indexes.present?     # If the global indexes array exists
+      if tag.globals.indexes[key].nil?  # Set the value of that index to zero if not present
+        tag.globals.indexes[key] = 0
+      end
+    else
+      tag.globals.indexes = { key => 0 } # Create the indexes array and that index
+    end  
+
+    index = tag.globals.indexes[key]    # Store the current value for return
+    tag.globals.indexes[key] += 1       # Increment the index value on the global object
+    
+    index                               # Return the stored index
+  end
 
   desc %{
     Renders the main content of a page. Use the @part@ attribute to select a specific
