@@ -515,11 +515,10 @@ module StandardTags
     
     *Usage:* _The following would render '0012'
     
-    <pre><code><r:index array="items" /><r:index array="widgets" /><r:index array="items" /><r:index array="items" /></code></pre>
+    <pre><code><r:index [array="widgets"] /><r:index array="snippets" /><r:index [array="widgets"] /><r:index [array="widgets"] /></code></pre>
   }
   tag 'index' do |tag|
-    raise TagError, "`index' tag must contain an `array' attribute." unless tag.attr['array']
-    key = tag.attr['array']
+    key = tag.attr['array'] ||= 'array'
 
     if tag.globals.indexes.present?     # If the global indexes array exists
       if tag.globals.indexes[key].nil?  # Set the value of that index to zero if not present
@@ -533,6 +532,19 @@ module StandardTags
     tag.globals.indexes[key] += 1       # Increment the index value on the global object
     
     index                               # Return the stored index
+  end
+  
+  desc %{
+    Resets the counter on an array
+    
+    *Usage:* _The following with render '010'
+    
+    <pre><code><r:index [array="widgets"] /><r:index [array="widgets"] /><r:reset [array="widgets"] /><r:index [array="widgets"] /></code></pre>
+  }
+  tag 'reset' do |tag|
+    key = tag.attr['array'] ||= 'array'
+    tag.globals.indexes[key] = 0
+    nil
   end
 
   desc %{
