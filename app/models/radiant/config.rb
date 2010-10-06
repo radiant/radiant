@@ -32,8 +32,33 @@ module Radiant
   class Config < ActiveRecord::Base
     set_table_name "config"
     after_save :update_cache
+    validate :validate_against_definition
+    cattr_accessor :definitions, :configuration_files
 
+    @@definitions = {}
+    @@configuration_files = []
+    
     class << self
+      def add_configuration_files(paths)
+        paths = [paths] unless paths.is_a? Array
+        paths.each { |path| load(path) if File.exist? path }
+      end
+
+      def prepare
+        yield self if block_given?
+      end
+      
+      def namespace(prefix, options = {}, &block)
+        prefix = [options[:prefix], prefix].join('.') if options[:prefix]
+        with_options(options.merge(:prefix => prefix), &block)
+      end
+      
+      def define(key, options={})
+        key = [options[:prefix], key].join('.') if options[:prefix]
+        definitions[key] = Radiant::Config::Definition.new(options)
+        self[key] ||= options[:default]
+      end
+
       def [](key)
         if table_exists?
           unless Radiant::Config.cache_file_exists?
@@ -52,7 +77,7 @@ module Radiant
           value
         end
       end
-
+      
       def to_hash
         Hash[ *find(:all).map { |pair| [pair.key, pair.value] }.flatten ]
       end
@@ -86,20 +111,52 @@ module Radiant
       end
     end
 
+    def definition
+      self.class.definitions[key] ||= Radiant::Config::Definition.new
+    end
+
     def value=(param)
       self[:value] = param.to_s
     end
 
     def value
-      if key.ends_with? "?"
-        self[:value] == "true"
+      if boolean?
+        checked?
       else
         self[:value]
       end
+    end
+
+    def boolean?
+      definition.boolean? || key.ends_with?("?")
+    end
+    
+    def checked?
+      boolean? && self[:value] == "true"
+    end
+        
+    def selector?
+      definition.selector?
+    end
+    
+    def selected_value
+      definition.selected(value)
     end
     
     def update_cache
       Radiant::Config.initialize_cache
     end
+
+    delegate :default, :type, :label, :allow_blank?, :hidden?, :settable?, :selection, :validation, :to => :definition
+
+    def validate_against_definition
+      if block = validation
+        errors.add_to_base key + ' ' + definition.error_message unless block.call(self.value)
+      end
+      if selector?
+        errors.add_to_base "#{value} is not one of the selectable values for #{key}" unless definition.selectable?(value)
+      end
+    end
+
   end
 end

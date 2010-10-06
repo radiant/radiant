@@ -20,7 +20,19 @@ class Status
   
   def self.find_all
     @@statuses.dup
-  end  
+  end
+  
+  def self.settable
+    settable = @@statuses.dup - [self['Scheduled']]
+  end
+  
+  def self.settable_options
+    self.settable.map{ |s| [t(s.name.downcase), s.id] }
+  end
+  
+  def self.settable_values
+    self.settable.map(&:name)
+  end
   
   @@statuses = [
     Status.new(:id => 1,   :name => 'Draft'    ),

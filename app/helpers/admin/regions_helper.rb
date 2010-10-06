@@ -22,6 +22,9 @@ module Admin::RegionsHelper
     unless @region_set
       @controller_name ||= @controller.controller_name
       @template_name ||= @controller.template_name
+      
+      Rails.logger.warn ">>  admin.send(#{@controller_name}).send(#{@template_name})"
+      
       @region_set = admin.send(@controller_name).send(@template_name)
     end
   end

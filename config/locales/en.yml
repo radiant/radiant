@@ -146,6 +146,7 @@ en:
     none: '<none>' 
     normal: '<normal>'
   settings: 'Settings'
+  show_all: 'Show all'
   slug: 'Slug'
   snippet: 'Snippet'   
   snippets: 'Snippets'

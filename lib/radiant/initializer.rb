@@ -62,7 +62,6 @@ module Radiant
       AdminUI.instance
     end
 
-
     def extension(ext)
       ::ActiveSupport::Deprecation.warn("Extension dependencies have been deprecated. Extensions may be packaged as gems and use the Gem spec to declare dependencies.", caller)
       @extension_dependencies << ext unless @extension_dependencies.include?(ext)
@@ -207,8 +206,17 @@ end_error
 
     def after_initialize
       super
+      initialize_configuration
       extension_loader.activate_extensions
       configuration.check_extension_dependencies
+    end
+    
+    def initialize_configuration
+      Radiant::Config.add_configuration_files(default_configuration_files)
+    end
+
+    def default_configuration_files
+      paths = [RAILS_ROOT + '/config/settings.rb', RADIANT_ROOT + '/config/settings.rb'].uniq
     end
 
     def initialize_default_admin_tabs

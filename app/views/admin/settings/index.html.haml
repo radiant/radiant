@@ -1,0 +1,37 @@
+- body_classes << "reversed"
+
+#settings.box
+  - render_region :settings do |settings|
+    - settings.site do
+      %h3 Site configuration
+      %p.ruled
+        = show_setting 'site.title'
+      %p.ruled
+        = show_setting 'site.domain'
+      %p.ruled
+        = show_setting 'dev.host'
+      %p.ruled
+        = show_setting 'local.timezone'
+
+    - settings.defaults do
+      %h3 Defaults
+      %p.ruled
+        = show_setting 'defaults.locale'
+      %p.ruled
+        = show_setting 'defaults.page.filter'
+      %p.ruled
+        = show_setting 'defaults.page.parts'
+      %p.ruled
+        = show_setting 'defaults.page.fields'
+      %p.ruled
+        = show_setting 'defaults.page.status'
+
+    - settings.users do
+      %h3 Passwords
+      %p.ruled
+        = show_setting 'users.allow_password_reset?'
+
+    - settings.sheets do
+      %h3 Javascripts &amp; stylesheets
+      %p.ruled
+        = show_setting 'sheets.compress?'
