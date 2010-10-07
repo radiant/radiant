@@ -28,3 +28,6 @@
 [submodule "vendor/extensions/page_menu"]
 	path = vendor/extensions/page_menu
 	url = git://github.com/radiant/radiant-page_menu-extension.git
+[submodule "vendor/extensions/markdown_filter"]
+	path = vendor/extensions/markdown_filter
+	url = git://github.com/radiant/radiant-markdown_filter-extension.git
