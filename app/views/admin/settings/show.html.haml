@@ -3,7 +3,11 @@
 #settings.box
   - render_region :settings do |settings|
     - settings.site do
-      %h3 Site configuration
+      %h3
+        - if admin?
+          .actions
+            = link_to "Edit settings", edit_admin_settings_url
+        Site configuration
       %p.ruled
         = show_setting 'site.title'
       %p.ruled
@@ -30,8 +34,3 @@
       %h4 Passwords
       %p.ruled
         = show_setting 'users.allow_password_reset?'
-
-    - settings.sheets do
-      %h3 Javascripts &amp; stylesheets
-      %p.ruled
-        = show_setting 'sheets.compress?'

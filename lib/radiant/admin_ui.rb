@@ -234,8 +234,13 @@ module Radiant
 
     def load_default_setting_regions
       returning OpenStruct.new do |setting|
-        setting.index = RegionSet.new do |index|
-          index.settings.concat %w{site defaults users sheets}
+        setting.show = RegionSet.new do |show|
+          show.settings.concat %w{site defaults users}
+        end
+        setting.edit = RegionSet.new do |edit|
+          edit.main.concat %w{edit_header edit_form}
+          edit.form.concat %w{edit_site edit_defaults edit_users}
+          edit.form_bottom.concat %w{edit_buttons}
         end
       end
     end

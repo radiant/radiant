@@ -1,5 +1,5 @@
 class Admin::SettingsController < ApplicationController
-  before_filter :get_setting, :except => [:index]
+  # before_filter :get_setting, :except => [:index]
 
   only_allow_access_to :show, :edit, :update,
     :when => [:admin],

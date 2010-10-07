@@ -15,19 +15,20 @@ module Admin::SettingsHelper
   def edit_setting(key, options={})
     setting = setting_for(key)
     domkey = key.gsub(/\W/, '_')
-    label = content_tag(:label, options[:label] || setting.label || key)
+    title = options[:label] || setting.label || key
     name = setting.key.to_sym
     html = ""
     if setting.boolean?
       html << check_box_tag(name, 1, setting.value, :class => 'setting', :id => domkey)
-      html << label
+      html << content_tag(:label, title, :class => 'checkbox', :for => domkey)
     elsif setting.selector?
-      html << label
-      html << select_tag(name, options_from_collection_for_select(setting.definition.selection), setting.value, :class => 'setting', :id => domkey)
+      html << content_tag(:label, title, :for => domkey)
+      html << select_tag(name, options_for_select(setting.definition.selection, setting.value), :class => 'setting', :id => domkey)
     else
-      html << label
-      text_field_tag(name, setting.value, :class => 'setting', :id => domkey)
+      html << content_tag(:label, title, :for => domkey)
+      html << text_field_tag(name, setting.value, :class => 'textbox', :id => domkey)
     end
+    html
   end
   
   def setting_for(key)

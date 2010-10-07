@@ -12,7 +12,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.namespace :admin do |admin|
     admin.resource :preferences
-    admin.resources :settings
+    admin.resource :settings
     admin.resources :extensions, :only => :index
     admin.resources :page_parts
     admin.resources :page_fields

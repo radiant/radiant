@@ -21,6 +21,13 @@ module Radiant
         if selector?
           choices = select_from
           choices = choices.call if choices.respond_to? :call
+          if allow_blank?
+            if choices.is_a? Array
+              choices.unshift ""
+            elsif choices.is_a? Hash
+              choices[''] ||= ""
+            end
+          end
           choices
         end
       end
