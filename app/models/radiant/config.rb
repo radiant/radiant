@@ -33,32 +33,9 @@ module Radiant
     set_table_name "config"
     after_save :update_cache
     validate :validate_against_definition
-    cattr_accessor :definitions, :configuration_files
-
-    @@definitions = {}
-    @@configuration_files = []
+    cattr_accessor :definitions
     
     class << self
-      def add_configuration_files(paths)
-        paths = [paths] unless paths.is_a? Array
-        paths.each { |path| load(path) if File.exist? path }
-      end
-
-      def prepare
-        yield self if block_given?
-      end
-      
-      def namespace(prefix, options = {}, &block)
-        prefix = [options[:prefix], prefix].join('.') if options[:prefix]
-        with_options(options.merge(:prefix => prefix), &block)
-      end
-      
-      def define(key, options={})
-        key = [options[:prefix], key].join('.') if options[:prefix]
-        definitions[key] = Radiant::Config::Definition.new(options)
-        self[key] ||= options[:default]
-      end
-
       def [](key)
         if table_exists?
           unless Radiant::Config.cache_file_exists?
@@ -109,10 +86,37 @@ module Radiant
       def cache_file
         cache_file = File.join(cache_path,'radiant_config_cache.txt')
       end
-    end
+      
+      def read_configuration_files(paths)
+        initialize_definitions if definitions.nil?
+        paths = [paths] unless paths.is_a? Array
+        Rails.logger.warn "%%  Reading configs from #{paths.inspect}"
+        paths.each { |path| load(path) if File.exist? path }
+      end
+      
+      def prepare
+        yield self if block_given?
+      end
+      
+      def namespace(prefix, options = {}, &block)
+        prefix = [options[:prefix], prefix].join('.') if options[:prefix]
+        with_options(options.merge(:prefix => prefix), &block)
+      end
+      
+      def define(key, options={})
+        key = [options[:prefix], key].join('.') if options[:prefix]
+        definitions[key] = Radiant::Config::Definition.new(options)
+        self[key] ||= options[:default]
+      end
 
-    def definition
-      self.class.definitions[key] ||= Radiant::Config::Definition.new
+      def initialize_definitions
+        @@definitions = {}
+        read_configuration_files([RAILS_ROOT + '/config/settings.rb', RADIANT_ROOT + '/config/settings.rb'].uniq)
+      end
+      
+      def initialized?
+        !!@initialized
+      end
     end
 
     def value=(param)
@@ -125,6 +129,10 @@ module Radiant
       else
         self[:value]
       end
+    end
+
+    def definition
+      self.class.definitions[key] ||= Radiant::Config::Definition.new
     end
 
     def boolean?

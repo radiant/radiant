@@ -24,7 +24,7 @@ class Admin::SettingsController < ApplicationController
     end
   end
   
-  def update    
+  def update  
     @setting.update_attributes!(:value, params[:setting][:value])
     respond_to do |format|
       format.html { render :action => 'show' }
@@ -39,10 +39,10 @@ private
     unless @setting.settable?
       respond_to do |format|
         format.html { 
-          flash['error'] = "Not settable"
+          flash['error'] = "#{@setting.key} is not settable"
           redirect_to :action => 'index'
         }
-        format.js { render :status => 403, :text => 'Not settable' }
+        format.js { render :status => 403, :text => "#{@setting.key} is not settable" }
       end
       return false
     end

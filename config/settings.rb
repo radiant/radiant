@@ -1,8 +1,9 @@
 Radiant::Config.prepare do |config|
-  config.define 'admin.title', :label => 'Admin title', :default => "Radiant CMS"
-  config.define 'dev.host', :label => 'Development host', :allow_change => true
-  config.define 'local.timezone', :label => 'Timezone name', :allow_change => true
+  config.namespace('admin') do |admin|
+    admin.define 'title', :label => 'Admin title', :default => "Radiant CMS"
+  end
   config.namespace('defaults', :allow_change => true) do |defaults|
+    defaults.define 'locale', :label => 'Default language', :select_from => lambda { Radiant::AvailableLocales.locales }, :allow_blank => true
     defaults.namespace('page') do |page|
       page.define 'parts', :label => 'Default page parts', :notes => 'comma separated list of part names', :default => "Body,Extended"
       page.define 'status', :select_from => lambda { Status.settable_values }, :label => "Default page status", :allow_blank => true, :default => "Draft"
@@ -17,4 +18,6 @@ Radiant::Config.prepare do |config|
   config.namespace('users', :allow_change => true) do |users|
     users.define 'allow_password_reset?', :label => 'Allow password reset?'
   end
+  config.define 'dev.host', :label => 'Development host', :allow_change => true
+  config.define 'local.timezone', :label => 'Timezone name', :allow_change => true
 end 
