@@ -52,23 +52,25 @@ module Radiant
         if selector?
           choices = select_from
           choices = choices.call if choices.respond_to? :call
-          if allow_blank?
-            if choices.is_a? Array
-              choices.unshift ""
-            elsif choices.is_a? Hash
-              choices[''] ||= ""
-            end
-          end
+          choices = normalize_selection(choices)
+          choices.unshift ["",""] if allow_blank?
           choices
         end
       end
       
-      # If the config item is a selector and :select_from specifies a list of [value, name] pairs, this will return the 
-      # name corresponding to the currently selected value.
+      # Standardises on an options array-of-arrays so that it's easy to work with
+      #
+      def normalize_selection(choices)
+        choices = choices.to_a if Hash === choices
+        choices = choices.collect{|c| (c.is_a? Array) ? c : [c,c]}
+      end
+      
+      # If the config item is a selector and :select_from specifies [name, value] pairs (as hash or array), 
+      # this will return the name corresponding to the currently selected value.
       #
       def selected(value)
-        if value && selector? && pair = selection.select{|s| s.first == value}
-          pair.shift
+        if value && selector? && pair = selection.find{|s| s.last == value}
+          pair.first
         end
       end
       
@@ -80,20 +82,15 @@ module Radiant
       # * if :allow_blank has been set to false, we test that the value is not blank
       #
       def validate(setting)
-        Rails.logger.warn "!!  validating #{setting.key} against definition"
-
         if validate_with.is_a? Proc
           setting.errors.add :value, error_message unless validate_with.call(setting.value)
         end
-        
         if !allow_blank?
           setting.errors.add :value, "must not be blank" if setting.value.blank?
         end
-
         if selector?
           setting.errors.add :value, "must choose one of the permitted values" unless selectable?(setting.value)
         end
-        
         if integer?
           setting.errors.add :value, "must be a number" unless setting.value =~ /\A-?\d*\Z/
         end
@@ -101,7 +98,8 @@ module Radiant
       
       # Returns true if the value is one of the permitted selections
       def selectable?(value)
-        !selector? || selection.map(&:first).include?(value)
+        return true unless selector?
+        selection.map(&:last).include?(value)
       end
       
       # Returns true unless :allow_blank has been explicitly set to false. Defaults to true.

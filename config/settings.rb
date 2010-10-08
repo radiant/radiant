@@ -18,6 +18,6 @@ Radiant::Config.prepare do |config|
   config.namespace('user', :allow_change => true) do |user|
     user.define 'allow_password_reset?', :label => 'Allow users to reset passwords?'
   end
-  config.define 'dev.host', :label => 'Development host', :allow_change => false
+  config.define 'dev.host', :label => 'Development host'
   config.define 'local.timezone', :label => 'Timezone name', :allow_change => true, :select_from => lambda { ActiveSupport::TimeZone::MAPPING.keys.sort }
 end 

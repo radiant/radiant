@@ -51,7 +51,7 @@ module Admin::ConfigurationHelper
       html << content_tag(:label, title, :for => domkey)
       html << text_field_tag(name, value, :class => 'textbox', :id => domkey)
     end
-    html << content_tag(:span, setting.errors.full_messages.to_sentence, :class => "error") if setting.errors.any?
+    html = %{<span class="error-with-field">#{html} <span class="error">#{[setting.errors.on(:value)].flatten.first}</span></span>} if setting.errors.any?
     html
   end
   

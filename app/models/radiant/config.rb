@@ -131,8 +131,8 @@ module Radiant
         load(path) if File.exist? path
       end
       
-      # Block-receiver. imilar to Routing::Routes.draw, it yields the Radiant::Config eigenclass
-      # so that definitions are easily declared:
+      # Block-receiver. Similar to Routing::Routes.draw, it yields the Radiant::Config eigenclass
+      # so that definitions are easily declared from anywhere:
       # 
       #   Radiant::Config.prepare do |config|
       #     config.define(...)
@@ -217,7 +217,11 @@ module Radiant
       newvalue = param.to_s
       if newvalue != self[:value]
         raise ConfigError, "#{self.key} cannot be changed" unless settable?
-        self[:value] = newvalue
+        if boolean?
+          self[:value] = (newvalue == "0" || newvalue == "false" || newvalue.blank? ) ? "false" : "true"
+        else
+          self[:value] = newvalue
+        end
         self.save!
       end
       self[:value]
