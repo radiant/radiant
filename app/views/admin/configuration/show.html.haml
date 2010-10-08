@@ -6,7 +6,7 @@
       %h3
         - if admin?
           .actions
-            = link_to "Edit settings", edit_admin_settings_url
+            = button_to "Edit settings", edit_admin_configuration_url, :method => :get
         Site configuration
       %p.ruled
         = show_setting 'site.title'
@@ -33,4 +33,4 @@
     - settings.users do
       %h4 Passwords
       %p.ruled
-        = show_setting 'users.allow_password_reset?'
+        = show_setting 'user.allow_password_reset?'

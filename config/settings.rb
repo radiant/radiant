@@ -15,9 +15,9 @@ Radiant::Config.prepare do |config|
     site.define 'title', :label => 'Site title'
     site.define 'domain', :label => 'Site domain'
   end
-  config.namespace('users', :allow_change => true) do |users|
-    users.define 'allow_password_reset?', :label => 'Allow password reset?'
+  config.namespace('user', :allow_change => true) do |user|
+    user.define 'allow_password_reset?', :label => 'Allow users to reset passwords?'
   end
-  config.define 'dev.host', :label => 'Development host', :allow_change => true
+  config.define 'dev.host', :label => 'Development host', :allow_change => false
   config.define 'local.timezone', :label => 'Timezone name', :allow_change => true, :select_from => lambda { ActiveSupport::TimeZone::MAPPING.keys.sort }
 end 

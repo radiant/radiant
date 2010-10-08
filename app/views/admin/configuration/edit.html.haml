@@ -6,7 +6,7 @@
     %h1 Configuration
 
   - main.edit_form do
-    %form{:method=>"put", :action => admin_settings_url, "data-onsubmit_status"=>"Saving changes&#8230;"}
+    - form_for :config, :url => admin_configuration_url, :html => {"data-onsubmit_status"=>"Saving changes&#8230;", :method => :put} do |f|
       = render_region :form_top
       - render_region :form do |form|
         - form.edit_site do
@@ -37,11 +37,11 @@
           %fieldset
             %h3 Passwords
             %p
-              = edit_setting('users.allow_password_reset?')
+              = edit_setting('user.allow_password_reset?')
     
       - render_region :form_bottom do |form_bottom|
         - form_bottom.edit_buttons do
           %p.buttons
             %input.button{:type=>"submit", :value=>"Save Changes"}/
             or
-            = link_to "Cancel", admin_settings_url
+            = link_to "Cancel", admin_configuration_url

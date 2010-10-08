@@ -120,7 +120,7 @@ module Radiant
     end
 
     # Region sets
-    %w{page snippet layout user setting extension}.each do |controller|
+    %w{page snippet layout user configuration extension}.each do |controller|
       attr_accessor controller
       alias_method "#{controller}s", controller
     end
@@ -141,7 +141,7 @@ module Radiant
       nav << design
 
       settings = nav_tab("Settings")
-      settings << nav_item("Site", "/admin/settings")
+      settings << nav_item("Site", "/admin/configuration")
       settings << nav_item("Personal", "/admin/preferences")
       settings << nav_item("Users", "/admin/users")
       settings << nav_item("Extensions", "/admin/extensions")
@@ -153,7 +153,7 @@ module Radiant
       @snippet = load_default_snippet_regions
       @layout = load_default_layout_regions
       @user = load_default_user_regions
-      @setting = load_default_setting_regions
+      @configuration = load_default_configuration_regions
       @extension = load_default_extension_regions
     end
 
@@ -232,12 +232,12 @@ module Radiant
       end
     end
 
-    def load_default_setting_regions
-      returning OpenStruct.new do |setting|
-        setting.show = RegionSet.new do |show|
+    def load_default_configuration_regions
+      returning OpenStruct.new do |configuration|
+        configuration.show = RegionSet.new do |show|
           show.settings.concat %w{site defaults users}
         end
-        setting.edit = RegionSet.new do |edit|
+        configuration.edit = RegionSet.new do |edit|
           edit.main.concat %w{edit_header edit_form}
           edit.form.concat %w{edit_site edit_defaults edit_users}
           edit.form_bottom.concat %w{edit_buttons}
