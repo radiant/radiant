@@ -222,8 +222,8 @@ module Radiant
     #   Radiant::Config.find_or_create_by_key('key').value = value
     #
     # And calling value= also applies any validations and restrictions that are found in the associated definition.
-    # so this will raise a ConfigError if you try to change a protected config entry or supply a value that is not
-    # among those permitted.
+    # so this will raise a ConfigError if you try to change a protected config entry or a ValidationError if you 
+    # supply a value that is not among those permitted.
     #
     def value=(param)
       newvalue = param.to_s
