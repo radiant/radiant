@@ -7,7 +7,7 @@ class Admin::SettingsController < ApplicationController
     :denied_message => 'You must have admin privileges to edit settings.'
 
   def index
-    
+    redirect_to admin_configuration_url
   end
   
   def show
@@ -25,7 +25,7 @@ class Admin::SettingsController < ApplicationController
   end
   
   def update  
-    @setting.update_attributes!(:value, params[:setting][:value])
+    @setting.value = params[:config][:value]
     respond_to do |format|
       format.html { render :action => 'show' }
       format.js { render :layout => false, :action => 'show' }

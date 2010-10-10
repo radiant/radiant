@@ -41,6 +41,8 @@ module NavigationHelpers
       admin_snippets_path(:format => format)
     when /users/i
       admin_users_path(:format => format)
+    when /configuration/i
+      admin_configuration_path(:format => format)
     when /extensions/i
       admin_extensions_path(:format => format)
     when /export/i

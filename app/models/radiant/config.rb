@@ -57,6 +57,7 @@ module Radiant
     set_table_name "config"
     after_save :update_cache
     cattr_accessor :definitions
+    @@definitions = {}
     
     class ConfigError < RuntimeError; end
     
@@ -185,17 +186,28 @@ module Radiant
       #     end
       #   end
       #
+      # It's also possible to reuse a definition by passing it to define:
+      #
+      #   choose_layout = Radiant::Config::Definition.new(:select_from => lambda {Layout.all.map{|l| [l.name, l.d]}})
+      #   define "my.layout", choose_layout
+      #   define "your.layout", choose_layout
+      #
+      # but that's only used in testing at the moment.
+      #
       def define(key, options={})
-        key = [options[:prefix], key].join('.') if options[:prefix]
-        definitions[key] = Radiant::Config::Definition.new(options)
-        self[key] ||= options[:default]
+        if options.is_a? Radiant::Config::Definition
+          definitions[key] = options
+        else
+          key = [options[:prefix], key].join('.') if options[:prefix]
+          definitions[key] = Radiant::Config::Definition.new(options)
+        end
+        self[key] ||= definitions[key].default
       end
       
       # We makes sure that core settings.rb files are reloaded in dev mode by calling initialize_definitions
       # whenever read_configuration_files is called (as it will be whenever an extension reloads).
       #
       def initialize_definitions
-        @@definitions = {}
         read_configuration_file(RAILS_ROOT + '/config/settings.rb')
         read_configuration_file(RADIANT_ROOT + '/config/settings.rb') unless RADIANT_ROOT == RAILS_ROOT
       end
@@ -222,7 +234,8 @@ module Radiant
         else
           self[:value] = newvalue
         end
-        self.save!
+        raise "ActiveRecord::RecordInvalid" unless self.valid?
+        self.save
       end
       self[:value]
     end
@@ -241,8 +254,6 @@ module Radiant
     def value
       if boolean?
         checked?
-      elsif definition.type == :integer
-        self[:value].to_i
       else
         self[:value]
       end
@@ -284,7 +295,7 @@ module Radiant
       Radiant::Config.initialize_cache
     end
 
-    delegate :default, :type, :allow_blank?, :hidden?, :settable?, :selection, :to => :definition
+    delegate :default, :type, :allow_blank?, :hidden?, :settable?, :selection, :notes, :to => :definition
 
     def validate
       definition.validate(self)

@@ -1,7 +1,7 @@
 module Radiant
   class Config
     class Definition
-      attr_reader :default, :type, :label, :notes, :validate_with, :select_from, :allow_blank, :allow_display, :allow_change, :error_message
+      attr_reader :default, :type, :label, :notes, :validate_with, :select_from, :allow_blank, :allow_display, :allow_change
       
       # Configuration 'definitions' are metadata held in memory that add restriction and description to individual config entries.
       #
@@ -22,7 +22,7 @@ module Radiant
       # See the method documentation in Radiant::Config for options and conventions.
       #
       def initialize(options={})
-        [:default, :type, :label, :validate_with, :select_from, :allow_blank, :allow_change, :allow_display, :error_message].each do |attribute|
+        [:default, :type, :label, :notes, :validate_with, :select_from, :allow_blank, :allow_change, :allow_display].each do |attribute|
           instance_variable_set "@#{attribute}".to_sym, options[attribute]
         end
       end
@@ -82,17 +82,19 @@ module Radiant
       # * if :allow_blank has been set to false, we test that the value is not blank
       #
       def validate(setting)
-        if validate_with.is_a? Proc
-          setting.errors.add :value, error_message unless validate_with.call(setting.value)
-        end
-        if !allow_blank?
+        if allow_blank?
+          return if setting.value.blank?
+        else
           setting.errors.add :value, "must not be blank" if setting.value.blank?
+        end
+        if validate_with.is_a? Proc
+          validate_with.call(setting)
         end
         if selector?
           setting.errors.add :value, "must choose one of the permitted values" unless selectable?(setting.value)
         end
         if integer?
-          setting.errors.add :value, "must be a number" unless setting.value =~ /\A-?\d*\Z/
+          Integer(setting.value) rescue setting.errors.add :value, "must be a number"
         end
       end
       
