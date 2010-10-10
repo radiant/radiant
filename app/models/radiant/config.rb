@@ -170,7 +170,7 @@ module Radiant
       # * :select_from should be a list or hash suitable for passing to options_for_select, or a block that will return such a list at runtime
       # * :validate_with should be a block that will receive a value and return true or false. Validations are also implied by type or select_from.
       # * :allow_blank should be false if the config item must not be blank or nil
-      # * :allow_change should be false if the config item should be protected at runtime
+      # * :allow_change should be false if the config item can only be set, not changed. Add a default to specify an unchanging config entry.
       # * :allow_display should be false if the config item should not be showable in radius tags
       # * :error_message can specify the error message shown should validation fail
       #
@@ -201,7 +201,11 @@ module Radiant
           key = [options[:prefix], key].join('.') if options[:prefix]
           definitions[key] = Radiant::Config::Definition.new(options)
         end
-        self[key] ||= definitions[key].default
+        begin
+          self[key] ||= definitions[key].default
+        rescue ActiveRecord::RecordInvalid
+          raise ApplicationError, "Default configuration invalid: value '#{definitions[key].default}' is not allowed for '#{key}'"
+        end
       end
       
       # We makes sure that core settings.rb files are reloaded in dev mode by calling initialize_definitions
@@ -228,7 +232,7 @@ module Radiant
     def value=(param)
       newvalue = param.to_s
       if newvalue != self[:value]
-        raise ConfigError, "#{self.key} cannot be changed" unless settable?
+        raise ConfigError, "#{self.key} cannot be changed" unless settable? || self[:value].blank?
         if boolean?
           self[:value] = (newvalue == "0" || newvalue == "false" || newvalue.blank? ) ? "false" : "true"
         else
