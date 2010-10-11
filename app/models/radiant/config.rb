@@ -57,7 +57,10 @@ module Radiant
     set_table_name "config"
     after_save :update_cache
     cattr_accessor :definitions
+    cattr_accessor :configuration_files
     @@definitions = {}
+    @@configuration_files = []
+    @@loaded = false
     
     class ConfigError < RuntimeError; end
     
@@ -128,8 +131,24 @@ module Radiant
       #   Radiant::Config.read_configuration_file(path)
       # 
       def read_configuration_file(path)
-        initialize_definitions if definitions.nil?
-        load(path) if File.exist? path
+        read_core_configuration_files unless loaded?
+        load_file(path)
+      end
+      
+      def read_core_configuration_files
+        load_file(RADIANT_ROOT + '/config/settings.rb')
+        load_file(RAILS_ROOT + '/config/settings.rb') unless RADIANT_ROOT == RAILS_ROOT
+        @@loaded = true
+      end
+      
+      def load_file(path)
+        if File.exist? path
+          load(path) && configuration_files << path
+        end
+      end
+
+      def loaded?
+        @@loaded
       end
       
       # Block-receiver. Similar to Routing::Routes.draw, it yields the Radiant::Config eigenclass
@@ -180,7 +199,7 @@ module Radiant
       #     defaults.define 'locale', :label => 'Default language', :select_from => lambda { Radiant::AvailableLocales.locales }
       #     defaults.namespace('page') do |page|
       #       page.define 'parts', :label => 'Default page parts', :notes => 'comma separated list of part names', :default => "Body,Extended"
-      #       page.define 'status', :select_from => lambda { Status.settable_values }, :label => "Default page status", :default => "Draft"
+      #       page.define 'status', :select_from => lambda { Status.selectable_values }, :label => "Default page status", :default => "Draft"
       #       page.define 'filter', :select_from => lambda { TextFilter.descendants.map { |s| s.filter_name }.sort }, :label => "Default text filter"
       #       page.define 'fields', :label => 'Default page fields', :notes => 'comma separated list of field names'
       #     end
@@ -204,16 +223,8 @@ module Radiant
         begin
           self[key] ||= definitions[key].default
         rescue ActiveRecord::RecordInvalid
-          raise ApplicationError, "Default configuration invalid: value '#{definitions[key].default}' is not allowed for '#{key}'"
+          raise LoadError, "Default configuration invalid: value '#{definitions[key].default}' is not allowed for '#{key}'"
         end
-      end
-      
-      # We makes sure that core settings.rb files are reloaded in dev mode by calling initialize_definitions
-      # whenever read_configuration_files is called (as it will be whenever an extension reloads).
-      #
-      def initialize_definitions
-        read_configuration_file(RAILS_ROOT + '/config/settings.rb')
-        read_configuration_file(RADIANT_ROOT + '/config/settings.rb') unless RADIANT_ROOT == RAILS_ROOT
       end
     end
     
@@ -238,8 +249,7 @@ module Radiant
         else
           self[:value] = newvalue
         end
-        raise "ActiveRecord::RecordInvalid" unless self.valid?
-        self.save
+        self.save!
       end
       self[:value]
     end
@@ -299,7 +309,7 @@ module Radiant
       Radiant::Config.initialize_cache
     end
 
-    delegate :default, :type, :allow_blank?, :hidden?, :settable?, :selection, :notes, :to => :definition
+    delegate :default, :type, :allow_blank?, :hidden?, :visible?, :settable?, :selection, :notes, :to => :definition
 
     def validate
       definition.validate(self)

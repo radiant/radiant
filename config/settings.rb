@@ -6,7 +6,7 @@ Radiant::Config.prepare do |config|
     defaults.define 'locale', :label => 'Default language', :select_from => lambda { Radiant::AvailableLocales.locales }, :allow_blank => true
     defaults.namespace('page') do |page|
       page.define 'parts', :label => 'Default page parts', :notes => 'comma separated list of part names', :default => "Body,Extended"
-      page.define 'status', :select_from => lambda { Status.settable_values }, :label => "Default page status", :allow_blank => true, :default => "Draft"
+      page.define 'status', :select_from => lambda { Status.selectable_values }, :label => "Default page status", :allow_blank => true, :default => "Draft"
       page.define 'filter', :select_from => lambda { TextFilter.descendants.map { |s| s.filter_name }.sort }, :label => "Default text filter", :allow_blank => true
       page.define 'fields', :label => 'Default page fields', :notes => 'comma separated list of field names'
     end

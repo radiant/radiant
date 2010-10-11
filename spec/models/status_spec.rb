@@ -51,3 +51,14 @@ describe Status, 'find_all' do
     end
   end
 end
+
+describe Status, 'selectable' do
+  it "should return all statuses except 'Scheduled'" do
+    statuses = Status.selectable
+    statuses.size.should > 0
+    statuses.each do |status|
+      status.should be_kind_of(Status)
+      status.name.should_not == "Scheduled"
+    end
+  end
+end

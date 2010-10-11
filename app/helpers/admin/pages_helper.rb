@@ -24,7 +24,7 @@ module Admin::PagesHelper
   
   def status_to_display
     @page.status_id = 100 if @page.status_id == 90
-    @display_status = Status.settable_options
+    @display_status = Status.selectable_options
     return @display_status
   end
 
