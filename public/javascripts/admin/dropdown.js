@@ -72,6 +72,15 @@ Dropdown.TriggerBehavior = Behavior.create({
   
   onclick: function(event) {
     event.stop();
+    $$('a.dropdown').each(function(drop){ drop.removeClassName('selected') });
+    c = $H(Dropdown.Menu.controls);
+    clicked = this;
+    c.each(function(pair){
+      menu = Dropdown.Menu.controls[pair.key];
+      if (menu && menu.visible()) { 
+        menu.close(clicked.element,clicked.options);
+      }
+    })
     if (this.menu) this.menu.toggle(this.element, this.options);
   }
 });
