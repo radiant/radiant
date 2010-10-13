@@ -167,7 +167,7 @@ module Radiant
           definition = options
         else
           key = [options[:prefix], key].join('.') if options[:prefix]
-          definition = Radiant::Config::Definition.new(key, options)
+          definition = Radiant::Config::Definition.new(options)
         end
 
         raise LoadError, "Configuration invalid: #{key} is already defined" unless definitions[key].nil? || definitions[key].empty?
@@ -187,7 +187,11 @@ module Radiant
       end
       
       def definition_for(key)
-        definitions[key] ||= Radiant::Config::Definition.new(key, :empty => true)
+        definitions[key] ||= Radiant::Config::Definition.new(:empty => true)
+      end
+      
+      def clear_definitions!
+        Radiant.config_definitions = {}
       end
       
     end

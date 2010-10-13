@@ -22,14 +22,18 @@ module Radiant
     #     config.define 'something', default => 'something'
     #     config['other.thing'] = 'nothing'
     #   end
-    #
+    #    
     def config
       yield Radiant::Config if block_given?
       Radiant::Config
     end
     
     def config_definitions
-      @@config_definitions ||= {}
+      @config_definitions ||= {}
+    end
+
+    def config_definitions=(definitions)
+      @config_definitions = definitions
     end
     
   end

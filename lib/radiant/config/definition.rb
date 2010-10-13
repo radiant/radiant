@@ -22,8 +22,7 @@ module Radiant
       #
       # See the method documentation in Radiant::Config for options and conventions.
       #
-      def initialize(key, options={})
-        raise ArgumentError, "First argument to Radiant::Config::Definition.new must be a config key" unless String === key and !key.blank?
+      def initialize(options={})
         [:empty, :default, :type, :notes, :validate_with, :select_from, :allow_blank, :allow_change, :allow_display].each do |attribute|
           instance_variable_set "@#{attribute}".to_sym, options[attribute]
         end
