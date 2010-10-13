@@ -24,10 +24,14 @@ module Radiant
     #   end
     #
     def config
-      @@configuration ||= Radiant::Config
-      yield @@configuration if block_given?
-      @@configuration
+      yield Radiant::Config if block_given?
+      Radiant::Config
     end
+    
+    def config_definitions
+      @@config_definitions ||= {}
+    end
+    
   end
   
   # NB. Radiant::Configuration (aka Rails.configuration) is an extension-aware subclass of Rails::Configuration 

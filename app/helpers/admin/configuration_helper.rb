@@ -12,9 +12,9 @@ module Admin::ConfigurationHelper
     html = ""
     html << content_tag(:label, t("config.#{key}").titlecase, :for => domkey)
     if setting.boolean?
-      html << content_tag(:span, setting.value.to_s, :class => options[:class] || setting.checked?.to_s, :id => domkey)
+      html << content_tag(:span, setting.value.to_s, :id => domkey, :class => (options[:class] || setting.checked?.to_s))
     else
-      html << content_tag(:span, (setting.selected_value || setting.value), :id => domkey)
+      html << content_tag(:span, (setting.selected_value || setting.value), :id => domkey, :class => options[:class])
     end
   end
   

@@ -57,11 +57,7 @@ module Radiant
     
     set_table_name "config"
     after_save :update_cache
-    cattr_accessor :definitions
-    cattr_accessor :configuration_files
-    @@definitions = {}
-    @@configuration_files = []
-    @@loaded = false
+    attr_reader :definition
     
     class ConfigError < RuntimeError; end
     
@@ -168,28 +164,30 @@ module Radiant
       #
       def define(key, options={})
         if options.is_a? Radiant::Config::Definition
-          store_definition(key, options)
+          definition = options
         else
           key = [options[:prefix], key].join('.') if options[:prefix]
-          store_definition(key, Radiant::Config::Definition.new(options))
+          definition = Radiant::Config::Definition.new(key, options)
         end
-        begin
-          self[key] ||= definitions[key].default
-        rescue ActiveRecord::RecordInvalid
-          raise LoadError, "Default configuration invalid: value '#{definitions[key].default}' is not allowed for '#{key}'"
-        end
-      end
-      alias :set :define
-      
-      #:nodoc:
-      def store_definition(key, definition)
+
         raise LoadError, "Configuration invalid: #{key} is already defined" unless definitions[key].nil? || definitions[key].empty?
         definitions[key] = definition
+
+        if self[key].nil? && !definition.default.nil?
+          begin
+            self[key] = definition.default
+          rescue ActiveRecord::RecordInvalid
+            raise LoadError, "Default configuration invalid: value '#{definition.default}' is not allowed for '#{key}'"
+          end
+        end
       end
       
-      #:nodoc:
-      def clear_definitions!
-        @@definitions = {}
+      def definitions
+        Radiant.config_definitions
+      end
+      
+      def definition_for(key)
+        definitions[key] ||= Radiant::Config::Definition.new(key, :empty => true)
       end
       
     end
@@ -243,7 +241,7 @@ module Radiant
     # that does not restrict use.
     #
     def definition
-      self.class.definitions[key] ||= Radiant::Config::Definition.new(:empty => true)
+      @definition ||= self.class.definition_for(self.key)
     end
 
     # Returns the label for this item as defined in its definition, or the key if no label (or no definition) has been defined.
@@ -255,12 +253,13 @@ module Radiant
     # Returns true if the item key ends with '?' or the definition specifies :type => :boolean.
     #
     def boolean?
-      definition.boolean? || key.ends_with?("?")
+      definition.boolean? || self.key.ends_with?("?")
     end
     
     # Returns true if the item is boolean and true.
     #
     def checked?
+      return nil if self[:value].nil?
       boolean? && self[:value] == "true"
     end
     

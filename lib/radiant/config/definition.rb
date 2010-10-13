@@ -1,8 +1,9 @@
 module Radiant
   class Config
     class Definition
-      attr_reader :empty, :default, :type, :notes, :validate_with, :select_from, :allow_blank, :allow_display, :allow_change
       
+      attr_reader :empty, :default, :type, :notes, :validate_with, :select_from, :allow_blank, :allow_display, :allow_change
+
       # Configuration 'definitions' are metadata held in memory that add restriction and description to individual config entries.
       #
       # By default radiant's configuration machinery is open and ad-hoc: config items are just globally-accessible variables.
@@ -21,7 +22,8 @@ module Radiant
       #
       # See the method documentation in Radiant::Config for options and conventions.
       #
-      def initialize(options={})
+      def initialize(key, options={})
+        raise ArgumentError, "First argument to Radiant::Config::Definition.new must be a config key" unless String === key and !key.blank?
         [:empty, :default, :type, :notes, :validate_with, :select_from, :allow_blank, :allow_change, :allow_display].each do |attribute|
           instance_variable_set "@#{attribute}".to_sym, options[attribute]
         end
@@ -137,3 +139,4 @@ module Radiant
     end
   end
 end
+
