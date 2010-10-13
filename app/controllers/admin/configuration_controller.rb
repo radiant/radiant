@@ -7,6 +7,7 @@ class Admin::ConfigurationController < ApplicationController
     :denied_message => 'You must have admin privileges to edit site configuration.'
 
   def show
+    @user = current_user
     render
   end
   
