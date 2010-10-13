@@ -28,10 +28,6 @@ module Radiant
       File.exist?(routing_file)
     end
 
-    def has_settings?
-      File.exist?(settings_file)
-    end
-    
     def migrations_path
       File.join(self.root, 'db', 'migrate')
     end
@@ -39,11 +35,13 @@ module Radiant
     def routing_file
       File.join(self.root, 'config', 'routes.rb')
     end
-
-    def settings_file
-      File.join(self.root, 'config', 'settings.rb')
+        
+    def load_initializers
+      Dir["#{self.root}/config/initializers/**/*.rb"].sort.each do |initializer|
+        load(initializer)
+      end
     end
-    
+
     def migrator
       unless @migrator
         extension = self
@@ -94,7 +92,6 @@ module Radiant
         instance.activate if instance.respond_to? :activate
         ActionController::Routing::Routes.add_configuration_file(instance.routing_file) if instance.routed?
         ActionController::Routing::Routes.reload
-        Radiant::Config.read_configuration_file(instance.settings_file) if instance.has_settings?
         instance.active = true
       end
       alias :activate :activate_extension

@@ -6,13 +6,13 @@ module Admin::ConfigurationHelper
   #   show_setting("admin.title")
   #   => <label for="admin_title">Admin title<label><span id="admin_title">Radiant CMS</span>
   #
-  def show_setting(key, options={})
+  def show_config(key, options={})
     setting = setting_for(key)
     domkey = key.gsub(/\W/, '_')
     html = ""
-    html << content_tag(:label, (options[:label] || setting.label || key), :for => domkey)
+    html << content_tag(:label, t("config.#{key}").titlecase, :for => domkey)
     if setting.boolean?
-      html << content_tag(:span, setting.value.to_s, :class => setting.checked?, :id => domkey)
+      html << content_tag(:span, setting.value.to_s, :class => options[:class] || setting.checked?.to_s, :id => domkey)
     else
       html << content_tag(:span, (setting.selected_value || setting.value), :id => domkey)
     end
@@ -34,11 +34,11 @@ module Admin::ConfigurationHelper
   #   edit_setting("user.allow_password_reset?")
   #   => <label for="user_allow_password_reset_">Admin title<label><input type="checkbox" name="config['user.allow_password_reset?']" id="user_allow_password_reset_" value="1" checked="checked" />
   #
-  def edit_setting(key, options={})
+  def edit_config(key, options={})
     setting = setting_for(key)
     domkey = key.gsub(/\W/, '_')
     name = "config[#{key}]"
-    title = options[:label] || setting.label || key
+    title = t("config.#{key}").titlecase
     value = params[key.to_sym].nil? ? setting.value : params[key.to_sym]
     html = ""
     if setting.boolean?
@@ -57,7 +57,7 @@ module Admin::ConfigurationHelper
   
   def setting_for(key)
     @config ||= {}    # normally initialized in Admin::ConfigurationController
-    @config[key] ||= Radiant::Config.find_or_create_by_key(key)
+    @config[key] ||= Radiant.config.find_or_create_by_key(key)
   end
   
   def definition_for(key)

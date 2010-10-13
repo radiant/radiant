@@ -27,7 +27,7 @@ describe Radiant::AdminUI do
     @admin.nav.should have(3).items
     @admin.nav[:content].should have(1).items
     @admin.nav[:design].should have(2).items
-    @admin.nav[:settings].should have(4).items
+    @admin.nav[:settings].should have(3).items
   end
 
   it "should have collections of Region Sets for every controller" do

@@ -13,31 +13,31 @@
           %fieldset
             %h3 Site  
             %p
-              = edit_setting('site.title')
+              = edit_config('site.name')
             %p
-              = edit_setting('site.domain')
+              = edit_config('site.host')
             %p
-              = edit_setting('dev.host')
+              = edit_config('dev.host')
             %p
-              = edit_setting('local.timezone')
+              = edit_config('local.timezone')
   
         - form.edit_defaults do
           %fieldset
             %h3 Defaults
             %p
-              = edit_setting('defaults.locale')
+              = edit_config('defaults.locale')
             %p
-              = edit_setting('defaults.page.filter')
+              = edit_config('defaults.page.filter')
             %p
-              = edit_setting('defaults.page.parts')
+              = edit_config('defaults.page.parts')
             %p
-              = edit_setting('defaults.page.status')
+              = edit_config('defaults.page.status')
   
         - form.edit_users do
           %fieldset
             %h3 Passwords
             %p
-              = edit_setting('user.allow_password_reset?')
+              = edit_config('user.allow_password_reset?')
     
       - render_region :form_bottom do |form_bottom|
         - form_bottom.edit_buttons do

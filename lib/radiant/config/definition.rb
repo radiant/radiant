@@ -1,14 +1,14 @@
 module Radiant
   class Config
     class Definition
-      attr_reader :default, :type, :label, :notes, :validate_with, :select_from, :allow_blank, :allow_display, :allow_change
+      attr_reader :empty, :default, :type, :notes, :validate_with, :select_from, :allow_blank, :allow_display, :allow_change
       
       # Configuration 'definitions' are metadata held in memory that add restriction and description to individual config entries.
       #
       # By default radiant's configuration machinery is open and ad-hoc: config items are just globally-accessible variables.
       # They're created when first mentioned and then available in all parts of the application. The definition mechanism is a way 
-      # to place limits on that behavior. It allows you to protect a config entry, to specify the values it can take, to 
-      # validate it when it changes and to add labels and description. In the next update it will also allow you to declare that
+      # to place limits on that behavior. It allows you to protect a config entry, to specify the values it can take and to 
+      # validate it when it changes. In the next update it will also allow you to declare that
       # a config item is global or site-specific.
       #
       # The actual defining is done by Radiant::Config#define and usually in a block like this:
@@ -22,9 +22,16 @@ module Radiant
       # See the method documentation in Radiant::Config for options and conventions.
       #
       def initialize(options={})
-        [:default, :type, :label, :notes, :validate_with, :select_from, :allow_blank, :allow_change, :allow_display].each do |attribute|
+        [:empty, :default, :type, :notes, :validate_with, :select_from, :allow_blank, :allow_change, :allow_display].each do |attribute|
           instance_variable_set "@#{attribute}".to_sym, options[attribute]
         end
+      end
+      
+      # Returns true if the definition included an :empty flag, which should only be the case for the blank, unrestricting
+      # definitions created when an undefined config item is set or got.
+      #
+      def empty?
+        !!empty
       end
       
       # Returns true if the definition included a :type => :boolean parameter. Config entries that end in '?' are automatically 

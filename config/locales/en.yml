@@ -39,6 +39,25 @@ en:
   cancel: 'Cancel'
   change: 'Change'
   close: 'Close'
+  config:
+    admin:
+      title: 'admin header title'
+    defaults:
+      locale: 'default language'
+      page:
+        fields: "page fields"
+        filter: "page filter"
+        parts: "page parts"
+        status: "page status"
+    dev:
+      host: "dev site domain name"
+    local:
+      timezone: "local timezone"
+    site:
+      name: "site name"
+      host: "site domain"
+    user:
+      allow_password_reset?: "allow password reset"
   content: 'Content'
   content_type: 'Content&#8209;Type'    
   creating_status: 'Creating {{model}}&#8230;'
@@ -63,6 +82,8 @@ en:
   draft: 'Draft'
   edit_layout: 'Edit Layout'
   edit_page:  'Edit Page'   
+  edit_preferences: 'Edit Preferences'
+  edit_settings: 'Edit Settings'
   edit_snippet: 'Edit Snippet'
   edit_user: 'Edit User'
   email_address: 'E-mail Address'

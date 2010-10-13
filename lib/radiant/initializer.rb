@@ -10,6 +10,29 @@ require 'radiant/gem_locator'
 module Radiant
   autoload :Cache, 'radiant/cache'
   
+  class << self
+    # Radiant.config returns the Radiant::Config eigenclass object, so it can be used wherever you would use Radiant::Config.
+    #
+    #   Radiant.config['site.title']
+    #   Radiant.config['site.url'] = 'example.com'
+    #
+    # but it will also yield itself to a block:
+    #
+    #   Radiant.config do |config|
+    #     config.define 'something', default => 'something'
+    #     config['other.thing'] = 'nothing'
+    #   end
+    #
+    def config
+      @@configuration ||= Radiant::Config
+      yield @@configuration if block_given?
+      @@configuration
+    end
+  end
+  
+  # NB. Radiant::Configuration (aka Rails.configuration) is an extension-aware subclass of Rails::Configuration 
+  #     Radiant::Config (aka Radiant.config) is the application-configuration model class
+  
   class Configuration < Rails::Configuration
     attr_accessor :extension_paths
     attr_writer :extensions
@@ -202,6 +225,11 @@ end_error
       add_gem_load_paths
       load_gems
       check_gem_dependencies
+    end
+    
+    def load_application_initializers
+      super
+      extension_loader.load_extension_initalizers
     end
 
     def after_initialize

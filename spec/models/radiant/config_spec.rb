@@ -2,8 +2,8 @@ require File.dirname(__FILE__) + "/../../spec_helper"
 
 describe Radiant::Config do
   before :each do
-    Radiant::Config.initialize_cache
-    @config = Radiant::Config
+    Radiant.config.initialize_cache
+    @config = Radiant.config
     set('test', 'cool')
     set('foo', 'bar')
   end
@@ -105,49 +105,7 @@ describe Radiant::Config do
       @config['junk?'].should be_false
     end
   end
-  
-  describe "reading a configuration file" do
-    it "should always read core configuration files first" do
-      @config.should_receive(:loaded?).and_return(false)
-      @config.should_receive(:read_core_configuration_files)
-      @config.read_configuration_file(SPEC_ROOT + "/fixtures/settings.rb")
-    end
-
-    it "should only read core configuration files once" do
-      @config.read_core_configuration_files
-      @config.should_not_receive(:read_core_configuration_files)
-      @config.read_configuration_file(SPEC_ROOT + "/fixtures/settings.rb")
-    end
-
-    it "should load the specified file" do
-      @config.read_core_configuration_files
-      @config.should_receive(:define).with('simple', hash_including(:default => 'this string', :prefix => 'testing'))
-      @config.read_configuration_file(SPEC_ROOT + "/fixtures/settings.rb")
-    end
-
-    it "should record definitions" do
-      @config.read_configuration_file(SPEC_ROOT + "/fixtures/settings.rb")
-      @config.definitions["testing.simple"].label.should_not be_nil
-    end
     
-    it "should populate defaults" do
-      @config.read_configuration_file(SPEC_ROOT + "/fixtures/more_settings.rb")
-      @config['testing.defaulted'].should == "this default string"
-    end
-    
-    it "should not populate with a default where a value already exists" do
-      @config['testing.defaulted'] = "already exists"
-      @config.read_configuration_file(SPEC_ROOT + "/fixtures/more_settings.rb")
-      @config['testing.defaulted'].should == "already exists"
-    end
-  end
-  
-  describe "reading a contradictory configuration file" do
-    it "should raise an ApplicationError" do
-      lambda{ @config.read_configuration_file(SPEC_ROOT + "/fixtures/bad_settings.rb") }.should raise_error(LoadError)
-    end
-  end
-  
   describe "where no definition exists" do
     it "should create a blank definition" do
       get_config("ad.hoc.setting").definition.should be_kind_of(Radiant::Config::Definition)
@@ -159,15 +117,12 @@ describe Radiant::Config do
       c.visible?.should be_true
       c.settable?.should be_true
     end
-    
-    it "should label with key" do
-      get_config("impromptu.storage").label.should == 'impromptu.storage'
-    end
   end
   
   describe "where a definition exists" do
     before do
-      @config.read_configuration_file(SPEC_ROOT + "/fixtures/more_settings.rb")
+      @config.clear_definitions!
+      load(SPEC_ROOT + "/fixtures/more_settings.rb")
     end
     
     it "should validate against the definition" do
@@ -181,7 +136,7 @@ describe Radiant::Config do
       lambda { definition.value = "something else" }.should raise_error(Radiant::Config::ConfigError)
     end
   end
-  
+    
   def get_config(key)
     setting = Radiant::Config.find_or_create_by_key(key)
   end

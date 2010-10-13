@@ -7,26 +7,21 @@ class Admin::ConfigurationController < ApplicationController
     :denied_message => 'You must have admin privileges to edit site configuration.'
 
   def show
-    
+    render
   end
   
   def edit
-    
+    render
   end
   
   def update
     if params[:config]
       begin
-        Radiant::Config.transaction do
+        Radiant.config.transaction do
           params["config"].each_pair do |key, value|
-            Rails.logger.warn "!! config key: #{key} -> #{value}"
-            
             @config[key] = Radiant::Config.find_or_create_by_key(key)
-            @config[key].value = value   # sets errors on @config['key'] that the helper methods will pick up
+            @config[key].value = value      # validation sets errors on @config['key'] that the helper methods will pick up
           end
-          
-          Rails.logger.warn "@config is #{@config.inspect}"
-          
           redirect_to :action => :show
         end
       rescue ActiveRecord::RecordInvalid => e

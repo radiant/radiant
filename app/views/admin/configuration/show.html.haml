@@ -1,36 +1,69 @@
 - body_classes << "reversed"
 
-#settings.box
-  - render_region :settings do |settings|
-    - settings.site do
+#preferences.box
+  - render_region :user do |user|
+    - user.preferences do
+      %h3
+        .actions
+          = button_to t("edit_preferences"), "/admin/preferences", :method => :get
+        = t('personal_preferences')
+      = render :partial => 'admin/users/avatar'
+      %p.ruled
+        %label 
+          = t('name') 
+        %span
+          = current_user.name
+      %p.ruled
+        %label 
+          = t('email_address') 
+        %span.uri 
+          = current_user.email
+      %p.ruled
+        %label 
+          = t('login') 
+        %span
+          = current_user.login
+      %p.ruled
+        %label 
+          = t('password') 
+        %big &bull;&bull;&bull;&bull;&bull;
+      %p.ruled
+        %label
+          = t('language') 
+        %span 
+          = current_user.locale
+
+#config.box
+  - render_region :config do |config|
+    - config.site do
       %h3
         - if admin?
           .actions
-            = button_to "Edit settings", edit_admin_configuration_url, :method => :get
-        Site configuration
+            = button_to t("edit_settings"), edit_admin_configuration_url, :method => :get
+        Configuration
       %p.ruled
-        = show_setting 'site.title'
+        = show_config 'site.name'
       %p.ruled
-        = show_setting 'site.domain'
+        = show_config 'site.host', :class => 'uri'
       %p.ruled
-        = show_setting 'dev.host'
+        = show_config 'dev.host', :class => 'uri'
       %p.ruled
-        = show_setting 'local.timezone'
+        = show_config 'local.timezone'
 
-    - settings.defaults do
+    - config.defaults do
       %h4 Defaults
       %p.ruled
-        = show_setting 'defaults.locale'
+        = show_config 'defaults.locale'
       %p.ruled
-        = show_setting 'defaults.page.filter'
+        = show_config 'defaults.page.filter'
       %p.ruled
-        = show_setting 'defaults.page.parts'
+        = show_config 'defaults.page.parts'
       %p.ruled
-        = show_setting 'defaults.page.fields'
+        = show_config 'defaults.page.fields'
       %p.ruled
-        = show_setting 'defaults.page.status'
+        = show_config 'defaults.page.status'
 
-    - settings.users do
+    - config.users do
       %h4 Passwords
       %p.ruled
-        = show_setting 'user.allow_password_reset?'
+        = show_config 'user.allow_password_reset?'

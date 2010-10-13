@@ -31,6 +31,7 @@ describe "Radiant::Config::Definition" do
     @selecting_from_hash = Radiant::Config::Definition.new({
       :label => "selecting from hash",
       :default => "Non-monkey",
+      :allow_blank => true,
       :select_from => {"monkey" => "Definitely a monkey", "goat" => "No fingers", "Bear" => "Angry, huge", "Donkey" => "Non-monkey"}
     })
     @selecting_required = Radiant::Config::Definition.new({
@@ -63,22 +64,13 @@ describe "Radiant::Config::Definition" do
   end
   after :each do 
     Radiant::Cache.clear
+    Radiant.config.clear_definitions!
   end
 
   describe "basic definition" do
     before do
-      Radiant::Config.define('test', @basic)
+      Radiant.config.define('test', @basic)
       @setting = Radiant::Config.find_by_key('test')
-    end
-
-    it "should supply a label" do
-      @basic.label.should == "testiness"
-      @setting.label.should == "testiness"
-    end
-
-    it "should supply notes" do
-      @basic.notes.should == "Irritability"
-      @setting.notes.should == "Irritability"
     end
 
     it "should specify a default" do
@@ -107,6 +99,7 @@ describe "Radiant::Config::Definition" do
       lambda{Radiant::Config['valid'] = "Monkey"}.should_not raise_error
       Radiant::Config['valid'].should == "Monkey"
       lambda{Radiant::Config['selecting'] = "Goat"}.should_not raise_error
+      lambda{Radiant::Config['selecting'] = ""}.should_not raise_error
       lambda{Radiant::Config['integer'] = "27"}.should_not raise_error
       lambda{Radiant::Config['integer'] = 27}.should_not raise_error
       lambda{Radiant::Config['required'] = "Still here"}.should_not raise_error

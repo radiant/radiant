@@ -141,8 +141,7 @@ module Radiant
       nav << design
 
       settings = nav_tab("Settings")
-      settings << nav_item("Site", "/admin/configuration")
-      settings << nav_item("Personal", "/admin/preferences")
+      settings << nav_item("General", "/admin/configuration")
       settings << nav_item("Users", "/admin/users")
       settings << nav_item("Extensions", "/admin/extensions")
       nav << settings
@@ -235,7 +234,8 @@ module Radiant
     def load_default_configuration_regions
       returning OpenStruct.new do |configuration|
         configuration.show = RegionSet.new do |show|
-          show.settings.concat %w{site defaults users}
+          show.user.concat %w{preferences}
+          show.config.concat %w{site defaults users}
         end
         configuration.edit = RegionSet.new do |edit|
           edit.main.concat %w{edit_header edit_form}

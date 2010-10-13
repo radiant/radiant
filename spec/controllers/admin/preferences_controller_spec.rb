@@ -17,7 +17,7 @@ describe Admin::PreferencesController do
     login_as :non_admin
     put :update, :user => { :password => '', :password_confirmation => '', :email => 'updated@gmail.com' }
     user = users(:non_admin)
-    response.should redirect_to(admin_preferences_path)
+    response.should redirect_to(admin_configuration_path)
     user.email.should == 'updated@gmail.com'
   end
 

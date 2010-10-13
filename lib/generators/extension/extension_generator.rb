@@ -21,6 +21,7 @@ class ExtensionGenerator < Rails::Generator::NamedBase
       m.directory "#{extension_path}/app/models"
       m.directory "#{extension_path}/app/views"
       m.directory "#{extension_path}/config/locales"
+      m.directory "#{extension_path}/config/initializers"
       m.directory "#{extension_path}/db/migrate"
       m.directory "#{extension_path}/lib/tasks"
       
@@ -29,6 +30,7 @@ class ExtensionGenerator < Rails::Generator::NamedBase
       m.template 'tasks.rake',          "#{extension_path}/lib/tasks/#{extension_file_name}_tasks.rake"
       m.template 'en.yml',              "#{extension_path}/config/locales/en.yml"
       m.template 'routes.rb',           "#{extension_path}/config/routes.rb"
+      m.template 'radiant_config.rb',   "#{extension_path}/config/initializers/radiant_config.rb"
       
       if options[:with_test_unit]
         m.directory "#{extension_path}/test/fixtures"
