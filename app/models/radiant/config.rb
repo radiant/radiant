@@ -1,4 +1,15 @@
 module Radiant
+
+  class << self
+    def config_definitions
+      @config_definitions ||= {}
+    end
+
+    def config_definitions=(definitions)
+      @config_definitions = definitions
+    end
+  end
+
   class Config < ActiveRecord::Base
     #
     # The Radiant.config model class is stored in the database (and cached) but emulates a hash 

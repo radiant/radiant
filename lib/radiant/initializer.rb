@@ -23,19 +23,10 @@ module Radiant
     #     config['other.thing'] = 'nothing'
     #   end
     #    
-    def config
+    def config  # method must be defined before any initializers run
       yield Radiant::Config if block_given?
       Radiant::Config
     end
-    
-    def config_definitions
-      @config_definitions ||= {}
-    end
-
-    def config_definitions=(definitions)
-      @config_definitions = definitions
-    end
-    
   end
   
   # NB. Radiant::Configuration (aka Rails.configuration) is an extension-aware subclass of Rails::Configuration 
