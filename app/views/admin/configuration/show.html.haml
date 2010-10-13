@@ -5,7 +5,7 @@
     - user.preferences do
       %h3
         .actions
-          = button_to t("edit_preferences"), "/admin/preferences", :method => :get
+          = button_to t("edit"), "/admin/preferences", :method => :get
         = t('personal_preferences')
       = render :partial => 'admin/users/avatar'
       %p.ruled
@@ -39,7 +39,7 @@
       %h3
         - if admin?
           .actions
-            = button_to t("edit_settings"), edit_admin_configuration_url, :method => :get
+            = button_to t("edit"), edit_admin_configuration_url, :method => :get
         Configuration
       %p.ruled
         = show_config 'site.name'
