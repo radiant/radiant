@@ -1,0 +1,10 @@
+--- |
+ --- 
+ defaults.page.parts: body, extended
+ test: passes
+ admin.title: RadiantCMS
+ defaults.page.status: Nonexistent
+ admin.subtitle: Publishing for Small Teams
+ this: that
+ defaults.page.filter: ""
+ true?: true

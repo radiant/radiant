@@ -4,60 +4,48 @@ describe "Radiant::Config::Definition" do
   before :each do
     Radiant::Config.initialize_cache
     @basic = Radiant::Config::Definition.new({
-      :default => 'quite testy',
-      :label => "testiness",
-      :notes => "Irritability"
+      :default => 'quite testy'
     })
     @boolean = Radiant::Config::Definition.new({
       :type => :boolean,
-      :default => true,
-      :label => "bool"
+      :default => true
     })
     @integer = Radiant::Config::Definition.new({
       :type => :integer,
-      :default => 50,
-      :label => "int"
+      :default => 50
     })
     @validating = Radiant::Config::Definition.new({
-      :label => "validating",
       :default => "Monkey",
       :validate_with => lambda {|s| s.errors.add(:value, "That's no monkey") unless s.value == "Monkey" }
     })
     @selecting = Radiant::Config::Definition.new({
-      :label => "selecting",
       :default => "Monkey",
       :select_from => [["m", "Monkey"], ["g", "Goat"]]
     })
     @selecting_from_hash = Radiant::Config::Definition.new({
-      :label => "selecting from hash",
       :default => "Non-monkey",
       :allow_blank => true,
       :select_from => {"monkey" => "Definitely a monkey", "goat" => "No fingers", "Bear" => "Angry, huge", "Donkey" => "Non-monkey"}
     })
     @selecting_required = Radiant::Config::Definition.new({
-      :label => "selecting non-blank",
       :default => "other",
       :allow_blank => false,
       :select_from => lambda { ['recent', 'other', 'misc'] }
     })
     @enclosed = "something"
     @selecting_at_runtime = Radiant::Config::Definition.new({
-      :label => "selecting at runtime",
       :default => "something",
       :select_from => lambda { [@enclosed] }
     })
     @protected = Radiant::Config::Definition.new({
-      :label => "frozen",
       :default => "Monkey",
       :allow_change => false
     })
     @hiding = Radiant::Config::Definition.new({
-      :label => "hidden",
       :default => "Secret Monkey",
       :allow_display => false
     })
     @present = Radiant::Config::Definition.new({
-      :label => "present",
       :default => "Hola",
       :allow_blank => false
     })
