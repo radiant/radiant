@@ -1,5 +1,5 @@
 Radiant.config do |config|
-  config.define 'admin.title', :label => 'Admin title', :default => "Radiant CMS"
+  config.define 'admin.title', :default => "Radiant CMS"
   config.define 'dev.host'
   config.define 'local.timezone', :allow_change => true, :select_from => lambda { ActiveSupport::TimeZone::MAPPING.keys.sort }
   config.define 'defaults.locale', :select_from => lambda { Radiant::AvailableLocales.locales }, :allow_blank => true

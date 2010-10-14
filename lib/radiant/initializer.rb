@@ -227,8 +227,15 @@ end_error
     end
     
     def load_application_initializers
+      load_radiant_initializers
       super
       extension_loader.load_extension_initalizers
+    end
+
+    def load_radiant_initializers
+      Dir["#{RADIANT_ROOT}/config/initializers/**/*.rb"].sort.each do |initializer|
+        load(initializer)
+      end
     end
 
     def after_initialize
