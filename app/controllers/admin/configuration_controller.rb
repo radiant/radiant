@@ -3,7 +3,7 @@ class Admin::ConfigurationController < ApplicationController
   
   only_allow_access_to :show, :edit, :update,
     :when => [:admin],
-    :denied_url => { :controller => 'admin/settings', :action => 'index' },
+    :denied_url => { :controller => 'admin/configuration', :action => 'show' },
     :denied_message => 'You must have admin privileges to edit site configuration.'
 
   def show
