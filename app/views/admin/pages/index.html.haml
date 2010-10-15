@@ -9,9 +9,9 @@
           - sitemap_head.title_column_header do
             %th.page= t('page') 
           - sitemap_head.status_column_header do
-            %th.status{:style=>"width: 8em"}= t('status')
+            %th.status= t('status')
           - sitemap_head.actions_column_header do
-            %th.actions{:style=>"width: 18em"}= t('modify')
+            %th.actions= t('modify')
     %tbody
       - if @homepage
         = render_node @homepage
