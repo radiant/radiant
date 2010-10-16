@@ -2,6 +2,8 @@
 
 === Edge
 
+* Allow loading of database templates from extensions [Jim Gay]
+* Restore Roasters template styling [Jim Gay]
 * Integrated PageFields extension into core [Josh French]
 * Added the Sheets extension to manage Javascript and Stylesheets [Jim Gay]
 * Page-type select menu moved to Pages#index [Josh French]
