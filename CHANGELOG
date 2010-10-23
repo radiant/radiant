@@ -2,6 +2,7 @@
 
 === Edge
 
+* Set autocomplete="off" for password fields [Gert Goet]
 * Allow loading of database templates from extensions [Jim Gay]
 * Restore Roasters template styling [Jim Gay]
 * Integrated PageFields extension into core [Josh French]
