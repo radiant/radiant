@@ -766,7 +766,7 @@ module StandardTags
       case
       when time_attr == 'now'
         Time.zone.now
-      when ['published_at', 'created_at', 'updated_at'].include?(time_attr)
+      when Page.date_column_names.include?(time_attr)
         page[time_attr]
       else
         raise TagError, "Invalid value for 'for' attribute."

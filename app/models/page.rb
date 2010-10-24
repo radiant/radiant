@@ -214,6 +214,10 @@ class Page < ActiveRecord::Base
     end
     alias_method :find_by_url, :find_by_path
 
+    def date_column_names
+      self.columns.collect{|c| c.name if c.sql_type =~ /date/}.compact
+    end
+
     def display_name(string = nil)
       if string
         @display_name = string
@@ -228,6 +232,7 @@ class Page < ActiveRecord::Base
       @display_name = @display_name + " - not installed" if missing? && @display_name !~ /not installed/
       @display_name
     end
+    
     def display_name=(string)
       display_name(string)
     end
