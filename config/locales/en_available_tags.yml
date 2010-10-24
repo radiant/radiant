@@ -7,7 +7,7 @@ en:
 
       *Usage*:
       
-      <pre><code><r:aggregate urls=\"/section1; /section2; /section3\">
+      <pre><code><r:aggregate paths=\"/section1; /section2; /section3\">
         <r:children:count />
       </r:aggregate></code></pre>"
     aggregate-children-each: "Renders the contained block for each child of the aggregated pages.  Accepts the
@@ -15,7 +15,7 @@ en:
 
       *Usage*:
       
-      <pre><code><r:aggregate urls=\"/section1; /section2; /section3\">
+      <pre><code><r:aggregate paths=\"/section1; /section2; /section3\">
         <r:children:each>
             ...
         </r:children:each>
@@ -25,7 +25,7 @@ en:
 
       *Usage*:
       
-      <pre><code><r:aggregate urls=\"/section1; /section2; /section3\">
+      <pre><code><r:aggregate paths=\"/section1; /section2; /section3\">
         <r:children:first>
             ...
         </r:children:first>
@@ -35,34 +35,35 @@ en:
 
       *Usage*:
       
-      <pre><code><r:aggregate urls=\"/section1; /section2; /section3\">
+      <pre><code><r:aggregate paths=\"/section1; /section2; /section3\">
         <r:children:last>
             ...
         </r:children:last>
       </r:aggregate></code></pre>"
     aggregate-each: "Sets the scope to the individual aggregated page allowing you to
-      iterate through each of the listed urls.
+      iterate through each of the listed paths.
       
       *Usage*:
       
-      <pre><code><r:aggregate:each urls=\"/section1; /section2; /section3\"> ... </r:aggregate:each></code></pre>"
-    aggregate: "Aggregates the children of multiple URLs using the @urls@ attribute.
+      <pre><code><r:aggregate:each paths=\"/section1; /section2; /section3\"> ... </r:aggregate:each></code></pre>"
+    aggregate: "Aggregates the children of multiple paths using the @paths@ attribute.
       Useful for combining many different sections/categories into a single
       feed or listing.
       
       *Usage*:
       
-      <pre><code><r:aggregate urls=\"/section1; /section2; /section3\"> ... </r:aggregate></code></pre>"
+      <pre><code><r:aggregate paths=\"/section1; /section2; /section3\"> ... </r:aggregate></code></pre>"
     author: "Renders the name of the author of the current page."
     breadcrumb: "Renders the @breadcrumb@ attribute of the current page."
     breadcrumbs: "Renders a trail of breadcrumbs to the current page. The separator attribute
       specifies the HTML fragment that is inserted between each of the breadcrumbs. By
       default it is set to @>@. The boolean nolinks attribute can be specified to render
-      breadcrumbs in plain text, without any links (useful when generating title tag).
+      breadcrumbs in plain text, without any links (useful when generating title tag). 
+      Set the noself attribute to 'true' to omit the present page (useful in page headers).
 
       *Usage:*
 
-      <pre><code><r:breadcrumbs [separator=\"separator_string\"] [nolinks=\"true\"] /></code></pre>"
+      <pre><code><r:breadcrumbs [separator=\"separator_string\"] [nolinks=\"true\"] [noself=\"true\"]/></code></pre>"
     children-count: "Renders the total number of children."
     children-each-child: "Page attribute tags inside of this tag refer to the current child. This is occasionally
       useful if you are inside of another tag (like &lt;r:find&gt;) and need to refer back to the
@@ -173,7 +174,8 @@ en:
       *Usage:*
       
       <pre><code><r:children>...</r:children></code></pre>"
-    comment: "Nothing inside a set of comment tags is rendered.
+    comment: "This is deprecated and will be removed. Plase use @<r:hide>@
+      Nothing inside a set of comment tags is rendered.
 
       *Usage:*
 
@@ -210,12 +212,17 @@ en:
       *Usage:*
 
       <pre><code><r:escape_html>...</r:escape_html></code></pre>"
-    find: "Inside this tag all page related tags refer to the page found at the @url@ attribute.
-      @url@s may be relative or absolute paths.
+    field: "Renders the content of the field given in the @name@ attribute.
 
       *Usage:*
 
-      <pre><code><r:find url=\"value_to_find\">...</r:find></code></pre>"
+      <pre><code><r:field name=\"Keywords\" /></code></pre>"
+    find: "Inside this tag all page related tags refer to the page found at the @path@ attribute.
+      @path@s may be relative or absolute paths.
+
+      *Usage:*
+
+      <pre><code><r:find path=\"value_to_find\">...</r:find></code></pre>"
     gravatar: "Renders the Gravatar of the author of the current page or the named user.
 
       *Usage:*
@@ -227,6 +234,11 @@ en:
       <pre><code><r:gravatar [name=\"User Name\"]
             [rating=\"G | PG | R | X\"]
             [size=\"32px\"] /></code></pre>"
+    hide: "Nothing inside a set of hide tags is rendered.
+
+      *Usage:*
+
+      <pre><code><r:hide>...</r:hide></code></pre>"
     if_ancestor_or_self: "Renders the contained elements if the current contextual page is either the actual page or one of its parents.
 
       This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is or descends from the current page.
@@ -259,12 +271,27 @@ en:
       *Usage:*
 
       <pre><code><r:if_dev>...</r:if_dev></code></pre>"
+    if_field: "Renders the contained elements if the field given in the @name@ attribute
+      exists. The tag also takes an optional @equals@ or @matches@ attribute;
+      these will expand the tag if the field's content equals or matches the
+      given string or regex.
+
+      *Usage:*
+
+      <pre><code><r:if_field name=\"author\" [equals|matches=\"John\"] [ignore_case=\"true|false\"]>...</r:if_field></code></pre>"
     if_parent: "Renders the contained elements only if the current contextual page has a parent, i.e.
       is not the root page.
 
       *Usage:*
       
       <pre><code><r:if_parent>...</r:if_parent></code></pre>"
+    if_path: "Renders the containing elements only if the page's path matches the regular expression
+      given in the @matches@ attribute. If the @ignore_case@ attribute is set to false, the
+      match is case sensitive. By default, @ignore_case@ is set to true.
+
+      *Usage:*
+      
+      <pre><code><r:if_path matches=\"regexp\" [ignore_case=\"true|false\"]>...</r:if_path></code></pre>"
     if_self: "Renders the contained elements if the current contextual page is also the actual page.
 
       This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is the current page.
@@ -272,13 +299,35 @@ en:
       *Usage:*
       
       <pre><code><r:if_self>...</r:if_self></code></pre>"
-    if_url: "Renders the containing elements only if the page's url matches the regular expression
-      given in the @matches@ attribute. If the @ignore_case@ attribute is set to false, the
-      match is case sensitive. By default, @ignore_case@ is set to true.
+    javascript: "Renders the content from or a reference to the javascript specified in the @slug@ 
+attribute. Additionally, the @as@ attribute can be used to make the tag render 
+as one of the following:
 
-      *Usage:*
-      
-      <pre><code><r:if_url matches=\"regexp\" [ignore_case=\"true|false\"]>...</r:if_url></code></pre>"
+* with no @as@ value the javascript's content is rendered by default.
+* @inline@ - wraps the javascript's content in an (X)HTML @<script>@ element.
+* @url@ - the full path to the javascript.
+* @link@ - embeds the url in an (X)HTML @<script>@ element (creating a link to the external javascript).
+
+*Additional Options:*
+When rendering @as=\"inline\"@ or @as=\"link\"@, the (X)HTML @type@ attribute
+is automatically be set to the default javascript content-type.
+You can overrride this attribute or add additional ones by passing extra
+attributes to the @<r:javascript>@ tag.
+        
+*Usage:*
+        
+<pre><code><r:javascript slug=\"site.css\" as=\"inline\" 
+  type=\"text/custom\" id=\"my_id\" />
+<r:javascript slug=\"other.js\" as=\"link\" /></code></pre>
+
+The above example will produce the following:
+        
+<pre><code>            <script type=\"text/custom\" id=\"my_id\">
+//<![CDATA[
+  var your_script = 'this content';
+//]]>
+</script>
+<script type=\"text/javascript\" src=\"/js/other.js\"></script></code></pre>"
     link: "Renders a link to the page. When used as a single tag it uses the page's title
       for the link name. When used as a double tag the part in between both tags will
       be used as the link text. The link tag passes all attributes over to the HTML
@@ -350,14 +399,14 @@ en:
       *Usage:*
 
       <pre><code><r:normal><r:unless_last>...</r:unless_last></r:normal></code></pre>"
-    navigation: "Renders a list of links specified in the @urls@ attribute according to three
+    navigation: "Renders a list of links specified in the @paths@ attribute according to three
       states:
 
       * @normal@ specifies the normal state for the link
-      * @here@ specifies the state of the link when the url matches the current
-         page's URL
+      * @here@ specifies the state of the link when the path matches the current
+         page's PATH
       * @selected@ specifies the state of the link when the current page matches
-         is a child of the specified url
+         is a child of the specified path
       # @if_last@ renders its contents within a @normal@, @here@ or
         @selected@ tag if the item is the last in the navigation elements
       # @if_first@ renders its contents within a @normal@, @here@ or
@@ -367,10 +416,10 @@ en:
 
       *Usage:*
 
-      <pre><code><r:navigation urls=\"[Title: url | Title: url | ...]\">
-        <r:normal><a href=\"<r:url />\"><r:title /></a></r:normal>
+      <pre><code><r:navigation paths=\"[Title: path | Title: path | ...]\">
+        <r:normal><a href=\"<r:path />\"><r:title /></a></r:normal>
         <r:here><strong><r:title /></strong></r:here>
-        <r:selected><strong><a href=\"<r:url />\"><r:title /></a></strong></r:selected>
+        <r:selected><strong><a href=\"<r:path />\"><r:title /></a></strong></r:selected>
         <r:between> | </r:between>
       </r:navigation>
       </code></pre>"
@@ -393,6 +442,7 @@ en:
       *Usage:*
       
       <pre><code><r:parent>...</r:parent></code></pre>"
+    path: "Renders the @path@ attribute of the current page."
     random: "Randomly renders one of the options specified by the @option@ tags.
 
       *Usage:*
@@ -436,6 +486,37 @@ en:
       *Usage:*
 
       <pre><code><r:status [downcase='true'] /></code></pre>"
+    stylesheet: "Renders the content from or a reference to the stylesheet specified in the @slug@ 
+attribute. Additionally, the @as@ attribute can be used to make the tag render 
+as one of the following:
+
+* with no @as@ value the stylesheet's content is rendered by default.
+* @inline@ - wraps the stylesheet's content in an (X)HTML @<style>@ element.
+* @url@ - the full path to the stylesheet.
+* @link@ - embeds the url in an (X)HTML @<link>@ element (creating a link to the external stylesheet).
+
+*Additional Options:*
+When rendering @as=\"inline\"@ or @as=\"link\"@, the (X)HTML @type@ attribute
+is automatically be set to the default stylesheet content-type.
+You can overrride this attribute or add additional ones by passing extra
+attributes to the @<r:stylesheet>@ tag.
+        
+*Usage:*
+        
+<pre><code><r:stylesheet slug=\"site.css\" as=\"inline\" 
+  type=\"text/custom\" id=\"my_id\" />
+<r:stylesheet slug=\"other.css\" as=\"link\" 
+  rel=\"alternate stylesheet\" /></code></pre>
+
+The above example will produce the following:
+        
+<pre><code>            <style type=\"text/custom\" id=\"my_id\">
+/*<![CDATA[*/
+  .your_stylesheet { content: 'here' }
+/*]]>*/
+</style>
+<link rel=\"alternate stylesheet\" type=\"text/css\" 
+  href=\"/css/other.css\" /></code></pre>"
     textile: "Filters its contents with the Textile filter.
 
       *Usage*:
@@ -483,12 +564,25 @@ en:
       *Usage:*
 
       <pre><code><r:unless_dev>...</r:unless_dev></code></pre>"
+    unless_field: "The opposite of @if_field@. Renders the contained elements unless the field
+      given in the @name@ attribute exists. The tag also takes an optional
+      @equals@ or @matches@ attribute; these will expand the tag unless the
+      field's content equals or matches the given string or regex.
+
+      *Usage:*
+
+      <pre><code><r:unless_field name=\"author\" [equals|matches=\"John\"] [ignore_case=\"true|false\"]>...</r:unless_field></code></pre>"
     unless_parent: "Renders the contained elements only if the current contextual page has no parent, i.e.
       is the root page.
 
       *Usage:*
       
       <pre><code><r:unless_parent>...</r:unless_parent></code></pre>"
+    unless_path: "The opposite of the @if_path@ tag.
+
+      *Usage:*
+      
+      <pre><code><r:unless_path matches=\"regexp\" [ignore_case=\"true|false\"]>...</r:unless_path></code></pre>"
     unless_self: "Renders the contained elements unless the current contextual page is also the actual page.
 
       This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless the child element is the current page.
@@ -496,12 +590,6 @@ en:
       *Usage:*
 
       <pre><code><r:unless_self>...</r:unless_self></code></pre>"
-    unless_url: "The opposite of the @if_url@ tag.
-
-      *Usage:*
-      
-      <pre><code><r:unless_url matches=\"regexp\" [ignore_case=\"true|false\"]>...</r:unless_url></code></pre>"
-    url: "Renders the @url@ attribute of the current page."
     yield: "Used within a snippet as a placeholder for substitution of child content, when
       the snippet is called as a double tag.
 
