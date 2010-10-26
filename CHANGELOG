@@ -2,6 +2,7 @@
 
 === Edge
 
+* Localize <r:date> [Jim Gay]
 * Make any date column a valid value for <r:date /> [Jim Gay]
 * Move url methods to path [Jim Gay]
 * Allow use of custom TextFilter names[Petrik de Heus]

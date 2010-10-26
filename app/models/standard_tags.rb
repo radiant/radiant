@@ -774,7 +774,7 @@ module StandardTags
     else
       page.published_at || page.created_at
     end
-    date.strftime(format)
+    I18n.l date, :format => format
   end
 
   desc %{

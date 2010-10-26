@@ -583,6 +583,10 @@ describe "Standard Tags" do
       page.should render('<r:date format="%d %b %Y" />').as('11 Jan 2006')
     end
 
+    it "should format the published date according to localized format" do
+      page.should render('<r:date format="%B %Y" />').as(I18n.l(page.published_at, :format => '%B %Y'))
+    end
+
     describe "with 'for' attribute" do
       it "set to 'now' should render the current date in the current Time.zone" do
         page.should render('<r:date for="now" />').as(Time.zone.now.strftime("%A, %B %d, %Y"))
