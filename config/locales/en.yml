@@ -10,6 +10,7 @@ en:
         taken: 'this name is already in use' # name_in_use
         too_long: 'this must not be longer than {{count}} characters' # character_limit
         too_short: 'this must be at least {{count}} characters long' # character_minimum
+        not_permitted: 'this must be one of the permitted values'
       models:
         page:
           attributes:

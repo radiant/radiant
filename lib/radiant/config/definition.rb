@@ -93,16 +93,16 @@ module Radiant
         if allow_blank?
           return if setting.value.blank?
         else
-          setting.errors.add :value, "of #{setting.key} must not be blank" if setting.value.blank?
+          setting.errors.add :value, t("activerecord.errors.messages.blank") if setting.value.blank?
         end
         if validate_with.is_a? Proc
           validate_with.call(setting)
         end
         if selector?
-          setting.errors.add :value, "of #{setting.key} is not one of the permitted values" unless selectable?(setting.value)
+          setting.errors.add :value, t("activerecord.errors.messages.not_permitted") unless selectable?(setting.value)
         end
         if integer?
-          Integer(setting.value) rescue setting.errors.add :value, "of #{setting.key} must be a number"
+          Integer(setting.value) rescue setting.errors.add :value, t("activerecord.errors.messages.not_a_number")
         end
       end
       

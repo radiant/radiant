@@ -18,6 +18,9 @@ module Admin::ConfigurationHelper
       value = setting.selected_value || setting.value
       html << content_tag(:span, value, :id => domkey, :class => options[:class])
     end
+    setting.valid?
+    html = %{#{html} <span class="warning">#{t([setting.errors.on(:value)].flatten.first)}</span>} if setting.errors.any?
+    html
   end
   
   # Renders the setting as label and appropriate input field:
@@ -44,6 +47,7 @@ module Admin::ConfigurationHelper
     value = params[key.to_sym].nil? ? setting.value : params[key.to_sym]
     html = ""
     if setting.boolean?
+      html << hidden_field_tag(name, 0)
       html << check_box_tag(name, 1, value, :class => 'setting', :id => domkey)
       html << content_tag(:label, title, :class => 'checkbox', :for => domkey)
     elsif setting.selector?
