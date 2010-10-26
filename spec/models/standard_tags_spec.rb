@@ -584,7 +584,7 @@ describe "Standard Tags" do
     end
 
     it "should format the published date according to localized format" do
-      page.should render('<r:date format="%B %Y" />').as(I18n.l(page.published_at, :format => '%B %Y'))
+      page.should render('<r:date format="short" />').as(I18n.l(page.published_at, :format => :short))
     end
 
     describe "with 'for' attribute" do
