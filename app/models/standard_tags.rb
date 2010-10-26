@@ -774,7 +774,7 @@ module StandardTags
     else
       page.published_at || page.created_at
     end
-    @i18n_date_format_keys ||= I18n.config.backend.send(:translations)[I18n.locale][:date][:formats].keys
+    @i18n_date_format_keys ||= (I18n.config.backend.send(:translations)[I18n.locale][:date][:formats].keys rescue [])
     format = @i18n_date_format_keys.include?(format.to_sym) ? format.to_sym : format
     I18n.l date, :format => format
   end
