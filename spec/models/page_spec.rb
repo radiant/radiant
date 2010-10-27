@@ -296,21 +296,21 @@ describe Page do
     end
   end
     
-  describe '#url' do
+  describe '#path' do
     it "should start with a slash" do
-      page.url.should match(/^\//)
+      page.path.should match(/^\//)
     end
     it "should return a string with the current page's slug catenated with it's ancestor's slugs and delimited by slashes" do
-      pages(:grandchild).url.should == '/parent/child/grandchild/'
+      pages(:grandchild).path.should == '/parent/child/grandchild/'
     end
     it 'should end with a slash' do
-      page.url.should match(/\/$/)
+      page.path.should match(/\/$/)
     end
   end
   
-  describe '#child_url' do
-    it 'should return the #url for the given child' do
-      parent.child_url(child).should == '/parent/child/'
+  describe '#child_path' do
+    it 'should return the #path for the given child' do
+      parent.child_path(child).should == '/parent/child/'
     end
   end
   
@@ -425,7 +425,7 @@ describe Page, "rendering" do
   end
 end
 
-describe Page, "#find_by_url" do
+describe Page, "#find_by_path" do
   dataset :pages, :file_not_found
 
   before :each do
@@ -433,44 +433,44 @@ describe Page, "#find_by_url" do
   end
 
   it 'should allow you to find the home page' do
-    @page.find_by_url('/').should == @page
+    @page.find_by_path('/').should == @page
   end
 
   it 'should allow you to find deeply nested pages' do
-    @page.find_by_url('/parent/child/grandchild/great-grandchild/').should == pages(:great_grandchild)
+    @page.find_by_path('/parent/child/grandchild/great-grandchild/').should == pages(:great_grandchild)
   end
 
   it 'should not allow you to find virtual pages' do
-    @page.find_by_url('/virtual/').should == pages(:file_not_found)
+    @page.find_by_path('/virtual/').should == pages(:file_not_found)
   end
 
   it 'should find the FileNotFoundPage when a page does not exist' do
-    @page.find_by_url('/nothing-doing/').should == pages(:file_not_found)
+    @page.find_by_path('/nothing-doing/').should == pages(:file_not_found)
   end
 
   it 'should find a draft FileNotFoundPage in dev mode' do
-    @page.find_by_url('/drafts/no-page-here', false).should == pages(:lonely_draft_file_not_found)
+    @page.find_by_path('/drafts/no-page-here', false).should == pages(:lonely_draft_file_not_found)
   end
 
   it 'should not find a draft FileNotFoundPage in live mode' do
-    @page.find_by_url('/drafts/no-page-here').should_not == pages(:lonely_draft_file_not_found)
+    @page.find_by_path('/drafts/no-page-here').should_not == pages(:lonely_draft_file_not_found)
   end
 
   it 'should find a custom file not found page' do
-    @page.find_by_url('/gallery/nothing-doing').should == pages(:no_picture)
+    @page.find_by_path('/gallery/nothing-doing').should == pages(:no_picture)
   end
 
   it 'should not find draft pages in live mode' do
-    @page.find_by_url('/draft/').should == pages(:file_not_found)
+    @page.find_by_path('/draft/').should == pages(:file_not_found)
   end
 
   it 'should find draft pages in dev mode' do
-    @page.find_by_url('/draft/', false).should == pages(:draft)
+    @page.find_by_path('/draft/', false).should == pages(:draft)
   end
 
   it "should use the top-most published 404 page by default" do
-    @page.find_by_url('/foo').should == pages(:file_not_found)
-    @page.find_by_url('/foo/bar').should == pages(:file_not_found)
+    @page.find_by_path('/foo').should == pages(:file_not_found)
+    @page.find_by_path('/foo/bar').should == pages(:file_not_found)
   end
 end
 
@@ -547,6 +547,12 @@ describe Page, "class" do
     end
     Page.is_descendant_class_name?("InvalidPage").should == false
   end
+
+  describe ".date_column_names" do
+    it "should return an array of column names whose sql_type is a date or datetime" do
+      Page.date_column_names.should == Page.columns.collect{|c| c.name if c.sql_type =~ /date/ }.compact
+    end
+  end
 end
 
 describe Page, "loading subclasses before bootstrap" do
@@ -609,26 +615,26 @@ describe Page, "class which is applied to a page but not defined" do
   end
 end
 
-describe Page, "class find_by_url" do
+describe Page, "class find_by_path" do
   dataset :pages, :file_not_found
 
   it 'should find the home page' do
-    Page.find_by_url('/').should == pages(:home)
+    Page.find_by_path('/').should == pages(:home)
   end
 
   it 'should find children' do
-    Page.find_by_url('/parent/child/').should == pages(:child)
+    Page.find_by_path('/parent/child/').should == pages(:child)
   end
 
   it 'should not find draft pages in live mode' do
-    Page.find_by_url('/draft/').should == pages(:file_not_found)
-    Page.find_by_url('/draft/', false).should == pages(:draft)
+    Page.find_by_path('/draft/').should == pages(:file_not_found)
+    Page.find_by_path('/draft/', false).should == pages(:draft)
   end
 
   it 'should raise an exception when root page is missing' do
     pages(:home).destroy
     Page.find_by_parent_id().should be_nil
-    lambda { Page.find_by_url "/" }.should raise_error(Page::MissingRootPageError, 'Database missing root page')
+    lambda { Page.find_by_path "/" }.should raise_error(Page::MissingRootPageError, 'Database missing root page')
   end
 end
 

@@ -6,23 +6,23 @@ describe "Standard Tags" do
   it '<r:page> should allow access to the current page' do
     page(:home)
     page.should render('<r:page:title />').as('Home')
-    page.should render(%{<r:find url="/radius"><r:title /> | <r:page:title /></r:find>}).as('Radius | Home')
+    page.should render(%{<r:find path="/radius"><r:title /> | <r:page:title /></r:find>}).as('Radius | Home')
   end
 
-  [:breadcrumb, :slug, :title, :url].each do |attr|
+  [:breadcrumb, :slug, :title, :path].each do |attr|
     it "<r:#{attr}> should render the '#{attr}' attribute" do
       value = page.send(attr)
       page.should render("<r:#{attr} />").as(value.to_s)
     end
   end
 
-  it "<r:url> with a nil relative URL root should scope to the relative root of /" do
+  it "<r:path> with a nil relative URL root should scope to the relative root of /" do
     ActionController::Base.relative_url_root = nil
-    page(:home).should render("<r:url />").as("/")
+    page(:home).should render("<r:path />").as("/")
   end
 
-  it '<r:url> with a relative URL root should scope to the relative root' do
-    page(:home).should render("<r:url />").with_relative_root("/foo").as("/foo/")
+  it '<r:path> with a relative URL root should scope to the relative root' do
+    page(:home).should render("<r:path />").with_relative_root("/foo").as("/foo/")
   end
 
   it '<r:parent> should change the local context to the parent page' do
@@ -90,7 +90,7 @@ describe "Standard Tags" do
       it 'should link to the correct paginated page' do
         page(:another)
         page.pagination_parameters = {:page => 1, :per_page => 1}
-        page.should render('<r:find url="/assorted"><r:children:each paginated="true"><r:slug /> </r:children:each></r:find>').matching(%r{href="/another})
+        page.should render('<r:find path="/assorted"><r:children:each paginated="true"><r:slug /> </r:children:each></r:find>').matching(%r{href="/another})
       end
       it 'should pass through selected will_paginate parameters' do
         page(:assorted)
@@ -334,7 +334,7 @@ describe "Standard Tags" do
       end
 
       it "set to an erroneous value should render an error" do
-        page.should render('<r:content part="sidebar" inherit="weird value" />').with_error(%{`inherit' attribute of `content' tag must be set to either "true" or "false"})
+        page.should render('<r:content part="sidebar" inherit="weird value" />').with_error(%{`inherit' attribute of `content' tag must be one of: true, false})
       end
 
       it "should render parts with respect to the current contextual page" do
@@ -494,47 +494,47 @@ describe "Standard Tags" do
   end
 
   describe "<r:aggregate>" do
-    it "should raise an error when given no 'urls' attribute" do
-      pages(:home).should render('<r:aggregate></r:aggregate>').with_error("`urls' attribute required")
+    it "should raise an error when given no 'paths' attribute" do
+      pages(:home).should render('<r:aggregate></r:aggregate>').with_error("`aggregate' tag must contain a `paths' or `urls' attribute.")
     end
-    it "should expand its contents with a given 'urls' attribute formatted as '/url1; /url2;'" do
-      pages(:home).should render('<r:aggregate urls="/parent/child; /first;">true</r:aggregate>').as('true')
+    it "should expand its contents with a given 'paths' attribute formatted as '/path1; /path2;'" do
+      pages(:home).should render('<r:aggregate paths="/parent/child; /first;">true</r:aggregate>').as('true')
     end
   end
   
   describe "<r:aggregate:children>" do
     it "should expand its contents" do
-      pages(:home).should render('<r:aggregate urls="/parent/child; /first;"><r:children>true</r:children></r:aggregate>').as('true') 
+      pages(:home).should render('<r:aggregate paths="/parent/child; /first;"><r:children>true</r:children></r:aggregate>').as('true') 
     end
   end
   
   describe "<r:aggregate:children:count>" do
     it "should display the number of aggregated children" do
-      pages(:home).should render('<r:aggregate urls="/news; /assorted"><r:children:count /></r:aggregate>').as('14')
+      pages(:home).should render('<r:aggregate paths="/news; /assorted"><r:children:count /></r:aggregate>').as('14')
     end
   end
   
   describe "<r:aggregate:children:each>" do
-    it "should loop through each child from the given urls" do
-      pages(:home).should render('<r:aggregate urls="/parent; /news"><r:children:each><r:title/> </r:children:each></r:aggregate>').as('Article Article 2 Article 3 Article 4 Child Child 2 Child 3 ')
+    it "should loop through each child from the given paths" do
+      pages(:home).should render('<r:aggregate paths="/parent; /news"><r:children:each><r:title/> </r:children:each></r:aggregate>').as('Article Article 2 Article 3 Article 4 Child Child 2 Child 3 ')
     end
     it "should sort the children by the given 'by' attribute" do
-      pages(:home).should render('<r:aggregate urls="/assorted; /news"><r:children:each by="slug"><r:slug /> </r:children:each></r:aggregate>').as('a article article-2 article-3 article-4 b c d e f g h i j ')
+      pages(:home).should render('<r:aggregate paths="/assorted; /news"><r:children:each by="slug"><r:slug /> </r:children:each></r:aggregate>').as('a article article-2 article-3 article-4 b c d e f g h i j ')
     end
     it "should order the children by the given 'order' attribute when used with 'by'" do
-      pages(:home).should render('<r:aggregate urls="/assorted; /news"><r:children:each by="slug" order="desc"><r:slug /> </r:children:each></r:aggregate>').as('j i h g f e d c b article-4 article-3 article-2 article a ')
+      pages(:home).should render('<r:aggregate paths="/assorted; /news"><r:children:each by="slug" order="desc"><r:slug /> </r:children:each></r:aggregate>').as('j i h g f e d c b article-4 article-3 article-2 article a ')
     end
     it "should limit the number of results with the given 'limit' attribute" do
-      pages(:home).should render('<r:aggregate urls="/assorted; /news"><r:children:each by="slug" order="desc" limit="3"><r:slug /> </r:children:each></r:aggregate>').as('j i h ')
+      pages(:home).should render('<r:aggregate paths="/assorted; /news"><r:children:each by="slug" order="desc" limit="3"><r:slug /> </r:children:each></r:aggregate>').as('j i h ')
     end
   end
   
   describe "<r:aggregate:each>" do
-    it "should loop through each of the given aggregate urls" do
-      pages(:home).should render('<r:aggregate urls="/parent/child; /first; /assorted;"><r:each><r:title /> </r:each></r:aggregate>').as('Child First Assorted ')
+    it "should loop through each of the given aggregate paths" do
+      pages(:home).should render('<r:aggregate paths="/parent/child; /first; /assorted;"><r:each><r:title /> </r:each></r:aggregate>').as('Child First Assorted ')
     end
     it "should display it's contents in the scope of the individually aggregated page" do
-      pages(:home).should render('<r:aggregate urls="/parent; /news; /assorted;"><r:each><r:children:each><r:title /> </r:children:each></r:each></r:aggregate>').as('Child Child 2 Child 3 Article Article 2 Article 3 Article 4 a b c d e f g h i j ')
+      pages(:home).should render('<r:aggregate paths="/parent; /news; /assorted;"><r:each><r:children:each><r:title /> </r:children:each></r:each></r:aggregate>').as('Child Child 2 Child 3 Article Article 2 Article 3 Article 4 a b c d e f g h i j ')
     end
   end
 
@@ -581,6 +581,10 @@ describe "Standard Tags" do
 
     it "should format the published date according to the 'format' attribute" do
       page.should render('<r:date format="%d %b %Y" />').as('11 Jan 2006')
+    end
+
+    it "should format the published date according to localized format" do
+      page.should render('<r:date format="short" />').as(I18n.l(page.published_at, :format => :short))
     end
 
     describe "with 'for' attribute" do
@@ -651,7 +655,7 @@ describe "Standard Tags" do
     end
 
     it "should render an error when not given a 'name' attribute" do
-      page.should render('<r:snippet />').with_error("`snippet' tag must contain `name' attribute")
+      page.should render('<r:snippet />').with_error("`snippet' tag must contain a `name' attribute.")
     end
 
     it "should filter the snippet with its assigned filter" do
@@ -720,15 +724,15 @@ describe "Standard Tags" do
 
   describe "<r:navigation>" do
     it "should render the nested <r:normal> tag by default" do
-      tags = %{<r:navigation urls="Home: / | Assorted: /assorted/ | Parent: /parent/">
+      tags = %{<r:navigation paths="Home: / | Assorted: /assorted/ | Parent: /parent/">
                  <r:normal><r:title /></r:normal>
                </r:navigation>}
       expected = %{Home Assorted Parent}
       page.should render(tags).as(expected)
     end
 
-    it "should render the nested <r:selected> tag for URLs that match the current page" do
-      tags = %{<r:navigation urls="Home: / | Assorted: /assorted/ | Parent: /parent/ | Radius: /radius/">
+    it "should render the nested <r:selected> tag for paths that match the current page" do
+      tags = %{<r:navigation paths="Home: / | Assorted: /assorted/ | Parent: /parent/ | Radius: /radius/">
                  <r:normal><r:title /></r:normal>
                  <r:selected><strong><r:title/></strong></r:selected>
                </r:navigation>}
@@ -736,11 +740,11 @@ describe "Standard Tags" do
       page(:parent).should render(tags).as(expected)
     end
 
-    it "should render the nested <r:here> tag for URLs that exactly match the current page" do
-      tags = %{<r:navigation urls="Home: Boy: / | Assorted: /assorted/ | Parent: /parent/">
-                 <r:normal><a href="<r:url />"><r:title /></a></r:normal>
+    it "should render the nested <r:here> tag for paths that exactly match the current page" do
+      tags = %{<r:navigation paths="Home: Boy: / | Assorted: /assorted/ | Parent: /parent/">
+                 <r:normal><a href="<r:path />"><r:title /></a></r:normal>
                  <r:here><strong><r:title /></strong></r:here>
-                 <r:selected><strong><a href="<r:url />"><r:title /></a></strong></r:selected>
+                 <r:selected><strong><a href="<r:path />"><r:title /></a></strong></r:selected>
                  <r:between> | </r:between>
                </r:navigation>}
       expected = %{<strong><a href="/">Home: Boy</a></strong> | <strong>Assorted</strong> | <a href="/parent/">Parent</a>}
@@ -748,7 +752,7 @@ describe "Standard Tags" do
     end
 
     it "should render the nested <r:between> tag between each link" do
-      tags = %{<r:navigation urls="Home: / | Assorted: /assorted/ | Parent: /parent/">
+      tags = %{<r:navigation paths="Home: / | Assorted: /assorted/ | Parent: /parent/">
                  <r:normal><r:title /></r:normal>
                  <r:between> :: </r:between>
                </r:navigation>}
@@ -756,16 +760,16 @@ describe "Standard Tags" do
       page.should render(tags).as(expected)
     end
 
-    it 'without urls should render nothing' do
+    it 'without paths should render nothing' do
       page.should render(%{<r:navigation><r:normal /></r:navigation>}).as('')
     end
 
     it 'without a nested <r:normal> tag should render an error' do
-      page.should render(%{<r:navigation urls="something:here"></r:navigation>}).with_error( "`navigation' tag must include a `normal' tag")
+      page.should render(%{<r:navigation paths="something:here"></r:navigation>}).with_error( "`navigation' tag must include a `normal' tag")
     end
 
-    it 'with urls without trailing slashes should match corresponding pages' do
-      tags = %{<r:navigation urls="Home: / | Assorted: /assorted | Parent: /parent | Radius: /radius">
+    it 'with paths without trailing slashes should match corresponding pages' do
+      tags = %{<r:navigation paths="Home: / | Assorted: /assorted | Parent: /parent | Radius: /radius">
                  <r:normal><r:title /></r:normal>
                  <r:here><strong><r:title /></strong></r:here>
                </r:navigation>}
@@ -774,10 +778,10 @@ describe "Standard Tags" do
     end
 
     it 'should prune empty blocks' do
-      tags = %{<r:navigation urls="Home: Boy: / | Archives: /archive/ | Radius: /radius/ | Docs: /documentation/">
-                 <r:normal><a href="<r:url />"><r:title /></a></r:normal>
+      tags = %{<r:navigation paths="Home: Boy: / | Archives: /archive/ | Radius: /radius/ | Docs: /documentation/">
+                 <r:normal><a href="<r:path />"><r:title /></a></r:normal>
                  <r:here></r:here>
-                 <r:selected><strong><a href="<r:url />"><r:title /></a></strong></r:selected>
+                 <r:selected><strong><a href="<r:path />"><r:title /></a></strong></r:selected>
                  <r:between> | </r:between>
                </r:navigation>}
       expected = %{<strong><a href="/">Home: Boy</a></strong> | <a href="/archive/">Archives</a> | <a href="/documentation/">Docs</a>}
@@ -785,30 +789,30 @@ describe "Standard Tags" do
     end
 
     it 'should render text under <r:if_first> and <r:if_last> only on the first and last item, respectively' do
-      tags = %{<r:navigation urls="Home: / | Assorted: /assorted | Parent: /parent | Radius: /radius">
-                 <r:normal><r:if_first>(</r:if_first><a href="<r:url />"><r:title /></a><r:if_last>)</r:if_last></r:normal>
+      tags = %{<r:navigation paths="Home: / | Assorted: /assorted | Parent: /parent | Radius: /radius">
+                 <r:normal><r:if_first>(</r:if_first><a href="<r:path />"><r:title /></a><r:if_last>)</r:if_last></r:normal>
                  <r:here><r:if_first>(</r:if_first><r:title /><r:if_last>)</r:if_last></r:here>
-                 <r:selected><r:if_first>(</r:if_first><strong><a href="<r:url />"><r:title /></a></strong><r:if_last>)</r:if_last></r:selected>
+                 <r:selected><r:if_first>(</r:if_first><strong><a href="<r:path />"><r:title /></a></strong><r:if_last>)</r:if_last></r:selected>
                </r:navigation>}
       expected = %{(<strong><a href=\"/\">Home</a></strong> <a href=\"/assorted\">Assorted</a> <a href=\"/parent\">Parent</a> Radius)}
       page(:radius).should render(tags).as(expected)
     end
 
     it 'should render text under <r:unless_first> on every item but the first' do
-      tags = %{<r:navigation urls="Home: / | Assorted: /assorted | Parent: /parent | Radius: /radius">
-                 <r:normal><r:unless_first>&gt; </r:unless_first><a href="<r:url />"><r:title /></a></r:normal>
+      tags = %{<r:navigation paths="Home: / | Assorted: /assorted | Parent: /parent | Radius: /radius">
+                 <r:normal><r:unless_first>&gt; </r:unless_first><a href="<r:path />"><r:title /></a></r:normal>
                  <r:here><r:unless_first>&gt; </r:unless_first><r:title /></r:here>
-                 <r:selected><r:unless_first>&gt; </r:unless_first><strong><a href="<r:url />"><r:title /></a></strong></r:selected>
+                 <r:selected><r:unless_first>&gt; </r:unless_first><strong><a href="<r:path />"><r:title /></a></strong></r:selected>
                </r:navigation>}
       expected = %{<strong><a href=\"/\">Home</a></strong> &gt; <a href=\"/assorted\">Assorted</a> &gt; <a href=\"/parent\">Parent</a> &gt; Radius}
       page(:radius).should render(tags).as(expected)
     end
 
     it 'should render text under <r:unless_last> on every item but the last' do
-      tags = %{<r:navigation urls="Home: / | Assorted: /assorted | Parent: /parent | Radius: /radius">
-                 <r:normal><a href="<r:url />"><r:title /></a><r:unless_last> &gt;</r:unless_last></r:normal>
+      tags = %{<r:navigation paths="Home: / | Assorted: /assorted | Parent: /parent | Radius: /radius">
+                 <r:normal><a href="<r:path />"><r:title /></a><r:unless_last> &gt;</r:unless_last></r:normal>
                  <r:here><r:title /><r:unless_last> &gt;</r:unless_last></r:here>
-                 <r:selected><strong><a href="<r:url />"><r:title /></a></strong><r:unless_last> &gt;</r:unless_last></r:selected>
+                 <r:selected><strong><a href="<r:path />"><r:title /></a></strong><r:unless_last> &gt;</r:unless_last></r:selected>
                </r:navigation>}
       expected = %{<strong><a href=\"/\">Home</a></strong> &gt; <a href=\"/assorted\">Assorted</a> &gt; <a href=\"/parent\">Parent</a> &gt; Radius}
       page(:radius).should render(tags).as(expected)
@@ -816,28 +820,28 @@ describe "Standard Tags" do
   end
 
   describe "<r:find>" do
-    it "should change the local page to the page specified in the 'url' attribute" do
-      page.should render(%{<r:find url="/parent/child/"><r:title /></r:find>}).as('Child')
+    it "should change the local page to the page specified in the 'path' attribute" do
+      page.should render(%{<r:find path="/parent/child/"><r:title /></r:find>}).as('Child')
     end
 
-    it "should render an error without the 'url' attribute" do
-      page.should render(%{<r:find />}).with_error("`find' tag must contain `url' attribute")
+    it "should render an error without a 'path' or 'url' attribute" do
+      page.should render(%{<r:find />}).with_error("`find' tag must contain a `path' or `url' attribute.")
     end
 
-    it "should render nothing when the 'url' attribute does not point to a page" do
-      page.should render(%{<r:find url="/asdfsdf/"><r:title /></r:find>}).as('')
+    it "should render nothing when the 'path' attribute does not point to a page" do
+      page.should render(%{<r:find path="/asdfsdf/"><r:title /></r:find>}).as('')
     end
 
-    it "should render nothing when the 'url' attribute does not point to a page and a custom 404 page exists" do
-      page.should render(%{<r:find url="/gallery/asdfsdf/"><r:title /></r:find>}).as('')
+    it "should render nothing when the 'path' attribute does not point to a page and a custom 404 page exists" do
+      page.should render(%{<r:find path="/gallery/asdfsdf/"><r:title /></r:find>}).as('')
     end
 
     it "should scope contained tags to the found page" do
-      page.should render(%{<r:find url="/parent/"><r:children:each><r:slug /> </r:children:each></r:find>}).as('child child-2 child-3 ')
+      page.should render(%{<r:find path="/parent/"><r:children:each><r:slug /> </r:children:each></r:find>}).as('child child-2 child-3 ')
     end
 
     it "should accept a path relative to the current page" do
-      page(:great_grandchild).should render(%{<r:find url="../../../child-2"><r:title/></r:find>}).as("Child 2")
+      page(:great_grandchild).should render(%{<r:find path="../../../child-2"><r:title/></r:find>}).as("Child 2")
     end
   end
 
@@ -871,71 +875,71 @@ describe "Standard Tags" do
     end
   end
 
-  describe "<r:if_url>" do
+  describe "<r:if_path>" do
     describe "with 'matches' attribute" do
       it "should render the contained block if the page URL matches" do
-        page.should render('<r:if_url matches="a.sorted/$">true</r:if_url>').as('true')
+        page.should render('<r:if_path matches="a.sorted/$">true</r:if_path>').as('true')
       end
 
       it "should not render the contained block if the page URL does not match" do
-        page.should render('<r:if_url matches="fancypants">true</r:if_url>').as('')
+        page.should render('<r:if_path matches="fancypants">true</r:if_path>').as('')
       end
 
       it "set to a malformatted regexp should render an error" do
-        page.should render('<r:if_url matches="as(sorted/$">true</r:if_url>').with_error("Malformed regular expression in `matches' argument of `if_url' tag: unmatched (: /as(sorted\\/$/")
+        page.should render('<r:if_path matches="as(sorted/$">true</r:if_path>').with_error("Malformed regular expression in `matches' argument of `if_path' tag: unmatched (: /as(sorted\\/$/")
       end
 
       it "without 'ignore_case' attribute should ignore case by default" do
-        page.should render('<r:if_url matches="asSorted/$">true</r:if_url>').as('true')
+        page.should render('<r:if_path matches="asSorted/$">true</r:if_path>').as('true')
       end
 
       describe "with 'ignore_case' attribute" do
         it "set to 'true' should use a case-insensitive match" do
-          page.should render('<r:if_url matches="asSorted/$" ignore_case="true">true</r:if_url>').as('true')
+          page.should render('<r:if_path matches="asSorted/$" ignore_case="true">true</r:if_path>').as('true')
         end
 
         it "set to 'false' should use a case-sensitive match" do
-          page.should render('<r:if_url matches="asSorted/$" ignore_case="false">true</r:if_url>').as('')
+          page.should render('<r:if_path matches="asSorted/$" ignore_case="false">true</r:if_path>').as('')
         end
       end
     end
 
     it "with no attributes should render an error" do
-      page.should render('<r:if_url>test</r:if_url>').with_error("`if_url' tag must contain a `matches' attribute.")
+      page.should render('<r:if_path>test</r:if_path>').with_error("`if_path' tag must contain a `matches' attribute.")
     end
   end
 
-  describe "<r:unless_url>" do
+  describe "<r:unless_path>" do
     describe "with 'matches' attribute" do
       it "should not render the contained block if the page URL matches" do
-        page.should render('<r:unless_url matches="a.sorted/$">true</r:unless_url>').as('')
+        page.should render('<r:unless_path matches="a.sorted/$">true</r:unless_path>').as('')
       end
 
       it "should render the contained block if the page URL does not match" do
-        page.should render('<r:unless_url matches="fancypants">true</r:unless_url>').as('true')
+        page.should render('<r:unless_path matches="fancypants">true</r:unless_path>').as('true')
       end
 
       it "set to a malformatted regexp should render an error" do
-        page.should render('<r:unless_url matches="as(sorted/$">true</r:unless_url>').with_error("Malformed regular expression in `matches' argument of `unless_url' tag: unmatched (: /as(sorted\\/$/")
+        page.should render('<r:unless_path matches="as(sorted/$">true</r:unless_path>').with_error("Malformed regular expression in `matches' argument of `unless_path' tag: unmatched (: /as(sorted\\/$/")
       end
 
       it "without 'ignore_case' attribute should ignore case by default" do
-        page.should render('<r:unless_url matches="asSorted/$">true</r:unless_url>').as('')
+        page.should render('<r:unless_path matches="asSorted/$">true</r:unless_path>').as('')
       end
 
       describe "with 'ignore_case' attribute" do
         it "set to 'true' should use a case-insensitive match" do
-          page.should render('<r:unless_url matches="asSorted/$">true</r:unless_url>').as('')
+          page.should render('<r:unless_path matches="asSorted/$">true</r:unless_path>').as('')
         end
 
         it "set to 'false' should use a case-sensitive match" do
-          page.should render('<r:unless_url matches="asSorted/$" ignore_case="false">true</r:unless_url>').as('true')
+          page.should render('<r:unless_path matches="asSorted/$" ignore_case="false">true</r:unless_path>').as('true')
         end
       end
     end
 
     it "with no attributes should render an error" do
-      page.should render('<r:unless_url>test</r:unless_url>').with_error("`unless_url' tag must contain a `matches' attribute.")
+      page.should render('<r:unless_path>test</r:unless_path>').with_error("`unless_path' tag must contain a `matches' attribute.")
     end
   end
 
@@ -980,11 +984,11 @@ describe "Standard Tags" do
 
     describe "on an included page" do
       it "should render the contained block when on the dev site" do
-        page.should render('-<r:find url="/devtags/"><r:content part="if_dev" /></r:find>-').as('-dev-').on('dev.site.com')
+        page.should render('-<r:find path="/devtags/"><r:content part="if_dev" /></r:find>-').as('-dev-').on('dev.site.com')
       end
 
       it "should not render the contained block when not on the dev site" do
-        page.should render('-<r:find url="/devtags/"><r:content part="if_dev" /></r:find>-').as('--')
+        page.should render('-<r:find path="/devtags/"><r:content part="if_dev" /></r:find>-').as('--')
       end
     end
   end
@@ -1004,11 +1008,11 @@ describe "Standard Tags" do
 
     describe "on an included page" do
       it "should not render the contained block when not on the dev site" do
-        page.should render('-<r:find url="/devtags/"><r:content part="unless_dev" /></r:find>-').as('--').on('dev.site.com')
+        page.should render('-<r:find path="/devtags/"><r:content part="unless_dev" /></r:find>-').as('--').on('dev.site.com')
       end
 
       it "should render the contained block when not on the dev site" do
-        page.should render('-<r:find url="/devtags/"><r:content part="unless_dev" /></r:find>-').as('-not dev-')
+        page.should render('-<r:find path="/devtags/"><r:content part="unless_dev" /></r:find>-').as('-not dev-')
       end
     end
   end
@@ -1033,41 +1037,41 @@ describe "Standard Tags" do
 
   describe "<r:if_ancestor_or_self>" do
     it "should render the tag's content when the current page is an ancestor of tag.locals.page" do
-      page(:radius).should render(%{<r:find url="/"><r:if_ancestor_or_self>true</r:if_ancestor_or_self></r:find>}).as('true')
+      page(:radius).should render(%{<r:find path="/"><r:if_ancestor_or_self>true</r:if_ancestor_or_self></r:find>}).as('true')
     end
 
     it "should not render the tag's content when current page is not an ancestor of tag.locals.page" do
-      page(:parent).should render(%{<r:find url="/radius"><r:if_ancestor_or_self>true</r:if_ancestor_or_self></r:find>}).as('')
+      page(:parent).should render(%{<r:find path="/radius"><r:if_ancestor_or_self>true</r:if_ancestor_or_self></r:find>}).as('')
     end
   end
 
   describe "<r:unless_ancestor_or_self>" do
     it "should render the tag's content when the current page is not an ancestor of tag.locals.page" do
-      page(:parent).should render(%{<r:find url="/radius"><r:unless_ancestor_or_self>true</r:unless_ancestor_or_self></r:find>}).as('true')
+      page(:parent).should render(%{<r:find path="/radius"><r:unless_ancestor_or_self>true</r:unless_ancestor_or_self></r:find>}).as('true')
     end
 
     it "should not render the tag's content when current page is an ancestor of tag.locals.page" do
-      page(:radius).should render(%{<r:find url="/"><r:unless_ancestor_or_self>true</r:unless_ancestor_or_self></r:find>}).as('')
+      page(:radius).should render(%{<r:find path="/"><r:unless_ancestor_or_self>true</r:unless_ancestor_or_self></r:find>}).as('')
     end
   end
 
   describe "<r:if_self>" do
     it "should render the tag's content when the current page is the same as the local contextual page" do
-      page(:home).should render(%{<r:find url="/"><r:if_self>true</r:if_self></r:find>}).as('true')
+      page(:home).should render(%{<r:find path="/"><r:if_self>true</r:if_self></r:find>}).as('true')
     end
 
     it "should not render the tag's content when the current page is not the same as the local contextual page" do
-      page(:radius).should render(%{<r:find url="/"><r:if_self>true</r:if_self></r:find>}).as('')
+      page(:radius).should render(%{<r:find path="/"><r:if_self>true</r:if_self></r:find>}).as('')
     end
   end
 
   describe "<r:unless_self>" do
     it "should render the tag's content when the current page is not the same as the local contextual page" do
-      page(:radius).should render(%{<r:find url="/"><r:unless_self>true</r:unless_self></r:find>}).as('true')
+      page(:radius).should render(%{<r:find path="/"><r:unless_self>true</r:unless_self></r:find>}).as('true')
     end
 
     it "should not render the tag's content when the current page is the same as the local contextual page" do
-      page(:home).should render(%{<r:find url="/"><r:unless_self>true</r:unless_self></r:find>}).as('')
+      page(:home).should render(%{<r:find path="/"><r:unless_self>true</r:unless_self></r:find>}).as('')
     end
   end
 

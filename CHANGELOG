@@ -2,6 +2,13 @@
 
 === Edge
 
+* Localize <r:date> [Jim Gay]
+* Make any date column a valid value for <r:date /> [Jim Gay]
+* Move url methods to path [Jim Gay]
+* Allow use of custom TextFilter names[Petrik de Heus]
+* Set autocomplete="off" for password fields [Gert Goet]
+* Allow loading of database templates from extensions [Jim Gay]
+* Restore Roasters template styling [Jim Gay]
 * Integrated PageFields extension into core [Josh French]
 * Added the Sheets extension to manage Javascript and Stylesheets [Jim Gay]
 * Page-type select menu moved to Pages#index [Josh French]
