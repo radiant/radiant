@@ -21,6 +21,11 @@ table.index
     padding: 2px 9px
     &.actions
       padding-left: 15px
+      min-width: 18em
+    &.name
+      width: 100%
+    &.status
+      min-width: 8em
   td
     text-align: left
     padding: 4px 9px
@@ -66,6 +71,7 @@ table.index
           text-decoration: underline
     &.actions
       font-size: 85%
+      white-space: nowrap
   tr
     &:first-child
       border-top: 1px solid white
@@ -77,14 +83,6 @@ table.index
         +linear-gradient(color_stops(#e5f5ff, #c5dff5))
 
 table.index#pages
-  th.page
-    width: 100%
-  th.status
-    min-width: 8em
-  th.actions
-    min-width: 18em
-  td.actions
-    white-space: nowrap
   tr.page
     &.level_0 td.name
       font-size: 120%
