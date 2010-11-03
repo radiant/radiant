@@ -134,8 +134,9 @@ describe Admin::PagesController do
 
         it "should allow access to #{user.to_s.humanize}s for the #{action} action" do
           login_as user
+          controller.should_receive(:paginated?).and_return(false)
           send method, action, :id => Page.first.id
-          response.should redirect_to('/admin/pages')
+          response.should redirect_to('http://test.host/admin/pages')
         end
       end
     end
