@@ -2,6 +2,7 @@
 
 === Edge
 
+* Update Haml to 3.0.23 [Jim Gay]
 * Localize <r:date> [Jim Gay]
 * Make any date column a valid value for <r:date /> [Jim Gay]
 * Move url methods to path [Jim Gay]

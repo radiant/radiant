@@ -118,8 +118,8 @@ END
 
       names.map do |name|
         # Can't use || because someone might explicitly pass in false with a symbol
-        sym_local = "_haml_locals[#{name.to_sym.inspect}]"
-        str_local = "_haml_locals[#{name.to_s.inspect}]"
+        sym_local = "_haml_locals[#{inspect_obj(name.to_sym)}]"
+        str_local = "_haml_locals[#{inspect_obj(name.to_s)}]"
         "#{name} = #{sym_local}.nil? ? #{str_local} : #{sym_local}"
       end.join(';') + ';'
     end
@@ -320,7 +320,7 @@ END
       @to_merge.each do |type, val, tabs|
         case type
         when :text
-          str << val.inspect[1...-1]
+          str << inspect_obj(val)[1...-1]
           mtabs += tabs
         when :script
           if mtabs != 0 && !@options[:ugly]
@@ -336,12 +336,14 @@ END
         end
       end
 
-      @precompiled <<
-        if @options[:ugly]
-          "_hamlout.buffer << \"#{str}\";"
-        else
-          "_hamlout.push_text(\"#{str}\", #{mtabs}, #{@dont_tab_up_next_text.inspect});"
-        end
+      unless str.empty?
+        @precompiled <<
+          if @options[:ugly]
+            "_hamlout.buffer << \"#{str}\";"
+          else
+            "_hamlout.push_text(\"#{str}\", #{mtabs}, #{@dont_tab_up_next_text.inspect});"
+          end
+      end
       @precompiled << "\n" * newlines
       @to_merge = []
       @dont_tab_up_next_text = false
@@ -577,17 +579,17 @@ END
       raise SyntaxError.new("Invalid tag: \"#{line}\".") unless match = line.scan(/%([-:\w]+)([-:\w\.\#]*)(.*)/)[0]
       tag_name, attributes, rest = match
       new_attributes_hash = old_attributes_hash = last_line = object_ref = nil
-      attributes_hashes = []
+      attributes_hashes = {}
       while rest
         case rest[0]
         when ?{
           break if old_attributes_hash
           old_attributes_hash, rest, last_line = parse_old_attributes(rest)
-          attributes_hashes << [:old, old_attributes_hash]
+          attributes_hashes[:old] = old_attributes_hash
         when ?(
           break if new_attributes_hash
           new_attributes_hash, rest, last_line = parse_new_attributes(rest)
-          attributes_hashes << [:new, new_attributes_hash]
+          attributes_hashes[:new] = new_attributes_hash
         when ?[
           break if object_ref
           object_ref, rest = balance(rest, ?[, ?])
@@ -660,7 +662,7 @@ END
         if type == :static
           static_attributes[name] = val
         else
-          dynamic_attributes << name.inspect << " => " << val << ","
+          dynamic_attributes << inspect_obj(name) << " => " << val << ","
         end
       end
       dynamic_attributes << "}"
@@ -695,7 +697,7 @@ END
 
       return name, [:static, content.first[1]] if content.size == 1
       return name, [:dynamic,
-        '"' + content.map {|(t, v)| t == :str ? v.inspect[1...-1] : "\#{#{v}}"}.join + '"']
+        '"' + content.map {|(t, v)| t == :str ? inspect_obj(v)[1...-1] : "\#{#{v}}"}.join + '"']
     end
 
     # Parses a line that will render as an XHTML tag, and adds the code that will
@@ -755,16 +757,21 @@ END
       object_ref = "nil" if object_ref.nil? || @options[:suppress_eval]
 
       attributes = Precompiler.parse_class_and_id(attributes)
-      attributes_hashes.map! do |syntax, attributes_hash|
-        if syntax == :old
-          static_attributes = parse_static_hash(attributes_hash)
-          attributes_hash = nil if static_attributes || @options[:suppress_eval]
-        else
-          static_attributes, attributes_hash = attributes_hash
-        end
+      attributes_list = []
+
+      if attributes_hashes[:new]
+        static_attributes, attributes_hash = attributes_hashes[:new]
         Buffer.merge_attrs(attributes, static_attributes) if static_attributes
-        attributes_hash
-      end.compact!
+        attributes_list << attributes_hash
+      end
+
+      if attributes_hashes[:old]
+        static_attributes = parse_static_hash(attributes_hashes[:old])
+        Buffer.merge_attrs(attributes, static_attributes) if static_attributes
+        attributes_list << attributes_hashes[:old] unless static_attributes || @options[:suppress_eval]
+      end
+
+      attributes_list.compact!
 
       raise SyntaxError.new("Illegal nesting: nesting within a self-closing tag is illegal.", @next_line.index) if block_opened? && self_closing
       raise SyntaxError.new("There's no Ruby code for #{action} to evaluate.", last_line - 1) if parse && value.empty?
@@ -782,7 +789,7 @@ END
         (nuke_inner_whitespace && block_opened?)
 
       # Check if we can render the tag directly to text and not process it in the buffer
-      if object_ref == "nil" && attributes_hashes.empty? && !preserve_script
+      if object_ref == "nil" && attributes_list.empty? && !preserve_script
         tag_closed = !block_opened? && !self_closing && !parse
 
         open_tag  = prerender_tag(tag_name, self_closing, attributes)
@@ -800,19 +807,19 @@ END
         return if tag_closed
       else
         flush_merged_text
-        content = parse ? 'nil' : value.inspect
-        if attributes_hashes.empty?
-          attributes_hashes = ''
-        elsif attributes_hashes.size == 1
-          attributes_hashes = ", #{attributes_hashes.first}"
+        content = parse ? 'nil' : inspect_obj(value)
+        if attributes_list.empty?
+          attributes_list = ''
+        elsif attributes_list.size == 1
+          attributes_list = ", #{attributes_list.first}"
         else
-          attributes_hashes = ", (#{attributes_hashes.join(").merge(")})"
+          attributes_list = ", (#{attributes_list.join(").merge(")})"
         end
 
         args = [tag_name, self_closing, !block_opened?, preserve_tag, escape_html,
                 attributes, nuke_outer_whitespace, nuke_inner_whitespace
-               ].map { |v| v.inspect }.join(', ')
-        push_silent "_hamlout.open_tag(#{args}, #{object_ref}, #{content}#{attributes_hashes})"
+               ].map {|v| inspect_obj(v)}.join(', ')
+        push_silent "_hamlout.open_tag(#{args}, #{object_ref}, #{content}#{attributes_list})"
         @dont_tab_up_next_text = @dont_indent_next_line = dont_indent_next_line
       end
 
@@ -1017,14 +1024,14 @@ END
 
     def unescape_interpolation(str, opts = {})
       res = ''
-      rest = Haml::Shared.handle_interpolation str.dump do |scan|
+      rest = Haml::Shared.handle_interpolation inspect_obj(str) do |scan|
         escapes = (scan[2].size - 1) / 2
         res << scan.matched[0...-3 - escapes]
         if escapes % 2 == 1
           res << '#{'
         else
           content = eval('"' + balance(scan, ?{, ?}, 1)[0][0...-1] + '"')
-          content = "Haml::Helpers.html_escape(#{content})" if opts[:escape_html]
+          content = "Haml::Helpers.html_escape((#{content}))" if opts[:escape_html]
           res << '#{' + content + "}"# Use eval to get rid of string escapes
         end
       end

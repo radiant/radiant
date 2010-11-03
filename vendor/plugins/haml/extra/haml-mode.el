@@ -4,7 +4,7 @@
 
 ;; Author: Nathan Weizenbaum
 ;; URL: http://github.com/nex3/haml/tree/master
-;; Version: 3.0.14
+;; Version: 3.0.19
 ;; Created: 2007-03-08
 ;; By: Nathan Weizenbaum
 ;; Keywords: markup, language, html
@@ -73,7 +73,7 @@ a specific level to which the current line could be indented.")
   `(,(concat haml-tag-beg-re "[><]*[ \t]*$")
     "^[ \t]*[&!]?[-=~].*do[ \t]*\\(|.*|[ \t]*\\)?$"
     ,(concat "^[ \t]*[&!]?[-=~][ \t]*\\("
-             (regexp-opt '("if" "unless" "while" "until" "else"
+             (regexp-opt '("if" "unless" "while" "until" "else" "for"
                            "begin" "elsif" "rescue" "ensure" "when"))
              "\\)")
     "^[ \t]*/\\(\\[.*\\]\\)?[ \t]*$"

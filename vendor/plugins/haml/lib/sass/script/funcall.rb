@@ -1,4 +1,5 @@
-require File.join(File.dirname(__FILE__), 'functions')
+require 'sass/script/functions'
+
 module Sass
   module Script
     # A SassScript parse node representing a function call.
@@ -63,12 +64,10 @@ module Sass
         args = self.args.map {|a| a.perform(environment)}
         ruby_name = name.gsub('-', '_')
         unless Haml::Util.has?(:public_instance_method, Functions, ruby_name) && ruby_name !~ /^__/
-          return Script::String.new("#{name}(#{args.map {|a| a.perform(environment)}.join(', ')})")
+          opts(Script::String.new("#{name}(#{args.map {|a| a.perform(environment)}.join(', ')})"))
+        else
+          opts(Functions::EvaluationContext.new(environment.options).send(ruby_name, *args))
         end
-
-        result = Functions::EvaluationContext.new(environment.options).send(ruby_name, *args)
-        result.options = environment.options
-        return result
       rescue ArgumentError => e
         raise e unless e.backtrace.any? {|t| t =~ /:in `(block in )?(#{name}|perform)'$/}
         raise Sass::SyntaxError.new("#{e.message} for `#{name}'")

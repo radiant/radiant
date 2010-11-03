@@ -3,6 +3,47 @@
 * Table of contents
 {:toc}
 
+## 3.0.23
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.23).
+
+* Fix the error message for unloadable modules when running the executables under Ruby 1.9.2.
+
+* Fix an error when combining old-style and new-style attributes.
+
+## 3.0.22
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.22).
+
+* Allow an empty line after `case` but before `when`.
+
+* Remove `vendor/sass`, which snuck into the gem by mistake
+  and was causing trouble for Heroku users (thanks to [Jacques Crocker](http://railsjedi.com/)).
+
+* Support the Rails 3.1 template handler API.
+
+## 3.0.21
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.21).
+
+* Fix the permissions errors for good.
+
+## 3.0.20
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.20).
+
+* Fix some permissions errors.
+
+## 3.0.19
+
+[Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.19).
+
+* Fix the `:encoding` option under Ruby 1.9.2.
+
+* Fix interpolated if statement when HTML escaping is enabled.
+
+* Allow the `--unix-newlines` flag to work on Unix, where it's a no-op.
+
 ## 3.0.18
 
 [Tagged on GitHub](http://github.com/nex3/haml/commit/3.0.18).
@@ -13,6 +54,9 @@
 * Get rid of the annoying RDoc errors on install.
 
 * Disambiguate references to the `Rails` module when `haml-rails` is installed.
+
+* Fix a bug in `haml_tag` that would allow duplicate attributes to be added
+  and make `data-` attributes not work.
 
 * Compatibility with Rails 3 final.
 

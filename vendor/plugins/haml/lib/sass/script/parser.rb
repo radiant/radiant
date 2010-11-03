@@ -128,6 +128,8 @@ module Sass
         [:times, :div, :mod],
       ]
 
+      ASSOCIATIVE = [:comma, :concat, :plus, :times]
+
       class << self
         # Returns an integer representing the precedence
         # of the given operator.
@@ -139,6 +141,13 @@ module Sass
             return i if Array(e).include?(op)
           end
           raise "[BUG] Unknown operator #{op}"
+        end
+
+        # Returns whether or not the given operation is associative.
+        #
+        # @private
+        def associative?(op)
+          ASSOCIATIVE.include?(op)
         end
 
         private
@@ -246,7 +255,7 @@ RUBY
         return if @stop_at && @stop_at.include?(@lexer.peek.value)
 
         name = @lexer.next
-        if color = Color::HTML4_COLORS[name.value]
+        if color = Color::HTML4_COLORS[name.value.downcase]
           return node(Color.new(color))
         end
         node(Script::String.new(name.value, :identifier))
