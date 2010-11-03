@@ -3,11 +3,12 @@ module Admin::ConfigurationHelper
 
   # Renders the setting as label and value:
   #
-  #   show_setting("admin.title")
+  #   show_config("admin.title")
   #   => <label for="admin_title">Admin title<label><span id="admin_title">Radiant CMS</span>
   #
   def show_config(key, options={})
     setting = setting_for(key)
+    setting.valid?
     domkey = key.gsub(/\W/, '_')
     html = ""
     html << content_tag(:label, t("config.#{key}").titlecase, :for => domkey)
@@ -18,8 +19,8 @@ module Admin::ConfigurationHelper
       value = setting.selected_value || setting.value
       html << content_tag(:span, value, :id => domkey, :class => options[:class])
     end
-    setting.valid?
-    html = %{#{html} <span class="warning">#{t([setting.errors.on(:value)].flatten.first)}</span>} if setting.errors.any?
+    html << content_tag(:span, " #{t("units.#{setting.units}")}", :class => 'units') if setting.units
+    html << content_tag(:span, [setting.errors.on(:value)].flatten.first, :class => 'warning') if setting.errors.any?
     html
   end
   
@@ -28,7 +29,7 @@ module Admin::ConfigurationHelper
   #   edit_setting("admin.title")
   #   => <label for="admin_title">Admin title<label><input type="text" name="config['admin.title']" id="admin_title" value="Radiant CMS" />
   #
-  #   edit_setting("defaults.page.status")
+  #   edit_config("defaults.page.status")
   #   => 
   #   <label for="defaults_page_status">Default page status<label>
   #   <select type="text" name="config['defaults.page.status']" id="defaults_page_status">
@@ -44,6 +45,7 @@ module Admin::ConfigurationHelper
     domkey = key.gsub(/\W/, '_')
     name = "config[#{key}]"
     title = t("config.#{key}").titlecase
+    title << content_tag(:span, " (#{t("units.#{setting.units}")})", :class => 'units') if setting.units
     value = params[key.to_sym].nil? ? setting.value : params[key.to_sym]
     html = ""
     if setting.boolean?
@@ -57,7 +59,10 @@ module Admin::ConfigurationHelper
       html << content_tag(:label, title, :for => domkey)
       html << text_field_tag(name, value, :class => 'textbox', :id => domkey)
     end
-    html = %{<span class="error-with-field">#{html} <span class="error">#{[setting.errors.on(:value)].flatten.first}</span></span>} if setting.errors.any?
+    if setting.errors.any?
+      html << content_tag(:span, [setting.errors.on(:value)].flatten.first, :class => 'error') if setting.errors.any?
+      html = content_tag(:span, html, :class => "error-with-field")
+    end
     html
   end
   

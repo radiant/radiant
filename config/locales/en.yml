@@ -205,6 +205,13 @@ en:
     by: 'by'
     last_updated: 'Last Updated'
   type: 'Type'
+  units:
+    KB: "MB"
+    MB: "MB"
+    GB: "MB"
+    seconds: "seconds"
+    minutes: "minutes"
+    hours: "hours"
   user: 'User'
   username: 'Username'
   username_or_email: 'Username or E-mail Address'

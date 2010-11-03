@@ -282,7 +282,7 @@ module Radiant
       Radiant::Config.initialize_cache
     end
 
-    delegate :default, :type, :allow_blank?, :hidden?, :visible?, :settable?, :selection, :notes, :to => :definition
+    delegate :default, :type, :allow_blank?, :hidden?, :visible?, :settable?, :selection, :notes, :units, :to => :definition
 
     def validate
       definition.validate(self)
