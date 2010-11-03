@@ -516,7 +516,7 @@ describe "Standard Tags" do
   
   describe "<r:aggregate:children:each>" do
     it "should loop through each child from the given paths" do
-      pages(:home).should render('<r:aggregate paths="/parent; /news"><r:children:each><r:title/> </r:children:each></r:aggregate>').as('Article Article 2 Article 3 Article 4 Child Child 2 Child 3 ')
+      pages(:home).should render('<r:aggregate paths="/parent; /news"><r:children:each by="title"><r:title/> </r:children:each></r:aggregate>').as('Article Article 2 Article 3 Article 4 Child Child 2 Child 3 ')
     end
     it "should sort the children by the given 'by' attribute" do
       pages(:home).should render('<r:aggregate paths="/assorted; /news"><r:children:each by="slug"><r:slug /> </r:children:each></r:aggregate>').as('a article article-2 article-3 article-4 b c d e f g h i j ')

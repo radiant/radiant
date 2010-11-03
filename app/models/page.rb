@@ -215,7 +215,7 @@ class Page < ActiveRecord::Base
     alias_method :find_by_url, :find_by_path
 
     def date_column_names
-      self.columns.collect{|c| c.name if c.sql_type =~ /date/}.compact
+      self.columns.collect{|c| c.name if c.sql_type =~ /(date|time)/}.compact
     end
 
     def display_name(string = nil)
