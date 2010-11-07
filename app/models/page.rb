@@ -171,11 +171,11 @@ class Page < ActiveRecord::Base
     elsif (path =~ /^#{Regexp.quote(my_path)}([^\/]*)/)
       slug_child = children.find_by_slug($1)
       if slug_child
-        found = slug_child.find_by_path(path, live, clean)
+        found = slug_child.find_by_url(path, live, clean) # TODO: set to find_by_path after deprecation
         return found if found
       end
       children.each do |child|
-        found = child.find_by_path(path, live, clean)
+        found = child.find_by_url(path, live, clean) # TODO: set to find_by_path after deprecation
         return found if found
       end
       file_not_found_types = ([FileNotFoundPage] + FileNotFoundPage.descendants)
@@ -212,7 +212,10 @@ class Page < ActiveRecord::Base
       raise MissingRootPageError unless root
       root.find_by_path(path, live)
     end
-    alias_method :find_by_url, :find_by_path
+    def find_by_url(*args)
+      ActiveSupport::Deprecation.warn("`find_by_url' has been deprecated; use `find_by_path' instead.", caller)
+      find_by_path(*args)
+    end
 
     def date_column_names
       self.columns.collect{|c| c.name if c.sql_type =~ /(date|time)/}.compact
