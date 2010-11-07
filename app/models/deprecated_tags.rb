@@ -2,6 +2,18 @@ module DeprecatedTags
   include Radiant::Taggable
 
   desc %{
+    This is deprecated and will be removed. Plase use @<r:hide>@
+    Nothing inside a set of comment tags is rendered.
+
+    *Usage:*
+
+    <pre><code><r:comment>...</r:comment></code></pre>
+  }
+  tag 'comment' do |tag|
+    ActiveSupport::Deprecation.warn("the <r:comment> tag is no longer encouraged in Radiant 0.9.2+; use <r:hide> instead.", caller)
+  end
+
+  desc %{
     The namespace for 'meta' attributes.  If used as a singleton tag, both the description
     and keywords fields will be output as &lt;meta /&gt; tags unless the attribute 'tag' is set to 'false'.
 
