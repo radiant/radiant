@@ -747,19 +747,19 @@ records:
       content: |-
         // -----------------------------------------------------------------------------------
         //
-        //	Lightbox v2.04
-        //	by Lokesh Dhakar - http://www.lokeshdhakar.com
-        //	Last Modification: 2/9/08
+        //  Lightbox v2.04
+        //  by Lokesh Dhakar - http://www.lokeshdhakar.com
+        //  Last Modification: 2/9/08
         //
-        //	For more information, visit:
-        //	http://lokeshdhakar.com/projects/lightbox2/
+        //  For more information, visit:
+        //  http://lokeshdhakar.com/projects/lightbox2/
         //
-        //	Licensed under the Creative Commons Attribution 2.5 License - http://creativecommons.org/licenses/by/2.5/
-        //  	- Free for use in both personal and commercial projects
-        //		- Attribution requires leaving author name, author link, and the license info intact.
-        //	
+        //  Licensed under the Creative Commons Attribution 2.5 License - http://creativecommons.org/licenses/by/2.5/
+        //    - Free for use in both personal and commercial projects
+        //    - Attribution requires leaving author name, author link, and the license info intact.
+        //  
         //  Thanks: Scott Upton(uptonic.com), Peter-Paul Koch(quirksmode.com), and Thomas Fuchs(mir.aculo.us) for ideas, libs, and snippets.
-        //  		Artemy Tregubenko (arty.name) for cleanup and help in updating to latest ver of proto-aculous.
+        //      Artemy Tregubenko (arty.name) for cleanup and help in updating to latest ver of proto-aculous.
         //
         // -----------------------------------------------------------------------------------
         /*
@@ -803,10 +803,10 @@ records:
       
             borderSize: 10,         //if you adjust the padding in the CSS, you will need to update this variable
       
-        	// When grouping images this is used to write: Image # of #.
-        	// Change it for non-english localization
-        	labelImage: "Image",
-        	labelOf: "of"
+          // When grouping images this is used to write: Image # of #.
+          // Change it for non-english localization
+          labelImage: "Image",
+          labelOf: "of"
         }, window.LightboxOptions || {});
       
         // -----------------------------------------------------------------------------------
@@ -831,8 +831,8 @@ records:
                 if (LightboxOptions.resizeSpeed > 10) LightboxOptions.resizeSpeed = 10;
                 if (LightboxOptions.resizeSpeed < 1)  LightboxOptions.resizeSpeed = 1;
       
-        	    this.resizeDuration = LightboxOptions.animate ? ((11 - LightboxOptions.resizeSpeed) * 0.15) : 0;
-        	    this.overlayDuration = LightboxOptions.animate ? 0.2 : 0;  // shadow fade in/out duration
+              this.resizeDuration = LightboxOptions.animate ? ((11 - LightboxOptions.resizeSpeed) * 0.15) : 0;
+              this.overlayDuration = LightboxOptions.animate ? 0.2 : 0;  // shadow fade in/out duration
       
                 // When Lightbox starts it will resize itself from 250 by 250 to the current image dimension.
                 // If animations are turned off, it will be hidden as to prevent a flicker of a
@@ -876,8 +876,8 @@ records:
       
                 var objBody = $$('body')[0];
       
-        		objBody.appendChild(Builder.node('div',{id:'overlay'}));
-      	
+            objBody.appendChild(Builder.node('div',{id:'overlay'}));
+        
                 objBody.appendChild(Builder.node('div',{id:'lightbox'}, [
                     Builder.node('div',{id:'outerImageContainer'}, 
                         Builder.node('div',{id:'imageContainer'}, [
@@ -909,13 +909,13 @@ records:
                 ]));
       
       
-        		$('overlay').hide().observe('click', (function() { this.end(); }).bind(this));
-        		$('lightbox').hide().observe('click', (function(event) { if (event.element().id == 'lightbox') this.end(); }).bind(this));
-        		$('outerImageContainer').setStyle({ width: size, height: size });
-        		$('prevLink').observe('click', (function(event) { event.stop(); this.changeImage(this.activeImage - 1); }).bindAsEventListener(this));
-        		$('nextLink').observe('click', (function(event) { event.stop(); this.changeImage(this.activeImage + 1); }).bindAsEventListener(this));
-        		$('loadingLink').observe('click', (function(event) { event.stop(); this.end(); }).bind(this));
-        		$('bottomNavClose').observe('click', (function(event) { event.stop(); this.end(); }).bind(this));
+            $('overlay').hide().observe('click', (function() { this.end(); }).bind(this));
+            $('lightbox').hide().observe('click', (function(event) { if (event.element().id == 'lightbox') this.end(); }).bind(this));
+            $('outerImageContainer').setStyle({ width: size, height: size });
+            $('prevLink').observe('click', (function(event) { event.stop(); this.changeImage(this.activeImage - 1); }).bindAsEventListener(this));
+            $('nextLink').observe('click', (function(event) { event.stop(); this.changeImage(this.activeImage + 1); }).bindAsEventListener(this));
+            $('loadingLink').observe('click', (function(event) { event.stop(); this.end(); }).bind(this));
+            $('bottomNavClose').observe('click', (function(event) { event.stop(); this.end(); }).bind(this));
       
                 var th = this;
                 (function(){
@@ -996,7 +996,7 @@ records:
                 this.hoverNav.hide();
                 this.prevLink.hide();
                 this.nextLink.hide();
-        		// HACK: Opera9 does not currently support scriptaculous opacity and appear fx
+            // HACK: Opera9 does not currently support scriptaculous opacity and appear fx
                 this.imageDataContainer.setStyle({opacity: .0001});
                 this.numberDisplay.hide();      
               
@@ -1091,10 +1091,10 @@ records:
                     { 
                         duration: this.resizeDuration, 
                         afterFinish: (function() {
-        	                // update overlay size and update nav
-        	                var arrayPageSize = this.getPageSize();
-        	                this.overlay.setStyle({ height: arrayPageSize[1] + 'px' });
-        	                this.updateNav();
+                          // update overlay size and update nav
+                          var arrayPageSize = this.getPageSize();
+                          this.overlay.setStyle({ height: arrayPageSize[1] + 'px' });
+                          this.updateNav();
                         }).bind(this)
                     } 
                 );
@@ -1192,53 +1192,53 @@ records:
             //  getPageSize()
             //
             getPageSize: function() {
-      	        
-        	     var xScroll, yScroll;
-      		
-        		if (window.innerHeight && window.scrollMaxY) {	
-        			xScroll = window.innerWidth + window.scrollMaxX;
-        			yScroll = window.innerHeight + window.scrollMaxY;
-        		} else if (document.body.scrollHeight > document.body.offsetHeight){ // all but Explorer Mac
-        			xScroll = document.body.scrollWidth;
-        			yScroll = document.body.scrollHeight;
-        		} else { // Explorer Mac...would also work in Explorer 6 Strict, Mozilla and Safari
-        			xScroll = document.body.offsetWidth;
-        			yScroll = document.body.offsetHeight;
-        		}
-      		
-        		var windowWidth, windowHeight;
-      		
-        		if (self.innerHeight) {	// all except Explorer
-        			if(document.documentElement.clientWidth){
-        				windowWidth = document.documentElement.clientWidth; 
-        			} else {
-        				windowWidth = self.innerWidth;
-        			}
-        			windowHeight = self.innerHeight;
-        		} else if (document.documentElement && document.documentElement.clientHeight) { // Explorer 6 Strict Mode
-        			windowWidth = document.documentElement.clientWidth;
-        			windowHeight = document.documentElement.clientHeight;
-        		} else if (document.body) { // other Explorers
-        			windowWidth = document.body.clientWidth;
-        			windowHeight = document.body.clientHeight;
-        		}	
-      		
-        		// for small pages with total height less then height of the viewport
-        		if(yScroll < windowHeight){
-        			pageHeight = windowHeight;
-        		} else { 
-        			pageHeight = yScroll;
-        		}
-      	
-        		// for small pages with total width less then width of the viewport
-        		if(xScroll < windowWidth){	
-        			pageWidth = xScroll;		
-        		} else {
-        			pageWidth = windowWidth;
-        		}
+                
+               var xScroll, yScroll;
+          
+            if (window.innerHeight && window.scrollMaxY) {  
+              xScroll = window.innerWidth + window.scrollMaxX;
+              yScroll = window.innerHeight + window.scrollMaxY;
+            } else if (document.body.scrollHeight > document.body.offsetHeight){ // all but Explorer Mac
+              xScroll = document.body.scrollWidth;
+              yScroll = document.body.scrollHeight;
+            } else { // Explorer Mac...would also work in Explorer 6 Strict, Mozilla and Safari
+              xScroll = document.body.offsetWidth;
+              yScroll = document.body.offsetHeight;
+            }
+          
+            var windowWidth, windowHeight;
+          
+            if (self.innerHeight) {  // all except Explorer
+              if(document.documentElement.clientWidth){
+                windowWidth = document.documentElement.clientWidth; 
+              } else {
+                windowWidth = self.innerWidth;
+              }
+              windowHeight = self.innerHeight;
+            } else if (document.documentElement && document.documentElement.clientHeight) { // Explorer 6 Strict Mode
+              windowWidth = document.documentElement.clientWidth;
+              windowHeight = document.documentElement.clientHeight;
+            } else if (document.body) { // other Explorers
+              windowWidth = document.body.clientWidth;
+              windowHeight = document.body.clientHeight;
+            }  
+          
+            // for small pages with total height less then height of the viewport
+            if(yScroll < windowHeight){
+              pageHeight = windowHeight;
+            } else { 
+              pageHeight = yScroll;
+            }
+        
+            // for small pages with total width less then width of the viewport
+            if(xScroll < windowWidth){  
+              pageWidth = xScroll;    
+            } else {
+              pageWidth = windowWidth;
+            }
       
-        		return [pageWidth,pageHeight];
-        	}
+            return [pageWidth,pageHeight];
+          }
         }
       
         document.observe('dom:loaded', function () { new Lightbox(); });
@@ -1267,14 +1267,14 @@ records:
         del, dfn, em, img, q, dl, dt, dd, ol, ul, li,
         fieldset, form, label, legend,
         table, caption, tbody, tfoot, thead, tr, th, td {
-        	margin: 0;
-        	padding: 0;
-        	border: 0;
-        	font-weight: inherit;
-        	font-style: inherit;
-        	font-size: 100%;
-        	font-family: inherit;
-        	vertical-align: baseline;
+          margin: 0;
+          padding: 0;
+          border: 0;
+          font-weight: inherit;
+          font-style: inherit;
+          font-size: 100%;
+          font-family: inherit;
+          vertical-align: baseline;
         }
       
       
@@ -2832,32 +2832,32 @@ records:
         /*---------------------------------  Navigation.css  ---*/ 
       
         #nav {
-        	height: 38px;
-        	background: transparent url(/images/roasters/nav-background.gif) repeat-x top left; }
+          height: 38px;
+          background: transparent url(/images/roasters/nav-background.gif) repeat-x top left; }
       
         #nav ul {
-        	display: block;
-        	margin: 0;
-        	padding: 0;
-        	list-style-type: none;
-        	width: auto; }
+          display: block;
+          margin: 0;
+          padding: 0;
+          list-style-type: none;
+          width: auto; }
       
         #nav ul li {
-        	display: block;
-        	float: left;
-        	margin: 0;
-        	padding: 0; }
+          display: block;
+          float: left;
+          margin: 0;
+          padding: 0; }
       
         #nav ul li a {
           font-family: "Lucida Sans", "Lucida Grande", Helvetica, Arial, sans-serif;
           font-size: 13px;
-        	display: block;
-        	float: left;
-        	color: #3D3D3D;
-        	text-decoration: none;
-        	padding: 8px 16px 7px;
-        	border-bottom: none;
-        	background: transparent url(/images/roasters/nav-divider.gif) no-repeat top right; }
+          display: block;
+          float: left;
+          color: #3D3D3D;
+          text-decoration: none;
+          padding: 8px 16px 7px;
+          border-bottom: none;
+          background: transparent url(/images/roasters/nav-divider.gif) no-repeat top right; }
       
         #nav ul li a:hover {
           color: #FFFFFF;
@@ -2872,7 +2872,7 @@ records:
       
         /*---------------------------------  Lightbox.css  ---*/ 
       
-        #lightbox{	position: absolute;	left: 0; width: 100%; z-index: 100; text-align: center; line-height: 0;}
+        #lightbox{  position: absolute;  left: 0; width: 100%; z-index: 100; text-align: center; line-height: 0;}
         #lightbox img{ width: auto; height: auto;}
         #lightbox a img{ border: none; }
       
@@ -2890,13 +2890,13 @@ records:
         #prevLink:hover, #prevLink:visited:hover { background: url(/images/roasters/prevlabel.gif) left 15% no-repeat; }
         #nextLink:hover, #nextLink:visited:hover { background: url(/images/roasters/nextlabel.gif) right 15% no-repeat; }
       
-        #imageDataContainer{ font: 10px Verdana, Helvetica, sans-serif; background-color: #fff; margin: 0 auto; line-height: 1.4em; overflow: auto; width: 100%	; }
+        #imageDataContainer{ font: 10px Verdana, Helvetica, sans-serif; background-color: #fff; margin: 0 auto; line-height: 1.4em; overflow: auto; width: 100%  ; }
       
-        #imageData{	padding:0 10px; color: #666; }
-        #imageData #imageDetails{ width: 70%; float: left; text-align: left; }	
-        #imageData #caption{ font-weight: bold;	}
-        #imageData #numberDisplay{ display: block; clear: left; padding-bottom: 1.0em;	}			
-        #imageData #bottomNavClose{ width: 66px; float: right;  padding-bottom: 0.7em; outline: none;}	 	
+        #imageData{  padding:0 10px; color: #666; }
+        #imageData #imageDetails{ width: 70%; float: left; text-align: left; }  
+        #imageData #caption{ font-weight: bold;  }
+        #imageData #numberDisplay{ display: block; clear: left; padding-bottom: 1.0em;  }      
+        #imageData #bottomNavClose{ width: 66px; float: right;  padding-bottom: 0.7em; outline: none;}     
       
         #overlay{ position: absolute; top: 0; left: 0; z-index: 90; width: 100%; height: 500px; background-color: #000; }
 
