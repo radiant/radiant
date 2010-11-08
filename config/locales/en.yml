@@ -8,8 +8,8 @@ en:
         invalid: 'this does not match the expected format' #invalid_format
         not_a_number: 'this must be a number' # must be number
         taken: 'this name is already in use' # name_in_use
-        too_long: 'this must not be longer than {{count}} characters' # character_limit
-        too_short: 'this must be at least {{count}} characters long' # character_minimum
+        too_long: 'this must not be longer than %{count} characters' # character_limit
+        too_short: 'this must be at least %{count} characters long' # character_minimum
       models:
         page:
           attributes:
@@ -29,11 +29,11 @@ en:
   add_tab: 'Add Tab'
   admin: 'Administrator' 
   available_tags: 'Available Tags'
-  available_tags_for: 'Available Tags for {{name}}'
+  available_tags_for: 'Available Tags for %{name}'
   body: 'Body'  
   breadcrumb: 'Breadcrumb'
   buttons:
-    create: 'Create {{name}}'   
+    create: 'Create %{name}'
     save_and_continue: 'Save and Continue Editing'
     save_changes: 'Save Changes'  
   cancel: 'Cancel'
@@ -41,7 +41,7 @@ en:
   close: 'Close'
   content: 'Content'
   content_type: 'Content&#8209;Type'    
-  creating_status: 'Creating {{model}}&#8230;'
+  creating_status: 'Creating %{model}&#8230;'
   date:
     abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
     abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
@@ -54,7 +54,7 @@ en:
     month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]   
     order: [ :year, :month, :day ]
   delete_layout: 'Delete Layout'
-  delete_pages: 'Delete {{pages}}'  
+  delete_pages: 'Delete %{pages}'
   delete_snippet: 'Delete Snippet'
   delete_user: 'Delete User'
   description: 'Description'
@@ -123,16 +123,16 @@ en:
   remove_field: 'Remove Field'
   remove_layout: 'Remove Layout'
   remove_page: 'Remove Page'
-  remove_pages: 'Remove {{pages}}'
+  remove_pages: 'Remove %{pages}'
   remove_snippet: 'Remove Snippet'
   remove_tab: 'Remove Tab'
   remove_user: 'Remove user'
   required: 'Required'  
   resource_controller:
-    not_found: "{{humanized_model_name}} could not be found."
-    removed: "{{humanized_model_name}} has been deleted."
-    saved: "{{humanized_model_name}} saved below."
-    update_conflict: "{{humanized_model_name}} has been modified since it was last loaded. Changes cannot be saved without potentially losing data." 
+    not_found: "%{humanized_model_name} could not be found."
+    removed: "%{humanized_model_name} has been deleted."
+    saved: "%{humanized_model_name} saved below."
+    update_conflict: "%{humanized_model_name} has been modified since it was last loaded. Changes cannot be saved without potentially losing data."
     validation_errors: "Validation errors occurred while processing this form. Please take a moment to  review the form and correct any input errors before continuing."
   reviewed: 'Reviewed'
   roles: 'Roles'
@@ -156,7 +156,7 @@ en:
     layouts:
       remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following layout?'   
     pages: 
-      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following {{pages}}?'
+      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following %{pages}?'
     snippets:
       remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following snippet?'
     users: 
