@@ -84,8 +84,13 @@ class ResponseCache
   
   # Expires the entire cache.
   def clear
-    Dir["#{directory}/*"].each do |f|
-      FileUtils.rm_rf f
+    cache_dir_path = "#{directory || ResponseCache.defaults[:directory]}/"
+    if cache_dir_path == '/'
+      raise "ResponseCache.instance.defaults[:directory] is set to '#{cache_dir_path}'! - cache not cleared"
+    else
+      Dir["#{cache_dir_path}*"].each do |f|
+        FileUtils.rm_rf f
+      end
     end
   end
   

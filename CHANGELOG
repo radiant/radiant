@@ -1,5 +1,9 @@
 == Change Log
 
+=== 0.7.2 Engravings
+
+* Fix cache.clear method to prevent accidental `rm -rf /` in specs. [Andrew vonderLuft]
+
 === 0.7.1 Engraving
 
 * Properly escape page part contents in the UI. [John Muhl, Sean Cribbs]
