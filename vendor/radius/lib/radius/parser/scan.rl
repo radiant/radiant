@@ -86,6 +86,7 @@
 module Radius
   class Scanner
     def self.operate(prefix, data)
+      data = Radius::OrdString.new data
       buf = ""
       csel = ""
       @prematch = ''
