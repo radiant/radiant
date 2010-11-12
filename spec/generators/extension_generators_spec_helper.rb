@@ -1,17 +1,10 @@
-ENV["RAILS_ENV"] = 'test'
-RAILS_ENV = 'test'
 BASE_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '../../'))
 require 'fileutils'
 require 'tempfile'
-require 'spec'
-require File.join(BASE_ROOT, 'spec/matchers/generator_matchers')
-require File.join(BASE_ROOT, 'lib/plugins/string_extensions/lib/string_extensions')
+require File.join(BASE_ROOT, 'spec/support/generator_matchers')
+
 
 unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
-  # this is so we can require ActiveSupport
-  $:.unshift File.join(BASE_ROOT, 'vendor/rails/activesupport/lib')
-  # This is so the initializer and Rails::Generator is properly found
-  $:.unshift File.join(BASE_ROOT, 'vendor/rails/railties/lib')
   require 'active_support'
 
   # Mock out what we need from AR::Base
@@ -59,15 +52,7 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
   else
     RADIANT_ROOT = tmp_dir.dup
   end
-
-  if defined? RAILS_ROOT
-    RAILS_ROOT.replace tmp_dir.dup
-  else
-    RAILS_ROOT = tmp_dir.dup
-  end
-
-  require 'initializer'
-
+  
   # Mocks out the configuration
   module Rails
     def self.configuration
@@ -75,7 +60,7 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
     end
   end
 
-  require 'rails_generator'
+  require 'rails/generators'
 
   module GeneratorSpecHelperMethods
     # Instantiates the Generator.
@@ -160,7 +145,7 @@ end
 
 Git = Module.new unless defined?(::Git)
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
   config.include(Spec::Matchers::GeneratorMatchers)
 end
 
