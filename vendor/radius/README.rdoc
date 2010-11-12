@@ -61,8 +61,6 @@ It is recommended that you install Radius using the RubyGems packaging system:
 
   % gem install --remote radius
 
-You can also install Radius by copying lib/radius.rb into the Ruby load path.
-
 
 == License
 

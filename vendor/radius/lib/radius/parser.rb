@@ -25,7 +25,7 @@ module Radius
     
     # Parses string for tags, expands them, and returns the result.
     def parse(string)
-      @stack = [ParseContainerTag.new { |t| t.contents.to_s }]
+      @stack = [ ParseContainerTag.new { |t| Utility.array_to_s(t.contents) } ]
       tokenize(string)
       stack_up
       @stack.last.to_s
@@ -51,7 +51,7 @@ module Radius
         when :close
           popped = @stack.pop
           raise WrongEndTagError.new(popped.name, t[:name], @stack) if popped.name != t[:name]
-          popped.on_parse { |b| @context.render_tag(popped.name, popped.attributes) { b.contents.to_s } }
+          popped.on_parse { |b| @context.render_tag(popped.name, popped.attributes) { Utility.array_to_s(b.contents) } }
           @stack.last.contents << popped
         when :tasteless
           raise TastelessTagError.new(t, @stack)

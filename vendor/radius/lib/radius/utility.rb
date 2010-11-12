@@ -26,5 +26,15 @@ module Radius
       underscored_string.split('_').each { |part| string << part.capitalize }
       string
     end
+
+    if RUBY_VERSION[0,3] == '1.8'
+      def self.array_to_s(c)
+        c.to_s
+      end
+    else
+      def self.array_to_s(c)
+        c.map{|x| x.is_a?(Array) ? array_to_s(x) : x.to_s }.join
+      end
+    end
   end
 end
