@@ -14,11 +14,16 @@ module Spec
             @matching = @expected
           end
           case
-            when @expected_error_message then false
-            when @expected then @actual == @expected
-            when @matching then @actual =~ @matching
-            when @not_matching then @actual !~ @not_matching
-            else true
+            when @expected_error_message
+              false
+            when @expected
+              @actual == @expected
+            when @matching
+              @actual =~ @matching
+            when @not_matching
+              @actual !~ @not_matching
+            else
+              true
           end
         rescue => @actual_error
           if @expected_error_message
