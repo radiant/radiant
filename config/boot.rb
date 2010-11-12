@@ -6,6 +6,7 @@ begin
   ENV['BUNDLE_GEMFILE'] = gemfile
   require 'bundler'
   Bundler.setup
+  require 'rails'
 rescue Bundler::GemNotFound => e
   STDERR.puts e.message
   STDERR.puts "Try running `bundle install`."

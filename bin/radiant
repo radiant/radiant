@@ -4,9 +4,6 @@ require File.join(File.dirname(__FILE__), '..', 'config', 'boot')
 
 $LOAD_PATH << File.join(File.dirname(__FILE__), '..')
 
-require 'lib/ruby_version_check'
-Signal.trap("INT") { puts; exit }
-
 require 'lib/radiant'
 if ARGV.any? { |arg| %w(--version -v).any? { |flag| arg == flag } }
   puts "Radiant #{Radiant::Version}"
@@ -15,14 +12,13 @@ end
 
 app_path = ARGV.first
 
-require 'lib/rails_generator'
-require 'rails_generator/scripts/generate'
+require 'rails/generators'
 
-class Rails::Generator::Base
+class Rails::Generators::Base
 
   def self.use_application_sources!
     reset_sources
-    sources << Rails::Generator::PathSource.new(:builtin, "#{File.dirname(__FILE__)}/../lib/generators")
+    sources << Rails::Generators::PathSource.new(:builtin, "#{File.dirname(__FILE__)}/../lib/generators")
   end
 
   def add_general_options!(opt)
@@ -49,5 +45,5 @@ class Rails::Generator::Base
 
 end
 
-Rails::Generator::Base.use_application_sources!
-Rails::Generator::Scripts::Generate.new.run(ARGV, :generator => 'instance')
+Rails::Generators::Base.use_application_sources!
+Rails::Generators::Scripts::Generate.new.run(ARGV, :generator => 'instance')

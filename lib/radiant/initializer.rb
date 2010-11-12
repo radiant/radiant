@@ -1,11 +1,12 @@
-require 'initializer'
+# require 'initializer'
 require 'radiant/admin_ui'
 require 'radiant/extension_loader'
 
 module Radiant
   autoload :Cache, 'radiant/cache'
   
-  class Configuration < Rails::Configuration
+  module Configuration
+    include Rails::Configuration
     attr_accessor :extension_paths
     attr_writer :extensions
     attr_accessor :view_paths
