@@ -1,7 +1,7 @@
 source :rubygems
 
 gem 'rails',          '3.0.1'
-gem 'radius',         '0.7.0.prerelease', :path => 'vendor/radius'
+gem 'radius',         '0.7.0.prerelease', :path => File.join(File.dirname(__FILE__), 'vendor/radius')
 
 gem 'RedCloth',       '~> 4.2.2', :require => 'redcloth'
 gem 'rdiscount',      '~> 1.5.8'
@@ -11,6 +11,7 @@ gem 'will_paginate',  '~> 3.0.pre2'
 gem 'haml',           '~> 2.2.20'
 gem 'acts_as_tree',   '~> 0.1.1'
 gem 'rack-cache',     '~> 0.5.2', :require => nil
+gem 'devise'
 
 group :development do
   gem 'sqlite3-ruby', '~> 1.2.5', :require => 'sqlite3'
