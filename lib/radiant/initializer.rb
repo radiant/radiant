@@ -1,4 +1,4 @@
-require 'initializer'
+# require 'initializer'
 require 'radiant/admin_ui'
 require 'radiant/extension_loader'
 require 'radiant/extension_locator'
@@ -7,51 +7,12 @@ require 'radiant/gem_locator'
 module Radiant
   autoload :Cache, 'radiant/cache'
   
-  class << self
-    # Returns the Radiant::Config eigenclass object, so it can be used wherever you would use Radiant::Config.
-    #
-    #   Radiant.config['site.title']
-    #   Radiant.config['site.url'] = 'example.com'
-    #
-    # but it will also yield itself to a block:
-    #
-    #   Radiant.config do |config|
-    #     config.define 'something', default => 'something'
-    #     config['other.thing'] = 'nothing'
-    #   end
-    #    
-    def config  # method must be defined before any initializers run
-      yield Radiant::Config if block_given?
-      Radiant::Config
-    end
-    
-    # Returns the configuration object with which this application was initialized.
-    # For now it's exactly the same as calling Rails.configuration except that it will also yield itself to a block.
-    #    
-    def configuration
-      yield Rails.configuration if block_given?
-      Rails.configuration
-    end
-    
-    # Returns the root directory of this radiant installation (which is usually the gem directory).
-    # This is not the same as Rails.root, which is the instance directory and tends to contain only site-delivery material.
-    #
-    def root
-      Pathname.new(RADIANT_ROOT) if defined?(RADIANT_ROOT)
-    end
-  end
-  
-  # NB. Radiant::Configuration (aka Radiant.configuration) is our extension-aware subclass of Rails::Configuration 
-  #     Radiant::Config (aka Radiant.config) is the application-configuration model class.
-
-  class Configuration < Rails::Configuration
-    
-    # The Radiant::Configuration class extends Rails::Configuration with three purposes:
-    # * to reset some rails defaults so that files are found in RADIANT_ROOT instead of RAILS_ROOT
-    # * to notice that some gems and plugins are in fact radiant extensions 
-    # * to notice that some radiant extensions add load paths (for plugins, controllers, metal, etc)
-    
-    attr_accessor :extension_paths, :ignored_extensions
+  module Configuration
+    include Rails::Configuration
+    attr_accessor :extension_paths
+    attr_writer :extensions
+    attr_accessor :view_paths
+    attr_accessor :extension_dependencies
 
     def initialize #:nodoc:
       self.extension_paths = default_extension_paths
