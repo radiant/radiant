@@ -1,6 +1,5 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 require File.join(File.dirname(__FILE__), *%w[.. .. lib autotest radiant_rails_rspec])
-require File.join(File.dirname(__FILE__), *%w[.. matchers autotest_matchers])
 
 describe Autotest::RadiantRailsRspec, "file mapping" do
   before(:each) do
