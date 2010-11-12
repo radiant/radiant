@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-ENV['RAILS_ENV'] ||= 'production'
+require File.join(File.dirname(__FILE__), '..', 'config', 'boot')
 
 $LOAD_PATH << File.join(File.dirname(__FILE__), '..')
 
@@ -15,14 +15,13 @@ end
 
 app_path = ARGV.first
 
-require 'rails_generator'
-require 'rails_generator/scripts/generate'
+require 'rails/generators'
 
-class Rails::Generator::Base
+class Rails::Generators::Base
 
   def self.use_application_sources!
     reset_sources
-    sources << Rails::Generator::PathSource.new(:builtin, "#{File.dirname(__FILE__)}/../lib/generators")
+    sources << Rails::Generators::PathSource.new(:builtin, "#{File.dirname(__FILE__)}/../lib/generators")
   end
 
   def add_general_options!(opt)
@@ -49,5 +48,5 @@ class Rails::Generator::Base
 
 end
 
-Rails::Generator::Base.use_application_sources!
-Rails::Generator::Scripts::Generate.new.run(ARGV, :generator => 'instance')
+Rails::Generators::Base.use_application_sources!
+Rails::Generators::Scripts::Generate.new.run(ARGV, :generator => 'instance')

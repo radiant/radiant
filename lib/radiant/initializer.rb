@@ -1,4 +1,4 @@
-require 'initializer'
+# require 'initializer'
 require 'radiant/admin_ui'
 require 'radiant/extension_loader'
 
