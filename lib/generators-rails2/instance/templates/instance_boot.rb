@@ -62,18 +62,7 @@ module Radiant
       load_mutex
       load_initializer
     end
-    
-    # RubyGems from version 1.6 does not require thread but Rails depend on it
-    # This should newer rails do automaticly
-    def load_mutex
-      begin
-        require "thread" unless defined?(Mutex)
-      rescue LoadError => e
-        $stderr.puts %(Mutex could not be initialized. #{load_error_message})
-        exit 1
-      end
-    end
-    
+
     def load_initializer
       begin
         require 'radiant'
