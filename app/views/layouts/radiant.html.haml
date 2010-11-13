@@ -6,9 +6,9 @@
     - @stylesheets.uniq.each do |stylesheet|
       = stylesheet_tag stylesheet, {}    
     - admin_javascripts.uniq.each do |javascript|
-      = javascript_tag javascript, {}
+      = javascript_include_tag javascript, {}
     - @javascripts.uniq.each do |javascript|
-      = javascript_tag javascript, {}
+      = javascript_include_tag javascript, {}
     - if yield(:page_scripts).present?
       = javascript_tag yield(:page_scripts)
     - if yield(:page_css).present?
