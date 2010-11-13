@@ -11,6 +11,8 @@ describe Admin::PagesHelper do
     @page = mock_model(Page)
     @errors = mock("errors")
     @page.stub!(:errors).and_return(@errors)
+    helper.stub!(:image).and_return('')
+    helper.stub!(:admin?).and_return(true)
     helper.instance_variable_set(:@page, @page)
   end
 
@@ -60,4 +62,41 @@ describe Admin::PagesHelper do
   it "should render javascript for the page editing form" do
     helper.should respond_to(:page_edit_javascripts)
   end
+
+  describe "#child_link_for" do
+    it "should disable the menu when there are no allowable children" do
+      @page.stub!(:allowed_children).and_return([])
+      helper.child_link_for(@page).should match('<span class="action disabled">')
+    end
+
+    it "should link to Page#new when there is one allowable child" do
+      @page.stub!(:allowed_children).and_return([Page])
+      helper.child_link_for(@page).should match(Regexp.escape(new_admin_page_child_path(@page, :page_class => 'Page')))
+    end
+
+    it "should show the menu when there are multiple allowable children" do
+      @page.stub!(:allowed_children).and_return([Page,FileNotFoundPage])
+      helper.child_link_for(@page).should match("#allowed_children_#{@page.id}")
+    end
+  end
+
+  describe "#children_for" do
+    it "should not show virtual pages to designers" do
+      helper.stub!(:admin?).and_return(false)
+      @page.stub!(:allowed_children).and_return([Page, ArchivePage, FileNotFoundPage])
+      helper.children_for(@page).flatten.should_not include(FileNotFoundPage)
+    end
+  end
+  
+
+  describe '#clean_page_description' do
+    it "should remove all whitespace (except single spaces) from the given page's description" do
+      @page.stub!(:description).and_return(%{
+        This is the  description   for the   
+            current page!
+      })
+      helper.clean_page_description(@page).should == 'This is the description for the current page!'
+    end
+  end
+
 end

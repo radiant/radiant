@@ -335,6 +335,16 @@ describe Page do
     p1.update_attributes!(:breadcrumb => "foo")
     lambda { p2.update_attributes!(:breadcrumb => "blah") }.should raise_error(ActiveRecord::StaleObjectError)
   end
+
+  it "should list descendants" do
+    children = page.allowed_children
+    children.should include(FileNotFoundPage)
+  end
+
+  it "should reject pages that aren't in the menu" do
+    FileNotFoundPage.in_menu false
+    page.allowed_children.should_not include(FileNotFoundPage)
+  end
 end
 
 describe Page, "before save filter" do
@@ -684,4 +694,5 @@ describe Page, "processing" do
     @page.process(@request, @response)
     @response.response_code.should == 404
   end
+
 end

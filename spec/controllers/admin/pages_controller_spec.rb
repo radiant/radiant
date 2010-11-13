@@ -226,6 +226,23 @@ describe Admin::PagesController do
       get :new, :page_id => home.id
       assigns(:page).should == new_page
     end
+
+     it "should create a page based on the given param" do
+       get :new, :page_id => page_id(:home), :page_class => 'FileNotFoundPage'
+       assigns(:page).should be_a(FileNotFoundPage)
+     end
+
+     it "should gracefully handle bogus page params" do
+       get :new, :page_id => page_id(:home), :page_class => 'BogusPage'
+       assigns(:page).should be_a(Page)
+     end
+
+     it "should instantiate a new page of the given class" do
+       PagesControllerSpecPage = Class.new(Page)
+       PagesControllerSpecPage.stub!(:default_page_parts).and_return(PagePart.new :name => "my_part")
+       get :new, :page_id => page_id(:home), :page_class => 'PagesControllerSpecPage'
+       assigns(:page).parts.map(&:name).should include('my_part')
+     end
   end
 
   describe '#update' do

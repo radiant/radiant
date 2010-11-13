@@ -27,6 +27,32 @@ module Admin::PagesHelper
     @display_status = Status.selectable.map{ |s| [I18n.translate(s.name.downcase), s.id] }
   end
 
+  def children_for(page)
+    page.allowed_children
+  end
+
+  def children_for_with_roles(page)
+    children = children_for_without_roles(page)
+    children.reject! { |p| p.new.virtual? } unless admin?
+    children
+  end
+  alias_method_chain :children_for, :roles
+
+  def child_link_for(page)
+    case children_for(page).size
+    when 0
+      content_tag :span, image('plus_disabled') + ' ' + t('add_child'), :class => 'action disabled'
+    when 1
+      link_to image('plus') + ' ' + t('add_child'), new_admin_page_child_path(page, :page_class => children_for(page).first), :class => "action"
+    else
+      link_to image('plus') + ' ' + t('add_child'), "#allowed_children_#{page.id}", :class => "action dropdown"
+    end
+  end
+
+  def clean_page_description(page)
+    page.description.to_s.strip.gsub(/\t/,'').gsub(/\s+/,' ')
+  end
+
   def page_edit_javascripts
     <<-CODE
     function addPart(form) {
