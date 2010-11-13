@@ -1,7 +1,7 @@
 require_dependency 'login_system'
 require_dependency 'radiant/legacy_routes'
 
-class ApplicationController < ActionController::Base
+class Radiant::AdminController < ApplicationController
   include LoginSystem
   include Radiant::LegacyRoutes
   
@@ -18,6 +18,8 @@ class ApplicationController < ActionController::Base
 
   # helpers to include additional assets from actions or views
   helper_method :include_stylesheet, :include_javascript
+
+  helper 'radiant/admin'
   
   def include_stylesheet(sheet)
     @stylesheets << sheet

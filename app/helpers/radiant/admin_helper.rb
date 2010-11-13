@@ -1,7 +1,7 @@
 require_dependency 'radiant/legacy_routes'
 require_dependency 'radiant/available_locales'
 
-module ApplicationHelper
+module Radiant::AdminHelper
   include LocalTime
   include Admin::RegionsHelper
   include Radiant::LegacyRoutes
