@@ -40,11 +40,44 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency "will_paginate", "~> 2.3.11"
   s.add_dependency "stringex",      "~> 1.3.0"
 
-  s.add_development_dependency "cucumber-rails",    "~> 0.3.2"
-  s.add_development_dependency "database_cleaner",  "~> 0.6.5"
-  s.add_development_dependency "webrat",            "~> 0.7.3"
-  s.add_development_dependency "rspec",             "~> 1.3.1"
-  s.add_development_dependency "rspec-rails",       "~> 1.3.3"
-  s.add_development_dependency "test-unit",         "1.2.3"
-  s.add_development_dependency "ZenTest",           "4.6.0"
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<rake>, [">= 0.8.3"])
+      s.add_runtime_dependency('RedCloth',       ['~> 4.2.2' ])
+      s.add_runtime_dependency('rdiscount',      [ '~> 1.5.8' ])
+      s.add_runtime_dependency('rubypants',      [ '~> 0.2.0' ])
+      s.add_runtime_dependency('highline',       [ '~> 1.5.2' ])
+      s.add_runtime_dependency('will_paginate',  [ '~> 3.0.pre2' ])
+      s.add_runtime_dependency('haml')
+      s.add_runtime_dependency('sass')
+      s.add_runtime_dependency('acts_as_tree',   [ '~> 0.1.1' ])
+      s.add_runtime_dependency('rack-cache',     [ '~> 0.5.2' ])
+      s.add_runtime_dependency('devise')
+    else
+      s.add_dependency(%q<rake>, [">= 0.8.3"])
+      s.add_dependency('RedCloth',       ['~> 4.2.2' ])
+      s.add_dependency('rdiscount',      [ '~> 1.5.8' ])
+      s.add_dependency('rubypants',      [ '~> 0.2.0' ])
+      s.add_dependency('highline',       [ '~> 1.5.2' ])
+      s.add_dependency('will_paginate',  [ '~> 3.0.pre2' ])
+      s.add_dependency('haml')
+      s.add_dependency('sass')
+      s.add_dependency('acts_as_tree',   [ '~> 0.1.1' ])
+      s.add_dependency('rack-cache',     [ '~> 0.5.2' ])
+      s.add_dependency('devise')
+    end
+  else
+    s.add_dependency(%q<rake>, [">= 0.8.3"])
+    s.add_dependency(%q<rack-cache>)
+    s.add_dependency(%q<will_paginate>, ["~> 2.3.11"])
+    s.add_dependency(%q<RedCloth>, [">= 4.0.0"])
+    s.add_dependency('rdiscount',      [ '~> 1.5.8' ])
+    s.add_dependency('rubypants',      [ '~> 0.2.0' ])
+    s.add_dependency('highline',       [ '~> 1.5.2' ])
+    s.add_dependency('will_paginate',  [ '~> 3.0.pre2' ])
+    s.add_dependency('haml')
+    s.add_dependency('sass')
+    s.add_dependency('acts_as_tree',   [ '~> 0.1.1' ])
+    s.add_dependency('rack-cache',     [ '~> 0.5.2' ])
+    s.add_dependency('devise')
+  end
 end
