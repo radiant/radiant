@@ -1,5 +1,6 @@
 require_dependency 'login_system'
 require_dependency 'radiant/legacy_routes'
+require 'login_system'
 
 class AdminController < ApplicationController
   include LoginSystem
