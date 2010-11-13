@@ -24,7 +24,7 @@ Rails.application.routes.draw do |map|
         get :remove
       end
     end
-    
+  
     resource :preferences
     resources :extensions, :only => :index
     resources :page_parts

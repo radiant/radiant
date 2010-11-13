@@ -1,5 +1,5 @@
-class Admin::WelcomeController < ApplicationController
-
+class Admin::WelcomeController < AdminController
+  no_login_required
   skip_before_filter :verify_authenticity_token
   
   def index
