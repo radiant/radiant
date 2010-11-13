@@ -2,13 +2,12 @@
 # require_dependency 'application_controller'
 
 class <%= class_name %> < Radiant::Extension
-  version YAML::load_file(File.join(File.dirname(__FILE__), 'VERSION'))
-  description "Describe <%= extension_name %> here"
+  version "1.0"
+  description "Describe your extension here"
   url "<%= homepage %>"
-
-  # DEPRECATED
+  
   # extension_config do |config|
-  #   config.gem 'some-awesome-gem'
+  #   config.gem 'some-awesome-gem
   #   config.after_initialize do
   #     run_something
   #   end
@@ -18,7 +17,7 @@ class <%= class_name %> < Radiant::Extension
   
   def activate
     # tab 'Content' do
-    #   add_item "<%= extension_name %>", "/admin/<%= extension_file_name %>", :after => "Pages"
+    #   add_item "<%= extension_name %>", "/admin/<%= file_name %>", :after => "Pages"
     # end
   end
 end
