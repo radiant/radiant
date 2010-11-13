@@ -24,10 +24,9 @@ Rails.application.routes.draw do
     end
 
     resource :preferences
-	resource :configuration, :to => 'configuration'
-    resources :extensions, :only => :index
-    resources :page_parts
-	resources :page_fields
+    resources :extensions,  :only => :index
+    resources :page_parts,  :only => :create
+    resources :page_fields, :only => :create
     match 'reference/:type(.:format)' => 'admin/references#show', :as => :reference
   end
 
