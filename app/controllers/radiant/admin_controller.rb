@@ -1,27 +1,29 @@
 require_dependency 'login_system'
 require_dependency 'radiant/legacy_routes'
 
-class ApplicationController < ActionController::Base
+class Radiant::AdminController < ApplicationController
   include LoginSystem
   
   protect_from_forgery
-  
+
   before_filter :set_current_user
   before_filter :set_timezone
   before_filter :set_user_locale
   before_filter :set_javascripts_and_stylesheets
   before_filter :set_standard_body_style, :only => [:new, :edit, :update, :create]
-  
+
   attr_reader :pagination_parameters
   helper_method :pagination_parameters
 
   # helpers to include additional assets from actions or views
   helper_method :include_stylesheet, :include_javascript
-  
+
+  helper 'radiant/admin'
+
   def include_stylesheet(sheet)
     @stylesheets << sheet
   end
-  
+
   def include_javascript(script)
     @javascripts << script
   end
@@ -42,7 +44,7 @@ class ApplicationController < ActionController::Base
       self.action_name
     end
   end
-    
+
   def rescue_action_in_public(exception)
     case exception
       when ActiveRecord::RecordNotFound, ActionController::UnknownController, ActionController::UnknownAction, ActionController::RoutingError
@@ -51,9 +53,9 @@ class ApplicationController < ActionController::Base
         super
     end
   end
-  
+
   private
-  
+
     def set_current_user
       UserActionObserver.instance.current_user = current_user
     end  
@@ -65,7 +67,7 @@ class ApplicationController < ActionController::Base
     def set_timezone
       Time.zone = Radiant::Config['local.timezone'] || Time.zone_default
     end
-  
+
     def set_javascripts_and_stylesheets
       @stylesheets ||= []
       @stylesheets.concat %w(admin/main)
@@ -76,5 +78,5 @@ class ApplicationController < ActionController::Base
       @body_classes ||= []
       @body_classes.concat(%w(reversed))
     end
-    
+
 end

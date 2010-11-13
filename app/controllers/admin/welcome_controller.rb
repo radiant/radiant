@@ -1,4 +1,4 @@
-class Admin::WelcomeController < ApplicationController
+class Admin::WelcomeController < Radiant::AdminController
   no_login_required
   before_filter :never_cache
   skip_before_filter :verify_authenticity_token
