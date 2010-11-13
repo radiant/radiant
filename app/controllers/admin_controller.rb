@@ -2,7 +2,7 @@ require_dependency 'login_system'
 require_dependency 'radiant/legacy_routes'
 require 'login_system'
 
-class AdminController < ApplicationController
+class Radiant::AdminController < ApplicationController
   include LoginSystem
   
   protect_from_forgery
@@ -17,9 +17,11 @@ class AdminController < ApplicationController
   helper_method :pagination_parameters
 
   # helpers to include additional assets from actions or views
-  helper_method :include_stylesheet, :include_javascript
+  helper_method :include_stylesheet, :include_javascript, :admin_javascripts
 
   helper 'radiant/admin'
+  
+  layout 'radiant'
 
   def include_stylesheet(sheet)
     @stylesheets << sheet
@@ -79,5 +81,28 @@ class AdminController < ApplicationController
       @body_classes ||= []
       @body_classes.concat(%w(reversed))
     end
+    
+    def admin_javascripts
+      %w(admin/prototype admin/rails admin/effects admin/lowpro admin/dateinput admin/pagestatus admin/cookie admin/popup
+      admin/status admin/utility admin/codearea admin/tabcontrol admin/ruledtable admin/sitemap admin/shortcuts admin/toggle
+      admin/validationerror admin/application)
+    end
 
+  class << self
+    # TODO MOVE
+    def only_allow_access_to(*args)
+      options = {}
+      options = args.pop.dup if args.last.kind_of?(Hash)
+      options.symbolize_keys!
+      actions = args.map { |a| a.to_s.intern }
+      actions.each do |action|
+        controller_permissions[action] = options
+      end
+    end
+    
+    def controller_permissions
+      @controller_permissions ||= Hash.new { |h,k| h[k.to_s.intern] = Hash.new }
+    end
+  end
+    
 end
