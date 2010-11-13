@@ -75,12 +75,12 @@ module Radiant
     require 'will_paginate'
     
     # TODO: Resurrect this once we know what's happening with Extensions
-    #config.to_prepare do
-    #  extensions = Radiant::Engine.railties.engines.select { |e| e.is_a? Radiant::Extension }
-    #  extensions.each do |ext|
-    #    ext.activate if ext.respond_to? :activate
-    #  end
-    #end
+    config.to_prepare do
+      extensions = Rails.application.railties.engines.select { |e| e.is_a? Radiant::Extension }
+      extensions.each do |ext|
+        ext.activate if ext.respond_to? :activate
+      end
+    end
     
     config.secret_token = "4ac217d6512aae25ea83a25d58c30bed06520ac20ff8040da552f88d3046cf9103c1a7ca21254c9fc64a6f3dd59e00e206e7c410d612390be23d834b48f7b1e8"
     
