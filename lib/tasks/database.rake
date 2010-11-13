@@ -3,6 +3,7 @@ namespace :db do
   
   namespace :migrate do
     task :radiant do
+      # TODO: Test with migrations in both places. May be better to copy files rather than.
       ActiveRecord::Migrator.migrate(File.join(File.dirname(__FILE__), "..", "..", "db", "migrate"))
     end
   end
