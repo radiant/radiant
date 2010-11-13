@@ -18,7 +18,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.files = Dir['**/*','.gitignore', 'public/.htaccess', 'log/.keep', 'vendor/extensions/.keep'] - ignores
   s.homepage = %q{http://radiantcms.org}
   s.rdoc_options = ["--title", "Radiant -- Publishing for Small Teams", "--line-numbers", "--main", "README", "--exclude", "app", "--exclude", "bin", "--exclude", "config", "--exclude", "db", "--exclude", "features", "--exclude", "lib", "--exclude", "log", "--exclude", "pkg", "--exclude", "public", "--exclude", "script", "--exclude", "spec", "--exclude", "test", "--exclude", "tmp", "--exclude", "vendor"]
-  s.require_paths = ["lib"]
+  s.require_paths = [".","lib"]
   s.rubyforge_project = %q{radiant}
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{A no-fluff content management system designed for small teams.}
