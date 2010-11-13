@@ -41,26 +41,6 @@ module Radiant
     def active?
       @active
     end
-    
-    def migrated?
-      migrator.new(:up, migrations_path).pending_migrations.empty?
-    end
-    
-    def enabled?
-      active? and migrated?
-    end
-    
-    def migrations_path
-      File.join(self.root, 'db', 'migrate')
-    end
-    
-    def migrator
-      unless @migrator
-        extension = self
-        @migrator = Class.new(ExtensionMigrator){ self.extension = extension }
-      end
-      @migrator
-    end
 
     def admin
       AdminUI.instance
@@ -118,11 +98,31 @@ module Radiant
         subclass.called_from = caller.first.sub(/:\d+$/, '')
         subclass.extension_name(subclass.name.to_name('Extension'))
       end
-      
+
       def subclasses
         superclass.subclasses
       end
-      
+
+      def migrated?
+        migrator.new(:up, migrations_path).pending_migrations.empty?
+      end
+
+      def enabled?
+        active? and migrated?
+      end
+
+      def migrations_path
+        File.join(self.root, 'db', 'migrate')
+      end
+
+      def migrator
+        unless @migrator
+          extension = self
+          @migrator = Class.new(ExtensionMigrator){ self.extension = extension }
+        end
+        @migrator
+      end
+
       # override the original method to compensate for some extensions
       # not having a "lib" directory. also, don't traverse upwards beyond
       # the "vendor/extensions" directory

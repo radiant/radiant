@@ -1,7 +1,8 @@
 require_dependency 'login_system'
 require_dependency 'radiant/legacy_routes'
+require 'login_system'
 
-class Radiant::AdminController < ApplicationController
+class AdminController < ApplicationController
   include LoginSystem
   include Radiant::LegacyRoutes
   
@@ -12,13 +13,13 @@ class Radiant::AdminController < ApplicationController
   before_filter :set_user_locale
   before_filter :set_javascripts_and_stylesheets
   before_filter :set_standard_body_style, :only => [:new, :edit, :update, :create]
-  
+    
   attr_reader :pagination_parameters
   helper_method :pagination_parameters
 
   # helpers to include additional assets from actions or views
   helper_method :include_stylesheet, :include_javascript, :admin_javascripts
-
+  
   helper 'radiant/admin'
   
   layout 'radiant'

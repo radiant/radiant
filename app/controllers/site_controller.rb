@@ -5,7 +5,6 @@ class SiteController < ApplicationController
   include Radiant::Pagination::Controller
   
   skip_before_filter :verify_authenticity_token
-  no_login_required
   cattr_writer :cache_timeout
   
   def self.cache_timeout
