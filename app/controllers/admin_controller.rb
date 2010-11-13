@@ -20,8 +20,6 @@ class AdminController < ApplicationController
   # helpers to include additional assets from actions or views
   helper_method :include_stylesheet, :include_javascript, :admin_javascripts
   
-  helper 'radiant/admin'
-  
   layout 'radiant'
   
   def include_stylesheet(sheet)
