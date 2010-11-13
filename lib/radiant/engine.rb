@@ -43,6 +43,10 @@ module Radiant
       app.middleware.insert_after Rack::Sendfile, Radiant::Cache, :verbose => true
     end
 
+    initializer "static assets" do |app|
+      app.middleware.use ::ActionDispatch::Static, "#{root}/public"
+    end
+
     # Configure generators values. Many other options are available, be sure to check the documentation.
     config.generators do |g|
       g.orm             :active_record
