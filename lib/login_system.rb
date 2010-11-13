@@ -30,7 +30,7 @@ module LoginSystem
         session['user_id'] = current_user.id
         true
       else
-        session[:return_to] = request.fullpath
+        session[:return_to] = request.request_uri
         respond_to do |format|
           format.html { redirect_to login_url }
           format.any(:xml,:json) { request_http_basic_authentication }
