@@ -1,4 +1,3 @@
-require_dependency 'login_system'
 require_dependency 'radiant/legacy_routes'
 
 class Radiant::AdminController < ApplicationController
