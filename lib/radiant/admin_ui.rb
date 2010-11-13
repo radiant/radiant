@@ -1,6 +1,9 @@
 require 'simpleton'
 require 'ostruct'
 
+# TODO: Find out where this should actually go...
+require 'annotatable'
+
 module Radiant
   class AdminUI
     # This may be loaded before ActiveSupport, so do an explicit require
