@@ -1,0 +1,3 @@
+---
+en:
+  <%= extension_name.downcase %>: <%= extension_name %>
