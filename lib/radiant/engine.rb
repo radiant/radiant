@@ -78,8 +78,7 @@ module Radiant
     require 'acts_as_tree'
     require 'will_paginate'
     
-    # TODO: Resurrect this once we know what's happening with Extensions
-    config.to_prepare do
+    initializer "activate extensions" do
       extensions = Rails.application.railties.engines.select { |e| e.is_a? Radiant::Extension }
       extensions.each do |ext|
         ext.activate if ext.respond_to? :activate
