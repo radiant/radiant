@@ -70,7 +70,7 @@ module Radiant
     end
 
     require 'radiant/extension'
-    Dir["#{config.root}/vendor/extensions/*/*_extension.rb"].each do |extension|
+    Dir["#{config.root}/../extensions/*/*_extension.rb"].each do |extension|
       require extension
     end
 
