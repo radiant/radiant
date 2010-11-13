@@ -3,10 +3,10 @@
   %head
     %meta{"http-equiv"=>"Content-type", :content=>"text/html;charset=utf-8"}/
     %title= @page_title || default_page_title
+    = csrf_meta_tag
     - @stylesheets.uniq.each do |stylesheet|
       = stylesheet_link_tag stylesheet
-    = csrf_meta_tag
-    = javascript_include_tag %w(admin/prototype admin/rails admin/effects admin/lowpro admin/dateinput admin/pagestatus admin/cookie admin/popup admin/status admin/utility admin/codearea admin/tabcontrol admin/ruledtable admin/sitemap admin/shortcuts admin/toggle admin/validationerror admin/application), :cache => 'admin/all'
+    = javascript_include_tag admin_javascripts, :cache => 'admin/all'
     - @javascripts.uniq.each do |javascript|
       = javascript_include_tag javascript
     - if yield(:page_scripts).present?
