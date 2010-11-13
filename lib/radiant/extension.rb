@@ -41,31 +41,7 @@ module Radiant
     def active?
       @active
     end
-    
-    def root
-      path.to_s
-    end
-    
-    def migrated?
-      migrator.new(:up, migrations_path).pending_migrations.empty?
-    end
-    
-    def enabled?
-      active? and migrated?
-    end
-    
-    def migrations_path
-      File.join(self.root, 'db', 'migrate')
-    end
-    
-    def migrator
-      unless @migrator
-        extension = self
-        @migrator = Class.new(ExtensionMigrator){ self.extension = extension }
-      end
-      @migrator
-    end
-    
+
     def admin
       AdminUI.instance
     end
@@ -136,6 +112,26 @@ module Radiant
 
       def subclasses
         superclass.subclasses
+      end
+
+      def migrated?
+        migrator.new(:up, migrations_path).pending_migrations.empty?
+      end
+
+      def enabled?
+        active? and migrated?
+      end
+
+      def migrations_path
+        File.join(self.root, 'db', 'migrate')
+      end
+
+      def migrator
+        unless @migrator
+          extension = self
+          @migrator = Class.new(ExtensionMigrator){ self.extension = extension }
+        end
+        @migrator
       end
 
       # override the original method to compensate for some extensions
