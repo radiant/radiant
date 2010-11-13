@@ -1,8 +1,6 @@
-require_dependency 'login_system'
 require_dependency 'radiant/legacy_routes'
 
-class Radiant::AdminController < ApplicationController
-  include LoginSystem
+class ApplicationController < ActionController::Base
   include Radiant::LegacyRoutes
   
   protect_from_forgery
@@ -79,5 +77,22 @@ class Radiant::AdminController < ApplicationController
       @body_classes ||= []
       @body_classes.concat(%w(reversed))
     end
+    
+  class << self
+    # TODO MOVE
+    def only_allow_access_to(*args)
+      options = {}
+      options = args.pop.dup if args.last.kind_of?(Hash)
+      options.symbolize_keys!
+      actions = args.map { |a| a.to_s.intern }
+      actions.each do |action|
+        controller_permissions[action] = options
+      end
+    end
+    
+    def controller_permissions
+      @controller_permissions ||= Hash.new { |h,k| h[k.to_s.intern] = Hash.new }
+    end
+  end
     
 end
