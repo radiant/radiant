@@ -17,7 +17,7 @@ class AdminController < ApplicationController
   helper_method :pagination_parameters
 
   # helpers to include additional assets from actions or views
-  helper_method :include_stylesheet, :include_javascript, :admin_javascripts
+  helper_method :include_stylesheet, :include_javascript
   helper 'admin'
 
   layout 'radiant'
@@ -79,12 +79,6 @@ class AdminController < ApplicationController
     def set_standard_body_style
       @body_classes ||= []
       @body_classes.concat(%w(reversed))
-    end
-    
-    def admin_javascripts
-      %w(admin/prototype admin/rails admin/effects admin/lowpro admin/dateinput admin/pagestatus admin/cookie admin/popup 
-      admin/status admin/utility admin/codearea admin/tabcontrol admin/ruledtable admin/sitemap admin/shortcuts admin/toggle 
-      admin/validationerror admin/application)
     end
     
   class << self
