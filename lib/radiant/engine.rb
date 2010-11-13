@@ -22,7 +22,7 @@ module Radiant
 
     # Activate observers that should always be running
     config.active_record.observers = :user_action_observer
-
+    
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
     # config.time_zone = 'Central Time (US & Canada)'
@@ -39,10 +39,14 @@ module Radiant
     # the default configuration.
     initializer "radiant.add_middleware" do |app|
       require 'radiant/cache'
-
+      
       app.middleware.insert_after Rack::Sendfile, Radiant::Cache, :verbose => true
     end
-
+    
+    initializer "static assets" do |app|
+      app.middleware.use ::ActionDispatch::Static, "#{root}/public"
+    end
+    
     # Configure generators values. Many other options are available, be sure to check the documentation.
     config.generators do |g|
       g.orm             :active_record
