@@ -12,6 +12,23 @@ module Radiant
         end
       RUBY
     end
+
+    initializer "engine.load_vendor_plugins" do
+      # Adds any plugins under this engine into the load path
+      Dir["#{config.root}/vendor/plugins/*"].each do |plugin|
+        %w( app/models app/controlers app/helpers lib ).each do |path|
+          $LOAD_PATH.unshift(File.join(plugin, path))
+        end
+      end
+    end
+
+    # TODO: Maybe resurrect later if we can work out how to do this.
+    #       Currently, extensions need to provide a config/routes.rb file rather than using define_routes
+    #def self.define_routes(&block)
+    #  Rails.application.routes.draw do |map|
+    #    yield map
+    #  end
+    #end
     
     class Configuration < ::Rails::Engine::Configuration
       def paths

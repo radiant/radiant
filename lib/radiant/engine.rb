@@ -70,6 +70,8 @@ module Radiant
     end
     
     require 'radiant/extension'
+
+    # Load up all the extensions. We don't do this in an initializer due to sequencing issues.
     Dir["#{config.root}/../../vendor/extensions/*/*_extension.rb"].each do |extension|
       require extension
     end
