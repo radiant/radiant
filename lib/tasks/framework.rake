@@ -88,7 +88,7 @@ namespace :radiant do
         end
         install script, "#{local_base}/#{base_name}", :mode => 0755
       end
-      install "#{File.dirname(__FILE__)}/../generators/instance/templates/instance_generate", "#{local_base}/generate", :mode => 0755
+      # TODO: make sure instance generator is registered
     end
 
     desc "Update your javascripts from your current radiant install"
