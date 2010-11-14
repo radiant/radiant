@@ -12,6 +12,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.namespace :admin do |admin|
     admin.resource :preferences
+    admin.resource :configuration, :controller => 'configuration'
+    # admin.resources :settings
     admin.resources :extensions, :only => :index
     admin.resources :page_parts
     admin.resources :page_fields

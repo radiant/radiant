@@ -27,7 +27,7 @@ module Radiant
     def routed?
       File.exist?(routing_file)
     end
-    
+
     def migrations_path
       File.join(self.root, 'db', 'migrate')
     end
@@ -35,7 +35,13 @@ module Radiant
     def routing_file
       File.join(self.root, 'config', 'routes.rb')
     end
-    
+        
+    def load_initializers
+      Dir["#{self.root}/config/initializers/**/*.rb"].sort.each do |initializer|
+        load(initializer)
+      end
+    end
+
     def migrator
       unless @migrator
         extension = self

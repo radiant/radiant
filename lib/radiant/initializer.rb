@@ -10,6 +10,28 @@ require 'radiant/gem_locator'
 module Radiant
   autoload :Cache, 'radiant/cache'
   
+  class << self
+    # Radiant.config returns the Radiant::Config eigenclass object, so it can be used wherever you would use Radiant::Config.
+    #
+    #   Radiant.config['site.title']
+    #   Radiant.config['site.url'] = 'example.com'
+    #
+    # but it will also yield itself to a block:
+    #
+    #   Radiant.config do |config|
+    #     config.define 'something', default => 'something'
+    #     config['other.thing'] = 'nothing'
+    #   end
+    #    
+    def config  # method must be defined before any initializers run
+      yield Radiant::Config if block_given?
+      Radiant::Config
+    end
+  end
+  
+  # NB. Radiant::Configuration (aka Rails.configuration) is an extension-aware subclass of Rails::Configuration 
+  #     Radiant::Config (aka Radiant.config) is the application-configuration model class
+  
   class Configuration < Rails::Configuration
     attr_accessor :extension_paths
     attr_writer :extensions
@@ -61,7 +83,6 @@ module Radiant
     def admin
       AdminUI.instance
     end
-
 
     def extension(ext)
       ::ActiveSupport::Deprecation.warn("Extension dependencies have been deprecated. Extensions may be packaged as gems and use the Gem spec to declare dependencies.", caller)
@@ -204,13 +225,25 @@ end_error
       load_gems
       check_gem_dependencies
     end
+    
+    def load_application_initializers
+      load_radiant_initializers
+      super
+      extension_loader.load_extension_initalizers
+    end
+
+    def load_radiant_initializers
+      Dir["#{RADIANT_ROOT}/config/initializers/**/*.rb"].sort.each do |initializer|
+        load(initializer)
+      end
+    end
 
     def after_initialize
       super
       extension_loader.activate_extensions
       configuration.check_extension_dependencies
     end
-
+    
     def initialize_default_admin_tabs
       admin.nav.clear
       admin.load_default_nav

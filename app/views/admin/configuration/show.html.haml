@@ -1,0 +1,69 @@
+- body_classes << "reversed"
+
+#preferences.box
+  - render_region :user do |user|
+    - user.preferences do
+      %h3
+        .actions
+          = button_to t("edit"), "/admin/preferences", :method => :get
+        = t('personal_preferences')
+      = render :partial => 'admin/users/avatar'
+      %p.ruled
+        %label 
+          = t('name') 
+        %span
+          = current_user.name
+      %p.ruled
+        %label 
+          = t('email_address') 
+        %span.uri 
+          = current_user.email
+      %p.ruled
+        %label 
+          = t('login') 
+        %span
+          = current_user.login
+      %p.ruled
+        %label 
+          = t('password') 
+        %big &bull;&bull;&bull;&bull;&bull;
+      %p.ruled
+        %label
+          = t('language') 
+        %span 
+          = current_user.locale
+
+#config.box
+  - render_region :config do |config|
+    - config.site do
+      %h3
+        - if admin?
+          .actions
+            = button_to t("edit"), edit_admin_configuration_url, :method => :get
+        Configuration
+      %p.ruled
+        = show_config 'site.name'
+      %p.ruled
+        = show_config 'site.host', :class => 'uri'
+      %p.ruled
+        = show_config 'dev.host', :class => 'uri'
+      %p.ruled
+        = show_config 'local.timezone'
+
+    - config.defaults do
+      %h4 Defaults
+      %p.ruled
+        = show_config 'defaults.locale'
+      %p.ruled
+        = show_config 'defaults.page.filter'
+      %p.ruled
+        = show_config 'defaults.page.parts'
+      %p.ruled
+        = show_config 'defaults.page.fields'
+      %p.ruled
+        = show_config 'defaults.page.status'
+
+    - config.users do
+      %h4 Passwords
+      %p.ruled
+        = show_config 'user.allow_password_reset?'

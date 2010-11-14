@@ -69,10 +69,10 @@ ActiveRecord::Schema.define(:version => 20100810151922) do
     t.integer  "lock_version",                 :default => 0
   end
 
-  add_index "pages", ["class_name"], :name => "altered_pages_class_name"
-  add_index "pages", ["parent_id"], :name => "altered_pages_parent_id"
-  add_index "pages", ["slug", "parent_id"], :name => "altered_pages_child_slug"
-  add_index "pages", ["virtual", "status_id"], :name => "altered_pages_published"
+  add_index "pages", ["class_name"], :name => "pages_class_name"
+  add_index "pages", ["parent_id"], :name => "pages_parent_id"
+  add_index "pages", ["slug", "parent_id"], :name => "pages_child_slug"
+  add_index "pages", ["virtual", "status_id"], :name => "pages_published"
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id"

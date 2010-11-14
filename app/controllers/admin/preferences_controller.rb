@@ -18,7 +18,7 @@ class Admin::PreferencesController < ApplicationController
   def update
     if valid_params?
       if @user.update_attributes(params[:user])
-        redirect_to :action => 'show'
+        redirect_to admin_configuration_path
       else
         flash[:error] = t('preferences_controller.error_updating')
         render :edit

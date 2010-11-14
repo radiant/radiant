@@ -2,8 +2,8 @@ require File.dirname(__FILE__) + "/../../spec_helper"
 
 describe Radiant::Config do
   before :each do
-    Radiant::Config.initialize_cache
-    @config = Radiant::Config
+    Radiant.config.initialize_cache
+    @config = Radiant.config
     set('test', 'cool')
     set('foo', 'bar')
   end
@@ -105,9 +105,44 @@ describe Radiant::Config do
       @config['junk?'].should be_false
     end
   end
+    
+  describe "where no definition exists" do
+    it "should create a blank definition" do
+      get_config("ad.hoc.setting").definition.should be_kind_of(Radiant::Config::Definition)
+    end
+    
+    it "should not protect or constrain" do
+      c = get_config("impromptu.storage")
+      c.allow_blank?.should be_true
+      c.visible?.should be_true
+      c.settable?.should be_true
+    end
+  end
+  
+  describe "where a definition exists" do
+    before do
+      @config.clear_definitions!
+      load(SPEC_ROOT + "/fixtures/more_settings.rb")
+    end
+    
+    it "should validate against the definition" do
+      definition = get_config('testing.validated')
+      lambda{ @config['testing.validated'] = "pig" }.should raise_error(ActiveRecord::RecordInvalid)
+    end
+    
+    it "should protect when the definition requires it" do
+      definition = get_config('testing.protected')
+      definition.settable?.should be_false
+      lambda { definition.value = "something else" }.should raise_error(Radiant::Config::ConfigError)
+    end
+  end
+    
+  def get_config(key)
+    setting = Radiant::Config.find_or_create_by_key(key)
+  end
 
   def set(key, value)
-    setting = Radiant::Config.find_by_key(key)
+    setting = get_config(key)
     setting.destroy if setting
     Radiant::Config.create!(:key => key, :value => value)
   end

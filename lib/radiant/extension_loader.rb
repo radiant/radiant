@@ -92,6 +92,10 @@ module Radiant
         end
       end.compact
     end
+    
+    def load_extension_initalizers
+      extensions.each &:load_initializers
+    end
 
     def deactivate_extensions
       extensions.each &:deactivate

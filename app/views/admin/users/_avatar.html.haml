@@ -1,3 +1,5 @@
 #avatar
   = image_tag(gravatar_url(@user.email, :size=>"96px"), :class=>"avatar", :width=>96, :height=>96, :alt=>"")
-  %p.caption Avatar provided by Gravatar.com
+  %p.caption
+    Avatar provided by 
+    = link_to "gravatar.com", 'http://gravatar.com/site/signup/'

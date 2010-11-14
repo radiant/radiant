@@ -16,15 +16,21 @@ class TaskSupport
     end
     def config_import(path = "#{Rails.root}/config/radiant_config.yml", clear = nil)
       self.establish_connection
-      Radiant::Config.delete_all if clear
       if File.exist?(path)
-          configs = YAML.load(YAML.load_file(path))
-          configs.each do |key, value|
-            c = Radiant::Config.find_or_initialize_by_key(key)
-            c.value = value
-            c.save
+        begin
+          Radiant::Config.transaction do
+            Radiant::Config.delete_all if clear
+            configs = YAML.load(YAML.load_file(path))
+            configs.each do |key, value|
+              c = Radiant::Config.find_or_initialize_by_key(key)
+              c.value = value
+              c.save
+            end
           end
-        puts "Radiant::Config updated from #{path}"
+          puts "Radiant::Config updated from #{path}"
+        rescue ActiveRecord::RecordInvalid => e
+          puts "IMPORT FAILED and rolled back. #{e}"
+        end
       else
         puts "No file exists at #{path}"
       end
@@ -37,7 +43,7 @@ class TaskSupport
         File.read(File.join(dir, f)) }.join("\n\n")
 
       cache_path = File.join(dir, cache_file)
-      rm(cache_path) if File.exists?(cache_path)
+      File.delete(cache_path) if File.exists?(cache_path)
       File.open(cache_path, "w+") { |f| f.write(cache_content) }
     end
 

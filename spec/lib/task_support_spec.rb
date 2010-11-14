@@ -20,6 +20,7 @@ describe TaskSupport do
   describe "self.config_import" do
     before do
       @yaml_file = "#{RADIANT_ROOT}/spec/fixtures/radiant_config.yml"
+      @bad_yaml_file = "#{RADIANT_ROOT}/spec/fixtures/invalid_config.yml"
     end
     it "should delete all Radiant::Config when the clear parameter is set to true" do
       Radiant::Config['testing_clear'] = 'true'
@@ -37,6 +38,11 @@ describe TaskSupport do
       Radiant::Config.delete_all
       TaskSupport.config_import(@yaml_file)
       Radiant::Config.to_hash.should == YAML.load(YAML.load_file(@yaml_file))
+    end
+    it "should roll back if an invalid config setting is imported" do
+      Radiant::Config['defaults.page.status'] = "Draft"
+      lambda{TaskSupport.config_import(@bad_yaml_file)}.should_not raise_error
+      Radiant::Config['defaults.page.status'].should == "Draft"
     end
   end
 

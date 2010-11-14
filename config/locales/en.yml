@@ -8,8 +8,9 @@ en:
         invalid: 'this does not match the expected format' #invalid_format
         not_a_number: 'this must be a number' # must be number
         taken: 'this name is already in use' # name_in_use
-        too_long: 'this must not be longer than %{count} characters' # character_limit
-        too_short: 'this must be at least %{count} characters long' # character_minimum
+        too_long: 'this must not be longer than {{count}} characters' # character_limit
+        too_short: 'this must be at least {{count}} characters long' # character_minimum
+        not_permitted: 'this must be one of the permitted values'
       models:
         page:
           attributes:
@@ -39,6 +40,25 @@ en:
   cancel: 'Cancel'
   change: 'Change'
   close: 'Close'
+  config:
+    admin:
+      title: 'admin header title'
+    defaults:
+      locale: 'default language'
+      page:
+        fields: "page fields"
+        filter: "page filter"
+        parts: "page parts"
+        status: "page status"
+    dev:
+      host: "dev site domain name"
+    local:
+      timezone: "local timezone"
+    site:
+      name: "site name"
+      host: "site domain"
+    user:
+      allow_password_reset?: "allow password reset"
   content: 'Content'
   content_type: 'Content&#8209;Type'    
   creating_status: 'Creating %{model}&#8230;'
@@ -61,8 +81,11 @@ en:
   design: 'Design'
   designer: 'Designer'
   draft: 'Draft'
+  edit: 'Edit'
   edit_layout: 'Edit Layout'
   edit_page:  'Edit Page'   
+  edit_preferences: 'Edit Preferences'
+  edit_settings: 'Edit Settings'
   edit_snippet: 'Edit Snippet'
   edit_user: 'Edit User'
   email_address: 'E-mail Address'
@@ -88,6 +111,7 @@ en:
   new_password: 'New Password'
   new_snippet: 'New Snippet'
   new_user: 'New User'  
+  no: 'No'
   no_layouts: 'No Layouts'
   no_pages: 'No Pages'
   no_snippets: 'No Snippets'
@@ -146,6 +170,7 @@ en:
     none: '<none>' 
     normal: '<normal>'
   settings: 'Settings'
+  show_all: 'Show all'
   slug: 'Slug'
   snippet: 'Snippet'   
   snippets: 'Snippets'
@@ -180,6 +205,13 @@ en:
     by: 'by'
     last_updated: 'Last Updated'
   type: 'Type'
+  units:
+    KB: "MB"
+    MB: "MB"
+    GB: "MB"
+    seconds: "seconds"
+    minutes: "minutes"
+    hours: "hours"
   user: 'User'
   username: 'Username'
   username_or_email: 'Username or E-mail Address'
@@ -192,3 +224,4 @@ en:
   welcome_controller:
     invalid_user: 'Invalid username, e-mail address, or password.' 
     logged_out: 'You are now logged out.'  
+  yes: 'Yes'

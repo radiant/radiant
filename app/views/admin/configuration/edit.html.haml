@@ -1,0 +1,47 @@
+- body_classes << "reversed"
+- @selected = :general
+
+- render_region :main do |main|
+  - main.edit_header do
+    %h1 Configuration
+
+  - main.edit_form do
+    - form_for :config, :url => admin_configuration_url, :html => {"data-onsubmit_status"=>"Saving changes&#8230;", :method => :put} do |f|
+      = render_region :form_top
+      - render_region :form do |form|
+        - form.edit_site do
+          %fieldset
+            %h3 Site  
+            %p
+              = edit_config('site.name')
+            %p
+              = edit_config('site.host')
+            %p
+              = edit_config('dev.host')
+            %p
+              = edit_config('local.timezone')
+  
+        - form.edit_defaults do
+          %fieldset
+            %h3 Defaults
+            %p
+              = edit_config('defaults.locale')
+            %p
+              = edit_config('defaults.page.filter')
+            %p
+              = edit_config('defaults.page.parts')
+            %p
+              = edit_config('defaults.page.status')
+  
+        - form.edit_users do
+          %fieldset
+            %h3 Passwords
+            %p
+              = edit_config('user.allow_password_reset?')
+    
+      - render_region :form_bottom do |form_bottom|
+        - form_bottom.edit_buttons do
+          %p.buttons
+            %input.button{:type=>"submit", :value=>"Save Changes"}/
+            or
+            = link_to "Cancel", admin_configuration_url
