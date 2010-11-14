@@ -135,20 +135,20 @@ namespace :radiant do
         FileUtils.mkpath(project_dir)
         FileUtils.cp(sass_files, project_dir)
       end
-      sass_dir = "#{RADIANT_ROOT}/public/stylesheets/sass/admin"
-      copy_sass[RAILS_ROOT + '/public/stylesheets/sass/admin/', Dir["#{sass_dir}/*"]]
+      sass_dir = "#{Radiant::Engine.root}/public/stylesheets/sass/admin"
+      copy_sass["#{Rails.root}/public/stylesheets/sass/admin/", Dir["#{sass_dir}/*"]]
       Dir["#{sass_dir}/*"].each do |d|
         if File.directory?(d)
-          copy_sass[RAILS_ROOT + "/public/stylesheets/sass/admin/#{File.basename(d)}/", Dir["#{d}/*"]]
+          copy_sass["#{Rails.root}/public/stylesheets/sass/admin/#{File.basename(d)}/", Dir["#{d}/*"]]
         end
       end
     end
 
     desc "Update initializers from your current radiant install"
     task :initializers do
-      project_dir = RAILS_ROOT + '/config/initializers/'
+      project_dir = "#{Rails.root}/config/initializers/"
       FileUtils.mkpath project_dir
-      initializers = Dir["#{File.dirname(__FILE__)}/../../config/initializers/*.rb"]
+      initializers = Dir["#{Radiant::Engine.root}/config/initializers/*.rb"]
       FileUtils.cp(initializers, project_dir)
     end
   end

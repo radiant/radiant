@@ -49,8 +49,9 @@ class TaskSupport
 
     # Reads through the layout file and returns an array of JS filenames
     #
+    # TODO: cache this lazily at runtime?
     def find_admin_js
-      layout = "#{RADIANT_ROOT}/app/views/layouts/application.html.haml"
+      layout = "#{RADIANT_ROOT}/app/views/layouts/radiant.html.haml"
       js_regexp = /javascript_include_tag %w\((.*)\), :cache => 'admin\/all/
       files = File.open(layout) { |f| f.read.match(js_regexp)[1].split }
       files.collect { |f| f.split('/').last + '.js' }
