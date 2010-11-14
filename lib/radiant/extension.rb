@@ -14,12 +14,18 @@ module Radiant
     end
 
     initializer "engine.load_vendor_plugins" do
+      warn "INITIALIZING AN EXTENSION"
       # Adds any plugins under this engine into the load path
       Dir["#{config.root}/vendor/plugins/*"].each do |plugin|
         %w( app/models app/controlers app/helpers lib ).each do |path|
           $LOAD_PATH.unshift(File.join(plugin, path))
         end
       end
+    end
+
+    initializer "activate" do
+      warn "ACTIVATING"
+      self.activate if self.respond_to? :activate
     end
 
     # TODO: Maybe resurrect later if we can work out how to do this.
