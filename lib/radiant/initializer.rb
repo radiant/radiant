@@ -1,8 +1,8 @@
 # require 'initializer'
 require 'radiant/admin_ui'
 require 'radiant/extension_loader'
-require 'radiant/extension_locator'
-require 'radiant/gem_locator'
+#require 'radiant/extension_locator'
+#require 'radiant/gem_locator'
 
 module Radiant
   autoload :Cache, 'radiant/cache'
@@ -81,40 +81,27 @@ module Radiant
       @requested_extensions ||= available_extensions
     end
     
-    # Sets the list of extensions that will be loaded and the order in which to load them.
-    # It can include an :all marker to mean 'everything else' and is typically set in environment.rb:
-    #   config.extensions = [:layouts, :taggable, :all]
-    #   config.extensions = [:dashboard, :blog, :all]
-    #   config.extensions = [:dashboard, :blog, :all, :comments]
-    #
-    # A LoadError is raised if any of the specified extensions can't be found.
-    #
-    def extensions=(extensions)
-      @requested_extensions = extensions
+    def all_available_extensions
+      # TODO: FIX
+      return Rails.application.railties.engines.select { |e| e.is_a? Radiant::Extension }
+
+      # load vendorized extensions by inspecting load path(s)
+      all = extension_paths.map do |path|
+        Dir["#{path}/*"].select {|f| File.directory?(f) }
+      end
+      # load any gem that follows extension rules
+      gems.inject(all) do |available,gem|
+        available << gem.specification.full_gem_path if gem.specification and
+          gem.specification.full_gem_path[/radiant-.*-extension-[\d\.]+$/]
+        available
+      end
+      # strip version info to glean proper extension names
+      all.flatten.map {|f| File.basename(f).gsub(/^radiant-|-extension-[\d\.]+$/, '') }.sort.map {|e| e.to_sym }
     end
     
-    # This is a configurable list of extension that should not be loaded.
-    #   config.ignore_extensions = [:experimental, :broken]
-    # You can also retrieve the list with +ignored_extensions+:
-    #   Radiant.configuration.ignored_extensions  # => [:experimental, :broken]
-    # These exclusions are applied regardless of dependencies and extension locations. A configuration that bundles
-    # required extensions then ignores them will not boot and is likely to fail with errors about unitialized constants.
-    #
-    def ignore_extensions(array)
-      self.ignored_extensions |= array
-    end
-    
-    # Returns an alphabetical list of every extension found among all the load paths and bundled gems. Any plugin or 
-    # gem whose path ends in the form +radiant-something-extension+ is considered to be an extension.
-    #
-    #   Radiant.configuration.available_extensions  # => [:name, :name, :name, :name]
-    #
-    # This method is always called during initialization, either as a default or to check that specified extensions are
-    # available. One of its side effects is to populate the ExtensionLoader's list of extension root locations, later 
-    # used when activating those extensions that have been enabled.
-    #
-    def available_extensions
-      @available_extensions ||= (vendored_extensions + gem_extensions).uniq.sort.map(&:to_sym)
+    def extension(ext)
+      ::ActiveSupport::Deprecation.warn("Extension dependencies have been deprecated. Extensions may be packaged as gems and use the Gem spec to declare dependencies.", caller)
+      @extension_dependencies << ext unless @extension_dependencies.include?(ext)
     end
     
     # Searches the defined extension_paths for subdirectories and returns a list of names as symbols.
@@ -204,17 +191,8 @@ module Radiant
     end
   end
 
-  class Initializer < Rails::Initializer
-  
-    # Rails::Initializer is essentially a list of startup steps and we extend it here by:
-    # * overriding or extending some of those steps so that they use radiant and extension paths
-    #   as well as (or instead of) the rails defaults.
-    # * appending some extra steps to set up the admin UI and activate extensions
-    
-    def self.run(command = :process, configuration = Configuration.new) #:nodoc
-      Rails.configuration = configuration
-      super
-    end
+  module Initializer
+    include Rails::Initializer
 
     # Returns true in the very unusual case where radiant has been deployed as a rails app itself, rather than 
     # loaded as a gem or from vendor/. This is only likely in situations where radiant is customised so heavily
@@ -315,45 +293,16 @@ module Radiant
       configuration.add_controller_paths(extension_loader.paths(:controller))
       configuration.add_eager_load_paths(extension_loader.paths(:eager_load))
     end
-    
-    # Initializes all the admin interface elements and views. Separate here so that it can be called
-    # to reset the interface before extension (re)activation.
-    #
-    def initialize_views
-      initialize_default_admin_tabs
-      initialize_framework_views
-      admin.load_default_regions
-    end
-    
-    # Initializes the core admin tabs. Separate so that it can be invoked by itself in tests.
-    #
-    def initialize_default_admin_tabs
-      admin.initialize_nav
-    end
-    
-    # This adds extension view paths to the standard Rails::Initializer method. 
-    # In environments that don't cache templates it reloads the path set on each request, 
-    # so that new extension paths are noticed without a restart.
-    #
-    def initialize_framework_views
-      view_paths = [].tap do |arr|
-        # Add the singular view path if it's not in the list
-        arr << configuration.view_path if !configuration.view_paths.include?(configuration.view_path)
-        # Add the default view paths
-        arr.concat configuration.view_paths
-        # Add the extension view paths
-        arr.concat extension_loader.view_paths
-        # Reverse the list so extensions come first
-        arr.reverse!
-      end
-      if configuration.frameworks.include?(:action_mailer) && ActionMailer::Base.view_paths.blank? || !ActionView::Base.cache_template_loading?
-        ActionMailer::Base.view_paths = ActionView::Base.process_view_paths(view_paths) if configuration.frameworks.include?(:action_mailer)
-      end
-    end 
 
-    # Extends the Rails initializer to make sure that extension controller paths are available when routes 
-    # are initialized.
-    #
+    def self.admin
+      AdminUI.instance
+    end
+
+    def self.configuration
+      Radiant::Configuration
+    end
+
+
     def initialize_routing
       configuration.add_controller_paths(extension_loader.paths(:controller))
       configuration.add_eager_load_paths(extension_loader.paths(:eager_load))
