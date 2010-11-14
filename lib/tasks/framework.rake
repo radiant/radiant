@@ -1,4 +1,5 @@
 namespace :radiant do
+  # TODO: remove freeze/unfreeze in favor of bundler locking?
   namespace :freeze do
     desc "Lock this application to the current gems (by unpacking them into vendor/radiant)"
     task :gems do
@@ -61,7 +62,7 @@ namespace :radiant do
 
   desc "Update configs, scripts, sass, stylesheets and javascripts from Radiant."
   task :update do
-    tasks = %w{scripts javascripts configs initializers images sass stylesheets cached_assets}
+    tasks = %w{scripts javascripts initializers images sass stylesheets cached_assets}
     tasks = tasks & ENV['ONLY'].split(',') if ENV['ONLY']
     tasks = tasks - ENV['EXCEPT'].split(',') if ENV['EXCEPT']
     tasks.each do |task| 
@@ -107,67 +108,11 @@ namespace :radiant do
       TaskSupport.cache_admin_js
     end
 
-    desc "Update config/boot.rb from your current radiant install"
-    task :configs do
-      require 'erb'
-      FileUtils.cp("#{File.dirname(__FILE__)}/../generators/instance/templates/instance_boot.rb", Rails.root + '/config/boot.rb')
-      instances = {
-        :env          => "#{Rails.root}/config/environment.rb",
-        :development  => "#{Rails.root}/config/environments/development.rb",
-        :test         => "#{Rails.root}/config/environments/test.rb",
-        :production   => "#{Rails.root}/config/environments/production.rb"
-      }
-      tmps = {
-        :env          => "#{Rails.root}/config/environment.tmp",
-        :development  => "#{Rails.root}/config/environments/development.tmp",
-        :test         => "#{Rails.root}/config/environments/test.tmp",
-        :production   => "#{Rails.root}/config/environments/production.tmp"
-      }
-      gens = {
-        :env          => "#{File.dirname(__FILE__)}/../generators/instance/templates/instance_environment.rb",
-        :development  => "#{File.dirname(__FILE__)}/../../config/environments/development.rb",
-        :test         => "#{File.dirname(__FILE__)}/../../config/environments/test.rb",
-        :production   => "#{File.dirname(__FILE__)}/../../config/environments/production.rb"
-      }
-      backups = {
-        :env          => "#{Rails.root}/config/environment.bak",
-        :development  => "#{Rails.root}/config/environments/development.bak",
-        :test         => "#{Rails.root}/config/environments/test.bak",
-        :production   => "#{Rails.root}/config/environments/production.bak"
-      }
-      @warning_start = "** WARNING **
-The following files have been changed in Radiant. Your originals have 
-been backed up with .bak extensions. Please copy your customizations to 
-the new files:"
-      [:env, :development, :test, :production].each do |env_type|
-        File.open(tmps[env_type], 'w') do |f|
-          app_name = File.basename(File.expand_path(Rails.root))
-          f.write ERB.new(File.read(gens[env_type])).result(binding)
-        end
-        unless FileUtils.compare_file(instances[env_type], tmps[env_type])
-          FileUtils.cp(instances[env_type], backups[env_type])
-          FileUtils.cp(tmps[env_type], instances[env_type])
-          @warnings ||= ""
-          case env_type
-          when :env
-            @warnings << "
-- config/environment.rb"
-          else
-            @warnings << "
-- config/environments/#{env_type.to_s}.rb"
-          end
-        end
-        FileUtils.rm(tmps[env_type])
-      end
-      if @warnings
-        puts @warning_start + @warnings
-      end
-    end
-
     desc "Update admin images from your current radiant install"
     task :images do
-      project_dir = Rails.root + '/public/images/admin/'
-      images = Dir["#{File.dirname(__FILE__)}/../../public/images/admin/*"]
+      project_dir = "#{Rails.root}/public/images/admin/"
+      FileUtils.mkdir_p(project_dir)
+      images = Dir["#{Radiant::Engine.root}/public/images/admin/*"]
       FileUtils.cp(images, project_dir)
     end
 
