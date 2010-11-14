@@ -65,27 +65,14 @@ module Radiant
     end
     
     initializer "admin_ui" do
+      # TODO: Confirm this is the best place for these
+      require 'acts_as_tree'
+      require 'will_paginate'
+    
       require 'radiant/admin_ui'
       AdminUI.instance.load_default_nav
     end
-    
-    require 'radiant/extension'
 
-    # Load up all the extensions. We don't do this in an initializer due to sequencing issues.
-    Dir["#{config.root}/../../vendor/extensions/*/*_extension.rb"].each do |extension|
-      require extension
-    end
-
-    # TODO: Confirm this is the best place for these
-    require 'acts_as_tree'
-    require 'will_paginate'
-    
-    initializer "activate extensions" do
-      extensions = Rails.application.railties.engines.select { |e| e.is_a? Radiant::Extension }
-      extensions.each do |ext|
-        ext.activate if ext.respond_to? :activate
-      end
-    end
     
     config.secret_token = "4ac217d6512aae25ea83a25d58c30bed06520ac20ff8040da552f88d3046cf9103c1a7ca21254c9fc64a6f3dd59e00e206e7c410d612390be23d834b48f7b1e8"
     

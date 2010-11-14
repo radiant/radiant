@@ -1,6 +1,10 @@
 RADIANT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), "..")) unless defined? RADIANT_ROOT
 
 require 'radiant/engine'
+
+require 'radiant/extension_loader'
+Radiant::ExtensionLoader.load_extensions
+
 unless defined? Radiant::Version
   module Radiant
     module Version
