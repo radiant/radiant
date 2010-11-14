@@ -48,5 +48,14 @@ unless defined? Radiant::Version
         alias :to_str :to_s
       end
     end
+
+    # TODO Engines should have a similar feature
+    def self.loaded_via_gem?
+      false
+    end
+
+    def self.app?
+      true
+    end
   end
 end
