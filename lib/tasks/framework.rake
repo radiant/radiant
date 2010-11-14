@@ -118,13 +118,13 @@ namespace :radiant do
 
     desc "Update admin stylesheets from your current radiant install"
     task :stylesheets do
-      project_dir = Rails.root + '/public/stylesheets/admin/'
-      
+      project_dir = "#{Rails.root}/public/stylesheets/admin/"
+      FileUtils.mkdir_p(project_dir)
       copy_stylesheets = proc do |project_dir, styles|
         styles.reject!{|s| File.basename(s) == 'overrides.css'} if File.exists?(project_dir + 'overrides.css')
         FileUtils.cp(styles, project_dir)
       end
-      copy_stylesheets[Rails.root + '/public/stylesheets/admin/',Dir["#{File.dirname(__FILE__)}/../../public/stylesheets/admin/*.css"]]
+      copy_stylesheets["#{Rails.root}/public/stylesheets/admin/",Dir["#{Radiant::Engine.root}/public/stylesheets/admin/*.css"]]
     end
 
     desc "Update admin sass files from your current radiant install"
