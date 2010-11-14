@@ -14,7 +14,8 @@ module Radiant
     end
 
     initializer "engine.load_vendor_plugins" do
-      warn "INITIALIZING AN EXTENSION"
+      # TODO: May not be necessary in the future if Railties loads it itself. As of Rails-3.0.1, railsties doesn't
+      #       so we have to load them manually here.
       # Adds any plugins under this engine into the load path
       Dir["#{config.root}/vendor/plugins/*"].each do |plugin|
         %w( app/models app/controlers app/helpers lib ).each do |path|
@@ -24,7 +25,6 @@ module Radiant
     end
 
     initializer "activate" do
-      warn "ACTIVATING"
       self.activate if self.respond_to? :activate
     end
 
