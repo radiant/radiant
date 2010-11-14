@@ -98,6 +98,9 @@ namespace :radiant do
         scripts.reject!{|s| File.basename(s) == 'overrides.js'} if File.exists?(project_dir + 'overrides.js')
         FileUtils.cp(scripts, project_dir)
       end
+      copy_javascripts["#{Rails.root}/public/javascripts/", Dir["#{Radiant::Engine.root}/public/javascripts/*.js"]]
+      copy_javascripts["#{Rails.root}/public/javascripts/admin", Dir["#{Radiant::Engine.root}/public/javascripts/admin/*.js"]]
+    end
 
     desc "Update the cached assets for the admin UI"
     task :cached_assets do
