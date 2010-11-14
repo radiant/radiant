@@ -246,7 +246,7 @@ class Page < ActiveRecord::Base
     end
 
     def load_subclasses
-      unless Radiant::Application.config.cache_classes
+      unless Rails::Application.config.cache_classes
         ActiveSupport::Dependencies.autoload_paths.grep(/\bmodels$/).each do |path|
           Dir["#{path}/*_page.rb"].each do |file|
             require file.sub("#{path}/", '')
