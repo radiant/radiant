@@ -67,7 +67,7 @@ var Status = {
 Status.window = function() {
   if (!this.statusWindow) this.statusWindow = new Status.Window();
   return this.statusWindow;
-}
+};
 
 Status.BackgroundImages = function() {
   return $A([
@@ -78,7 +78,7 @@ Status.BackgroundImages = function() {
     Status.BottomLeftImage,
     Status.BottomRightImage
   ]);
-}
+};
 
 Status.preloadImages = function() {
   if (!Status.imagesPreloaded) {
@@ -88,21 +88,21 @@ Status.preloadImages = function() {
     });
     Status.preloadedImages = true;
   }
-}
+};
 
 Status.FormBehavior = Behavior.create({
   initialize: function() {
-    var attr = this.element.attributes['data-onsubmit_status']
+    var attr = this.element.attributes['data-onsubmit_status'];
     if (attr) this.status = attr.value; 
-    if (this.status) this.element.observe('submit', function() { showStatus(this.status) }.bind(this));
+    if (this.status) this.element.observe('submit', function() { showStatus(this.status); }.bind(this));
   }
 });
 
 Status.LinkBehavior = Behavior.create({
   initialize: function() {
-    var attr = this.element.attributes['data-onclick_status']
+    var attr = this.element.attributes['data-onclick_status'];
     if (attr) this.status = attr.value; 
-    if (this.status) this.element.observe('click', function() { showStatus(this.status) }.bind(this));
+    if (this.status) this.element.observe('click', function() { showStatus(this.status); }.bind(this));
   }
 });
 
@@ -115,11 +115,11 @@ Status.Window = Class.create({
   buildWindow: function() {
     this.element = $table({'class': 'status_window', style: 'display: none; position: absolute; border-collapse: collapse; padding: 0px; margin: 0px; z-index: 10000'});
     var tbody = $tbody();
-    this.element.insert(tbody)
+    this.element.insert(tbody);
     
     var top_row = $tr();
     top_row.insert($td({style: 'background: url(' + Status.TopLeftImage + '); height: ' + Status.CornerThickness + 'px; width: ' + Status.CornerThickness + 'px; padding: 0px'}));
-    top_row.insert($td({style: 'background: url(' + Status.BackgroundImage + '); height: ' + Status.CornerThickness + 'px; padding: 0px'}))
+    top_row.insert($td({style: 'background: url(' + Status.BackgroundImage + '); height: ' + Status.CornerThickness + 'px; padding: 0px'}));
     top_row.insert($td({style: 'background: url(' + Status.TopRightImage + '); height: ' + Status.CornerThickness + 'px; width: ' + Status.CornerThickness + 'px; padding: 0px'}));
     tbody.insert(top_row);
     
@@ -132,7 +132,7 @@ Status.Window = Class.create({
     
     var bottom_row = $tr();
     bottom_row.insert($td({style: 'background: url(' + Status.BottomLeftImage + '); height: ' + Status.CornerThickness + 'px; width: ' + Status.CornerThickness + 'px; padding: 0px'}));
-    bottom_row.insert($td({style: 'background: url(' + Status.BackgroundImage + '); height: ' + Status.CornerThickness + 'px; padding: 0px'}))
+    bottom_row.insert($td({style: 'background: url(' + Status.BackgroundImage + '); height: ' + Status.CornerThickness + 'px; padding: 0px'}));
     bottom_row.insert($td({style: 'background: url(' + Status.BottomRightImage + '); height: ' + Status.CornerThickness + 'px; width: ' + Status.CornerThickness + 'px; padding: 0px'}));
     tbody.insert(bottom_row);
     
@@ -154,7 +154,7 @@ Status.Window = Class.create({
   },
   
   setStatus: function(value) {
-    this.status.update(value)
+    this.status.update(value);
   },
   
   getStatus: function() {
@@ -187,8 +187,8 @@ Status.Window = Class.create({
   centerWindowInView: function() {
     var offsets = document.viewport.getScrollOffsets();
     this.element.setStyle({
-      left: parseInt(offsets.left + (document.viewport.getWidth() - this.element.getWidth()) / 2) + 'px',
-      top: parseInt(offsets.top + (document.viewport.getHeight() - this.element.getHeight()) / 2.2) + 'px'
+      left: parseInt(offsets.left + (document.viewport.getWidth() - this.element.getWidth()) / 2, 10) + 'px',
+      top: parseInt(offsets.top + (document.viewport.getHeight() - this.element.getHeight()) / 2.2, 10) + 'px'
     });
   },
   
