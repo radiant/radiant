@@ -49,12 +49,12 @@ var CodeArea = Class.create({
           if (t.value.slice(ss,se).indexOf("\n") != -1) {
             // Special case of multi line selection
             
-            var pre = t.value.slice(0, ss)
-            var sel = t.value.slice(ss, se)
+            var pre = t.value.slice(0, ss);
+            var sel = t.value.slice(ss, se);
             var post = t.value.slice(se, t.value.length);
             
             // Back off one tab
-            sel = sel.replace(new RegExp("^" + tab, "gm"), '')
+            sel = sel.replace(new RegExp("^" + tab, "gm"), '');
             
             // Put everything back together
             t.value = pre.concat(sel).concat(post);
@@ -87,7 +87,7 @@ var CodeArea = Class.create({
             var post = t.value.slice(se, t.value.length);
             
             // Indent one tab
-            sel = sel.replace(/^/gm, tab)
+            sel = sel.replace(/^/gm, tab);
             
             // Put everything back together
             t.value = pre.concat(sel).concat(post);
