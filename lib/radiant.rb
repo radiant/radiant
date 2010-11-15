@@ -5,7 +5,7 @@ unless defined? Radiant::Version
     module Version
       Major = '0'
       Minor = '7'
-      Tiny  = '1'
+      Tiny  = '2'
 
       class << self
         def to_s
