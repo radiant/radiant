@@ -1,5 +1,5 @@
 // Ensure that relative_url_root is defined
-if(typeof(relative_url_root) === 'undefined'){ relative_url_root = ''}
+if(typeof(relative_url_root) === 'undefined'){ relative_url_root = '';}
 
 // Popup Images
 Popup.BorderImage            = relative_url_root + '/images/admin/popup_border_background.png';
