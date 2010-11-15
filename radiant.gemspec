@@ -2,13 +2,13 @@
 
 Gem::Specification.new do |s|
   s.name = %q{radiant}
-  s.version = "0.7.1"
+  s.version = "0.7.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Radiant CMS dev team"]
-  s.date = %q{2009-02-15}
+  s.date = %q{2010-11-15}
   s.default_executable = %q{radiant}
-  s.description = %q{Radiant is a simple and powerful publishing system designed for small teams. It is built with Rails and is similar to Textpattern or MovableType, but is a general purpose content managment system--not merely a blogging engine.}
+  s.description = %q{Radiant is a simple and powerful publishing system designed for small teams. It is built with Rails and is similar to Textpattern or MovableType, but is a general purpose content management system--not merely a blogging engine.}
   s.email = %q{radiant@radiantcms.org}
   s.executables = ["radiant"]
   s.extra_rdoc_files = ["README", "CONTRIBUTORS", "CHANGELOG", "INSTALL", "LICENSE"]
