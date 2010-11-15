@@ -131,8 +131,8 @@ var SiteMapBehavior = Behavior.create({
       {
         insertion: "after",
         method: "get",
-        onLoading:  function() { spinner.show(); this.updating = true  }.bind(this),
-        onComplete: function() { spinner.fade(); this.updating = false }.bind(this)
+        onLoading:  function() { spinner.show(); this.updating = true;  }.bind(this),
+        onComplete: function() { spinner.fade(); this.updating = false; }.bind(this)
       }
     );
   },
