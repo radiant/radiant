@@ -249,7 +249,9 @@ class Page < ActiveRecord::Base
       unless Rails::Application.config.cache_classes
         ActiveSupport::Dependencies.autoload_paths.grep(/\bmodels$/).each do |path|
           Dir["#{path}/*_page.rb"].each do |file|
-            require file.sub("#{path}/", '')
+            klass = file.sub("#{path}/", '').gsub('.rb','')
+            require_dependency klass
+            ActiveSupport::Dependencies.explicitly_unloadable_constants << klass.camelize
           end
         end
       end
