@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{radiant}
-  s.version = "0.9.1"
+  s.version = YAML::load_file(File.join(File.dirname(__FILE__), 'VERSION'))
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Radiant CMS dev team"]
@@ -25,45 +25,47 @@ a general purpose content managment system--not merely a blogging engine.}
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
-
+    
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<rake>, [">= 0.8.3"])
-      s.add_runtime_dependency('RedCloth',       ['~> 4.2.2' ])
+      s.add_runtime_dependency('rake',           [ '>= 0.8.3' ])
+      s.add_runtime_dependency('RedCloth',       [ '~> 4.2.2' ])
       s.add_runtime_dependency('rdiscount',      [ '~> 1.5.8' ])
       s.add_runtime_dependency('rubypants',      [ '~> 0.2.0' ])
       s.add_runtime_dependency('highline',       [ '~> 1.5.2' ])
       s.add_runtime_dependency('will_paginate',  [ '~> 3.0.pre2' ])
-      s.add_runtime_dependency('haml')
-      s.add_runtime_dependency('sass')
+      s.add_runtime_dependency('haml',           [ '~> 3.0.23'])
+      s.add_runtime_dependency('sass',           [ '~> 3.1.0' ])
       s.add_runtime_dependency('acts_as_tree',   [ '~> 0.1.1' ])
       s.add_runtime_dependency('rack-cache',     [ '~> 0.5.2' ])
-      s.add_runtime_dependency('devise')
+      s.add_runtime_dependency('devise',         [ '~> 1.1.3' ])
     else
-      s.add_dependency(%q<rake>, [">= 0.8.3"])
-      s.add_dependency('RedCloth',       ['~> 4.2.2' ])
+      s.add_dependency('rake',           [ '>= 0.8.3' ])
+      s.add_dependency('rack-cache',     [ '>= 0.5.3' ])
+      s.add_dependency('rake',           [ '>= 0.8.3' ])
+      s.add_dependency('RedCloth',       [ '~> 4.2.2' ])
       s.add_dependency('rdiscount',      [ '~> 1.5.8' ])
       s.add_dependency('rubypants',      [ '~> 0.2.0' ])
       s.add_dependency('highline',       [ '~> 1.5.2' ])
       s.add_dependency('will_paginate',  [ '~> 3.0.pre2' ])
-      s.add_dependency('haml')
-      s.add_dependency('sass')
+      s.add_dependency('haml',           [ '~> 3.0.23'])
+      s.add_dependency('sass',           [ '~> 3.1.0' ])
       s.add_dependency('acts_as_tree',   [ '~> 0.1.1' ])
       s.add_dependency('rack-cache',     [ '~> 0.5.2' ])
-      s.add_dependency('devise')
+      s.add_dependency('devise',         [ '~> 1.1.3' ])
     end
   else
-    s.add_dependency(%q<rake>, [">= 0.8.3"])
-    s.add_dependency(%q<rack-cache>)
-    s.add_dependency(%q<will_paginate>, ["~> 2.3.11"])
-    s.add_dependency(%q<RedCloth>, [">= 4.0.0"])
+    s.add_dependency('rake',           [ '>= 0.8.3' ])
+    s.add_dependency('rack-cache',     [ '>= 0.5.3' ])
+    s.add_dependency('rake',           [ '>= 0.8.3' ])
+    s.add_dependency('RedCloth',       [ '~> 4.2.2' ])
     s.add_dependency('rdiscount',      [ '~> 1.5.8' ])
     s.add_dependency('rubypants',      [ '~> 0.2.0' ])
     s.add_dependency('highline',       [ '~> 1.5.2' ])
     s.add_dependency('will_paginate',  [ '~> 3.0.pre2' ])
-    s.add_dependency('haml')
-    s.add_dependency('sass')
+    s.add_dependency('haml',           [ '~> 3.0.23'])
+    s.add_dependency('sass',           [ '~> 3.1.0' ])
     s.add_dependency('acts_as_tree',   [ '~> 0.1.1' ])
     s.add_dependency('rack-cache',     [ '~> 0.5.2' ])
-    s.add_dependency('devise')
+    s.add_dependency('devise',         [ '~> 1.1.3' ])
   end
 end
