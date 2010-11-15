@@ -63,7 +63,7 @@ Popup.borderImages = function() {
     Popup.BorderBottomLeftImage,
     Popup.BorderBottomRightImage
   ]);
-}
+};
 
 Popup.preloadImages = function() {
   if (!Popup.imagesPreloaded) {
@@ -73,14 +73,14 @@ Popup.preloadImages = function() {
     });
     Popup.preloadedImages = true;
   }
-}
+};
 
 Popup.TriggerBehavior = Behavior.create({
   initialize: function() {
     if (!Popup.Windows[this.element.href]) {
       var matches = this.element.href.match(/\#(.+)$/);
       Popup.Windows[this.element.href] = (matches ? new Popup.Window($(matches[1])) : new Popup.AjaxWindow(this.element.href));
-    };
+    }
     this.window = Popup.Windows[this.element.href];
   },
   
@@ -152,7 +152,7 @@ Popup.AbstractWindow = Class.create({
   focus: function() {
     var form = this.element.down('form');
     if (form) {
-      var elements = form.getElements().reject(function(e) { return e.type == 'hidden' });
+      var elements = form.getElements().reject(function(e) { return e.type == 'hidden'; });
       var element = elements[0] || form.down('button');
       if (element) element.focus();
     }
@@ -175,8 +175,8 @@ Popup.AbstractWindow = Class.create({
   centerWindowInView: function() {
     var offsets = document.viewport.getScrollOffsets();
     this.element.setStyle({
-      left: parseInt(offsets.left + (document.viewport.getWidth() - this.element.getWidth()) / 2) + 'px',
-      top: parseInt(offsets.top + (document.viewport.getHeight() - this.element.getHeight()) / 2.2) + 'px'
+      left: parseInt(offsets.left + (document.viewport.getWidth() - this.element.getWidth()) / 2, 10) + 'px',
+      top: parseInt(offsets.top + (document.viewport.getHeight() - this.element.getHeight()) / 2.2, 10) + 'px'
     });
   }
 });
