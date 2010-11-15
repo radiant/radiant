@@ -23,13 +23,9 @@ class Status
   end
   
   def self.selectable
-    settable = @@statuses.dup - [self['Scheduled']]
+    find_all - [self['Scheduled']]
   end
-  
-  def self.selectable_options
-    self.selectable.map{ |s| [t(s.name.downcase), s.id] }
-  end
-  
+    
   def self.selectable_values
     self.selectable.map(&:name)
   end

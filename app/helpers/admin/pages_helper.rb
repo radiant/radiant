@@ -24,8 +24,7 @@ module Admin::PagesHelper
   
   def status_to_display
     @page.status_id = 100 if @page.status_id == 90
-    @display_status = Status.selectable_options
-    return @display_status
+    @display_status = Status.selectable.map{ |s| [I18n.translate(s.name.downcase), s.id] }
   end
 
   def page_edit_javascripts

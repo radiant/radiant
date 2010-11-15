@@ -15,7 +15,7 @@ Feature: Rich configuration
 		And I should see the site domain    
 		
   Scenario: Editing configuration
-		When I press "Edit settings"
+		When I press "Edit"
 		Then I should see a "Configuration" heading
 		And I should see "Site title"
 		And I should see "Timezone name"
