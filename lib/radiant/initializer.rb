@@ -233,8 +233,10 @@ end_error
     end
 
     def load_radiant_initializers
-      Dir["#{RADIANT_ROOT}/config/initializers/**/*.rb"].sort.each do |initializer|
-        load(initializer)
+      unless RADIANT_ROOT == RAILS_ROOT   ## in that case the initializers will be run during normal rails startup
+        Dir["#{RADIANT_ROOT}/config/initializers/**/*.rb"].sort.each do |initializer|
+          load(initializer)
+        end
       end
     end
 
