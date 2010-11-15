@@ -101,7 +101,7 @@ var Toggle = {
     if (matches) {
       var ids = matches[1].split(',');
       var elements = [];
-      ids.each(function(id) { elements.push($(id)) });
+      ids.each(function(id) { elements.push($(id)); });
       return elements;
     } else {
       return [];
@@ -154,8 +154,8 @@ var Toggle = {
   **/
   show: function(elements, effect, options) {
     var elements = $([elements]).flatten();
-    elements = elements.map(function(element) { return $(element) });
-    elements = elements.reject(function(element) { return element.visible() });
+    elements = elements.map(function(element) { return $(element); });
+    elements = elements.reject(function(element) { return element.visible(); });
     Toggle.toggle(elements, effect, options);
   },
   
@@ -167,8 +167,8 @@ var Toggle = {
   **/
   hide: function(elements, effect, options) {
     var elements = $([elements]).flatten();
-    elements = elements.map(function(element) { return $(element) });
-    elements = elements.reject(function(element) { return !element.visible() });
+    elements = elements.map(function(element) { return $(element); });
+    elements = elements.reject(function(element) { return !element.visible(); });
     Toggle.toggle(elements, effect, options);
   },
   
@@ -230,7 +230,7 @@ Toggle.LinkBehavior = Behavior.create({
     this.afterToggle.bind(this);
     
     var elements = Toggle.extractToggleObjects(this.element.readAttribute('rel'));
-    this.toggleWrappers = elements.map(function(e) { return Toggle.wrapElement(e) });
+    this.toggleWrappers = elements.map(function(e) { return Toggle.wrapElement(e); });
     
     this.toggleID = Toggle.extractAnchor(this.element.href);
     this.element.behavior = this; // a bit of a hack
@@ -249,8 +249,8 @@ Toggle.LinkBehavior = Behavior.create({
       this.toggleWrappers,
       this.effect,
       {
-        beforeStart: function() { this.beforeToggle(this.element) }.bind(this),
-        afterFinish: function() { this.afterToggle(this.element) }.bind(this)
+        beforeStart: function() { this.beforeToggle(this.element); }.bind(this),
+        afterFinish: function() { this.afterToggle(this.element); }.bind(this)
       }
     );
   }
@@ -292,7 +292,7 @@ Toggle.CheckboxBehavior = Behavior.create({
     this.invert = options.invert;
     
     var elements = Toggle.extractToggleObjects(this.element.readAttribute('rel'));
-    this.toggleWrappers = elements.map(function(e) { return Toggle.wrapElement(e) });
+    this.toggleWrappers = elements.map(function(e) { return Toggle.wrapElement(e); });
     
     this.effect = 'none';
     this.toggle();
@@ -348,15 +348,15 @@ Toggle.RadioGroupBehavior = Behavior.create({
     this.toggleWrapperIDsFor = {};
     
     this.radioButtons.each(function(radioButton) {
-      var elements = Toggle.extractToggleObjects(radioButton.readAttribute('rel'))
+      var elements = Toggle.extractToggleObjects(radioButton.readAttribute('rel'));
       var ids = elements.invoke('identify');
-      var wrapperIDs = elements.map(function(e) { return Toggle.wrapElement(e) }).invoke('identify');
+      var wrapperIDs = elements.map(function(e) { return Toggle.wrapElement(e); }).invoke('identify');
       this.toggleWrapperIDsFor[radioButton.identify()] = wrapperIDs;
       this.toggleWrapperIDs.push(wrapperIDs);
       radioButton.observe('click', this.onRadioButtonClick.bind(this));
     }.bind(this));
     
-    this.toggleWrapperIDs = this.toggleWrapperIDs.flatten().uniq()
+    this.toggleWrapperIDs = this.toggleWrapperIDs.flatten().uniq();
     
     this.effect = "none";
     this.toggle();
@@ -370,9 +370,9 @@ Toggle.RadioGroupBehavior = Behavior.create({
   
   toggle: function() {
     var group = this.element;
-    var radioButton = this.radioButtons.find(function(b) { return b.checked });
+    var radioButton = this.radioButtons.find(function(b) { return b.checked; });
     var wrapperIDs = this.toggleWrapperIDsFor[radioButton.identify()];
-    var partitioned = this.toggleWrapperIDs.partition(function(id) { return wrapperIDs.include(id) });
+    var partitioned = this.toggleWrapperIDs.partition(function(id) { return wrapperIDs.include(id); });
     Toggle.show(partitioned[0], this.effect);
     Toggle.hide(partitioned[1], this.effect);
   }
@@ -401,13 +401,13 @@ Toggle.SelectBehavior = Behavior.create({
     this.toggleWrapperIDsFor = {};
     
     optionElements.each(function(optionElement) {
-      var elements = Toggle.extractToggleObjects(optionElement.readAttribute('rel'))
-      var wrapperIDs = elements.map(function(e) { return Toggle.wrapElement(e) }).invoke('identify');
+      var elements = Toggle.extractToggleObjects(optionElement.readAttribute('rel'));
+      var wrapperIDs = elements.map(function(e) { return Toggle.wrapElement(e); }).invoke('identify');
       this.toggleWrapperIDsFor[optionElement.identify()] = wrapperIDs;
       this.toggleWrapperIDs.push(wrapperIDs);
     }.bind(this));
     
-    this.toggleWrapperIDs = this.toggleWrapperIDs.flatten().uniq()
+    this.toggleWrapperIDs = this.toggleWrapperIDs.flatten().uniq();
     
     this.effect = "none";
     this.toggle();
@@ -423,7 +423,7 @@ Toggle.SelectBehavior = Behavior.create({
     var combo = this.element;
     var option = $(combo.options[combo.selectedIndex]);
     var wrapperIDs = this.toggleWrapperIDsFor[option.identify()];
-    var partitioned = this.toggleWrapperIDs.partition(function(id) { return wrapperIDs.include(id) });
+    var partitioned = this.toggleWrapperIDs.partition(function(id) { return wrapperIDs.include(id); });
     Toggle.show(partitioned[0], this.effect);
     Toggle.hide(partitioned[1], this.effect);
   }
