@@ -1,5 +1,7 @@
 RADIANT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), "..")) unless defined? RADIANT_ROOT
 
+require 'local_time'
+
 require 'radiant/engine'
 
 require 'radiant/initializer'
@@ -13,6 +15,11 @@ unless defined? Radiant::Version
       Minor = '1'
       Tiny  = '0'
       Patch = 'alpha' # set to nil for normal release
+
+      Major = version[0]
+      Minor = version[1]
+      Tiny  = version[2]
+      Patch = version[3]
 
       class << self
         def to_s
