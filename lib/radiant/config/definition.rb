@@ -66,7 +66,8 @@ module Radiant
         end
       end
       
-      # Standardises on an options array-of-arrays so that it's easy to work with
+      # in definitions we accept anything that options_for_select would normally take
+      # here we standardises on an options array-of-arrays so that it's easier to validate input
       #
       def normalize_selection(choices)
         choices = choices.to_a if Hash === choices
@@ -106,10 +107,10 @@ module Radiant
         end
       end
       
-      # Returns true if the value is one of the permitted selections
+      # Returns true if the value is one of the permitted selections. Not case-sensitive.
       def selectable?(value)
         return true unless selector?
-        selection.map(&:last).include?(value)
+        selection.map(&:last).map(&:downcase).include?(value.downcase)
       end
       
       # Returns true unless :allow_blank has been explicitly set to false. Defaults to true.
