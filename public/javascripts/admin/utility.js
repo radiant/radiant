@@ -9,11 +9,11 @@ Object.extend(String.prototype, {
   },
   
   toInteger: function() {
-    return parseInt(this);
+    return parseInt(this, 10);
   },
   
   toSlug: function(allow_periods) {
-    replacement_regex = allow_periods ? /[\s:;=+]+/g : /[\s\.:;=+]+/g
+    replacement_regex = allow_periods ? /[\s:;=+]+/g : /[\s\.:;=+]+/g;
     return this.strip().downcase().replace(/[^-a-z0-9~\s\.:;+=_]/g, '').replace(replacement_regex, '-');
   }
 });
@@ -32,7 +32,7 @@ Element.addMethods({
   },
 
   centerInViewport: function(element) {
-    var header = $('header')
+    var header = $('header');
     var headerBottom = header.getHeight();
     var viewport = document.viewport.getScrollOffsets();
     viewport.height = document.viewport.getHeight();
