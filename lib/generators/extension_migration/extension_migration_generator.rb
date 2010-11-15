@@ -13,7 +13,7 @@ ActiveRecord::Generators::MigrationGenerator.class_eval do
 
   def create_migration_file
     set_local_assigns!
-    migration_template "migration.rb", "vendor/extensions/#{extension_name}/db/migrate/#{file_name}.rb"
+    migration_template 'migration.rb', File.join('vendor/extensions', extension_name ,'/db/migrate/', file_name, '.rb')
   end
 end
 
