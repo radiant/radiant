@@ -27,7 +27,7 @@ Then /^I should see page (\d+) of the results$/ do |p|
 end
 
 Then /^I should see a depagination link$/ do
-  response.body.should have_tag("a", :text => "show all")
+  response.body.should have_tag("a", :href => "/admin/readers?pp=all")
 end
 
 Then /^I should mention the request parameters$/ do

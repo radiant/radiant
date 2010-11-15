@@ -1,7 +1,7 @@
 class Admin::ConfigurationController < ApplicationController
   before_filter :initialize_config
   
-  only_allow_access_to :show, :edit, :update,
+  only_allow_access_to :edit, :update,
     :when => [:admin],
     :denied_url => { :controller => 'admin/configuration', :action => 'show' },
     :denied_message => 'You must have admin privileges to edit site configuration.'
