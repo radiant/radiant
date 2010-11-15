@@ -7,7 +7,7 @@ Feature: Edit user preferences
     When I open my preferences
     And I fill in "E-mail Address" with "my-new-email@example.com"
     And I press "Save Changes"
-    Then I should be on the preferences screen
+    Then I should be on the configuration screen
     
     Examples:
       | username  |

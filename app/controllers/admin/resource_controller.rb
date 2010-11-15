@@ -97,7 +97,7 @@ class Admin::ResourceController < ApplicationController
   # a convenience method that returns true if paginate_models has been called on this controller class
   # and can be used to make display decisions in controller and view
   def paginated?
-    self.class.paginated == true
+    self.class.paginated == true && params[:pp] != 'all'
   end
   helper_method :paginated?
 

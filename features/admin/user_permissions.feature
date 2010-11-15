@@ -116,7 +116,6 @@ Feature: User authentication and permissions
     Given I am logged in as "<username>"
     And I should see "Settings"
     When I follow "Settings"
-    And I follow "Personal"
     Then I should see "Personal Preferences"
     
     Examples:
