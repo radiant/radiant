@@ -11,7 +11,7 @@ class HamlTest < Test::Unit::TestCase
           locals = Hash[*(#{test}["locals"] || {}).collect {|k, v| [k.to_sym, v] }.flatten]
           options = Hash[*(#{test}["config"] || {}).collect {|k, v| [k.to_sym, v.to_sym] }.flatten]
           engine = Haml::Engine.new(#{test}["haml"], options)
-          assert_equal(engine.render(Object.new, locals).chomp, #{test}["html"])
+          assert_equal(#{test}["html"], engine.render(Object.new, locals).chomp)
         end
       EOTEST
     end
