@@ -42,6 +42,7 @@ class InstanceGenerator < Rails::Generator::Base
       base_dirs = %w(config config/environments config/initializers db log script public vendor/plugins vendor/extensions)
       text_files = %w(CHANGELOG CONTRIBUTORS LICENSE INSTALL README)
       environments = Dir["#{root}/config/environments/*.rb"]
+      # initializers are now run from RADIANT_ROOT before the instance, so those are no longer copied across
       scripts = Dir["#{root}/script/**/*"].reject { |f| f =~ /(destroy|generate|plugin)$/ }
       public_files = ["public/.htaccess"] + Dir["#{root}/public/**/*"]
       

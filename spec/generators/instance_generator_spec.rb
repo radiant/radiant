@@ -81,11 +81,18 @@ share_as :AllInstanceGenerators do
   end
 
   # Check for initializers
-  %w(haml.rb).each do |file|
+  # initializers are now run from RADIANT_ROOT before the instance, 
+  # so most of those are should no longer be copied across
+  %w(radiant_config.rb).each do |file|
     it "should have a #{file} initializer" do
       'config/initializers'.should have_generated_file(file)
     end
   end
+  %w(haml.rb compass.rb).each do |file|
+    it "should not have a #{file} initializer" do
+      'config/initializers'.should_not have_generated_file(file)
+    end
+  end 
 end
 
 describe "IntanceGenerator" do
