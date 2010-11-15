@@ -1,14 +1,8 @@
 # Uncomment this if you reference any of your controllers in activate
 # require_dependency 'application_controller'
-require 'radiant-<%= file_name %>-extension/version'
 class <%= class_name %> < Radiant::Extension
-<<<<<<< HEAD
-  version Radiant<%= class_name %>::VERSION
-  description "Adds <%= file_name %> to Radiant."
-=======
   version YAML::load_file(File.join(File.dirname(__FILE__), 'VERSION'))
   description "Describe <%= extension_name %> here"
->>>>>>> generators being rewritten in rails3 style
   url "<%= homepage %>"
 
   # DEPRECATED
