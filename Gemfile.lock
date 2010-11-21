@@ -6,11 +6,6 @@ GIT
       activerecord (>= 2.3.0)
       activesupport (>= 2.3.0)
 
-PATH
-  remote: vendor/radius
-  specs:
-    radius (0.7.0.prerelease)
-
 GEM
   remote: http://rubygems.org/
   specs:
@@ -179,7 +174,6 @@ DEPENDENCIES
   mongrel (~> 1.2.0.pre2)
   mysql (~> 2.8.1)
   rack-cache (~> 0.5.2)
-  radius (= 0.7.0.prerelease)!
   rails (= 3.0.1)
   rdiscount (~> 1.5.8)
   rspec-rails (= 2.0.0)
