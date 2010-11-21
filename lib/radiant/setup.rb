@@ -20,7 +20,9 @@ module Radiant
       UserActionObserver.current_user = @admin
       load_default_configuration
       load_database_template(config[:database_template])
-      announce "Finished.\n\n"
+      announce "Finished."
+      announce "Don't forget to run your update task to copy any public assets for your template.\n\n"
+      announce "For example, run 'rake radiant:extensions:site_templates:update'."
     end
     
     def create_admin_user(name, username, password)
@@ -50,6 +52,7 @@ module Radiant
         step { Radiant::Config['defaults.page.parts' ] = 'body, extended' }
         step { Radiant::Config['defaults.page.status' ] = 'draft' }
         step { Radiant::Config['defaults.page.filter' ] = nil }
+        step { Radiant::Config['defaults.page.fields'] = 'Keywords, Description' }
         step { Radiant::Config['session_timeout'] = 2.weeks }
         step { Radiant::Config['default_locale'] = 'en' }
       end

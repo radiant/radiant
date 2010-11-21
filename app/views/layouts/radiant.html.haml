@@ -1,0 +1,57 @@
+!!!
+%html{html_attrs}
+  %head
+    %meta{"http-equiv"=>"Content-type", :content=>"text/html;charset=utf-8"}/
+    %title= @page_title || default_page_title
+    - @stylesheets.uniq.each do |stylesheet|
+      = stylesheet_tag stylesheet, {}    
+    = javascript_include_tag %w(admin/prototype admin/effects admin/lowpro admin/dateinput admin/pagestatus admin/cookie admin/popup admin/pagefield admin/status admin/utility admin/codearea admin/tabcontrol admin/ruledtable admin/sitemap admin/shortcuts admin/toggle admin/validationerror admin/application), :cache => 'admin/all'
+    - @javascripts.uniq.each do |javascript|
+      = javascript_include_tag javascript, {}
+    - if yield(:page_scripts).present?
+      = javascript_tag yield(:page_scripts)
+    - if yield(:page_css).present?
+      %style{:type => "text/css"}= yield(:page_css)
+    = yield :meta
+    = stylesheet_and_javascript_overrides
+  %body{:class=>body_classes.join(" ")}
+    #page
+      #header
+        - if logged_in?
+          #site_links
+            = t('logged_in_as')
+            = link_to h(current_user.name), edit_admin_preferences_path
+            &nbsp;
+            = link_to t('log_out'), logout_path
+            &nbsp;
+            = link_to t('view_site'), root_path, :id=>"view_site"
+          %ul#navigation
+            - nav_tabs.each do |tab|
+              - if tab.visible?(current_user)
+                %li{:class=>('current ' if current_tab?(tab)).to_s}
+                  %a{:href=>(tab.first.relative_url if tab.first)}
+                    = translate_with_default(tab.name)
+                  - if current_tab?(tab)
+                    %ul#nav_sub
+                      - tab.each do |sub_item|
+                        - if sub_item.visible?(current_user)
+                          %li
+                            %a{:href => sub_item.relative_url, :class => current_item?(sub_item) ? 'current' : ''}>
+                              %span
+                                = translate_with_default(sub_item.name)
+                                
+          #header_bottom
+            %div
+      #main
+        - if flash[:notice]
+          #notice
+            %p= flash[:notice]
+        - if flash[:error]
+          #error
+            %p= flash[:error]
+        #content
+          = find_and_preserve(yield)
+
+      - if yield(:popups).present?
+        #popups
+          = yield :popups

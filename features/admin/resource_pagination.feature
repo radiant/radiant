@@ -19,7 +19,7 @@ Feature: Paginating admin views
     Then I should see page 2 of the results
     And I should see "snippet_50"
 
-    When I follow "show all" within "div.depaginate"
+    When I follow "show all"
     # Then I should mention the request parameters
     Then I should see all the snippets
     And I should not see pagination controls

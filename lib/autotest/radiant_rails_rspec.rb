@@ -23,7 +23,6 @@
 $:.push(*Dir["vendor/rails/*/lib"])
 
 require 'active_support'
-require 'autotest/rspec'
 
 Autotest.add_hook :initialize do |at|
   
@@ -102,7 +101,9 @@ Autotest.add_hook :initialize do |at|
   }
 end
 
-class Autotest::RadiantRailsRspec < Autotest::Rspec
+require 'autotest/rspec2'
+
+class Autotest::RadiantRailsRspec < Autotest::Rspec2
 
   def spec_command
     "script/spec"

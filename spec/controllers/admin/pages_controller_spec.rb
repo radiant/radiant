@@ -134,8 +134,9 @@ describe Admin::PagesController do
 
         it "should allow access to #{user.to_s.humanize}s for the #{action} action" do
           login_as user
+          controller.should_receive(:paginated?).and_return(false)
           send method, action, :id => Page.first.id
-          response.should redirect_to('/admin/pages')
+          response.should redirect_to('http://test.host/admin/pages')
         end
       end
     end
@@ -204,13 +205,41 @@ describe Admin::PagesController do
     end
   end
 
-  it "should initialize meta and buttons_partials in new action" do
-    get :new, :page_id => page_id(:home)
-    response.should be_success
-    assigns(:meta).should be_kind_of(Array)
-    assigns(:buttons_partials).should be_kind_of(Array)
+  describe '#new' do
+    it "should initialize meta and buttons_partials in new action" do
+      get :new, :page_id => page_id(:home)
+      response.should be_success
+      assigns(:meta).should be_kind_of(Array)
+      assigns(:buttons_partials).should be_kind_of(Array)
+    end
+  
+    it "should set the parent_id from the parameters" do
+      get :new, :page_id => page_id(:home)
+      assigns(:page).parent_id.should == page_id(:home)
+    end
+  
+    it "should set the @page variable" do
+      home = pages(:home)
+      new_page = home.class.new_with_defaults
+      new_page.parent_id = home.id
+      Page.stub!(:new_with_defaults).and_return(new_page)
+      get :new, :page_id => home.id
+      assigns(:page).should == new_page
+    end
   end
 
+  describe '#update' do
+    it 'should update the page updated_at on every update' do
+      start_updated_at = pages(:home).updated_at
+      put :update, :id => page_id(:home), :page => {:breadcrumb => 'Homepage'} and sleep(1)
+      next_updated_at = pages(:home).updated_at
+      lambda{ start_updated_at <=> next_updated_at }.should be_true
+      put :update, :id => page_id(:home), :page => {:breadcrumb => 'Homepage'} and sleep(1)
+      final_updated_at = pages(:home).updated_at
+      lambda{ next_updated_at <=> final_updated_at }.should be_true
+    end
+  end
+  
   it "should initialize meta and buttons_partials in edit action" do
     get :edit, :id => page_id(:home)
     response.should be_success

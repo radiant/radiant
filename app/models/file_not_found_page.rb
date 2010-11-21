@@ -1,5 +1,9 @@
 class FileNotFoundPage < Page
   
+  def allowed_children
+    []
+  end
+  
   description %{
     A "File Not Found" page can be used to override the default error
     page in the event that a page is not found among a page's children.

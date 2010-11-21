@@ -31,4 +31,14 @@ module Admin::ReferencesHelper
       class_of_page.display_name
     end
   end
+  
+  def filter
+    @filter ||= begin
+      TextFilter.find_descendant(params[:filter_name])
+    end
+  end
+
+  def class_of_page
+    @page_class ||= (params[:class_name].blank? ? 'Page' : params[:class_name]).constantize
+  end
 end

@@ -43,8 +43,9 @@ Feature: Managing snippets
     And I should see the form
   
   Scenario: View a snippet
-    When I view a snippet
+    When I view a filtered snippet
     Then I should see "Edit Snippet"
+    And I should see "Markdown"
   
   Scenario: Delete a snippet with confirmation
     When I follow "Design" within "#navigation"

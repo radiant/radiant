@@ -1,6 +1,10 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe Admin::ReferencesHelper do
+  class CustomFilter < TextFilter
+    filter_name "Really Custom"
+  end
+
   describe "determining the page class" do
     before :each do
       helper.send(:instance_variable_set, :@page_class, nil)
@@ -33,6 +37,11 @@ describe Admin::ReferencesHelper do
     it "should return the filter object for the named filter" do
       params[:filter_name] = "Textile"
       helper.filter.should == TextileFilter
+    end
+
+    it "should return the filter object for a custom named filter" do
+      params[:filter_name] = "Really Custom"
+      helper.filter.should == CustomFilter
     end
 
     it "should return nil when the set filter is blank" do

@@ -1,4 +1,4 @@
-class Admin::PreferencesController < ApplicationController
+class Admin::PreferencesController < AdminController
   before_filter :load_user
 
   def initialize
@@ -6,13 +6,13 @@ class Admin::PreferencesController < ApplicationController
     @template_name = 'preferences'
   end
 
-  def show
+  def show    
     set_standard_body_style
-    render :edit, :layout => 'application'
+    render :edit, :layout => 'radiant'
   end
 
   def edit
-    render :layout => 'application'
+    render :layout => 'radiant'
   end
 
   def update
@@ -21,11 +21,11 @@ class Admin::PreferencesController < ApplicationController
         redirect_to :action => 'show'
       else
         flash[:error] = t('preferences_controller.error_updating')
-        render :edit, :layout => 'application'
+        render :edit, :layout => 'radiant'
       end
     else
       announce_bad_data
-      render :edit, :layout => 'application'
+      render :edit, :layout => 'radiant'
     end
   end
 

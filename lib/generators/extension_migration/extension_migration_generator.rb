@@ -1,25 +1,23 @@
-require 'rails_generator/base'
-require 'rails_generator/generators/components/migration/migration_generator'
+begin
+  require 'rails/generators/active_record/migration/migration_generator'
+rescue LoadError
+end
 
-class ExtensionMigrationGenerator < MigrationGenerator
+ActiveRecord::Generators::MigrationGenerator.class_eval do
+  remove_argument :name
+  remove_argument :attributes
   
-  attr_accessor :extension_name
+  argument :extension_name, :as => :string
+  argument :name, :as => :string
+  argument :attributes, :type => :array, :default => [], :banner => "field:type field:type"
   
-  def initialize(runtime_args, runtime_options = {})
-    runtime_args = runtime_args.dup
-    @extension_name = runtime_args.shift
-    super(runtime_args, runtime_options)
+  def create_migration_file
+    set_local_assigns!
+    migration_template 'migration.rb', File.join('vendor/extensions', extension_name ,'/db/migrate/', file_name, '.rb')
   end
-  
-  def banner
-    "Usage: #{$0} extension_migration ExtensionName MigrationName [field:type, field:type]"
-  end
-  
-  def extension_path
-    File.join('vendor', 'extensions', @extension_name.underscore)
-  end
-  
-  def destination_root
-    File.join(RAILS_ROOT, extension_path)
-  end
+end
+
+
+class ExtensionMigrationGenerator < Rails::Generators::Base
+  hook_for :orm, :required => true, :as => :migration
 end

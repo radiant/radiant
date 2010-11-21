@@ -1,6 +1,6 @@
 #header
   font-size: 90%
-  background: #c00 url(../../images/admin/navigation_background.gif) repeat-x
+  background: #c00 image_url('admin/navigation_background.gif') repeat-x
   width: 100%
   position: relative
   height: auto
@@ -18,7 +18,7 @@
     
 #view_site 
   font-size: 90%
-  background: url(../../images/admin/view_site.png) no-repeat
+  background: image_url('admin/view_site.png') no-repeat
   display: block
   position: absolute
   right: 12px
@@ -41,7 +41,7 @@ ul#navigation
     margin: 4px 0 0 8px
     white-space: nowrap
     a 
-      background: url(../../images/admin/navigation_tabs.png) left top repeat-x
+      background: image_url('admin/navigation_tabs.png') left top repeat-x
       color: #edd
       display: block
       height: 30px
@@ -49,7 +49,7 @@ ul#navigation
       padding: 0 20px
       position: relative
       text-decoration: none
-      +round-top-corners(6px)
+      +border-top-radius(6px)
     &:hover a
       background-position: left -48px
       color: white
@@ -60,7 +60,7 @@ ul#navigation
     &.dimmed a
       background-position: 0 -48px
   ul#nav_sub
-    background: url(../../images/admin/navigation_secondary_background.png) repeat-x
+    background: image_url('admin/navigation_secondary_background.png') repeat-x
     font-size: 95%
     clear: both
     left: 0
@@ -74,7 +74,7 @@ ul#navigation
     li
       margin: 0
       a
-        background: url(../../images/admin/navigation_secondary_background.png) repeat-x
+        background: image_url('admin/navigation_secondary_background.png') repeat-x
         color: #555
         display: -moz-inline-stack
         display: inline-block
@@ -87,14 +87,14 @@ ul#navigation
           background-position: left -40px
           color: #444
         &.current        
-          background: url(../../images/admin/navigation_secondary_background.png) left -80px repeat-x
+          background: image_url('admin/navigation_secondary_background.png') left -80px repeat-x
           color: #333
           font-weight: bold
           &:hover
             background-position: left -120px
             color: #222
         span
-          background: url(../../images/admin/navigation_secondary_separator.gif) right bottom no-repeat
+          background: image_url('admin/navigation_secondary_separator.gif') right bottom no-repeat
           display: block
           margin: 0
           padding: 0 26px
@@ -105,7 +105,7 @@ ul#navigation
   height: 38px
   position: relative
   div
-    background: url(../../images/admin/navigation_shadow.png) repeat-x
+    background: image_url('admin/navigation_shadow.png') repeat-x
     position: absolute
     top: 38px
     width: 100%

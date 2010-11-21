@@ -21,7 +21,7 @@
           - thead.title_header do
             %th.extension= t('extension')
           - thead.website_header do
-            %th.website= t('website') 
+            %th.website= t('more_info') 
           - thead.version_header do
             %th.version= t('version')
     %tbody
@@ -34,7 +34,7 @@
                 %p= h extension.description
             - tbody.website_cell do 
               %td.website
-                = extension.url.nil? || extension.url.empty? ? "" : link_to(t('website'), extension.url, :target => "_blank")
+                = extension.url.nil? || extension.url.empty? ? "" : link_to(t('more_info'), extension.url, :target => "_blank")
             - tbody.version_cell do
               %td.version= h extension.version
 

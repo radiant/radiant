@@ -1,7 +1,7 @@
 = form_for [:admin, @user] do |f|
   = hidden_field "user", "lock_version"
   
-  = render :partial => 'avatar'
+  = render :partial => 'avatar' unless @user.new_record?
   
   = render_region :form_top, :locals => {:f => f}
   
@@ -19,7 +19,7 @@
     - form.edit_username do
       %p
         = f.label :login, t('username') 
-        = f.text_field "login", :class => "textbox", :size => 32, :maxlength => 40 
+        = f.text_field "login", :class => "textbox", :size => 32, :maxlength => 40, :autocomplete => 'off'
     
     - form.edit_password do
       = render "password_fields", :f => f

@@ -15,7 +15,7 @@ Description:
     vendor/extension_name/test/functional.
 
 Example:
-    ./script/generate extension_controller MyExt Assets list show
+    rails generate extension_controller MyExt Assets list show
 
     Controller: vendor/my_ext/app/controllers/assets_controller.rb
     Views:      vendor/my_ext/app/views/assets/list.rhtml [...]
@@ -24,7 +24,7 @@ Example:
     Test:       vendor/my_ext/test/functional/assets_test.rb (if extension created with "--with-test-unit")
 
 Modules Example:
-    ./script/generate extension_controller MyExt 'admin/assets' upload remove
+    rails generate extension_controller MyExt 'admin/assets' upload remove
 
     Controller: vendor/my_ext/app/controllers/admin/assets_controller.rb
     Views:      vendor/my_ext/app/views/admin/assets/upload.rhtml [...]

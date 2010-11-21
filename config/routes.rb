@@ -1,4 +1,4 @@
-Radiant::Application.routes.draw do |map|
+Rails.application.routes.draw do
   # The priority is based upon order of creation:
   # first created -> highest priority.
   
@@ -24,10 +24,11 @@ Radiant::Application.routes.draw do |map|
         get :remove
       end
     end
-    
+  
     resource :preferences
-    resources :extensions, :only => :index
-    resources :page_parts
+    resources :extensions,  :only => :index
+    resources :page_parts,  :only => :create
+    resources :page_fields, :only => :create
     match 'reference/:type(.:format)' => 'admin/references#show', :as => :reference
   end
   

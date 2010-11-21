@@ -27,9 +27,7 @@ Then /^I should see page (\d+) of the results$/ do |p|
 end
 
 Then /^I should see a depagination link$/ do
-  response.body.should have_tag('div.depaginate') do
-    with_tag("a", :text => "show all")
-  end
+  response.body.should have_tag("a", :text => "show all")
 end
 
 Then /^I should mention the request parameters$/ do
@@ -39,7 +37,7 @@ end
 
 Then /^I should see all the snippets$/ do
   Snippet.all.each do |snippet|
-    response.body.should have_tag('tr.node') do
+    response.body.should have_tag('tr.snippet') do
       with_tag("a", :text => snippet.name)
     end
   end

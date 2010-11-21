@@ -1,27 +1,30 @@
 // main.css - main stylesheet for the Radiant admin interface
 
+// Variables
+@import partials/base
+
 // Modules
-@import modules/opacity.sass
-@import modules/rounded.sass
-@import modules/shadow.sass
-@import modules/links.sass
+@import compass
+@import modules/links
+
++global-reset
 
 // Partials
-@import partials/reset.sass
-@import partials/base.sass
-@import partials/layout.sass
-@import partials/header.sass
-@import partials/avatars.sass
-@import partials/messages.sass
-@import partials/forms.sass
-@import partials/content.sass
-@import partials/actions.sass
-@import partials/footer.sass
-@import partials/popup.sass
-@import partials/tabcontrol.sass
-@import partials/dateinput.sass
-@import partials/toolbar.sass
-@import partials/validations.sass
+@import partials/typography
+@import partials/layout
+@import partials/header
+@import partials/avatars
+@import partials/dropdown
+@import partials/messages
+@import partials/forms
+@import partials/index
+@import partials/content
+@import partials/actions
+@import partials/footer
+@import partials/popup
+@import partials/tabcontrol
+@import partials/dateinput
+@import partials/toolbar
 
 // Deprecated
-@import partials/deprecated.sass
+@import partials/deprecated

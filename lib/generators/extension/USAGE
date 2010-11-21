@@ -9,7 +9,7 @@ Description:
     and test directories.
 
 Example:
-    ./script/generate extension AssetManagement
+    rails generate extension AssetManagement
 
     This will create:
     vendor/extensions/asset_management/app/controllers

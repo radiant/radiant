@@ -4,9 +4,12 @@ module StandardTags
 
   include Radiant::Taggable
   include LocalTime
+
+  require "will_paginate/view_helpers"
   include WillPaginate::ViewHelpers
 
   class TagError < StandardError; end
+  class RequiredAttributeError < StandardError; end
 
   desc %{
     Causes the tags referring to a page's attributes to refer to the current page.
@@ -30,11 +33,12 @@ module StandardTags
   end
 
   desc %{
-    Renders the @url@ attribute of the current page.
+    Renders the @path@ attribute of the current page.
   }
-  tag 'url' do |tag|
-    relative_url_for(tag.locals.page.url, tag.globals.page.request)
+  tag 'path' do |tag|
+    relative_url_for(tag.locals.page.path, tag.globals.page.request)
   end
+  alias_method :'tag:url', :'tag:path'
 
   desc %{
     Gives access to a page's children.
@@ -347,29 +351,29 @@ module StandardTags
   end
   
     desc %{
-    Aggregates the children of multiple URLs using the @urls@ attribute.
+    Aggregates the children of multiple paths using the @paths@ attribute.
     Useful for combining many different sections/categories into a single
     feed or listing.
     
     *Usage*:
     
-    <pre><code><r:aggregate urls="/section1; /section2; /section3"> ... </r:aggregate></code></pre>
+    <pre><code><r:aggregate paths="/section1; /section2; /section3"> ... </r:aggregate></code></pre>
   }
   tag "aggregate" do |tag|
-    raise "`urls' attribute required" unless tag.attr["urls"]
-    urls = tag.attr["urls"].split(";").map(&:strip).reject(&:blank?).map { |u| clean_url u }
-    parent_ids = urls.map {|u| Page.find_by_url(u) }.map(&:id)
+    required_attr(tag, 'paths', 'urls')
+    paths = (tag.attr['paths']||tag.attr["urls"]).split(";").map(&:strip).reject(&:blank?).map { |u| clean_path u }
+    parent_ids = paths.map {|u| Page.find_by_path(u) }.map(&:id)
     tag.locals.parent_ids = parent_ids
     tag.expand
   end
   
   desc %{
     Sets the scope to the individual aggregated page allowing you to
-    iterate through each of the listed urls.
+    iterate through each of the listed paths.
     
     *Usage*:
     
-    <pre><code><r:aggregate:each urls="/section1; /section2; /section3"> ... </r:aggregate:each></code></pre>
+    <pre><code><r:aggregate:each paths="/section1; /section2; /section3"> ... </r:aggregate:each></code></pre>
   }
   tag "aggregate:each" do |tag|
     aggregates = []
@@ -409,7 +413,7 @@ module StandardTags
 
     *Usage*:
     
-    <pre><code><r:aggregate urls="/section1; /section2; /section3">
+    <pre><code><r:aggregate paths="/section1; /section2; /section3">
       <r:children:count />
     </r:aggregate></code></pre>
   }  
@@ -428,7 +432,7 @@ module StandardTags
 
     *Usage*:
     
-    <pre><code><r:aggregate urls="/section1; /section2; /section3">
+    <pre><code><r:aggregate paths="/section1; /section2; /section3">
       <r:children:each>
         ...
       </r:children:each>
@@ -453,7 +457,7 @@ module StandardTags
 
     *Usage*:
     
-    <pre><code><r:aggregate urls="/section1; /section2; /section3">
+    <pre><code><r:aggregate paths="/section1; /section2; /section3">
       <r:children:first>
         ...
       </r:children:first>
@@ -474,7 +478,7 @@ module StandardTags
 
     *Usage*:
     
-    <pre><code><r:aggregate urls="/section1; /section2; /section3">
+    <pre><code><r:aggregate paths="/section1; /section2; /section3">
       <r:children:last>
         ...
       </r:children:last>
@@ -499,7 +503,7 @@ module StandardTags
     <pre><code><r:cycle values="first, second, third" [reset="true|false"] [name="cycle"] /></code></pre>
   }
   tag 'cycle' do |tag|
-    raise TagError, "`cycle' tag must contain a `values' attribute." unless tag.attr['values']
+    required_attr(tag, 'values')
     cycle = (tag.globals.cycle ||= {})
     values = tag.attr['values'].split(",").collect(&:strip)
     cycle_name = tag.attr['name'] || 'cycle'
@@ -532,19 +536,14 @@ module StandardTags
     else
       rendering_parts[page.id] << part_name
     end
-    boolean_attr = proc do |attribute_name, default|
-      attribute = (tag.attr[attribute_name] || default).to_s
-      raise TagError.new(%{`#{attribute_name}' attribute of `content' tag must be set to either "true" or "false"}) unless attribute =~ /true|false/i
-      (attribute.downcase == 'true') ? true : false
-    end
-    inherit = boolean_attr['inherit', false]
+    inherit = boolean_attr_or_error(tag,'inherit',false)
     part_page = page
     if inherit
       while (part_page.part(part_name).nil? and (not part_page.parent.nil?)) do
         part_page = part_page.parent
       end
     end
-    contextual = boolean_attr['contextual', true]
+    contextual = boolean_attr_or_error(tag,'contextual', true)
     part = part_page.part(part_name)
     tag.locals.page = part_page unless contextual
     result = tag.globals.page.render_snippet(part) unless part.nil?
@@ -625,36 +624,38 @@ module StandardTags
   end
 
   desc %{
-    Renders the containing elements only if the page's url matches the regular expression
+    Renders the containing elements only if the page's path matches the regular expression
     given in the @matches@ attribute. If the @ignore_case@ attribute is set to false, the
     match is case sensitive. By default, @ignore_case@ is set to true.
 
     *Usage:*
     
-    <pre><code><r:if_url matches="regexp" [ignore_case="true|false"]>...</r:if_url></code></pre>
+    <pre><code><r:if_path matches="regexp" [ignore_case="true|false"]>...</r:if_path></code></pre>
   }
-  tag 'if_url' do |tag|
-    raise TagError.new("`if_url' tag must contain a `matches' attribute.") unless tag.attr.has_key?('matches')
+  tag 'if_path' do |tag|
+    required_attr(tag,'matches')
     regexp = build_regexp_for(tag, 'matches')
-    unless tag.locals.page.url.match(regexp).nil?
+    unless tag.locals.page.path.match(regexp).nil?
        tag.expand
     end
   end
+  alias_method :'tag:if_url', :'tag:if_path'
 
   desc %{
-    The opposite of the @if_url@ tag.
+    The opposite of the @if_path@ tag.
 
     *Usage:*
     
-    <pre><code><r:unless_url matches="regexp" [ignore_case="true|false"]>...</r:unless_url></code></pre>
+    <pre><code><r:unless_path matches="regexp" [ignore_case="true|false"]>...</r:unless_path></code></pre>
   }
-  tag 'unless_url' do |tag|
-    raise TagError.new("`unless_url' tag must contain a `matches' attribute.") unless tag.attr.has_key?('matches')
+  tag 'unless_path' do |tag|
+    required_attr(tag, 'matches')
     regexp = build_regexp_for(tag, 'matches')
-    if tag.locals.page.url.match(regexp).nil?
+    if tag.locals.page.path.match(regexp).nil?
         tag.expand
     end
   end
+  alias_method :'tag:unless_url', :'tag:unless_path'
 
   desc %{
     Renders the contained elements if the current contextual page is either the actual page or one of its parents.
@@ -767,7 +768,7 @@ module StandardTags
       case
       when time_attr == 'now'
         Time.zone.now
-      when ['published_at', 'created_at', 'updated_at'].include?(time_attr)
+      when Page.date_column_names.include?(time_attr)
         page[time_attr]
       else
         raise TagError, "Invalid value for 'for' attribute."
@@ -775,7 +776,9 @@ module StandardTags
     else
       page.published_at || page.created_at
     end
-    date.strftime(format)
+    @i18n_date_format_keys ||= (I18n.config.backend.send(:translations)[I18n.locale][:date][:formats].keys rescue [])
+    format = @i18n_date_format_keys.include?(format.to_sym) ? format.to_sym : format
+    I18n.l date, :format => format
   end
 
   desc %{
@@ -801,29 +804,32 @@ module StandardTags
     attributes = options.inject('') { |s, (k, v)| s << %{#{k.downcase}="#{v}" } }.strip
     attributes = " #{attributes}" unless attributes.empty?
     text = tag.double? ? tag.expand : tag.render('title')
-    %{<a href="#{tag.render('url')}#{anchor}"#{attributes}>#{text}</a>}
+    %{<a href="#{tag.render('path')}#{anchor}"#{attributes}>#{text}</a>}
   end
 
   desc %{
     Renders a trail of breadcrumbs to the current page. The separator attribute
     specifies the HTML fragment that is inserted between each of the breadcrumbs. By
     default it is set to @>@. The boolean nolinks attribute can be specified to render
-    breadcrumbs in plain text, without any links (useful when generating title tag).
+    breadcrumbs in plain text, without any links (useful when generating title tag). 
+    Set the noself attribute to 'true' to omit the present page (useful in page headers).
 
     *Usage:*
 
-    <pre><code><r:breadcrumbs [separator="separator_string"] [nolinks="true"] /></code></pre>
+    <pre><code><r:breadcrumbs [separator="separator_string"] [nolinks="true"] [noself="true"]/></code></pre>
   }
   tag 'breadcrumbs' do |tag|
     page = tag.locals.page
-    breadcrumbs = [page.breadcrumb]
     nolinks = (tag.attr['nolinks'] == 'true')
+    noself = (tag.attr['noself'] == 'true')
+    breadcrumbs = []
+    breadcrumbs << (noself ? '' : page.breadcrumb)
     page.ancestors.each do |ancestor|
       tag.locals.page = ancestor
       if nolinks
         breadcrumbs.unshift tag.render('breadcrumb')
       else
-        breadcrumbs.unshift %{<a href="#{tag.render('url')}">#{tag.render('breadcrumb')}</a>}
+        breadcrumbs.unshift %{<a href="#{tag.render('path')}">#{tag.render('breadcrumb')}</a>}
       end
     end
     separator = tag.attr['separator'] || ' &gt; '
@@ -853,7 +859,7 @@ module StandardTags
         raise TagError.new('snippet not found')
       end
     else
-      raise TagError.new("`snippet' tag must contain `name' attribute")
+      required_attr(tag,'name')
     end
   end
 
@@ -893,18 +899,18 @@ module StandardTags
   end
 
   desc %{
-    Inside this tag all page related tags refer to the page found at the @url@ attribute.
-    @url@s may be relative or absolute paths.
+    Inside this tag all page related tags refer to the page found at the @path@ attribute.
+    @path@s may be relative or absolute paths.
 
     *Usage:*
 
-    <pre><code><r:find url="value_to_find">...</r:find></code></pre>
+    <pre><code><r:find path="value_to_find">...</r:find></code></pre>
   }
   tag 'find' do |tag|
-    url = tag.attr['url']
-    raise TagError.new("`find' tag must contain `url' attribute") unless url
+    required_attr(tag,'path','url')
+    path = tag.attr['path'] || tag.attr['url']
 
-    found = Page.find_by_url(absolute_path_for(tag.locals.page.url, url))
+    found = Page.find_by_path(absolute_path_for(tag.locals.page.path, path))
     if page_found?(found)
       tag.locals.page = found
       tag.expand
@@ -936,13 +942,13 @@ module StandardTags
   end
 
   desc %{
-    Nothing inside a set of comment tags is rendered.
+    Nothing inside a set of hide tags is rendered.
 
     *Usage:*
 
-    <pre><code><r:comment>...</r:comment></code></pre>
+    <pre><code><r:hide>...</r:hide></code></pre>
   }
-  tag 'comment' do |tag|
+  tag 'hide' do |tag|
   end
 
   desc %{
@@ -971,14 +977,14 @@ module StandardTags
   end
 
   desc %{
-    Renders a list of links specified in the @urls@ attribute according to three
+    Renders a list of links specified in the @paths@ attribute according to three
     states:
 
     * @normal@ specifies the normal state for the link
-    * @here@ specifies the state of the link when the url matches the current
-       page's URL
+    * @here@ specifies the state of the link when the path matches the current
+       page's PATH
     * @selected@ specifies the state of the link when the current page matches
-       is a child of the specified url
+       is a child of the specified path
     # @if_last@ renders its contents within a @normal@, @here@ or
       @selected@ tag if the item is the last in the navigation elements
     # @if_first@ renders its contents within a @normal@, @here@ or
@@ -988,10 +994,10 @@ module StandardTags
 
     *Usage:*
 
-    <pre><code><r:navigation urls="[Title: url | Title: url | ...]">
-      <r:normal><a href="<r:url />"><r:title /></a></r:normal>
+    <pre><code><r:navigation paths="[Title: path | Title: path | ...]">
+      <r:normal><a href="<r:path />"><r:title /></a></r:normal>
       <r:here><strong><r:title /></strong></r:here>
-      <r:selected><strong><a href="<r:url />"><r:title /></a></strong></r:selected>
+      <r:selected><strong><a href="<r:path />"><r:title /></a></strong></r:selected>
       <r:between> | </r:between>
     </r:navigation>
     </code></pre>
@@ -1001,23 +1007,23 @@ module StandardTags
     tag.expand
     raise TagError.new("`navigation' tag must include a `normal' tag") unless hash.has_key? :normal
     result = []
-    pairs = tag.attr['urls'].to_s.split('|').map do |pair|
+    pairs = (tag.attr['paths']||tag.attr['urls']).to_s.split('|').map do |pair|
       parts = pair.split(':')
       value = parts.pop
       key = parts.join(':')
       [key.strip, value.strip]
     end
-    pairs.each_with_index do |(title, url), i|
-      compare_url = remove_trailing_slash(url)
-      page_url = remove_trailing_slash(self.url)
+    pairs.each_with_index do |(title, path), i|
+      compare_path = remove_trailing_slash(path)
+      page_path = remove_trailing_slash(self.path)
       hash[:title] = title
-      hash[:url] = url
+      hash[:path] = path
       tag.locals.first_child = i == 0
       tag.locals.last_child = i == pairs.length - 1
-      case page_url
-      when compare_url
+      case page_path
+      when compare_path
         result << (hash[:here] || hash[:selected] || hash[:normal]).call
-      when Regexp.compile( '^' + Regexp.quote(url))
+      when Regexp.compile( '^' + Regexp.quote(path))
         result << (hash[:selected] || hash[:normal]).call
       else
         result << hash[:normal].call
@@ -1032,7 +1038,7 @@ module StandardTags
       hash[symbol] = tag.block
     end
   end
-  [:title, :url].each do |symbol|
+  [:title, :path].each do |symbol|
     tag "navigation:#{symbol}" do |tag|
       hash = tag.locals.navigation
       hash[symbol]
@@ -1123,61 +1129,58 @@ module StandardTags
     status
   end
 
-  desc %{
-    The namespace for 'meta' attributes.  If used as a singleton tag, both the description
-    and keywords fields will be output as &lt;meta /&gt; tags unless the attribute 'tag' is set to 'false'.
+  desc %(
+    Renders the content of the field given in the @name@ attribute.
 
     *Usage:*
 
-    <pre><code> <r:meta [tag="false"] />
-     <r:meta>
-       <r:description [tag="false"] />
-       <r:keywords [tag="false"] />
-     </r:meta>
-    </code></pre>
-  }
-  tag 'meta' do |tag|
-    if tag.double?
-      tag.expand
-    else
-      tag.render('description', tag.attr) +
-      tag.render('keywords', tag.attr)
+    <pre><code><r:field name="Keywords" /></code></pre>
+  )
+  tag 'field' do |tag|
+    required_attr(tag,'name')
+    tag.locals.page.field(tag.attr['name']).try(:content)
+  end
+
+  desc %(
+    Renders the contained elements if the field given in the @name@ attribute
+    exists. The tag also takes an optional @equals@ or @matches@ attribute;
+    these will expand the tag if the field's content equals or matches the
+    given string or regex.
+
+    *Usage:*
+
+    <pre><code><r:if_field name="author" [equals|matches="John"] [ignore_case="true|false"]>...</r:if_field></code></pre>
+  )
+  tag 'if_field' do |tag|
+    required_attr(tag,'name')
+    field = tag.locals.page.field(tag.attr['name'])
+    return '' if field.nil?
+    tag.expand if case
+      when (tag.attr['equals'] and tag.attr['ignore_case'] == 'false') ; field.content == tag.attr['equals']
+      when tag.attr['equals'] ; field.content.downcase == tag.attr['equals'].downcase
+      when tag.attr['matches'] ; field.content =~ build_regexp_for(tag, 'matches')
+      else field
     end
   end
 
-  desc %{
-    Emits the page description field in a meta tag, unless attribute
-    'tag' is set to 'false'.
+  desc %(
+    The opposite of @if_field@. Renders the contained elements unless the field
+    given in the @name@ attribute exists. The tag also takes an optional
+    @equals@ or @matches@ attribute; these will expand the tag unless the
+    field's content equals or matches the given string or regex.
 
     *Usage:*
 
-    <pre><code> <r:meta:description [tag="false"] /> </code></pre>
-  }
-  tag 'meta:description' do |tag|
-    show_tag = tag.attr['tag'] != 'false' || false
-    description = CGI.escapeHTML(tag.locals.page.description)
-    if show_tag
-      "<meta name=\"description\" content=\"#{description}\" />"
-    else
-      description
-    end
-  end
-
-  desc %{
-    Emits the page keywords field in a meta tag, unless attribute
-    'tag' is set to 'false'.
-
-    *Usage:*
-
-    <pre><code> <r:meta:keywords [tag="false"] /> </code></pre>
-  }
-  tag 'meta:keywords' do |tag|
-    show_tag = tag.attr['tag'] != 'false' || false
-    keywords = CGI.escapeHTML(tag.locals.page.keywords)
-    if show_tag
-      "<meta name=\"keywords\" content=\"#{keywords}\" />"
-    else
-      keywords
+    <pre><code><r:unless_field name="author" [equals|matches="John"] [ignore_case="true|false"]>...</r:unless_field></code></pre>
+  )
+  tag 'unless_field' do |tag|
+    required_attr(tag,'name')
+    field = tag.locals.page.field(tag.attr['name'])
+    tag.expand unless case
+      when (field and (tag.attr['equals'] and tag.attr['ignore_case'] == 'false')) ; field.content == tag.attr['equals']
+      when (field and tag.attr['equals']) ; field.content.downcase == tag.attr['equals'].downcase
+      when (field and tag.attr['matches']) ; field.content =~ build_regexp_for(tag, 'matches')
+      else field
     end
   end
 
@@ -1248,7 +1251,7 @@ module StandardTags
     def will_paginate_options(tag)
       attr = tag.attr.symbolize_keys
       if attr[:paginated] == 'true'
-        attr.slice(:class, :previous_label, :next_label, :inner_window, :outer_window, :separator, :per_page).merge({:renderer => Radiant::Pagination::LinkRenderer.new(tag.globals.page.url)})
+        attr.slice(:class, :previous_label, :next_label, :inner_window, :outer_window, :separator, :per_page).merge({:renderer => Radiant::Pagination::LinkRenderer.new(tag.globals.page.path)})
       else
         {}
       end
@@ -1299,8 +1302,13 @@ module StandardTags
       values = options[:values].split(',').map!(&:strip)
 
       attribute = (tag.attr[attribute_name] || default).to_s
-      raise TagError.new(%{'#{attribute_name}' attribute of #{tag} tag must be one of: #{values.join(',')}}) unless values.include?(attribute)
+      raise TagError.new(%{`#{attribute_name}' attribute of `#{tag.name}' tag must be one of: #{values.join(', ')}}) unless values.include?(attribute)
       return attribute
+    end
+    
+    def required_attr(tag, *attribute_names)
+      attr_collection = attribute_names.map{|a| "`#{a}'"}.join(' or ')
+      raise TagError.new("`#{tag.name}' tag must contain a #{attr_collection} attribute.") if (tag.attr.keys & attribute_names).blank?
     end
 
     def dev?(request)
