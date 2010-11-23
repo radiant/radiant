@@ -8,20 +8,23 @@ Feature: Rich configuration
     And I go to the "configuration" admin page
 
   Scenario: Reviewing configuration
-    Then I should see a "Site configuration" heading
-		And I should see "Site title"
-		And I should see "Site domain"
-		And I should see the site title
-		And I should see the site domain    
+    Then I should see "Personal Preferences"
+    And I should see "Configuration"
+		And I should see "Site Name"
+		And I should see "Site Domain"
 		
   Scenario: Editing configuration
-		When I press "Edit"
-		Then I should see a "Configuration" heading
-		And I should see "Site title"
-		And I should see "Timezone name"
-		When I fill in "Site title" with "Something else"
-		And I select "London" from "Timezone name"
+		When I press "Edit Configuration"
+		Then I should see the form
+		And I should see "Site Name"
+		And I should see "Local Timezone"
+		When I fill in "Site Name" with "Something else"
+		And I select "London" from "Local Timezone"
 		And I press "Save Changes"
-		Then I should see "Site configuration"
-		And I should see "Something Else"
+    And I should see "Configuration"
+		And I should see "Something else"
 		
+  Scenario: Editing preferences
+		When I press "Edit Preferences"
+    Then I should see "Personal Preferences"
+		And I should see the form

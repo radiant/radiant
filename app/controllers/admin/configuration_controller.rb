@@ -1,4 +1,10 @@
 class Admin::ConfigurationController < ApplicationController
+
+  # Admin::ConfigurationController handles the batch-updating of Radiant::Config entries.
+  # It accepts any set of config name-value pairs but is accessible only to administrators.
+  # Note that configuration is routed as a singular resource so we only deal with show/edit/update
+  # and the show and edit views determine what set of config values is shown and made editable.
+  
   before_filter :initialize_config
   
   only_allow_access_to :edit, :update,
