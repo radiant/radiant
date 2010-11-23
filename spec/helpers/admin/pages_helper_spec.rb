@@ -99,4 +99,18 @@ describe Admin::PagesHelper do
     end
   end
 
+  describe '#child_menu_for' do
+    it "should be empty if there are no options" do
+      helper.stub!(:children_for).and_return([])
+      helper.child_menu_for(@page).should be_nil
+    end
+
+    it "should list options if there are any" do
+      helper.stub!(:children_for).and_return([Page, FileNotFoundPage])
+      @page.stub!(:default_child).and_return(Page)
+      menu = helper.child_menu_for(@page)
+      menu.should match(/Normal Page/)
+    end
+  end
+
 end

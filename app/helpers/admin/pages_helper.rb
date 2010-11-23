@@ -53,6 +53,22 @@ module Admin::PagesHelper
     page.description.to_s.strip.gsub(/\t/,'').gsub(/\s+/,' ')
   end
 
+  def child_menu_for(page)
+    children = children_for(page)
+    return nil if children.size < 2
+    children.unshift(children.delete(page.default_child), :separator) if children.include?(page.default_child)
+    name_for = proc { |p| (name = p.name.to_name('Page')).blank? ? t('normal_page') : name }
+    content_tag :ul, :class => 'menu', :id => "allowed_children_#{page.id}" do
+      children.map do |child|
+        if child == :separator
+          content_tag :li, nil, :class => 'separator'
+        else
+          content_tag :li, link_to(name_for[child], new_admin_page_child_path(page, :page_class => child), :title => clean_page_description(child))
+        end
+      end
+    end
+  end
+
   def page_edit_javascripts
     <<-CODE
     function addPart(form) {
