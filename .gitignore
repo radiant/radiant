@@ -12,3 +12,4 @@ spec/datasets/tmp
 *.tmproj
 .idea
 rerun.txt
+*.swp

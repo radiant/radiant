@@ -32,7 +32,9 @@ class Admin::PagesController < Admin::ResourceController
     end
 
     def model_class
-      if params[:page_id]
+      if Page.descendants.any? { |d| d.to_s == params[:page_class] }
+        params[:page_class].constantize
+      elsif params[:page_id]
         Page.find(params[:page_id]).children
       else
         Page
