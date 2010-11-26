@@ -204,16 +204,8 @@ class Page < ActiveRecord::Base
     super(options.reverse_merge(:include => :parts), &block)
   end
 
-  def default_child
-    self.class.default_child
-  end
-
-  def allowed_children_lookup
-    [default_child, *Page.descendants.sort_by(&:name)].uniq
-  end
-
-  def set_allowed_children_cache
-    self.allowed_children_cache = allowed_children_lookup.collect(&:name).join(',')
+  def to_json(options={}, &block)
+    super(options.reverse_merge(:include => :parts), &block)
   end
 
   class << self
