@@ -203,6 +203,10 @@ class Page < ActiveRecord::Base
     super(options.reverse_merge(:include => :parts), &block)
   end
 
+  def to_json(options={}, &block)
+    super(options.reverse_merge(:include => :parts), &block)
+  end
+
   class << self
     alias_method :in_menu?, :in_menu
     alias_method :in_menu, :in_menu=
