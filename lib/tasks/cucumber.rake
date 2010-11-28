@@ -24,10 +24,9 @@ begin
   desc 'Alias for cucumber:ok'
   task :cucumber => 'cucumber:ok'
 
-  task :default => :cucumber
-
-  task :features => :cucumber do
-    STDERR.puts "*** The 'features' task is deprecated. See rake -T cucumber ***"
+  Cucumber::Rake::Task.new({:wip => 'db:test:prepare'}, 'Run features that are being worked on') do |t|
+    t.fork = true # You may get faster startup if you set this to false
+    t.profile = 'wip'
   end
 
 rescue LoadError

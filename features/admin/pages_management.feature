@@ -39,7 +39,8 @@ Feature: Managing pages
     Given I am logged in as "existing"
     And there is a homepage
     When I go to the "pages" admin page
-    And I follow "Add child"
+    And I follow "Add Child"
+    And I follow "Normal Page"
     Then I should see "New Page"
     And there should be a "body" part
     And there should be an "extended" part
@@ -67,14 +68,6 @@ Feature: Managing pages
     Given I am logged in as "existing"
     When I view a page
     Then I should see "Edit Page"
-    
-  Scenario: Change page type
-    Given I am logged in as "existing"
-    When I edit the "virtual" page
-    And I select "<normal>" from "Page type"
-    And I press "Save and Continue Editing"
-    Then I should see "Edit Page"
-    And "&lt;normal&gt;" should be selected for "Page type"
     
   Scenario: Change page status from Scheduled to Draft
     Given I am logged in as "existing"

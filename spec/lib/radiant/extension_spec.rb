@@ -37,7 +37,7 @@ describe Radiant::Extension do
     it { should be_routed }
   end
   context "when the routing_file does not exist" do
-    subject { BasicExtension }
+    subject { UnroutedExtension }
     it { should_not be_routed }
   end
   
@@ -61,13 +61,13 @@ describe Radiant::Extension do
   end
 
   it "should allow the manipulation of tabs" do
-    BasicExtension.admin.nav['Design'].length.should == 2
+    start_length = BasicExtension.admin.nav['Design'].length
     BasicExtension.class_eval {
       tab 'Design' do
         add_item "Pages", "/admin/pages"
       end
     }
-    BasicExtension.admin.nav['Design'].length.should == 3
+    BasicExtension.admin.nav['Design'].length.should == start_length + 1
   end
   
   it "should allow the addition of tabs" do

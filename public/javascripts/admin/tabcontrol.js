@@ -72,6 +72,7 @@ var TabControl = Class.create({
           }
         } else {
           this.select(tab);
+          $('part_' + tab.caption + '_content').focus();
         }
         event.stop();
       }

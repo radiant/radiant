@@ -1,11 +1,11 @@
 =default-link
-  color: #0066cc
+  color: $base-link-color
   text-decoration: underline
   &:hover
     text-decoration: none
 
 =alt-link
-  color: red
+  color: $alt-link-color
   text-decoration: underline
   &:hover
     text-decoration: none
@@ -13,3 +13,6 @@
 =plain-link
   color: #333
   text-decoration: none
+  &:hover
+    text-decoration: underline
+    color: $base-link-color

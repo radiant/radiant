@@ -1,6 +1,8 @@
 # require 'initializer'
 require 'radiant/admin_ui'
 require 'radiant/extension_loader'
+#require 'radiant/extension_locator'
+#require 'radiant/gem_locator'
 
 module Radiant
   autoload :Cache, 'radiant/cache'
@@ -27,12 +29,22 @@ module Radiant
       paths.unshift(RADIANT_ROOT + "/test/fixtures/extensions") if env == "test"
       paths
     end
+
+    def default_plugin_locators
+      locators = []
+      locators << Radiant::ExtensionLocator if defined? Gem
+      locators << Radiant::GemLocator if defined? Gem
+      locators << Rails::Plugin::FileSystemLocator
+    end
     
     def extensions
       @extensions ||= all_available_extensions
     end
     
     def all_available_extensions
+      # TODO: FIX
+      return Rails.application.railties.engines.select { |e| e.is_a? Radiant::Extension }
+
       # load vendorized extensions by inspecting load path(s)
       all = extension_paths.map do |path|
         Dir["#{path}/*"].select {|f| File.directory?(f) }
@@ -47,11 +59,6 @@ module Radiant
       all.flatten.map {|f| File.basename(f).gsub(/^radiant-|-extension-[\d\.]+$/, '') }.sort.map {|e| e.to_sym }
     end
     
-    def admin
-      AdminUI.instance
-    end
-
-
     def extension(ext)
       ::ActiveSupport::Deprecation.warn("Extension dependencies have been deprecated. Extensions may be packaged as gems and use the Gem spec to declare dependencies.", caller)
       @extension_dependencies << ext unless @extension_dependencies.include?(ext)
@@ -149,11 +156,8 @@ end_error
       end
   end
 
-  class Initializer < Rails::Initializer
-    def self.run(command = :process, configuration = Configuration.new)
-      Rails.configuration = configuration
-      super
-    end
+  module Initializer
+    include Rails::Initializer
 
     def set_autoload_paths
       extension_loader.add_extension_paths
@@ -200,37 +204,14 @@ end_error
       configuration.check_extension_dependencies
     end
 
-    def initialize_default_admin_tabs
-      admin.nav.clear
-      admin.load_default_nav
+    def self.admin
+      AdminUI.instance
     end
 
-    def initialize_framework_views
-      view_paths = [].tap do |arr|
-        # Add the singular view path if it's not in the list
-        arr << configuration.view_path if !configuration.view_paths.include?(configuration.view_path)
-        # Add the default view paths
-        arr.concat configuration.view_paths
-        # Add the extension view paths
-        arr.concat extension_loader.view_paths
-        # Reverse the list so extensions come first
-        arr.reverse!
-      end
-      if configuration.frameworks.include?(:action_mailer) || defined?(ActionMailer::Base)
-        # This happens before the plugins are loaded so we must load it manually
-        unless ActionMailer::Base.respond_to? :view_paths
-          require "#{RADIANT_ROOT}/lib/plugins/extension_patches/lib/mailer_view_paths_extension"
-        end
-        ActionMailer::Base.view_paths = ActionView::Base.process_view_paths(view_paths)
-      end
-      if configuration.frameworks.include?(:action_controller) || defined?(ActionController::Base)
-        view_paths.each do |vp|
-          unless ActionController::Base.view_paths.include?(vp)
-            ActionController::Base.prepend_view_path vp
-          end
-        end
-      end
+    def self.configuration
+      Radiant::Configuration
     end
+
 
     def initialize_routing
       extension_loader.add_controller_paths

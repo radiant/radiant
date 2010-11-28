@@ -161,7 +161,7 @@ module AdminHelper
   end
   
   def filter_options_for_select(selected=nil)
-    options_for_select([[t('select.none'), '']] + TextFilter.descendants.map { |s| s.filter_name }.sort, selected)
+    options_for_select([[t('select.none'), '']] + TextFilter.descendants_names, selected)
   end
   
   def body_classes
@@ -231,7 +231,9 @@ module AdminHelper
       depagination_limit = options.delete(:max_per_page)                           # supply :max_per_page => false to include the 'show all' link no matter how large the collection
       html = will_paginate(list, will_paginate_options.merge(options))
       if depaginate && list.total_pages > 1 && (!depagination_limit.blank? || list.total_entries <= depagination_limit.to_i)
-        html << content_tag(:div, link_to("show all", :pp => list.total_entries), :class => 'depaginate')
+        html.insert(html.index("</div>"), content_tag(:span, link_to("show all", :pp => list.total_entries), :class => 'toggle'))
+      elsif list.total_entries > depagination_limit.to_i
+        html = content_tag(:div, link_to("paginate", :p => 1), :class => 'pagination')
       end
       html
     end

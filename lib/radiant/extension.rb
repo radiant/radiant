@@ -12,6 +12,29 @@ module Radiant
         end
       RUBY
     end
+
+    initializer "engine.load_vendor_plugins" do
+      # TODO: May not be necessary in the future if Railties loads it itself. As of Rails-3.0.1, railsties doesn't
+      #       so we have to load them manually here.
+      # Adds any plugins under this engine into the load path
+      Dir["#{config.root}/vendor/plugins/*"].each do |plugin|
+        %w( app/models app/controlers app/helpers lib ).each do |path|
+          $LOAD_PATH.unshift(File.join(plugin, path))
+        end
+      end
+    end
+
+    initializer "activate" do
+      self.activate if self.respond_to? :activate
+    end
+
+    # TODO: Maybe resurrect later if we can work out how to do this.
+    #       Currently, extensions need to provide a config/routes.rb file rather than using define_routes
+    #def self.define_routes(&block)
+    #  Rails.application.routes.draw do |map|
+    #    yield map
+    #  end
+    #end
     
     class Configuration < ::Rails::Engine::Configuration
       def paths
@@ -105,6 +128,14 @@ module Radiant
 
       def migrated?
         migrator.new(:up, migrations_path).pending_migrations.empty?
+      end
+      
+      # override the original method to compensate for some extensions
+      # not having a "lib" directory. also, don't traverse upwards beyond
+      # the "vendor/extensions" directory
+      def find_root_with_flag(flag, default = nil)
+        path = File.dirname(self.called_from)
+        default ||= path
       end
 
       def enabled?

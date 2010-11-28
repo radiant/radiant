@@ -21,5 +21,16 @@ class TextFilter
       text = File.read(filename) rescue ""
       self.description text
     end
+
+    def descendants_names
+      descendants.map { |s| s.filter_name }.sort
+    end
+
+    def find_descendant(filter_name)
+      descendants.each do |s|
+        return s if s.filter_name == filter_name
+      end
+      nil
+    end
   end
 end

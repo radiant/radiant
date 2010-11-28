@@ -21,7 +21,7 @@ class PagesDataset < Dataset::Base
       create_page "Child 3"
     end
     create_page "Childless"
-    create_page "Assorted", :keywords => "sweet & harmonious biscuits", :description => "sweet & harmonious biscuits" do
+    create_page "Assorted" do
       breadcrumbs = %w(f e d c b a j i h g)
       %w(a b c d e f g h i j).each_with_index do |name, i|
         create_page name, :breadcrumb => breadcrumbs[i], :published_at => Time.now - (10 - i).minutes

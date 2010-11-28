@@ -23,9 +23,29 @@ end
 describe Page, 'validations' do
   dataset :pages
   test_helper :validations
+  
+  let(:page){ Page.new(page_params)}
 
   before :each do
     @page = @model = Page.new(page_params)
+  end
+  
+  it 'should not be valid with a slug length greater than 100 characters' do
+    page.valid?.should be_true
+    page.slug = 'x'*101
+    page.valid?.should be_false
+  end
+  
+  it 'should not be valid with a title length greater than 255 characters' do
+    page.valid?.should be_true
+    page.title = 'x'*256
+    page.valid?.should be_false
+  end
+  
+  it 'should not be valid with a breadcrumb length greater than 160 characters' do
+    page.valid?.should be_true
+    page.breadcrumb = 'x'*161
+    page.valid?.should be_false
   end
 
   it 'should validate length of' do
@@ -120,184 +140,195 @@ end
 
 describe Page do
   dataset :pages
+  
+  let(:page){ pages(:first ) }
+  let(:home){ pages(:home) }
+  let(:parent){ pages(:parent) }
+  let(:child){ pages(:child) }
+  let(:part){ page.parts(:body) }
 
-  before :each do
-    @page = pages(:first)
-  end
-
-  it 'should have parts' do
-    @page.parts.count.should == 1
-    pages(:home).parts.count.should == 4
+  describe '#parts' do
+    it 'should return PageParts with a page_id of the page id' do
+      home.parts.sort_by{|p| p.name }.should == PagePart.find_all_by_page_id(home.id).sort_by{|p| p.name }
+    end
   end
 
   it 'should destroy dependant parts' do
-    @page.parts.create(page_part_params(:name => 'test', :page_id => nil))
-    @page.parts.find_by_name('test').should be_kind_of(PagePart)
-
-    id = @page.id
-    @page.destroy
-    PagePart.find_by_page_id_and_name(id, 'test').should be_nil
+    page.parts.create(page_part_params(:name => 'test'))
+    page.parts.find_by_name('test').should_not be_nil
+    id = page.id
+    page.destroy
+    PagePart.find_by_page_id(id).should be_nil
+  end
+  
+  describe '#part' do
+    it 'should find the part with a name of the given string' do
+      page.part('body').should == page.parts.find_by_name('body')
+    end
+    it 'should find the part with a name of the given symbol' do
+      page.part(:body).should == page.parts.find_by_name('body')
+    end
+    it 'should access unsaved parts by name' do
+      part = PagePart.new(:name => "test")
+      page.parts << part
+      page.part('test').should == part
+      page.part(:test).should == part
+    end
+    it 'should return nil for an invalid part name' do
+      page.part('not-real').should be_nil
+    end
   end
 
-  it 'should allow access to parts by name with a string' do
-    part = @page.part('body')
-    part.name.should == 'body'
-  end
+  describe '#field' do
+    it "should find a field" do
+      page.fields.create(:name => 'keywords', :content => 'radiant')
+      page.field(:keywords).should == page.fields.find_by_name('keywords')
+    end
 
-  it 'should allow access to parts by name with a symbol' do
-    part = @page.part(:body)
-    part.name.should == 'body'
+    it "should find an unsaved field" do
+      field = PageField.new(:name => 'description', :content => 'radiant')
+      page.fields << field
+      page.field(:description).should == field
+    end
   end
-
-  it 'should allow access to parts by name when page is unsaved' do
-    part = PagePart.new(:content => "test", :name => "test")
-    @page.parts << part
-    @page.part('test').should == part
-    @page.part(:test).should == part
+  
+  describe '#has_part?' do
+    it 'should return true for a valid part' do
+      page.has_part?('body').should == true
+      page.has_part?(:body).should == true
+    end
+    it 'should return false for a non-existant part' do
+      page.has_part?('obviously_false_part_name').should == false
+      page.has_part?(:obviously_false_part_name).should == false
+    end
   end
-
-  it 'should allow access to parts by name created with the build method when page is unsaved' do
-    @page.parts.build(:content => "test", :name => "test")
-    @page.part('test').content.should == "test"
-    @page.part(:test).content.should == "test"
+  
+  describe '#inherits_part?' do
+    it 'should return true if any ancestor page has a part of the given name' do
+      child.has_part?(:sidebar).should be_false
+      child.inherits_part?(:sidebar).should be_true
+    end
+    it 'should return false if any ancestor page does not have a part of the given name' do
+      home.has_part?(:sidebar).should be_true
+      home.inherits_part?(:sidebar).should be_false
+    end
+  end
+  
+  describe '#has_or_inherits_part?' do
+    it 'should return true if the current page or any ancestor has a part of the given name' do
+      child.has_or_inherits_part?(:sidebar).should be_true
+    end
+    it 'should return false if the current part or any ancestor does not have a part of the given name' do
+      child.has_or_inherits_part?(:obviously_false_part_name).should be_false
+    end
   end
 
   it "should accept new page parts as an array of PageParts" do
-    @page.parts = [PagePart.new(:name => 'body', :content => 'Hello, world!')]
-    @page.parts.size.should == 1
-    @page.parts.first.should be_kind_of(PagePart)
-    @page.parts.first.name.should == 'body'
-    @page.parts.first.content.should == 'Hello, world!'
+    page.parts = [PagePart.new(:name => 'body', :content => 'Hello, world!')]
+    page.parts.size.should == 1
+    page.parts.first.should be_kind_of(PagePart)
+    page.parts.first.name.should == 'body'
+    page.parts.first.content.should == 'Hello, world!'
   end
 
   it "should dirty the page object when only changing parts" do
     lambda do
-      @page.parts = [PagePart.new(:name => 'body', :content => 'Hello, world!')]
-      @page.changed.should_not be_empty
+      page.dirty?.should be_false
+      page.parts = [PagePart.new(:name => 'body', :content => 'Hello, world!')]
+      page.dirty?.should be_true
+    end
+  end
+  
+  describe '#published?' do
+    it "should be true when the status is Status[:published]" do
+      page.status = Status[:published]
+      page.published?.should be_true
+    end
+    it "should be false when the status is not Status[:published]" do
+      page.status = Status[:draft]
+      page.published?.should be_false
+    end
+  end
+  
+  describe '#scheduled?' do
+    it "should be true when the status is Status[:scheduled]" do
+      page.status = Status[:scheduled]
+      page.scheduled?.should be_true
+    end
+    it "should be false when the status is not Status[:scheduled]" do
+      page.status = Status[:published]
+      page.scheduled?.should be_false
     end
   end
 
-  # invalid, as published_at is set when form is submitted
-
-  it 'should set published_at when published' do
-    @page = Page.new(page_params(:status_id => '1', :published_at => nil))
-    @page.published_at.should be_nil
-
-    @page.status_id = Status[:published].id
-    @page.save
-    @page.published_at.should_not be_nil
-    @page.published_at.utc.day.should == Time.now.utc.day
-  end
-
-  it 'should not update published_at when already published' do
-    @page = Page.new(page_params(:status_id => Status[:published].id))
-    @page.published_at.should be_kind_of(Time)
-
-    expected = @page.published_at
-    @page.save
-    @page.published_at.should == expected
-  end
-
-  it 'should answer true when published' do
-    @page.status = Status[:published]
-    @page.published?.should == true
-  end
-
-  it 'should answer false when not published' do
-    @page.status = Status[:draft]
-    @page.published?.should be_false
+  context 'when setting the published_at date' do
+    it 'should change its status to scheduled with a date in the future' do
+      new_page = Page.new(page_params(:status_id => '100', :published_at => '2020-1-1'))
+      new_page.save
+      new_page.status_id.should == 90 
+    end
+    it 'should set the status to published when the date is in the past' do
+      scheduled_time = Time.zone.now - 1.year
+      p = Page.new(page_params(:status_id => '90', :published_at => scheduled_time))
+      p.save
+      p.status_id.should == 100
+    end
   end
   
-  it 'should answer false when not published but scheduled' do
-    @page.status = Status[:scheduled]
-    @page.published?.should be_false
+  context 'when setting the status' do  
+    it 'should set published_at when given the published status id' do
+      page = Page.new(page_params(:status_id => '100', :published_at => nil))
+      page.status_id = Status[:published].id
+      page.save
+      page.published_at.utc.day.should == Time.now.utc.day
+    end
+    it 'should change its status to draft when set to draft' do
+      scheduled = pages(:scheduled)
+      scheduled.status_id = '1'
+      scheduled.save
+      scheduled.status_id.should == 1
+    end
+    it 'should not update published_at when already published' do
+      new_page = Page.new(page_params(:status_id => Status[:published].id))
+      expected = new_page.published_at
+      new_page.save
+      new_page.published_at.should == expected
+    end
   end
-
-  it 'should change its status to scheduled when publishing in the future' do
-    @page = Page.new(page_params(:status_id => '100', :published_at => '2020-1-1'))
-    @page.save
-    @page.status_id.should == 90    
-  end
-
-  it 'should change its status to draft when set to draft' do
-    @page = pages(:scheduled)
-    @page.status_id = Status[:draft].id
-    @page.save
-    @page.status_id.should == 1    
+    
+  describe '#path' do
+    it "should start with a slash" do
+      page.path.should match(/^\//)
+    end
+    it "should return a string with the current page's slug catenated with it's ancestor's slugs and delimited by slashes" do
+      pages(:grandchild).path.should == '/parent/child/grandchild/'
+    end
+    it 'should end with a slash' do
+      page.path.should match(/\/$/)
+    end
   end
   
-  it 'should be published status when published_at is in the past' do
-    #current time 01-29-2010
-    scheduled_time = '2010-1-1'
-    @page = Page.new(page_params(:status_id => Status[:scheduled].id, :published_at => scheduled_time))
-    @page.save
-    @page.status_id.should == Status[:published].id
+  describe '#child_path' do
+    it 'should return the #path for the given child' do
+      parent.child_path(child).should == '/parent/child/'
+    end
   end
   
-  it "should answer the page's url" do
-    @page = pages(:parent)
-    @page.url.should == '/parent/'
-    @page.children.first.url.should == '/parent/child/'
-
-    grandchild = pages(:grandchild)
-    grandchild.url.should == '/parent/child/grandchild/'
+  describe '#status' do
+    it 'should return the Status with the id of the page status_id' do
+      home.status.should == Status.find(home.status_id)
+    end
   end
 
-  it 'should allow you to calculate a child url from the parent' do
-    @page = pages(:parent)
-    child = pages(:child)
-    @page.child_url(child).should == '/parent/child/'
+  describe '#status=' do
+    it 'should set the status_id to the id of the given Status' do
+      home.status = Status[:draft]
+      home.status_id.should == Status[:draft].id
+    end
   end
 
-  it 'should have status' do
-    @page = pages(:home)
-    @page.status.should == Status[:published]
-  end
-
-  it 'should allow you to set the status' do
-    @page = pages(:home)
-    draft = Status[:draft]
-    @page.status = draft
-    @page.status.should == draft
-    @page.status_id.should == draft.id
-  end
-
-  it 'should respond to cache? with true (by default)' do
-    @page.cache?.should == true
-  end
-
-  it 'should respond to virtual? with false (by default)' do
-    @page.virtual?.should == false
-  end
-
-  it 'should allow you to tell if a part exists based on a string or symbol' do
-    @page = pages(:home)
-    @page.has_part?(:body).should == true
-    @page.has_part?('sidebar').should == true
-    @page.has_part?(:obviously_false_part_name).should == false
-  end
-
-  it 'should allow you to tell if a part is inherited' do
-    @page = pages(:child)
-    @page.has_part?(:sidebar).should == false
-    @page.inherits_part?(:sidebar).should == true
-
-    @page = pages(:home)
-    @page.has_part?(:sidebar).should == true
-    @page.inherits_part?(:sidebar).should == false
-  end
-
-  it 'should allow you to tell if a part exists or is inherited' do
-    @page = pages(:child)
-    @page.has_part?(:sidebar).should == false
-    @page.has_or_inherits_part?(:sidebar).should == true
-    @page.has_or_inherits_part?(:obviously_false_part_name).should == false
-
-    @page = pages(:home)
-    @page.has_part?(:sidebar).should == true
-    @page.has_or_inherits_part?(:sidebar).should == true
-    @page.has_or_inherits_part?(:obviously_false_part_name).should == false
-  end
+  its(:cache?){ should be_true }
+  its(:virtual?){ should be_false }
 
   it 'should support optimistic locking' do
     p1, p2 = Page.find(page_id(:first)), Page.find(page_id(:first))
@@ -331,7 +362,7 @@ describe Page, "before save filter" do
     @page.send(:read_attribute, :virtual).should == true
 
    # turn a virtual page into a non-virtual one
-   ["", nil, "Page", "EnvDumpPage"].each do |value|
+   ["", nil, "Page", "PageSpecTestPage"].each do |value|
       @page = ArchiveYearIndexPage.create(page_params)
       @page.class_name = value
       @page.save.should == true
@@ -394,7 +425,7 @@ describe Page, "rendering" do
   end
 end
 
-describe Page, "#find_by_url" do
+describe Page, "#find_by_path" do
   dataset :pages, :file_not_found
 
   before :each do
@@ -402,44 +433,44 @@ describe Page, "#find_by_url" do
   end
 
   it 'should allow you to find the home page' do
-    @page.find_by_url('/').should == @page
+    @page.find_by_path('/').should == @page
   end
 
   it 'should allow you to find deeply nested pages' do
-    @page.find_by_url('/parent/child/grandchild/great-grandchild/').should == pages(:great_grandchild)
+    @page.find_by_path('/parent/child/grandchild/great-grandchild/').should == pages(:great_grandchild)
   end
 
   it 'should not allow you to find virtual pages' do
-    @page.find_by_url('/virtual/').should == pages(:file_not_found)
+    @page.find_by_path('/virtual/').should == pages(:file_not_found)
   end
 
   it 'should find the FileNotFoundPage when a page does not exist' do
-    @page.find_by_url('/nothing-doing/').should == pages(:file_not_found)
+    @page.find_by_path('/nothing-doing/').should == pages(:file_not_found)
   end
 
   it 'should find a draft FileNotFoundPage in dev mode' do
-    @page.find_by_url('/drafts/no-page-here', false).should == pages(:lonely_draft_file_not_found)
+    @page.find_by_path('/drafts/no-page-here', false).should == pages(:lonely_draft_file_not_found)
   end
 
   it 'should not find a draft FileNotFoundPage in live mode' do
-    @page.find_by_url('/drafts/no-page-here').should_not == pages(:lonely_draft_file_not_found)
+    @page.find_by_path('/drafts/no-page-here').should_not == pages(:lonely_draft_file_not_found)
   end
 
   it 'should find a custom file not found page' do
-    @page.find_by_url('/gallery/nothing-doing').should == pages(:no_picture)
+    @page.find_by_path('/gallery/nothing-doing').should == pages(:no_picture)
   end
 
   it 'should not find draft pages in live mode' do
-    @page.find_by_url('/draft/').should == pages(:file_not_found)
+    @page.find_by_path('/draft/').should == pages(:file_not_found)
   end
 
   it 'should find draft pages in dev mode' do
-    @page.find_by_url('/draft/', false).should == pages(:draft)
+    @page.find_by_path('/draft/', false).should == pages(:draft)
   end
 
   it "should use the top-most published 404 page by default" do
-    @page.find_by_url('/foo').should == pages(:file_not_found)
-    @page.find_by_url('/foo/bar').should == pages(:file_not_found)
+    @page.find_by_path('/foo').should == pages(:file_not_found)
+    @page.find_by_path('/foo/bar').should == pages(:file_not_found)
   end
 end
 
@@ -489,6 +520,13 @@ describe Page, "class" do
     end
   end
 
+  it "should allow initialization with default fields" do
+    @page = Page.new_with_defaults({ 'defaults.page.fields' => 'x, y, z' })
+    @page.fields.size.should == 3
+    @page.fields.first.name.should == 'x'
+    @page.fields.last.name.should == 'z'
+  end
+
   it "should expose default page parts" do
     override = PagePart.new(:name => 'override')
     Page.stub!(:default_page_parts).and_return([override])
@@ -510,6 +548,11 @@ describe Page, "class" do
     Page.is_descendant_class_name?("InvalidPage").should == false
   end
 
+  describe ".date_column_names" do
+    it "should return an array of column names whose sql_type is a date or datetime" do
+      Page.date_column_names.should == Page.columns.collect{|c| c.name if c.sql_type =~ /date/ }.compact
+    end
+  end
 end
 
 describe Page, "loading subclasses before bootstrap" do
@@ -572,26 +615,26 @@ describe Page, "class which is applied to a page but not defined" do
   end
 end
 
-describe Page, "class find_by_url" do
+describe Page, "class find_by_path" do
   dataset :pages, :file_not_found
 
   it 'should find the home page' do
-    Page.find_by_url('/').should == pages(:home)
+    Page.find_by_path('/').should == pages(:home)
   end
 
   it 'should find children' do
-    Page.find_by_url('/parent/child/').should == pages(:child)
+    Page.find_by_path('/parent/child/').should == pages(:child)
   end
 
   it 'should not find draft pages in live mode' do
-    Page.find_by_url('/draft/').should == pages(:file_not_found)
-    Page.find_by_url('/draft/', false).should == pages(:draft)
+    Page.find_by_path('/draft/').should == pages(:file_not_found)
+    Page.find_by_path('/draft/', false).should == pages(:draft)
   end
 
   it 'should raise an exception when root page is missing' do
     pages(:home).destroy
     Page.find_by_parent_id().should be_nil
-    lambda { Page.find_by_url "/" }.should raise_error(Page::MissingRootPageError, 'Database missing root page')
+    lambda { Page.find_by_path "/" }.should raise_error(Page::MissingRootPageError, 'Database missing root page')
   end
 end
 
