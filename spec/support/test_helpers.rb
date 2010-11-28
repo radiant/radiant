@@ -11,7 +11,7 @@ module TestHelperDirective
         self.send(:include, constant)
       rescue NameError
         if first_time
-          filename = Rails.root + 'test/helpers' + "#{name}_test_helper"
+          filename = File.join(SPEC_ROOT,"..","test","helpers","#{name}_test_helper")
           require filename
           first_time = false
           retry
