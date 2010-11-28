@@ -212,5 +212,5 @@ Event.observe(window, 'resize', function(event) {
 });
 
 Event.addBehavior({
-  'a.dropdown': Dropdown.TriggerBehavior(),
+  'a.dropdown': Dropdown.TriggerBehavior()
 });
