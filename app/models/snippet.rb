@@ -16,4 +16,8 @@ class Snippet < ActiveRecord::Base
   
   object_id_attr :filter, TextFilter
 
+  def after_initialize
+    self.filter_id ||= Radiant::Config['defaults.snippet.filter'] if new_record?
+  end
+
 end
