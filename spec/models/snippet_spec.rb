@@ -5,7 +5,25 @@ describe Snippet do
   test_helper :validations
   
   before :each do
+    @original_filter = Radiant::Config['defaults.snippet.filter']
     @snippet = @model = Snippet.new(snippet_params)
+  end
+
+  after :each do
+    Radiant::Config['defaults.snippet.filter'] = @original_filter
+  end
+
+  it "should take the filter from the default filter" do
+    Radiant::Config['defaults.snippet.filter'] = "Textile"
+    snippet = Snippet.new :name => 'new-snippet'
+    snippet.filter_id.should == "Textile"
+  end
+
+  it "shouldn't override existing snippets filters with the default filter" do
+    snippet = Snnippet.find(:first, :conditions => {:filter_id => nil})
+    Radiant::Config['defaults.snippet.filter'] = "Textile"
+    snippet.reload
+    snippet.filter_id.should_not == "Textile"
   end
   
   it 'should validate length of' do
