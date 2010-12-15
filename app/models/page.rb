@@ -39,6 +39,8 @@ class Page < ActiveRecord::Base
   attr_accessor :request, :response, :pagination_parameters
   class_inheritable_accessor :in_menu
   self.in_menu = true
+  class_inheritable_accessor :default_child
+  self.default_child = self
 
   set_inheritance_column :class_name
 
@@ -204,7 +206,7 @@ class Page < ActiveRecord::Base
   end
 
   def default_child
-    Page
+    self.class.default_child
   end
 
   def allowed_children
