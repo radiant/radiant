@@ -41,7 +41,7 @@ share_as :AllInstanceGenerators do
   end
   
   # Check for admin sass/css
-  %w(main.css modules/_links.sass modules/_opacity.sass modules/_rounded.sass modules/_shadow.sass 
+  %w(main.css modules/_links.sass modules/_rounded.sass 
     partials/_avatars.sass partials/_footer.sass partials/_layout.sass partials/_reset.sass main.sass 
     partials/_base.sass partials/_forms.sass partials/_messages.sass partials/_content.sass 
     partials/_header.sass partials/_popup.sass partials/_tabcontrol.sass partials/_dateinput.sass 
