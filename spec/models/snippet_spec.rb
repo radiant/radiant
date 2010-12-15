@@ -20,7 +20,7 @@ describe Snippet do
   end
 
   it "shouldn't override existing snippets filters with the default filter" do
-    snippet = Snnippet.find(:first, :conditions => {:filter_id => nil})
+    snippet = Snippet.find(:first, :conditions => {:filter_id => nil})
     Radiant::Config['defaults.snippet.filter'] = "Textile"
     snippet.reload
     snippet.filter_id.should_not == "Textile"
