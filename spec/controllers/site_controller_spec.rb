@@ -28,7 +28,7 @@ describe SiteController do
   end
 
   it "should redirect to admin if missing root" do
-    Page.should_receive(:find_by_url).and_raise(Page::MissingRootPageError)
+    Page.should_receive(:find_by_path).and_raise(Page::MissingRootPageError)
     get :show_page, :url => '/'
     response.should redirect_to(welcome_url)
   end
@@ -146,7 +146,7 @@ describe SiteController do
     
     it "should prevent upstream caching when the page should not be cached" do
       @page = pages(:home)
-      Page.should_receive(:find_by_url).and_return(@page)
+      Page.should_receive(:find_by_path).and_return(@page)
       @page.should_receive(:cache?).and_return(false)
       get :show_page, :url => '/'
       response.headers['Cache-Control'].should =~ /private/
@@ -174,7 +174,7 @@ describe SiteController do
   describe "pagination" do
     it "should pass through pagination parameters to the page" do
       @page = pages(:home)
-      Page.stub!(:find_by_url).and_return(@page)
+      Page.stub!(:find_by_path).and_return(@page)
       @page.should_receive(:pagination_parameters=).with({:page => '3', :per_page => '12'})
       get :show_page, :url => '/', :page => '3', :per_page => '12'
     end
