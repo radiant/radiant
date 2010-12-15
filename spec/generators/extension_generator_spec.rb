@@ -1,12 +1,13 @@
 require File.dirname(__FILE__) + "/extension_generators_spec_helper"
 
 describe "ExtensionGenerator with normal options" do
-  it_should_behave_like AllGenerators
+  include GeneratorSpecHelperMethods
+  it_should_behave_like "all generators"
 
   before(:each) do
-    cp_r File.join(BASE_ROOT, 'lib/generators/extension'),  File.join(RADIANT_ROOT, 'vendor/generators')
+    FileUtils.cp_r File.join(BASE_ROOT, 'lib/generators/extension'),  File.join(RADIANT_ROOT, 'vendor/generators')
     git_config = {'user.name' => 'Ext Author', 'user.email' => 'ext@radiantcms.org', 'github.user' => 'extauthor'}
-    Git.should_receive(:global_config).and_return git_config
+    Git.stub!(:global_config).and_return git_config
     run_generator('extension', %w(Sample))
   end
   
@@ -145,17 +146,18 @@ describe "ExtensionGenerator with normal options" do
   end
   
   after(:each) do
-    rm_rf Dir["#{RADIANT_ROOT}/vendor/extensions/*"]
-    rm_rf Dir["#{RADIANT_ROOT}/vendor/generators/*"]
+    FileUtils.rm_rf Dir["#{RADIANT_ROOT}/vendor/extensions/*"]
+    FileUtils.rm_rf Dir["#{RADIANT_ROOT}/vendor/generators/*"]
   end
 end
 
 describe "ExtensionGenerator with test-unit option" do
-  it_should_behave_like AllGenerators
+  include GeneratorSpecHelperMethods
+  it_should_behave_like "all generators"
   
   before(:each) do
     Git.stub!(:global_config).and_return({})
-    cp_r File.join(BASE_ROOT, 'lib/generators/extension'),  File.join(RADIANT_ROOT, 'vendor/generators')
+    FileUtils.cp_r File.join(BASE_ROOT, 'lib/generators/extension'),  File.join(RADIANT_ROOT, 'vendor/generators')
     run_generator('extension', %w(Sample --with-test-unit))
   end
   
@@ -229,7 +231,7 @@ describe "ExtensionGenerator with test-unit option" do
   end
   
   after(:each) do
-    rm_rf Dir["#{RADIANT_ROOT}/vendor/extensions/*"]
-    rm_rf Dir["#{RADIANT_ROOT}/vendor/generators/*"]
+    FileUtils.rm_rf Dir["#{RADIANT_ROOT}/vendor/extensions/*"]
+    FileUtils.rm_rf Dir["#{RADIANT_ROOT}/vendor/generators/*"]
   end
 end

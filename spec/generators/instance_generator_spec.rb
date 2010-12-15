@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + "/extension_generators_spec_helper"
 
-share_as :AllInstanceGenerators do
+shared_examples_for "all instance generators" do
   # Check for directories
   %w(config config/environments config/initializers db log script vendor/plugins vendor/extensions
     public public/images public/stylesheets public/images/admin public/stylesheets/admin public/stylesheets/sass
@@ -101,21 +101,21 @@ describe "IntanceGenerator" do
   Rails::Generator::Base.prepend_sources(Rails::Generator::PathSource.new(:radiant, File.join(BASE_ROOT, 'lib', 'generators')))
   
   describe('with no options') do
-    it_should_behave_like AllInstanceGenerators
+    it_should_behave_like "all instance generators"
 
     before(:all) do
       with_radiant_root_as_base_root { suppress_stdout { run_generator('instance', [RAILS_ROOT]) } }
     end
 
     after(:all) do
-      rm_rf Dir["#{RADIANT_ROOT}"]
+      FileUtils.rm_rf Dir["#{RADIANT_ROOT}"]
     end
   end
 
   { 'db2'=>'ibm_db', 'mysql'=>'mysql', 'postgresql'=>'postgresql', 
     'sqlite3'=>'sqlite3', 'sqlserver'=>'sqlserver' }.each do |db, adapter|
     describe("with #{db} database option") do
-      it_should_behave_like AllInstanceGenerators
+      it_should_behave_like "all instance generators"
 
       before(:all) do
         with_radiant_root_as_base_root { suppress_stdout { run_generator('instance', ['-d', db, RAILS_ROOT]) } }
@@ -128,13 +128,13 @@ describe "IntanceGenerator" do
       end
     
       after(:all) do
-        rm_rf Dir["#{RADIANT_ROOT}"]
+        FileUtils.rm_rf Dir["#{RADIANT_ROOT}"]
       end
     end
   end
   
   describe('with shebang option') do
-    it_should_behave_like AllInstanceGenerators
+    it_should_behave_like "all instance generators"
 
     before(:all) do
       @shebang = '/my/path/to/ruby'
@@ -153,7 +153,7 @@ describe "IntanceGenerator" do
     end
     
     after(:all) do
-      rm_rf Dir["#{RADIANT_ROOT}"]
+      FileUtils.rm_rf Dir["#{RADIANT_ROOT}"]
     end
   end
 end

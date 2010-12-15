@@ -124,18 +124,15 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
     end
   end
 
-  share_as :AllGenerators do
-    include FileUtils
-    include GeneratorSpecHelperMethods
-  
+  shared_examples_for "all generators" do
     before(:all) do
       ActiveRecord::Base.pluralize_table_names = true
     
-      mkdir_p "#{RADIANT_ROOT}/app"
-      mkdir_p "#{RADIANT_ROOT}/config"
-      mkdir_p "#{RADIANT_ROOT}/db"
-      mkdir_p "#{RADIANT_ROOT}/vendor/generators"
-      mkdir_p "#{RADIANT_ROOT}/vendor/extensions"
+      FileUtils.mkdir_p "#{RADIANT_ROOT}/app"
+      FileUtils.mkdir_p "#{RADIANT_ROOT}/config"
+      FileUtils.mkdir_p "#{RADIANT_ROOT}/db"
+      FileUtils.mkdir_p "#{RADIANT_ROOT}/vendor/generators"
+      FileUtils.mkdir_p "#{RADIANT_ROOT}/vendor/extensions"
 
       File.open("#{RADIANT_ROOT}/config/routes.rb", 'w') do |f|
         f << "ActionController::Routing::Routes.draw do |map|\n\nend"
@@ -144,14 +141,15 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
   
     after(:all) do
       %w(app db config vendor).each do |dir|
-        rm_rf File.join(RADIANT_ROOT, dir)
+        FileUtils.rm_rf File.join(RADIANT_ROOT, dir)
       end
     end
   end
   
-  share_as :AllExtensionGenerators do
+  shared_examples_for "all extension generators" do
     before(:all) do
-      cp_r File.join(BASE_ROOT, 'spec/fixtures/example_extension'), File.join(RADIANT_ROOT, 'vendor/extensions/example')
+      FileUtils.mkdir_p "#{RADIANT_ROOT}/vendor/extensions"
+      FileUtils.cp_r File.join(BASE_ROOT, 'spec/fixtures/example_extension'), File.join(RADIANT_ROOT, 'vendor/extensions/example')
     end
   end
 
