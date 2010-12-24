@@ -7,4 +7,5 @@
  admin.subtitle: Publishing for Small Teams
  this: that
  defaults.page.filter: ""
+ defaults.snippet.filter: ""
  true?: true

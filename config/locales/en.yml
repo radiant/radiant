@@ -51,6 +51,8 @@ en:
         filter: "page filter"
         parts: "page parts"
         status: "page status"
+      snippet:
+        filter: "snippet filter"
     dev:
       host: "dev site domain name"
     local:

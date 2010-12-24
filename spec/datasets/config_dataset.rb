@@ -7,6 +7,7 @@ class ConfigDataset < Dataset::Base
     Radiant::Config['defaults.page.status'] = 'draft'
     Radiant::Config['defaults.page.filter'] = nil
     Radiant::Config['defaults.page.fields'] = 'keywords, description'
+    Radiant::Config['defaults.snippet.filter'] = nil
     Radiant::Config['session_timeout'] = 2.weeks
   end
 end
