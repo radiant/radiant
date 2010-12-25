@@ -7,6 +7,12 @@ GIT
       activesupport (>= 2.3.0)
 
 GIT
+  remote: https://github.com/dirkkelly/radius.git
+  revision: d312e31954c3dfa5711b06267d79b9ea11c5f059
+  specs:
+    radius (0.7.0.prerelease)
+
+GIT
   remote: https://github.com/parasew/acts_as_tree.git
   revision: ed52495d1671c99e1add582628403bf8104e9077
   specs:
@@ -28,11 +34,6 @@ PATH
       rdiscount (~> 1.5.8)
       rubypants (~> 0.2.0)
       will_paginate (~> 3.0.pre2)
-
-PATH
-  remote: ../../vendor/radius
-  specs:
-    radius (0.7.0.prerelease)
 
 GEM
   remote: http://rubygems.org/
