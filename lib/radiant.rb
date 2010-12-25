@@ -17,7 +17,7 @@ unless defined? Radiant::Version
       Minor = version[1]
       Tiny  = version[2]
       Patch = version[3]
-
+      
       class << self
         def to_s
           [Major, Minor, Tiny, Patch].delete_if{|v| v.nil? }.join('.')
@@ -30,7 +30,7 @@ unless defined? Radiant::Version
     def self.loaded_via_gem?
       false
     end
-
+    
     def self.app?
       true
     end
