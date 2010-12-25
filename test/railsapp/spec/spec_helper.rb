@@ -1,9 +1,9 @@
 unless defined? SPEC_ROOT
   ENV["RAILS_ENV"] = "test"
-
+  
   SPEC_ROOT = File.expand_path(File.dirname(__FILE__))
-
-  require File.expand_path(File.join(SPEC_ROOT, '../../../', 'config/environment'))
+  
+  require File.expand_path(File.join(SPEC_ROOT, '..', 'config/environment'))
   require 'rspec/rails'
   require 'dataset'
   require 'dataset/extensions/rspec'
@@ -11,7 +11,7 @@ unless defined? SPEC_ROOT
   Dataset::Resolver.default = Dataset::DirectoryResolver.new("#{SPEC_ROOT}/datasets")
   
   Dir["#{SPEC_ROOT}/support/**/*.rb"].each {|f| require f}
-
+  
   RSpec.configure do |config|
     include Spec::Rails::Matchers
     
