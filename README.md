@@ -1,4 +1,4 @@
-== Welcome to Radiant
+## Welcome to Radiant
 
 Radiant is a no-fluff, open source content management system designed for
 small teams. It is similar to Textpattern or MovableType, but is a general
@@ -19,64 +19,41 @@ Radiant features:
 * Built using Ruby on Rails
 * And much more...
 
-
-== License
+## License
 
 Radiant is released under the MIT license and is copyright (c) 2006-2009
 John W. Long and Sean Cribbs. A copy of the MIT license can be found in the
 LICENSE file.
 
+## Installation
 
-== Installation and Setup
+The aim is to have everything served from your Gemfile 
 
-Radiant is a traditional Ruby on Rails application, meaning that you can
-configure and run it the way you would a normal Rails application.
+    gem 'radiant'
+    gem 'radiant-archive-extension'
+    gem 'radiant-layouts-extension'
 
-See the INSTALL file for more details.
+## Development
 
-== Installation of a Prerelease
+* Fork the project
+* Write tests in tests/railsapp/specs
+* Modify code in the root directory
+* Continue hacking ...
+* Send a pull request
 
-As Radiant nears newer releases, you can experiment with any prerelease version.
-
-Install the prerelease gem with the following command:
-
-    $ gem install radiant --prerelease
-
-This will install the gem with the prerelease name, for example: ‘radiant-0.9.0.rc2’.
-
-== Upgrading an Existing Project to a newer version
-
-1. Update the Radiant assets from in your project:
-
-    $ rake radiant:update
-
-2. Migrate the database:
-
-    $ rake production db:migrate
-
-3. Restart the web server
-
-== Development Requirements
-
-To run tests you will need to have the following gems installed:
-
-  gem install ZenTest rspec rspec-rails cucumber webrat nokogiri
-
-
-== Support
+## Support
 
 The best place to get support is on the mailing list:
 
-http://radiantcms.org/mailing-list/
+  [http://radiantcms.org/mailing-list/](http://radiantcms.org/mailing-list/)
 
 Most of the development for Radiant happens on Github:
 
-http://github.com/radiant/radiant/
+  [http://github.com/radiant/radiant/](http://github.com/radiant/radiant/)
 
 The project wiki is here:
 
-http://wiki.github.com/radiant/radiant/
-
+  [http://wiki.github.com/radiant/radiant/](http://wiki.github.com/radiant/radiant/)
 
 Enjoy!
 
