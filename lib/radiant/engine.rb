@@ -1,11 +1,4 @@
-require 'radiant'
-require 'rails'
-
 module Radiant
-  #class Application < Rails::Engine
-  #
-  #end
-
   class Engine < Rails::Engine
     require 'radiant/core_ext'
 
