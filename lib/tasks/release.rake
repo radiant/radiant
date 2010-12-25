@@ -32,11 +32,18 @@ namespace 'radiant' do
     s.platform = Gem::Platform::RUBY
     s.bindir = 'bin'
     s.executables = (Dir['bin/*'] + Dir['scripts/*']).map { |file| File.basename(file) } 
-    s.add_dependency 'rake', '>= 0.8.3'
-    s.add_dependency 'rack', '~> 1.1.0' # No longer bundled in actionpack
-    s.add_dependency 'compass', '~> 0.10.4'
-    s.add_dependency 'will_paginate', '~> 2.3.11'
-    s.add_dependency 'RedCloth', '>=4.0.0'
+    s.add_dependency 'rake',          '~> 0.8.7'
+    s.add_dependency 'rack',          '~> 1.2.1'
+    s.add_dependency 'haml',          '~> 3.0.23'
+    s.add_dependency 'compass',       '~> 0.10.4'
+    s.add_dependency 'rdiscount',     '~> 1.5.8'
+    s.add_dependency 'rubypants',     '~> 0.0.2'
+    s.add_dependency 'highline',      '~> 1.5.2'
+    s.add_dependency 'will_paginate', '~> 2.3.15'
+    s.add_dependency 'acts_as_tree',  '~> 0.1.1'
+    s.add_dependency 'RedCloth',      '~> 4.2.2'
+    s.add_dependency 'rack-cache',    '~> 0.5.2'
+    s.add_dependency 'radius',        '~> 0.7.0.prerelease'    
     s.has_rdoc = true
     s.rdoc_options << '--title' << RDOC_TITLE << '--line-numbers' << '--main' << 'README'
     rdoc_excludes = Dir["**"].reject { |f| !File.directory? f }
@@ -62,6 +69,7 @@ namespace 'radiant' do
     files.include 'public/.htaccess'
     files.exclude /\btmp\b/
     files.exclude 'radiant.gemspec'
+    files.exclude 'test/railsapp'
     # Read .gitignore from plugins and exclude those files
     Dir['vendor/plugins/*/.gitignore'].each do |gi|
       dirname = File.dirname(gi)
