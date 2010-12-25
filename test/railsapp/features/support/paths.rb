@@ -60,7 +60,7 @@ module NavigationHelpers
       end
     end
   end
-  
+
   def normalize_page_name(page_name)
     page_name.gsub(/^["']+(.*?)["']+$/,'\1')
   end

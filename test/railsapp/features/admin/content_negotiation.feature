@@ -8,7 +8,7 @@ Feature: Proper content negotiation
     When I send an "Accept" header of "image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/x-ms-application, application/vnd.ms-xpsdocument, application/xaml+xml, application/x-ms-xbap, application/x-shockwave-flash, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*"
     And I go to the "pages" admin page
     Then I should not see "Missing template"
-    
+
   Scenario: Requesting XML format via file-extension
     Given I am logged in as "admin"
     When I send an "Accept" header of "image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/x-ms-application, application/vnd.ms-xpsdocument, application/xaml+xml, application/x-ms-xbap, application/x-shockwave-flash, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*"

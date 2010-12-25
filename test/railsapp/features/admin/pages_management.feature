@@ -2,19 +2,19 @@ Feature: Managing pages
   In order to create, modify, and delete content from the website
   a content editor
   wants to manipulate pages in the admin interface
-  
+
   Scenario: Listing pages
     Given I am logged in as "existing"
     When I go to the "pages" admin page
     Then I should see "Pages"
     And I should see "Home"
-    
+
   Scenario: No pages
     Given I am logged in as "existing"
     Given there are no pages
     When I go to the "pages" admin page
     Then I should see "No Pages"
-    
+
   Scenario: Creating a homepage
     Given I am logged in as "existing"
     And there are no pages
@@ -23,7 +23,7 @@ Feature: Managing pages
     And I should see "My site"
     When I go to the homepage
     Then I should see "Under Construction"
-  
+
   Scenario: Creating child pages
     Given there are no pages
     And I am logged in as "existing"
@@ -45,7 +45,7 @@ Feature: Managing pages
     And I should see "Under Construction"
     When I go to the new child page
     Then I should see "Under Construction"
-    
+
   Scenario: Delete page
     Given I am logged in as "existing"
     When I go to the "pages" admin page
@@ -53,12 +53,12 @@ Feature: Managing pages
     Then I should see "permanently remove"
     When I press "Delete Pages"
     Then I should see "No Pages"
-    
+
   Scenario: View a page
     Given I am logged in as "existing"
     When I view a page
     Then I should see "Edit Page"
-    
+
   Scenario: Change page status from Scheduled to Draft
     Given I am logged in as "existing"
     When I edit the "scheduled" page

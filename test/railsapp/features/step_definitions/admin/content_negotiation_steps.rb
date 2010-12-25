@@ -39,4 +39,3 @@ def set_headers
     header(k, v)
   end unless @request_headers.blank?
 end
-

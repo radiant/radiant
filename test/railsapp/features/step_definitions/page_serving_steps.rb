@@ -59,4 +59,3 @@ def set_page_cache(status)
     end
   }, __FILE__, __LINE__
 end
-

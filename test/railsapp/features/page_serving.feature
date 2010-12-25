@@ -15,19 +15,19 @@ Feature: Serving pages from front-end
     When I go to the great-grandchild page
     Then I should get a 200 response code
     And I should see "Great Grandchild body."
-  
+
   Scenario: Apache/lighttpd acceleration
     Given I have turned on X-Sendfile headers
     When I go to the first page
     And I go to the first page
     Then I should get an "X-Sendfile" header in the response
-    
+
   Scenario: nginx acceleration
     Given I have turned on X-Accel-Redirect headers
     When I go to the first page
     And I go to the first page
     Then I should get an "X-Accel-Redirect" header in the response
-    
+
   Scenario: page caching enabled
     Given I have page caching on
     When I go to the first page

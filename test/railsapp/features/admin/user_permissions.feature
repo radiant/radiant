@@ -2,7 +2,7 @@ Feature: User authentication and permissions
   In order to protect design assets from unskilled modification
     and user accounts from hijacking
   users should be given different access permissions
-  
+
   Scenario Outline: Authentication-login
   When I go to the login page
     And I fill in "Username" with "<username>"
@@ -15,19 +15,19 @@ Feature: User authentication and permissions
       | admin     |
       | existing  |
       | designer |
-  
+
   Scenario Outline: Authentication-logout
     Given I am logged in as "<username>"
     When I follow "Logout"
     Then I should be on the login screen
-    
+
     Examples:
       | username  |
       | admin     |
       | existing  |
       | designer |
-  
-  
+
+
   Scenario Outline: All users can edit pages
     Given I am logged in as "<username>"
     And I should see "Content"
@@ -50,12 +50,12 @@ Feature: User authentication and permissions
     And I should not see "You must have designer privileges"
     And I follow "Main"
     Then I should see "Edit Layout"
-    
+
     Examples:
       | username  |
       | admin     |
       | designer |
-      
+
   Scenario Outline: Ordinary users cannot edit layouts
     Given I am logged in as "<username>"
     And I should not see "Design"
@@ -74,7 +74,7 @@ Feature: User authentication and permissions
     And I should not see "You must have administrative privileges"
     And I follow "Another"
     Then I should see "Edit User"
-  
+
   Scenario Outline: Non-admins cannot see or edit users
     Given I am logged in as "<username>"
     And I should not see "Users"
@@ -86,13 +86,13 @@ Feature: User authentication and permissions
       | existing  |
       | another   |
       | designer |
-      
+
   Scenario Outline: Non-admins see preferences link
     Given I am logged in as "<username>"
     And I should see "Settings"
     When I follow "Settings"
     Then I should see "Personal Preferences"
-    
+
     Examples:
       | username  |
       | existing  |

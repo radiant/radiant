@@ -1,7 +1,7 @@
 Feature: Managing users
   In order to allow others to edit content and design assets
   As an administrator I want to manage the set of users
-  
+
   Background:
     Given I am logged in as "admin"
     And I go to the "users" admin page
@@ -10,11 +10,11 @@ Feature: Managing users
     And I should see "Designer"
     And I should see "Existing"
     # And a host of others
-    
+
   Scenario: View a user
     When I view a user
     Then I should see "Edit User"
-  
+
   Scenario: Create new user
     When I follow "New User"
     And I fill in "Name" with "New Guy"
@@ -25,7 +25,7 @@ Feature: Managing users
     And I press "Create User"
     Then I should be on the users list
     And I should see "New Guy"
-  
+
   Scenario: Display form errors on submit
     When I follow "New User"
     And I fill in "Name" with "New Guy"
@@ -33,7 +33,7 @@ Feature: Managing users
     And I press "Create User"
     Then I should see an error message
     And I should see the form
-    
+
   Scenario: Edit existing user
     When I follow "Designer"
     Then I should see the form
@@ -53,7 +53,7 @@ Feature: Managing users
     When I attempt to delete my own account
     Then I should see an error message
     And I should see "You cannot delete yourself"
-  
+
   Scenario: Delete other users
     When I follow "Remove"
     Then I should see "permanently remove"
