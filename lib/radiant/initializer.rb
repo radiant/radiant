@@ -1,6 +1,7 @@
 # require 'initializer'
 require 'radiant/admin_ui'
 require 'radiant/extension_loader'
+require 'radiant/taggable'
 #require 'radiant/extension_locator'
 #require 'radiant/gem_locator'
 
