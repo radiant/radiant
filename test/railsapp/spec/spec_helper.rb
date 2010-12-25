@@ -11,7 +11,7 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
 require 'dataset'
 require 'dataset/extensions/rspec'
-Dataset::Resolver.default = Dataset::DirectoryResolver.new("#{SPEC_ROOT}/datasets")
+Dataset::Resolver.default = Dataset::DirectoryResolver.new("#{RADIANT_ROOT}/spec/datasets")
 
 RSpec.configure do |config|
   # == Mock Framework
