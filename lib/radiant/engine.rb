@@ -68,9 +68,6 @@ module Radiant
       require 'radiant/admin_ui'
       AdminUI.instance.load_default_nav
     end
-
-    
-    config.secret_token = "4ac217d6512aae25ea83a25d58c30bed06520ac20ff8040da552f88d3046cf9103c1a7ca21254c9fc64a6f3dd59e00e206e7c410d612390be23d834b48f7b1e8"
     
     config.action_view.field_error_proc = Proc.new do |html, instance|
       if html !~ /label/
@@ -79,28 +76,6 @@ module Radiant
         html
       end
     end
-  end
-  
-  module Version
-    Major = '0'
-    Minor = '9'
-    Tiny  = '1'
-    Patch = nil # set to nil for normal release
-
-    class << self
-      def to_s
-        [Major, Minor, Tiny, Patch].delete_if{|v| v.nil? }.join('.')
-      end
-      alias :to_str :to_s
-    end
-  end
-  
-  def self.loaded_via_gem?
-    false
-  end
-  
-  def self.app?
-    true
   end
   
 end
