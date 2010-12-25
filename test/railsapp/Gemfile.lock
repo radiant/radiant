@@ -192,18 +192,18 @@ PLATFORMS
 
 DEPENDENCIES
   acts_as_tree!
-  autotest (= 4.4.6)
-  capybara (= 0.4.0)
-  cucumber (= 0.10.0)
-  cucumber-rails (= 0.3.2)
-  database_cleaner (= 0.6.0)
+  autotest (~> 4.4.6)
+  capybara (~> 0.4.0)
+  cucumber (~> 0.10.0)
+  cucumber-rails (~> 0.3.2)
+  database_cleaner (~> 0.6.0)
   dataset!
   mongrel (~> 1.2.0.pre2)
   mysql (~> 2.8.1)
   radiant!
   radius!
   rails (= 3.0.3)
-  rspec-rails (= 2.3.1)
-  ruby-debug19 (= 0.11.6)
+  rspec-rails (~> 2.3.1)
+  ruby-debug19 (~> 0.11.6)
   sqlite3-ruby (~> 1.2.5)
   will_paginate (= 3.0.pre2)

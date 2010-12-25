@@ -2,10 +2,10 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.0.3'
 
-gem 'will_paginate',  '3.0.pre2', :require => 'will_paginate'
-gem 'acts_as_tree',   :git  => 'https://github.com/parasew/acts_as_tree.git'
-gem 'radius',         :path => '../../vendor/radius'
-gem 'radiant',        :path => '../../'
+gem 'will_paginate',      '3.0.pre2', :require => 'will_paginate'
+gem 'acts_as_tree',       :git  => 'https://github.com/parasew/acts_as_tree.git'
+gem 'radius',             :path => '../../vendor/radius'
+gem 'radiant',            :path => '../../'
 
 #gem 'radiant-page_menu-extension',      :path => 'lib/extensions/page_menu'
 #gem 'radiant-archive-extension',        :path => 'lib/extensions/archive'
@@ -15,18 +15,19 @@ gem 'radiant',        :path => '../../'
 #gem 'radiant-site_templates-extension', :path => 'lib/extensions/site_templates'
 
 group :development do
-  gem 'sqlite3-ruby', '~> 1.2.5', :require => 'sqlite3'
-  gem 'mysql',        '~> 2.8.1'
-  gem 'mongrel',      '~> 1.2.0.pre2'
+  gem 'sqlite3-ruby',     '~> 1.2.5', :require => 'sqlite3'
+  gem 'mysql',            '~> 2.8.1'
+  gem 'mongrel',          '~> 1.2.0.pre2'
+  gem 'rspec-rails',      '~> 2.3.1'
 end
 
 group :test do
-  gem 'ruby-debug19',     '0.11.6',                                       :require => 'ruby-debug'
-  gem 'rspec-rails',      '2.3.1'
-  gem 'cucumber',         '0.10.0'
-  gem 'cucumber-rails',   '0.3.2'
-  gem 'database_cleaner', '0.6.0'
-  gem 'capybara',         '0.4.0'
+  gem 'ruby-debug19',     '~> 0.11.6', :require => 'ruby-debug'
+  gem 'rspec-rails',      '~> 2.3.1'
+  gem 'cucumber',         '~> 0.10.0'
+  gem 'cucumber-rails',   '~> 0.3.2'
+  gem 'database_cleaner', '~> 0.6.0'
+  gem 'capybara',         '~> 0.4.0'
   gem 'dataset',          :git => 'git://github.com/radiant/dataset.git', :require => nil
-  gem 'autotest',         '4.4.6'
+  gem 'autotest',         '~> 4.4.6'
 end
