@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/dirkkelly/radius.git
-  revision: d312e31954c3dfa5711b06267d79b9ea11c5f059
+  revision: 7d5279c2f277c575f70cc9cda05a9be9fb51b7f7
   specs:
     radius (0.7.0.prerelease)
 
@@ -104,9 +104,8 @@ GEM
     ffi (0.6.3)
       rake (>= 0.8.7)
     gem_plugin (0.2.3)
-    gherkin (2.3.2)
+    gherkin (2.3.3)
       json (~> 1.4.6)
-      term-ansicolor (~> 1.0.5)
     haml (3.0.25)
     highline (1.5.2)
     i18n (0.5.0)
