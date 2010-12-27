@@ -1293,8 +1293,8 @@ module StandardTags
 
     def dev?(request)
       return false if request.nil?
-      if dev_host = Radiant::Config['dev.host']
-        dev_host == request.host
+      if Radiant::Config['dev.host'].present?
+        Radiant::Config['dev.host'] == request.host
       else
         request.host =~ /^dev\./
       end

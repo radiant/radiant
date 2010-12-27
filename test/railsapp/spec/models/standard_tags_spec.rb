@@ -948,6 +948,9 @@ describe "Standard Tags" do
   end
 
   describe "<r:if_dev>" do
+    before :each do
+      Radiant::Config['dev.host'] = nil
+    end
     it "should render the contained block when on the dev site" do
       page.should render('-<r:if_dev>dev</r:if_dev>-').as('-dev-').on('dev.site.com')
     end
@@ -957,7 +960,7 @@ describe "Standard Tags" do
     end
 
     it "should not render the contained block when no request is present" do
-      page(:devtags).render_part('if_dev').should_not have_text('dev')
+      page(:devtags).render_part('if_dev').should_not include('dev')
     end
 
     describe "on an included page" do
@@ -972,6 +975,9 @@ describe "Standard Tags" do
   end
 
   describe "<r:unless_dev>" do
+    before :each do
+      Radiant::Config['dev.host'] = nil
+    end
     it "should not render the contained block when not on the dev site" do
       page.should render('-<r:unless_dev>not dev</r:unless_dev>-').as('--').on('dev.site.com')
     end
@@ -981,7 +987,7 @@ describe "Standard Tags" do
     end
 
     it "should render the contained block when no request is present" do
-      page(:devtags).render_part('unless_dev').should have_text('not dev')
+      page(:devtags).render_part('unless_dev').should include('not dev')
     end
 
     describe "on an included page" do
