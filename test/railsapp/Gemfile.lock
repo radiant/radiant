@@ -8,7 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/dirkkelly/radius.git
-  revision: 7d5279c2f277c575f70cc9cda05a9be9fb51b7f7
+  revision: 098d4e3075b84b292c8a8295c69e9d920455f13c
+  branch: ruby19
   specs:
     radius (0.7.0.prerelease)
 
