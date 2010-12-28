@@ -4,7 +4,7 @@ gem 'rails', '3.0.3'
 
 gem 'will_paginate',      '3.0.pre2', :require => 'will_paginate'
 gem 'acts_as_tree',       :git  => 'https://github.com/parasew/acts_as_tree.git'
-gem 'radius',             :git  => 'https://github.com/dirkkelly/radius.git'
+gem 'radius',             :git  => 'https://github.com/dirkkelly/radius.git', :branch => 'ruby19'
 gem 'radiant',            :path => '../../'
 
 #gem 'radiant-page_menu-extension',      :path => 'lib/extensions/page_menu'
