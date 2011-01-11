@@ -854,7 +854,7 @@ module StandardTags
         tag.locals.yield = tag.expand if tag.double?
         tag.globals.page.render_snippet(snippet)
       else
-        raise TagError.new('snippet not found')
+        raise TagError.new("snippet '#{name}' not found")
       end
     else
       required_attr(tag,'name')

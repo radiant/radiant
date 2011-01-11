@@ -4,7 +4,6 @@ en:
   activerecord:
     errors:
       messages:
-      messages:
         blank: 'this must not be blank' # required
         invalid: 'this does not match the expected format' #invalid_format
         not_a_number: 'this must be a number' # must be number
@@ -55,6 +54,10 @@ en:
         filter: "snippet filter"
     dev:
       host: "dev site domain name"
+    errors:
+      blank: 'this must not be blank'
+      not_permitted: 'this must be one of the available values'
+      not_a_number: 'this must be a number'
     local:
       timezone: "local timezone"
     site:
