@@ -190,7 +190,7 @@ class Admin::ResourceController < ApplicationController
     end
 
     def edit_model_path
-      method = "edit_admin_#{model_name.downcase}_path"
+      method = "edit_admin_#{model_name.underscore}_path"
       send method.to_sym, params[:id]
     end
 
