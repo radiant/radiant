@@ -176,7 +176,7 @@ module Radiant
           definition = Radiant::Config::Definition.new(options)
         end
 
-        raise LoadError, "Configuration invalid: #{key} is already defined" unless definitions[key].nil? || definitions[key].empty?
+        raise LoadError, "Duplicate config definition for '#{key}'. Are you loading something twice?" unless definitions[key].nil? || definitions[key].empty?
         definitions[key] = definition
 
         if self[key].nil? && !definition.default.nil?
