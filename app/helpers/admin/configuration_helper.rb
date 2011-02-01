@@ -20,7 +20,7 @@ module Admin::ConfigurationHelper
       html << content_tag(:span, value, :id => domkey, :class => options[:class])
     end
     html << content_tag(:span, " #{t("units.#{setting.units}")}", :class => 'units') if setting.units
-    html << content_tag(:span, t([setting.errors.on(:value)].flatten.first), :class => 'warning') if setting.errors.any?
+    html << content_tag(:span, t('config.warning') + t([setting.errors.on(:value)].flatten.first), :class => 'warning') if setting.errors.any?
     html
   end
   
