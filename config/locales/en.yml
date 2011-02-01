@@ -214,12 +214,15 @@ en:
     last_updated: 'Last Updated'
   type: 'Type'
   units:
-    KB: "MB"
+    KB: "KB"
     MB: "MB"
-    GB: "MB"
+    GB: "GB"
     seconds: "seconds"
     minutes: "minutes"
     hours: "hours"
+    days: "days"
+    weeks: "weeks"
+    months: "months"
   user: 'User'
   username: 'Username'
   username_or_email: 'Username or E-mail Address'
@@ -228,6 +231,7 @@ en:
     cannot_delete_self: 'You cannot delete yourself.'    
   version: 'Version'
   view_site: 'View Site'
+  warning: "Warning: "
   website: 'Website'
   welcome_controller:
     invalid_user: 'Invalid username, e-mail address, or password.' 
