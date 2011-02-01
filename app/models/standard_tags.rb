@@ -736,14 +736,16 @@ module StandardTags
     rating = (tag.attr['rating'] || 'G')
     size = (tag.attr['size'] || '32px')
     email = User.find_by_name(name).email
-    if email != ''
+    default = "#{request.protocol}#{request.host_with_port}/images/admin/avatar_#{([size.to_i] * 2).join('x')}.png"
+    unless email.blank?
       url = 'http://www.gravatar.com/avatar.php?'
       url << "gravatar_id=#{Digest::MD5.new.update(email)}"
       url << "&rating=#{rating}"
       url << "&size=#{size.to_i}"
+      url << "&default=#{default}"
       url
     else
-      "#{request.protocol}#{request.host_with_port}/images/admin/avatar_#{([size.to_i] * 2).join('x')}.png"
+      default
     end
   end
 
@@ -808,9 +810,9 @@ module StandardTags
   desc %{
     Renders a trail of breadcrumbs to the current page. The separator attribute
     specifies the HTML fragment that is inserted between each of the breadcrumbs. By
-    default it is set to @>@. The boolean nolinks attribute can be specified to render
+    default it is set to @>@. The boolean @nolinks@ attribute can be specified to render
     breadcrumbs in plain text, without any links (useful when generating title tag). 
-    Set the noself attribute to 'true' to omit the present page (useful in page headers).
+    Set the boolean @noself@ attribute to omit the present page (useful in page headers).
 
     *Usage:*
 
@@ -821,7 +823,7 @@ module StandardTags
     nolinks = (tag.attr['nolinks'] == 'true')
     noself = (tag.attr['noself'] == 'true')
     breadcrumbs = []
-    breadcrumbs << (noself ? '' : page.breadcrumb)
+    breadcrumbs.unshift page.breadcrumb unless noself
     page.ancestors.each do |ancestor|
       tag.locals.page = ancestor
       if nolinks
