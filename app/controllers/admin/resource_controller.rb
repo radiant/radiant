@@ -3,6 +3,7 @@ class Admin::ResourceController < ApplicationController
   
   helper_method :model, :current_object, :models, :current_objects, :model_symbol, :plural_model_symbol, :model_class, :model_name, :plural_model_name
   before_filter :populate_format
+  before_filter :never_cache
   before_filter :load_models, :only => :index
   before_filter :load_model, :only => [:new, :create, :edit, :update, :remove, :destroy]
   after_filter :clear_model_cache, :only => [:create, :update, :destroy]
@@ -221,6 +222,13 @@ class Admin::ResourceController < ApplicationController
 
     def format
       params[:format] || 'html'
+    end
+    
+    
+    # I would like to set this to expires_in(1.minute, :private => true) to allow for more fluid navigation
+    # but the annoyance for concurrent authors would be too great.
+    def never_cache
+      expires_now
     end
     
     # Assist with user agents that cause improper content-negotiation

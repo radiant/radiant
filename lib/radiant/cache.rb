@@ -16,6 +16,7 @@ module Radiant
       self.use_x_sendfile = options.delete(:use_x_sendfile) if options[:use_x_sendfile]
       self.use_x_accel_redirect = options.delete(:use_x_accel_redirect) if options[:use_x_accel_redirect]
       Rack::Cache.new(app, {
+          :private_headers => ['Authorization'],
           :entitystore => "radiant:tmp/cache/entity",
           :metastore => "radiant:tmp/cache/meta",
           :verbose => false,

@@ -1,5 +1,6 @@
 class Admin::WelcomeController < ApplicationController
   no_login_required
+  before_filter :never_cache
   skip_before_filter :verify_authenticity_token
   
   def index
@@ -31,6 +32,10 @@ class Admin::WelcomeController < ApplicationController
   end
   
   private
+  
+    def never_cache
+      expires_now
+    end
   
     def announce_logged_out
       flash[:notice] = t('welcome_controller.logged_out')
