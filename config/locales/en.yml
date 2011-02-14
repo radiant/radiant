@@ -231,7 +231,7 @@ en:
     cannot_delete_self: 'You cannot delete yourself.'    
   version: 'Version'
   view_site: 'View Site'
-  warning: "Warning: "
+  warning: 'Warning'
   website: 'Website'
   welcome_controller:
     invalid_user: 'Invalid username, e-mail address, or password.' 
