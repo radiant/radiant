@@ -2,6 +2,7 @@
 
 === Edge
 
+* String format breadcrumb tag in archive pages [Oriol Gual]
 * Fix bug with deletion of page parts [Josh French]
 * Unroll PageMenu into core [Josh French]
 * Update Haml to 3.0.23 [Jim Gay]
