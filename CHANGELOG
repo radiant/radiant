@@ -2,6 +2,7 @@
 
 === Edge
 
+* Use <r:cycle /> for a numeric counter [Jim Gay, Dirk Kelly]
 * String format breadcrumb tag in archive pages [Oriol Gual]
 * Fix bug with deletion of page parts [Josh French]
 * Unroll PageMenu into core [Josh French]

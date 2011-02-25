@@ -492,23 +492,44 @@ module StandardTags
   end
 
   desc %{
-    Renders one of the passed values based on a global cycle counter.  Use the @reset@
-    attribute to reset the cycle to the beginning.  Use the @name@ attribute to track
-    multiple cycles; the default is @cycle@.
+    Renders a counter value or one of the values given based on a global cycle counter. 
+    
+    To get a numeric counter just use the tag, or specify a start value with @start@.
+    Use the @reset@ attribute to reset the cycle to the beginning. Using @reset@ on a
+    numbered cycle will begin at 0. Use the @name@  attribute to track multiple cycles; 
+    the default is @cycle@.
 
     *Usage:*
     
-    <pre><code><r:cycle values="first, second, third" [reset="true|false"] [name="cycle"] /></code></pre>
+    <pre><code><r:cycle [values="first, second, third"] [reset="true|false"] [name="cycle"] [start="second"] /></code></pre>
+    <pre><code><r:cycle start="3" /></code></pre>
   }
   tag 'cycle' do |tag|
-    required_attr(tag, 'values')
     cycle = (tag.globals.cycle ||= {})
-    values = tag.attr['values'].split(",").collect(&:strip)
+    if tag.attr['values']
+      values = tag.attr['values'].split(",").collect(&:strip)
+    end
+    start = tag.attr['start']
     cycle_name = tag.attr['name'] || 'cycle'
-    current_index = (cycle[cycle_name] ||=  0)
-    current_index = 0 if tag.attr['reset'] == 'true'
-    cycle[cycle_name] = (current_index + 1) % values.size
-    values[current_index]
+    if values
+      if start
+        current_index = (cycle[cycle_name] ||= values.index(start))
+      else
+        current_index = (cycle[cycle_name] ||=  0)
+      end
+      current_index = 0 if tag.attr['reset'] == 'true'
+      cycle[cycle_name] = (current_index + 1) % values.size
+      values[current_index]
+    else
+      cycle[cycle_name] ||= (start.presence || 0).to_i
+      output = cycle[cycle_name]
+      cycle[cycle_name] += 1
+      if tag.attr['reset'] == 'true'
+        cycle[cycle_name] = 0
+        output = cycle[cycle_name]
+      end
+      output
+    end
   end
 
   desc %{

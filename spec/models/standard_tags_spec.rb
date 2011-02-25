@@ -944,12 +944,17 @@ describe "Standard Tags" do
   end
 
   describe "<r:cycle>" do
+    subject { page }
     it "should render passed values in succession" do
       page.should render('<r:cycle values="first, second" /> <r:cycle values="first, second" />').as('first second')
     end
 
     it "should return to the beginning of the cycle when reaching the end" do
       page.should render('<r:cycle values="first, second" /> <r:cycle values="first, second" /> <r:cycle values="first, second" />').as('first second first')
+    end
+
+    it "should start at a given start value" do
+      page.should render('<r:cycle values="first, second, third" start="second" /> <r:cycle values="first, second, third" start="second" /> <r:cycle values="first, second, third" start="second" />').as('second third first')
     end
 
     it "should use a default cycle name of 'cycle'" do
@@ -963,10 +968,12 @@ describe "Standard Tags" do
     it "should reset the counter" do
       page.should render('<r:cycle values="first, second" /> <r:cycle values="first, second" reset="true"/>').as('first first')
     end
-
-    it "should require the values attribute" do
-      page.should render('<r:cycle />').with_error("`cycle' tag must contain a `values' attribute.")
-    end
+    
+    it { should render('<r:cycle /> <r:cycle />').as('0 1') }
+    it { should render('<r:cycle start="3" /> <r:cycle start="3" /> <r:cycle start="3" />').as('3 4 5') }
+    it { should render('<r:cycle start="3" /> <r:cycle name="other" /> <r:cycle start="3" />').as('3 0 4') }
+    it { should render('<r:cycle start="3" /> <r:cycle name="other" start="23" /> <r:cycle />').as('3 23 4') }
+    it { should render('<r:cycle start="3" /> <r:cycle name="other" start="23" /> <r:cycle reset="true" />').as('3 23 0') }
   end
 
   describe "<r:if_dev>" do
