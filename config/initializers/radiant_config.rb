@@ -12,6 +12,6 @@ Radiant.config do |config|
   config.define 'pagination.per_page_param_name', :default => 'per_page'
   config.define 'admin.pagination.per_page', :type => :integer, :default => 50
   config.define 'site.title', :default => "Your site title", :allow_blank => false
-  config.define 'site.domain', :default => "www.example.com", :allow_blank => false
+  config.define 'site.host', :default => "www.example.com", :allow_blank => false
   config.define 'user.allow_password_reset?', :default => true
 end 
