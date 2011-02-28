@@ -87,8 +87,8 @@ module Radiant
 
       def []=(key, value)
         if table_exists?
-          pair = find_or_initialize_by_key(key)
-          pair.value = value
+          setting = find_or_initialize_by_key(key)
+          setting.value = value
         end
       end
       
@@ -211,7 +211,7 @@ module Radiant
     #   Radiant::Config.find_or_create_by_key('key').value = value
     #
     # Calling value= also applies any validations and restrictions that are found in the associated definition.
-    # so this will raise a ConfigError if you try to change a protected config entry or a ValidationError if you 
+    # so this will raise a ConfigError if you try to change a protected config entry or a RecordInvalid if you 
     # set a value that is not among those permitted.
     #
     def value=(param)

@@ -85,7 +85,7 @@ module Radiant
       
       # Checks the supplied value against the validation rules for this definition.
       # There are several ways in which validations might be defined or implied:
-      # * if :validate_with specifies a block, the new config value is passed to the block
+      # * if :validate_with specifies a block, the setting object is passed to the block
       # * if :type is :integer, we test that the supplied string resolves to a valid integer
       # * if the config item is a selector we test that its value is one of the permitted options
       # * if :allow_blank has been set to false, we test that the value is not blank
@@ -94,16 +94,16 @@ module Radiant
         if allow_blank?
           return if setting.value.blank?
         else
-          setting.errors.add :value, "config.errors.blank" if setting.value.blank?
+          setting.errors.add :value, :blank if setting.value.blank?
         end
         if validate_with.is_a? Proc
           validate_with.call(setting)
         end
         if selector?
-          setting.errors.add :value, "config.errors.not_permitted" unless selectable?(setting.value)
+          setting.errors.add :value, :not_permitted unless selectable?(setting.value)
         end
         if integer?
-          Integer(setting.value) rescue setting.errors.add :value, "config.errors.not_a_number"
+          Integer(setting.value) rescue setting.errors.add :value, :not_a_number
         end
       end
       
