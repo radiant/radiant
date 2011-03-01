@@ -872,17 +872,30 @@ module StandardTags
     <pre><code><r:snippet name="snippet_name">Lorem ipsum dolor...</r:snippet></code></pre>
   }
   tag 'snippet' do |tag|
-    if name = tag.attr['name']
-      if snippet = Snippet.find_by_name(name.strip)
-        tag.locals.yield = tag.expand if tag.double?
-        tag.globals.page.render_snippet(snippet)
-      else
-        raise TagError.new("snippet '#{name}' not found")
-      end
+    required_attr(tag, 'name')
+    name = tag['name']
+
+    snippet = snippet_cache(name.strip)
+    
+    if snippet
+      tag.locals.yield = tag.expand if tag.double?
+      tag.globals.page.render_snippet(snippet)
     else
-      required_attr(tag,'name')
+      raise TagError.new("snippet '#{name}' not found")
     end
   end
+
+  def snippet_cache(name)
+    @snippet_cache ||= {}
+
+    snippet = @snippet_cache[name]
+    unless snippet
+      snippet = Snippet.find_by_name(name)
+      @snippet_cache[name] = snippet
+    end
+    snippet
+  end
+  private :snippet_cache
 
   desc %{
     Used within a snippet as a placeholder for substitution of child content, when
@@ -1213,10 +1226,10 @@ module StandardTags
 
       [:limit, :offset].each do |symbol|
         if number = attr[symbol]
-          if number =~ /^\d{1,4}$/
+          if number =~ /^\d+$/
             options[symbol] = number.to_i
           else
-            raise TagError.new("`#{symbol}' attribute of `each' tag must be a positive number between 1 and 4 digits")
+            raise TagError.new("`#{symbol}' attribute must be a positive number")
           end
         end
       end

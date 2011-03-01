@@ -1,13 +1,19 @@
 class UserActionObserver < ActiveRecord::Observer
   observe User, Page, Layout, Snippet
   
-  cattr_accessor :current_user
+  def self.current_user=(user)
+    Thread.current[:current_user] = user
+  end
+  
+  def self.current_user
+    Thread.current[:current_user]
+  end
   
   def before_create(model)
-    model.created_by = @@current_user
+    model.created_by = self.class.current_user
   end
   
   def before_update(model)
-    model.updated_by = @@current_user
+    model.updated_by = self.class.current_user
   end
 end
