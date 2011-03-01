@@ -20,14 +20,14 @@ records:
               <div id="main">
                 <div id="content-wrapper">
                   <div id="content">
-                    <r:unless_url matches="^/$"><h1><r:title /></h1></r:unless_url>
+                    <r:unless_path matches="^/$"><h1><r:title /></h1></r:unless_path>
                     <r:content />
                     <r:if_content part="extended">
                     <div id="extended">
                       <r:content part="extended" />
                     </div>
                     </r:if_content>
-                    <r:if_url matches="^/articles/\d{4}/\d{2}/\d{2}/.+"><r:unless_url matches="-archives/$"><p class="info">Posted by <r:author /> on <r:date /></p></r:unless_url></r:if_url>
+                    <r:if_path matches="^/articles/\d{4}/\d{2}/\d{2}/.+"><r:unless_path matches="-archives/$"><p class="info">Posted by <r:author /> on <r:date /></p></r:unless_path></r:if_path>
                   </div>
                 </div>
                 <div id="sidebar-wrapper">
@@ -58,7 +58,7 @@ records:
       id: 1
       content: |
         <div id="header">
-          <div id="site-title"><r:if_url matches="^/$">Your Blog Name</r:if_url><r:unless_url matches="^/$"><a href="/">Your Blog Name</a></r:unless_url></div>
+          <div id="site-title"><r:if_path matches="^/$">Your Blog Name</r:if_path><r:unless_path matches="^/$"><a href="/">Your Blog Name</a></r:unless_path></div>
           <div id="site-subtitle">a really amusing tag-line here</div>
         </div>
         <hr class="hidden" />
@@ -410,14 +410,14 @@ records:
         * "AVLUX Hosting":http://avlux.net
 
         h3. Recent Entries
-        <r:if_url matches="^/$">
+        <r:if_path matches="^/$">
         <r:find url="/articles/"><r:children:each limit="10" offset="5" order="desc">
         * <r:link /></r:children:each></r:find>
-        </r:if_url>
-        <r:unless_url matches="^/$">
+        </r:if_path>
+        <r:unless_path matches="^/$">
         <r:find url="/articles/"><r:children:each limit="10" order="desc">
         * <r:link /></r:children:each></r:find>
-        </r:unless_url>
+        </r:unless_path>
 
         "Archives...":/articles/
 
