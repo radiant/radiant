@@ -2,6 +2,7 @@
 
 === Edge
 
+* Speedup recursive snippet usage [Andrew O'Brian, Jim Gay]
 * Use <r:cycle /> for a numeric counter [Jim Gay, Dirk Kelly]
 * String format breadcrumb tag in archive pages [Oriol Gual]
 * Fix bug with deletion of page parts [Josh French]
