@@ -124,6 +124,7 @@ en:
   optional: 'Optional'
   or: 'or'
   page: 'Page'
+  page_hierarchy: 'Page hierarchy of the current site'
   page_page: 'Page Part'
   page_title: 'Page Title'  
   page_type: 'Page Type'
