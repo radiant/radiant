@@ -1,6 +1,7 @@
 require 'digest/sha1'
 
 class User < ActiveRecord::Base
+  has_many :pages, :foreign_key => :created_by_id
 
   # Default Order
   default_scope :order => 'name'
