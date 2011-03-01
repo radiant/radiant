@@ -876,7 +876,7 @@ module StandardTags
     name = tag['name']
 
     snippet = snippet_cache(name.strip)
-    # debugger
+    
     if snippet
       tag.locals.yield = tag.expand if tag.double?
       tag.globals.page.render_snippet(snippet)
