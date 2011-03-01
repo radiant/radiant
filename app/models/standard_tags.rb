@@ -1226,10 +1226,10 @@ module StandardTags
 
       [:limit, :offset].each do |symbol|
         if number = attr[symbol]
-          if number =~ /^\d{1,4}$/
+          if number =~ /^\d+$/
             options[symbol] = number.to_i
           else
-            raise TagError.new("`#{symbol}' attribute of `each' tag must be a positive number between 1 and 4 digits")
+            raise TagError.new("`#{symbol}' attribute must be a positive number")
           end
         end
       end

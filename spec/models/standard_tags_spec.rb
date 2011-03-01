@@ -103,17 +103,15 @@ describe "Standard Tags" do
     end
     
     it 'should error with invalid "limit" attribute' do
-      message = "`limit' attribute of `each' tag must be a positive number between 1 and 4 digits"
+      message = "`limit' attribute must be a positive number"
       page.should render(page_children_each_tags(%{limit="a"})).with_error(message)
       page.should render(page_children_each_tags(%{limit="-10"})).with_error(message)
-      page.should render(page_children_each_tags(%{limit="50000"})).with_error(message)
     end
 
     it 'should error with invalid "offset" attribute' do
-      message = "`offset' attribute of `each' tag must be a positive number between 1 and 4 digits"
+      message = "`offset' attribute must be a positive number"
       page.should render(page_children_each_tags(%{offset="a"})).with_error(message)
       page.should render(page_children_each_tags(%{offset="-10"})).with_error(message)
-      page.should render(page_children_each_tags(%{offset="50000"})).with_error(message)
     end
 
     it 'should error with invalid "by" attribute' do
