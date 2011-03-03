@@ -2,7 +2,7 @@
 
 .outset
   = render_region :top
-  %table.index.pages{:summary=>t('page_hierarchy')}
+  %table.index#pages{:summary=>t('page_hierarchy')}
     %thead
       %tr
         - render_region :sitemap_head do |sitemap_head|
