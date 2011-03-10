@@ -28,7 +28,7 @@
         %span.reference_links
           Reference:
           %span{:id => "tag_reference_link"}
-            = link_to_function 'Available Tags', "loadTagReference('Page');"
+            = link_to_function t('available_tags'), "loadTagReference('Page');"
     - form_bottom.edit_buttons do
       %p.buttons
         = save_model_button @layout
