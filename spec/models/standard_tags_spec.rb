@@ -525,6 +525,32 @@ describe "Standard Tags" do
     it "should limit the number of results with the given 'limit' attribute" do
       pages(:home).should render('<r:aggregate paths="/assorted; /news"><r:children:each by="slug" order="desc" limit="3"><r:slug /> </r:children:each></r:aggregate>').as('j i h ')
     end
+    
+
+    describe 'with paginated="true"' do
+      it 'should limit correctly the result set' do
+        page.pagination_parameters = {:page => 1, :per_page => 10}
+        page.should render('<r:aggregate paths="/assorted; /news"><r:children:each paginated="true" per_page="10"><r:slug /> </r:children:each></r:aggregate>').matching(/article article-2 article-3 article-4 a b c d e f /)
+        page.should render('<r:aggregate paths="/assorted; /news"><r:children:each paginated="true" per_page="2"><r:slug /> </r:children:each></r:aggregate>').not_matching(/article article-2 article-3/)
+      end
+      it 'should display a pagination control block' do
+        page.pagination_parameters = {:page => 1, :per_page => 1}
+        page.should render('<r:aggregate paths="/assorted; /news"><r:children:each paginated="true"><r:slug /> </r:children:each></r:aggregate>').matching(/div class="pagination"/)
+      end
+      it 'should link to the correct paginated page' do
+        page(:another)
+        page.pagination_parameters = {:page => 1, :per_page => 1}
+        page.should render('<r:find path="/assorted"><r:children:each paginated="true"><r:slug /> </r:children:each></r:find>').matching(%r{href="/another})
+      end
+      it 'should pass through selected will_paginate parameters' do
+        page(:assorted)
+        page.pagination_parameters = {:page => 5, :per_page => 1}
+        page.should render('<r:aggregate paths="/assorted; /news"><r:children:each paginated="true" separator="not that likely a choice"><r:slug /> </r:children:each></r:aggregate>').matching(/not that likely a choice/)
+        page.should render('<r:aggregate paths="/assorted; /news"><r:children:each paginated="true" previous_label="before"><r:slug /> </r:children:each></r:aggregate>').matching(/before/)
+        page.should render('<r:aggregate paths="/assorted; /news"><r:children:each paginated="true" next_label="after"><r:slug /> </r:children:each></r:aggregate>').matching(/after/)
+        page.should render('<r:aggregate paths="/assorted; /news"><r:children:each paginated="true" inner_window="1" outer_window="0"><r:slug /> </r:children:each></r:aggregate>').not_matching(/\?p=2/)
+      end
+    end
   end
   
   describe "<r:aggregate:each>" do

@@ -115,23 +115,7 @@ module StandardTags
     </code></pre>
   }
   tag 'children:each' do |tag|
-    options = children_find_options(tag)
-    paging = pagination_find_options(tag)
-    result = []
-    tag.locals.previous_headers = {}
-    displayed_children = paging ? tag.locals.children.paginate(options.merge(paging)) : tag.locals.children.all(options)
-    displayed_children.each_with_index do |item, i|
-      tag.locals.child = item
-      tag.locals.page = item
-      tag.locals.first_child = i == 0
-      tag.locals.last_child = i == displayed_children.length - 1
-      result << tag.expand
-    end
-    if paging && displayed_children.total_pages > 1
-      tag.locals.paginated_list = displayed_children
-      result << tag.render('pagination', tag.attr.dup)
-    end
-    result
+    render_children_with_pagination(tag)
   end
 
   desc %{
@@ -437,16 +421,7 @@ module StandardTags
     </r:aggregate></code></pre>
   }
   tag "aggregate:children:each" do |tag|
-    options = aggregate_children(tag)
-    children = Page.find(:all, options)
-    tag.locals.previous_headers = {}
-    returning String.new do |output|
-      children.each do |child|
-        tag.locals.page = child
-        tag.locals.child = child
-        output << tag.expand
-      end
-    end
+    render_children_with_pagination(tag, :aggregate => true)
   end
   
   desc %{
@@ -1219,6 +1194,32 @@ module StandardTags
   end
 
   private
+    def render_children_with_pagination(tag, opts={})
+      if opts[:aggregate]
+        findable = Page
+        options = aggregate_children(tag)
+      else
+        findable = tag.locals.children
+        options = children_find_options(tag)
+      end
+      paging = pagination_find_options(tag)
+      result = []
+      tag.locals.previous_headers = {}
+      displayed_children = paging ? findable.paginate(options.merge(paging)) : findable.all(options)
+      displayed_children.each_with_index do |item, i|
+        tag.locals.child = item
+        tag.locals.page = item
+        tag.locals.first_child = i == 0
+        tag.locals.last_child = i == displayed_children.length - 1
+        result << tag.expand
+      end
+      if paging && displayed_children.total_pages > 1
+        tag.locals.paginated_list = displayed_children
+        result << tag.render('pagination', tag.attr.dup)
+      end
+      result
+    end
+    
     def children_find_options(tag)
       attr = tag.attr.symbolize_keys
 
