@@ -145,7 +145,7 @@ records:
         <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
           <channel>
             <title>Article RSS Feed</title>
-            <link>http://your-web-site.com<r:url /></link>
+            <link>http://example.com<r:url /></link>
             <language>en-us</language>
             <ttl>40</ttl>
             <description>The main blog feed for my Web site.</description>
@@ -155,8 +155,8 @@ records:
                   <title><r:title /></title>
                   <description><r:escape_html><r:content /></r:escape_html></description>
                   <pubDate><r:rfc1123_date /></pubDate>
-                  <guid>http://your-web-site.com<r:url /></guid>
-                  <link>http://your-web-site.com<r:url /></link>
+                  <guid>http://example.com<r:url /></guid>
+                  <link>http://example.com<r:url /></link>
                 </item>
             </r:children:each>
             </r:find>
