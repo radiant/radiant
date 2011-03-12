@@ -2,6 +2,7 @@
 
 === Edge
 
+* Remove legacy routes [Jim Gay]
 * Allow pagination in aggregated pages [Jim Gay]
 * Make UserActionObserver thread safe [Mark Reginald James]
 * Speedup recursive snippet usage [Andrew O'Brian, Jim Gay]
