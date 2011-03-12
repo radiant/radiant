@@ -1,7 +1,6 @@
 module ApplicationHelper
   include LocalTime
   include Admin::RegionsHelper
-  include Radiant::LegacyRoutes
   
   def config
     Radiant::Config
