@@ -147,12 +147,12 @@ records:
       lock_version: 19
       id: 6
       content: |-
-        <r:find url="/news">
+        <r:find path="/news">
           <r:children:each order="desc" limit="3">
           <div class="entry">
             <h3><r:link /></h3>
             <div class="posted">
-              Posted by <r:author /> on <r:date format="%B %d, %Y" /><em>|</em><img src="/images/roasters/comment.png" /><a href="<r:url />#disqus_thread">Comments</a><em>|</em><r:link>Read full article</r:link>    
+              Posted by <r:author /> on <r:date format="%B %d, %Y" /><em>|</em><img src="/images/roasters/comment.png" /><a href="<r:path />#disqus_thread">Comments</a><em>|</em><r:link>Read full article</r:link>    
             </div>
             <r:content part="summary" />
           </div>
@@ -219,7 +219,7 @@ records:
       created_by_id: 1
       lock_version: 9
       id: 3
-      content: "<ul>\r\n  <r:navigation urls=\"Home: /\">\r\n      <r:normal><li><a href=\"<r:url />\"><r:title /></a></li></r:normal>\r\n      <r:here><li class=\"selected\"><a href=\"<r:url />\"><r:title /></a></li></r:here>\r\n      <r:selected><li><a href=\"<r:url />\"><r:title /></a></li></r:selected>\r\n  </r:navigation>\r\n  <r:navigation urls=\"Tour: /tour | News: /news | Locations: /locations | About: /about\">\r\n    <r:normal><li><a href=\"<r:url />\"><r:title /></a></li></r:normal>\r\n    <r:here><li class=\"selected\"><a href=\"<r:url />\"><r:title /></a></li></r:here>\r\n    <r:selected><li class=\"selected\"><a href=\"<r:url />\"><r:title /></a></li></r:selected>\r\n  </r:navigation>\r\n\
+      content: "<ul>\r\n  <r:navigation urls=\"Home: /\">\r\n      <r:normal><li><a href=\"<r:path />\"><r:title /></a></li></r:normal>\r\n      <r:here><li class=\"selected\"><a href=\"<r:path />\"><r:title /></a></li></r:here>\r\n      <r:selected><li><a href=\"<r:path />\"><r:title /></a></li></r:selected>\r\n  </r:navigation>\r\n  <r:navigation urls=\"Tour: /tour | News: /news | Locations: /locations | About: /about\">\r\n    <r:normal><li><a href=\"<r:path />\"><r:title /></a></li></r:normal>\r\n    <r:here><li class=\"selected\"><a href=\"<r:path />\"><r:title /></a></li></r:here>\r\n    <r:selected><li class=\"selected\"><a href=\"<r:path />\"><r:title /></a></li></r:selected>\r\n  </r:navigation>\r\n\
         </ul>    "
     9: 
       updated_by_id: 
@@ -269,7 +269,7 @@ records:
       created_by_id: 1
       lock_version: 0
       id: 10
-      content: <div class="posted">Posted by <r:author /> on <r:date format="%B %d, %Y" /><em>|</em><img src="/images/roasters/comment.png" /><a href="<r:url />#disqus_thread">Comments</a></div>
+      content: <div class="posted">Posted by <r:author /> on <r:date format="%B %d, %Y" /><em>|</em><img src="/images/roasters/comment.png" /><a href="<r:path />#disqus_thread">Comments</a></div>
   Pages: 
     16: 
       updated_by_id: 
@@ -1300,7 +1300,7 @@ records:
       
         <div id="sitemap">
          <ul>
-           <r:find url="/">
+           <r:find path="/">
              <r:snippet name="sitemap" />
            </r:find>
          </ul>
@@ -1331,7 +1331,7 @@ records:
         <div class="box">
         <h3>News Archives</h3>
         <ul>
-        <r:find url="/news/">
+        <r:find path="/news/">
         <r:children:each order="desc">
         <r:header><li><a href="<r:date format="/news/%Y/%m/" />"><r:date format="%B %Y" /></a></li></r:header>
         </r:children:each>
@@ -3076,7 +3076,7 @@ records:
         <div class="entry">
         <h3><r:link /></h3>
             <div class="posted">
-              Posted by <r:author /> on <r:date format="%B %d, %Y" /><em>|</em><img src="/images/roasters/comment.png" /><a href="<r:url />#disqus_thread">Comments</a><em>|</em><r:link>Read full article</r:link>    
+              Posted by <r:author /> on <r:date format="%B %d, %Y" /><em>|</em><img src="/images/roasters/comment.png" /><a href="<r:path />#disqus_thread">Comments</a><em>|</em><r:link>Read full article</r:link>    
             </div>
           <r:content part="summary" />
         </div>
@@ -3147,18 +3147,18 @@ records:
         <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
           <channel>
             <title>Article RSS Feed</title>
-            <link>http://example.com<r:url /></link>
+            <link>http://example.com<r:path /></link>
             <language>en-us</language>
             <ttl>40</ttl>
             <description>The main blog feed for my Web site.</description>
-            <r:find url="/news/">
+            <r:find path="/news/">
             <r:children:each limit="10" order="desc">
                 <item>
                   <title><r:title /></title>
                   <description><r:escape_html><r:content /></r:escape_html></description>
                   <pubDate><r:rfc1123_date /></pubDate>
-                  <guid>http://example.com<r:url /></guid>
-                  <link>http://example.com<r:url /></link>
+                  <guid>http://example.com<r:path /></guid>
+                  <link>http://example.com<r:path /></link>
                 </item>
             </r:children:each>
             </r:find>
@@ -3219,7 +3219,7 @@ records:
         <div class="entry">
           <h3><r:link /></h3>
             <div class="posted">
-              Posted by <r:author /> on <r:date format="%B %d, %Y" /><em>|</em><img src="/images/roasters/comment.png" /><a href="<r:url />#disqus_thread">Comments</a><em>|</em><r:link>Read full article</r:link>    
+              Posted by <r:author /> on <r:date format="%B %d, %Y" /><em>|</em><img src="/images/roasters/comment.png" /><a href="<r:path />#disqus_thread">Comments</a><em>|</em><r:link>Read full article</r:link>    
             </div>
           <r:content part="summary" />
         </div>
