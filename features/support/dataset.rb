@@ -1,3 +1,4 @@
+require 'cucumber/rails/world'
 require 'dataset'
 
 Cucumber::Rails::World.class_eval do
