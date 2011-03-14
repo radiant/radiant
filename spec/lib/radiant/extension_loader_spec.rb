@@ -75,7 +75,6 @@ describe Radiant::ExtensionLoader do
     @instance.send(:load_paths_for, "#{RADIANT_ROOT}/vendor/extensions/archive").should == %W{
         #{RADIANT_ROOT}/vendor/extensions/archive/lib
         #{RADIANT_ROOT}/vendor/extensions/archive/app/models
-        #{RADIANT_ROOT}/vendor/extensions/archive/test/helpers
         #{RADIANT_ROOT}/vendor/extensions/archive}
   end
 
