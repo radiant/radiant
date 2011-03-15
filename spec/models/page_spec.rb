@@ -559,8 +559,8 @@ describe Page, "class" do
   end
 
   describe ".date_column_names" do
-    it "should return an array of column names whose sql_type is a date or datetime" do
-      Page.date_column_names.should == Page.columns.collect{|c| c.name if c.sql_type =~ /date/ }.compact
+    it "should return an array of column names whose sql_type is a date, datetime or timestamp" do
+      Page.date_column_names.should == Page.columns.collect{|c| c.name if c.sql_type =~ /^date(time)?|timestamp/ }.compact
     end
   end
 end
