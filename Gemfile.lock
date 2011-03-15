@@ -1,0 +1,58 @@
+PATH
+  remote: .
+  specs:
+    radiant (0.9.1)
+      RedCloth (>= 4.0.0)
+      rack (~> 1.1.0)
+      rake (>= 0.8.3)
+      will_paginate (~> 2.3.11)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    RedCloth (4.2.7)
+    builder (3.0.0)
+    compass (0.10.6)
+      haml (>= 3.0.4)
+    cucumber (0.10.0)
+      builder (>= 2.1.2)
+      diff-lcs (~> 1.1.2)
+      gherkin (~> 2.3.2)
+      json (~> 1.4.6)
+      term-ansicolor (~> 1.0.5)
+    cucumber-rails (0.3.2)
+      cucumber (>= 0.8.0)
+    database_cleaner (0.6.5)
+    diff-lcs (1.1.2)
+    gherkin (2.3.4)
+      json (~> 1.4.6)
+    haml (3.0.25)
+    json (1.4.6)
+    nokogiri (1.4.4)
+    rack (1.1.2)
+    rack-test (0.5.7)
+      rack (>= 1.0)
+    rake (0.8.7)
+    rspec (1.3.1)
+    rspec-rails (1.3.3)
+      rack (>= 1.0.0)
+      rspec (= 1.3.1)
+    term-ansicolor (1.0.5)
+    webrat (0.7.3)
+      nokogiri (>= 1.2.0)
+      rack (>= 1.0)
+      rack-test (>= 0.5.3)
+    will_paginate (2.3.15)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  compass (~> 0.10.5)
+  cucumber (> 0.3.9)
+  cucumber-rails (~> 0.3.2)
+  database_cleaner (~> 0.6.5)
+  radiant!
+  rspec (~> 1.3.1)
+  rspec-rails (~> 1.3.3)
+  webrat (~> 0.7.3)
