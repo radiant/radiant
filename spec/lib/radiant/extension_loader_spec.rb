@@ -28,7 +28,7 @@ describe Radiant::ExtensionLoader do
     @initializer.should_receive(:configuration).and_return(@configuration)
     @instance.configuration.should == @configuration
   end
-
+  
   it "should only load extensions specified in the configuration" do
     @configuration.should_receive(:extensions).at_least(:once).and_return([:basic])
     @instance.stub!(:all_extension_roots).and_return(@extension_paths)
@@ -36,7 +36,14 @@ describe Radiant::ExtensionLoader do
   end
 
   it "should load gem extensions with paths matching radiant-*-extension" do
-    gem_path = File.join RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-extension-0.0.0)
+    gem_path = File.join RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-extension-61e0ad14a3ae)
+    @configuration.should_receive(:extensions).at_least(:once).and_return([:gem_ext])
+    @instance.stub!(:all_extension_roots).and_return([File.expand_path(gem_path)])
+    @instance.send(:select_extension_roots).should == [gem_path]
+  end
+
+  it "should load gem extensions packed by bundler from git" do
+    gem_path = File.join RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-extension-61e0ad14a3ae)
     @configuration.should_receive(:extensions).at_least(:once).and_return([:gem_ext])
     @instance.stub!(:all_extension_roots).and_return([File.expand_path(gem_path)])
     @instance.send(:select_extension_roots).should == [gem_path]
