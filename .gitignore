@@ -13,3 +13,6 @@ spec/datasets/tmp
 .idea
 rerun.txt
 *.swp
+radiant-*.gem
+.rvmrc
+Gemfile.lock
