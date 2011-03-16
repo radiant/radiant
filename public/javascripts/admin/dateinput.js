@@ -130,7 +130,7 @@ DateInputBehavior = Behavior.create({
   },
   
   getDate : function() {
-    return this.options.getter(this.element.value) || new Date;
+    return this.options.getter(this.element.value) || new Date();
   },
   
   _isOverWidget: function(event) {
@@ -140,7 +140,7 @@ DateInputBehavior = Behavior.create({
       var widgetRight = this.element.cumulativeOffset().left + this.element.getDimensions().width;
       positionedOverWidget = (event.pointerX() >= widgetLeft && event.pointerX() <= widgetRight);
     } else {
-      var calendarIconWidth = parseInt(this.element.getStyle('padding-right'));
+      var calendarIconWidth = parseInt(this.element.getStyle('padding-right'), 10);
       var widgetLeft = this.element.cumulativeOffset().left + this.element.getDimensions().width - calendarIconWidth;
       positionedOverWidget = (event.pointerX() >= widgetLeft);
     }
@@ -195,7 +195,7 @@ DateInputBehavior.Calendar = Behavior.create({
     if (this.element.visible()) {
       this.hide();
     } else {
-      this.show()
+      this.show();
     }
   },
   
@@ -277,7 +277,7 @@ DateInputBehavior.Calendar = Behavior.create({
   },
   
   _selectYear: function(combo) {
-    var year = parseInt($F(combo))
+    var year = parseInt($F(combo));
     this.date.setYear(year);
     this.selector.setDate(this.date, false);
     this.redraw();
@@ -341,7 +341,7 @@ DateInputBehavior.Calendar = Behavior.create({
         if (day <= monthLength && (i > 0 || j >= firstDay)) { 
           var classes = ['day'];
           
-          if (this._compareDate(new Date, year, month, day)) classes.push('today');
+          if (this._compareDate(new Date(), year, month, day)) classes.push('today');
           if (this._compareDate(this.selector.date, year, month, day)) classes.push('selected');
           
           html += '<td class="' + classes.join(' ') + '">' + 

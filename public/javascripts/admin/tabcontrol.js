@@ -1,4 +1,4 @@
-if(typeof(relative_url_root) === 'undefined'){ relative_url_root = ''}
+if(typeof(relative_url_root) === 'undefined'){ relative_url_root = '';}
 
 var TabControlBehavior = Behavior.create({
   initialize: function() {
@@ -81,15 +81,15 @@ var TabControl = Class.create({
   },
   
   findTabByCaption: function(caption) {
-    return this.tabs.detect(function(tab) { return tab.caption == caption });
+    return this.tabs.detect(function(tab) { return tab.caption == caption; });
   },
   
   findTabByPage: function(page) {
-    return this.tabs.detect(function(tab) { return tab.page == page });
+    return this.tabs.detect(function(tab) { return tab.page == page; });
   },
   
   findTabByElement: function(element) {
-    return this.tabs.detect(function(tab) { return tab.element == element });
+    return this.tabs.detect(function(tab) { return tab.element == element; });
   }
 });
 

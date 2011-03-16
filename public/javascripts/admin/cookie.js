@@ -77,4 +77,4 @@ Cookie = {
       return now.toGMTString();     
     }
   }
-}
+};
