@@ -2,6 +2,10 @@ When /^I fill in the "([^\"]*)" content with "([^\"]*)"$/ do |part, content|
   fill_in("part_#{part.to_slug}_content", :with => content)
 end
 
+When /^I fill in the "([^\"]*)" content with the text$/ do |part, content|
+  fill_in("part_#{part.to_slug}_content", :with => content)
+end
+
 Then /^there should be an? "([^\"]*)" part$/ do |name|
   response.should have_tag("#page_#{name.to_slug}")
   response.should have_tag("#part-#{name.to_slug}")
