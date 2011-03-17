@@ -3,10 +3,10 @@ RADIANT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), "..")) unless 
 unless defined? Radiant::Version
   module Radiant
     module Version
-      Major = '0'
-      Minor = '9'
-      Tiny  = '2'
-      Patch = 'a' # set to nil for normal release
+      Major = '1'
+      Minor = '0'
+      Tiny  = '0'
+      Patch = 'alpha' # set to nil for normal release
 
       class << self
         def to_s
