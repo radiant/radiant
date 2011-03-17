@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
-
+require File.expand_path(__FILE__ + '/../lib/radiant.rb')
 Gem::Specification.new do |s|
   s.name = %q{radiant}
-  s.version = "0.9.1"
+  s.version = Radiant::Version.to_s
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Radiant CMS dev team"]
@@ -14,7 +14,8 @@ a general purpose content managment system--not merely a blogging engine.}
   s.email = %q{radiant@radiantcms.org}
   s.executables = ["radiant"]
   s.extra_rdoc_files = ["README", "CONTRIBUTORS", "CHANGELOG", "INSTALL", "LICENSE"]
-  s.files = `git ls-files`.split("\n")
+  ignores = File.read('.gitignore').split("\n").inject([]) {|a,p| a + Dir[p] }
+  s.files = Dir['**/*','.gitignore', 'public/.htaccess'] - ignores
   s.homepage = %q{http://radiantcms.org}
   s.rdoc_options = ["--title", "Radiant -- Publishing for Small Teams", "--line-numbers", "--main", "README", "--exclude", "app", "--exclude", "bin", "--exclude", "config", "--exclude", "db", "--exclude", "features", "--exclude", "lib", "--exclude", "log", "--exclude", "pkg", "--exclude", "public", "--exclude", "script", "--exclude", "spec", "--exclude", "test", "--exclude", "tmp", "--exclude", "vendor"]
   s.require_paths = ["lib"]
