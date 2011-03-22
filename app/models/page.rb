@@ -334,7 +334,7 @@ class Page < ActiveRecord::Base
     end
 
     def clean_path(path)
-      "/#{ path.strip }/".gsub(%r{//+}, '/')
+      "/#{ path.to_s.strip }/".gsub(%r{//+}, '/')
     end
     alias_method :clean_url, :clean_path
 
@@ -355,7 +355,7 @@ class Page < ActiveRecord::Base
     end
 
     def parse_object(object)
-      text = object.content
+      text = object.content || ''
       text = parse(text)
       text = object.filter.filter(text) if object.respond_to? :filter_id
       text

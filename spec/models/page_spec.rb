@@ -433,6 +433,10 @@ describe Page, "rendering" do
     create_page "Test Page", :body => "<r:test1 /> <r:test2 />", :class_name => "PageSpecTestPage"
     pages(:test_page).should render_as('Hello world! Another test. body.')
   end
+  
+  it 'should render blank when containing no content' do
+    Page.new.should render_as('')
+  end
 end
 
 describe Page, "#find_by_path" do
