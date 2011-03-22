@@ -20,6 +20,8 @@ describe Radiant::Exporter do
   end
   
   its(:exportable_models){ should == [Radiant::Config, User, Page, PagePart, PageField, Snippet, Layout] }
+  its(:template_models){ should == [Layout, Snippet, Page, PagePart, PageField] }
+  its(:ignored_template_attributes){ should == [:lock_version, :created_at, :updated_at, :created_by_id, :updated_by_id] }
   it "should allow setting exportable_models" do
     exporter.exportable_models = [Page]
     exporter.exportable_models.should == [Page]

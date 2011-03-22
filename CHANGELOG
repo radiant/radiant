@@ -2,6 +2,7 @@
 
 === Edge
 
+* Provide an export function for custom templates [Jim Gay]
 * Remove legacy routes [Jim Gay]
 * Allow pagination in aggregated pages [Jim Gay]
 * Make UserActionObserver thread safe [Mark Reginald James]

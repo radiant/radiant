@@ -8,7 +8,7 @@ describe Admin::ExportController do
   end
   
   it "should export a YAML file" do
-    get :yaml
+    get :export
     response.should be_success
     response.content_type.should == "text/yaml"
     YAML.load(response.body).should be_kind_of(Hash)
