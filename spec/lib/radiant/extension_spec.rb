@@ -60,7 +60,7 @@ describe Radiant::Extension do
     end
   end
 
-  it "should allow the manipulation of tabs" do
+  it "should allow the addition of items" do
     start_length = BasicExtension.admin.nav['Design'].length
     BasicExtension.class_eval {
       tab 'Design' do
@@ -68,6 +68,26 @@ describe Radiant::Extension do
       end
     }
     BasicExtension.admin.nav['Design'].length.should == start_length + 1
+  end
+  
+  it "should allow the ordering of nav tabs after other tabs" do
+    nav = BasicExtension.admin.nav
+    BasicExtension.class_eval {
+      tab "Assets", :before => "Design"
+    }
+    assets = nav["Assets"]
+    content = nav["content"]
+    nav.index(assets).should == (nav.index(content) + 1)
+  end
+  
+  it "should allow the ordering of nav tabs before other tabs" do
+    nav = BasicExtension.admin.nav
+    BasicExtension.class_eval {
+      tab "Assets", :before => "Design"
+    }
+    assets = nav["Assets"]
+    design = nav["Design"]
+    nav.index(assets).should == (nav.index(design) - 1)
   end
   
   it "should allow the addition of tabs" do

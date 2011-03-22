@@ -5,18 +5,18 @@ module Radiant
   class AdminUI
     # This may be loaded before ActiveSupport, so do an explicit require
     require 'radiant/admin_ui/region_set'
-
+    
     class DuplicateTabNameError < StandardError; end
-
+    
     # The NavTab Class holds the structure of a navigation tab (including
     # its sub-nav items).
     class NavTab < Array
       attr_reader :name
-
+      
       def initialize(name)
         @name = name
       end
-
+      
       def [](id)
         unless id.kind_of? Fixnum
           self.find {|subnav_item| subnav_item.name.to_s.titleize == id.to_s.titleize }
@@ -24,7 +24,7 @@ module Radiant
           super
         end
       end
-
+      
       def <<(*args)
         options = args.extract_options!
         item = args.size > 1 ? deprecated_add(*(args << caller)) : args.first
@@ -46,7 +46,7 @@ module Radiant
           end
         end
       end
-
+      
       alias :add :<<
       
       def add_item(*args)
@@ -63,30 +63,30 @@ module Radiant
           add NavSubItem.new(args.first, args.second)
         end
       end
-
+      
       def visible?(user)
         any? { |sub_item| sub_item.visible?(user) }
       end
-
+      
       def deprecated_add(name, url, caller)
         ActiveSupport::Deprecation.warn("admin.tabs.add is no longer supported in Radiant 0.9.x.  Please update your code to use: \ntab \"Content\" do\n\tadd_item(...)\nend", caller)
         NavSubItem.new(name, url)
       end
     end
-
+    
     # Simple structure for storing the properties of a tab's sub items.
     class NavSubItem
       attr_reader :name, :url
       attr_accessor :tab
-
+      
       def initialize(name, url = "#")
         @name, @url = name, url
       end
-
+      
       def visible?(user)
         visible_by_controller?(user)
       end
-
+      
       def relative_url
         File.join(ActionController::Base.relative_url_root || '', url)
       end
@@ -102,9 +102,9 @@ module Radiant
         end
       end
     end
-
+    
     include Simpleton
-
+    
     attr_accessor :nav
     
     def nav_tab(*args)
@@ -118,28 +118,28 @@ module Radiant
     def tabs
       nav['Content']
     end
-
+    
     # Region sets
     %w{page snippet layout user configuration extension}.each do |controller|
       attr_accessor controller
       alias_method "#{controller}s", controller
     end
-
+    
     def initialize
       @nav = NavTab.new("Tab Container")
       load_default_regions
     end
-
+    
     def load_default_nav
       content = nav_tab("Content")
       content << nav_item("Pages", "/admin/pages")
       nav << content
-
+      
       design = nav_tab("Design")
       design << nav_item("Layouts", "/admin/layouts")
       design << nav_item("Snippets", "/admin/snippets")
       nav << design
-
+      
       settings = nav_tab("Settings")
       settings << nav_item("General", "/admin/configuration")
       settings << nav_item("Personal", "/admin/preferences")
@@ -147,7 +147,7 @@ module Radiant
       settings << nav_item("Extensions", "/admin/extensions")
       nav << settings
     end
-
+    
     def load_default_regions
       @page = load_default_page_regions
       @snippet = load_default_snippet_regions
@@ -156,9 +156,9 @@ module Radiant
       @configuration = load_default_configuration_regions
       @extension = load_default_extension_regions
     end
-
+    
     private
-
+    
     def load_default_page_regions
       returning OpenStruct.new do |page|
         page.edit = RegionSet.new do |edit|
@@ -175,7 +175,7 @@ module Radiant
         page.new = page._part = page.edit
       end
     end
-
+    
     def load_default_user_regions
       returning OpenStruct.new do |user|
         user.preferences = RegionSet.new do |preferences|
@@ -197,7 +197,7 @@ module Radiant
         user.new = user.edit
       end
     end
-
+    
     def load_default_snippet_regions
       returning OpenStruct.new do |snippet|
         snippet.edit = RegionSet.new do |edit|
@@ -214,7 +214,7 @@ module Radiant
         snippet.new = snippet.edit
       end
     end
-
+    
     def load_default_layout_regions
       returning OpenStruct.new do |layout|
         layout.edit = RegionSet.new do |edit|
@@ -231,7 +231,7 @@ module Radiant
         layout.new = layout.edit
       end
     end
-
+    
     def load_default_configuration_regions
       returning OpenStruct.new do |configuration|
         configuration.show = RegionSet.new do |show|
@@ -245,7 +245,7 @@ module Radiant
         end
       end
     end
-
+    
     def load_default_extension_regions
       returning OpenStruct.new do |extension|
         extension.index = RegionSet.new do |index|

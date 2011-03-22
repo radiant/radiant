@@ -54,11 +54,21 @@ module Radiant
       AdminUI.instance
     end
     
-    def tab(name,&block)
+    def tab(name, options={}, &block)
       @the_tab = admin.nav[name]
       unless @the_tab
         @the_tab = Radiant::AdminUI::NavTab.new(name)
-        admin.nav << @the_tab
+        before = options.delete(:before)
+        after = options.delete(:after)
+        tab_name = before || after
+        tab_object = admin.nav[tab_name]
+        if tab_object
+          index = admin.nav.index(tab_object)
+          index += 1 unless before
+          admin.nav.insert(index, @the_tab)
+        else
+          admin.nav << @the_tab
+        end
       end
       if block_given?
         block.call(@the_tab)
