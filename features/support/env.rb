@@ -13,6 +13,8 @@ require 'cucumber/rails/world'
 require 'cucumber/rails/active_record'
 require 'cucumber/web/tableish'
 
+require 'spec/expectations'
+
 require 'webrat'
 require 'webrat/core/matchers'
 
