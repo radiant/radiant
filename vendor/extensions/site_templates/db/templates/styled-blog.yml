@@ -125,7 +125,7 @@ records:
       breadcrumb: Third Post
       parent_id: 4
       status_id: 100
-      published_at: 06/11/2010
+      published_at: 01/11/2011
     8: 
       slug: about
       title: About
@@ -169,7 +169,7 @@ records:
       content: |
         <r:find path="/articles/">
       
-        <r:children:each limit="1" order="desc">
+        <r:children:each limit="1" by="published_at" order="desc">
         <div class="first entry">
           <h3><r:link /></h3>
           <r:content />
@@ -178,7 +178,7 @@ records:
         </div>
         </r:children:each>
       
-        <r:children:each limit="4" offset="1" order="desc">
+        <r:children:each limit="4" offset="1" by="published_at" order="desc">
         <div class="entry">
           <h3><r:link /></h3>
           <r:content />
@@ -216,7 +216,7 @@ records:
             <ttl>40</ttl>
             <description>The main blog feed for my Web site.</description>
             <r:find path="/articles/">
-            <r:children:each limit="10" order="desc">
+            <r:children:each limit="10" by="published_at" order="desc">
                 <item>
                   <title><r:title /></title>
                   <description><r:escape_html><r:content /></r:escape_html></description>
@@ -234,7 +234,7 @@ records:
       page_id: 4
       id: 4
       content: |-
-        <r:children:each limit="5" order="desc">
+        <r:children:each limit="5" by="published_at" order="desc">
         <div class="entry">
           <h3><r:link /></h3>
           <r:content />
@@ -276,11 +276,11 @@ records:
       
         h3. Recent Entries
         <r:if_path matches="^/$">
-        <r:find path="/articles/"><r:children:each limit="10" offset="5" order="desc">
+        <r:find path="/articles/"><r:children:each limit="10" offset="5" by="published_at" order="desc">
         * <r:link /></r:children:each></r:find>
         </r:if_path>
         <r:unless_path matches="^/$">
-        <r:find path="/articles/"><r:children:each limit="10" order="desc">
+        <r:find path="/articles/"><r:children:each limit="10" by="published_at" order="desc">
         * <r:link /></r:children:each></r:find>
         </r:unless_path>
       
@@ -322,7 +322,7 @@ records:
         <h3>Archives By Month</h3>
         <ul>
         <r:find path="/articles/">
-        <r:children:each order="desc">
+        <r:children:each by="published_at" order="desc">
         <r:header><li><a href="<r:date format="/articles/%Y/%m/" />"><r:date format="%B %Y" /></a></li></r:header>
         </r:children:each>
         </r:find>
@@ -334,7 +334,7 @@ records:
       page_id: 9
       id: 12
       content: |-
-        <r:archive:children:each order="desc">
+        <r:archive:children:each by="published_at" order="desc">
         <div class="entry">
           <h3><r:link /></h3>
           <r:content />
