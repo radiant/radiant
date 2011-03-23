@@ -7,7 +7,7 @@
         .actions
           = button_to t("edit_preferences"), "/admin/preferences", :method => :get
         = t('personal_preferences')
-      = render :partial => 'admin/users/avatar'
+      = image_tag(gravatar_url(@user.email, :size=>"64px"), :class=>"avatar", :width=>64, :height=>64, :alt=>"")
       %p.ruled
         %label 
           = t('name') 

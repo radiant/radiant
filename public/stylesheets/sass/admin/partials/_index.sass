@@ -39,7 +39,8 @@ table.index
       color: black
       text-decoration: none
       &:hover
-        background: #eee image_url('admin/buttons_background.png') repeat-x
+        background: #d8d8d8
+        +linear-gradient(color-stops(#fff, #ccc))
         border: 1px solid #a5c9df
         margin: 0 24px 0 0
         +border-radius
@@ -79,8 +80,11 @@ table.index
       td
         border-top: 1px solid #d5f0ff
         border-bottom: 1px solid #c5dff5
-        background: #c5dff5 image_url('admin/row_highlight.png') repeat-x center top
+        background: #c5dff5
         +linear-gradient(color_stops(#e5f5ff, #c5dff5))
+  thead
+    tr, tr:first-child
+      border-top: none
 
 table.index#pages
   tr.page

@@ -1,48 +1,52 @@
+$header: #ca0000 !default
+$primary-tab: rgba(white, 0.3)
+$primary-tab-current: white
+
 #header
   font-size: 90%
-  background: #c00 image_url('admin/navigation_background.gif') repeat-x
-  width: 100%
+  background: $header
+  +linear-gradient(color-stops(darken($header,12), $header, $header))
   position: relative
-  height: auto
-  
+  &:after
+    content: "\0020"
+    display: block
+    clear: both
+    overflow: hidden
+    height: 2px
+    width: 100%
+    position: absolute
+    +linear-gradient(color-stops(rgba(black,0.3), rgba(black, 0)))
+
 #site_links
-  color: #f5cbcb
+  color: mix($header, white, 15%)
   font-size: 80%
   float: right
-  padding: 15px 80px 0 5px
+  padding: 15px 10px 0 5px
   height: 16px
-  a, a:visited 
+  a 
     color: white
   a:hover, strong a 
     text-decoration: none
-    
+
 #view_site 
   font-size: 90%
-  background: image_url('admin/view_site.png') no-repeat
-  display: block
-  position: absolute
-  right: 12px
-  top: 14px
-  height: 17px
-  width: 64px
-  line-height: 17px
-  padding-left: 1px
-  text-align: center
+  background: rgba(black, 0.45)
+  +border-radius
+  display: inline
+  padding: 3px 10px 4px
   text-decoration: none
   
 ul#navigation
-  font-size: 100%
   float: left
   margin-top: 6px
-  postion: relative
   li
     float: left
     height: 30px
     margin: 4px 0 0 8px
     white-space: nowrap
-    a 
-      background: image_url('admin/navigation_tabs.png') left top repeat-x
-      color: #edd
+    a
+      background: $primary-tab
+      color: mix($header, white, 15%)
       display: block
       height: 30px
       line-height: 30px
@@ -51,62 +55,64 @@ ul#navigation
       text-decoration: none
       +border-top-radius(6px)
     &:hover a
-      background-position: left -48px
+      background: opacify($primary-tab, 0.2)
       color: white
     &.current a
-      background-position: left -96px
+      background: white
       color: #333
       font-weight: bold
-    &.dimmed a
-      background-position: 0 -48px
-  ul#nav_sub
-    background: image_url('admin/navigation_secondary_background.png') repeat-x
-    font-size: 95%
-    clear: both
-    left: 0
-    bottom: 0
-    margin: 0
-    padding: 0
-    position: absolute
-    width: 100%
-    height: 38px
-    z-index: 10
-    li
-      margin: 0
-      a
-        background: image_url('admin/navigation_secondary_background.png') repeat-x
-        color: #555
-        display: -moz-inline-stack
-        display: inline-block
-        font-weight: normal
-        line-height: 38px
-        margin: 0
-        padding: 0
-        height: 38px
-        &:hover
-          background-position: left -40px
-          color: #444
-        &.current        
-          background: image_url('admin/navigation_secondary_background.png') left -80px repeat-x
-          color: #333
-          font-weight: bold
-          &:hover
-            background-position: left -120px
-            color: #222
-        span
-          background: image_url('admin/navigation_secondary_separator.gif') right bottom no-repeat
-          display: block
-          margin: 0
-          padding: 0 26px
-          height: 38px
 
-#header_bottom
+#toolbar
+  background: white
+  +linear-gradient(color-stops(white, darken(white, 5%), darken(white, 20%)))
+  font-size: 95%
   clear: both
+  margin: 0
+  width: 100%
   height: 38px
-  position: relative
-  div
-    background: image_url('admin/navigation_shadow.png') repeat-x
-    position: absolute
-    top: 38px
-    width: 100%
-    height: 4px
+  +pie-clearfix
+  .right
+    float: right
+  form.search
+    padding: 8px 8px 0
+    input[type=search]
+      font-size: 12px
+      +border-radius(100px)
+      border: 1px solid #ccc
+      border-top-color: #999
+      border-left-color: #b0b0b0
+      border-right-color: #bbb
+      background: white image_url('admin/search.png') 4px center no-repeat
+      +box-shadow(rgba(black, 0.2), 0, 1px, 0, inset)
+      width: 180px
+      padding: 2px 8px 2px 20px
+
+ul#secondary_navigation
+  float: left
+  margin-right: 8px
+  li
+    float: left
+    display: block
+    background: image-url('admin/navigation_secondary_separator.gif') bottom right no-repeat
+    padding-right: 2px
+    a
+      color: #555
+      display: block
+      font-weight: normal
+      float: left
+      line-height: 38px
+      margin: 0
+      padding: 0 26px
+      height: 38px
+      text-decoration: none
+      &:hover
+        +linear-gradient(color-stops(#e4f9ff, #d2ebfd 30%, #b1d1f1 50%, #9bc5ed 50%, #caecff))
+        color: #444
+      &.current
+        background: #ddd
+        +linear-gradient(color-stops(white, darken(white, 10%) 35%, darken(white, 15%) 50%, darken(white, 20%) 50%, darken(white, 15%)))
+        color: #333
+        font-weight: bold
+        &:hover
+          +linear-gradient(color-stops(#e0f9fe, #c4e2f8 30%, #98c3e7 50%, #79aedb 50%, #b1ddef))
+          color: #222

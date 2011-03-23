@@ -31,9 +31,10 @@
     width: 100%
     clear: both
     .page
-      padding: 12px 20px 20px
-      background: image_url('admin/vertical_tan_gradient.png') top left repeat-x #f5f1e2
+      background: white
+      +linear-gradient(color-stops(white, #f5f1e2 15%, #f5f1e2))
       +box-shadow(rgba(0,0,0,0.15), 2px, 2px, 3px)
+      padding: 12px 20px 20px
       p
         margin-top: 0
       label

@@ -2,33 +2,53 @@ div.popup
   color: #333
   background-color: white
   border: 1px solid #777
-  padding: 0 10px
+  padding: 10px 20px
   font-size: 90%
+  
   .busy
     float: right
     margin-top: 9px
+  
   h3.title
-    background: #ecf4ff
-    border-bottom: 1px solid #bcd8f4
+    background: #c5dff5
+    +linear-gradient(color_stops(#e5f5ff, #c5dff5))
+    border-bottom: 1px solid #a7cdf0
     font-size: 120%
-    margin: 0 -10px 10px -10px
+    margin: -10px -20px 20px -20px
     padding: 6px 10px
+  
   label
     display: block
     font-size: 90%
     &.inline
       display: inline
+  
   input.button
     font-size: 120%
+  
+  .viewport
+    background: white
+    border: 1px solid #ddd
+    border-top: 1px solid #ccc
+    border-left: 1px solid #ccc
+    +box-shadow(#fff, 1px, 1px, 0)
+    margin: 1em 0
+    overflow: auto
+    table.index
+      margin: -1px 0 0
+  
   .buttons
     font-size: 90%
+    margin-top: 1.5em
     input.button
       font-size: 130%
-  .tag_description,
-  .snippet_description
+    a.cancel
+      color: $alt-link-color
+  
+  .tag_description, .snippet_description
     border-bottom: 1px dotted silver
     font-size: 95%
-    padding: 12px 0
+    padding: 6px 0
     h4
       color: green
       font-size: 120%
@@ -47,6 +67,7 @@ div.popup
       font-family: Monaco, "Courier New", Courier, monospace
       overflow: hidden
       padding: 10px
+  
   .reference
     font-size: 90%
     border: 1px solid silver
@@ -69,13 +90,8 @@ div.popup
       border: 1px solid #ddd
       color: #666
       font-family: Monaco, "Courier New", Courier, monospace
-      overflow: hidden
+      overflow: auto
       padding: 10px
-    h4
-      color: green
-      font-size: 120%
-      margin-top: 0
-      margin-bottom: 8px
     table
       width: 100%
       th
@@ -102,8 +118,31 @@ div.popup
         margin: 0
         margin-top: 1em
         margin-bottom: 1em
+  
   .close_link
     text-align: center
+.tag
+  color: green
+  cursor: pointer
+  font-size: 120%
+  margin-top: 0
+  margin-bottom: 8px
+.tag_options
+  margin-left: 1em
+  li
+    margin-bottom: 8px
+.tag_option_value_list
+  margin-left: 1em
+  li
+    display: inline
+    &:last-child
+      border: none
+    code
+      padding-left: 0.3em
+      padding-right: 0.3em
+      &:hover
+        background: #666
+        color: #fff
 
 div.popup .reference table
   th
@@ -115,3 +154,19 @@ div.popup .reference table
     color: black
     margin: 0
     margin-bottom: .5em
+
+div.popup.textured
+  background: #eee
+  
+  .head
+    background: white
+    padding: 10px 20px
+    margin: -20px -20px 20px
+    border-bottom: 1px solid #ccc
+    +box-shadow(#fff, 0, 1px, 0)
+  
+  .buttons
+    border-top: 1px solid white
+    margin: 20px -20px -10px
+    padding: 20px
+    +box-shadow(#ccc, 0, -1px, 0)

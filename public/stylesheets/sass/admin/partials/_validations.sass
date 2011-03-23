@@ -1,22 +1,19 @@
-#content form p span.error-with-field
-  input
-    :border
-      :color #c00
-      :width 1px
-      :style solid
 #content
+  
+  span.error-with-field
+    input, select
+      background: #f3c2c2
+  
   span.error
-    :line-height 1.4
-    :background-color #c00
-    :color white
-    :padding 3px 6px
-    :margin 0 0 0 6px
-    :background-color #c00
-    :cursor pointer
+    line-height: 1.4
+    background-color: #c00
+    color: white
+    padding: 3px 6px
+    margin: 0 0 0 6px
+    background-color: #b30000
     +border-radius
     +box-shadow
     a.closer
-      :margin-left 10px
-      :color #fcc
-      :text-decoration none
-  
+      margin-left: 10px
+      color: #fcc
+      text-decoration: none

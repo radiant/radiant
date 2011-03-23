@@ -9,14 +9,15 @@
   right: 0
   bottom: 0
   background: #777
-  +linear-gradient(color_stops(#555, #666, #777, #777))
+  +linear-gradient(color-stops(#555, #666, #777, #777))
   ul
     padding: 14px 8px
   li
     display: inline
     margin-right: 5px
   a
-    background: #eee image_url('admin/buttons_background.png') repeat-x
+    background: #d8d8d8
+    +linear-gradient(color-stops(#fff, #ccc))
     color: #333
     font-size: 80%
     padding: 8px 12px
@@ -45,7 +46,8 @@
       float: left
       padding: 6px 12px 6px 12px
       margin-right: 1px
-      background: #fff image_url('admin/shadow.png') repeat-x
+      background: #ddd
+      +linear-gradient(color-stops(#c5c5c5, #f0f0f0 20%, #fff 35%, #fff))
       color: #999
       font-size: 80%
       text-decoration: none
@@ -54,20 +56,20 @@
     a
       text-shadow: 1px 1px 1px #eee
       &:hover
-        background: #fff image_url('admin/buttons_background.png') repeat-x
+        background: #d8d8d8
+        +linear-gradient(color-stops(#fff, #fff, #ddd))
         color: #0076a3
         +button-shadow
       &:active
-        background: #fff image_url('admin/shadow.png') repeat-x
         color: #000
         +no-button-shadow
     span.disabled
       color: #666
       background-color: #999
-      background-image: none
-      +linear-gradient(color_stops(#888, #999, #999, #999))
+      +linear-gradient(color-stops(#888, #999, #999, #999))
     span.current
       color: #000
+      background: white
       font-weight: bold
       background-image: none
       +button-shadow

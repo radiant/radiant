@@ -27,19 +27,12 @@
             - nav_tabs.each do |tab|
               - if tab.visible?(current_user)
                 %li{:class=>('current ' if current_tab?(tab)).to_s}
-                  %a{:href=>(tab.first.relative_url if tab.first)}
-                    = translate_with_default(tab.name)
-                  - if current_tab?(tab)
-                    %ul#nav_sub
-                      - tab.each do |sub_item|
-                        - if sub_item.visible?(current_user)
-                          %li
-                            %a{:href => sub_item.relative_url, :class => current_item?(sub_item) ? 'current' : ''}>
-                              %span
-                                = translate_with_default(sub_item.name)
-                                
-          #header_bottom
-            %div
+                  = link_to translate_with_default(tab.name), (tab.first.relative_url if tab.first)
+          #toolbar
+            %ul#secondary_navigation
+              - @current_tab.each do |sub_item|
+                - if sub_item.visible?(current_user)
+                  %li= link_to translate_with_default(sub_item.name), sub_item.relative_url, :class=>('current' if current_item?(sub_item))
       #main
         - if flash[:notice]
           #notice
