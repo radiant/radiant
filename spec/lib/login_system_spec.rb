@@ -8,9 +8,13 @@ class StubController < ActionController::Base
 end
 
 class NoLoginRequiredController < StubController;  no_login_required; end
+
 class LoginRequiredController < StubController; end
+
 class NoLoginRequiredChildController < NoLoginRequiredController; end
+
 class LoginRequiredGrandChildController < NoLoginRequiredChildController; login_required; end
+
 class PrivilegedUsersOnlyController < LoginRequiredController
   only_allow_access_to :edit, :new,
                        :when => [:admin, :designer],
@@ -19,6 +23,7 @@ class PrivilegedUsersOnlyController < LoginRequiredController
   def edit; render :text => 'just a test'; end
   def new; render :text => 'just a test'; end
 end
+
 class AdminOnlyController < LoginRequiredController
     only_allow_access_to :edit,
                          :when => :admin,
@@ -26,6 +31,7 @@ class AdminOnlyController < LoginRequiredController
                          :denied_message => 'Fun.'
     def edit; render :text => 'just a test'; end
 end
+
 class ConditionalAccessController < LoginRequiredController
     attr_writer :condition
     only_allow_access_to :edit, :if => :condition?,
