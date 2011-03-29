@@ -87,6 +87,6 @@ Radiant::Initializer.run do |config|
     end
   end
   
-  config.gem 'compass', :version => '~> 0.10.5'
+  config.gem 'compass', :version => '~> 0.10.6'
   config.gem 'will_paginate', :version => '~> 2.3.11'
 end
