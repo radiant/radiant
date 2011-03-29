@@ -9,6 +9,7 @@ ActionController::Routing::Routes.draw do |map|
     admin.resources :snippets
     admin.resources :users
   end
+  map.preview 'admin/preview', :controller => 'admin/pages', :action => 'preview', :conditions => {:method => [:post, :put]}
 
   map.namespace :admin do |admin|
     admin.resource :preferences

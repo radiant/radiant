@@ -1,4 +1,23 @@
 document.observe('dom:loaded', function() {
+  
+  var previewer = $('preview_panel')
+  var preview_tools = previewer.down('.preview_tools')
+  var frame = $('page-preview')
+  var body = document.body
+  
+  Event.addBehavior({
+   "div.preview_tools a.cancel:click" : function(event) {
+      previewer.hide()
+      body.removeClassName('clipped')
+      frame.src = ''
+      event.stop()
+    },
+    "iframe:load" : function(event) {
+      preview_tools.style['opacity'] = null
+    }
+  });
+  
+  
   $('show-preview').observe('click', function(e) {
     e.stop();
     
@@ -7,17 +26,10 @@ document.observe('dom:loaded', function() {
       oldAction = form.action
     
     try {
-      var previewer = $('preview_panel').show()
-      var frame = $('page-preview')
-      $$('div.preview_tools a.cancel, div.preview_tools input').each(function(item, index){
-        item.observe('click', function(e){
-          if(item.hasClassName('cancel')) {
-            previewer.hide()
-            frame.src = ''
-            e.stop();
-          }
-        })
-      })
+      $(body).scrollTo()
+      previewer.show()
+      preview_tools.style['opacity'] = 1
+      body.addClassName('clipped')
       form.target = frame.id
       form.action = '/admin/preview'
       form.submit()

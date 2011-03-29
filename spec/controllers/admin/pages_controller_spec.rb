@@ -191,6 +191,39 @@ describe Admin::PagesController do
     end
   end
 
+  describe '#preview' do
+    
+    let(:preview_page){ pages(:home) }
+    let(:body_id){ preview_page.part('body').id }
+    let(:preview_params){ 
+      {'page' => { 
+        'title' => 'BOGUS',
+        'id' => preview_page.id.to_s, 
+        'parts_attributes' => [{'content' => 'TEST', 'id' => body_id.to_s}] } } 
+    }
+    it 'should render the page with changes' do
+      request.stub!(:referer).and_return("/admin/pages/#{preview_page.id}/edit")
+      post :preview, preview_params
+      response.body.should eql('TEST')
+    end
+
+    describe 'new child' do
+      it 'should not save any changes' do
+        page_count = Page.count
+        request.stub!(:referer).and_return("/admin/pages/#{preview_page.id}/edit")
+        post :preview, preview_params
+        Page.count.should == page_count
+      end
+    end
+    describe 'edit existing page' do
+      it 'should not save any changes' do
+        request.stub!(:referer).and_return("/admin/pages/#{preview_page.id}/edit")
+        original_date = preview_page.updated_at
+        post :preview, preview_params
+        preview_page.reload.updated_at.should == original_date
+      end
+    end
+  end
 
   describe "prompting page removal" do
     integrate_views

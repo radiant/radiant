@@ -143,6 +143,7 @@ en:
   preferences_controller:
     error_updating: 'There was an error updating your preferences.'      
     updated: 'Your preferences have been updated.' 
+  preview: 'Preview'
   published: 'Published'
   published_at: 'Published at' 
   published_on: 'Published On'

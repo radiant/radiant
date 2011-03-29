@@ -22,6 +22,12 @@ class Admin::PagesController < Admin::ResourceController
     assign_page_attributes
     response_for :new
   end
+  
+  def preview
+    render_preview
+  rescue => exception
+    render :text => exception.message unless @performed_render
+  end
 
   private
     def assign_page_attributes
@@ -38,6 +44,25 @@ class Admin::PagesController < Admin::ResourceController
         Page.find(params[:page_id]).children
       else
         Page
+      end
+    end
+      
+    def render_preview
+      Page.transaction do
+        PagePart.transaction do
+          page_class = Page.descendants.include?(model_class) ? model_class : Page
+          if request.referer =~ %r{/admin/pages/(\d+)/edit}
+            page = Page.find($1).becomes(page_class)
+            page.update_attributes(params[:page])
+          else
+            page = page_class.new(params[:page])
+            page.published_at = page.updated_at = page.created_at = Time.now
+            page.parent = Page.find($1) if request.referer =~ %r{/admin/pages/(\d+)/children/new}
+          end
+          page.process(request,response)
+          @performed_render = true
+          raise 'Changes not saved!'
+        end
       end
     end
 

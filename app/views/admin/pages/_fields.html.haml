@@ -1,3 +1,4 @@
+- include_javascript 'admin/page_preview'
 = fields.hidden_field :lock_version
 = fields.hidden_field :parent_id
 = fields.hidden_field :class_name
@@ -55,7 +56,16 @@
     %p.buttons{:style=>"clear: left"}
       = save_model_button(@page)
       = save_model_and_continue_editing_button(@page)
+      = submit_tag(t('preview', :default => 'Preview'), :class => 'button', :id => 'show-preview')
       = t('or')
       = link_to t('cancel'), admin_pages_url
+    #preview_panel.fullcover.grey_out{:style => 'display: none;'}
+      %iframe{:id => 'page-preview', :class => 'fullcover', :name => 'page-preview', :src => '/loading-iframe.html', :frameborder => 0, :scrolling => "auto"}
+      .preview_tools
+        =submit_tag(t('buttons.save_changes'), :class => 'big save_changes')
+        =submit_tag(t('buttons.save_and_continue'), :class => 'big save_and_continue', :name => 'continue')
+        %span.info
+          = t('or')
+          =link_to(t('edit_page'),{}, :class => 'cancel')
   - form_bottom.edit_timestamp do
     = updated_stamp @page
