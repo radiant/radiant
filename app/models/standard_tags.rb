@@ -1053,6 +1053,7 @@ module StandardTags
       hash[symbol]
     end
   end
+  alias_method :'tag:navigation:url', :'tag:navigation:path'
 
   desc %{
     Renders the containing elements if the element is the first
