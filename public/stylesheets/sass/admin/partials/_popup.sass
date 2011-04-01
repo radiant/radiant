@@ -3,7 +3,12 @@ div.popup
   background-color: white
   border: 1px solid #777
   padding: 10px 20px
-  font-size: 90%
+  
+  strong
+    font-weight: bold
+  
+  em
+    font-style: italic
   
   .busy
     float: right
@@ -13,15 +18,21 @@ div.popup
     background: #c5dff5
     +linear-gradient(color_stops(#e5f5ff, #c5dff5))
     border-bottom: 1px solid #a7cdf0
-    font-size: 120%
+    font-size: 100%
     margin: -10px -20px 20px -20px
     padding: 6px 10px
   
+  p.intro
+    font-size: 90%
+    
   label
     display: block
-    font-size: 90%
+    font-size: 85%
     &.inline
       display: inline
+    span.hint
+      font-size: 90%
+      color: #666
   
   input.button
     font-size: 120%
@@ -38,10 +49,10 @@ div.popup
       margin: -1px 0 0
   
   .buttons
-    font-size: 90%
     margin-top: 1.5em
+    font-size: 85%
     input.button
-      font-size: 130%
+      font-size: 120%
     a.cancel
       color: $alt-link-color
   
