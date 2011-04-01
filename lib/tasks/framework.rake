@@ -171,6 +171,10 @@ the new files:"
         project_dir = RAILS_ROOT + '/public/images/admin/'
         images = Dir["#{File.dirname(__FILE__)}/../../public/images/admin/*"]
         FileUtils.cp(images, project_dir)
+        # get files in /images also, like radiant-badge-color.png
+        project_dir = RAILS_ROOT + '/public/images/'
+        images = Dir["#{File.dirname(__FILE__)}/../../public/images/*"].map {|f| f if ! File.directory?(f) }.compact!
+        FileUtils.cp(images, project_dir)
       end
 
       desc "Update admin stylesheets from your current radiant install"
