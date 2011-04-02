@@ -1,7 +1,7 @@
 - content_for 'popups' do
   #add_part_popup.popup{:style => "display: none"}
     #add_part_busy.busy{:style => "display: none"}= image('spinner.gif', :alt => "")
-    %h3.title= t('add_part')
+    .popup_title= t('add_part')
     - form_for([:admin, PagePart.new], :html => { :onsubmit => "addPart(this); return false" }) do |f|
       %p
         %label{:for => 'part_name_field'}= t('name')
@@ -10,10 +10,10 @@
       %p.buttons
         = submit_tag t('add_part'), :id => 'add_part_button', :class => "button"
         = t('or')
-        = link_to_function t('cancel'), "$(this).closePopup()"
+        = link_to_function t('cancel'), "$(this).closePopup()", :class=>"cancel"
   #add_field_popup.popup{:style=>"display: none"}
     #add_field_busy.busy{:style=>"display: none"}= image('spinner.gif', :alt => "")
-    %h3.title= t('add_field')
+    .popup_title= t('add_field')
     - form_for [:admin, PageField.new], :html => { :onsubmit => "event.stop(); addField(this)" } do |f|
       %p
         %label{:for=>"page_field_name"}= t('name')
@@ -23,5 +23,5 @@
       %p.buttons
         = submit_tag t('add_field'), :class=>'button', :id=>'add_page_field_button'
         = t('or')
-        = link_to_function t('cancel'), "$(this).closePopup()"
+        = link_to_function t('cancel'), "$(this).closePopup()", :class=>"cancel"
   = render_region :popups

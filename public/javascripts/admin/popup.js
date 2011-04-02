@@ -1,8 +1,8 @@
 /*
  *  popup.js
- *
- *  dependencies: prototype.js, effects.js, lowpro.js
- *
+ *  
+ *  dependencies: prototype.js, dragdrop.js, effects.js, lowpro.js
+ *  
  *  --------------------------------------------------------------------------
  *  
  *  Allows you to open up a URL inside of a Facebook-style window. To use
@@ -10,19 +10,19 @@
  *  HTML snippet that you would like to load up inside a window:
  *  
  *    <a class="popup" href="window.html">Window</a>
- *
+ *  
  *  You can also "popup" a specific div by referencing it by ID:
- *
+ *  
  *    <a class="popup" href="#my_div">Popup</a>
  *    <div id="my_div" style="display:none">Hello World!</div>
  *  
  *  You will need to install the following hook:
  *  
  *    Event.addBehavior({'a.popup': Popup.TriggerBehavior()});
- *
+ *  
  *  --------------------------------------------------------------------------
  *  
- *  Copyright (c) 2008, John W. Long
+ *  Copyright (c) 2008-2011, John W. Long
  *  Portions copyright (c) 2008, Five Points Solutions, Inc.
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a
@@ -52,7 +52,8 @@ var Popup = {
   BorderTopRightImage: '/images/popup_border_top_right.png',
   BorderBottomLeftImage: '/images/popup_border_bottom_left.png',
   BorderBottomRightImage: '/images/popup_border_bottom_right.png',
-  Windows: []
+  Draggable: false,
+  zindex: 10000
 };
 
 Popup.borderImages = function() {
@@ -63,7 +64,7 @@ Popup.borderImages = function() {
     Popup.BorderBottomLeftImage,
     Popup.BorderBottomRightImage
   ]);
-};
+}
 
 Popup.preloadImages = function() {
   if (!Popup.imagesPreloaded) {
@@ -73,15 +74,16 @@ Popup.preloadImages = function() {
     });
     Popup.preloadedImages = true;
   }
-};
+}
 
 Popup.TriggerBehavior = Behavior.create({
-  initialize: function() {
-    if (!Popup.Windows[this.element.href]) {
-      var matches = this.element.href.match(/\#(.+)$/);
-      Popup.Windows[this.element.href] = (matches ? new Popup.Window($(matches[1])) : new Popup.AjaxWindow(this.element.href));
+  initialize: function(options) {
+    var matches = this.element.href.match(/\#(.+)$/);
+    if (matches) {
+      this.window = new Popup.Window($(matches[1]), options);
+    } else {
+     this.window = new Popup.AjaxWindow(this.element.href, options);
     }
-    this.window = Popup.Windows[this.element.href];
   },
   
   onclick: function(event) {
@@ -95,9 +97,12 @@ Popup.TriggerBehavior = Behavior.create({
 });
 
 Popup.AbstractWindow = Class.create({
-  initialize: function() {
+  initialize: function(options) {
+    options = Object.extend({draggable: Popup.Draggable}, options)
+    this.draggable = options.draggable;
     Popup.preloadImages();
     this.buildWindow();
+    this.element.observe('click', this.click.bind(this))
   },
   
   buildWindow: function() {
@@ -131,6 +136,25 @@ Popup.AbstractWindow = Class.create({
     body.insert(this.element);
   },
   
+  createDraggable: function() {
+    if (!this._draggable) {
+      this._draggable = new Draggable(this.element.identify(), {
+        handle: 'popup_title',
+        scroll: window,
+        zindex: Popup.zindex,
+        onStart: function() { this.startDrag(); return true; }.bind(this),
+        onEnd: function() { this.endDrag(); return true; }.bind(this)
+      });
+    }
+  },
+  
+  destroyDraggable: function() {
+    if (this._draggable) {
+      this._draggable.destroy();
+      this._draggable = null;
+    }
+  },
+  
   show: function() {
     this.beforeShow();
     this.element.show();
@@ -138,7 +162,9 @@ Popup.AbstractWindow = Class.create({
   },
   
   hide: function() {
+    this.beforeHide();
     this.element.hide();
+    this.afterHide();
   },
   
   toggle: function() {
@@ -152,7 +178,7 @@ Popup.AbstractWindow = Class.create({
   focus: function() {
     var form = this.element.down('form');
     if (form) {
-      var elements = form.getElements().reject(function(e) { return e.type == 'hidden'; });
+      var elements = form.getElements().reject(function(e) { return e.type == 'hidden' });
       var element = elements[0] || form.down('button');
       if (element) element.focus();
     }
@@ -165,25 +191,58 @@ Popup.AbstractWindow = Class.create({
       this.top.setStyle("width:" + width + "px");
       this.bottom.setStyle("width:" + width + "px");
     }
+    this.bringToTop();
     this.centerWindowInView();
   },
   
   afterShow: function() {
+    if (this.draggable) this.createDraggable();
     this.focus();
   },
-
+  
+  beforeHide: function() {
+    if (this.draggable) this.destroyDraggable();
+  },
+  
+  afterHide: function() {
+    // noopp
+  },
+  
+  titleClick: function(event) {
+    this.bringToTop();
+  },
+  
+  startDrag: function() {
+    this.bringToTop();
+  },
+  
+  endDrag: function() {
+    this.bringToTop();
+  },
+  
+  click: function(event) {
+    if (event.target.hasClassName('popup_title')) this.bringToTop();
+  },
+  
   centerWindowInView: function() {
     var offsets = document.viewport.getScrollOffsets();
     this.element.setStyle({
-      left: parseInt(offsets.left + (document.viewport.getWidth() - this.element.getWidth()) / 2, 10) + 'px',
-      top: parseInt(offsets.top + (document.viewport.getHeight() - this.element.getHeight()) / 2.2, 10) + 'px'
+      left: parseInt(offsets.left + (document.viewport.getWidth() - this.element.getWidth()) / 2) + 'px',
+      top: parseInt(offsets.top + (document.viewport.getHeight() - this.element.getHeight()) / 2.2) + 'px'
     });
+  },
+  
+  bringToTop: function() {
+    Popup.zindex += 1;
+    this.element.style.zIndex = Popup.zindex;
+    if (this._draggable) this._draggable.originalZ = Popup.zindex;
   }
+  
 });
 
 Popup.Window = Class.create(Popup.AbstractWindow, {
-  initialize: function($super, element) {
-    $super();
+  initialize: function($super, element, options) {
+    $super(options);
     element.remove();
     this.content.update(element);
     element.show();
@@ -192,7 +251,7 @@ Popup.Window = Class.create(Popup.AbstractWindow, {
 
 Popup.AjaxWindow = Class.create(Popup.AbstractWindow, {
   initialize: function($super, url, options) {
-    $super();
+    $super(options);
     options = Object.extend({reload: true}, options);
     this.url = url;
     this.reload = options.reload;
@@ -200,7 +259,13 @@ Popup.AjaxWindow = Class.create(Popup.AbstractWindow, {
   
   show: function($super) {
     if (!this.loaded || this.reload) {
-      new Ajax.Updater(this.content, this.url, {asynchronous: false, method: "get", evalScripts: true, onComplete: $super});
+      this.hide();
+      new Ajax.Updater(this.content, this.url, {
+        asynchronous: false,
+        method: "get",
+        evalScripts: true, 
+        onComplete: $super
+      });
       this.loaded = true;
     } else {
       $super();

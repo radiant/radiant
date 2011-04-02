@@ -2,8 +2,6 @@
 // will be maintained here for a time so that older extensions continue to
 // look reasonable.
 
-
-
 // Use for "empty" instead of "note"
 table.index td.note
   color: silver
@@ -24,3 +22,12 @@ table.index td.note
     label
       display: inline
       text-shadow: #666 1px 1px 0
+
+// Use a div with a class of "popup_title" instead of an h3 with a class of "title"
+div.popup h3.title
+  background: #c5dff5
+  +linear-gradient(color_stops(#e5f5ff, #c5dff5))
+  border-bottom: 1px solid #a7cdf0
+  font-size: 100%
+  margin: -10px -20px 20px -20px
+  padding: 6px 10px
