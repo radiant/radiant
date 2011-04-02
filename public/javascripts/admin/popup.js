@@ -56,6 +56,8 @@ var Popup = {
   zindex: 10000
 };
 
+Popup.windows = [];
+
 Popup.borderImages = function() {
   return $A([
     Popup.BorderImage,
@@ -77,13 +79,13 @@ Popup.preloadImages = function() {
 }
 
 Popup.TriggerBehavior = Behavior.create({
+  
   initialize: function(options) {
-    var matches = this.element.href.match(/\#(.+)$/);
-    if (matches) {
-      this.window = new Popup.Window($(matches[1]), options);
-    } else {
-     this.window = new Popup.AjaxWindow(this.element.href, options);
+    if (!Popup.windows[this.element.href]) {
+      var matches = this.element.href.match(/\#(.+)$/);
+      Popup.windows[this.element.href] = (matches ? new Popup.Window($(matches[1]), options) : new Popup.AjaxWindow(this.element.href, options));
     }
+    this.window = Popup.windows[this.element.href];
   },
   
   onclick: function(event) {
