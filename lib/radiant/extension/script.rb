@@ -74,11 +74,12 @@ Supports:       Radiant #{supports_radiant_version}
     end
 
     def migrate
-      rake "radiant:extensions:#{name}:migrate"
+      puts "Migrating up for #{name} extension"
+      puts `rake radiant:extensions:#{name}:migrate`
     end
 
     def update
-      rake "radiant:extensions:#{name}:update"
+      puts `rake radiant:extensions:#{name}:update`
     end
   end
 
@@ -94,7 +95,8 @@ Supports:       Radiant #{supports_radiant_version}
     end
 
     def migrate_down
-      rake "radiant:extensions:#{name}:migrate VERSION=0"
+      puts "Migrating down for #{name} extension"
+      puts `rake radiant:extensions:#{name}:migrate VERSION=0`
     end
 
     def remove_extension_directory
