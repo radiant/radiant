@@ -74,7 +74,8 @@ Radiant::Initializer.run do |config|
       html
     end
   end
-
+  
+  config.gem 'haml', :version => '3.0.25'
   config.gem 'compass', :version => '~> 0.10.6'
   config.gem 'will_paginate', :version => '~> 2.3.11'
 

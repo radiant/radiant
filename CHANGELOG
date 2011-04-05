@@ -2,6 +2,7 @@
 
 === Edge
 
+* require HAML 3.0.25 [Jeff Casimir]
 * Provide an export function for custom templates [Jim Gay]
 * Remove legacy routes [Jim Gay]
 * Allow pagination in aggregated pages [Jim Gay]
