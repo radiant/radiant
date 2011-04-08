@@ -11,7 +11,7 @@
         %span.title= @snippet.name
 
 - form_for [:admin, @snippet], :html => {:method => :delete, 'data-onsubmit_status'=>"Removing snippet&#8230;"} do
-  %p.buttons
+  .buttons
     %input.button{:type=>"submit", :value => t('delete_snippet')}/
     = t('or')
     = link_to t('cancel'), admin_snippets_url

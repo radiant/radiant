@@ -13,7 +13,7 @@
     %p.remember_me
       = check_box_tag :remember_me, 1, false, :class => 'checkbox'
       %label.checkbox{:for=>"remember_me"}= t('remember_me_in_this_browser')
-    %p.buttons
+    .buttons
       %input.button{:type => "submit", :value => t('login')}
 
 %p.version

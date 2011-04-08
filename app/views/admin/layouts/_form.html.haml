@@ -30,7 +30,7 @@
           %span{:id => "tag_reference_link"}
             = link_to_function t('available_tags'), "loadTagReference('Page');"
     - form_bottom.edit_buttons do
-      %p.buttons
+      .buttons
         = save_model_button @layout
         = save_model_and_continue_editing_button @layout
         = t('or') 

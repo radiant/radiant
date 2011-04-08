@@ -53,7 +53,7 @@
   - form_bottom.edit_buttons do
     - @buttons_partials.each do |partial|
       = render :partial => partial, :locals => {:f => fields}
-    %p.buttons{:style=>"clear: left"}
+    .buttons{:style=>"clear: left"}
       = save_model_button(@page)
       = save_model_and_continue_editing_button(@page)
       = submit_tag(t('preview', :default => 'Preview'), :class => 'button', :id => 'show-preview')

@@ -12,7 +12,7 @@
       = render_node @page, :simple => true
 
 - form_for [:admin, @page.becomes(Page)], :html => {:method => :delete, 'data-onsubmit_status'=>"Removing pages&#8230;"} do
-  %p.buttons
+  .buttons
     %input.button{:type=>"submit", :value => t('delete_pages', :pages => pages) }/
     = t('or')    
     = link_to t('cancel'), admin_pages_url

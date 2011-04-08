@@ -10,7 +10,7 @@
         %span.title= @user.name
 
 - form_for [:admin, @user], :html => { :method => :delete, 'data-onsubmit_status'=>"Removing user&#8230;" } do
-  %p.buttons
+  .buttons
     %input.button{:type=>"submit", :value => t('delete_user')}/
     = t('or')  
     = link_to t('cancel'), admin_users_path

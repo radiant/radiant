@@ -44,7 +44,7 @@
   
   - render_region :form_bottom, :locals => {:f => f} do |form_bottom|
     - form_bottom.edit_buttons do
-      %p.buttons
+      .buttons
         = save_model_button(@user)
         = save_model_and_continue_editing_button(@user)
         = t('or')   

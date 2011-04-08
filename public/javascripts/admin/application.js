@@ -8,6 +8,9 @@ Popup.BorderTopRightImage    = relative_url_root + '/images/admin/popup_border_t
 Popup.BorderBottomLeftImage  = relative_url_root + '/images/admin/popup_border_bottom_left.png';
 Popup.BorderBottomRightImage = relative_url_root + '/images/admin/popup_border_bottom_right.png';
 
+// Popup Buttons
+Popup.ButtonsClass           = 'buttons';
+
 // Make all popups draggable
 Popup.Draggable = true;
 

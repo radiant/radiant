@@ -51,10 +51,36 @@ div.popup
       margin: -1px 0 0
   
   .buttons
-    margin-top: 1.5em
+    border-top: 1px solid #e5e5e5
+    background: #f5f5f5
     font-size: 85%
+    margin: 1.5em -20px -10px
+    padding: 10px
+    text-align: right
     input.button
       font-size: 120%
+    button
+      font-size: 110%
+      padding: 4px 15px 5px
+      background: #f5f5f5
+      border: 1px solid #959595
+      +border-radius(100px)
+      +box-shadow(white, 0, 2px, 0, inset)
+      +linear-gradient(color-stops(#ddd 0%, #eee 15%, #fff 100%))
+      &.default
+        border: 1px solid #154ca6
+        +box-shadow(#c7e0f6, 0, 2px, 1px, inset)
+        color: white
+        +linear-gradient(color-stops(#67b4e1, #78b9e1))
+      &:active
+        border: 1px solid #888
+        +box-shadow(none)
+        +linear-gradient(color-stops(#ccc 0%, #ddd 15%, #eee 100%))
+      &.default:active
+        border: 1px solid #002c86
+        +linear-gradient(color-stops(#4794c1, #78b9e1))
+      &:focus
+        border-width: 2px
     a.cancel
       color: $alt-link-color
   

@@ -7,7 +7,7 @@
         %label{:for => 'part_name_field'}= t('name')
         = f.text_field :name, :id => 'part_name_field', :maxlength => 100, :style => "width: 15em", :class => "textbox big"
         = hidden_field_tag 'index', 0, :id => 'page_part_index_field'
-      %p.buttons
+      .buttons
         = submit_tag t('add_part'), :id => 'add_part_button', :class => "button"
         = t('or')
         = link_to_function t('cancel'), "$(this).closePopup()", :class=>"cancel"
@@ -20,7 +20,7 @@
         = f.text_field :name, :maxlength=>100, :class=>'textbox big', :style=>"width: 15em"
         = hidden_field_tag 'index', 2, :id=>'page_field_index_field'
         = hidden_field_tag 'page_field_counter', @page.fields.size
-      %p.buttons
+      .buttons
         = submit_tag t('add_field'), :class=>'button', :id=>'add_page_field_button'
         = t('or')
         = link_to_function t('cancel'), "$(this).closePopup()", :class=>"cancel"

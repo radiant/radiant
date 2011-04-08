@@ -24,7 +24,7 @@
                 = link_to_function t('available_tags'), "loadTagReference('Page');"
   - render_region :form_bottom, :locals => {:f => f} do |form_bottom|
     - form_bottom.edit_buttons do
-      %p.buttons{:style=>"clear: left"}
+      .buttons{:style=>"clear: left"}
         = save_model_button(@snippet)
         = save_model_and_continue_editing_button(@snippet)
         = t('or')
