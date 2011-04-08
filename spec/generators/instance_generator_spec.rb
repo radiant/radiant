@@ -41,9 +41,9 @@ shared_examples_for "all instance generators" do
   end
   
   # Check for admin sass/css
-  %w(main.css modules/_links.sass modules/_rounded.sass 
-    partials/_avatars.sass partials/_footer.sass partials/_layout.sass partials/_reset.sass main.sass 
-    partials/_base.sass partials/_forms.sass partials/_messages.sass partials/_content.sass 
+  %w(main.css modules/_links.sass 
+    partials/_avatars.sass partials/_footer.sass partials/_layout.sass main.sass 
+    _base.sass partials/_forms.sass partials/_messages.sass partials/_content.sass 
     partials/_header.sass partials/_popup.sass partials/_tabcontrol.sass partials/_dateinput.sass 
     partials/_toolbar.sass).each do |file|
     if file.ends_with?('.css')
@@ -58,15 +58,15 @@ shared_examples_for "all instance generators" do
   end
   
   # Check for admin images
-  %w(navigation_secondary_separator.gif add_tab.png navigation_shadow.png minus_disabled.png
-    navigation_tabs.png snippet.png brown_bottom_line.gif new_homepage.png single_form_shadow.png
-    spacer.gif buttons_background.png new_layout.png spinner.gif collapse.png new_snippet.png 
-    status_background.png draft_page.png new_user.png status_bottom_left.png expand.png page.png 
-    status_bottom_right.png layout.png plus.png status_spinner.gif login_shadow.png plus_grey.png 
+  %w(navigation_secondary_separator.gif add_tab.png minus_disabled.png
+     snippet.png brown_bottom_line.gif single_form_shadow.png
+    spinner.gif collapse.png 
+    status_background.png draft_page.png status_bottom_left.png expand.png page.png 
+    status_bottom_right.png layout.png plus.png status_spinner.gif plus_grey.png 
     status_top_left.png metadata_toggle.png popup_border_background.png status_top_right.png minus.png 
     popup_border_bottom_left.png tab_close.png minus_grey.png popup_border_bottom_right.png 
-    vertical_tan_gradient.png navigation_background.gif popup_border_top_left.png view_site.png 
-    navigation_secondary_background.png popup_border_top_right.png virtual_page.png).each do |file|
+    popup_border_top_left.png 
+    popup_border_top_right.png virtual_page.png).each do |file|
     it "should have a #{file} admin image" do
       'public/images/admin'.should have_generated_file(file)
     end

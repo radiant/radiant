@@ -79,6 +79,10 @@ Radiant::Initializer.run do |config|
       html
     end
   end
+  
+  config.gem 'haml', :version => '3.0.25'
+  config.gem 'compass', :version => '~> 0.10.6'
+  config.gem 'will_paginate', :version => '~> 2.3.11'
 
   config.after_initialize do
     # Add new inflection rules using the following format:
@@ -86,7 +90,4 @@ Radiant::Initializer.run do |config|
       inflect.uncountable 'config'
     end
   end
-  
-  config.gem 'compass', :version => '~> 0.10.6'
-  config.gem 'will_paginate', :version => '~> 2.3.11'
 end

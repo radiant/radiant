@@ -31,22 +31,22 @@ Supports:       Radiant #{supports_radiant_version}
 
   class Action
     def rake(command)
-      `rake #{command} RAILS_ENV=#{RAILS_ENV}` if tasks_include? command
+      puts "rake #{command}"
+      puts `rake #{command} RAILS_ENV=#{RAILS_ENV}` if tasks_include? command
     end
 
     def tasks_include?(command)
-      extension = command.split('radiant:extensions:')
-      if extension.length > 1
-        extension = extension.reject{|e| e.blank? }[0]
+      command = command.split(':')
+      if command.length > 1 && command[0..1] == ['radiant','extensions']
+        extension = command[2]
+        task = "radiant:extensions:#{extension}:#{command[3].split[0]}"
       else
-        extension = extension.to_s
+        extension = task = command.to_s
       end
       rake_file = File.join(RAILS_ROOT, 'vendor', 'extensions', extension) + '/lib/tasks/' + extension + '_extension_tasks.rake'
-      if File.exist? rake_file
-        load rake_file
-      end
+      load rake_file if File.exist? rake_file
       tasks = Rake.application.tasks.map(&:name)
-      tasks.include? "#{command}"
+      tasks.include? task
     end
     
     def file_utils
@@ -305,13 +305,13 @@ module Radiant
             puts "#{extension_name} is already installed."
           else
             find_extension
+            if registered?
+              extension.install
+            else
+              raise ArgumentError, "#{extension_name} is not available in the registry."
+            end
           end
-          if registered?
-            extension.install
-          else
-            raise ArgumentError, "#{extension_name} is not available in the registry."
-          end
-         end
+        end
       end
 
       class Uninstall
