@@ -16,7 +16,7 @@ describe Admin::NodeHelper do
   end
 
   it "should render a sitemap node" do
-    helper.should_receive(:render).with(:partial => "node", :locals => {:level => 0, :simple => false, :page => @page}).and_return(@current_node)
+    helper.should_receive(:render).with(:partial => "admin/pages/node", :locals => {:level => 0, :simple => false, :page => @page}).and_return(@current_node)
     helper.render_node(@page)
     helper.assigns[:current_node] == @page
   end
