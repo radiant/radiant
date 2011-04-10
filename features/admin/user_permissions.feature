@@ -8,7 +8,7 @@ Feature: User authentication and permissions
     And I fill in "Username" with "<username>"
     And I fill in "Password" with "password"
     And I press "Login"
-    Then I should see "Pages"
+    Then I should see "Content"
     
     Examples:
       | username  |
@@ -30,11 +30,11 @@ Feature: User authentication and permissions
   
   Scenario Outline: All users can edit pages
     Given I am logged in as "<username>"
-    And I should see "Pages"
+    And I should see "Content"
     When I go to the "pages" admin page
     And I follow "Home"
     Then I should see "Edit Page"
-    And I should see "Pages"
+    And I should see "Content"
     
     Examples:
       | username  |
