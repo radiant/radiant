@@ -1,2 +1,0 @@
-module Admin::AbstractModelHelper
-end
