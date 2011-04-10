@@ -15,25 +15,6 @@
   li
     display: inline
     margin-right: 5px
-  a
-    background: #d8d8d8
-    +linear-gradient(color-stops(#fff, #ccc))
-    color: #333
-    font-size: 80%
-    padding: 8px 12px
-    text-decoration: none
-    text-shadow: 1px 1px 1px #eee
-    +border-radius(5px)
-    +button-shadow
-    &:hover
-      color: #0076a3
-      text-shadow: 1px 1px 1px #fff
-    &:active
-      background: #fff
-      +no-button-shadow
-      color: black
-    img
-      vertical-align: -20%
 
   .pagination
     position: relative
@@ -93,8 +74,23 @@
       
 .button_form
   display: inline
+.action_button
+  display: inline
+  background: #d8d8d8
+  +linear-gradient(color-stops(#fff, #ccc))
+  color: #333
   font-size: 80%
-  background: #fff  
-  +border-radius
   padding: 8px 12px
-  
+  text-decoration: none
+  text-shadow: 1px 1px 1px #eee
+  +border-radius(5px)
+  +button-shadow
+  &:hover
+    color: #0076a3
+    text-shadow: 1px 1px 1px #fff
+  &:active
+    background: #fff
+    +no-button-shadow
+    color: black
+  img
+    vertical-align: -20%

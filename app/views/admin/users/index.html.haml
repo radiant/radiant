@@ -36,4 +36,4 @@
     #actions
       = pagination_for(@users)
       %ul
-        %li= link_to image('plus') + " " + t('new_user'), new_admin_user_url
+        %li= link_to image('plus') + " " + t('new_user'), new_admin_user_url, :class => 'action_button'

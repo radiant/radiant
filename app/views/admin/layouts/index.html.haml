@@ -33,4 +33,4 @@
     #actions
       = pagination_for(@layouts)
       %ul
-        %li= link_to image('plus') + " " + t('new_layout'), new_admin_layout_url
+        %li= link_to image('plus') + " " + t('new_layout'), new_admin_layout_url, :class => 'action_button'
