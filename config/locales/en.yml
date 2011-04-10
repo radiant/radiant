@@ -58,7 +58,7 @@ en:
     local:
       timezone: "local timezone"
     site:
-      name: "site name"
+      title: "site title"
       host: "site domain"
     user:
       allow_password_reset?: "allow password reset"

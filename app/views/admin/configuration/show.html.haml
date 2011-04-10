@@ -41,31 +41,18 @@
           .actions
             = button_to t("edit_configuration"), edit_admin_configuration_url, :method => :get
         Configuration
-      %p.ruled
-        = show_config 'site.name'
-      %p.ruled
-        = show_config 'site.host', :class => 'uri'
-      %p.ruled
-        = show_config 'dev.host', :class => 'uri'
-      %p.ruled
-        = show_config 'local.timezone'
+      - Radiant.config.site_settings.each do |site_setting|
+        %p.ruled
+          = show_config site_setting, :class => (site_setting =~ /host$/ ? 'uri' : nil)
 
     - config.defaults do
       %h4 Defaults
-      %p.ruled
-        = show_config 'defaults.locale'
-      %p.ruled
-        = show_config 'defaults.page.filter'
-      %p.ruled
-        = show_config 'defaults.page.parts'
-      %p.ruled
-        = show_config 'defaults.page.fields'
-      %p.ruled
-        = show_config 'defaults.page.status'
-      %p.ruled
-        = show_config 'defaults.snippet.filter'
+      - Radiant.config.default_settings.each do |default_setting|
+        %p.ruled
+          = show_config default_setting
 
     - config.users do
       %h4 Passwords
-      %p.ruled
-        = show_config 'user.allow_password_reset?'
+      - Radiant.config.user_settings.each do |user_setting|
+        %p.ruled
+          = show_config user_setting

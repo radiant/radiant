@@ -124,6 +124,18 @@ module Radiant
         cache_file = File.join(cache_path,'radiant_config_cache.txt')
       end
       
+      def site_settings
+        @site_settings ||= %w{ site.title site.host dev.host local.timezone }
+      end
+      
+      def default_settings
+        @default_settings ||= %w{ defaults.locale defaults.page.filter defaults.page.parts defaults.page.fields defaults.page.status defaults.snippet.filter }
+      end
+      
+      def user_settings
+        @user_settings ||= ['user.allow_password_reset?']
+      end
+      
       # A convenient drying method for specifying a prefix and options common to several settings.
       # 
       #   Radiant.config do |config| 

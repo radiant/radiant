@@ -12,34 +12,23 @@
         - form.edit_site do
           %fieldset
             %h3 Site  
-            %p
-              = edit_config('site.name')
-            %p
-              = edit_config('site.host')
-            %p
-              = edit_config('dev.host')
-            %p
-              = edit_config('local.timezone')
+            - Radiant.config.site_settings.each do |site_setting|
+              %p
+                = edit_config site_setting
   
         - form.edit_defaults do
           %fieldset
             %h3 Defaults
-            %p
-              = edit_config('defaults.locale')
-            %p
-              = edit_config('defaults.page.filter')
-            %p
-              = edit_config('defaults.page.parts')
-            %p
-              = edit_config('defaults.page.status')
-            %p
-              = edit_config('defaults.snippet.filter')
+            - Radiant.config.default_settings.each do |default_setting|
+              %p
+                = edit_config default_setting
   
         - form.edit_users do
           %fieldset
             %h3 Passwords
-            %p
-              = edit_config('user.allow_password_reset?')
+            - Radiant.config.user_settings.each do |user_setting|
+              %p
+                = edit_config user_setting
     
       - render_region :form_bottom do |form_bottom|
         - form_bottom.edit_buttons do
