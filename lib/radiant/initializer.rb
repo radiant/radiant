@@ -33,7 +33,7 @@ module Radiant
   #     Radiant::Config (aka Radiant.config) is the application-configuration model class
   
   class Configuration < Rails::Configuration
-    attr_accessor :extension_paths
+    attr_accessor :extension_paths, :ignored_extensions
     attr_writer :extensions
     attr_accessor :view_paths
     attr_accessor :extension_dependencies
@@ -63,6 +63,11 @@ module Radiant
     
     def extensions
       @extensions ||= all_available_extensions
+    end
+      
+    def ignore_extensions(array)
+      self.ignored_extensions ||= []
+      self.ignored_extensions |= array
     end
     
     def all_available_extensions

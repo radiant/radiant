@@ -31,6 +31,7 @@ describe Radiant::ExtensionLoader do
   
   it "should only load extensions specified in the configuration" do
     @configuration.should_receive(:extensions).at_least(:once).and_return([:basic])
+    @configuration.should_receive(:ignored_extensions).at_least(:once).and_return([])
     @instance.stub!(:all_extension_roots).and_return(@extension_paths)
     @instance.send(:select_extension_roots).should == [File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/basic")]
   end
@@ -38,6 +39,7 @@ describe Radiant::ExtensionLoader do
   it "should load gem extensions with paths matching radiant-*-extension" do
     gem_path = File.join RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-extension-61e0ad14a3ae)
     @configuration.should_receive(:extensions).at_least(:once).and_return([:gem_ext])
+    @configuration.should_receive(:ignored_extensions).at_least(:once).and_return([])
     @instance.stub!(:all_extension_roots).and_return([File.expand_path(gem_path)])
     @instance.send(:select_extension_roots).should == [gem_path]
   end
@@ -45,6 +47,7 @@ describe Radiant::ExtensionLoader do
   it "should load gem extensions packed by bundler from git" do
     gem_path = File.join RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-extension-61e0ad14a3ae)
     @configuration.should_receive(:extensions).at_least(:once).and_return([:gem_ext])
+    @configuration.should_receive(:ignored_extensions).at_least(:once).and_return([])
     @instance.stub!(:all_extension_roots).and_return([File.expand_path(gem_path)])
     @instance.send(:select_extension_roots).should == [gem_path]
   end
@@ -54,6 +57,7 @@ describe Radiant::ExtensionLoader do
     extension_roots = extensions.map {|ext| File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/#{ext}") }
     @instance.stub!(:all_extension_roots).and_return(@extension_paths)
     @configuration.should_receive(:extensions).at_least(:once).and_return(extensions)
+    @configuration.should_receive(:ignored_extensions).at_least(:once).and_return([])
     @instance.send(:select_extension_roots).should == extension_roots
   end
 
@@ -62,7 +66,20 @@ describe Radiant::ExtensionLoader do
     extension_roots = @extension_paths[0..-2].unshift(@extension_paths[-1])
     @instance.stub!(:all_extension_roots).and_return(@extension_paths)
     @configuration.should_receive(:extensions).at_least(:once).and_return(extensions)
+    @configuration.should_receive(:ignored_extensions).at_least(:once).and_return([])
     @instance.send(:select_extension_roots).should == extension_roots
+  end
+  
+  it "should not load any ignored extensions" do
+    extensions = [:load_order_red, :all, :load_order_green]
+    extensions -= [:basic]
+    extension_roots = @extension_paths[0..-2].unshift(@extension_paths[-1])
+    @instance.stub!(:all_extension_roots).and_return(@extension_paths)
+    @configuration.should_receive(:extensions).at_least(:once).and_return(extensions)
+    @configuration.should_receive(:ignored_extensions).at_least(:once).and_return([:basic])
+    roots = @instance.send(:select_extension_roots)
+    exts = roots.collect{|e| e.split('/').last }
+    exts.should_not include('basic')
   end
 
   it "should raise an error when an extension named in the configuration cannot be found" do

@@ -133,7 +133,7 @@ module Radiant
           []
         end
       end
-
+      
       def select_extension_roots
         all_roots = all_extension_roots.dup
         roots = configuration.extensions.uniq.map do |ext_name|
@@ -150,6 +150,9 @@ module Radiant
         if placeholder = roots.index(:all)
           # replace the :all symbol with any remaining paths
           roots[placeholder, 1] = all_roots
+        end
+        configuration.ignored_extensions.each do |removed|
+          roots.delete_if{|root| root.split('/').last.to_s == removed.to_s }
         end
         roots
       end
