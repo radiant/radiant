@@ -1,136 +1,10 @@
 --- 
 name: Roasters (a coffee-themed blog / brochure)
 records:
-  PageFields: 
-    16: 
-      name: Description
-      page_id: 8
-      id: 16
-      content: 
-    5: 
-      name: Keywords
-      page_id: 3
-      id: 5
-      content: 
-    22: 
-      name: Description
-      page_id: 11
-      id: 22
-      content: 
-    11: 
-      name: Keywords
-      page_id: 6
-      id: 11
-      content: 
-    17: 
-      name: Keywords
-      page_id: 9
-      id: 17
-      content: 
-    6: 
-      name: Description
-      page_id: 3
-      id: 6
-      content: 
-    23: 
-      name: Keywords
-      page_id: 12
-      id: 23
-      content: 
-    12: 
-      name: Description
-      page_id: 6
-      id: 12
-      content: 
-    1: 
-      name: Keywords
-      page_id: 1
-      id: 1
-      content: 
-    18: 
-      name: Description
-      page_id: 9
-      id: 18
-      content: 
-    7: 
-      name: Keywords
-      page_id: 4
-      id: 7
-      content: 
-    24: 
-      name: Description
-      page_id: 12
-      id: 24
-      content: 
-    2: 
-      name: Description
-      page_id: 1
-      id: 2
-      content: 
-    19: 
-      name: Keywords
-      page_id: 10
-      id: 19
-      content: 
-    8: 
-      name: Description
-      page_id: 4
-      id: 8
-      content: 
-    25: 
-      name: Keywords
-      page_id: 13
-      id: 25
-      content: 
-    3: 
-      name: Keywords
-      page_id: 2
-      id: 3
-      content: 
-    20: 
-      name: Description
-      page_id: 10
-      id: 20
-      content: 
-    9: 
-      name: Keywords
-      page_id: 5
-      id: 9
-      content: 
-    26: 
-      name: Description
-      page_id: 13
-      id: 26
-      content: 
-    15: 
-      name: Keywords
-      page_id: 8
-      id: 15
-      content: 
-    4: 
-      name: Description
-      page_id: 2
-      id: 4
-      content: 
-    21: 
-      name: Keywords
-      page_id: 11
-      id: 21
-      content: 
-    10: 
-      name: Description
-      page_id: 5
-      id: 10
-      content: 
+  PageFields: {}
   Snippets: 
     5: 
-      updated_by_id: 
       name: rss
-      created_at: 2008-12-31 07:04:11 Z
-      filter_id: ""
-      updated_at: 2009-01-02 07:05:37 Z
-      created_by_id: 1
-      lock_version: 5
       id: 5
       content: |
         <img src="/images/roasters/rss.gif" />
@@ -138,13 +12,7 @@ records:
         <p>Get the <a href="/rss/">feed</a> for our latest news. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora.</p>
 
     6: 
-      updated_by_id: 
       name: articles
-      created_at: 2009-01-01 22:40:23 Z
-      filter_id: ""
-      updated_at: 2009-01-02 07:19:28 Z
-      created_by_id: 1
-      lock_version: 19
       id: 6
       content: |-
         <r:find path="/news">
@@ -161,13 +29,7 @@ records:
       
         <r:snippet name="comments_summary" />
     1: 
-      updated_by_id: 
       name: header
-      created_at: 2008-12-24 01:08:44 Z
-      filter_id: ""
-      updated_at: 2009-01-02 07:01:43 Z
-      created_by_id: 1
-      lock_version: 9
       id: 1
       content: |
         <div id="header">
@@ -175,60 +37,30 @@ records:
         </div>
 
     7: 
-      updated_by_id: 
       name: sitemap
-      created_at: 2009-01-01 23:51:52 Z
-      filter_id: ""
-      updated_at: 2009-01-02 00:45:01 Z
-      created_by_id: 1
-      lock_version: 14
       id: 7
       content: " <r:children:each by=\"title\" order=\"asc\">\r\n   <r:unless_content part=\"no-map\">\r\n     <li>\r\n       <r:link />\r\n       <r:if_children>\r\n         <ul class=\"second\">\r\n           <r:snippet name=\"sitemap\" />\r\n         </ul>\r\n       </r:if_children>\r\n     </li>\r\n   </r:unless_content>\r\n </r:children:each>\r\n\
         \r\n"
     2: 
-      updated_by_id: 
       name: footer
-      created_at: 2008-12-24 01:08:44 Z
-      filter_id: ""
-      updated_at: 2009-01-02 07:45:16 Z
-      created_by_id: 1
-      lock_version: 5
       id: 2
       content: |
         Copyright &copy; <r:date format="%Y" /> your company. All rights reserved | <a href="mailto:info@yourcompany.com">Contact</a> | <a href="/sitemap">Site Map</a> | Powered by <a href="http://radiantcms.org/">Radiant</a>
 
     8: 
-      updated_by_id: 
       name: comments
-      created_at: 2009-01-02 02:17:21 Z
-      filter_id: ""
-      updated_at: 2009-01-02 07:20:55 Z
-      created_by_id: 1
-      lock_version: 3
       id: 8
       content: |-
         <img src="/images/roasters/comments.jpg" />
       
         <div id="disqus_thread"></div><r:comment><script type="text/javascript" src="http://disqus.com/forums/radiant/embed.js"></script><noscript><a href="http://radiant.disqus.com/?url=ref">View the discussion thread.</a></noscript></r:comment><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
     3: 
-      updated_by_id: 
       name: navigation
-      created_at: 2008-12-30 21:38:09 Z
-      filter_id: ""
-      updated_at: 2009-01-02 07:45:54 Z
-      created_by_id: 1
-      lock_version: 9
       id: 3
       content: "<ul>\r\n  <r:navigation urls=\"Home: /\">\r\n      <r:normal><li><a href=\"<r:path />\"><r:title /></a></li></r:normal>\r\n      <r:here><li class=\"selected\"><a href=\"<r:path />\"><r:title /></a></li></r:here>\r\n      <r:selected><li><a href=\"<r:path />\"><r:title /></a></li></r:selected>\r\n  </r:navigation>\r\n  <r:navigation urls=\"Tour: /tour | News: /news | Locations: /locations | About: /about\">\r\n    <r:normal><li><a href=\"<r:path />\"><r:title /></a></li></r:normal>\r\n    <r:here><li class=\"selected\"><a href=\"<r:path />\"><r:title /></a></li></r:here>\r\n    <r:selected><li class=\"selected\"><a href=\"<r:path />\"><r:title /></a></li></r:selected>\r\n  </r:navigation>\r\n\
         </ul>    "
     9: 
-      updated_by_id: 
       name: comments_summary
-      created_at: 2009-01-02 02:18:23 Z
-      filter_id: ""
-      updated_at: 2009-01-02 02:59:44 Z
-      created_by_id: 1
-      lock_version: 4
       id: 9
       content: "\xEF\xBB\xBF\xEF\xBB\xBF\xEF\xBB\xBF\xEF\xBB\xBF<script type=\"text/javascript\">\r\n\
         //<![CDATA[\r\n\
@@ -246,13 +78,7 @@ records:
         </script>\r\n\
         \r\n"
     4: 
-      updated_by_id: 
       name: newsletter
-      created_at: 2008-12-31 01:08:12 Z
-      filter_id: ""
-      updated_at: 2009-01-02 06:11:14 Z
-      created_by_id: 1
-      lock_version: 19
       id: 4
       content: |-
         <div class="box">
@@ -261,361 +87,225 @@ records:
             <input class="subscribe" type="submit" value="Subscribe" />
         </div>
     10: 
-      updated_by_id: 
       name: posted
-      created_at: 2009-01-02 07:32:00 Z
-      filter_id: ""
-      updated_at: 2009-01-02 07:32:00 Z
-      created_by_id: 1
-      lock_version: 0
       id: 10
       content: <div class="posted">Posted by <r:author /> on <r:date format="%B %d, %Y" /><em>|</em><img src="/images/roasters/comment.png" /><a href="<r:path />#disqus_thread">Comments</a></div>
   Pages: 
-    16: 
-      updated_by_id: 
-      slug: reset.css
-      class_name: StylesheetPage
-      created_at: 2010-10-16 03:53:52 Z
-      virtual: true
-      title: reset.css
-      updated_at: 2010-10-16 03:53:52 Z
-      created_by_id: 1
-      lock_version: 0
-      id: 16
-      breadcrumb: reset.css
-      parent_id: 15
-      status_id: 100
-      published_at: 2010-10-16 03:53:52 Z
-      layout_id: 
-    5: 
-      updated_by_id: 
-      slug: new-location-opening-tonight
-      class_name: Page
-      created_at: 2008-12-24 01:08:45 Z
-      virtual: false
-      title: New location opening tonight
-      updated_at: 2009-01-02 09:27:43 Z
-      created_by_id: 1
-      lock_version: 16
-      id: 5
-      breadcrumb: New location opening tonight
-      parent_id: 4
-      status_id: 100
-      published_at: 2006-06-09 00:00:00 Z
-      layout_id: 
-    22: 
-      updated_by_id: 
-      slug: effects.js
-      class_name: JavascriptPage
-      created_at: 2010-10-16 04:17:41 Z
-      virtual: true
-      title: effects.js
-      updated_at: 2010-10-16 04:17:41 Z
-      created_by_id: 1
-      lock_version: 0
-      id: 22
-      breadcrumb: effects.js
-      parent_id: 18
-      status_id: 100
-      published_at: 2010-10-16 04:17:41 Z
-      layout_id: 
-    11: 
-      updated_by_id: 
-      slug: sitemap
-      class_name: Page
-      created_at: 2009-01-01 23:49:07 Z
-      virtual: false
-      title: Site Map
-      updated_at: 2009-01-02 01:31:41 Z
-      created_by_id: 1
-      lock_version: 11
-      id: 11
-      breadcrumb: Site Map
-      parent_id: 1
-      status_id: 100
-      published_at: 2009-01-01 16:49:07 Z
-      layout_id: 
-    17: 
-      updated_by_id: 
-      slug: styles.css
-      class_name: StylesheetPage
-      created_at: 2010-10-16 03:54:15 Z
-      virtual: true
-      title: styles.css
-      updated_at: 2010-10-16 03:54:15 Z
-      created_by_id: 1
-      lock_version: 0
-      id: 17
-      breadcrumb: styles.css
-      parent_id: 15
-      status_id: 100
-      published_at: 2010-10-16 03:54:15 Z
-      layout_id: 
-    6: 
-      updated_by_id: 
-      slug: grass-fed-foam-from-jersey
-      class_name: Page
-      created_at: 2008-12-24 01:08:45 Z
-      virtual: false
-      title: Grass-fed foam from Jersey
-      updated_at: 2009-01-02 07:31:42 Z
-      created_by_id: 1
-      lock_version: 8
-      id: 6
-      breadcrumb: Grass-fed foam from Jersey
-      parent_id: 4
-      status_id: 100
-      published_at: 2006-06-10 00:00:00 Z
-      layout_id: 
-    23: 
-      updated_by_id: 
-      slug: builder.js
-      class_name: JavascriptPage
-      created_at: 2010-10-16 04:18:05 Z
-      virtual: true
-      title: builder.js
-      updated_at: 2010-10-16 04:18:05 Z
-      created_by_id: 1
-      lock_version: 0
-      id: 23
-      breadcrumb: builder.js
-      parent_id: 18
-      status_id: 100
-      published_at: 2010-10-16 04:18:04 Z
-      layout_id: 
-    12: 
-      updated_by_id: 
-      slug: locations
-      class_name: Page
-      created_at: 2009-01-02 02:11:32 Z
-      virtual: false
-      title: Locations
-      updated_at: 2009-01-02 04:08:35 Z
-      created_by_id: 1
-      lock_version: 8
-      id: 12
-      breadcrumb: Locations
-      parent_id: 1
-      status_id: 100
-      published_at: 2009-01-01 19:11:32 Z
-      layout_id: 
     1: 
-      updated_by_id: 
       slug: /
       class_name: Page
-      created_at: 2008-12-24 01:08:45 Z
       virtual: false
       title: Home Page
-      updated_at: 2009-01-02 07:38:13 Z
-      created_by_id: 1
-      lock_version: 78
       id: 1
       breadcrumb: Home
       parent_id: 
       status_id: 100
       published_at: 2008-12-23 18:08:45 Z
-      layout_id: 1
-    18: 
-      updated_by_id: 
-      slug: js
-      class_name: JavascriptPage
-      created_at: 2010-10-16 04:06:08 Z
-      virtual: true
-      title: js
-      updated_at: 2010-10-16 04:06:08 Z
-      created_by_id: 
-      lock_version: 0
-      id: 18
-      breadcrumb: js
-      parent_id: 1
-      status_id: 100
-      published_at: 2010-10-16 04:06:08 Z
-      layout_id: 
-    13: 
-      updated_by_id: 
-      slug: tour
-      class_name: Page
-      created_at: 2009-01-02 07:36:32 Z
-      virtual: false
-      title: Tour
-      updated_at: 2009-01-02 09:48:51 Z
-      created_by_id: 1
-      lock_version: 25
-      id: 13
-      breadcrumb: Tour
-      parent_id: 1
-      status_id: 100
-      published_at: 2009-01-02 00:49:40 Z
-      layout_id: 
     2: 
-      updated_by_id: 
       slug: file-not-found
       class_name: FileNotFoundPage
-      created_at: 2008-12-24 01:08:45 Z
       virtual: true
       title: File Not Found
-      updated_at: 2008-12-24 01:08:45 Z
-      created_by_id: 1
-      lock_version: 0
       id: 2
       breadcrumb: File Not Found
       parent_id: 1
       status_id: 100
       published_at: 2008-12-23 18:08:45 Z
-      layout_id: 
-    19: 
-      updated_by_id: 
-      slug: swfobject.js
-      class_name: JavascriptPage
-      created_at: 2010-10-16 04:06:40 Z
-      virtual: true
-      title: swfobject.js
-      updated_at: 2010-10-16 04:06:40 Z
-      created_by_id: 1
-      lock_version: 0
-      id: 19
-      breadcrumb: swfobject.js
-      parent_id: 18
-      status_id: 100
-      published_at: 2010-10-16 04:06:40 Z
-      layout_id: 
-    8: 
-      updated_by_id: 
-      slug: the-finest-grind
-      class_name: Page
-      created_at: 2008-12-24 01:08:45 Z
-      virtual: false
-      title: The Finest grind
-      updated_at: 2009-01-02 09:27:11 Z
-      created_by_id: 1
-      lock_version: 11
-      id: 8
-      breadcrumb: The Finest grind
-      parent_id: 4
-      status_id: 100
-      published_at: 2008-12-23 18:08:45 Z
-      layout_id: 
     3: 
-      updated_by_id: 
       slug: rss
       class_name: 
-      created_at: 2008-12-24 01:08:45 Z
       virtual: false
       title: RSS Feed
-      updated_at: 2008-12-24 01:08:45 Z
-      created_by_id: 1
-      lock_version: 0
       id: 3
       breadcrumb: RSS Feed
       parent_id: 1
       status_id: 100
       published_at: 2008-12-23 18:08:45 Z
-      layout_id: 3
-    20: 
-      updated_by_id: 
-      slug: prototype.js
-      class_name: JavascriptPage
-      created_at: 2010-10-16 04:11:38 Z
-      virtual: true
-      title: prototype.js
-      updated_at: 2010-10-16 04:11:38 Z
-      created_by_id: 1
-      lock_version: 0
-      id: 20
-      breadcrumb: prototype.js
-      parent_id: 18
-      status_id: 100
-      published_at: 2010-10-16 04:11:38 Z
-      layout_id: 
-    9: 
-      updated_by_id: 
-      slug: about
-      class_name: Page
-      created_at: 2008-12-24 01:08:45 Z
-      virtual: false
-      title: About
-      updated_at: 2009-01-02 09:22:02 Z
-      created_by_id: 1
-      lock_version: 9
-      id: 9
-      breadcrumb: About
-      parent_id: 1
-      status_id: 100
-      published_at: 2008-12-23 18:08:45 Z
-      layout_id: 
-    15: 
-      updated_by_id: 
-      slug: css
-      class_name: StylesheetPage
-      created_at: 2010-10-16 03:53:40 Z
-      virtual: true
-      title: css
-      updated_at: 2010-10-16 03:53:40 Z
-      created_by_id: 1
-      lock_version: 0
-      id: 15
-      breadcrumb: css
-      parent_id: 1
-      status_id: 100
-      published_at: 2010-10-16 03:53:40 Z
-      layout_id: 
+      layout_id: 2
     4: 
-      updated_by_id: 
       slug: news
       class_name: ArchivePage
-      created_at: 2008-12-24 01:08:45 Z
       virtual: false
       title: Articles
-      updated_at: 2009-01-02 07:27:53 Z
-      created_by_id: 1
-      lock_version: 18
       id: 4
       breadcrumb: News
       parent_id: 1
       status_id: 100
       published_at: 2008-12-23 18:08:45 Z
-      layout_id: 
-    21: 
-      updated_by_id: 1
-      slug: lightbox.js
-      class_name: JavascriptPage
-      created_at: 2010-10-16 04:15:58 Z
-      virtual: true
-      title: lightbox.js
-      updated_at: 2010-10-16 04:20:36 Z
-      created_by_id: 1
-      lock_version: 1
-      id: 21
-      breadcrumb: lightbox.js
-      parent_id: 18
+    5: 
+      slug: new-location-opening-tonight
+      class_name: Page
+      virtual: false
+      title: New location opening tonight
+      id: 5
+      breadcrumb: New location opening tonight
+      parent_id: 4
       status_id: 100
-      published_at: 2010-10-16 04:20:36 Z
-      layout_id: 
-    10: 
-      updated_by_id: 
+      published_at: 2006-06-09 00:00:00 Z
+    6: 
+      slug: grass-fed-foam-from-jersey
+      class_name: Page
+      virtual: false
+      title: Grass-fed foam from Jersey
+      id: 6
+      breadcrumb: Grass-fed foam from Jersey
+      parent_id: 4
+      status_id: 100
+      published_at: 2006-06-10 00:00:00 Z
+    7: 
+      slug: the-finest-grind
+      class_name: Page
+      virtual: false
+      title: The Finest grind
+      id: 7
+      breadcrumb: The Finest grind
+      parent_id: 4
+      status_id: 100
+      published_at: 2008-12-23 18:08:45 Z
+    8: 
+      slug: about
+      class_name: Page
+      virtual: false
+      title: About
+      id: 8
+      breadcrumb: About
+      parent_id: 1
+      status_id: 100
+      published_at: 2008-12-23 18:08:45 Z
+    9: 
       slug: monthly-archives
       class_name: ArchiveMonthIndexPage
-      created_at: 2008-12-24 01:08:45 Z
       virtual: true
       title: "%B %Y Archives"
-      updated_at: 2009-01-02 07:29:46 Z
-      created_by_id: 1
-      lock_version: 9
-      id: 10
+      id: 9
       breadcrumb: Monthly Archives
       parent_id: 4
       status_id: 100
       published_at: 2008-12-23 18:08:45 Z
-      layout_id: 
+    10: 
+      slug: sitemap
+      class_name: Page
+      virtual: false
+      title: Site Map
+      id: 10
+      breadcrumb: Site Map
+      parent_id: 1
+      status_id: 100
+      published_at: 2009-01-01 16:49:07 Z
+    11: 
+      slug: locations
+      class_name: Page
+      virtual: false
+      title: Locations
+      id: 11
+      breadcrumb: Locations
+      parent_id: 1
+      status_id: 100
+      published_at: 2009-01-01 19:11:32 Z
+    12: 
+      slug: tour
+      class_name: Page
+      virtual: false
+      title: Tour
+      id: 12
+      breadcrumb: Tour
+      parent_id: 1
+      status_id: 100
+      published_at: 2009-01-02 00:49:40 Z
+    13: 
+      slug: css
+      class_name: StylesheetPage
+      virtual: true
+      title: css
+      id: 13
+      breadcrumb: css
+      parent_id: 1
+      status_id: 100
+      published_at: 2010-10-16 03:53:40 Z
+    14: 
+      slug: reset.css
+      class_name: StylesheetPage
+      virtual: true
+      title: reset.css
+      id: 14
+      breadcrumb: reset.css
+      parent_id: 13
+      status_id: 100
+      published_at: 2010-10-16 03:53:52 Z
+    15: 
+      slug: styles.css
+      class_name: StylesheetPage
+      virtual: true
+      title: styles.css
+      id: 15
+      breadcrumb: styles.css
+      parent_id: 13
+      status_id: 100
+      published_at: 2010-10-16 03:54:15 Z
+    16: 
+      slug: js
+      class_name: JavascriptPage
+      virtual: true
+      title: js
+      id: 16
+      breadcrumb: js
+      parent_id: 1
+      status_id: 100
+      published_at: 2010-10-16 04:06:08 Z
+    17: 
+      slug: swfobject.js
+      class_name: JavascriptPage
+      virtual: true
+      title: swfobject.js
+      id: 17
+      breadcrumb: swfobject.js
+      parent_id: 16
+      status_id: 100
+      published_at: 2010-10-16 04:06:40 Z
+    18: 
+      slug: prototype.js
+      class_name: JavascriptPage
+      virtual: true
+      title: prototype.js
+      id: 18
+      breadcrumb: prototype.js
+      parent_id: 16
+      status_id: 100
+      published_at: 2010-10-16 04:11:38 Z
+    19:
+      slug: lightbox.js
+      class_name: JavascriptPage
+      virtual: true
+      title: lightbox.js
+      id: 19
+      breadcrumb: lightbox.js
+      parent_id: 16
+      status_id: 100
+      published_at: 2010-10-16 04:20:36 Z
+    20: 
+      slug: effects.js
+      class_name: JavascriptPage
+      virtual: true
+      title: effects.js
+      id: 20
+      breadcrumb: effects.js
+      parent_id: 16
+      status_id: 100
+      published_at: 2010-10-16 04:17:41 Z
+    21: 
+      slug: builder.js
+      class_name: JavascriptPage
+      virtual: true
+      title: builder.js
+      id: 21
+      breadcrumb: builder.js
+      parent_id: 16
+      status_id: 100
+      published_at: 2010-10-16 04:18:04 Z
   Layouts: 
-    1: 
-      updated_by_id: 1
+    1:
       name: Normal
-      created_at: 2008-12-24 01:08:45 Z
       content_type: ""
-      updated_at: 2010-10-16 04:18:46 Z
-      created_by_id: 1
-      lock_version: 37
       id: 1
       content: |
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
@@ -678,15 +368,10 @@ records:
           </div>
         </html>
 
-    3: 
-      updated_by_id: 
+    2: 
       name: XML Feed
-      created_at: 2008-12-24 01:08:45 Z
       content_type: text/xml
-      updated_at: 2008-12-24 01:08:45 Z
-      created_by_id: 1
-      lock_version: 0
-      id: 3
+      id: 2
       content: |
         <r:content />
 
@@ -694,13 +379,13 @@ records:
     16: 
       name: summary
       filter_id: Textile
-      page_id: 8
+      page_id: 7
       id: 16
       content: Vivamus mollis porttitor odio. Vestibulum id mi. Suspendisse a tortor quis metus imperdiet eleifend. Pellentesque libero nulla, aliquam in, tristique vel, elementum et, odio. Fusce id ligula. Vivamus dapibus imperdiet ante. Aliquam id eros ut velit eleifend aliquet. Nulla commodo viverra orci. Sed auctor. Maecenas commodo. Mauris adipiscing lectus quis quam. Nulla a nisl in augue suscipit tincidunt. Nunc eros. Nam eget sapien eget lorem ultrices pulvinar. Vivamus dolor.
     27: 
       name: body
       filter_id: ""
-      page_id: 15
+      page_id: 13
       id: 27
       content: 
     5: 
@@ -723,13 +408,13 @@ records:
     22: 
       name: sidebar
       filter_id: ""
-      page_id: 12
+      page_id: 11
       id: 22
       content: ""
     11: 
       name: sidebar
       filter_id: ""
-      page_id: 9
+      page_id: 8
       id: 11
       content: |
         <div class="box" style="margin-top:50px">
@@ -742,7 +427,7 @@ records:
     33: 
       name: body
       filter_id: ""
-      page_id: 21
+      page_id: 19
       id: 33
       content: |-
         // -----------------------------------------------------------------------------------
@@ -1245,7 +930,7 @@ records:
     28: 
       name: body
       filter_id: ""
-      page_id: 16
+      page_id: 14
       id: 28
       content: |
         /* -------------------------------------------------------------- 
@@ -1293,7 +978,7 @@ records:
     17: 
       name: body
       filter_id: ""
-      page_id: 11
+      page_id: 10
       id: 17
       content: |
         <h2>Site Map</h2>
@@ -1345,7 +1030,7 @@ records:
     34: 
       name: body
       filter_id: ""
-      page_id: 22
+      page_id: 20
       id: 34
       content: |-
         // script.aculo.us effects.js v1.8.1, Thu Jan 03 22:07:12 -0500 2008
@@ -2473,7 +2158,7 @@ records:
     23: 
       name: body
       filter_id: ""
-      page_id: 13
+      page_id: 12
       id: 23
       content: |
         <div id="extra">
@@ -2542,13 +2227,13 @@ records:
     18: 
       name: extended
       filter_id: ""
-      page_id: 11
+      page_id: 10
       id: 18
       content: ""
     29: 
       name: body
       filter_id: ""
-      page_id: 17
+      page_id: 15
       id: 29
       content: |
         /*---------------------------------  Styles.css  ---*/ 
@@ -2903,7 +2588,7 @@ records:
     24: 
       name: sidebar
       filter_id: ""
-      page_id: 13
+      page_id: 12
       id: 24
       content: |
         <div class="spot">
@@ -2927,7 +2612,7 @@ records:
     35: 
       name: body
       filter_id: ""
-      page_id: 23
+      page_id: 21
       id: 35
       content: |-
         // script.aculo.us builder.js v1.8.1, Thu Jan 03 22:07:12 -0500 2008
@@ -3069,7 +2754,7 @@ records:
     13: 
       name: body
       filter_id: ""
-      page_id: 10
+      page_id: 9
       id: 13
       content: |-
         <r:archive:children:each order="desc">
@@ -3128,7 +2813,7 @@ records:
     30: 
       name: body
       filter_id: ""
-      page_id: 18
+      page_id: 16
       id: 30
       content: 
     14: 
@@ -3168,13 +2853,13 @@ records:
     20: 
       name: no-map
       filter_id: ""
-      page_id: 11
+      page_id: 10
       id: 20
       content: ""
     31: 
       name: body
       filter_id: ""
-      page_id: 19
+      page_id: 17
       id: 31
       content: |-
         /**
@@ -3188,7 +2873,7 @@ records:
     9: 
       name: body
       filter_id: Textile
-      page_id: 8
+      page_id: 7
       id: 9
       content: |-
         <h3><r:title /></h3>
@@ -3229,7 +2914,7 @@ records:
     32: 
       name: body
       filter_id: ""
-      page_id: 20
+      page_id: 18
       id: 32
       content: |-
         /*  Prototype JavaScript framework, version 1.6.1
@@ -8109,7 +7794,7 @@ records:
     21: 
       name: body
       filter_id: Textile
-      page_id: 12
+      page_id: 11
       id: 21
       content: |
         <iframe width="868" height="480" frameborder="0" style="border:1px solid #dbd6d1;" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.com/maps/ms?ie=UTF8&amp;hl=en&amp;t=k&amp;s=AARTsJoMI8Z8NYIgz5ckH51H72GUL2fOcw&amp;msa=0&amp;msid=113091985902776583734.00045f77d6a96be3a6389&amp;ll=45.519759,-122.668791&amp;spn=0.030069,0.075531&amp;z=14&amp;output=embed"></iframe><br /><small><a href="http://maps.google.com/maps/ms?ie=UTF8&amp;hl=en&amp;t=k&amp;msa=0&amp;msid=113091985902776583734.00045f77d6a96be3a6389&amp;ll=45.519759,-122.668791&amp;spn=0.030069,0.075531&amp;z=14&amp;source=embed" style="color:#0000FF;text-align:left">View Larger Map</a></small>
@@ -8117,14 +7802,13 @@ records:
     10: 
       name: body
       filter_id: Textile
-      page_id: 9
+      page_id: 8
       id: 10
       content: "h2. Since 1999...\r\n\
         \r\n\
         Duis vitae mi. Nunc tristique mauris malesuada odio. Integer pharetra, urna sit amet scelerisque sollicitudin, felis est rhoncus nibh, sed sollicitudin ipsum lacus quis metus. In hac habitasse platea dictumst. Sed quis sem eu libero tristique vehicula. In fermentum, pede ut congue placerat, arcu erat tempor augue, id ornare ipsum ante vitae tellus. Duis bibendum quam vitae lectus. Curabitur euismod nulla a risus. Suspendisse erat. Nulla facilisi. Integer odio felis, sollicitudin in, feugiat non, dictum sit amet, elit. "
   Users: 
     1: 
-      updated_by_id: 
       session_token: 
       salt: 258eadf34cd675e3ec8a08758886cb35d6694f24
       name: Administrator
