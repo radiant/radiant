@@ -9,6 +9,20 @@ require File.join(File.dirname(__FILE__), 'boot')
 
 require 'radius'
 
+# Play nice with Rubygems 1.6+. This is only required for Radiant 0.9.1
+# because it uses an older Rails version. Newer versions of Radiant (master)
+# use a newer Rails
+if Gem::VERSION >= "1.3.6" 
+    module Rails
+        class GemDependency
+            def requirement
+                r = super
+                (r == Gem::Requirement.default) ? nil : r
+            end
+        end
+    end
+end
+
 Radiant::Initializer.run do |config|
   # Skip frameworks you're not going to use (only works if using vendor/rails).
   # To use Rails without a database, you must remove the Active Record framework
