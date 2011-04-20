@@ -273,6 +273,12 @@ describe Page do
       p.save
       p.status_id.should == 100
     end
+    it 'should interpret the input date correctly when the current language is not English' do
+      I18n.locale = :nl
+      page.update_attribute(:published_at, "17 mei 2011")
+      #page.published_at.month.should == 5
+      I18n.locale = :en
+    end
   end
   
   context 'when setting the status' do  
