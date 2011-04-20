@@ -1,5 +1,5 @@
-require 'activesupport'
-require 'activerecord'
+require 'active_support'
+require 'active_record'
 
 require 'dataset/version'
 require 'dataset/instance_methods'
