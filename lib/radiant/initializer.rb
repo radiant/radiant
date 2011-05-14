@@ -96,7 +96,11 @@ module Radiant
 
     def gem(name, options = {})
       super
-      extensions << $1.intern if gems.last.name =~ /^radiant-(.*)-extension$/
+      if gems.last.name =~ /^radiant-(.*)-extension$/ && extension_symbol = $1.intern
+        if (@extensions & [extension_symbol, :all]).empty?
+          extensions << extension_symbol
+        end
+      end
     end
 
     def check_extension_dependencies
