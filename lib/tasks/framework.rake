@@ -61,9 +61,9 @@ unless File.directory? "#{RAILS_ROOT}/app"
       rm_rf "vendor/radiant"
     end
 
-    desc "Update configs, scripts, sass, stylesheets and javascripts from Radiant."
+    desc "Update configs, scripts, html, images, sass, stylesheets and javascripts from Radiant."
     task :update do
-      tasks = %w{scripts javascripts configs images sass stylesheets cached_assets}
+      tasks = %w{scripts javascripts configs static_html images sass stylesheets cached_assets}
       tasks = tasks & ENV['ONLY'].split(',') if ENV['ONLY']
       tasks = tasks - ENV['EXCEPT'].split(',') if ENV['EXCEPT']
       tasks.each do |task| 
@@ -164,6 +164,13 @@ the new files:"
         if @warnings
           puts @warning_start + @warnings
         end
+      end
+
+      desc "Update static HTML files from your current radiant install"
+      task :static_html do
+        project_dir = RAILS_ROOT + "/public/"
+        html_files = Dir["#{File.dirname(__FILE__)}/../../public/*.html"].delete_if { |f| f =~ /404.html|500.html/ }
+        FileUtils.cp(html_files, project_dir)
       end
 
       desc "Update admin and radiant images from your current radiant install"
