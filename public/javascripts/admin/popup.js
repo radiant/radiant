@@ -23,7 +23,8 @@ var Popup = {
   
   // Other Configuration
   Draggable: false,   // Window is draggable by titlebar
-  AutoFocus: true     // Focus on first control in popup
+  AutoFocus: true,    // Focus on first control in popup
+  Singular: false     // Other popups close when this is opened
   
 };
 
@@ -75,11 +76,13 @@ Popup.AbstractWindow = Class.create({
   initialize: function(options) {
     options = Object.extend({
       draggable: Popup.Draggable,
-      autofocus: Popup.AutoFocus
-    }, options)
+      autofocus: Popup.AutoFocus,
+      singular: Popup.Singular
+    }, options);
     
     this.draggable = options.draggable;
     this.autofocus = options.autofocus;
+    this.singular = options.singular;
     
     Popup.preloadImages();
     
@@ -162,7 +165,7 @@ Popup.AbstractWindow = Class.create({
   focus: function() {
     var form = this.element.down('form');
     if (form) {
-      var elements = form.getElements().reject(function(e) { return e.type == 'hidden' });
+      var elements = form.getElements().reject(function(e) { return e.type == 'hidden'; });
       var element = elements[0] || form.down('button');
       if (element) element.focus();
     }
@@ -175,6 +178,7 @@ Popup.AbstractWindow = Class.create({
       this.top.setStyle("width:" + width + "px");
       this.bottom.setStyle("width:" + width + "px");
     }
+    if (this.singular) Popup.closeAll();
     this.bringToTop();
     this.centerWindowInView();
   },
@@ -259,6 +263,10 @@ Popup.AjaxWindow = Class.create(Popup.AbstractWindow, {
   }
 });
 
+Popup.closeAll = function () {
+  $$('div.popup_window').each(function (el) { el.fire('popup:hide'); });
+}
+
 Popup.dialog = function(options) {
   options = Object.extend({
     title: 'Dialog',
@@ -304,12 +312,12 @@ Popup.confirm = function(message, options) {
     buttons: [Popup.Okay, Popup.Cancel],
     okay: function() { },
     cancel: function() { }
-  }, options)
+  }, options);
   
   options.buttonClick = options.buttonClick || function(button) {
     if (button == Popup.Okay) options.okay();
     if (button == Popup.Cancel) options.cancel();
-  }
+  };
   
   Popup.dialog(options);
 }
@@ -318,9 +326,9 @@ Popup.alert = function(message, options) {
   options = Object.extend({
     title: 'Alert',
     buttons: [Popup.Okay]
-  }, options)
+  }, options);
   
-  Popup.confirm(message, options)
+  Popup.confirm(message, options);
 }
 
 // Element extensions

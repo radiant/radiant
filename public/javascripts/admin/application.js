@@ -14,6 +14,9 @@ Popup.ButtonsClass           = 'buttons';
 // Make all popups draggable
 Popup.Draggable = true;
 
+// Make all popups singular (on opening they close other open popups)
+Popup.Singular = true;
+
 // Status Images
 Status.SpinnerImage          = relative_url_root + '/images/admin/status_spinner.gif';
 Status.BackgroundImage       = relative_url_root + '/images/admin/status_background.png';
