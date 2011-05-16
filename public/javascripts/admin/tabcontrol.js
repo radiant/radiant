@@ -2,7 +2,7 @@ if(typeof(relative_url_root) === 'undefined'){ relative_url_root = '';}
 
 var TabControlBehavior = Behavior.create({
   initialize: function() {
-    new TabControl(this.element);
+    this.controller = new TabControl(this.element);
   }
 });
 
