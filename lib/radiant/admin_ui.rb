@@ -160,7 +160,7 @@ module Radiant
     private
     
     def load_default_page_regions
-      returning OpenStruct.new do |page|
+      OpenStruct.new.tap do |page|
         page.edit = RegionSet.new do |edit|
           edit.main.concat %w{edit_header edit_form edit_popups}
           edit.form.concat %w{edit_title edit_extended_metadata edit_page_parts}
@@ -177,7 +177,7 @@ module Radiant
     end
     
     def load_default_user_regions
-      returning OpenStruct.new do |user|
+      OpenStruct.new.tap do |user|
         user.preferences = RegionSet.new do |preferences|
           preferences.main.concat %w{edit_header edit_form}
           preferences.form.concat %w{edit_name edit_email edit_username edit_password edit_locale}
@@ -199,7 +199,7 @@ module Radiant
     end
     
     def load_default_snippet_regions
-      returning OpenStruct.new do |snippet|
+      OpenStruct.new.tap do |snippet|
         snippet.edit = RegionSet.new do |edit|
           edit.main.concat %w{edit_header edit_form}
           edit.form.concat %w{edit_title edit_content edit_filter}
@@ -216,7 +216,7 @@ module Radiant
     end
     
     def load_default_layout_regions
-      returning OpenStruct.new do |layout|
+      OpenStruct.new.tap do |layout|
         layout.edit = RegionSet.new do |edit|
           edit.main.concat %w{edit_header edit_form}
           edit.form.concat %w{edit_title edit_extended_metadata edit_content}
@@ -233,7 +233,7 @@ module Radiant
     end
     
     def load_default_configuration_regions
-      returning OpenStruct.new do |configuration|
+      OpenStruct.new.tap do |configuration|
         configuration.show = RegionSet.new do |show|
           show.user.concat %w{preferences}
           show.config.concat %w{site defaults users}
@@ -247,7 +247,7 @@ module Radiant
     end
     
     def load_default_extension_regions
-      returning OpenStruct.new do |extension|
+      OpenStruct.new.tap do |extension|
         extension.index = RegionSet.new do |index|
           index.thead.concat %w{title_header website_header version_header}
           index.tbody.concat %w{title_cell website_cell version_cell}
