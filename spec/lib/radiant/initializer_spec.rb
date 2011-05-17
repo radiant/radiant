@@ -100,6 +100,16 @@ describe Radiant::Configuration do
       @configuration.gem 'radiant-gem_ext-extension'
       @configuration.extensions.should include(:gem_ext)
     end
+    it "should not add an extension to the extensions array if :all is present" do
+      @configuration.extensions = [:all]
+      @configuration.gem 'radiant-gem_ext-extension'
+      @configuration.extensions.should_not include(:gem_ext)
+    end
+    it "should not add an extension to the extensions array if a symbol for the extension name is present" do
+      @configuration.extensions = [:gem_ext]
+      @configuration.gem 'radiant-gem_ext-extension'
+      @configuration.extensions.should include(:gem_ext)
+    end
   end
 end
 
