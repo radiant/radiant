@@ -1,6 +1,6 @@
 begin
   require_library_or_gem 'memcache'
-
+  require 'thread'
   module ActionController
     module Session
       class MemCacheStore < AbstractStore
@@ -43,6 +43,15 @@ begin
           rescue MemCache::MemCacheError, Errno::ECONNREFUSED
             return false
           end
+
+          def destroy(env)
+            if sid = current_session_id(env)
+              @pool.delete(sid)
+            end
+          rescue MemCache::MemCacheError, Errno::ECONNREFUSED
+            false
+          end
+
       end
     end
   end

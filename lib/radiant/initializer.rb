@@ -152,7 +152,7 @@ end_error
       end
 
       # Provide the load paths for the Radiant installation
-      def default_load_paths
+      def default_autoload_paths
         paths = ["#{RADIANT_ROOT}/test/mocks/#{environment}"]
 
         # Add the app's controller directory
@@ -225,7 +225,7 @@ end_error
       # checks for plugins within extensions:
       extension_loader.add_plugin_paths
       super
-      ActiveSupport::Dependencies.load_once_paths -= extension_loader.extension_load_paths
+      ActiveSupport::Dependencies.autoload_once_paths -= extension_loader.extension_load_paths
     end
 
     def load_plugins

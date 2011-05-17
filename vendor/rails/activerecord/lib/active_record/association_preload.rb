@@ -282,7 +282,11 @@ module ActiveRecord
           end
           through_records.flatten!
         else
-          records.first.class.preload_associations(records, through_association)
+          options = {}
+          options[:include] = reflection.options[:include] || reflection.options[:source] if reflection.options[:conditions] || reflection.options[:order]
+          options[:order] = reflection.options[:order]
+          options[:conditions] = reflection.options[:conditions]
+          records.first.class.preload_associations(records, through_association, options)
           through_records = records.map {|record| record.send(through_association)}.flatten
         end
         through_records.compact!
@@ -357,7 +361,13 @@ module ActiveRecord
         table_name = reflection.klass.quoted_table_name
 
         if interface = reflection.options[:as]
-          conditions = "#{reflection.klass.quoted_table_name}.#{connection.quote_column_name "#{interface}_id"} #{in_or_equals_for_ids(ids)} and #{reflection.klass.quoted_table_name}.#{connection.quote_column_name "#{interface}_type"} = '#{self.base_class.sti_name}'"
+          parent_type = if reflection.active_record.abstract_class?
+            self.base_class.sti_name
+          else
+            reflection.active_record.sti_name
+          end
+
+          conditions = "#{reflection.klass.quoted_table_name}.#{connection.quote_column_name "#{interface}_id"} #{in_or_equals_for_ids(ids)} and #{reflection.klass.quoted_table_name}.#{connection.quote_column_name "#{interface}_type"} = '#{parent_type}'"
         else
           foreign_key = reflection.primary_key_name
           conditions = "#{reflection.klass.quoted_table_name}.#{foreign_key} #{in_or_equals_for_ids(ids)}"

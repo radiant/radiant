@@ -287,7 +287,6 @@ module ActionController
             "REMOTE_ADDR"    => remote_addr,
             "CONTENT_TYPE"   => "application/x-www-form-urlencoded",
             "CONTENT_LENGTH" => data ? data.length.to_s : nil,
-            "HTTP_COOKIE"    => encode_cookies,
             "HTTP_ACCEPT"    => accept,
 
             "rack.version"      => [0,1],
@@ -297,6 +296,8 @@ module ActionController
             "rack.multiprocess" => true,
             "rack.run_once"     => false
           )
+
+          env['HTTP_COOKIE'] = encode_cookies if cookies.any?
 
           (headers || {}).each do |key, value|
             key = key.to_s.upcase.gsub(/-/, "_")
@@ -414,15 +415,25 @@ module ActionController
         end
 
         def multipart_requestify(params, first=true)
-          returning Hash.new do |p|
+          Array.new.tap do |p|
             params.each do |key, value|
               k = first ? key.to_s : "[#{key.to_s}]"
               if Hash === value
                 multipart_requestify(value, false).each do |subkey, subvalue|
-                  p[k + subkey] = subvalue
+                  p << [k + subkey, subvalue]
+                end
+              elsif Array === value
+                value.each do |element|
+                  if Hash === element || Array === element
+                    multipart_requestify(element, false).each do |subkey, subvalue|
+                      p << ["#{k}[]#{subkey}", subvalue]
+                    end
+                  else
+                    p << ["#{k}[]", element]
+                  end
                 end
               else
-                p[k] = value
+                p << [k, value]
               end
             end
           end
@@ -453,6 +464,7 @@ EOF
             end
           end.join("")+"--#{boundary}--\r"
         end
+
     end
 
     # A module used to extend ActionController::Base, so that integration tests
@@ -500,7 +512,7 @@ EOF
           reset! unless @integration_session
           # reset the html_document variable, but only for new get/post calls
           @html_document = nil unless %w(cookies assigns).include?(method)
-          returning @integration_session.__send__(method, *args) do
+          @integration_session.__send__(method, *args).tap do
             copy_session_variables!
           end
         end
@@ -524,7 +536,7 @@ EOF
         if self.class.respond_to?(:fixture_table_names)
           self.class.fixture_table_names.each do |table_name|
             name = table_name.tr(".", "_")
-            next unless respond_to?(name)
+            next unless respond_to?(name, true)
             extras.__send__(:define_method, name) { |*args|
               delegate.send(name, *args)
             }
@@ -556,7 +568,7 @@ EOF
       def method_missing(sym, *args, &block)
         reset! unless @integration_session
         if @integration_session.respond_to?(sym)
-          returning @integration_session.__send__(sym, *args, &block) do
+          @integration_session.__send__(sym, *args, &block).tap do
             copy_session_variables!
           end
         else

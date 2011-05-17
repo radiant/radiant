@@ -9,6 +9,11 @@ require 'models/developer'
 class NamedScopeTest < ActiveRecord::TestCase
   fixtures :posts, :authors, :topics, :comments, :author_addresses
 
+  def test_named_scope_with_STI
+    assert_equal 5,Post.with_type_self.count
+    assert_equal 1,SpecialPost.with_type_self.count
+  end
+
   def test_implements_enumerable
     assert !Topic.find(:all).empty?
 
@@ -141,6 +146,12 @@ class NamedScopeTest < ActiveRecord::TestCase
     assert_equal authors(:david).posts & Post.containing_the_letter_a, authors(:david).posts.containing_the_letter_a
   end
 
+  def test_nested_named_scopes_doesnt_duplicate_conditions_on_child_scopes
+    comments_scope = posts(:welcome).comments.send(:construct_sql)
+    named_scope_sql_conditions = posts(:welcome).comments.containing_the_letter_e.send(:current_scoped_methods)[:find][:conditions]
+    assert_no_match /#{comments_scope}.*#{comments_scope}/i, named_scope_sql_conditions
+  end
+
   def test_has_many_through_associations_have_access_to_named_scopes
     assert_not_equal Comment.containing_the_letter_e, authors(:david).comments
     assert !Comment.containing_the_letter_e.empty?
@@ -265,7 +276,7 @@ class NamedScopeTest < ActiveRecord::TestCase
   end
 
   def test_rand_should_select_a_random_object_from_proxy
-    assert Topic.approved.random_element.is_a?(Topic)
+    assert Topic.approved.sample.is_a?(Topic)
   end
 
   def test_should_use_where_in_query_for_named_scope

@@ -119,6 +119,13 @@ if ActiveRecord::Base.connection.supports_migrations?
       end
     end
 
+    def test_index_symbol_names
+      assert_nothing_raised { Person.connection.add_index :people, :primary_contact_id, :name => :symbol_index_name }
+      assert Person.connection.index_exists?(:people, :symbol_index_name, true)
+      assert_nothing_raised { Person.connection.remove_index :people, :name => :symbol_index_name }
+      assert_equal true, !Person.connection.index_exists?(:people, :symbol_index_name, false)
+    end
+
     def test_add_index_length_limit
       good_index_name = 'x' * Person.connection.index_name_length
       too_long_index_name = good_index_name + 'x'
@@ -737,6 +744,10 @@ if ActiveRecord::Base.connection.supports_migrations?
       assert_nothing_raised { Person.connection.remove_column("hats", "hat_size") }
     ensure
       ActiveRecord::Base.connection.drop_table(:hats)
+    end
+
+    def test_remove_column_no_second_parameter_raises_exception
+      assert_raise(ArgumentError) { Person.connection.remove_column("funny") }
     end
 
     def test_change_type_of_not_null_column

@@ -227,6 +227,24 @@ class IntegrationTestTest < Test::Unit::TestCase
   end
 end
 
+require 'active_record_unit'
+# Tests that fixtures are accessible in the integration test sessions
+class IntegrationTestWithFixtures < ActiveRecordTestCase
+  include ActionController::Integration::Runner
+
+  fixtures :companies
+
+  def test_fixtures_in_new_session
+    sym = :thirty_seven_signals
+    # fixtures are accessible in main session
+    assert_not_nil companies(sym)
+
+    # create a new session and the fixtures should be accessible in it as well
+    session1 = open_session { |sess| }
+    assert_not_nil session1.companies(sym)
+  end
+end
+
 # Tests that integration tests don't call Controller test methods for processing.
 # Integration tests have their own setup and teardown.
 class IntegrationTestUsesCorrectClass < ActionController::IntegrationTest
@@ -264,6 +282,14 @@ class IntegrationProcessTest < ActionController::IntegrationTest
 
     def multipart_post_with_multiparameter_params
       render :text => "foo(1i): #{params[:"foo(1i)"]}, foo(2i): #{params[:"foo(2i)"]}, filesize: #{params[:file].size}", :status => 200
+    end
+
+    def multipart_post_with_nested_params
+      render :text => "foo: #{params[:foo][0]}, #{params[:foo][1]}; [filesize: #{params[:file_list][0][:content].size}, filesize: #{params[:file_list][1][:content].size}]", :status => 200
+    end
+
+    def multipart_post_with_multiparameter_complex_params
+      render :text => "foo(1i): #{params[:"foo(1i)"]}, foo(2i): #{params[:"foo(2i)"]}, [filesize: #{params[:file_list][0][:content].size}, filesize: #{params[:file_list][1][:content].size}]", :status => 200
     end
 
     def post
@@ -402,6 +428,24 @@ class IntegrationProcessTest < ActionController::IntegrationTest
 
       assert_equal 200, status
       assert_equal "foo(1i): bar, foo(2i): baz, filesize: 159528", response.body
+    end
+  end
+
+  def test_multipart_post_with_nested_params
+    with_test_route_set do
+      post '/multipart_post_with_nested_params', :"foo" => ['a', 'b'], :file_list => [{:content => fixture_file_upload(FILES_DIR + "/mona_lisa.jpg", "image/jpg")}, {:content => fixture_file_upload(FILES_DIR + "/mona_lisa.jpg", "image/jpg")}]
+
+      assert_equal 200, status
+      assert_equal "foo: a, b; [filesize: 159528, filesize: 159528]", response.body
+    end
+  end
+
+  def test_multipart_post_with_multiparameter_complex_attribute_parameters
+    with_test_route_set do
+      post '/multipart_post_with_multiparameter_complex_params', :"foo(1i)" => "bar", :"foo(2i)" => "baz", :file_list => [{:content => fixture_file_upload(FILES_DIR + "/mona_lisa.jpg", "image/jpg")}, {:content => fixture_file_upload(FILES_DIR + "/mona_lisa.jpg", "image/jpg")}]
+
+      assert_equal 200, status
+      assert_equal "foo(1i): bar, foo(2i): baz, [filesize: 159528, filesize: 159528]", response.body
     end
   end
 

@@ -117,11 +117,11 @@ describe Radiant::ExtensionLoader do
   end
 
   it "should add extension paths to the configuration" do
-    load_paths = []
+    autoload_paths = []
     @instance.should_receive(:extension_load_paths).and_return(@extension_paths)
-    @configuration.should_receive(:load_paths).at_least(:once).and_return(load_paths)
+    @configuration.should_receive(:autoload_paths).at_least(:once).and_return(autoload_paths)
     @instance.add_extension_paths
-    load_paths.should == @extension_paths
+    autoload_paths.should == @extension_paths
   end
 
   it "should add plugin paths to the configuration" do

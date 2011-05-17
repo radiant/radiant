@@ -195,6 +195,7 @@ module ActiveRecord
       #  remove_column(:suppliers, :qualification)
       #  remove_columns(:suppliers, :qualification, :experience)
       def remove_column(table_name, *column_names)
+        raise ArgumentError.new("You must specify at least one column name.  Example: remove_column(:people, :first_name)") if column_names.empty?
         column_names.flatten.each do |column_name|
           execute "ALTER TABLE #{quote_table_name(table_name)} DROP #{quote_column_name(column_name)}"
         end
@@ -273,7 +274,7 @@ module ActiveRecord
 
         if Hash === options # legacy support, since this param was a string
           index_type = options[:unique] ? "UNIQUE" : ""
-          index_name = options[:name] || index_name
+          index_name = options[:name].to_s if options[:name]
         else
           index_type = options
         end
@@ -346,6 +347,7 @@ module ActiveRecord
       # as there's no way to determine the correct answer in that case.
       def index_exists?(table_name, index_name, default)
         return default unless respond_to?(:indexes)
+        index_name = index_name.to_s
         indexes(table_name).detect { |i| i.name == index_name }
       end
 

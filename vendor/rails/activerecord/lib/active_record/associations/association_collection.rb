@@ -234,8 +234,9 @@ module ActiveRecord
       # See destroy for more info.
       def destroy_all
         load_target
-        destroy(@target)
-        reset_target!
+        destroy(@target).tap do
+          reset_target!
+        end
       end
 
       def create(attrs = {})
@@ -331,6 +332,7 @@ module ActiveRecord
 
       def include?(record)
         return false unless record.is_a?(@reflection.klass)
+        return include_in_memory?(record) if record.new_record?
         load_target if @reflection.options[:finder_sql] && !loaded?
         return @target.include?(record) if loaded?
         exists?(record)
@@ -349,7 +351,16 @@ module ActiveRecord
             begin
               if !loaded?
                 if @target.is_a?(Array) && @target.any?
-                  @target = find_target + @target.find_all {|t| t.new_record? }
+                  @target = find_target.map do |f|
+                    i = @target.index(f)
+                    t = @target.delete_at(i) if i
+                    if t && t.changed?
+                      t
+                    else
+                      f.mark_for_destruction if t && t.marked_for_destruction?
+                      f
+                    end
+                  end + @target.find_all {|t| t.new_record?}
                 else
                   @target = find_target
                 end
@@ -363,7 +374,19 @@ module ActiveRecord
           target
         end
         
-        def method_missing(method, *args)
+        def method_missing(method, *args, &block)
+          case method.to_s
+          when 'find_or_create'
+            return find(:first, :conditions => args.first) || create(args.first)
+          when /^find_or_create_by_(.*)$/
+            rest = $1
+            find_args = pull_finder_args_from(DynamicFinderMatch.match(method).attribute_names, *args)
+            return  send("find_by_#{rest}", find_args) ||
+                    method_missing("create_by_#{rest}", *args, &block)
+          when /^create_by_(.*)$/
+            return create($1.split('_and_').zip(args).inject({}) { |h,kv| k,v=kv ; h[k] = v ; h }, &block)
+          end
+
           if @target.respond_to?(method) || (!@reflection.klass.respond_to?(method) && Class.respond_to?(method))
             if block_given?
               super { |*block_args| yield(*block_args) }
@@ -418,6 +441,25 @@ module ActiveRecord
         end
 
       private
+        # Separate the "finder" args from the "create" args given to a
+        # find_or_create_by_ call.  Returns an array with the
+        # parameter values in the same order as the keys in the
+        # "names" array.  This code was based on code in base.rb's
+        # method_missing method.
+        def pull_finder_args_from(names, *args)
+          attributes = names.collect { |name| name.intern }
+          attribute_hash = {}
+          args.each_with_index do |arg, i|
+            if arg.is_a?(Hash)
+              attribute_hash.merge! arg
+            else
+              attribute_hash[attributes[i]] = arg
+            end
+          end
+          attribute_hash = attribute_hash.with_indifferent_access
+          attributes.collect { |attr| attribute_hash[attr] }
+        end
+
         def create_record(attrs)
           attrs.update(@reflection.options[:conditions]) if @reflection.options[:conditions].is_a?(Hash)
           ensure_owner_is_not_new
@@ -462,8 +504,8 @@ module ActiveRecord
         def callbacks_for(callback_name)
           full_callback_name = "#{callback_name}_for_#{@reflection.name}"
           @owner.class.read_inheritable_attribute(full_callback_name.to_sym) || []
-        end   
-        
+        end
+
         def ensure_owner_is_not_new
           if @owner.new_record?
             raise ActiveRecord::RecordNotSaved, "You cannot call create unless the parent is saved"
@@ -473,6 +515,18 @@ module ActiveRecord
         def fetch_first_or_last_using_find?(args)
           args.first.kind_of?(Hash) || !(loaded? || @owner.new_record? || @reflection.options[:finder_sql] ||
                                          @target.any? { |record| record.new_record? } || args.first.kind_of?(Integer))
+        end
+
+        def include_in_memory?(record)
+          if @reflection.is_a?(ActiveRecord::Reflection::ThroughReflection)
+            @owner.send(proxy_reflection.through_reflection.name.to_sym).each do |source|
+              source_reflection_target = source.send(proxy_reflection.source_reflection.name)
+              return true if source_reflection_target.respond_to?(:include?) ? source_reflection_target.include?(record) : source_reflection_target == record
+            end
+            false
+          else
+            @target.include?(record)
+          end
         end
     end
   end

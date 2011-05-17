@@ -43,7 +43,7 @@ module Radiant
 
     def add_extension_paths
       extension_load_paths.reverse_each do |path|
-        configuration.load_paths.unshift path
+        configuration.autoload_paths.unshift path
         $LOAD_PATH.unshift path
       end
     end

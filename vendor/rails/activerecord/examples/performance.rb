@@ -12,6 +12,8 @@ require 'rbench'
 
 __DIR__ = File.dirname(__FILE__)
 $:.unshift "#{__DIR__}/../lib"
+$:.unshift "#{__DIR__}/../../activesupport/lib"
+
 require 'active_record'
 
 conn = { :adapter => 'mysql',
@@ -25,7 +27,7 @@ conn[:socket] = Pathname.glob(%w[
   /tmp/mysql.sock
   /var/mysql/mysql.sock
   /var/run/mysqld/mysqld.sock
-]).find { |path| path.socket? }
+]).find { |path| path.socket? }.to_s
 
 ActiveRecord::Base.establish_connection(conn)
 
@@ -58,7 +60,7 @@ end
 sqlfile = "#{__DIR__}/performance.sql"
 
 if File.exists?(sqlfile)
-  mysql_bin = %w[mysql mysql5].select { |bin| `which #{bin}`.length > 0 }
+  mysql_bin = %w[mysql mysql5].detect { |bin| `which #{bin}`.length > 0 }
   `#{mysql_bin} -u #{conn[:username]} #{"-p#{conn[:password]}" unless conn[:password].blank?} #{conn[:database]} < #{sqlfile}`
 else
   puts 'Generating data...'
@@ -88,7 +90,7 @@ else
     )
   end
 
-  mysqldump_bin = %w[mysqldump mysqldump5].select { |bin| `which #{bin}`.length > 0 }
+  mysqldump_bin = %w[mysqldump mysqldump5].detect { |bin| `which #{bin}`.length > 0 }
   `#{mysqldump_bin} -u #{conn[:username]} #{"-p#{conn[:password]}" unless conn[:password].blank?} #{conn[:database]} exhibits users > #{sqlfile}`
 end
 
@@ -153,6 +155,40 @@ RBench.run(TIMES) do
 
   report 'Model.transaction' do
     ar { Exhibit.transaction { Exhibit.new } }
+  end
+
+  report 'Model.find(id)' do
+    id = Exhibit.first.id
+    ar { Exhibit.find(id) }
+  end
+
+  report 'Model.find_by_sql' do
+    ar { Exhibit.find_by_sql("SELECT * FROM exhibits WHERE id = #{(rand * 1000 + 1).to_i}").first }
+  end
+
+  report 'Model.log', (TIMES * 10) do
+    ar { Exhibit.connection.send(:log, "hello", "world") {} }
+  end
+
+  report 'AR.execute(query)', (TIMES / 2) do
+    ar { ActiveRecord::Base.connection.execute("Select * from exhibits where id = #{(rand * 1000 + 1).to_i}") }
+  end
+
+  report 'Model.find(id)' do
+    id = Exhibit.first.id
+    ar { Exhibit.find(id) }
+  end
+
+  report 'Model.find_by_sql' do
+    ar { Exhibit.find_by_sql("SELECT * FROM exhibits WHERE id = #{(rand * 1000 + 1).to_i}").first }
+  end
+
+  report 'Model.log', (TIMES * 10) do
+    ar { Exhibit.connection.send(:log, "hello", "world") {} }
+  end
+
+  report 'AR.execute(query)', (TIMES / 2) do
+    ar { ActiveRecord::Base.connection.execute("Select * from exhibits where id = #{(rand * 1000 + 1).to_i}") }
   end
 
   summary 'Total'

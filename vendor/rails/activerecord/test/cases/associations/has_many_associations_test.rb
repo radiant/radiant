@@ -21,6 +21,91 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     Client.destroyed_client_ids.clear
   end
 
+  def test_create_by
+    person = Person.create! :first_name => 'tenderlove'
+    post   = Post.find :first
+
+    assert_equal [], person.readers
+    assert_nil person.readers.find_by_post_id(post.id)
+
+    reader = person.readers.create_by_post_id post.id
+
+    assert_equal 1, person.readers.count
+    assert_equal 1, person.readers.length
+    assert_equal post, person.readers.first.post
+    assert_equal person, person.readers.first.person
+  end
+
+  def test_create_by_multi
+    person = Person.create! :first_name => 'tenderlove'
+    post   = Post.find :first
+
+    assert_equal [], person.readers
+
+    reader = person.readers.create_by_post_id_and_skimmer post.id, false
+
+    assert_equal 1, person.readers.count
+    assert_equal 1, person.readers.length
+    assert_equal post, person.readers.first.post
+    assert_equal person, person.readers.first.person
+  end
+
+  def test_find_or_create_by
+    person = Person.create! :first_name => 'tenderlove'
+    post   = Post.find :first
+
+    assert_equal [], person.readers
+    assert_nil person.readers.find_by_post_id(post.id)
+
+    reader = person.readers.find_or_create_by_post_id post.id
+
+    assert_equal 1, person.readers.count
+    assert_equal 1, person.readers.length
+    assert_equal post, person.readers.first.post
+    assert_equal person, person.readers.first.person
+  end
+
+  def test_find_or_create_by_with_additional_parameters
+    post = Post.create! :title => 'test_find_or_create_by_with_additional_parameters', :body => 'this is the body'
+    comment = post.comments.create! :body => 'test comment body', :type => 'test'
+
+    assert_equal comment, post.comments.find_or_create_by_body('test comment body')
+
+    post.comments.find_or_create_by_body(:body => 'other test comment body', :type => 'test')
+    assert_equal 2, post.comments.count
+    assert_equal 2, post.comments.length
+    post.comments.find_or_create_by_body('other other test comment body', :type => 'test')
+    assert_equal 3, post.comments.count
+    assert_equal 3, post.comments.length
+    post.comments.find_or_create_by_body_and_type('3rd test comment body', 'test')
+    assert_equal 4, post.comments.count
+    assert_equal 4, post.comments.length
+  end
+
+  def test_find_or_create_by_with_block
+    post = Post.create! :title => 'test_find_or_create_by_with_additional_parameters', :body => 'this is the body'
+    comment = post.comments.find_or_create_by_body('other test comment body') { |comment| comment.type = 'test' }
+    assert_equal 'test', comment.type
+  end
+
+  def test_find_or_create
+    person = Person.create! :first_name => 'tenderlove'
+    post   = Post.find :first
+
+    assert_equal [], person.readers
+    assert_nil person.readers.find(:first, :conditions => {
+      :post_id => post.id
+    })
+
+    reader = person.readers.find_or_create :post_id => post.id
+
+    assert_equal 1, person.readers.count
+    assert_equal 1, person.readers.length
+    assert_equal post, person.readers.first.post
+    assert_equal person, person.readers.first.person
+  end
+
+
   def force_signal37_to_load_all_clients_of_firm
     companies(:first_firm).clients_of_firm.each {|f| }
   end
@@ -486,7 +571,7 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     assert the_client.new_record?
   end
 
-  def test_find_or_create
+  def test_find_or_create_updates_size
     number_of_clients = companies(:first_firm).clients.size
     the_client = companies(:first_firm).clients.find_or_create_by_name("Yet another client")
     assert_equal number_of_clients + 1, companies(:first_firm, :reload).clients.size
@@ -772,10 +857,24 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
 
   def test_destroy_all
     force_signal37_to_load_all_clients_of_firm
-    assert !companies(:first_firm).clients_of_firm.empty?, "37signals has clients after load"
-    companies(:first_firm).clients_of_firm.destroy_all
+    clients = companies(:first_firm).clients_of_firm.to_a
+    assert !clients.empty?, "37signals has clients after load"
+    destroyed = companies(:first_firm).clients_of_firm.destroy_all
+    assert_equal clients.sort_by(&:id), destroyed.sort_by(&:id)
+    assert destroyed.all? { |client| client.frozen? }, "destroyed clients should be frozen"
     assert companies(:first_firm).clients_of_firm.empty?, "37signals has no clients after destroy all"
     assert companies(:first_firm).clients_of_firm(true).empty?, "37signals has no clients after destroy all and refresh"
+  end
+
+  def test_destroy_all_with_creates_and_scope_that_doesnt_match_created_records
+    company = companies(:first_firm)
+    unloaded_client_matching_scope = companies(:second_client)
+    created_client_matching_scope = company.clients_of_firm.create!(:name => "Somesoft")
+    created_client_not_matching_scope = company.clients_of_firm.create!(:name => "OtherCo")
+    destroyed = company.clients_of_firm.with_oft_in_name.destroy_all
+    assert destroyed.include?(unloaded_client_matching_scope), "unloaded clients matching the scope destroy_all on should have been destroyed"
+    assert destroyed.include?(created_client_matching_scope), "loaded clients matching the scope destroy_all on should have been destroyed"
+    assert !destroyed.include?(created_client_not_matching_scope), "loaded clients not matching the scope destroy_all on should not have been destroyed"
   end
 
   def test_dependence
@@ -1156,5 +1255,10 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
       end
     EOF
   end
-end
 
+  def test_include_method_in_has_many_association_should_return_true_for_instance_added_with_build
+    post = Post.new
+    comment = post.comments.build
+    assert post.comments.include?(comment)
+  end
+end

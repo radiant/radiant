@@ -1,5 +1,6 @@
 require 'yaml'
 require 'set'
+require 'active_support/core_ext/class/attribute'
 
 module ActiveRecord #:nodoc:
   # Generic Active Record exception class.
@@ -515,7 +516,7 @@ module ActiveRecord #:nodoc:
     @@timestamped_migrations = true
 
     # Determine whether to store the full constant name including namespace when using STI
-    superclass_delegating_accessor :store_full_sti_class
+    class_attribute :store_full_sti_class
     self.store_full_sti_class = false
 
     # Stores the default scope for the class
@@ -935,11 +936,18 @@ module ActiveRecord #:nodoc:
       def reset_counters(id, *counters)
         object = find(id)
         counters.each do |association|
-          child_class = reflect_on_association(association).klass
-          counter_name = child_class.reflect_on_association(self.name.downcase.to_sym).counter_cache_column
+          child_class = reflect_on_association(association.to_sym).klass
+          belongs_name = self.name.demodulize.underscore.to_sym
+          counter_name = child_class.reflect_on_association(belongs_name).counter_cache_column
+          value = object.send(association).count
 
-          connection.update("UPDATE #{quoted_table_name} SET #{connection.quote_column_name(counter_name)} = #{object.send(association).count} WHERE #{connection.quote_column_name(primary_key)} = #{quote_value(object.id)}", "#{name} UPDATE")
+          connection.update(<<-CMD, "#{name} UPDATE")
+            UPDATE #{quoted_table_name}
+            SET #{connection.quote_column_name(counter_name)} = #{value}
+            WHERE #{connection.quote_column_name(primary_key)} = #{quote_value(object.id)}
+          CMD
         end
+        return true
       end
 
       # A generic "counter updater" implementation, intended primarily to be
@@ -972,19 +980,13 @@ module ActiveRecord #:nodoc:
       #   #    SET comment_count = comment_count + 1,
       #   #  WHERE id IN (10, 15)
       def update_counters(id, counters)
-        updates = counters.inject([]) { |list, (counter_name, increment)|
-          sign = increment < 0 ? "-" : "+"
-          list << "#{connection.quote_column_name(counter_name)} = COALESCE(#{connection.quote_column_name(counter_name)}, 0) #{sign} #{increment.abs}"
-        }.join(", ")
-
-        if id.is_a?(Array)
-          ids_list = id.map {|i| quote_value(i)}.join(', ')
-          condition = "IN  (#{ids_list})"
-        else
-          condition = "= #{quote_value(id)}"
+        updates = counters.map do |counter_name, value|
+          operator = value < 0 ? '-' : '+'
+          quoted_column = connection.quote_column_name(counter_name)
+          "#{quoted_column} = COALESCE(#{quoted_column}, 0) #{operator} #{value.abs}"
         end
 
-        update_all(updates, "#{connection.quote_column_name(primary_key)} #{condition}")
+        update_all(updates.join(', '), primary_key => id )
       end
 
       # Increment a number field by one, usually representing a count.
@@ -1284,6 +1286,8 @@ module ActiveRecord #:nodoc:
 
       # Turns the +table_name+ back into a class name following the reverse rules of +table_name+.
       def class_name(table_name = table_name) # :nodoc:
+        ActiveSupport::Deprecation.warn("ActiveRecord::Base#class_name is deprecated and will be removed in Rails 2.3.9.", caller)
+
         # remove any prefix and/or suffix from the table name
         class_name = table_name[table_name_prefix.length..-(table_name_suffix.length + 1)].camelize
         class_name = class_name.singularize if pluralize_table_names
@@ -2642,7 +2646,7 @@ module ActiveRecord #:nodoc:
       # Note: The new instance will share a link to the same attributes as the original class. So any change to the attributes in either
       # instance will affect the other.
       def becomes(klass)
-        returning klass.new do |became|
+        klass.new.tap do |became|
           became.instance_variable_set("@attributes", @attributes)
           became.instance_variable_set("@attributes_cache", @attributes_cache)
           became.instance_variable_set("@new_record", new_record?)
@@ -2660,12 +2664,20 @@ module ActiveRecord #:nodoc:
       # Updates all the attributes from the passed-in Hash and saves the record. If the object is invalid, the saving will
       # fail and false will be returned.
       def update_attributes(attributes)
+        with_transaction_returning_status(:update_attributes_inside_transaction, attributes)
+      end
+
+      def update_attributes_inside_transaction(attributes) #:nodoc:
         self.attributes = attributes
         save
       end
 
       # Updates an object just like Base.update_attributes but calls save! instead of save so an exception is raised if the record is invalid.
       def update_attributes!(attributes)
+        with_transaction_returning_status(:update_attributes_inside_transaction!, attributes)
+      end
+
+      def update_attributes_inside_transaction!(attributes) #:nodoc:
         self.attributes = attributes
         save!
       end

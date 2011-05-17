@@ -184,7 +184,7 @@ module ActiveRecord
 
         # Look up a session by id and unmarshal its data if found.
         def find_by_session_id(session_id)
-          if record = @@connection.select_one("SELECT * FROM #{@@table_name} WHERE #{@@session_id_column}=#{@@connection.quote(session_id)}")
+          if record = connection.select_one("SELECT * FROM #{@@table_name} WHERE #{@@session_id_column}=#{connection.quote(session_id)}")
             new(:session_id => session_id, :marshaled_data => record['data'])
           end
         end
@@ -310,6 +310,14 @@ module ActiveRecord
         return true
       end
       
+      def destroy(env)
+        if sid = current_session_id(env)
+          Base.silence do
+            get_session_model(env, sid).destroy
+          end
+        end
+      end
+
       def get_session_model(env, sid)
         if env[ENV_SESSION_OPTIONS_KEY][:id].nil?
           env[SESSION_RECORD_KEY] = find_session(sid)

@@ -42,6 +42,10 @@ class CookieTest < ActionController::TestCase
       cookies["user_name"] = { :value => "david", :httponly => true }
     end
     
+    def authenticate_with_secure
+      cookies["user_name"] = { :value => "david", :secure => true }
+    end
+
     def set_permanent_cookie
       cookies.permanent[:user_name] = "Jamie"
     end
@@ -93,6 +97,27 @@ class CookieTest < ActionController::TestCase
     get :authenticate_with_http_only
     assert_equal ["user_name=david; path=/; HttpOnly"], @response.headers["Set-Cookie"]
     assert_equal({"user_name" => "david"}, @response.cookies)
+  end
+
+  def test_setting_cookie_with_secure
+    @request.env["HTTPS"] = "on"
+    get :authenticate_with_secure
+    assert_equal ["user_name=david; path=/; secure"], @response.headers["Set-Cookie"]
+    assert_equal({"user_name" => "david"}, @response.cookies)
+  end
+
+  def test_setting_cookie_with_secure_in_development
+    with_environment(:development) do
+      get :authenticate_with_secure
+      assert_equal ["user_name=david; path=/; secure"], @response.headers["Set-Cookie"]
+      assert_equal({"user_name" => "david"}, @response.cookies)
+    end
+  end
+
+  def test_not_setting_cookie_with_secure
+    get :authenticate_with_secure
+    assert_not_equal ["user_name=david; path=/; secure"], @response.headers["Set-Cookie"]
+    assert_not_equal({"user_name" => "david"}, @response.cookies)
   end
 
   def test_multiple_cookies
@@ -167,4 +192,17 @@ class CookieTest < ActionController::TestCase
     assert_match %r(#{20.years.from_now.year}), @response.headers["Set-Cookie"].first
     assert_equal 100, @controller.send(:cookies).signed[:remember_me]
   end
+
+  private
+    def with_environment(enviroment)
+      old_rails = Object.const_get(:Rails) rescue nil
+      mod = Object.const_set(:Rails, Module.new)
+      (class << mod; self; end).instance_eval do
+        define_method(:env) { @_env ||= ActiveSupport::StringInquirer.new(enviroment.to_s) }
+      end
+      yield
+    ensure
+      Object.module_eval { remove_const(:Rails) } if defined?(Rails)
+      Object.const_set(:Rails, old_rails) if old_rails
+    end
 end
