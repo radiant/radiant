@@ -42,13 +42,6 @@ describe PagePart do
       assert_invalid field, 'this must not be blank', '', ' ', nil
     end
   end
-  
-  it 'should validate numericality of' do
-    [:id, :page_id].each do |field|
-      assert_valid field, '1', '2'
-      assert_invalid field, 'this must be a number', 'abcd', '1,2', '1.3'
-    end
-  end
 end
 
 describe PagePart, 'filter' do

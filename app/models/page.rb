@@ -26,7 +26,6 @@ class Page < ActiveRecord::Base
 
   validates_format_of :slug, :with => %r{^([-_.A-Za-z0-9]*|/)$}
   validates_uniqueness_of :slug, :scope => :parent_id
-  validates_numericality_of :id, :status_id, :parent_id, :allow_nil => true, :only_integer => true
 
   validate :valid_class_name
 

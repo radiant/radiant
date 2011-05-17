@@ -71,14 +71,6 @@ describe Page, 'validations' do
     assert_invalid :slug, 'this does not match the expected format', 'abcd efg', ' abcd', 'abcd/efg'
   end
 
-  it 'should validate numericality of' do
-    assert_invalid :status_id, 'this must not be blank', '', nil
-    [:id, :status_id, :parent_id].each do |field|
-      assert_valid field, '1', '2'
-      assert_invalid field, 'this must be a number', 'abcd', '1,2', '1.3'
-    end
-  end
-
   it 'should validate uniqueness of' do
     @page.parent = pages(:parent)
     assert_invalid :slug, 'this slug is already in use by a sibling of this page', 'child', 'child-2', 'child-3'
