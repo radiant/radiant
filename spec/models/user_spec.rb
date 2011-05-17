@@ -68,13 +68,6 @@ describe User, "validations" do
     end
   end
   
-  it 'should validate numericality' do
-    [:id].each do |field|
-      assert_valid field, '1', '0'
-      assert_invalid field, 'this must be a number', 'abcd', '1,2', '1.3'
-    end
-  end
-  
   it 'should validate confirmation' do
     @user.confirm_password = true
     assert_invalid :password, 'this must match confirmation', 'test'

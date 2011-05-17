@@ -25,8 +25,6 @@ class User < ActiveRecord::Base
   validates_length_of :password, :within => 5..40, :allow_nil => true, :if => :validate_length_of_password?
   validates_length_of :email, :maximum => 255, :allow_nil => true
 
-  validates_numericality_of :id, :only_integer => true, :allow_nil => true
-
   attr_writer :confirm_password
   class << self
     def unprotected_attributes
