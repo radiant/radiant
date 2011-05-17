@@ -218,9 +218,11 @@ describe Admin::PagesController do
     describe 'edit existing page' do
       it 'should not save any changes' do
         request.stub!(:referer).and_return("/admin/pages/#{preview_page.id}/edit")
-        original_date = preview_page.updated_at
+        original_date = preview_page.updated_at.to_i
         post :preview, preview_params
-        preview_page.reload.updated_at.should == original_date
+        non_updated_page = Page.find(preview_page.id)
+        non_updated_page.title.should_not equal('BOGUS')
+        non_updated_page.updated_at.to_i.should equal(original_date)
       end
     end
   end
