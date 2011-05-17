@@ -21,8 +21,6 @@ module Radiant
       load_default_configuration
       load_database_template(config[:database_template])
       announce "Finished."
-      announce "Don't forget to run your update task to copy any public assets for your template.\n\n"
-      announce "For example, run 'rake radiant:extensions:site_templates:update'."
     end
     
     def create_admin_user(name, username, password)
