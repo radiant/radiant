@@ -11,6 +11,19 @@
 
 ActiveRecord::Schema.define(:version => 20100810151922) do
 
+  create_table "assets", :force => true do |t|
+    t.string   "caption"
+    t.string   "title"
+    t.string   "asset_file_name"
+    t.string   "asset_content_type"
+    t.integer  "asset_file_size"
+    t.integer  "created_by_id"
+    t.integer  "updated_by_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "uuid"
+  end
+
   create_table "config", :force => true do |t|
     t.string "key",   :limit => 40, :default => "", :null => false
     t.string "value",               :default => ""
@@ -33,6 +46,12 @@ ActiveRecord::Schema.define(:version => 20100810151922) do
     t.integer  "updated_by_id"
     t.string   "content_type",  :limit => 40
     t.integer  "lock_version",                 :default => 0
+  end
+
+  create_table "page_attachments", :force => true do |t|
+    t.integer "asset_id"
+    t.integer "page_id"
+    t.integer "position"
   end
 
   create_table "page_fields", :force => true do |t|
@@ -69,10 +88,10 @@ ActiveRecord::Schema.define(:version => 20100810151922) do
     t.integer  "lock_version",                 :default => 0
   end
 
-  add_index "pages", ["class_name"], :name => "pages_class_name"
-  add_index "pages", ["parent_id"], :name => "pages_parent_id"
-  add_index "pages", ["slug", "parent_id"], :name => "pages_child_slug"
-  add_index "pages", ["virtual", "status_id"], :name => "pages_published"
+  add_index "pages", ["class_name"], :name => "altered_pages_class_name"
+  add_index "pages", ["parent_id"], :name => "altered_pages_parent_id"
+  add_index "pages", ["slug", "parent_id"], :name => "altered_pages_child_slug"
+  add_index "pages", ["virtual", "status_id"], :name => "altered_pages_published"
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id"
