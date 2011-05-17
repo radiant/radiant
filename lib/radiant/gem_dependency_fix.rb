@@ -1,4 +1,3 @@
-require 'ruby-debug'
 module Rails
   class GemDependency < Gem::Dependency
     def add_load_paths
