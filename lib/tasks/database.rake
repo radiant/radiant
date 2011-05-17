@@ -27,5 +27,7 @@ namespace :db do
       :admin_password => ENV['ADMIN_PASSWORD'],
       :database_template => ENV['DATABASE_TEMPLATE']
     )
+    Rake::Task['db:migrate:extensions'].invoke
+    Rake::Task['radiant:extensions:update_all'].invoke
   end
 end
