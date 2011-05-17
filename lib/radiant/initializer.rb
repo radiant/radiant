@@ -128,6 +128,7 @@ end_error
     private
 
       def library_directories
+        require "#{RADIANT_ROOT}/lib/radiant/gem_dependency_fix"
         libs = %W{ 
           #{RADIANT_ROOT}/vendor/radius/lib
           #{RADIANT_ROOT}/vendor/highline/lib
