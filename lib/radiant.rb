@@ -6,7 +6,7 @@ unless defined? Radiant::Version
       Major = '1'
       Minor = '0'
       Tiny  = '0'
-      Patch = 'alpha' # set to nil for normal release
+      Patch = 'rc1' # set to nil for normal release
 
       class << self
         def to_s
