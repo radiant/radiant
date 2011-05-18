@@ -43,4 +43,15 @@ describe Radiant::ExtensionMigrator do
     UpgradingExtension.migrator.get_all_versions.should == [1,2,3]
     ActiveRecord::Base.connection.select_values("SELECT * FROM extension_meta WHERE name = 'Upgrading'").should be_empty
   end
+
+  describe '#migrate_extensions' do
+    it 'should migrate in the order of the specified extension load order' do
+      BasicExtension.migrator.should_receive(:migrate).once
+      UpgradingExtension.migrator.should_receive(:migrate).once
+      Rails.configuration.stub!(:extensions).and_return([:all, :basic])
+      Rails.configuration.stub!(:all_available_extensions).and_return([:basic, :upgrading])
+      Rails.configuration.extensions_in_order.should == [:upgrading, :basic]
+      Radiant::ExtensionMigrator.migrate_extensions
+    end
+  end
 end

@@ -64,6 +64,18 @@ module Radiant
     def extensions
       @extensions ||= all_available_extensions
     end
+
+    def extensions_in_order
+      return @extensions_in_order if @extensions_in_order
+      @extensions_in_order = (if extensions.include?(:all)
+        before_all = extensions.collect {|e| e if extensions.index(e).to_i < extensions.index(:all).to_i }.compact
+        after_all = extensions.collect {|e| e if extensions.index(e).to_i > extensions.index(:all).to_i }.compact
+        replacing_all_symbol = all_available_extensions - ((all_available_extensions & before_all) + (all_available_extensions & after_all))
+        before_all + replacing_all_symbol + after_all
+      else
+        extensions
+      end) - ignored_extensions
+    end
       
     def ignore_extensions(array)
       self.ignored_extensions ||= []
