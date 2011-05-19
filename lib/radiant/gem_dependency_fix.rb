@@ -8,7 +8,7 @@ module Rails
         return
       end
       if self.requirement
-        gem self.name, "#{self.requirement.requirements}"
+        gem self.name, self.requirement
       else
         gem self.name
       end
