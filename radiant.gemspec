@@ -24,7 +24,10 @@ a general purpose content managment system--not merely a blogging engine.}
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{A no-fluff content management system designed for small teams.}
 
-  s.add_dependency 'compass', '~> 0.10.5'
+  s.add_dependency 'haml', '~>3.0.25'
+  s.add_dependency 'compass', '~> 0.10.6'
+  s.add_dependency 'delocalize', '~>0.2.3'
+  s.add_dependency 'paperclip', '~>2.3.3'
   s.add_dependency 'rake', '>= 0.8.3'
   s.add_dependency 'rack', '~> 1.1.1'
   s.add_dependency 'will_paginate', '~> 2.3.11'
