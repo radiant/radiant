@@ -38,21 +38,21 @@ unless File.directory? "#{RAILS_ROOT}/app"
         radiant_git = "git://github.com/radiant/radiant.git"
 
         if File.exist?("vendor/radiant/.git/HEAD")
-          system "cd vendor/radiant; git checkout master; git pull origin master"
+          cd("vendor/radiant") { system "git checkout master"; system "git pull origin master"}        
         else
           system "git clone #{radiant_git} vendor/radiant"
         end
 
         case
         when ENV['TAG']
-          system "cd vendor/radiant; git checkout -b v#{ENV['TAG']} #{ENV['TAG']}"
+          cd("vendor/radiant") { system "git checkout -b v#{ENV['TAG']} #{ENV['TAG']}"} 
         when ENV['BRANCH']
-          system "cd vendor/radiant; git checkout --track -b #{ENV['BRANCH']} origin/#{ENV['BRANCH']}"
+          cd("vendor/radiant") { system "git checkout --track -b #{ENV['BRANCH']} origin/#{ENV['BRANCH']}"} 
         when ENV['REVISION']
-          system "cd vendor/radiant; git checkout -b REV_#{ENV['REVISION']} #{ENV['REVISION']}"
+          cd("vendor/radiant") { system "git checkout -b REV_#{ENV['REVISION']} #{ENV['REVISION']}"} 
         end
 
-        system "cd vendor/radiant; git submodule init; git submodule update"
+        cd("vendor/radiant") { system "git submodule update --init"}        
       end
     end
 
