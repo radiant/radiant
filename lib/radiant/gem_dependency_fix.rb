@@ -7,12 +7,11 @@ module Rails
         @load_paths_added = @loaded = @frozen = true
         return
       end
-      self.name
-      # if self.requirement
-      #   gem self.name, "#{self.requirement.requirements}"
-      # else
-      #   gem self.name
-      # end
+      if self.requirement
+        gem self.name, "#{self.requirement.requirements}"
+      else
+        gem self.name
+      end
       @spec = Gem.loaded_specs[name]
       @frozen = @spec.loaded_from.include?(self.class.unpacked_path) if @spec
       @load_paths_added = true
