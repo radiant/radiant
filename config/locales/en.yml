@@ -115,7 +115,7 @@ en:
   new_password: 'New Password'
   new_snippet: 'New Snippet'
   new_user: 'New User'  
-  no: 'No'
+  'no': 'No'
   no_layouts: 'No Layouts'
   no_pages: 'No Pages'
   no_snippets: 'No Snippets'
@@ -235,4 +235,4 @@ en:
   welcome_controller:
     invalid_user: 'Invalid username, e-mail address, or password.' 
     logged_out: 'You are now logged out.'  
-  yes: 'Yes'
+  'yes': 'Yes'
