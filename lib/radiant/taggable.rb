@@ -1,6 +1,7 @@
 module Radiant::Taggable
-  mattr_accessor :last_description, :tag_descriptions
+  mattr_accessor :last_description, :tag_descriptions, :tag_deprecations
   @@tag_descriptions = {}
+  @@tag_deprecations = {}
     
   def self.included(base)
     base.extend(ClassMethods)
@@ -41,6 +42,12 @@ module Radiant::Taggable
     self.class.tag_descriptions hash
   end
   
+  def warn_of_tag_deprecation(tag_name, deadline=nil)
+    message = "Deprecated radius tag #{tag_name}"
+    message << " will be removed in radiant #{deadline}" if deadline
+    ActiveSupport::Deprecation.warn(message, caller(3))
+  end
+
   module ClassMethods
     def inherited(subclass)
       subclass.tag_descriptions.reverse_merge! self.tag_descriptions
@@ -50,7 +57,7 @@ module Radiant::Taggable
     def tag_descriptions(hash = nil)
       Radiant::Taggable.tag_descriptions[self.name] ||= (hash ||{})
     end
-  
+
     def desc(text)
       Radiant::Taggable.last_description = text
       # Radiant::Taggable.last_description = RedCloth.new(Util.strip_leading_whitespace(text)).to_html
@@ -66,8 +73,40 @@ module Radiant::Taggable
       Util.tags_in_array(self.instance_methods)
     end
     
+    # Define a tag while also deprecating it. Normal usage:
+    #
+    #   deprecated_tag 'old:way', :substitute => 'new:way', :deadline => '1.1.1'
+    #
+    # If no substitute is given then a warning will be issued but nothing rendered. 
+    # If a deadline version is provided then it will be mentioned in the deprecation warnings.
+    #
+    # In less standard situations you can use deprecated_tag in exactly the 
+    # same way as tags are normally defined:
+    #
+    # desc %{
+    #   Please note that the old r:busted namespace is no longer supported. 
+    #   Refer to the documentation for more about the new r:hotness tags.
+    # }
+    # deprecated_tag 'busted' do |tag|
+    #   raise TagError "..."
+    # end
+    #
+    def deprecated_tag(name, options={}, &dblock)
+      Radiant::Taggable.tag_deprecations[name] = options
+      if dblock
+        tag(name) do |tag|
+          warn_of_tag_deprecation(name, options[:deadline])
+          dblock.call(tag)
+        end
+      else
+        tag(name) do |tag|
+          warn_of_tag_deprecation(name, options[:deadline])
+          tag.render(options[:substitute], tag.attr.dup, &tag.block) if options[:substitute]
+        end
+      end
+    end
   end
-   
+
   module Util
     def self.tags_in_array(array)
       array.grep(/^tag:/).map { |name| name[4..-1] }.sort
