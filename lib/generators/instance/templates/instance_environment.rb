@@ -75,10 +75,10 @@ Radiant::Initializer.run do |config|
     end
   end
   
-  config.gem 'haml', :version => '3.0.25'
+  config.gem 'haml', :version => '~> 3.0.24'
   config.gem 'compass', :version => '~> 0.10.6'
   config.gem 'will_paginate', :version => '~> 2.3.11'
-  config.gem 'delocalize', :version => '0.2.3'
+  config.gem 'delocalize', :version => '~> 0.2.3'
   config.gem 'paperclip', :version => '~> 2.3.3'
 
   config.after_initialize do
