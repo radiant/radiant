@@ -85,6 +85,8 @@ Radiant::Initializer.run do |config|
   config.gem 'will_paginate', :version => '~> 2.3.11'
   config.gem 'delocalize', :version => '~> 0.2.3'
   config.gem 'paperclip', :version => '~> 2.3.3'
+  config.gem 'uuidtools'
+  config.gem 'acts_as_list'
 
   config.after_initialize do
     # Add new inflection rules using the following format:
