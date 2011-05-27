@@ -24,6 +24,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{A no-fluff content management system designed for small teams.}
 
+  s.add_dependency "acts_as_list", "~> 0.1.2"
   s.add_dependency 'haml', '~>3.0.25'
   s.add_dependency 'compass', '~> 0.10.6'
   s.add_dependency 'delocalize', '~>0.2.3'
@@ -32,6 +33,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency 'rack', '~> 1.1.1'
   s.add_dependency 'will_paginate', '~> 2.3.11'
   s.add_dependency 'RedCloth', '>= 4.0.0'
+  s.add_dependency "uuidtools", "~> 2.1.2"
   
   s.add_development_dependency 'cucumber', '> 0.3.9'
   s.add_development_dependency 'cucumber-rails', '~> 0.3.2'
