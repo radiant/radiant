@@ -16,7 +16,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.executables = ["radiant"]
   s.extra_rdoc_files = ["README", "CONTRIBUTORS", "CHANGELOG", "INSTALL", "LICENSE"]
   ignores = File.read('.gitignore').split("\n").inject([]) {|a,p| a + Dir[p] }
-  s.files = Dir['**/*','.gitignore', 'public/.htaccess'] - ignores
+  s.files = Dir['**/*','.gitignore', 'public/.htaccess', 'log'] - ignores
   s.homepage = %q{http://radiantcms.org}
   s.rdoc_options = ["--title", "Radiant -- Publishing for Small Teams", "--line-numbers", "--main", "README", "--exclude", "app", "--exclude", "bin", "--exclude", "config", "--exclude", "db", "--exclude", "features", "--exclude", "lib", "--exclude", "log", "--exclude", "pkg", "--exclude", "public", "--exclude", "script", "--exclude", "spec", "--exclude", "test", "--exclude", "tmp", "--exclude", "vendor"]
   s.require_paths = ["lib"]
