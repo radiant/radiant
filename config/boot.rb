@@ -60,8 +60,6 @@ module Radiant
     def run
       load_mutex
       load_initializer
-
-      Rails::Initializer.run(:set_load_path)
     end
 
     # RubyGems from version 1.6 does not require thread but Rails depend on it
