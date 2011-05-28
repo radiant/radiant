@@ -222,7 +222,7 @@ describe Admin::PagesController do
         post :preview, preview_params
         non_updated_page = Page.find(preview_page.id)
         non_updated_page.title.should_not equal('BOGUS')
-        non_updated_page.updated_at.to_i.should equal(original_date)
+        non_updated_page.updated_at.to_i.should == original_date
       end
     end
   end
