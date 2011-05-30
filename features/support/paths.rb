@@ -1,4 +1,12 @@
 module NavigationHelpers
+  
+  # This hash can be extended with regular expressions
+  # and path values
+  #
+  #   PathMatchers[/styles/i] = 'admin_styles_path'
+  #
+  PathMatchers = {} unless defined?(PathMatchers)
+  
   # Maps a name to a path. Used by the
   #
   #   When /^I go to (.+)$/ do |page_name|
@@ -6,6 +14,11 @@ module NavigationHelpers
   # step definition in web_steps.rb
   #
   def path_to(page_name, format=nil)
+    PathMatchers.each do |path_matcher, value|
+      if path_matcher =~ normalize_page_name(page_name)
+        return send(value, {:format => format})
+      end
+    end
     case normalize_page_name(page_name)
     when /^\/(.*)/
       $1
