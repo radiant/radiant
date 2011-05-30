@@ -179,7 +179,7 @@ the new files:"
           project_dir = RAILS_ROOT + "/public/images/#{d}/"
           FileUtils.mkdir_p(project_dir)
           images = Dir["#{File.dirname(__FILE__)}/../../public/images/#{d}/*"]
-          FileUtils.cp(images, project_dir)
+          FileUtils.cp_r(images, project_dir)
         end
       end
 
