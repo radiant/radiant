@@ -3,7 +3,12 @@ When /^I fill in the "([^\"]*)" content with "([^\"]*)"$/ do |part, content|
 end
 
 When /^I fill in the "([^\"]*)" content with the text$/ do |part, content|
-  fill_in("part_#{part.to_slug}_content", :with => content)
+  standard_part_name = "part_#{part.to_slug}_content"
+  begin
+    fill_in(part, :with => content)
+  rescue
+    fill_in(standard_part_name, :with => content)
+  end
 end
 
 Then /^there should be an? "([^\"]*)" part$/ do |name|
