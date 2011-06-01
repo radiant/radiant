@@ -31,3 +31,6 @@
 [submodule "vendor/extensions/markdown_filter"]
 	path = vendor/extensions/markdown_filter
 	url = git://github.com/radiant/radiant-markdown_filter-extension.git
+[submodule "vendor/extensions/clipped"]
+	path = vendor/extensions/clipped
+	url = git://github.com/radiant/radiant-clipped-extension.git
