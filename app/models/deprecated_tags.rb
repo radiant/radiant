@@ -7,7 +7,6 @@ module DeprecatedTags
     if tag.double?
       tag.expand
     else
-      # tag.attr['tag'] = 'true'
       tag.render('description', tag.attr) + tag.render('keywords', tag.attr)
     end
   end
