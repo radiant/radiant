@@ -42,10 +42,11 @@ module Radiant::Taggable
     self.class.tag_descriptions hash
   end
   
-  def warn_of_tag_deprecation(tag_name, deadline=nil)
-    message = "Deprecated radius tag #{tag_name}"
-    message << " will be removed in radiant #{deadline}" if deadline
-    ActiveSupport::Deprecation.warn(message, caller(3))
+  def warn_of_tag_deprecation(tag_name, options={})
+    message = "Deprecated radius tag <r:#{tag_name}>"
+    message << " will be removed or significantly changed in radiant #{options[:deadline]}." if options[:deadline]
+    message << " Please use <r:#{options[:substitute]}> instead." if options[:substitute]
+    ActiveSupport::Deprecation.warn(message, caller(4))
   end
 
   module ClassMethods
@@ -92,15 +93,15 @@ module Radiant::Taggable
     # end
     #
     def deprecated_tag(name, options={}, &dblock)
-      Radiant::Taggable.tag_deprecations[name] = options
+      Radiant::Taggable.tag_deprecations[name] = options.dup
       if dblock
         tag(name) do |tag|
-          warn_of_tag_deprecation(name, options[:deadline])
+          warn_of_tag_deprecation(name, options)
           dblock.call(tag)
         end
       else
         tag(name) do |tag|
-          warn_of_tag_deprecation(name, options[:deadline])
+          warn_of_tag_deprecation(name, options)
           tag.render(options[:substitute], tag.attr.dup, &tag.block) if options[:substitute]
         end
       end

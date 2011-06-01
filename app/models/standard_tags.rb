@@ -36,7 +36,7 @@ module StandardTags
   tag 'path' do |tag|
     relative_url_for(tag.locals.page.path, tag.globals.page.request)
   end
-  alias_method :'tag:url', :'tag:path'
+  deprecated_tag 'url', :substitute => 'path', :deadline => '1.2'
 
   desc %{
     Gives access to a page's children.
@@ -633,7 +633,7 @@ module StandardTags
        tag.expand
     end
   end
-  alias_method :'tag:if_url', :'tag:if_path'
+  deprecated_tag 'if_url', :substitute => 'if_path', :deadline => '1.2'
 
   desc %{
     The opposite of the @if_path@ tag.
@@ -649,7 +649,7 @@ module StandardTags
         tag.expand
     end
   end
-  alias_method :'tag:unless_url', :'tag:unless_path'
+  deprecated_tag 'unless_url', :substitute => 'unless_path', :deadline => '1.2'
 
   desc %{
     Renders the contained elements if the current contextual page is either the actual page or one of its parents.
@@ -1053,7 +1053,7 @@ module StandardTags
       hash[symbol]
     end
   end
-  alias_method :'tag:navigation:url', :'tag:navigation:path'
+  deprecated_tag 'navigation:url', :substitute => 'navigation:path', :deadline => '1.2'
 
   desc %{
     Renders the containing elements if the element is the first

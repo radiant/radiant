@@ -25,6 +25,12 @@ describe "Standard Tags" do
     page(:home).should render("<r:path />").with_relative_root("/foo").as("/foo/")
   end
 
+  it "<r:url> should act like r:path but issue a deprecation warning" do
+    ActionController::Base.relative_url_root = nil
+    ActiveSupport::Deprecation.should_receive(:warn).and_return(true)
+    page(:home).should render("<r:url />").as("/")
+  end
+
   it '<r:parent> should change the local context to the parent page' do
     page(:parent)
     page.should render('<r:parent><r:title /></r:parent>').as(pages(:home).title)
