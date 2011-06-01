@@ -1,3 +1,4 @@
+require 'will_paginate'
 class Admin::ResourceController < ApplicationController
   extend Radiant::ResourceResponses
   
