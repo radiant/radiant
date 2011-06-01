@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
     []
   end
   s.files         = Dir['**/*'] - ignores
-  s.test_files    = Dir['test/**/*','spec/**/*','features/*'] - ignores
+  s.test_files    = Dir['test/**/*','spec/**/*','features/**/*'] - ignores
   # s.executables   = Dir['bin/*'] - ignores
   s.require_paths = ["lib"]
   
