@@ -17,7 +17,7 @@ class InstanceGenerator < Rails::Generator::Base
     "/opt/local/var/run/mysql5/mysqld.sock"   # mac + darwinports + mysql5
   ]
     
-  default_options :db => "mysql", :shebang => DEFAULT_SHEBANG, :freeze => false
+  default_options :db => "sqlite3", :shebang => DEFAULT_SHEBANG, :freeze => false
 
   def initialize(runtime_args, runtime_options = {})
     super
