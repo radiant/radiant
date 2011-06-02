@@ -7,7 +7,7 @@ module Radiant
     include Simpleton
     include Annotatable
 
-    annotate :version, :description, :url, :root, :extension_name
+    annotate :version, :description, :url, :root, :extension_name, :replaces
 
     attr_writer :active
 
@@ -27,7 +27,7 @@ module Radiant
     def routed?
       File.exist?(routing_file)
     end
-
+    
     def migrations_path
       File.join(self.root, 'db', 'migrate')
     end
@@ -48,6 +48,10 @@ module Radiant
         @migrator = Class.new(ExtensionMigrator){ self.extension = extension }
       end
       @migrator
+    end
+    
+    def replacement?
+      true if @replaces
     end
 
     def admin

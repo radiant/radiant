@@ -24,6 +24,7 @@ module Radiant
     def initialize(direction, migrations_path, target_version = nil)
       super
       initialize_extension_schema_migrations
+      initialize_replaced_migrations
     end
     
     private
@@ -44,6 +45,15 @@ module Radiant
         if current_version
           assume_migrated_upto_version(current_version.to_i) 
           ActiveRecord::Base.connection.delete("DELETE FROM extension_meta WHERE name = #{quote(extension_name)}")
+        end
+      end
+
+      def initialize_replaced_migrations
+        if old_extension_name = self.class.extension.replaces
+          if last_replaced_migration = ActiveRecord::Base.connection.select_values("SELECT version FROM #{ActiveRecord::Migrator.schema_migrations_table_name} WHERE version LIKE '#{old_extension_name}-%'").map{|v| v.sub(/^#{old_extension_name}\-/, '').to_i}.max
+            assume_migrated_upto_version(last_replaced_migration.to_i)
+            # we don't delete the old migrations so that the replacement can be reversed
+          end
         end
       end
       

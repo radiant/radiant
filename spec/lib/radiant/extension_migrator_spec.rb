@@ -6,7 +6,7 @@ describe Radiant::ExtensionMigrator do
   class Place < ActiveRecord::Base; end
 
   before :each do
-    ActiveRecord::Base.connection.delete("DELETE FROM schema_migrations WHERE version LIKE 'Basic-%' OR version LIKE 'Upgrading-%'")
+    ActiveRecord::Base.connection.delete("DELETE FROM schema_migrations WHERE version LIKE 'Basic-%' OR version LIKE 'Upgrading-%' OR version LIKE 'Replacing-%'")
     ActiveRecord::Base.connection.delete("DELETE FROM extension_meta WHERE name = 'Upgrading'")
   end
   
@@ -42,6 +42,14 @@ describe Radiant::ExtensionMigrator do
     end
     UpgradingExtension.migrator.get_all_versions.should == [1,2,3]
     ActiveRecord::Base.connection.select_values("SELECT * FROM extension_meta WHERE name = 'Upgrading'").should be_empty
+  end
+
+  it "should find and duplicate overlapping migrations from replaced extensions" do
+    ActiveRecord::Migration.suppress_messages do
+      BasicExtension.migrator.migrate
+      lambda{ ReplacingExtension.migrator.migrate }.should_not raise_error
+    end
+    ReplacingExtension.migrator.get_all_versions.should == [200812131420,200812131421,201106021232]
   end
 
   describe '#migrate_extensions' do
