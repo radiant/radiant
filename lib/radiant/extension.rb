@@ -51,7 +51,7 @@ module Radiant
     end
     
     def replacement?
-      true if @replaces
+      !!replaces
     end
 
     def admin
