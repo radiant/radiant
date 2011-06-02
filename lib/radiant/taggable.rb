@@ -46,7 +46,7 @@ module Radiant::Taggable
     message = "Deprecated radius tag <r:#{tag_name}>"
     message << " will be removed or significantly changed in radiant #{options[:deadline]}." if options[:deadline]
     message << " Please use <r:#{options[:substitute]}> instead." if options[:substitute]
-    ActiveSupport::Deprecation.warn(message, caller(4))
+    ActiveSupport::Deprecation.warn(message)
   end
 
   module ClassMethods

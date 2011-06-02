@@ -176,28 +176,30 @@ describe Radiant::Taggable, "when included in a module with deprecated tags" do
     OldTestObject.tags.should =~ ['new_hotness', 'old_testy', 'old_busted']
   end
   
-  describe 'rendering a deprecated tag with no substitute' do
-    it "should warn and render" do
-      ActiveSupport::Deprecation.should_receive(:warn).and_return(true)
-      @object.render_tag(:old_testy, @tag_binding).should == "just an old test"
+  ::ActiveSupport::Deprecation.silence do
+    describe 'rendering a deprecated tag with no substitute' do
+      it "should warn and render" do
+        ActiveSupport::Deprecation.should_receive(:warn).and_return(true)
+        @object.render_tag(:old_testy, @tag_binding).should == "just an old test"
+      end
     end
-  end
 
-  describe 'rendering a deprecated tag with substitution' do
-    it "should warn and substitute" do
-      ActiveSupport::Deprecation.should_receive(:warn).and_return(true)
-      @tag_binding.should_receive(:render).with("new_hotness", {:name => 'testy'}).and_return("stubbed tag")
-      @object.render_tag(:old_busted, @tag_binding).should == "stubbed tag"
+    describe 'rendering a deprecated tag with substitution' do
+      it "should warn and substitute" do
+        ActiveSupport::Deprecation.should_receive(:warn).and_return(true)
+        @tag_binding.should_receive(:render).with("new_hotness", {:name => 'testy'}).and_return("stubbed tag")
+        @object.render_tag(:old_busted, @tag_binding).should == "stubbed tag"
+      end
     end
-  end
 
-  describe 'rendering a deprecated tag with an expiry deadline' do
-    it "should warn with deadline" do
-      ActiveSupport::Deprecation.should_receive(:warn) { |*args|
-        args.first =~ /will be removed in radiant 9\.0/
-      }
-      @tag_binding.stub!(:render)
-      @object.render_tag(:old_busted, @tag_binding)
+    describe 'rendering a deprecated tag with an expiry deadline' do
+      it "should warn with deadline" do
+        ActiveSupport::Deprecation.should_receive(:warn) { |*args|
+          args.first =~ /will be removed in radiant 9\.0/
+        }
+        @tag_binding.stub!(:render)
+        @object.render_tag(:old_busted, @tag_binding)
+      end
     end
   end
 end
