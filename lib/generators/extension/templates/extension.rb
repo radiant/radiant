@@ -7,7 +7,7 @@ class <%= class_name %> < Radiant::Extension
   url "<%= homepage %>"
   
   # extension_config do |config|
-  #   config.gem 'some-awesome-gem
+  #   config.gem 'some-awesome-gem'
   #   config.after_initialize do
   #     run_something
   #   end
