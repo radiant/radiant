@@ -9,6 +9,7 @@ end
 Given /^there are no pages$/ do
   Page.delete_all
   PagePart.delete_all
+  PageField.delete_all
 end
 
 Given /^there is a homepage$/ do
