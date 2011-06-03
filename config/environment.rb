@@ -80,13 +80,13 @@ Radiant::Initializer.run do |config|
     end
   end
   
-  config.gem 'haml', :version => '~> 3.0.24'
-  config.gem 'compass', :version => '~> 0.10.6'
+  config.gem 'haml', :version => '~> 3.1.1'
+  config.gem 'compass', :version => '~> 0.11.1'
   config.gem 'will_paginate', :version => '~> 2.3.11'
   config.gem 'delocalize', :version => '~> 0.2.3'
   config.gem 'paperclip', :version => '~> 2.3.3'
-  config.gem 'uuidtools'
-  config.gem 'acts_as_list'
+  config.gem 'uuidtools', :version => "~> 2.1.2"
+  config.gem 'acts_as_list', :version => "~> 0.1.2"
 
   config.after_initialize do
     # Add new inflection rules using the following format:
