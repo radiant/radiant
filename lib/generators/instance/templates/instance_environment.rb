@@ -8,6 +8,7 @@
 require File.join(File.dirname(__FILE__), 'boot')
 
 require 'radius'
+require 'term/ansicolor'
 
 Radiant::Initializer.run do |config|
   # Skip frameworks you're not going to use (only works if using vendor/rails).
@@ -82,7 +83,6 @@ Radiant::Initializer.run do |config|
   config.gem "rack-cache",    :version => "~> 1.0.2"
   config.gem "radius",        :version => "~> 0.7.0.prerelease3"
   config.gem "rake",          :version => "~> 0.9.2"
-  config.gem "sass",          :version => "~> 3.1.1"
   config.gem "will_paginate", :version => "~> 2.3.11"
 
   # standard extensions
