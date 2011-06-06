@@ -50,6 +50,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency 'radiant-italian_language_pack-extension', '~>1.0.0'
   s.add_dependency 'radiant-japanese_language_pack-extension', '~>1.0.0'
   s.add_dependency 'radiant-russian_language_pack-extension', '~>1.0.0'
+  s.add_dependency 'radiant-debug-extension', '~>1.0.0'
   
   s.add_development_dependency 'cucumber', '> 0.3.9'
   s.add_development_dependency 'cucumber-rails', '~> 0.3.2'
