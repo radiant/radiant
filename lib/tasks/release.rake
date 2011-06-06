@@ -36,7 +36,7 @@ namespace 'radiant' do
     s.add_dependency 'rack', '~> 1.1.0' # No longer bundled in actionpack
     s.add_dependency 'compass', '~> 0.10.4'
     s.add_dependency 'will_paginate', '~> 2.3.11'
-    s.add_dependency 'RedCloth', '>=4.0.0'
+    s.add_dependency 'RedCloth', '>=4.2.0'
     s.has_rdoc = true
     s.rdoc_options << '--title' << RDOC_TITLE << '--line-numbers' << '--main' << 'README'
     rdoc_excludes = Dir["**"].reject { |f| !File.directory? f }
