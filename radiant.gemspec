@@ -25,6 +25,7 @@ a general purpose content managment system--not merely a blogging engine.}
 
   s.add_dependency "acts_as_list", "~> 0.1.2"
   s.add_dependency 'haml', '~>3.1.1'
+  s.add_dependency 'sass', '~>3.1.1'
   s.add_dependency 'compass', '~> 0.11.1'
   s.add_dependency 'delocalize', '~>0.2.3'
   s.add_dependency 'paperclip', '~>2.3.3'
