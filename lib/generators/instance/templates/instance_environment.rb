@@ -19,11 +19,8 @@ Radiant::Initializer.run do |config|
   # can be used as a placeholder for all extensions not explicitly named.
   # config.extensions = [ :all ]
   
-  # By default, only English translations are loaded. Remove any of these from
-  # the list below if you'd like to provide any of the additional options
-  config.ignore_extensions [:dutch_language_pack, :french_language_pack, :german_language_pack,
-                            :italian_language_pack, :japanese_language_pack, :russian_language_pack,
-                            :debug]
+  # Unload the extensions named here.
+  # config.ignore_extensions []
 
   # Your secret key for verifying cookie session data integrity.
   # If you change this key, all old sessions will become invalid!
@@ -74,15 +71,43 @@ Radiant::Initializer.run do |config|
       html
     end
   end
-  
-  config.gem 'rack-cache', :version => "~> 1.0.2"
-  config.gem 'RedCloth', :version => '~> 3.0.4'
-  config.gem 'haml', :version => '~> 3.1.1'
-  config.gem 'sass', :version => '~> 3.1.1'
-  config.gem 'compass', :version => '~> 0.11.1'
-  config.gem 'will_paginate', :version => '~> 2.3.11'
-  config.gem 'delocalize', :version => '~> 0.2.3'
-  config.gem 'radiant-clipped-extension', :version => "~> 1.0.0"
+
+  # required by radiant
+  config.gem "acts_as_list", :version => "~> 0.1.2"
+  config.gem "acts_as_tree", :version => "~> 0.1.1"
+  config.gem "compass", :version => "~> 0.11.1"
+  config.gem "delocalize", :version => "~> 0.2.3"
+  config.gem "haml", :version => "~> 3.1.1"
+  config.gem "highline", :version => "~> 1.6.2"
+  config.gem "paperclip", :version => "~> 2.3.3"
+  config.gem "rack", :version => "~> 1.1.1"
+  config.gem "rack-cache", :version => "~> 1.0.2"
+  config.gem "rake", :version => ">= 0.8.3"
+  config.gem "RedCloth", :version => ">= 4.2.0"
+  config.gem "uuidtools", :version => "~> 2.1.2"
+  config.gem "will_paginate", :version => "~> 2.3.11"
+
+  # core extensions
+  config.gem "radiant-archive-extension", :version => "~> 1.0.0"
+  config.gem "radiant-clipped-extension", :version => "~> 1.0.0.rc4"
+  config.gem "radiant-markdown_filter-extension", :version => "~> 1.0.0"
+  config.gem "radiant-sheets-extension", :version => "~> 1.0.0.pre"
+  config.gem "radiant-smarty_pants_filter-extension", :version => "~> 1.0.0"
+  config.gem "radiant-textile_filter-extension", :version => "~> 1.0.0"
+
+  # disabled by default
+  # config.gem "radiant-debug-extension", :version => "~> 1.0.0"
+  # config.gem "radiant-exporter-extension", :version => "~> 1.0.0"
+  # config.gem "radiant-site_templates-extension", :version => "~> 1.0.0"
+  # config.gem "radiant-dutch_language_pack-extension", :version => "~>1.0.0"
+  # config.gem "radiant-french_language_pack-extension", :version => "~>1.0.0"
+  # config.gem "radiant-german_language_pack-extension", :version => "~>1.0.0"
+  # config.gem "radiant-italian_language_pack-extension", :version => "~>1.0.0"
+  # config.gem "radiant-japanese_language_pack-extension", :version => "~>1.0.0"
+  # config.gem "radiant-russian_language_pack-extension", :version => "~>1.0.0"
+
+  # app extensions
+  # config.gem "radiant-example-extension", :version => "1.0.0", :lib => false
 
   config.after_initialize do
     # Add new inflection rules using the following format:
