@@ -105,6 +105,7 @@ Radiant::Initializer.run do |config|
   config.gem "radiant-japanese_language_pack-extension", :version => "~> 1.0.0"
   config.gem "radiant-russian_language_pack-extension", :version => "~> 1.0.0"
   config.gem "radiant-debug-extension", :version => "~> 1.0.0"
+  config.gem "radiant-exporter-extension", :version => "~> 1.0.0"
 
   config.after_initialize do
     # Add new inflection rules using the following format:
