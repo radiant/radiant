@@ -40,7 +40,7 @@ module Radiant
     #     end
     #   end
     #
-    # and usually in a config/settings.rb file either in radiant itself, in the application directory
+    # and usually in a config/radiant_config.rb file either in radiant itself, in the application directory
     # or in an extension. Radiant currently defines the following settings and makes them editable by 
     # admin users on the site configuration page:
     #
@@ -63,7 +63,7 @@ module Radiant
     #   # to display label and value, where label comes from looking up the config key in the active locale
     #   show_setting('admin.name') 
     #
-    #   # to display an appropriate checkbox, text field or select box with label:
+    #   # to display an appropriate checkbox, text field or select box with label as above:
     #   edit_setting('admin.name)
     #
     

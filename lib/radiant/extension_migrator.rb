@@ -24,7 +24,7 @@ module Radiant
     def initialize(direction, migrations_path, target_version = nil)
       super
       initialize_extension_schema_migrations
-      initialize_replaced_migrations
+      initialize_received_migrations
     end
     
     private
@@ -48,11 +48,12 @@ module Radiant
         end
       end
 
-      def initialize_replaced_migrations
-        if old_extension_name = self.class.extension.replaces
-          if last_replaced_migration = ActiveRecord::Base.connection.select_values("SELECT version FROM #{ActiveRecord::Migrator.schema_migrations_table_name} WHERE version LIKE '#{old_extension_name}-%'").map{|v| v.sub(/^#{old_extension_name}\-/, '').to_i}.max
-            assume_migrated_upto_version(last_replaced_migration.to_i)
-            # we don't delete the old migrations so that the replacement can be reversed
+      def initialize_received_migrations
+        if donors = self.class.extension.migrates_from
+          donors.each do |extension_name, until_migration|
+            replaced = ActiveRecord::Base.connection.select_values("SELECT version FROM #{ActiveRecord::Migrator.schema_migrations_table_name} WHERE version LIKE '#{extension_name}-%'").map{|v| v.sub(/^#{extension_name}\-/, '').to_i}
+            replaced.delete_if{|v| v > until_migration.to_i} if until_migration
+            assume_migrated_upto_version(replaced.max) if replaced.any?
           end
         end
       end

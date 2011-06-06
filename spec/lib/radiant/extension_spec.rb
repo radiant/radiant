@@ -14,10 +14,6 @@ describe Radiant::Extension do
     end
   end
 
-  it "should annotate 'replaces'" do
-    Radiant::Extension.should respond_to('replaces')
-  end
-  
   it "should have access to the Radiant::AdminUI instance" do
     BasicExtension.instance.should respond_to(:admin)
     BasicExtension.admin.should == Radiant::AdminUI.instance

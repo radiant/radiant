@@ -1,3 +1,3 @@
 class ReplacingExtension < Radiant::Extension
-  replaces "Basic"
+  migrate_from "Basic", 200812131420
 end

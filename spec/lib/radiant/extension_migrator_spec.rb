@@ -44,12 +44,12 @@ describe Radiant::ExtensionMigrator do
     ActiveRecord::Base.connection.select_values("SELECT * FROM extension_meta WHERE name = 'Upgrading'").should be_empty
   end
 
-  it "should find and duplicate overlapping migrations from replaced extensions" do
+  it "should obey migrate_from instructions" do
     ActiveRecord::Migration.suppress_messages do
       BasicExtension.migrator.migrate
       lambda{ ReplacingExtension.migrator.migrate }.should_not raise_error
     end
-    ReplacingExtension.migrator.get_all_versions.should == [200812131420,200812131421,201106021232]
+    ReplacingExtension.migrator.get_all_versions.should == [200812131420,201106021232]
   end
 
   describe '#migrate_extensions' do

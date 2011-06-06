@@ -7,10 +7,10 @@ module Radiant
     include Simpleton
     include Annotatable
 
-    annotate :version, :description, :url, :root, :extension_name, :replaces
+    annotate :version, :description, :url, :root, :extension_name
 
     attr_writer :active
-
+    
     def active?
       @active
     end
@@ -32,6 +32,10 @@ module Radiant
       File.join(self.root, 'db', 'migrate')
     end
     
+    def migrates_from
+      @migrates_from ||= {}
+    end
+    
     def routing_file
       File.join(self.root, 'config', 'routes.rb')
     end
@@ -50,10 +54,6 @@ module Radiant
       @migrator
     end
     
-    def replacement?
-      !!replaces
-    end
-
     def admin
       AdminUI.instance
     end
@@ -130,6 +130,10 @@ module Radiant
         @route_definitions ||= []
       end
 
+      def migrate_from(extension_name, until_migration=nil)
+        instance.migrates_from[extension_name] = until_migration
+      end
+
       # Expose the configuration object for init hooks
       # class MyExtension < ActiveRecord::Base
       #   extension_config do |config|
@@ -141,6 +145,7 @@ module Radiant
       def extension_config(&block)
         yield Rails.configuration
       end
+      
     end
   end
 end
