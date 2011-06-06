@@ -143,7 +143,6 @@ end_error
         require "#{RADIANT_ROOT}/lib/radiant/gem_dependency_fix"
         libs = %W{ 
           #{RADIANT_ROOT}/vendor/radius/lib
-          #{RADIANT_ROOT}/vendor/rack-cache/lib
         }
         libs
       end
