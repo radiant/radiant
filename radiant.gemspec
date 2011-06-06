@@ -44,6 +44,12 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency 'radiant-markdown_filter-extension', '~>1.0.0'
   s.add_dependency 'radiant-smarty_pants_filter-extension', '~>1.0.0'
   s.add_dependency 'radiant-textile_filter-extension', '~>1.0.0'
+  s.add_dependency 'radiant-german_language_pack-extension', '~>1.0.0'
+  s.add_dependency 'radiant-dutch_language_pack-extension', '~>1.0.0'
+  s.add_dependency 'radiant-french_language_pack-extension', '~>1.0.0'
+  s.add_dependency 'radiant-italian_language_pack-extension', '~>1.0.0'
+  s.add_dependency 'radiant-japanese_language_pack-extension', '~>1.0.0'
+  s.add_dependency 'radiant-russian_language_pack-extension', '~>1.0.0'
   
   s.add_development_dependency 'cucumber', '> 0.3.9'
   s.add_development_dependency 'cucumber-rails', '~> 0.3.2'

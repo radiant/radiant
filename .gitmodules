@@ -1,21 +1,3 @@
-[submodule "vendor/extensions/german_language_pack"]
-	path = vendor/extensions/german_language_pack
-	url = git://github.com/radiant/radiant-german_language_pack-extension.git
-[submodule "vendor/extensions/dutch_language_pack"]
-	path = vendor/extensions/dutch_language_pack
-	url = git://github.com/radiant/radiant-dutch_language_pack-extension.git
-[submodule "vendor/extensions/french_language_pack"]
-	path = vendor/extensions/french_language_pack
-	url = git://github.com/radiant/radiant-french_language_pack-extension.git
-[submodule "vendor/extensions/italian_language_pack"]
-	path = vendor/extensions/italian_language_pack
-	url = git://github.com/radiant/radiant-italian_language_pack-extension.git
-[submodule "vendor/extensions/japanese_language_pack"]
-	path = vendor/extensions/japanese_language_pack
-	url = git://github.com/radiant/radiant-japanese_language_pack-extension.git
-[submodule "vendor/extensions/russian_language_pack"]
-	path = vendor/extensions/russian_language_pack
-	url = git://github.com/radiant/radiant-russian_language_pack-extension.git
 [submodule "vendor/extensions/page_menu"]
 	path = vendor/extensions/page_menu
 	url = git://github.com/radiant/radiant-page_menu-extension.git
