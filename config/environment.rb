@@ -90,6 +90,7 @@ Radiant::Initializer.run do |config|
   config.gem 'paperclip', :version => '~> 2.3.3'
   config.gem 'uuidtools', :version => "~> 2.1.2"
   config.gem 'acts_as_list', :version => "~> 0.1.2"
+  config.gem 'acts_as_tree', :version => '~> 0.1.1'
   config.gem 'RedCloth', :version => ">= 4.2.0"
 
   config.after_initialize do
