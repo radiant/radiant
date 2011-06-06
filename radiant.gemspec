@@ -38,6 +38,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency "uuidtools", "~> 2.1.2"
   s.add_dependency "rack-cache", "~> 1.0.2"
   s.add_dependency "highline", "~> 1.6.2"
+  s.add_dependency "radiant-archive-extension", "~> 1.0.0"
   
   s.add_development_dependency 'cucumber', '> 0.3.9'
   s.add_development_dependency 'cucumber-rails', '~> 0.3.2'

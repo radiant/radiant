@@ -92,6 +92,7 @@ Radiant::Initializer.run do |config|
   config.gem 'acts_as_list', :version => "~> 0.1.2"
   config.gem 'acts_as_tree', :version => '~> 0.1.1'
   config.gem 'RedCloth', :version => ">= 4.2.0"
+  config.gem 'radiant-archive-extension', :version => '~> 1.0.0'
 
   config.after_initialize do
     # Add new inflection rules using the following format:
