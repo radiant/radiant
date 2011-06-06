@@ -24,6 +24,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.summary = %q{A no-fluff content management system designed for small teams.}
 
   s.add_dependency "acts_as_list", "~> 0.1.2"
+  s.add_dependency "acts_as_tree", "~> 0.1.1"
   s.add_dependency 'haml', '~>3.1.1'
   s.add_dependency 'sass', '~>3.1.1'
   s.add_dependency 'compass', '~> 0.11.1'
