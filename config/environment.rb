@@ -94,6 +94,7 @@ Radiant::Initializer.run do |config|
   config.gem 'RedCloth', :version => ">= 4.2.0"
   config.gem 'radiant-archive-extension', :version => '~> 1.0.0'
   config.gem 'radiant-clipped-extension', :version => '~> 1.0.0.rc4'
+  config.gem 'radiant-sheets-extension', :version => '~>1.0.0.pre'
 
   config.after_initialize do
     # Add new inflection rules using the following format:
