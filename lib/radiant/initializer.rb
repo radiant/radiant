@@ -141,10 +141,6 @@ end_error
 
       def library_directories
         require "#{RADIANT_ROOT}/lib/radiant/gem_dependency_fix"
-        libs = %W{ 
-          #{RADIANT_ROOT}/vendor/radius/lib
-        }
-        libs
       end
 
       def framework_root_path
