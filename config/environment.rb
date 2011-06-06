@@ -97,6 +97,7 @@ Radiant::Initializer.run do |config|
   config.gem 'radiant-sheets-extension', :version => '~>1.0.0.pre'
   config.gem "radiant-markdown_filter-extension", :version => "~> 1.0.0"
   config.gem "radiant-smarty_pants_filter-extension", :version => "~> 1.0.0"
+  config.gem "radiant-textile_filter-extension", :version => "~> 1.0.0"
 
   config.after_initialize do
     # Add new inflection rules using the following format:
