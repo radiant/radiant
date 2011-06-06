@@ -76,6 +76,7 @@ Radiant::Initializer.run do |config|
   end
   
   config.gem 'haml', :version => '~> 3.1.1'
+  config.gem 'sass', :version => '~> 3.1.1'
   config.gem 'compass', :version => '~> 0.11.1'
   config.gem 'will_paginate', :version => '~> 2.3.11'
   config.gem 'delocalize', :version => '~> 0.2.3'
