@@ -25,35 +25,35 @@ a general purpose content managment system--not merely a blogging engine.}
 
   s.add_dependency "acts_as_list", "~> 0.1.2"
   s.add_dependency "acts_as_tree", "~> 0.1.1"
-  s.add_dependency 'haml', '~>3.1.1'
-  s.add_dependency 'sass', '~>3.1.1'
-  s.add_dependency 'compass', '~> 0.11.1'
-  s.add_dependency 'delocalize', '~>0.2.3'
-  s.add_dependency 'paperclip', '~>2.3.3'
-  s.add_dependency 'rake', '>= 0.8.3'
-  s.add_dependency 'rack', '~> 1.1.1'
-  s.add_dependency 'rack-cache', '~> 1.0.2'
-  s.add_dependency 'will_paginate', '~> 2.3.11'
-  s.add_dependency 'RedCloth', '>= 4.2.0'
-  s.add_dependency "uuidtools", "~> 2.1.2"
-  s.add_dependency "rack-cache", "~> 1.0.2"
+
+  s.add_dependency "compass", "~> 0.11.1"
+  s.add_dependency "delocalize", "~> 0.2.3"
+  s.add_dependency "haml", "~> 3.1.1"
   s.add_dependency "highline", "~> 1.6.2"
+  s.add_dependency "paperclip", "~> 2.3.3"
+  s.add_dependency "rack", "~> 1.1.1"
+  s.add_dependency "rack-cache", "~> 1.0.2"
+  s.add_dependency "rake", ">= 0.8.3"
+  s.add_dependency "RedCloth", ">= 4.2.0"
+  s.add_dependency "sass", "~> 3.1.1"
+  s.add_dependency "uuidtools", "~> 2.1.2"
+  s.add_dependency "will_paginate", "~> 2.3.11"
   s.add_dependency "radiant-archive-extension", "~> 1.0.0"
   s.add_dependency "radiant-clipped-extension", "~> 1.0.0.rc4"
-  s.add_dependency 'radiant-sheets-extension', '~>1.0.0.pre'
-  s.add_dependency 'radiant-markdown_filter-extension', '~>1.0.0'
-  s.add_dependency 'radiant-smarty_pants_filter-extension', '~>1.0.0'
-  s.add_dependency 'radiant-textile_filter-extension', '~>1.0.0'
-  s.add_dependency 'radiant-german_language_pack-extension', '~>1.0.0'
-  s.add_dependency 'radiant-dutch_language_pack-extension', '~>1.0.0'
-  s.add_dependency 'radiant-french_language_pack-extension', '~>1.0.0'
-  s.add_dependency 'radiant-italian_language_pack-extension', '~>1.0.0'
-  s.add_dependency 'radiant-japanese_language_pack-extension', '~>1.0.0'
-  s.add_dependency 'radiant-russian_language_pack-extension', '~>1.0.0'
-  s.add_dependency 'radiant-debug-extension', '~>1.0.0'
-  s.add_dependency 'radiant-exporter-extension', '~>1.0.0'
-  
+  s.add_dependency "radiant-debug-extension", "~> 1.0.0"
+  s.add_dependency "radiant-exporter-extension", "~> 1.0.0"
+  s.add_dependency "radiant-markdown_filter-extension", "~> 1.0.0"
+  s.add_dependency "radiant-sheets-extension", "~> 1.0.0.pre"
   s.add_dependency "radiant-site_templates-extension", "~> 1.0.0"
+  s.add_dependency "radiant-smarty_pants_filter-extension", "~> 1.0.0"
+  s.add_dependency "radiant-textile_filter-extension", "~> 1.0.0"
+  s.add_dependency "radiant-dutch_language_pack-extension", "~>1.0.0"
+  s.add_dependency "radiant-french_language_pack-extension", "~>1.0.0"
+  s.add_dependency "radiant-german_language_pack-extension", "~>1.0.0"
+  s.add_dependency "radiant-italian_language_pack-extension", "~>1.0.0"
+  s.add_dependency "radiant-japanese_language_pack-extension", "~>1.0.0"
+  s.add_dependency "radiant-russian_language_pack-extension", "~>1.0.0"
+
   s.add_development_dependency 'cucumber', '> 0.3.9'
   s.add_development_dependency 'cucumber-rails', '~> 0.3.2'
   s.add_development_dependency 'database_cleaner', '~> 0.6.5'
