@@ -1,3 +1,0 @@
-[submodule "vendor/extensions/page_menu"]
-	path = vendor/extensions/page_menu
-	url = git://github.com/radiant/radiant-page_menu-extension.git
