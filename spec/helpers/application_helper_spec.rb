@@ -74,13 +74,6 @@ describe ApplicationHelper do
     helper.save_model_and_continue_editing_button(model).should =~ /^<input/
   end
   
-  it "should redefine pluralize without the count" do
-    helper.pluralize(1, "page").should == "page"
-    helper.pluralize(2, "page").should == "pages"
-    helper.pluralize(0, "page").should == "pages"
-    helper.pluralize(2, "ox", "oxen").should == "oxen"
-  end
-  
   it "should determine whether a given url matches the current url" do
     request = mock("request")
     helper.stub!(:request).and_return(request)
