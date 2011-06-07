@@ -41,18 +41,6 @@ module ApplicationHelper
     submit_tag t('buttons.save_and_continue'), :name => 'continue', :class => 'button', :accesskey => "s"
   end
   
-  # Redefine pluralize() so that it doesn't put the count at the beginning of
-  # the string.
-  def pluralize(count, singular, plural = nil)
-    if count == 1
-      singular
-    elsif plural
-      plural
-    else
-      ActiveSupport::Inflector.pluralize(singular)
-    end
-  end
-  
   def current_item?(item)
     if item.tab && item.tab.many? {|i| current_url?(i.relative_url) }
       # Accept only stricter URL matches if more than one matches
