@@ -103,7 +103,7 @@ class InstanceGenerator < Rails::Generator::Base
              "Default: #{DEFAULT_SHEBANG}") { |v| options[:shebang] = v }
       opt.on("-d", "--database=name", String,
             "Preconfigure for selected database (options: #{DATABASES.join(", ")}).",
-            "Default: mysql") { |v| options[:db] = v }
+            "Default: sqlite3") { |v| options[:db] = v }
     end
     
     def mysql_socket_location
