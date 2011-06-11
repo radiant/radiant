@@ -32,7 +32,7 @@ Given /^I have page caching (on|off)$/ do |status|
   set_page_cache status
 end
 
-Then /^The "([^\"]*)" header should be "([^\"]*)"$/ do |header_key, value|
+Then /^the "([^\"]*)" header should be "([^\"]*)"$/ do |header_key, value|
   response.headers.to_hash[header_key].should =~ Regexp.new(value)
 end
 

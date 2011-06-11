@@ -32,11 +32,11 @@ Feature: Serving pages from front-end
     Given I have page caching on
     When I go to the first page
     Then I should get an "ETag" header in the response
-    And The "Cache-Control" header should be "public"
+    And the "Cache-Control" header should be "public"
 
   Scenario: page caching disabled
     Given I have page caching off
     When I go to the first page
     Then I should not get an "ETag" header in the response
-    And The "Cache-Control" header should be "private"
+    And the "Cache-Control" header should be "private"
 
