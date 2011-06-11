@@ -31,6 +31,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency 'paperclip', '~>2.3.3'
   s.add_dependency 'rake', '>= 0.8.3'
   s.add_dependency 'rack', '~> 1.1.1'
+  s.add_dependency 'rack-cache', '~> 1.0.2'
   s.add_dependency 'will_paginate', '~> 2.3.11'
   s.add_dependency 'RedCloth', '>= 4.0.0'
   s.add_dependency "uuidtools", "~> 2.1.2"
