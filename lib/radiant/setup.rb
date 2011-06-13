@@ -70,6 +70,9 @@ module Radiant
       unless filename
         templates = find_and_load_templates("#{RADIANT_ROOT}/db/templates/*.yml")
         templates.concat find_and_load_templates("#{RADIANT_ROOT}/vendor/extensions/**/db/templates/*.yml")
+        Radiant::Extension.descendants.each do |d|
+          templates.concat find_and_load_templates(d.root + '/db/templates/*.yml')
+        end
         templates.concat find_and_load_templates("#{Rails.root}/vendor/extensions/**/db/templates/*.yml")
         templates.concat find_and_load_templates("#{Rails.root}/db/templates/*.yml")
         templates.uniq!
