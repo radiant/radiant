@@ -105,5 +105,20 @@ describe DeprecatedTags do
       end
     end
   end
-
+  
+  describe "<r:navigation>" do
+      it "should render with deprecated url attribute" do
+      ::ActiveSupport::Deprecation.silence do
+        lambda { 
+          @page.should render(%{
+<r:navigation urls="test:/test">
+  <r:normal><li><a href="<r:url/>"><r:title/></a></li></r:normal>
+  <r:selected><li><a class="current" href="<r:url/>"><r:title/></a></li></r:selected>
+  <r:between></r:between>
+</r:navigation>}).as(%{
+<li><a href="/test">test</a></li>})
+        }.should_not raise_error
+      end
+    end
+  end
 end
