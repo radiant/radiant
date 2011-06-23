@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(:version => 20100810151922) do
     t.integer  "updated_by_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "uuid"
     t.integer  "original_width"
     t.integer  "original_height"
     t.string   "original_extension"
