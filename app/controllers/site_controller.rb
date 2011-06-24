@@ -1,14 +1,14 @@
 class SiteController < ApplicationController
   include Radiant::Pagination::Controller
-  
+
   skip_before_filter :verify_authenticity_token
   no_login_required
   cattr_writer :cache_timeout
-  
+
   def self.cache_timeout
     @@cache_timeout ||= 5.minutes
   end
-  
+
   def show_page
     url = params[:url]
     if Array === url
@@ -27,7 +27,7 @@ class SiteController < ApplicationController
   rescue Page::MissingRootPageError
     redirect_to welcome_url
   end
-  
+
   private
     def batch_page_status_refresh
       @changed_pages = []
@@ -40,9 +40,9 @@ class SiteController < ApplicationController
         end
       end
 
-      expires_in nil, :private=>true, "no-cache" => true if @changed_pages.length > 0      
+      expires_in nil, :private=>true, "no-cache" => true if @changed_pages.length > 0
     end
-  
+
     def set_cache_control
       if (request.head? || request.get?) && @page.cache? && live?
         expires_in self.class.cache_timeout, :public => true, :private => false
@@ -51,7 +51,7 @@ class SiteController < ApplicationController
         headers['ETag'] = ''
       end
     end
-        
+
     def find_page(url)
       found = Page.find_by_path(url, live?)
       found if found and (found.published? or dev?)
@@ -63,15 +63,10 @@ class SiteController < ApplicationController
     end
 
     def dev?
-      if dev_host = @config['dev.host']
-        request.host == dev_host
-      else
-        request.host =~ /^dev\./
-      end
+      request.host == @config['dev.host'] || request.host =~ /^dev\./
     end
-    
+
     def live?
       not dev?
     end
-
 end
