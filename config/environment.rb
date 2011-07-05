@@ -92,7 +92,6 @@ Radiant::Initializer.run do |config|
   config.gem "rake",          :version => ">= 0.8.3"
   config.gem "RedCloth",      :version => ">= 4.2.0"
   config.gem "sass",          :version => "~> 3.1.1"
-  config.gem "uuidtools",     :version => "~> 2.1.2"
   config.gem "will_paginate", :version => "~> 2.3.11"
 
   # standard extensions
