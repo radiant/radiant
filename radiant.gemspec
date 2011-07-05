@@ -53,7 +53,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency "radiant-japanese_language_pack-extension",  "~>1.0.0"
   s.add_dependency "radiant-russian_language_pack-extension",   "~>1.0.0"
 
-  s.add_development_dependency "cucumber",          "> 0.3.9"
+  s.add_development_dependency "cucumber",          "~> 1.0.0"
   s.add_development_dependency "cucumber-rails",    "~> 0.3.2"
   s.add_development_dependency "database_cleaner",  "~> 0.6.5"
   s.add_development_dependency "webrat",            "~> 0.7.3"
