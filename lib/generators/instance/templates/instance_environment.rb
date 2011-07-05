@@ -73,7 +73,6 @@ Radiant::Initializer.run do |config|
   end
 
   # core dependencies
-  config.gem "acts_as_list",  :version => "~> 0.1.2"
   config.gem "acts_as_tree",  :version => "~> 0.1.1"
   config.gem "compass",       :version => "~> 0.11.1"
   config.gem "delocalize",    :version => "~> 0.2.3"
