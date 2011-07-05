@@ -106,12 +106,12 @@ Radiant::Initializer.run do |config|
   config.gem "radiant-textile_filter-extension",      :version => "~> 1.0.0"
 
   # language packs
-  config.gem "radiant-dutch_language_pack-extension",     :version => "~> 1.0.0"
-  config.gem "radiant-french_language_pack-extension",    :version => "~> 1.0.0"
-  config.gem "radiant-german_language_pack-extension",    :version => "~> 1.0.0"
-  config.gem "radiant-italian_language_pack-extension",   :version => "~> 1.0.0"
-  config.gem "radiant-japanese_language_pack-extension",  :version => "~> 1.0.0"
-  config.gem "radiant-russian_language_pack-extension",   :version => "~> 1.0.0"
+  # config.gem "radiant-dutch_language_pack-extension",     :version => "~> 1.0.0"
+  # config.gem "radiant-french_language_pack-extension",    :version => "~> 1.0.0"
+  # config.gem "radiant-german_language_pack-extension",    :version => "~> 1.0.0"
+  # config.gem "radiant-italian_language_pack-extension",   :version => "~> 1.0.0"
+  # config.gem "radiant-japanese_language_pack-extension",  :version => "~> 1.0.0"
+  # config.gem "radiant-russian_language_pack-extension",   :version => "~> 1.0.0"
 
   config.after_initialize do
     # Add new inflection rules using the following format:

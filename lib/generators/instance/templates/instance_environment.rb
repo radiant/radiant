@@ -96,7 +96,9 @@ Radiant::Initializer.run do |config|
   config.gem "radiant-smarty_pants_filter-extension", :version => "~> 1.0.0"
   config.gem "radiant-textile_filter-extension",      :version => "~> 1.0.0"
 
-  # language packs
+  # language packs are not installed by default
+  # use `gem install [language pack]` to install
+  # then uncomment the appropriate line below
   # config.gem "radiant-dutch_language_pack-extension",     :version => "~> 1.0.0"
   # config.gem "radiant-french_language_pack-extension",    :version => "~> 1.0.0"
   # config.gem "radiant-german_language_pack-extension",    :version => "~> 1.0.0"
