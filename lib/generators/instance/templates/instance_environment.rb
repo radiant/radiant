@@ -92,7 +92,7 @@ Radiant::Initializer.run do |config|
   config.gem "radiant-exporter-extension",            :version => "~> 1.0.0"
   config.gem "radiant-markdown_filter-extension",     :version => "~> 1.0.0"
   config.gem "radiant-sheets-extension",              :version => "~> 1.0.0.pre"
-  config.gem "radiant-site_templates-extension",      :version => "~> 1.0.0"
+  # config.gem "radiant-site_templates-extension",      :version => "~> 1.0.0"
   config.gem "radiant-smarty_pants_filter-extension", :version => "~> 1.0.0"
   config.gem "radiant-textile_filter-extension",      :version => "~> 1.0.0"
 
