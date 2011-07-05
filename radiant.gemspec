@@ -23,7 +23,6 @@ a general purpose content managment system--not merely a blogging engine.}
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{A no-fluff content management system designed for small teams.}
 
-  s.add_dependency "acts_as_list",  "~> 0.1.2"
   s.add_dependency "acts_as_tree",  "~> 0.1.1"
   s.add_dependency "compass",       "~> 0.11.1"
   s.add_dependency "delocalize",    "~> 0.2.3"
