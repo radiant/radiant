@@ -151,8 +151,10 @@ module Radiant
           # replace the :all symbol with any remaining paths
           roots[placeholder, 1] = all_roots
         end
-        configuration.ignored_extensions.each do |removed|
-          roots.delete_if{|root| root.split('/').last.to_s == removed.to_s }
+        if configuration.ignored_extensions
+          configuration.ignored_extensions.each do |removed|
+            roots.delete_if{|root| root.split('/').last.to_s == removed.to_s }
+          end
         end
         roots
       end
