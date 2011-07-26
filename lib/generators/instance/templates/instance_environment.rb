@@ -20,7 +20,7 @@ Radiant::Initializer.run do |config|
   # config.extensions = [ :all ]
   
   # Unload the extensions named here.
-  # config.ignore_extensions []
+  config.ignore_extensions []
 
   # Your secret key for verifying cookie session data integrity.
   # If you change this key, all old sessions will become invalid!
