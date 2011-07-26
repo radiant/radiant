@@ -7,9 +7,13 @@ unless defined? SPEC_ROOT
   when ENV["RADIANT_ENV_FILE"]
     require ENV["RADIANT_ENV_FILE"]
   when File.dirname(__FILE__) =~ %r{vendor/radiant/vendor/extensions}
-    require "#{File.expand_path(File.dirname(__FILE__) + "/../../../../../")}/config/environment"
+    env = "#{File.expand_path(File.dirname(__FILE__) + "/../../../")}/config/environment"
+    puts "requiring #{env}"
+    require env
   else
-    require "#{File.expand_path(File.dirname(__FILE__) + "/../../../")}/config/environment"
+    env = "#{File.expand_path(File.dirname(__FILE__) + "/../")}/config/environment"
+    puts "requiring #{env}"
+    require env
   end
 
   # unless defined? RADIANT_ROOT
