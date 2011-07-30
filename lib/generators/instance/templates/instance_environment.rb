@@ -108,6 +108,7 @@ Radiant::Initializer.run do |config|
 
   config.after_initialize do
     require 'acts_as_tree'
+    require 'RedCloth'
 
     # Add new inflection rules using the following format:
     ActiveSupport::Inflector.inflections do |inflect|
