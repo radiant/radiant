@@ -107,6 +107,8 @@ Radiant::Initializer.run do |config|
   # config.gem "radiant-example-extension", :version => "1.0.0", :lib => false
 
   config.after_initialize do
+    require 'acts_as_tree'
+
     # Add new inflection rules using the following format:
     ActiveSupport::Inflector.inflections do |inflect|
       inflect.uncountable 'config'
