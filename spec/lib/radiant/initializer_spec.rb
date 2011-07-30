@@ -48,6 +48,10 @@ describe Radiant::Configuration do
     @configuration.admin.should == Radiant::AdminUI.instance
   end
 
+  it "should initialize ignored extensions" do
+    @configuration.ignored_extensions.should eql([])
+  end
+
   it "should initialize extension dependencies" do
     @configuration.extension_dependencies.should eql([])
   end

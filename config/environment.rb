@@ -96,20 +96,21 @@ Radiant::Initializer.run do |config|
   config.gem "will_paginate", :version => "~> 2.3.11"
   config.gem "radiant-archive-extension", :version => "~> 1.0.0"
   config.gem "radiant-clipped-extension", :version => "~> 1.0.0.rc4"
-  config.gem "radiant-debug-extension", :version => "~> 1.0.0"
-  config.gem "radiant-exporter-extension", :version => "~> 1.0.0"
+  #config.gem "radiant-debug-extension", :version => "~> 1.0.0"
+  #config.gem "radiant-exporter-extension", :version => "~> 1.0.0"
 
   config.gem "radiant-markdown_filter-extension", :version => "~> 1.0.0"
   config.gem "radiant-sheets-extension", :version => "~> 1.0.0.pre"
   config.gem "radiant-site_templates-extension", :version => "~> 1.0.0"
   config.gem "radiant-smarty_pants_filter-extension", :version => "~> 1.0.0"
   config.gem "radiant-textile_filter-extension", :version => "~> 1.0.0"
-  config.gem "radiant-dutch_language_pack-extension", :version => "~>1.0.0"
-  config.gem "radiant-french_language_pack-extension", :version => "~>1.0.0"
-  config.gem "radiant-german_language_pack-extension", :version => "~>1.0.0"
-  config.gem "radiant-italian_language_pack-extension", :version => "~>1.0.0"
-  config.gem "radiant-japanese_language_pack-extension", :version => "~>1.0.0"
-  config.gem "radiant-russian_language_pack-extension", :version => "~>1.0.0"
+
+  #config.gem "radiant-dutch_language_pack-extension", :version => "~>1.0.0"
+  #config.gem "radiant-french_language_pack-extension", :version => "~>1.0.0"
+  #config.gem "radiant-german_language_pack-extension", :version => "~>1.0.0"
+  #config.gem "radiant-italian_language_pack-extension", :version => "~>1.0.0"
+  #config.gem "radiant-japanese_language_pack-extension", :version => "~>1.0.0"
+  #config.gem "radiant-russian_language_pack-extension", :version => "~>1.0.0"
 
   config.after_initialize do
     # Add new inflection rules using the following format:
