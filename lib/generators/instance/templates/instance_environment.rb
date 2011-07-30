@@ -7,8 +7,6 @@
 # Specifies gem version of Rails to use when vendor/rails is not present
 require File.join(File.dirname(__FILE__), 'boot')
 
-require 'radius'
-
 Radiant::Initializer.run do |config|
   # Skip frameworks you're not going to use (only works if using vendor/rails).
   # To use Rails without a database, you must remove the Active Record framework
@@ -81,6 +79,7 @@ Radiant::Initializer.run do |config|
   config.gem "rack",          :version => "~> 1.1.1"
   config.gem "rack-cache",    :version => "~> 1.0.2"
   config.gem "rake",          :version => ">= 0.8.3"
+  config.gem "radius",        :version => "~> 0.7.0.prerelease"
   config.gem "RedCloth",      :version => ">= 4.2.0"
   config.gem "will_paginate", :version => "~> 2.3.11"
 
