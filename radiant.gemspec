@@ -42,10 +42,15 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency "radiant-smarty_pants_filter-extension", "~> 1.0.0"
   s.add_dependency "radiant-textile_filter-extension",      "~> 1.0.0"
 
+  s.add_development_dependency "builder"           "~> 2.1.2"
   s.add_development_dependency "cucumber",         "> 0.3.9"
   s.add_development_dependency "cucumber-rails",   "~> 0.3.2"
   s.add_development_dependency "database_cleaner", "~> 0.6.5"
-  s.add_development_dependency "webrat",           "~> 0.7.3"
-  s.add_development_dependency "rspec",            "~> 1.3.1"
+  s.add_development_dependency "dataset",          "1.3.1"
+  s.add_development_dependency "nokogiri",         ">= 1.1.1"
+  s.add_development_dependency "rspec-core",       "~> 2.6.0"
+  s.add_development_dependency "rspec",            "~> 2.6.0"
   s.add_development_dependency "rspec-rails",      "~> 1.3.3"
+  s.add_development_dependency "webrat",           "~> 0.7.3"
+  s.add_development_dependency "ZenTest",          "~> 4.6.0"
 end

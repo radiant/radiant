@@ -7,8 +7,6 @@
 # Specifies gem version of Rails to use when vendor/rails is not present
 require File.join(File.dirname(__FILE__), 'boot')
 
-require 'radius'
-
 Radiant::Initializer.run do |config|
   # Skip frameworks you're not going to use (only works if using vendor/rails).
   # To use Rails without a database, you must remove the Active Record framework
@@ -112,7 +110,6 @@ Radiant::Initializer.run do |config|
   # config.gem "radiant-example-extension", :version => "1.0.0", :lib => false
 
   config.after_initialize do
-    require 'acts_as_tree'
     require 'RedCloth'
 
     # Add new inflection rules using the following format:
