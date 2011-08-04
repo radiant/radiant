@@ -80,6 +80,7 @@ Radiant::Initializer.run do |config|
   config.gem "highline",      :version => "~> 1.6.2"
   config.gem "rack",          :version => "~> 1.1.1"
   config.gem "rack-cache",    :version => "~> 1.0.2"
+  config.gem "radius",        :version => "~> 0.7.0.prerelease3"
   config.gem "rake",          :version => "~> 0.9.2"
   config.gem "RedCloth",      :version => "~> 4.2.0"
   config.gem "sass",          :version => "~> 3.1.1"
