@@ -61,6 +61,7 @@ namespace 'radiant' do
     files.exclude /^pkg/
     files.include 'public/.htaccess'
     files.exclude /\btmp\b/
+    files.include 'vendor/extensions/.keep'
     files.exclude 'radiant.gemspec'
     # Read .gitignore from plugins and exclude those files
     Dir['vendor/plugins/*/.gitignore'].each do |gi|
