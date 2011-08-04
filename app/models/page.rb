@@ -1,3 +1,5 @@
+require 'acts_as_tree'
+
 class Page < ActiveRecord::Base
 
   class MissingRootPageError < StandardError

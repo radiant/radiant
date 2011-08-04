@@ -42,6 +42,7 @@ module Radiant
       self.view_paths = []
       self.extension_paths = default_extension_paths
       self.extension_dependencies = []
+      self.ignored_extensions = []
       super
     end
 
@@ -78,7 +79,6 @@ module Radiant
     end
       
     def ignore_extensions(array)
-      self.ignored_extensions ||= []
       self.ignored_extensions |= array
     end
     
