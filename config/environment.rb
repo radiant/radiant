@@ -22,7 +22,7 @@ Radiant::Initializer.run do |config|
   
   # By default, only English translations are loaded. Remove any of these from
   # the list below if you'd like to provide any of the additional options
-  config.ignore_extensions []
+  # config.ignore_extensions []
 
   # Your secret key for verifying cookie session data integrity.
   # If you change this key, all old sessions will become invalid!
