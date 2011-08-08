@@ -181,14 +181,20 @@ module Radiant
       # but at the moment that's only done in testing.
       #
       def define(key, options={})
+        called_from =  caller.grep(/\/initializers\//).first
         if options.is_a? Radiant::Config::Definition
           definition = options
         else
           key = [options[:prefix], key].join('.') if options[:prefix]
-          definition = Radiant::Config::Definition.new(options)
+          definition = Radiant::Config::Definition.new(options.merge(:caller => called_from))
         end
 
-        raise LoadError, "Duplicate config definition for '#{key}'. Are you loading something twice?" unless definitions[key].nil? || definitions[key].empty?
+        raise LoadError, %{
+#{Term::ANSIColor.on_black}#{Term::ANSIColor.white}Duplicate config definition: '#{key}' is defined twice:
+#{Term::ANSIColor.red}#{called_from}#{Term::ANSIColor.white}
+#{Term::ANSIColor.green}#{definitions[key].caller}#{Term::ANSIColor.clear}
+        } unless definitions[key].nil? || definitions[key].empty?
+
         definitions[key] = definition
 
         if self[key].nil? && !definition.default.nil?
