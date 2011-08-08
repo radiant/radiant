@@ -79,7 +79,7 @@ Radiant::Initializer.run do |config|
       html
     end
   end
-  
+
   config.gem 'rack-cache', :version => "~> 1.0.2"
   config.gem 'RedCloth', :version => '~> 3.0.4'
   config.gem 'haml', :version => '~> 3.1.1'
