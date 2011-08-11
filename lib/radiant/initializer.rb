@@ -139,10 +139,6 @@ end_error
 
     private
 
-      def library_directories
-        require "#{RADIANT_ROOT}/lib/radiant/gem_dependency_fix"
-      end
-
       def framework_root_path
         RADIANT_ROOT + '/vendor/rails'
       end
@@ -167,7 +163,6 @@ end_error
         ).map { |dir| "#{RADIANT_ROOT}/#{dir}" }.select { |dir| File.directory?(dir) }
 
         paths.concat builtin_directories
-        paths.concat library_directories
       end
 
       def default_plugin_paths
