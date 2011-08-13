@@ -143,7 +143,7 @@ class Admin::ResourceController < ApplicationController
       self.model = if params[:id]
         model_class.find(params[:id])
       else
-        model_class.new
+        model_class.new()
       end
     end
 
