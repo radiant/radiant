@@ -3,7 +3,7 @@ class PageContext < Radius::Context
   attr_reader :page
   
   def initialize(page)
-    super()
+    super
     @page = page
     globals.page = @page
     page.tags.each do |name|
