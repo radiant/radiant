@@ -58,6 +58,34 @@ describe "Radiant::Extension::Script::Util" do
     @script.should be_installed
   end
 
+  it "should determine whether an extension is not installed" do
+    @script = mock('script action',:extension_paths => ['/path/to/extension/html_tags'])
+    @script.extend Radiant::Extension::Script::Util
+    @script.extension_name = 'tags'
+    @script.should_not be_installed
+  end
+
+  it "should determine whether an extension is installed" do
+    @script = mock('script action',:extension_paths => ['tags'])
+    @script.extend Radiant::Extension::Script::Util
+    @script.extension_name = 'tags'
+    @script.should be_installed
+  end
+
+  it "should determine whether an extension is installed" do
+    @script = mock('script action',:extension_paths => ['/path/to/extension/tags'])
+    @script.extend Radiant::Extension::Script::Util
+    @script.extension_name = 'tags'
+    @script.should be_installed
+  end
+
+  it "should determine whether an extension is installed on windows system" do
+    @script = mock('script action',:extension_paths => ['c:\path\to\extension\tags'])
+    @script.extend Radiant::Extension::Script::Util
+    @script.extension_name = 'tags'
+    @script.should be_installed
+  end
+
   it "should load all extensions from the web service" do
     Registry::Extension.should_receive(:find).with(:all).and_return([1,2,3])
     load_extensions.should == [1,2,3]
