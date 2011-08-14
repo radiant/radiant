@@ -88,7 +88,7 @@ Radiant::Initializer.run do |config|
   config.gem "rack",          :version => "~> 1.1.1"
   config.gem "rack-cache",    :version => "~> 1.0.2"
   config.gem "radius",        :version => "~> 0.7.0"
-  config.gem "rake",          :version => "~> 0.9.2"
+  config.gem "rake",          :version => "> 0.8.6"
   config.gem "will_paginate", :version => "~> 2.3.11"
 
   # standard extensions
