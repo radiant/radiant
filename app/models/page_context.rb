@@ -10,7 +10,7 @@ class PageContext < Radius::Context
       define_tag(name) { |tag_binding| page.render_tag(name, tag_binding) }
     end
   end
-
+  
   def dup
     rv = self.class.new(page)
     rv.globals = globals.dup
