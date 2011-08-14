@@ -75,13 +75,13 @@ describe SiteController do
       response.should be_success
     end
   end
-
-  it "should not display draft and hidden pages on default dev site when dev.host specified" do
-    controller.config = { 'dev.host' => 'mysite.com' }
-    request.host = 'dev.mysite.com'
-    ['draft', 'hidden'].each do |url|
-      get :show_page, :url => url
-      response.should be_missing
+  
+  ['draft','hidden'].each do |type|
+    it "it should display #{type} pages on default dev site when dev.host specified" do
+      controller.config = { 'dev.host' => 'mysite.com' }
+      request.host = 'dev.mysite.com'
+      get :show_page, :url => type
+      response.should_not be_missing
     end
   end
   
