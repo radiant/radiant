@@ -15,7 +15,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.executables = ["radiant"]
   s.extra_rdoc_files = ["README", "CONTRIBUTORS", "CHANGELOG", "INSTALL", "LICENSE"]
   ignores = File.read('.gitignore').split("\n").inject([]) {|a,p| a + Dir[p] }
-  s.files = Dir['**/*','.gitignore', 'public/.htaccess', 'log/.keep'] - ignores
+  s.files = Dir['**/*','.gitignore', 'public/.htaccess', 'log/.keep', 'vendor/extensions/.keep'] - ignores
   s.homepage = %q{http://radiantcms.org}
   s.rdoc_options = ["--title", "Radiant -- Publishing for Small Teams", "--line-numbers", "--main", "README", "--exclude", "app", "--exclude", "bin", "--exclude", "config", "--exclude", "db", "--exclude", "features", "--exclude", "lib", "--exclude", "log", "--exclude", "pkg", "--exclude", "public", "--exclude", "script", "--exclude", "spec", "--exclude", "test", "--exclude", "tmp", "--exclude", "vendor"]
   s.require_paths = ["lib"]
@@ -23,23 +23,32 @@ a general purpose content managment system--not merely a blogging engine.}
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{A no-fluff content management system designed for small teams.}
 
-  s.add_dependency "acts_as_list", "~> 0.1.2"
-  s.add_dependency 'haml', '~>3.1.1'
-  s.add_dependency 'sass', '~>3.1.1'
-  s.add_dependency 'compass', '~> 0.11.1'
-  s.add_dependency 'delocalize', '~>0.2.3'
-  s.add_dependency 'paperclip', '~>2.3.3'
-  s.add_dependency 'rake', '>= 0.8.3'
-  s.add_dependency 'rack', '~> 1.1.1'
-  s.add_dependency 'rack-cache', '~> 1.0.2'
-  s.add_dependency 'will_paginate', '~> 2.3.11'
-  s.add_dependency 'RedCloth', '>= 4.0.0'
-  s.add_dependency "uuidtools", "~> 2.1.2"
-  
-  s.add_development_dependency 'cucumber', '> 0.3.9'
-  s.add_development_dependency 'cucumber-rails', '~> 0.3.2'
-  s.add_development_dependency 'database_cleaner', '~> 0.6.5'
-  s.add_development_dependency 'webrat', '~> 0.7.3'
-  s.add_development_dependency 'rspec', '~> 1.3.1'
-  s.add_development_dependency 'rspec-rails', '~> 1.3.3'
+  s.add_dependency "acts_as_tree",    "~> 0.1.1"
+  s.add_dependency "compass",         "~> 0.11.1"
+  s.add_dependency "delocalize",      "~> 0.2.3"
+  s.add_dependency "haml",            "~> 3.1.1"
+  s.add_dependency "highline",        "~> 1.6.2"
+  s.add_dependency "rack",            "~> 1.1.1"
+  s.add_dependency "rack-cache",      "~> 1.0.2"
+  s.add_dependency "rake",            "> 0.8.6"
+  s.add_dependency "radius",          "~> 0.7.1"
+  s.add_dependency "term-ansicolor",  "~> 1.0.6"
+  s.add_dependency "will_paginate",   "~> 2.3.11"
+
+  s.add_dependency "radiant-archive-extension",             "~> 1.0.0"
+  s.add_dependency "radiant-clipped-extension",             "~> 1.0.0"
+  s.add_dependency "radiant-debug-extension",               "~> 1.0.0"
+  s.add_dependency "radiant-exporter-extension",            "~> 1.0.0"
+  s.add_dependency "radiant-markdown_filter-extension",     "~> 1.0.0"
+  s.add_dependency "radiant-sheets-extension",              "~> 1.0.0.pre"
+  s.add_dependency "radiant-site_templates-extension",      "~> 1.0.0"
+  s.add_dependency "radiant-smarty_pants_filter-extension", "~> 1.0.0"
+  s.add_dependency "radiant-textile_filter-extension",      "~> 1.0.0"
+
+  s.add_development_dependency "cucumber",          "~> 1.0.0"
+  s.add_development_dependency "cucumber-rails",    "~> 0.3.2"
+  s.add_development_dependency "database_cleaner",  "~> 0.6.5"
+  s.add_development_dependency "webrat",            "~> 0.7.3"
+  s.add_development_dependency "rspec",             "~> 1.3.1"
+  s.add_development_dependency "rspec-rails",       "~> 1.3.3"
 end

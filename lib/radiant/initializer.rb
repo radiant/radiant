@@ -42,6 +42,7 @@ module Radiant
       self.view_paths = []
       self.extension_paths = default_extension_paths
       self.extension_dependencies = []
+      self.ignored_extensions = []
       super
     end
 
@@ -78,7 +79,6 @@ module Radiant
     end
       
     def ignore_extensions(array)
-      self.ignored_extensions ||= []
       self.ignored_extensions |= array
     end
     
@@ -139,27 +139,6 @@ end_error
 
     private
 
-      def library_directories
-        require "#{RADIANT_ROOT}/lib/radiant/gem_dependency_fix"
-        libs = %W{ 
-          #{RADIANT_ROOT}/vendor/radius/lib
-          #{RADIANT_ROOT}/vendor/highline/lib
-          #{RADIANT_ROOT}/vendor/rack-cache/lib
-        }
-        begin
-          Object.send :gem, 'RedCloth', ">=4.0.0"
-          require 'redcloth'
-        rescue LoadError, Gem::LoadError
-          # If the gem is not available, use the packaged version
-          libs << "#{RADIANT_ROOT}/vendor/redcloth/lib"
-          after_initialize do
-            warn "RedCloth > 4.0 not found.  Falling back to RedCloth 3.0.4 (2005-09-15).  You should run `gem install RedCloth`."
-            require 'redcloth'
-          end
-        end
-        libs
-      end
-
       def framework_root_path
         RADIANT_ROOT + '/vendor/rails'
       end
@@ -184,7 +163,6 @@ end_error
         ).map { |dir| "#{RADIANT_ROOT}/#{dir}" }.select { |dir| File.directory?(dir) }
 
         paths.concat builtin_directories
-        paths.concat library_directories
       end
 
       def default_plugin_paths
