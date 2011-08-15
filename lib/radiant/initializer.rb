@@ -63,7 +63,8 @@ module Radiant
     end
     
     def extensions
-      @extensions ||= all_available_extensions
+      @extensions = all_available_extensions unless @extensions && @extensions.any?
+      @extensions
     end
 
     def extensions_in_order

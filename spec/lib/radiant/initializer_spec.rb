@@ -29,13 +29,6 @@ describe Radiant::Configuration do
   
   it "should initialize the extensions" do
     @configuration.extensions.should be_kind_of(Array)
-    @configuration.extensions.should include(:archive, :textile_filter, :markdown_filter) 
-  end
-  
-  it "should remove excluded extensions" do
-    @configuration.extensions -= [:archive]
-    @configuration.extensions.should be_kind_of(Array)
-    @configuration.extensions.should_not include(:archive) 
   end
   
   it "should have extensions only found in extension paths" do
@@ -44,35 +37,50 @@ describe Radiant::Configuration do
     @configuration.extensions.should_not include(:archive, :textile_filter, :markdown_filter) 
   end
   
+  it "should remove excluded extensions" do
+    @configuration.extensions -= [:basic]
+    @configuration.extensions.should be_kind_of(Array)
+    @configuration.extensions.should_not include(:basic) 
+  end
+  
   it "should have access to the AdminUI" do
     @configuration.admin.should == Radiant::AdminUI.instance
-  end
-
-  it "should initialize ignored extensions" do
-    @configuration.ignored_extensions.should eql([])
   end
 
   it "should initialize extension dependencies" do
     @configuration.extension_dependencies.should eql([])
   end
 
-  it "should add extension dependencies" do
-    @configuration.extension('basic')
-    @configuration.extension_dependencies.should eql(['basic'])
+  it "should deprecate the declaration of extension dependencies" do
+    ::ActiveSupport::Deprecation.silence do
+      ActiveSupport::Deprecation.should_receive(:warn).and_return(true)
+      @configuration.extension('basic')
+    end
   end
 
+  it "should still add extension dependencies" do
+    ::ActiveSupport::Deprecation.silence do
+      @configuration.extension('basic')
+      @configuration.extension_dependencies.should eql(['basic'])
+    end
+  end
+  
   it "should validate dependencies" do
-    @configuration.extensions = [BasicExtension]
-    @configuration.extension('basic')
-    @configuration.check_extension_dependencies.should be_true
+    ::ActiveSupport::Deprecation.silence do
+      @configuration.extensions = [BasicExtension]
+      @configuration.extension('basic')
+      @configuration.check_extension_dependencies.should be_true
+    end
   end
 
   it "should report missing dependencies" do
-    @configuration.extensions = [BasicExtension]
-    @configuration.extension('does_not_exist')
-    lambda {
-      @configuration.check_extension_dependencies
-    }.should raise_error(SystemExit)
+    ::ActiveSupport::Deprecation.silence do
+      @configuration.extensions = [BasicExtension]
+      @configuration.extension('does_not_exist')
+      lambda {
+        @configuration.check_extension_dependencies
+      }.should raise_error(SystemExit)
+    end
   end
 
   describe "#all_available_extensions" do
