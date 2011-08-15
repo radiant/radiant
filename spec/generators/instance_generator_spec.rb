@@ -11,7 +11,7 @@ shared_examples_for "all instance generators" do
   end
   
   # Check for files
-  %w(CHANGELOG CONTRIBUTORS LICENSE INSTALL README Rakefile).each do |file|
+  %w(CHANGELOG.md CONTRIBUTORS.md LICENSE.md INSTALL.md README.md Rakefile).each do |file|
     it "should have a #{file}" do
       ''.should have_generated_file(file)
     end

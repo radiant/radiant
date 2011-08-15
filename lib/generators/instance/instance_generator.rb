@@ -40,7 +40,7 @@ class InstanceGenerator < Rails::Generator::Base
       
       # Standard files and directories
       base_dirs = %w(config config/environments config/initializers db log script public vendor/plugins vendor/extensions)
-      text_files = %w(CHANGELOG CONTRIBUTORS LICENSE INSTALL README)
+      text_files = %w(CHANGELOG.md CONTRIBUTORS.md LICENSE.md INSTALL.md README.md)
       environments = Dir["#{root}/config/environments/*.rb"]
       # initializers are now run from RADIANT_ROOT before the instance, so those are no longer copied across
       scripts = Dir["#{root}/script/**/*"].reject { |f| f =~ /(destroy|generate|plugin)$/ }
@@ -85,7 +85,7 @@ class InstanceGenerator < Rails::Generator::Base
       m.file "instance_radiant_config.rb", "config/initializers/radiant_config.rb"
       
       # Install Readme
-      m.readme radiant_root("INSTALL")
+      m.readme radiant_root("INSTALL.md")
     end
   end
 
