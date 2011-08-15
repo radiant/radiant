@@ -47,14 +47,14 @@ describe "Radiant::Extension::Script::Util" do
   it "should determine extension paths" do
     # Bad coupling, but will work by default
     extension_paths.should be_kind_of(Array)
-    extension_paths.should include("#{RADIANT_ROOT}/vendor/extensions/archive")
+    extension_paths.should include("#{RADIANT_ROOT}/test/fixtures/extensions/basic")
   end
 
   it "should determine whether an extension is installed" do
     # Bad coupling, but will work by default
     @script = mock('script action')
     @script.extend Radiant::Extension::Script::Util
-    @script.extension_name = 'archive'
+    @script.extension_name = 'basic'
     @script.should be_installed
   end
 
@@ -98,20 +98,19 @@ describe "Radiant::Extension::Script::Install" do
 end
 
 describe "Radiant::Extension::Script::Uninstall" do
-
   before :each do
-    @extension = mock('Extension', :uninstall => true, :name => 'archive')
+    @extension = mock('Extension', :uninstall => true, :name => 'basic')
     Registry::Extension.stub!(:find).and_return([@extension])
   end
 
   it "should read the extension name from the command line" do
-    @uninstall = Radiant::Extension::Script::Uninstall.new ['archive']
-    @uninstall.extension_name.should == 'archive'
+    @uninstall = Radiant::Extension::Script::Uninstall.new ['basic']
+    @uninstall.extension_name.should == 'basic'
   end
 
   it "should attempt to find the extension and uninstall it" do
     @extension.should_receive(:uninstall).and_return(true)
-    @uninstall = Radiant::Extension::Script::Uninstall.new ['archive']
+    @uninstall = Radiant::Extension::Script::Uninstall.new ['basic']
   end
 
   it "should fail if an extension name is not given" do

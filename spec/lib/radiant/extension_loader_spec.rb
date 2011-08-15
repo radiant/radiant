@@ -96,10 +96,12 @@ describe Radiant::ExtensionLoader do
   end
 
   it "should determine load paths from an extension path" do
-    @instance.send(:load_paths_for, "#{RADIANT_ROOT}/vendor/extensions/archive").should == %W{
-        #{RADIANT_ROOT}/vendor/extensions/archive/lib
-        #{RADIANT_ROOT}/vendor/extensions/archive/app/models
-        #{RADIANT_ROOT}/vendor/extensions/archive}
+    @instance.send(:load_paths_for, "#{RADIANT_ROOT}/test/fixtures/extensions/basic").should =~ %W{
+        #{RADIANT_ROOT}/test/fixtures/extensions/basic/lib
+        #{RADIANT_ROOT}/test/fixtures/extensions/basic/app/models
+        #{RADIANT_ROOT}/test/fixtures/extensions/basic/app/controllers
+        #{RADIANT_ROOT}/test/fixtures/extensions/basic/app/metal
+        #{RADIANT_ROOT}/test/fixtures/extensions/basic}
   end
 
   it "should have load paths" do
