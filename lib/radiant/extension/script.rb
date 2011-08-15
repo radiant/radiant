@@ -85,7 +85,6 @@ Supports:       Radiant #{supports_radiant_version}
   class Uninstaller < Action
     attr_accessor :name
     def initialize(extension)
-      p "initializing uninstaller for #{extension.name}"
       self.name = extension.name
     end
 
@@ -323,9 +322,6 @@ module Radiant
         def initialize(args=[])
           raise ArgumentError, "You must specify an extension to uninstall." if args.blank?
           self.extension_name = to_extension_name(args.shift)
-
-          p "Uninstall: extension_name is #{extension_name}"
-
           if installed?
             find_extension && extension.uninstall
           else
