@@ -51,4 +51,6 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_development_dependency "webrat",            "~> 0.7.3"
   s.add_development_dependency "rspec",             "~> 1.3.1"
   s.add_development_dependency "rspec-rails",       "~> 1.3.3"
+  s.add_development_dependency "sqlite3",           "~> 1.3.4"
+  s.add_development_dependency "ZenTest",           "4.6.0"
 end
