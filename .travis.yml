@@ -1,4 +1,4 @@
-before_script: "cp config/database.sqlite.yml config/database.yml && rake db:migrate"
+before_script: "cp config/database.sqlite.yml config/database.yml && rake db:migrate && rake db:migrate:extensions"
 
 notifications:
   disabled: true
