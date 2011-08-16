@@ -13,7 +13,7 @@ It is built with Rails and is similar to Textpattern or MovableType, but is
 a general purpose content managment system--not merely a blogging engine.}
   s.email = %q{radiant@radiantcms.org}
   s.executables = ["radiant"]
-  s.extra_rdoc_files = ["README", "CONTRIBUTORS", "CHANGELOG", "INSTALL", "LICENSE"]
+  s.extra_rdoc_files = ["README.md", "CONTRIBUTORS.md", "CHANGELOG.md", "INSTALL.md", "LICENSE.md"]
   ignores = File.read('.gitignore').split("\n").inject([]) {|a,p| a + Dir[p] }
   s.files = Dir['**/*','.gitignore', 'public/.htaccess', 'log/.keep', 'vendor/extensions/.keep'] - ignores
   s.homepage = %q{http://radiantcms.org}

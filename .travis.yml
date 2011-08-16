@@ -1,10 +1,13 @@
-before_script: "cp config/database.sqlite.yml config/database.yml && rake db:migrate && rake db:migrate:extensions"
+before_script:
+  - "cp config/database.sqlite.yml config/database.yml"
+  - "rake db:migrate"
+  - "rake db:migrate:extensions"
 
 notifications:
   recipients:
     - radiantcms-ci@googlegroups.com
     - ci@spanner.org
-  irc: "irc.freenode.org#radiant"
+  irc: "irc.freenode.org#radiantcms"
   
 rvm:
   - 1.8.7
