@@ -31,12 +31,6 @@ describe Radiant::Configuration do
     @configuration.extensions.should be_kind_of(Array)
   end
   
-  it "should have extensions only found in extension paths" do
-    @configuration.extension_paths = [RADIANT_ROOT + "/test/fixtures/extensions"]
-    @configuration.extensions.should include(:basic, :overriding, :load_order_green) 
-    @configuration.extensions.should_not include(:archive, :textile_filter, :markdown_filter) 
-  end
-  
   it "should remove excluded extensions" do
     @configuration.extensions -= [:basic]
     @configuration.extensions.should be_kind_of(Array)
@@ -47,10 +41,6 @@ describe Radiant::Configuration do
     @configuration.admin.should == Radiant::AdminUI.instance
   end
 
-  it "should initialize extension dependencies" do
-    @configuration.extension_dependencies.should eql([])
-  end
-
   it "should deprecate the declaration of extension dependencies" do
     ::ActiveSupport::Deprecation.silence do
       ActiveSupport::Deprecation.should_receive(:warn).and_return(true)
@@ -58,36 +48,11 @@ describe Radiant::Configuration do
     end
   end
 
-  it "should still add extension dependencies" do
-    ::ActiveSupport::Deprecation.silence do
-      @configuration.extension('basic')
-      @configuration.extension_dependencies.should eql(['basic'])
-    end
-  end
-  
-  it "should validate dependencies" do
-    ::ActiveSupport::Deprecation.silence do
-      @configuration.extensions = [BasicExtension]
-      @configuration.extension('basic')
-      @configuration.check_extension_dependencies.should be_true
-    end
-  end
-
-  it "should report missing dependencies" do
-    ::ActiveSupport::Deprecation.silence do
-      @configuration.extensions = [BasicExtension]
-      @configuration.extension('does_not_exist')
-      lambda {
-        @configuration.check_extension_dependencies
-      }.should raise_error(SystemExit)
-    end
-  end
-
   describe "#all_available_extensions" do
     before do
       @spec = mock(Gem::Specification)
       @gem = mock(Rails::GemDependency, :specification => @spec)
-      @configuration.gems = [@gem]
+      Gem.stub!(:loaded_specs).and_return({:mock => @spec})
     end
 
     it "should not load gems that don't follow extension conventions" do
@@ -97,6 +62,7 @@ describe Radiant::Configuration do
     end
 
     it "should skip gems with invalid specifications" do
+      @spec.stub!(:full_gem_path).and_return(File.join(RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-extension-0.0.0)))
       @configuration.gems = [Rails::GemDependency.new('bogus_gem')]
       @configuration.all_available_extensions.should_not include(:bogus_gem)
     end
@@ -108,19 +74,12 @@ describe Radiant::Configuration do
   end
 
   describe "#gem" do
-    it "should add an extension gem to extensions array" do
-      @configuration.gem 'radiant-gem_ext-extension'
-      @configuration.extensions.should include(:gem_ext)
-    end
-    it "should not add an extension to the extensions array if :all is present" do
-      @configuration.extensions = [:all]
-      @configuration.gem 'radiant-gem_ext-extension'
-      @configuration.extensions.should_not include(:gem_ext)
-    end
-    it "should not add an extension to the extensions array if a symbol for the extension name is present" do
-      @configuration.extensions = [:gem_ext]
-      @configuration.gem 'radiant-gem_ext-extension'
-      @configuration.extensions.should include(:gem_ext)
+    it "should be deprecated" do
+      ::ActiveSupport::Deprecation.silence do
+        ActiveSupport::Deprecation.should_receive(:warn).and_return(true)
+        @configuration.gem 'radiant-gem_ext-extension'
+        @configuration.extensions.should_not include(:gem_ext)
+      end
     end
   end
 end
@@ -173,12 +132,6 @@ describe Radiant::Initializer do
 
   it "should load metal from RADIANT_ROOT and exensions" do
     Rails::Rack::Metal.metal_paths.should == ["#{RADIANT_ROOT}/app/metal", "#{RADIANT_ROOT}/test/fixtures/extensions/overriding/app/metal", "#{RADIANT_ROOT}/test/fixtures/extensions/basic/app/metal"]
-  end
-
-  it "should check dependent extensions" do
-    @initializer.configuration.frameworks = [] # ActionMailer not loaded at this point
-    @initializer.configuration.should_receive(:check_extension_dependencies)
-    @initializer.after_initialize
   end
 
   it "should remove extension gem paths from ActiveSupport::Dependencies" do

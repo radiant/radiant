@@ -17,7 +17,7 @@ describe Radiant::ExtensionLoader do
     @extension_paths = @extensions.map do |ext|
       File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/#{ext}")
     end
-    Radiant::AdminUI.tabs.clear
+    Radiant::AdminUI.instance.initialize_nav
   end
 
   it "should be a Simpleton" do
@@ -87,12 +87,6 @@ describe Radiant::ExtensionLoader do
     @instance.stub!(:all_extension_roots).and_return(@extension_paths)
     @configuration.should_receive(:extensions).at_least(:once).and_return(extensions)
     lambda { @instance.send(:select_extension_roots) }.should raise_error(LoadError)
-  end
-
-  it "should skip invalid gems" do
-    @configuration.stub!(:extension_paths).and_return([])
-    @configuration.stub!(:gems).and_return([Rails::GemDependency.new('bogus_gem')])
-    @instance.send(:all_extension_roots).should eql([])
   end
 
   it "should determine load paths from an extension path" do

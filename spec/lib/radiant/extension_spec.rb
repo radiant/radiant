@@ -126,7 +126,7 @@ describe Radiant::Extension, "when inactive" do
 
   before :each do
     BasicExtension.deactivate
-    Radiant::AdminUI.tabs.clear
+    Radiant::AdminUI.instance.initialize_nav
   end
 
   it "should become active when activated" do

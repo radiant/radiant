@@ -126,8 +126,13 @@ module Radiant
     end
     
     def initialize
-      @nav = NavTab.new("Tab Container")
+      initialize_nav
       load_default_regions
+    end
+    
+    def initialize_nav
+      @nav = NavTab.new("Tab Container")
+      load_default_nav
     end
     
     def load_default_nav

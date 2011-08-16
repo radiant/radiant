@@ -227,8 +227,7 @@ module Radiant
     end
     
     def initialize_default_admin_tabs
-      admin.nav.clear
-      admin.load_default_nav
+      admin.initialize_nav
     end
 
     def initialize_framework_views
