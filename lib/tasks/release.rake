@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'rake/testtask'
-require 'rake/rdoctask'
+require 'rdoc/task'
 require 'rake/gempackagetask'
 require 'radiant'
 

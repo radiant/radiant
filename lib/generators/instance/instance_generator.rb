@@ -73,6 +73,9 @@ class InstanceGenerator < Rails::Generator::Base
       }
 
       # Instance Rakefile
+      m.file "instance_gemfile", "Gemfile"
+
+      # Instance Rakefile
       m.file "instance_rakefile", "Rakefile"
 
       # Instance Configurations

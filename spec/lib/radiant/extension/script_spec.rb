@@ -177,7 +177,8 @@ describe "Registry::Action" do
   end
 
   it "should shell out with the specified rake task if it exists" do
-    rake_file = File.join(RADIANT_ROOT, 'vendor', 'rails', 'railties', 'lib', 'tasks', 'misc.rake')
+    rails_gemspec = Bundler.load.specs.find{|s| s.name == 'rails' }
+    rake_file = File.join(rails_gemspec.full_gem_path, 'lib', 'tasks', 'misc.rake')
     load rake_file
     @action.should_receive(:`).with("rake secret RAILS_ENV=#{RAILS_ENV}")
     @action.rake('secret')
