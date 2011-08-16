@@ -4,10 +4,10 @@ require File.join(File.dirname(__FILE__), '..', 'config', 'boot')
 
 $LOAD_PATH << File.join(File.dirname(__FILE__), '..')
 
-require 'lib/ruby_version_check'
+require 'ruby_version_check'
 Signal.trap("INT") { puts; exit }
 
-require 'lib/radiant'
+require 'radiant'
 if ARGV.any? { |arg| %w(--version -v).any? { |flag| arg == flag } }
   puts "Radiant #{Radiant::Version}"
   exit 0
@@ -15,7 +15,7 @@ end
 
 app_path = ARGV.first
 
-require 'lib/rails_generator'
+require 'rails_generator'
 require 'rails_generator/scripts/generate'
 
 class Rails::Generator::Base

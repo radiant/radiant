@@ -18,8 +18,15 @@ namespace :db do
     end
   end
   
+  task :initalize => :environment do
+    require 'highline/import'
+    if ENV['OVERWRITE'].to_s.downcase == 'true' or agree("This task will destroy any data in the database. Are you sure you want to \ncontinue? [yn] ")
+      Rake::Task["db:schema:load"].invoke
+    end
+  end
+  
   desc "Bootstrap your database for Radiant."
-  task :bootstrap => :remigrate do
+  task :bootstrap => :initalize do
     require 'radiant/setup'
     Radiant::Setup.bootstrap(
       :admin_name => ENV['ADMIN_NAME'],

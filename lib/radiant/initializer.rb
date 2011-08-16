@@ -220,6 +220,10 @@ end_error
       ActiveSupport::Dependencies.autoload_once_paths -= extension_loader.extension_load_paths
     end
 
+    def load_gems
+      @bundler_loaded ||= Bundler.require :default, Rails.env
+    end
+
     def load_plugins
       super
       extension_loader.load_extensions

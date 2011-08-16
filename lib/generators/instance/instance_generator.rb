@@ -42,11 +42,12 @@ class InstanceGenerator < Rails::Generator::Base
       base_dirs = %w(config config/environments config/initializers db log script public vendor/plugins vendor/extensions)
       text_files = %w(CHANGELOG.md CONTRIBUTORS.md LICENSE.md INSTALL.md README.md)
       environments = Dir["#{root}/config/environments/*.rb"]
-      # initializers are now run from RADIANT_ROOT before the instance, so those are no longer copied across
+      bundler_compatibility_files = %w{config/preinitializer.rb}
+      schema_file = %w{db/schema.rb}
       scripts = Dir["#{root}/script/**/*"].reject { |f| f =~ /(destroy|generate|plugin)$/ }
       public_files = ["public/.htaccess"] + Dir["#{root}/public/**/*"]
       
-      files = base_dirs + text_files + environments + scripts + public_files
+      files = base_dirs + text_files + environments + bundler_compatibility_files + schema_file + scripts + public_files
       files.map! { |f| f = $1 if f =~ %r{^#{root}/(.+)$}; f }
       files.sort!
       
@@ -72,7 +73,7 @@ class InstanceGenerator < Rails::Generator::Base
         :socket   => options[:db] == "mysql" ? mysql_socket_location : nil
       }
 
-      # Instance Rakefile
+      # Instance Gemfile
       m.file "instance_gemfile", "Gemfile"
 
       # Instance Rakefile
