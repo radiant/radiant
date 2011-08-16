@@ -110,67 +110,9 @@ module Radiant
   end
 
   class GemBoot < Boot
-    def load_initializer
-      self.class.load_rubygems
-      load_radiant_gem
-      super
-    end
-
+    # The location and version of the radiant gem should be set in your Gemfile
     def load_error_message
       "Please reinstall the Radiant gem with the command 'gem install radiant'."
-    end
-
-    def load_radiant_gem
-      if version = self.class.gem_version
-        gem 'radiant', version
-      else
-        gem 'radiant'
-      end
-    rescue Gem::LoadError => load_error
-      if load_error.message =~ /Could not find RubyGem radiant/
-        STDERR.puts %(Missing the Radiant #{version} gem. Please `gem install -v=#{version} radiant`, update your RADIANT_GEM_VERSION setting in config/environment.rb for the Radiant version you do have installed, or comment out RADIANT_GEM_VERSION to use the latest version installed.)
-        exit 1
-      else
-        raise
-      end
-    end
-
-    class << self
-      def rubygems_version
-        Gem::RubyGemsVersion rescue nil
-      end
-
-      def gem_version
-        if defined? RADIANT_GEM_VERSION
-          RADIANT_GEM_VERSION
-        elsif ENV.include?('RADIANT_GEM_VERSION')
-          ENV['RADIANT_GEM_VERSION']
-        else
-          parse_gem_version(read_environment_rb)
-        end
-      end
-
-      def load_rubygems
-        min_version = '1.3.2'
-        require 'rubygems'
-        unless rubygems_version >= min_version
-          $stderr.puts %Q(Radiant requires RubyGems >= #{min_version} (you have #{rubygems_version}). Please `gem update --system` and try again.)
-          exit 1
-        end
-
-      rescue LoadError
-        $stderr.puts %Q(Radiant requires RubyGems >= #{min_version}. Please install RubyGems and try again: http://rubygems.rubyforge.org)
-        exit 1
-      end
-
-      def parse_gem_version(text)
-        $1 if text =~ /^[^#]*RADIANT_GEM_VERSION\s*=\s*["']([!~<>=]*\s*[\d.]+)["']/
-      end
-
-      private
-        def read_environment_rb
-          File.read("#{RAILS_ROOT}/config/environment.rb")
-        end
     end
   end
 end

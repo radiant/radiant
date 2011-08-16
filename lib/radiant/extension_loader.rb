@@ -164,10 +164,7 @@ module Radiant
           roots = configuration.extension_paths.map do |path|
             Dir["#{path}/*"].map {|f| File.expand_path(f) if File.directory?(f) }.compact.sort
           end
-          configuration.gems.inject(roots) do |paths,gem|
-            paths.tap { |p| p << gem.specification.full_gem_path if gem.specification and
-                            gem.specification.full_gem_path[/radiant-.*-extension-([\d\.a-z]+|[a-z\d]+)$/] }
-          end
+          roots << configuration.extension_gem_paths
           roots.flatten
         end
       end

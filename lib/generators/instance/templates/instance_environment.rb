@@ -73,42 +73,6 @@ Radiant::Initializer.run do |config|
     end
   end
 
-  # core dependencies
-  config.gem "acts_as_tree",  :version => "~> 0.1.1"
-  config.gem "compass",       :version => "~> 0.11.1"
-  config.gem "delocalize",    :version => "~> 0.2.3"
-  config.gem "haml",          :version => "~> 3.1.1"
-  config.gem "highline",      :version => "~> 1.6.2"
-  config.gem "rack",          :version => "~> 1.1.1"
-  config.gem "rack-cache",    :version => "~> 1.0.2"
-  config.gem "radius",        :version => "~> 0.7.0.prerelease3"
-  config.gem "rake",          :version => "~> 0.9.2"
-  config.gem "will_paginate", :version => "~> 2.3.11"
-
-  # standard extensions
-  config.gem "radiant-archive-extension",             :version => "~> 1.0.0"
-  config.gem "radiant-clipped-extension",             :version => "~> 1.0.0"
-  # config.gem "radiant-debug-extension",               :version => "~> 1.0.0"
-  config.gem "radiant-exporter-extension",            :version => "~> 1.0.0"
-  config.gem "radiant-markdown_filter-extension",     :version => "~> 1.0.0"
-  config.gem "radiant-sheets-extension",              :version => "~> 1.0.0.pre"
-  config.gem "radiant-site_templates-extension",      :version => "~> 1.0.0"
-  config.gem "radiant-smarty_pants_filter-extension", :version => "~> 1.0.0"
-  config.gem "radiant-textile_filter-extension",      :version => "~> 1.0.0"
-
-  # language packs are not installed by default
-  # use `gem install [language pack]` to install
-  # then uncomment the appropriate line below
-  # config.gem "radiant-dutch_language_pack-extension",     :version => "~> 1.0.0"
-  # config.gem "radiant-french_language_pack-extension",    :version => "~> 1.0.0"
-  # config.gem "radiant-german_language_pack-extension",    :version => "~> 1.0.0"
-  # config.gem "radiant-italian_language_pack-extension",   :version => "~> 1.0.0"
-  # config.gem "radiant-japanese_language_pack-extension",  :version => "~> 1.0.0"
-  # config.gem "radiant-russian_language_pack-extension",   :version => "~> 1.0.0"
-
-  # application extensions
-  # config.gem "radiant-example-extension", :version => "1.0.0", :lib => false
-
   config.after_initialize do
     # Add new inflection rules using the following format:
     ActiveSupport::Inflector.inflections do |inflect|

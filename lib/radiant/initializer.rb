@@ -36,12 +36,10 @@ module Radiant
     attr_accessor :extension_paths, :ignored_extensions
     attr_writer :extensions
     attr_accessor :view_paths
-    attr_accessor :extension_dependencies
 
     def initialize
       self.view_paths = []
       self.extension_paths = default_extension_paths
-      self.extension_dependencies = []
       self.ignored_extensions = []
       super
     end
@@ -89,13 +87,17 @@ module Radiant
         Dir["#{path}/*"].select {|f| File.directory?(f) }
       end
       # load any gem that follows extension rules
-      gems.inject(all) do |available,gem|
-        available << gem.specification.full_gem_path if gem.specification and
-          gem.specification.full_gem_path[/radiant-.*-extension-[\d\.]+$/]
-        available
-      end
+      all << extension_gem_paths
       # strip version info to glean proper extension names
       all.flatten.map {|f| File.basename(f).gsub(/^radiant-|-extension-[\d\.]+$/, '') }.sort.map {|e| e.to_sym }
+    end
+    
+    def extension_gems
+      Gem.loaded_specs.values.select { |gemspec| gemspec.full_gem_path[/radiant-.*-extension-[\d\.]+$/] }
+    end
+    
+    def extension_gem_paths
+      extension_gems.map(&:full_gem_path)
     end
     
     def admin
@@ -103,39 +105,12 @@ module Radiant
     end
 
     def extension(ext)
-      ::ActiveSupport::Deprecation.warn("Extension dependencies have been deprecated. Extensions may be packaged as gems and use the Gem spec to declare dependencies.", caller)
-      @extension_dependencies << ext unless @extension_dependencies.include?(ext)
+      ::ActiveSupport::Deprecation.warn("Extension dependencies have been deprecated and are no longer supported in radiant 1.0. Extensions with dependencies should be packaged as gems and use the Gem spec to declare them.", caller)
     end
 
     def gem(name, options = {})
+      ::ActiveSupport::Deprecation.warn("Please declare gem dependencies in your Gemfile (or for an extension, in the .gemspec file).", caller)
       super
-      if gems.last.name =~ /^radiant-(.*)-extension$/ && extension_symbol = $1.intern
-        @extensions ||= []
-        if (@extensions & [extension_symbol, :all]).empty?
-          extensions << extension_symbol
-        end
-      end
-    end
-
-    def check_extension_dependencies
-      unloaded_extensions = []
-      @extension_dependencies.each do |ext|
-        extension = ext.camelcase + 'Extension'
-        begin
-          extension_class = extension.constantize
-          unloaded_extensions << extension unless defined?(extension_class) && (extension_class.active?)
-        rescue NameError
-          unloaded_extensions << extension
-        end
-      end
-      if unloaded_extensions.any?
-        abort <<-end_error
-Missing these required extensions:
-#{unloaded_extensions}
-end_error
-      else
-        return true
-      end
     end
 
     private
@@ -249,7 +224,6 @@ end_error
     def after_initialize
       super
       extension_loader.activate_extensions
-      configuration.check_extension_dependencies
     end
     
     def initialize_default_admin_tabs
