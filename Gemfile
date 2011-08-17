@@ -12,7 +12,7 @@ group :test do
   gem 'webrat', '~>0.7.3'
   gem 'rspec', '~>1.3.1'
   gem 'rspec-rails', '~>1.3.3'
-  gem "ZenTest", "~>4.6.0"
+  gem "ZenTest", "4.6.0"
 end
 
 group :cucumber do
@@ -22,5 +22,5 @@ group :cucumber do
   gem 'webrat', '~>0.7.3'
   gem 'rspec', '~>1.3.1'
   gem 'rspec-rails', '~>1.3.3'
-  gem "ZenTest", "~>4.6.0"
+  gem "ZenTest", "4.6.0"
 end
