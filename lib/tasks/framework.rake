@@ -109,60 +109,61 @@ unless File.directory? "#{RAILS_ROOT}/app"
         TaskSupport.cache_admin_js
       end
 
-      desc "Update config/boot.rb from your current radiant install"
+      desc "Update configuration files from your current radiant install"
       task :configs do
         require 'erb'
         FileUtils.cp("#{File.dirname(__FILE__)}/../generators/instance/templates/instance_boot.rb", RAILS_ROOT + '/config/boot.rb')
+        FileUtils.cp("#{File.dirname(__FILE__)}/../../config/preinitializer.rb", RAILS_ROOT + '/config/preinitializer.rb')
         instances = {
           :env          => "#{RAILS_ROOT}/config/environment.rb",
           :development  => "#{RAILS_ROOT}/config/environments/development.rb",
           :test         => "#{RAILS_ROOT}/config/environments/test.rb",
-          :production   => "#{RAILS_ROOT}/config/environments/production.rb"
+          :cucumber     => "#{RAILS_ROOT}/config/environments/cucumber.rb",
+          :production   => "#{RAILS_ROOT}/config/environments/production.rb",
+          :gemfile      => "#{RAILS_ROOT}/Gemfile"
         }
         tmps = {
           :env          => "#{RAILS_ROOT}/config/environment.tmp",
           :development  => "#{RAILS_ROOT}/config/environments/development.tmp",
           :test         => "#{RAILS_ROOT}/config/environments/test.tmp",
-          :production   => "#{RAILS_ROOT}/config/environments/production.tmp"
+          :cucumber     => "#{RAILS_ROOT}/config/environments/cucumber.rb",
+          :production   => "#{RAILS_ROOT}/config/environments/production.tmp",
+          :gemfile      => "#{RAILS_ROOT}/Gemfile.tmp"
         }
         gens = {
           :env          => "#{File.dirname(__FILE__)}/../generators/instance/templates/instance_environment.rb",
           :development  => "#{File.dirname(__FILE__)}/../../config/environments/development.rb",
           :test         => "#{File.dirname(__FILE__)}/../../config/environments/test.rb",
-          :production   => "#{File.dirname(__FILE__)}/../../config/environments/production.rb"
+          :cucumber     => "#{File.dirname(__FILE__)}/../../config/environments/cucumber.rb",
+          :production   => "#{File.dirname(__FILE__)}/../../config/environments/production.rb",
+          :gemfile      => "#{File.dirname(__FILE__)}/../generators/instance/templates/instance_gemfile"
         }
         backups = {
           :env          => "#{RAILS_ROOT}/config/environment.bak",
           :development  => "#{RAILS_ROOT}/config/environments/development.bak",
           :test         => "#{RAILS_ROOT}/config/environments/test.bak",
-          :production   => "#{RAILS_ROOT}/config/environments/production.bak"
+          :cucumber     => "#{RAILS_ROOT}/config/environments/cucumber.bak",
+          :production   => "#{RAILS_ROOT}/config/environments/production.bak",
+          :gemfile      => "#{RAILS_ROOT}/Gemfile.bak"
         }
-        @warning_start = "** WARNING **
+        warning = ""
+        [:env, :development, :test, :cucumber, :production, :gemfile].each do |env_file|
+          File.open(tmps[env_file], 'w') do |f|
+            app_name = File.basename(File.expand_path(RAILS_ROOT))
+            f.write ERB.new(File.read(gens[env_file])).result(binding)
+          end
+          next if File.exist?(instances[env_file]) && FileUtils.compare_file(instances[env_file], tmps[env_file])
+          FileUtils.cp(instances[env_file], backups[env_file]) if File.exist?(instances[env_file])
+          FileUtils.cp(tmps[env_file], instances[env_file])
+          FileUtils.rm(tmps[env_file])
+          warning << "
+- #{instances[env_file].sub(/^#{RAILS_ROOT}/, '')}"
+        end
+        unless warning.blank?
+          puts "** WARNING **
 The following files have been changed in Radiant. Your originals have 
 been backed up with .bak extensions. Please copy your customizations to 
-the new files:"
-        [:env, :development, :test, :production].each do |env_type|
-          File.open(tmps[env_type], 'w') do |f|
-            app_name = File.basename(File.expand_path(RAILS_ROOT))
-            f.write ERB.new(File.read(gens[env_type])).result(binding)
-          end
-          unless FileUtils.compare_file(instances[env_type], tmps[env_type])
-            FileUtils.cp(instances[env_type], backups[env_type])
-            FileUtils.cp(tmps[env_type], instances[env_type])
-            @warnings ||= ""
-            case env_type
-            when :env
-              @warnings << "
-- config/environment.rb"
-            else
-              @warnings << "
-- config/environments/#{env_type.to_s}.rb"
-            end
-          end
-          FileUtils.rm(tmps[env_type])
-        end
-        if @warnings
-          puts @warning_start + @warnings
+the new files: #{warning}"
         end
       end
 
@@ -210,14 +211,6 @@ the new files:"
           end
         end
       end
-
-      # desc "Update initializers from your current radiant install"
-      # task :initializers do
-      #   project_dir = RAILS_ROOT + '/config/initializers/'
-      #   FileUtils.mkpath project_dir
-      #   initializers = Dir["#{File.dirname(__FILE__)}/../../config/initializers/*.rb"]
-      #   FileUtils.cp(initializers, project_dir)
-      # end
     end
   end
 end

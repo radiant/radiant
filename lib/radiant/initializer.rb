@@ -105,7 +105,7 @@ module Radiant
     end
 
     def extension(ext)
-      ::ActiveSupport::Deprecation.warn("Extension dependencies have been deprecated and are no longer supported in radiant 1.0. Extensions with dependencies should be packaged as gems and use the Gem spec to declare them.", caller)
+      ::ActiveSupport::Deprecation.warn("Extension dependencies have been deprecated and are no longer supported in radiant 1.0. Extensions with dependencies should be packaged as gems and use the .gemspec to declare them.", caller)
     end
 
     def gem(name, options = {})
