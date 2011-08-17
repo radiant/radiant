@@ -7,6 +7,7 @@ notifications:
   recipients:
     - radiantcms-ci@googlegroups.com
     - ci@spanner.org
+    - git@johnmuhl.com
   irc: "irc.freenode.org#radiantcms"
   
 rvm:
