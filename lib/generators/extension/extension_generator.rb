@@ -24,16 +24,14 @@ class ExtensionGenerator < Rails::Generator::NamedBase
       m.directory "#{extension_path}/config/initializers"
       m.directory "#{extension_path}/db/migrate"
       m.directory "#{extension_path}/lib/tasks"
-      m.directory "#{extension_path}/lib/radiant-#{file_name}-extension"
       
-      m.template 'README',              "#{extension_path}/README"
+      m.template 'README.md',           "#{extension_path}/README.md"
       m.template 'extension.rb',        "#{extension_path}/#{extension_file_name}.rb"
       m.template 'tasks.rake',          "#{extension_path}/lib/tasks/#{extension_file_name}_tasks.rake"
       m.template 'en.yml',              "#{extension_path}/config/locales/en.yml"
       m.template 'routes.rb',           "#{extension_path}/config/routes.rb"
       m.template 'radiant_config.rb',   "#{extension_path}/config/initializers/radiant_config.rb"
       m.template 'lib.rb',              "#{extension_path}/lib/radiant-#{file_name}-extension.rb"
-      m.template 'version.rb',          "#{extension_path}/lib/radiant-#{file_name}-extension/version.rb"
       m.template 'gemspec.rb',          "#{extension_path}/radiant-#{file_name}-extension.gemspec"
       
       if options[:with_test_unit]
