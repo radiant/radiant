@@ -107,9 +107,11 @@ class Admin::ResourceController < ApplicationController
   # the per_page figure can be set in several ways:
   # request parameter > declared by paginate_models > default set in config entry @admin.pagination.per_page@ > overall default of 50
   def pagination_parameters
+    pp = params[:pp] || Radiant.config['admin.pagination.per_page']
+    pp = (self.class.default_per_page || 50) if pp.blank?
     {
       :page => (params[:p] || 1).to_i, 
-      :per_page => (params[:pp] || self.class.default_per_page || Radiant::Config['admin.pagination.per_page'] || 50).to_i
+      :per_page => pp.to_i
     }
   end
 
