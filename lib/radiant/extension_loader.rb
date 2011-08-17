@@ -60,6 +60,14 @@ module Radiant
       configuration.i18n.load_path.concat(locale_paths.map{ |path| Dir[File.join("#{path}","*.{rb,yml}")] })
     end
 
+    def helper_paths
+      extensions.map { |extension| "#{extension.root}/app/helpers" }.select { |d| File.directory?(d) }
+    end
+
+    def model_paths
+      extensions.map { |extension| "#{extension.root}/app/models" }.select { |d| File.directory?(d) }
+    end
+
     def controller_paths
       extensions.map { |extension| "#{extension.root}/app/controllers" }.select { |d| File.directory?(d) }
     end
@@ -74,6 +82,14 @@ module Radiant
     
     def metal_paths
       load_extension_roots.map { |extension| "#{extension}/app/metal" }.select { |d| File.directory?(d) }.reverse
+    end
+    
+    def eager_load_paths
+      controller_paths + model_paths + helper_paths
+    end
+
+    def add_eager_load_paths
+      configuration.eager_load_paths.concat(eager_load_paths)
     end
 
     # Load the extensions

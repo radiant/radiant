@@ -45,7 +45,7 @@ module Radiant
         load(initializer)
       end
     end
-
+    
     def migrator
       unless @migrator
         extension = self

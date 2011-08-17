@@ -27,6 +27,13 @@ module Radiant
       yield Radiant::Config if block_given?
       Radiant::Config
     end
+    
+    # Radiant.configuration returns the configuration object with which this application was initialized.
+    # For now it's exactly the same as calling Rails.configuration and only here for consistency.
+    #    
+    def configuration
+      Rails.configuration
+    end
   end
   
   # NB. Radiant::Configuration (aka Rails.configuration) is an extension-aware subclass of Rails::Configuration 
@@ -259,6 +266,7 @@ module Radiant
 
     def initialize_routing
       extension_loader.add_controller_paths
+      extension_loader.add_eager_load_paths
       super
     end
     
