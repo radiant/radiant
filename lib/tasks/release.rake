@@ -17,7 +17,7 @@ RUBY_FORGE_GROUPID = '1337'
 RUBY_FORGE_PACKAGEID = '1638'
 
 RDOC_TITLE = "Radiant -- Publishing for Small Teams"
-RDOC_EXTRAS = ["README", "CONTRIBUTORS", "CHANGELOG", "INSTALL", "LICENSE"]
+RDOC_EXTRAS = ["README.md", "CONTRIBUTORS.md", "CHANGELOG.md", "INSTALL.md", "LICENSE.md"]
 
 namespace 'radiant' do
   spec = Gem::Specification.new do |s|

@@ -1,31 +1,19 @@
 module Radiant::AvailableLocales
-
-  def self.locale_paths
-    root_locales = [File.join(RADIANT_ROOT, 'config', 'locales'), File.join(RAILS_ROOT, 'config', 'locales')].uniq
-    unless root_locales.empty?
-      Radiant::ExtensionLoader.locale_paths.dup + root_locales
-    else
-      Radiant::ExtensionLoader.locale_paths
-    end
-  end
-
+  
+  # Returns the list of available locale files in options_for_select format.
+  #
   def self.locales
     available_locales = {}
-
-    locale_paths.each do |path|
-      if File.exists? path
-        Dir.glob(path + "/*.yml").collect do |x|
-          result = File.basename(x, ".yml")
-          # filters out the available_tags files
-          result =~ /\_available_tags/ ? nil : result
-        end.compact.each do |str|
-          locale_file = YAML.load_file(File.join(path, str) + ".yml")
-          lang = locale_file[str]["this_file_language"] if locale_file[str]
-          available_locales.merge! Hash[lang, str] if lang
-        end.freeze
+    Radiant.configuration.i18n.load_path.each do |path|
+      if File.exists?(path) && path !~ /_available_tags/
+        locale_yaml = YAML.load_file(path)
+        stem = File.basename(path, '.yml')
+        if locale_yaml[stem] && lang = locale_yaml[stem]["this_file_language"]
+          available_locales[lang] = stem
+        end
       end
     end
-    available_locales.sort_by{ |s| s[0] }
+    available_locales.collect {|k,v| [k, v]}.sort_by { |s| s[0] }
   end
 
 end

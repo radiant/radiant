@@ -7,9 +7,9 @@ describe Radiant::Extension do
     Radiant::Extension.should respond_to(:instance)
   end
   
-  it "should annotate version, description, url, root and extension_name" do
+  it "should annotate version, description, url, path and extension_name" do
     Radiant::Extension.included_modules.should include(Annotatable)
-    %w{version description url root extension_name}.each do |attribute|
+    %w{version description url path extension_name}.each do |attribute|
       Radiant::Extension.should respond_to(attribute)
     end
   end

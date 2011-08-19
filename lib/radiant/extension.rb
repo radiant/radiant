@@ -7,12 +7,16 @@ module Radiant
     include Simpleton
     include Annotatable
 
-    annotate :version, :description, :url, :root, :extension_name
+    annotate :version, :description, :url, :extension_name, :path
 
     attr_writer :active
     
     def active?
       @active
+    end
+    
+    def root
+      path.to_s
     end
     
     def migrated?

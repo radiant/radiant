@@ -48,28 +48,28 @@ describe Radiant::Configuration do
     end
   end
 
-  describe "#all_available_extensions" do
+  describe "discovering gem extensions" do
     before do
       @spec = mock(Gem::Specification)
-      @gem = mock(Rails::GemDependency, :specification => @spec)
-      Gem.stub!(:loaded_specs).and_return({:mock => @spec})
-    end
-
-    it "should not load gems that don't follow extension conventions" do
-      @spec.stub!(:full_gem_path).and_return(File.join(RADIANT_ROOT, %w(test fixtures gems misnamed_ext-0.0.0)))
-      available_extensions = @configuration.all_available_extensions.map(&:to_s)
-      available_extensions.grep(/misnamed_ext/).should be_empty
-    end
-
-    it "should skip gems with invalid specifications" do
       @spec.stub!(:full_gem_path).and_return(File.join(RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-extension-0.0.0)))
-      @configuration.gems = [Rails::GemDependency.new('bogus_gem')]
-      @configuration.all_available_extensions.should_not include(:bogus_gem)
+      Gem.stub!(:loaded_specs).and_return({
+        'radiant-extension_gem-extension' => @spec,
+        'ordinary_gem' => @spec
+      })
     end
 
-    it "should load gems matching radiant-*-extension" do
-      @spec.stub!(:full_gem_path).and_return(File.join(RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-extension-0.0.0)))
-      @configuration.all_available_extensions.should include(:gem_ext)
+    it "should not catch gems that don't follow the extension-naming convention" do
+      @configuration.gem_extensions.should_not include("ordinary_gem")
+    end
+
+    it "should catch gems whose name matches the extension-naming convention" do
+      @configuration.gem_extensions.should include("extension_gem")
+    end
+  end
+  
+  describe "discovering vendored extensions" do
+    it "should catch extensions regardless of filename" do
+
     end
   end
 
@@ -112,7 +112,7 @@ describe Radiant::Initializer do
   end
   
   it "should add extension controller paths before initializing routing" do
-    @loader.should_receive(:add_controller_paths)
+    @initializer.configuration.should_receive(:add_controller_paths)
     @initializer.initialize_routing
   end
   
@@ -136,8 +136,11 @@ describe Radiant::Initializer do
 
   it "should remove extension gem paths from ActiveSupport::Dependencies" do
     load_paths = [File.join(RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-extension-0.0.0 lib))]
-    @loader.stub!(:extension_load_paths).and_return(load_paths)
+    @loader.should_receive(:paths).with(:plugin).and_return([])
+    @loader.should_receive(:paths).with(:load).and_return(load_paths)
     ActiveSupport::Dependencies.load_once_paths.should_receive(:-).with(load_paths)
     @initializer.add_plugin_load_paths
   end
 end
+
+

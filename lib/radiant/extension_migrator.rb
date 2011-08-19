@@ -8,7 +8,7 @@ module Radiant
       end
       
       def migrate_extensions
-        Rails.configuration.extensions_in_order.each do |ext|
+        Radiant.configuration.enabled_extensions.each do |ext|
           to_migrate = Extension.descendants.detect{|descendant| descendant.name == "#{ext.to_s.camelize}Extension" }
           to_migrate.migrator.migrate
         end

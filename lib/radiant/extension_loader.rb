@@ -1,21 +1,27 @@
 require 'radiant/extension'
+require 'radiant/extension_path'
 require 'method_observer'
 
 module Radiant
   class ExtensionLoader
+    # The ExtensionLoader is reponsible for the loading, activation and reactivation of extensions. 
+    # The noticing of important subdirectories is now handled by the ExtensionPath class.
 
     class DependenciesObserver < MethodObserver
+      # Extends the reload mechanism in ActiveSupport so that extensions are deactivated and reactivated
+      # when model classes are reloaded (in development mode, usually).
+      
       attr_accessor :config
 
-      def initialize(rails_config)
+      def initialize(rails_config) #:nodoc
         @config = rails_config
       end
 
-      def before_clear(*args)
+      def before_clear(*args) #:nodoc
         ExtensionLoader.deactivate_extensions
       end
 
-      def after_clear(*args)
+      def after_clear(*args) #:nodoc
         ExtensionLoader.load_extensions
         ExtensionLoader.activate_extensions
       end
@@ -25,165 +31,99 @@ module Radiant
 
     attr_accessor :initializer, :extensions
 
-    def initialize
+    def initialize #:nodoc
       self.extensions = []
     end
 
-    def configuration
-      initializer.configuration
+    # Returns a list of paths to all the extensions that are enabled in the configuration of this application.
+    #
+    def enabled_extension_paths
+      ExtensionPath.enabled.map(&:to_s)
     end
 
-    def extension_load_paths
-      load_extension_roots.map { |extension| load_paths_for(extension) }.flatten.select { |d| File.directory?(d) }
+    # Returns a list of all the paths discovered within extension roots of the specified type.
+    # (by calling the corresponding class method on ExtensionPath).
+    #
+    #   extension_loader.paths(:metal)         #=> ['extension/app/metal', 'extension/app/metal']
+    #   extension_loader.paths(:controller)    #=> ['extension/app/controllers', 'extension/app/controllers']
+    #   extension_loader.paths(:eager_load)    #=> ['extension/app/controllers', 'extension/app/models', 'extension/app/helpers']
+    #
+    # For compatibility with the old loader, there are also corresponding +type_paths+ 
+    # There are also (deprecated) +add_type_paths+ methods. 
+    #
+    def paths(type)
+      ExtensionPath.send("#{type}_paths".to_sym)
     end
 
-    def plugin_paths
-      load_extension_roots.map {|extension| "#{extension}/vendor/plugins" }.select {|d| File.directory?(d) }
+    # Loads but does not activate all the extensions that have been enabled, in the configured order 
+    # (which defaults to alphabetically). If an extension fails to load an error will be logged
+    # but application startup will not halt. If an extension doesn't exist, a LoadError will be raised
+    # and startup will halt.
+    #
+    def load_extensions
+      configuration = initializer.configuration
+      @observer ||= DependenciesObserver.new(configuration).observe(::ActiveSupport::Dependencies)
+      self.extensions = configuration.enabled_extensions.map { |ext| load_extension(ext) }.compact
     end
-
-    def add_extension_paths
-      extension_load_paths.reverse_each do |path|
-        configuration.autoload_paths.unshift path
-        $LOAD_PATH.unshift path
+    
+    # Loads the specified extension.
+    #
+    def load_extension(name)
+      extension_path = ExtensionPath.find(name)
+      begin
+        constant = "#{name}_extension".camelize
+        require extension_path.required
+        extension = constant.constantize 
+        extension.unloadable
+        extension.path = extension_path
+        extension
+      rescue LoadError, NameError => e
+        $stderr.puts "Could not load extension: #{name}.\n#{e.inspect}"
+        nil
       end
     end
-
-    def add_plugin_paths
-      configuration.plugin_paths.concat plugin_paths
-    end
     
-    def locale_paths
-      load_extension_roots.map { |extension| "#{extension}/config/locales" }.select { |d| File.directory?(d) }.reverse
-    end
-    
-    def add_locale_paths
-      configuration.i18n.load_path.concat(locale_paths.map{ |path| Dir[File.join("#{path}","*.{rb,yml}")] })
-    end
-
-    def helper_paths
-      extensions.map { |extension| "#{extension.root}/app/helpers" }.select { |d| File.directory?(d) }
-    end
-
-    def model_paths
-      extensions.map { |extension| "#{extension.root}/app/models" }.select { |d| File.directory?(d) }
-    end
-
-    def controller_paths
-      extensions.map { |extension| "#{extension.root}/app/controllers" }.select { |d| File.directory?(d) }
-    end
-
-    def add_controller_paths
-      configuration.controller_paths.concat(controller_paths)
-    end
-
-    def view_paths
-      extensions.map { |extension| "#{extension.root}/app/views" }.select { |d| File.directory?(d) }.reverse
-    end
-    
-    def metal_paths
-      load_extension_roots.map { |extension| "#{extension}/app/metal" }.select { |d| File.directory?(d) }.reverse
-    end
-    
-    def eager_load_paths
-      controller_paths + model_paths + helper_paths
-    end
-
-    def add_eager_load_paths
-      configuration.eager_load_paths.concat(eager_load_paths)
-    end
-
-    # Load the extensions
-    def load_extensions
-      @observer ||= DependenciesObserver.new(configuration).observe(::ActiveSupport::Dependencies)
-      self.extensions = load_extension_roots.map do |root|
-        begin
-          extension_file = "#{File.basename(root).gsub(/^radiant-|-extension-([\d\.a-z]+|[a-z\d]+)$/,'')}_extension"
-          extension = extension_file.camelize.constantize
-          extension.unloadable
-          extension.root = root
-          extension
-        rescue LoadError, NameError => e
-          $stderr.puts "Could not load extension from file: #{extension_file}.\n#{e.inspect}"
-          nil
-        end
-      end.compact
-    end
-    
+    # Loads all the initializers defined in enabled extensions, in the configured order.
+    #
     def load_extension_initalizers
       extensions.each &:load_initializers
     end
 
+    # Deactivates all enabled extensions.
+    #
     def deactivate_extensions
       extensions.each &:deactivate
     end
 
+    # Activates all enabled extensions and makes sure that any newly declared subclasses of Page are recognised.
+    # The admin UI and views have to be reinitialized each time to pick up changes and avoid duplicates.
+    #
     def activate_extensions
-      initializer.initialize_default_admin_tabs
-      # Reset the view paths after
-      initializer.initialize_framework_views
-      # Reset the admin UI regions
-      initializer.admin.load_default_regions
+      initializer.initialize_views
       extensions.each &:activate
-      # Make sure we have our subclasses loaded!
       Page.load_subclasses
     end
     alias :reactivate :activate_extensions
 
-    private
-
-      def load_paths_for(dir)
-        if File.directory?(dir)
-          %w(lib app/models app/controllers app/metal app/helpers test/helpers).collect do |p|
-            path = "#{dir}/#{p}"
-            path if File.directory?(path)
-          end.compact << dir
-        else
-          []
+    class << self
+      # Builds an ExtensionPath object from the supplied path, working out the name of the extension on the way.
+      # The ExtensionPath object will later be used to scan and load the extension.
+      # If two arguments are given, the first is taken to be the extension name and the second its path. 
+      # If only one argument is given, it should be a path. The extension name will be derived from its basename.
+      #
+      def record_path(path, name=nil)
+        ExtensionPath.from_path(path, name)
+      end
+    
+      %w{controller model view metal plugin load locale}.each do |type|
+        define_method("#{type}_paths".to_sym) do
+          paths(type)
+        end
+        define_method("add_#{type}_paths".to_sym) do |additional_paths|
+          ::ActiveSupport::Deprecation.warn("ExtensionLoader.add_#{type}_paths is has been moved and is deprecated. Please use Radiant.configuration.add_#{type}_paths", caller)
+          initializer.configuration.send("add_#{type}_paths".to_sym, additional_paths)
         end
       end
-
-      def load_extension_roots
-        @load_extension_roots ||= unless configuration.extensions.empty?
-          select_extension_roots
-        else
-          []
-        end
-      end
-      
-      def select_extension_roots
-        all_roots = all_extension_roots.dup
-        roots = configuration.extensions.uniq.map do |ext_name|
-          if :all === ext_name
-            :all
-          else
-            ext_path = all_roots.detect do |maybe_path|
-              File.basename(maybe_path).gsub(/^radiant-|-extension-([\d\.a-z]+|[a-z\d]+)$/, '') == ext_name.to_s
-            end
-            raise LoadError, "Cannot find the extension '#{ext_name}'!" if ext_path.nil?
-            all_roots.delete(ext_path)
-          end
-        end
-        if placeholder = roots.index(:all)
-          # replace the :all symbol with any remaining paths
-          roots[placeholder, 1] = all_roots
-        end
-        if configuration.ignored_extensions
-          configuration.ignored_extensions.each do |removed|
-            roots.delete_if{|root| root.split('/').last.to_s == removed.to_s }
-          end
-        end
-        roots
-      end
-
-      def all_extension_roots
-        @all_extension_roots ||= begin
-          roots = configuration.extension_paths.map do |path|
-            Dir["#{path}/*"].map {|f| File.expand_path(f) if File.directory?(f) }.compact.sort
-          end
-          roots << configuration.extension_gem_paths
-          roots.flatten
-        end
-      end
-
+    end
   end
 end

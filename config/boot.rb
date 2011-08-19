@@ -81,9 +81,6 @@ module Radiant
         $stderr.puts %(Radiant could not be initialized. #{load_error_message})
         exit 1
       end
-      Radiant::Initializer.run(:set_load_path)
-      Radiant::Initializer.run(:install_gem_spec_stubs)
-      Rails::GemDependency.add_frozen_gem_path
     end
   end
 
@@ -112,7 +109,7 @@ module Radiant
   class GemBoot < Boot
     # The location of the radiant gem should be set in the Gemfile
     def load_error_message
-      "Please reinstall the Radiant gem with the command 'gem install radiant'."
+      "Have you run `bundle install`?'."
     end
   end
 end
