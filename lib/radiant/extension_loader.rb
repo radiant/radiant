@@ -108,8 +108,8 @@ module Radiant
     class << self
       # Builds an ExtensionPath object from the supplied path, working out the name of the extension on the way.
       # The ExtensionPath object will later be used to scan and load the extension.
-      # If two arguments are given, the first is taken to be the extension name and the second its path. 
-      # If only one argument is given, it should be a path. The extension name will be derived from its basename.
+      # An extension name can be supplied in addition to the path. It will be processed in the usual way to 
+      # remove radiant- and -extension and any verion numbering.
       #
       def record_path(path, name=nil)
         ExtensionPath.from_path(path, name)

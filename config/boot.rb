@@ -107,7 +107,7 @@ module Radiant
   end
 
   class GemBoot < Boot
-    # The location of the radiant gem should be set in the Gemfile
+    # The location and version of the radiant gem should be set in your Gemfile
     def load_error_message
       "Have you run `bundle install`?'."
     end

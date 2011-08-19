@@ -392,14 +392,13 @@ module Radiant
       super
     end
 
-    # Returns the Radiant::AdminUI singleton so that initializer methods can set up the admin interface.
+    # Returns the Radiant::AdminUI singleton so that the initializer can set up the admin interface.
     #
     def admin
       configuration.admin
     end
 
-    # Returns the ExtensionLoader singleton that is called on to load extensions and also to report back any significant 
-    # paths they contain.
+    # Returns the ExtensionLoader singleton that will eventually load extensions.
     #
     def extension_loader
       ExtensionLoader.instance {|l| l.initializer = self }
