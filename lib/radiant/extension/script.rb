@@ -274,7 +274,7 @@ module Radiant
         end
 
         def installed?
-          path_match = Regexp.compile("#{extension_name}$")
+          path_match = Regexp.compile("(^|/|\\\\)#{extension_name}$")
           extension_paths.any? {|p| p =~ path_match }
         end
 
