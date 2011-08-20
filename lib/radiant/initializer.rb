@@ -292,7 +292,7 @@ module Radiant
     end
 
     # Extends the Rails initializer to add plugin paths in extensions
-    # and makes extension gem load paths reloadable (eg in development mode)
+    # and makes extension load paths reloadable (eg in development mode)
     #
     def add_plugin_load_paths
       configuration.add_plugin_paths(extension_loader.paths(:plugin))

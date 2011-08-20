@@ -72,8 +72,7 @@ module Radiant
       extension_path = ExtensionPath.find(name)
       begin
         constant = "#{name}_extension".camelize
-        require extension_path.required
-        extension = constant.constantize 
+        extension = constant.constantize
         extension.unloadable
         extension.path = extension_path
         extension

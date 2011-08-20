@@ -56,8 +56,10 @@ module Radiant
       @@known_paths = {}
     end
     
-    # Returns a list of all the likely load paths found within this extension root. It includes any of these 
+    # Returns a list of all the likely load paths found within this extension root. It includes all of these 
     # that exist and are directories:
+    #
+    # * path
     # * path/lib 
     # * path/app/models 
     # * path/app/controllers
@@ -68,7 +70,7 @@ module Radiant
     # You can call the class method ExtensionPath.load_paths to get a flattened list of all the load paths in all the enabled extensions.
     #
     def load_paths
-      %w(lib app/models app/controllers app/metal app/helpers test/helpers).collect { |d| check_subdirectory(d) }.flatten.compact
+      %w(lib app/models app/controllers app/metal app/helpers test/helpers).collect { |d| check_subdirectory(d) }.push(path).flatten.compact
     end
 
     # Returns a list of all the +vendor/plugin+ paths found within this extension root.
@@ -181,7 +183,7 @@ module Radiant
 
   private
 
-    # If the supplied path exists and is a directory, it is returned. Otherwise, nil.
+    # If the supplied path within the extension root exists and is a directory, its absolute path is returned. Otherwise, nil.
     #
     def check_subdirectory(subpath)
       subdirectory = File.join(path, subpath)
