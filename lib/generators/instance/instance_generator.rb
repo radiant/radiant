@@ -74,7 +74,11 @@ class InstanceGenerator < Rails::Generator::Base
       }
 
       # Instance Gemfile
-      m.file "instance_gemfile", "Gemfile"
+      m.template "instance_gemfile", "Gemfile", :assigns => {
+        :radiant_path => RADIANT_ROOT,
+        :radiant_version => Radiant::Version.to_s,
+        :sqlite_version => Gem.loaded_specs['sqlite3'].version.to_s
+      }
 
       # Instance Rakefile
       m.file "instance_rakefile", "Rakefile"
@@ -88,7 +92,6 @@ class InstanceGenerator < Rails::Generator::Base
       m.template "instance_boot.rb", "config/boot.rb"
       m.file "instance_radiant_config.rb", "config/initializers/radiant_config.rb"
       
-      # Install Readme
       m.readme radiant_root("INSTALL.md")
     end
   end
