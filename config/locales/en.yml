@@ -75,7 +75,10 @@ en:
       only_day: "%e"
       short: "%e %b"
     month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]   
-    order: [ :year, :month, :day ]
+    order:
+      - :year
+      - :month
+      - :day
   delete_layout: 'Delete Layout'
   delete_pages: 'Delete %{pages}'
   delete_snippet: 'Delete Snippet'
