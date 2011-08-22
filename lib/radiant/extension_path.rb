@@ -158,8 +158,6 @@ module Radiant
       #
       def enabled
         enabled_extensions = Radiant.configuration.enabled_extensions
-        missing_extensions = enabled_extensions - @@known_paths.keys
-        raise LoadError, "These configured extensions have not been found: #{missing_extensions.to_sentence}" if missing_extensions.any?
         @@known_paths.values_at(*enabled_extensions)
       end
       

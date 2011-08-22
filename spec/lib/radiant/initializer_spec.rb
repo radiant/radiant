@@ -37,6 +37,21 @@ describe Radiant::Configuration do
     @configuration.extensions.should_not include(:basic) 
   end
   
+  it "should expand the extension list" do
+    @configuration.extensions = [:archive, :all, :sheets]
+    @configuration.enabled_extensions.should include(:clipped)
+  end
+
+  it "should throw a LoadError if configured extensions do not exist" do
+    @configuration.extensions = [:archive, :bogus, :sheets]
+    lambda {@configuration.enabled_extensions}.should raise_error(LoadError)
+  end  
+
+  it "should default to the list of all discovered extensions" do
+    @configuration.extensions = nil
+    @configuration.enabled_extensions.should include(:clipped)
+  end  
+  
   it "should have access to the AdminUI" do
     @configuration.admin.should == Radiant::AdminUI.instance
   end

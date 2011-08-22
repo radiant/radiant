@@ -39,11 +39,6 @@ describe Radiant::ExtensionLoader do
     @loader.enabled_extension_paths.should == extension_roots
   end
 
-  it "should raise an error when an extension named in the configuration cannot be found" do
-    @configuration.should_receive(:enabled_extensions).at_least(:once).and_return([:foobar])
-    lambda { @loader.enabled_extension_paths }.should raise_error(LoadError)
-  end
-  
   describe "loading extensions" do
     it "should load and initialize" do
       extensions = [:basic, :overriding]

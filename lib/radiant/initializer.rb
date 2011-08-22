@@ -75,9 +75,43 @@ module Radiant
     # that the application is configured to load that extension.
     #
     def enabled_extensions
-      @enabled_extensions ||= extensions_in_order - ignored_extensions
+      @enabled_extensions ||= expanded_extension_list - ignored_extensions
     end
 
+    # The expanded and ordered list of extensions, including any that may later be ignored. This can be configured
+    # (it is here that the :all entry is expanded to mean 'everything else'), or will default to an alphabetical list
+    # of every extension found among gems and vendor/extensions directories.
+    #
+    #   Radiant.configuration.expanded_extension_list  # => [:name, :name, :name, :name]
+    #
+    # If an extension in the configurted list is not found, a LoadError will be thrown from here.
+    #
+    def expanded_extension_list
+      # NB. it should remain possible to say config.extensions = []
+      @extension_list ||= extensions ? expand_and_check(extensions) : available_extensions
+    end
+    
+    def expand_and_check(extension_list) #:nodoc
+      missing_extensions = extension_list - [:all] - available_extensions
+      raise LoadError, "These configured extensions have not been found: #{missing_extensions.to_sentence}" if missing_extensions.any?
+      if m = extension_list.index(:all)
+        extension_list[m] = available_extensions - extension_list
+      end
+      extension_list.flatten
+    end
+    
+    # Returns the checked and expanded list of extensions-to-enable. This may be derived from a list passed to
+    # +config.extensions=+ or it may have defaulted to all available extensions.
+    
+    # Without such a call, we default to the alphabetical list of all well-formed vendor and gem extensions 
+    # returned by +available_extensions+.
+    # 
+    #   Radiant.configuration.extensions  # => [:name, :all, :name]
+    #
+    def extensions
+      @requested_extensions ||= available_extensions
+    end
+    
     # Sets the list of extensions that will be loaded and the order in which to load them.
     # It can include an :all marker to mean 'everything else' and is typically set in environment.rb:
     #   config.extensions = [:layouts, :taggable, :all]
@@ -90,31 +124,6 @@ module Radiant
       @requested_extensions = extensions
     end
     
-    # Returns the (unexpanded) list of extensions-to-enable that has been set by calling +config.extensions=+.
-    # Without such a call, we default to the alphabetical list of all well-formed vendor and gem extensions 
-    # returned by +available_extensions+.
-    # 
-    #   Radiant.configuration.extensions  # => [:name, :all, :name]
-    #
-    def extensions
-      @requested_extensions ||= available_extensions
-    end
-    
-    # The expanded and ordered list of extensions, still including any that may later be ignored.
-    #
-    #   Radiant.configuration.extensions_in_order  # => [:name, :name, :name, :name]
-    #
-    def extensions_in_order
-      if extensions.include?(:all)
-        before_all = extensions.collect {|e| e if extensions.index(e).to_i < extensions.index(:all).to_i }.compact
-        after_all = extensions.collect {|e| e if extensions.index(e).to_i > extensions.index(:all).to_i }.compact
-        replacing_all_symbol = available_extensions - ((available_extensions & before_all) + (available_extensions & after_all))
-        before_all + replacing_all_symbol + after_all
-      else
-        extensions
-      end
-    end
-      
     # This is a configurable list of extension that should not be loaded.
     #   config.ignore_extensions = [:experimental, :broken]
     # You can also retrieve the list with +ignored_extensions+:
