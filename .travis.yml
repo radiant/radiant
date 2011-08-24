@@ -3,13 +3,17 @@ before_script:
   - "rake db:migrate"
   - "rake db:migrate:extensions"
 
+branches:
+  except:
+    - ruby19
+
 notifications:
   recipients:
     - radiantcms-ci@googlegroups.com
     - ci@spanner.org
     - git@johnmuhl.com
   irc: "irc.freenode.org#radiantcms"
-  
+
 rvm:
   - 1.8.7
 
