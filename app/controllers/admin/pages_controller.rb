@@ -2,7 +2,11 @@ class Admin::PagesController < Admin::ResourceController
   before_filter :initialize_meta_rows_and_buttons, :only => [:new, :edit, :create, :update]
   before_filter :count_deleted_pages, :only => [:destroy]
   
-  class PreviewStop < Exception; end
+  class PreviewStop < ActiveRecord::Rollback
+    def message
+      'Changes not saved!'
+    end
+  end
 
   responses do |r|
     r.plural.js do
@@ -69,7 +73,7 @@ class Admin::PagesController < Admin::ResourceController
     def process_with_exception(page)
       page.process(request, response)
       @performed_render = true
-      raise PreviewStop.new('Changes not saved!')
+      raise PreviewStop
     end
 
     def count_deleted_pages
