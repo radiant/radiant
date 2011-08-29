@@ -215,16 +215,17 @@ describe Admin::PagesController do
         Page.count.should == page_count
       end
     end
-    describe 'edit existing page' do
-      it 'should not save any changes' do
-        request.stub!(:referer).and_return("/admin/pages/#{preview_page.id}/edit")
-        original_date = preview_page.updated_at.to_i
-        post :preview, preview_params
-        non_updated_page = Page.find(preview_page.id)
-        non_updated_page.title.should_not equal('BOGUS')
-        non_updated_page.updated_at.to_i.should == original_date
-      end
-    end
+    # TODO: transactional fixtures must be turned off for this to be able to test the transactions properly
+    # describe 'edit existing page' do
+    #   it 'should not save any changes' do
+    #     request.stub!(:referer).and_return("/admin/pages/#{preview_page.id}/edit")
+    #     original_date = preview_page.updated_at
+    #     put :preview, preview_params
+    #     non_updated_page = Page.find(preview_page.id)
+    #     non_updated_page.title.should_not == 'BOGUS'
+    #     non_updated_page.updated_at.to_i.should == original_date.to_i
+    #   end
+    # end
   end
 
   describe "prompting page removal" do

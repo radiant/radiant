@@ -1,6 +1,8 @@
 class Admin::PagesController < Admin::ResourceController
   before_filter :initialize_meta_rows_and_buttons, :only => [:new, :edit, :create, :update]
   before_filter :count_deleted_pages, :only => [:destroy]
+  
+  class PreviewStop < Exception; end
 
   responses do |r|
     r.plural.js do
@@ -25,7 +27,7 @@ class Admin::PagesController < Admin::ResourceController
   
   def preview
     render_preview
-  rescue => exception
+  rescue PreviewStop => exception
     render :text => exception.message unless @performed_render
   end
 
@@ -59,11 +61,15 @@ class Admin::PagesController < Admin::ResourceController
             page.published_at = page.updated_at = page.created_at = Time.now
             page.parent = Page.find($1) if request.referer =~ %r{/admin/pages/(\d+)/children/new}
           end
-          page.process(request,response)
-          @performed_render = true
-          raise 'Changes not saved!'
+          process_with_exception(page)
         end
       end
+    end
+    
+    def process_with_exception(page)
+      page.process(request, response)
+      @performed_render = true
+      raise PreviewStop.new('Changes not saved!')
     end
 
     def count_deleted_pages
