@@ -30,7 +30,7 @@ ways. To test your installation, try running:
 
 And type this address into a web browser:
 
-    http://localhost:3000).
+    http://localhost:3000
 
 The administrative interface is available at /admin/. If your site is empty,
 you will be directed there automatically to create a home page. By default the
