@@ -26,9 +26,4 @@ Gem::Specification.new do |s|
   s.test_files    = Dir['test/**/*','spec/**/*','features/**/*'] - ignores
   # s.executables   = Dir['bin/*'] - ignores
   s.require_paths = ["lib"]
-
-  s.post_install_message = %{
-  Add this to your radiant project with:
-    config.gem 'radiant-<%= file_name %>-extension', :version => '~>#{Radiant<%= class_name %>::VERSION}'
-  }
 end
