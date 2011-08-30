@@ -37,6 +37,12 @@ describe "ExtensionGenerator with normal options" do
     end
   end
   
+  it "should require the module" do
+    'vendor/extensions/sample'.should have_generated_file('sample_extension.rb') do |body|
+      body.should match(%r(require "radiant-sample-extension"))
+    end
+  end
+
   it "should generate extension Rake tasks file" do
     'vendor/extensions/sample'.should have_generated_file('lib/tasks/sample_extension_tasks.rake') do |body|
       body.should match(r = /namespace :radiant do\n  namespace :extensions do\n    namespace :sample do\n((\n|\s*.*\n)*)    end\n  end\nend/)
@@ -179,6 +185,12 @@ describe "ExtensionGenerator with test-unit option" do
     end
   end
   
+  it "should require the module" do
+    'vendor/extensions/sample'.should have_generated_file('sample_extension.rb') do |body|
+      body.should match(%r(require "radiant-sample-extension"))
+    end
+  end
+
   it "should generate extension Rake tasks file" do
     'vendor/extensions/sample'.should have_generated_file('lib/tasks/sample_extension_tasks.rake') do |body|
       body.should match(r = /namespace :radiant do\n  namespace :extensions do\n    namespace :sample do\n((\n|\s*.*\n)*)    end\n  end\nend/)
