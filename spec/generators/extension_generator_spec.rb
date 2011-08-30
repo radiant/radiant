@@ -29,7 +29,9 @@ describe "ExtensionGenerator with normal options" do
   
   it "should generate extension init file" do
     'vendor/extensions/sample'.should have_generated_class('sample_extension', 'Radiant::Extension') do |body|
-      body.should match(/version RadiantSampleExtension::VERSION\n\s+description RadiantSampleExtension::DESCRIPTION\n\s+url RadiantSampleExtension::URL/)
+      body.should match(%r(version     RadiantSampleExtension::VERSION))
+      body.should match(%r(description RadiantSampleExtension::DESCRIPTION))
+      body.should match(%r(url         RadiantSampleExtension::URL))
       body.should match(/extension_config do \|config\|((\n|\s*.*\n)*)\s+\# end/)
       body.should have_method('activate')
     end
@@ -57,12 +59,12 @@ describe "ExtensionGenerator with normal options" do
   it "should populate radiant-sample-extension.rb with module namespace" do
     'vendor/extensions/sample'.should have_generated_file('lib/radiant-sample-extension.rb') do |body|
       body.should match(%r(module RadiantSampleExtension))
-      body.should match(%r(VERSION = '1\.0\.0'))
-      body.should match(%r(SUMMARY = "Sample for Radiant CMS"))
+      body.should match(%r(VERSION     = "1\.0\.0"))
+      body.should match(%r(SUMMARY     = "Sample for Radiant CMS"))
       body.should match(%r(DESCRIPTION = "Makes Radiant better by adding sample!"))
-      body.should match(%r(AUTHORS = \["Ext Author"\]))
-      body.should match(%r(EMAIL = \["ext@radiantcms.org"\]))
-      body.should match(%r(URL = "http://github.com/extauthor/radiant-sample-extension"))
+      body.should match(%r(AUTHORS     = \["Ext Author"\]))
+      body.should match(%r(EMAIL       = \["ext@radiantcms.org"\]))
+      body.should match(%r(URL         = "http://github.com/extauthor/radiant-sample-extension"))
     end
   end
   
@@ -170,7 +172,9 @@ describe "ExtensionGenerator with test-unit option" do
   
   it "should generate extension init file" do
     'vendor/extensions/sample'.should have_generated_class('sample_extension', 'Radiant::Extension') do |body|
-      body.should match(/version RadiantSampleExtension::VERSION\n\s+description RadiantSampleExtension::DESCRIPTION\n\s+url RadiantSampleExtension::URL/)
+      body.should match(%r(version     RadiantSampleExtension::VERSION))
+      body.should match(%r(description RadiantSampleExtension::DESCRIPTION))
+      body.should match(%r(url         RadiantSampleExtension::URL))
       body.should have_method('activate')
     end
   end
