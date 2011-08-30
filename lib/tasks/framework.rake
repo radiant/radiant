@@ -150,7 +150,7 @@ unless File.directory? "#{RAILS_ROOT}/app"
         [:env, :development, :test, :cucumber, :production, :gemfile].each do |env_file|
           File.open(tmps[env_file], 'w') do |f|
             app_name        = File.basename(File.expand_path(RAILS_ROOT))
-            radiant_version = Radiant::Version.to_s,
+            radiant_version = Radiant::Version.to_s
             sqlite_version  = Gem.loaded_specs['sqlite3'].version.to_s
             f.write ERB.new(File.read(gens[env_file])).result(binding)
           end
