@@ -30,6 +30,13 @@ module Radiant
       yield Rails.configuration if block_given?
       Rails.configuration
     end
+    
+    # Returns the root directory of this radiant installation (which is usually the gem directory).
+    # This is not the same as Rails.root, which is the instance directory and tends to contain only site-delivery material.
+    #
+    def root
+      RADIANT_ROOT
+    end
   end
   
   # NB. Radiant::Configuration (aka Radiant.configuration) is our extension-aware subclass of Rails::Configuration 
@@ -52,16 +59,16 @@ module Radiant
     end
 
     # Sets the locations in which we look for vendored extensions. Normally:
-    #   RAILS_ROOT/vendor/extensions
-    #   RADIANT_ROOT/vendor/extensions        
+    #   Rails.root/vendor/extensions
+    #   Radiant.root/vendor/extensions        
     # There are no vendor/* directories in +RADIANT_ROOT+ any more but the possibility remains for compatibility reasons.
     # In test mode we also add a fixtures path for testing the extension loader.
     #
     def default_extension_paths
       env = ENV["RAILS_ENV"] || RAILS_ENV
-      paths = [RAILS_ROOT + '/vendor/extensions', RADIANT_ROOT + '/vendor/extensions'].uniq
+      paths = [Rails.root + '/vendor/extensions', Radiant.root + '/vendor/extensions'].uniq
       # NB. config/environments/test.rb loads too late
-      paths.unshift(RADIANT_ROOT + "/test/fixtures/extensions") if env == "test"
+      paths.unshift(Radiant.root + "/test/fixtures/extensions") if env == "test"
       paths
     end
     

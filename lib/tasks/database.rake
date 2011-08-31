@@ -18,8 +18,32 @@ namespace :db do
     end
   end
   
+  task :initialize => :environment do    
+    require 'highline/import'
+    if ENV['OVERWRITE'].to_s.downcase == 'true' or agree("This task will destroy any data in the database. Are you sure you want to \ncontinue? [yn] ")
+
+      # We need to erase and remove all existing radiant tables, but we don't want to 
+      # assume that the administrator has access to drop and create the database.
+      # Ideally we should also allow for the presence of non-radiant tables, though
+      # that's not a setup anyone would recommend.
+      #
+      ActiveRecord::Base.connection.tables.each do |table|
+        ActiveRecord::Migration.drop_table table
+      end
+      
+      # run migrations  in Radiant.root/db/migrate
+      Rake::Task["db:migrate:radiant"].invoke
+
+      # run migrations  in Rails.root/db/migrate
+      Rake::Task["db:migrate"].invoke
+    else
+      say "Task cancelled."
+      exit
+    end
+  end
+  
   desc "Bootstrap your database for Radiant."
-  task :bootstrap => :remigrate do
+  task :bootstrap => :initialize do
     require 'radiant/setup'
     Radiant::Setup.bootstrap(
       :admin_name => ENV['ADMIN_NAME'],
@@ -29,5 +53,14 @@ namespace :db do
     )
     Rake::Task['db:migrate:extensions'].invoke
     Rake::Task['radiant:extensions:update_all'].invoke
+  end
+  
+  namespace :migrate do
+    desc "Migrates the database through steps defined in the core radiant distribution. Usual db:migrate options can apply."
+    task :radiant => :environment do
+      ActiveRecord::Migration.verbose = ENV["VERBOSE"] ? ENV["VERBOSE"] == "true" : true
+      ActiveRecord::Migrator.migrate(File.join(Radiant.root, 'db', 'migrate'), ENV["VERSION"] ? ENV["VERSION"].to_i : nil)
+      Rake::Task["db:schema:dump"].invoke if ActiveRecord::Base.schema_format == :ruby
+    end
   end
 end
