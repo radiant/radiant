@@ -66,6 +66,17 @@ unless File.directory? "#{RAILS_ROOT}/app"
       tasks = %w{scripts javascripts configs static_html images sass stylesheets cached_assets}
       tasks = tasks & ENV['ONLY'].split(',') if ENV['ONLY']
       tasks = tasks - ENV['EXCEPT'].split(',') if ENV['EXCEPT']
+      
+      instance_gemfile_path = RAILS_ROOT + '/Gemfile'
+      puts instance_gemfile_path
+      unless File.exists?(instance_gemfile_path)
+        File.open(instance_gemfile_path, 'w') do |f|
+          radiant_version = Radiant::Version.to_s
+          sqlite_version  = Gem.loaded_specs['sqlite3'].version.to_s
+          f.write ERB.new(File.read("#{File.dirname(__FILE__)}/../generators/instance/templates/instance_gemfile")).result(binding)
+        end
+      end
+        
       tasks.each do |task| 
         puts "* Updating #{task}"
         Rake::Task["radiant:update:#{task}"].invoke
@@ -112,8 +123,6 @@ unless File.directory? "#{RAILS_ROOT}/app"
       desc "Update configuration files from your current radiant install"
       task :configs do
         require 'erb'
-        FileUtils.cp("#{File.dirname(__FILE__)}/../generators/instance/templates/instance_boot.rb", RAILS_ROOT + '/config/boot.rb')
-        FileUtils.cp("#{File.dirname(__FILE__)}/../../config/preinitializer.rb", RAILS_ROOT + '/config/preinitializer.rb')
         instances = {
           :env          => "#{RAILS_ROOT}/config/environment.rb",
           :development  => "#{RAILS_ROOT}/config/environments/development.rb",
@@ -146,12 +155,19 @@ unless File.directory? "#{RAILS_ROOT}/app"
           :production   => "#{RAILS_ROOT}/config/environments/production.bak",
           :gemfile      => "#{RAILS_ROOT}/Gemfile.bak"
         }
+        
+        FileUtils.cp("#{File.dirname(__FILE__)}/../generators/instance/templates/instance_boot.rb", RAILS_ROOT + '/config/boot.rb')
+        FileUtils.cp("#{File.dirname(__FILE__)}/../../config/preinitializer.rb", RAILS_ROOT + '/config/preinitializer.rb')
         warning = ""
         [:env, :development, :test, :cucumber, :production, :gemfile].each do |env_file|
           File.open(tmps[env_file], 'w') do |f|
             app_name        = File.basename(File.expand_path(RAILS_ROOT))
             radiant_version = Radiant::Version.to_s
-            sqlite_version  = Gem.loaded_specs['sqlite3'].version.to_s
+            sqlite_version = if Gem.loaded_specs['sqlite3']
+              Gem.loaded_specs['sqlite3'].version.to_s
+            else
+              '1.3.3'
+            end
             f.write ERB.new(File.read(gens[env_file])).result(binding)
           end
           next if File.exist?(instances[env_file]) && FileUtils.compare_file(instances[env_file], tmps[env_file])
