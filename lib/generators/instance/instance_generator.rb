@@ -83,6 +83,9 @@ class InstanceGenerator < Rails::Generator::Base
       # Instance Rakefile
       m.file "instance_rakefile", "Rakefile"
 
+      # Config.ru is useful in rack-based situations like Pow
+      m.file "instance_config.ru", "config.ru"
+
       # Instance Configurations
       m.file "instance_routes.rb", "config/routes.rb"
       m.template "instance_environment.rb", "config/environment.rb", :assigns => {
