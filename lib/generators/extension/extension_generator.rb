@@ -77,7 +77,7 @@ class ExtensionGenerator < Rails::Generator::NamedBase
   end
 
   def homepage
-    author_info['github.user'] ? "http://github.com/#{author_info['github.user']}/radiant-#{file_name}-extension" : "http://yourwebsite.com/#{file_name}"
+    author_info['github.user'] ? "http://github.com/#{author_info['github.user']}/radiant-#{file_name}-extension" : "http://example.com/#{file_name}"
   end
 
   def author_email
