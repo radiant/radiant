@@ -8,7 +8,6 @@
 require File.join(File.dirname(__FILE__), 'boot')
 
 require 'radius'
-require 'term/ansicolor'
 
 Radiant::Initializer.run do |config|
   # Skip frameworks you're not going to use (only works if using vendor/rails).
