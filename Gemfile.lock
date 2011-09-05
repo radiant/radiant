@@ -1,93 +1,15 @@
 GIT
-  remote: git://github.com/johnmuhl/radiant-archive-extension.git
-  revision: a8dbcd8db939323e952bec1593f53a7e5edbab2e
+  remote: git://github.com/radiant/radiant-clipped-extension.git
+  revision: 7912572fcbf0a880f2dbe7691d0e1af074601b80
   specs:
-    radiant-archive-extension (1.0.0)
-
-GIT
-  remote: git://github.com/johnmuhl/radiant-clipped-extension.git
-  revision: 8ad529e9af9db3c19096cf2f3f664cf464c8ed58
-  specs:
-    radiant-clipped-extension (1.0.6)
+    radiant-clipped-extension (1.0.10)
       acts_as_list (~> 0.1.2)
       paperclip (~> 2.3.16)
       uuidtools (~> 2.1.2)
 
-GIT
-  remote: git://github.com/johnmuhl/radiant-debug-extension.git
-  revision: 597109411377e137e17138cd3e9cd5f380c1eb32
-  specs:
-    radiant-debug-extension (1.0.0)
-
-GIT
-  remote: git://github.com/johnmuhl/radiant-exporter-extension.git
-  revision: 9dc38cc857308d308f715cddc4a2b748e0f6589d
-  specs:
-    radiant-exporter-extension (1.0.0)
-
-GIT
-  remote: git://github.com/johnmuhl/radiant-markdown_filter-extension.git
-  revision: 1323b08c616bd7a0b3e295cfde9cbf3f1bdaebc3
-  specs:
-    radiant-markdown_filter-extension (1.0.0)
-      bluecloth (~> 2.1.0)
-
-GIT
-  remote: git://github.com/johnmuhl/radiant-sheets-extension.git
-  revision: 7a5365c41537d7e326a2d89cdb1cc09ad027e0b8
-  specs:
-    radiant-sheets-extension (1.0.0.pre)
-      coffee-script (~> 2.2.0)
-      sass (~> 3.1.2)
-
-GIT
-  remote: git://github.com/johnmuhl/radiant-smarty_pants_filter-extension.git
-  revision: 56f5ae401d6fdaa0cc8be6420bb796f0020f7f5d
-  specs:
-    radiant-smarty_pants_filter-extension (1.0.0)
-      rubypants (~> 0.2.0)
-
-GIT
-  remote: git://github.com/johnmuhl/radiant-textile_filter-extension.git
-  revision: e0e6c8374bfeb900282cf72e5194b6b6b92025bb
-  specs:
-    radiant-textile_filter-extension (1.0.2)
-      RedCloth (~> 4.2.0)
-
-PATH
-  remote: .
-  specs:
-    radiant (1.0.0.rc3)
-      acts_as_tree (~> 0.1.1)
-      bundler (~> 1.0.0)
-      compass (~> 0.11.1)
-      delocalize (~> 0.2.3)
-      haml (~> 3.1.1)
-      highline (~> 1.6.2)
-      rack (~> 1.1.1)
-      rack-cache (~> 1.0.2)
-      radiant-archive-extension (~> 1.0.0)
-      radiant-clipped-extension (~> 1.0.6)
-      radiant-debug-extension (~> 1.0.0)
-      radiant-exporter-extension (~> 1.0.0)
-      radiant-markdown_filter-extension (~> 1.0.0)
-      radiant-sheets-extension (~> 1.0.0.pre)
-      radiant-site_templates-extension (~> 1.0.0)
-      radiant-smarty_pants_filter-extension (~> 1.0.0)
-      radiant-textile_filter-extension (~> 1.0.0)
-      radius (~> 0.7.1)
-      rails (~> 2.3.12)
-      rake (> 0.8.6)
-      rdoc (~> 3.9.2)
-      stringex (~> 1.3.0)
-      term-ansicolor (~> 1.0.6)
-      will_paginate (~> 2.3.11)
-
 GEM
   remote: http://rubygems.org/
   specs:
-    RedCloth (4.2.8)
-    ZenTest (4.6.0)
     actionmailer (2.3.14)
       actionpack (= 2.3.14)
     actionpack (2.3.14)
@@ -99,57 +21,14 @@ GEM
       activesupport (= 2.3.14)
     activesupport (2.3.14)
     acts_as_list (0.1.4)
-    acts_as_tree (0.1.1)
-    bluecloth (2.1.0)
-    builder (3.0.0)
-    chunky_png (1.2.1)
     cocaine (0.2.0)
-    coffee-script (2.2.0)
-      coffee-script-source
-      execjs
-    coffee-script-source (1.1.2)
-    compass (0.11.5)
-      chunky_png (~> 1.2)
-      fssm (>= 0.2.7)
-      sass (~> 3.1)
-    cucumber (1.0.2)
-      builder (>= 2.1.2)
-      diff-lcs (>= 1.1.2)
-      gherkin (~> 2.4.5)
-      json (>= 1.4.6)
-      term-ansicolor (>= 1.0.5)
-    cucumber-rails (0.3.2)
-      cucumber (>= 0.8.0)
-    database_cleaner (0.6.7)
-    delocalize (0.2.6)
-    diff-lcs (1.1.2)
-    execjs (1.2.4)
-      multi_json (~> 1.0)
-    fssm (0.2.7)
-    gherkin (2.4.15)
-      json (>= 1.4.6)
-    haml (3.1.2)
-    highline (1.6.2)
-    hoe (1.5.1)
-      rake (>= 0.8.1)
-      rubyforge (>= 0.4.4)
-    json (1.5.3)
-    json_pure (1.5.3)
     mime-types (1.16)
-    multi_json (1.0.3)
-    nokogiri (1.5.0)
     paperclip (2.3.16)
       activerecord (>= 2.3.0)
       activesupport (>= 2.3.2)
       cocaine (>= 0.0.2)
       mime-types
     rack (1.1.2)
-    rack-cache (1.0.3)
-      rack (>= 0.4)
-    rack-test (0.6.1)
-      rack (>= 1.0)
-    radiant-site_templates-extension (1.0.0)
-    radius (0.7.1)
     rails (2.3.14)
       actionmailer (= 2.3.14)
       actionpack (= 2.3.14)
@@ -157,47 +36,14 @@ GEM
       activeresource (= 2.3.14)
       activesupport (= 2.3.14)
       rake (>= 0.8.3)
-    rake (0.9.2)
-    rdoc (3.9.4)
-    rspec (1.3.2)
-    rspec-rails (1.3.4)
-      rack (>= 1.0.0)
-      rspec (~> 1.3.1)
-    rubyforge (2.0.4)
-      json_pure (>= 1.1.7)
-    rubypants (0.2.0)
-    sass (3.1.7)
+    rake (0.9.2.2)
     sqlite3 (1.3.4)
-    stringex (1.3.0)
-    term-ansicolor (1.0.6)
-    test-unit (1.2.3)
-      hoe (>= 1.5.1)
     uuidtools (2.1.2)
-    webrat (0.7.3)
-      nokogiri (>= 1.2.0)
-      rack (>= 1.0)
-      rack-test (>= 0.5.3)
-    will_paginate (2.3.16)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  ZenTest (= 4.6.0)
-  cucumber-rails (~> 0.3.2)
-  database_cleaner (~> 0.6.5)
-  hoe (= 1.5.1)
-  radiant!
-  radiant-archive-extension (~> 1.0.0)!
-  radiant-clipped-extension (~> 1.0.6)!
-  radiant-debug-extension (~> 1.0.0)!
-  radiant-exporter-extension (~> 1.0.0)!
-  radiant-markdown_filter-extension (~> 1.0.0)!
-  radiant-sheets-extension (~> 1.0.0.pre)!
-  radiant-smarty_pants_filter-extension (~> 1.0.0)!
-  radiant-textile_filter-extension (~> 1.0.0)!
-  rspec (~> 1.3.1)
-  rspec-rails (~> 1.3.3)
-  sqlite3 (~> 1.3.4)
-  test-unit (= 1.2.3)
-  webrat (~> 0.7.3)
+  radiant-clipped-extension!
+  rails (= 2.3.14)
+  sqlite3 (= 1.3.4)

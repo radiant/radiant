@@ -1,15 +1,25 @@
 source :rubygems
-gemspec
 
-# group :development do
-#   gem 'wirble'
-# end
+# This is the minimum of dependency required to run
+# the radiant instance generator, which is (normally)
+# the only time the radiant gem functions as an
+# application. The instance has its own Gemfile, which
+# requires radiant and therefore pulls in every
+# dependency mentioned in radiant.gemspec.
 
-gem "radiant-archive-extension",             "~> 1.0.0",      :git => "git://github.com/johnmuhl/radiant-archive-extension.git"
-gem "radiant-clipped-extension",             "~> 1.0.6",      :git => "git://github.com/johnmuhl/radiant-clipped-extension.git"
-gem "radiant-debug-extension",               "~> 1.0.0",      :git => "git://github.com/johnmuhl/radiant-debug-extension.git"
-gem "radiant-exporter-extension",            "~> 1.0.0",      :git => "git://github.com/johnmuhl/radiant-exporter-extension.git"
-gem "radiant-markdown_filter-extension",     "~> 1.0.0",      :git => "git://github.com/johnmuhl/radiant-markdown_filter-extension.git"
-gem "radiant-sheets-extension",              "~> 1.0.0.pre",  :git => "git://github.com/johnmuhl/radiant-sheets-extension.git"
-gem "radiant-smarty_pants_filter-extension", "~> 1.0.0",      :git => "git://github.com/johnmuhl/radiant-smarty_pants_filter-extension.git"
-gem "radiant-textile_filter-extension",      "~> 1.0.0",      :git => "git://github.com/johnmuhl/radiant-textile_filter-extension.git"
+gem "rails",   "2.3.14"
+gem "sqlite3", "1.3.4"
+
+# When radiant is installed as a gem you can run all of
+# its tests and specs from an instance. If you're working
+# on radiant itself and you want to run specs from the
+# radiant root directory, uncomment the line below and
+# run `bundle install`.
+
+# gemspec
+
+gem "radiant-clipped-extension", :git => "git://github.com/radiant/radiant-clipped-extension.git"
+
+if ENV['TRAVIS']
+  gemspec :development_group => :test
+end
