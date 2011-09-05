@@ -35,7 +35,7 @@ module Radiant
     # This is not the same as Rails.root, which is the instance directory and tends to contain only site-delivery material.
     #
     def root
-      RADIANT_ROOT
+      Pathname.new(RADIANT_ROOT) if defined?(RADIANT_ROOT)
     end
   end
   
@@ -66,9 +66,9 @@ module Radiant
     #
     def default_extension_paths
       env = ENV["RAILS_ENV"] || RAILS_ENV
-      paths = [Rails.root + '/vendor/extensions', Radiant.root + '/vendor/extensions'].uniq
-      # NB. config/environments/test.rb loads too late
-      paths.unshift(Radiant.root + "/test/fixtures/extensions") if env == "test"
+      paths = [Rails.root + 'vendor/extensions']
+      paths.unshift(Radiant.root + "vendor/extensions") unless Rails.root == Radiant.root
+      paths.unshift(Radiant.root + "test/fixtures/extensions") if env == "test"
       paths
     end
     
