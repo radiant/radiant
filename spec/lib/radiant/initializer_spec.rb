@@ -24,7 +24,7 @@ describe Radiant::Configuration do
   it "should initialize the extension paths" do
     @configuration.extension_paths.should_not be_nil
     @configuration.extension_paths.should be_kind_of(Array)
-    @configuration.extension_paths.should include("#{RADIANT_ROOT}/vendor/extensions") 
+    @configuration.extension_paths.should include(Radiant.root + "vendor/extensions") 
   end
   
   it "should initialize the extensions" do
