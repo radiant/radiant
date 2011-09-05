@@ -12,7 +12,7 @@ require 'radius'
 Radiant::Initializer.run do |config|
   # Skip frameworks you're not going to use (only works if using vendor/rails).
   # To use Rails without a database, you must remove the Active Record framework
-  config.frameworks -= [ :action_mailer ]
+  # config.frameworks -= [ :action_mailer ]
 
   # Only load the extensions named here, in the order given. By default all
   # extensions in vendor/extensions are loaded, in alphabetical order. :all
