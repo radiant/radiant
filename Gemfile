@@ -1,5 +1,5 @@
 source :rubygems
-gemspec
+gemspec :development_group => :test
 
 # group :development do
 #   gem 'wirble'
