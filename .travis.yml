@@ -1,7 +1,7 @@
 before_script:
   - "cp config/database.sqlite.yml config/database.yml"
-  - "rake db:migrate"
-  - "rake db:migrate:extensions"
+  - "bundle exec rake db:migrate"
+  - "bundle exec rake db:migrate:extensions"
 
 branches:
   except:
