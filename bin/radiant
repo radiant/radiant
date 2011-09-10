@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+ENV['RAILS_ENV'] ||= 'production'
+
 require File.join(File.dirname(__FILE__), '..', 'config', 'boot')
 
 $LOAD_PATH << File.join(File.dirname(__FILE__), '..')
