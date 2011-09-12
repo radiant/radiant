@@ -7,7 +7,7 @@ class Page < ActiveRecord::Base
   end
 
   # Callbacks
-  before_save :update_virtual, :update_status
+  before_save :update_virtual, :update_status, :update_allowed_children_cache
 
   # Associations
   acts_as_tree :order => 'virtual DESC, title ASC'
@@ -201,7 +201,6 @@ class Page < ActiveRecord::Base
     true    
   end
 
-
   def to_xml(options={}, &block)
     super(options.reverse_merge(:include => :parts), &block)
   end
@@ -211,9 +210,8 @@ class Page < ActiveRecord::Base
   end
 
   def allowed_children
-    [default_child, *Page.descendants.sort_by(&:name)].select(&:in_menu?)
+    allowed_children_cache.split(',').uniq.map(&:constantize)
   end
-
 
   class << self
     alias_method :in_menu?, :in_menu
@@ -324,6 +322,13 @@ class Page < ActiveRecord::Base
       super - [self.class.inheritance_column]
     end
     
+    def update_allowed_children_cache
+      self.allowed_children_cache = allowed_children_lookup.collect(&:name).join(',')
+    end
+
+    def allowed_children_lookup
+      [default_child, *Page.descendants.sort_by(&:name)].select(&:in_menu?).uniq
+    end
 
     def update_virtual
       unless self.class == Page.descendant_class(class_name)

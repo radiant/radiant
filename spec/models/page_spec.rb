@@ -334,14 +334,33 @@ describe Page do
     lambda { p2.update_attributes!(:breadcrumb => "blah") }.should raise_error(ActiveRecord::StaleObjectError)
   end
 
-  it "should list descendants" do
-    children = page.allowed_children
-    children.should include(FileNotFoundPage)
+  describe '.default_child' do
+    it 'should return the Page class' do
+      Page.default_child.should == Page
+    end
   end
 
-  it "should reject pages that aren't in the menu" do
-    FileNotFoundPage.in_menu false
-    page.allowed_children.should_not include(FileNotFoundPage)
+  describe '#default_child' do
+    it 'should return the class default_child' do
+      page.default_child.should == Page.default_child
+    end
+  end
+
+  describe '#allowed_children' do
+    it "should return a unique array of allowable child classes" do
+      page.should_receive(:allowed_children_cache).and_return('Page,CustomFileNotFoundPage,CustomFileNotFoundPage,EnvDumpPage,ArchivePage')
+      children = page.allowed_children
+      children.should == [Page, CustomFileNotFoundPage, EnvDumpPage, ArchivePage]
+    end
+
+    it "should reject pages that aren't in the menu" do
+      FileNotFoundPage.in_menu false
+      page.allowed_children.should_not include(FileNotFoundPage)
+    end
+
+    it 'should return an array of allowable child classes' do
+      page.allowed_children
+    end
   end
 end
 
