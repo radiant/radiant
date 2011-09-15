@@ -1,3 +1,7 @@
+rvm: "1.8.7"
+gemfile: "Gemfile.travis"
+script: "bundle exec rake spec"
+
 before_script:
   - "cp config/database.sqlite.yml config/database.yml"
   - "bundle exec rake db:migrate"
@@ -13,8 +17,3 @@ notifications:
     - ci@spanner.org
     - git@johnmuhl.com
   irc: "irc.freenode.org#radiantcms"
-
-rvm:
-  - 1.8.7
-
-script: "bundle exec rake spec"
