@@ -8,10 +8,23 @@ gem "radiant", '~> <%= Radiant::Version.to_s %>'
 # alternatively, in development
 # gem 'radiant', :path => '/path/to/radiant/root'
 
-# this is here to enable the default bootstrap: you can delete it if you're using another database
-gem "sqlite3", "~> <%= sqlite_version %>"
+# SQLite is the default database connection but only suitable for local use
+gem "sqlite3", "~> 1.3.4"
 
-# language packs
+# To use MySQL
+# gem "mysql", "~> 2.8.1"
+
+# Postgres
+# gem "pg", "~> 0.11.0"
+
+# IBM DB2
+# gem "db2", "~> 2.6.2"
+
+# SQL Server
+# gem 'tiny_tds'
+# gem "activerecord-sqlserver-adapter", "~> 3.1.0"
+
+# Language packs
 # gem 'radiant-dutch_language_pack-extension', '~> 1.0.0'
 # gem 'radiant-french_language_pack-extension', '~> 1.0.0'
 # gem 'radiant-german_language_pack-extension', '~> 1.0.0'
@@ -19,16 +32,16 @@ gem "sqlite3", "~> <%= sqlite_version %>"
 # gem 'radiant-japanese_language_pack-extension', '~> 1.0.0'
 # gem 'radiant-russian_language_pack-extension', '~> 1.0.0'
 
-# standard gem extension
+# A standard gem extension
 # gem 'radiant-example-extension', :version => '~> 1.0.0'
 
-# forked extension
+# Your own forked extension
 # gem 'radiant-modified-extension', :git => 'git://github.com/your/fork.git'
 
-# local extension in development
+# A local extension in development
 # gem 'radiant-new-extension', :path => '/path/to/extension/root'
 
-# gems you would like to have in your development environment
+# Gems you would like to have in your development environment
 # group :development do
 #   gem 'wirble'
 # end
