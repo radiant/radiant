@@ -1,5 +1,4 @@
 rvm: "1.8.7"
-gemfile: "Gemfile.travis"
 script: "bundle exec rake spec"
 
 before_script:
