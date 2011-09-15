@@ -53,6 +53,15 @@ namespace :db do
     )
     Rake::Task['db:migrate:extensions'].invoke
     Rake::Task['radiant:extensions:update_all'].invoke
+    puts %{
+
+Your radiant application is now complete. You can test it by running script/server and directing a web browser to http://localhost:3000/.
+
+To add radiant extensions, just add gem lines to your application's Gemfile and run bundle install again. 
+
+To find radiant extensions, please visit http://ext.radiantcms.org.
+
+}
   end
   
   namespace :migrate do
