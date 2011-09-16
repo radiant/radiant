@@ -23,7 +23,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{A no-fluff content management system designed for small teams.}
 
-  s.add_dependency "rails",           "~> 2.3.12"
+  s.add_dependency "rails",           "~> 2.3.14"
   s.add_dependency "rdoc",            "~> 3.9.2"
   s.add_dependency "acts_as_tree",    "~> 0.1.1"
   s.add_dependency "bundler",         "~> 1.0.0"
@@ -35,6 +35,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency "rack-cache",      "~> 1.0.2"
   s.add_dependency "rake",            "~> 0.8.7"
   s.add_dependency "radius",          "~> 0.7.1"
+  s.add_dependency "sqlite3",         "~> 1.3.4"
   s.add_dependency "will_paginate",   "~> 2.3.11"
 
   s.add_dependency "radiant-archive-extension",             "~> 1.0.0"
@@ -46,16 +47,11 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency "radiant-site_templates-extension",      "~> 1.0.0"
   s.add_dependency "radiant-smarty_pants_filter-extension", "~> 1.0.0"
   s.add_dependency "radiant-textile_filter-extension",      "~> 1.0.0"
-  
-  # These should be development dependencies but 
-  # in that case `gem install radiant` omits them
-  # while Bundler.setup still looks for them.
-  s.add_dependency "cucumber-rails",    "~> 0.3.2"
-  s.add_dependency "database_cleaner",  "~> 0.6.5"
-  s.add_dependency "webrat",            "~> 0.7.3"
-  s.add_dependency "rspec",             "~> 1.3.1"
-  s.add_dependency "rspec-rails",       "~> 1.3.3"
-  s.add_dependency "sqlite3",           "~> 1.3.4"
-  s.add_dependency "ZenTest",           "4.6.0"
-  
+
+  s.add_development_dependency "cucumber-rails",    "~> 0.3.2"
+  s.add_development_dependency "database_cleaner",  "~> 0.6.5"
+  s.add_development_dependency "webrat",            "~> 0.7.3"
+  s.add_development_dependency "rspec",             "~> 1.3.1"
+  s.add_development_dependency "rspec-rails",       "~> 1.3.3"
+  s.add_development_dependency "ZenTest",           "4.6.0"
 end

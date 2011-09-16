@@ -6,9 +6,9 @@ source :rubygems
 # application. The instance has its own Gemfile, which
 # requires radiant and therefore pulls in every 
 # dependency mentioned in radiant.gemspec.
-#
-gem 'rails', '2.3.14'
-gem 'sqlite3', '1.3.4'
+
+gem "rails",   "~> 2.3.14"
+gem "sqlite3", "~> 1.3.4"
 
 # When radiant is installed as a gem you can run all of
 # its tests and specs from an instance. If you're working
