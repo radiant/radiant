@@ -46,8 +46,9 @@ class InstanceGenerator < Rails::Generator::Base
       schema_file = %w{db/schema.rb}
       scripts = Dir["#{root}/script/**/*"].reject { |f| f =~ /(destroy|generate|plugin)$/ }
       public_files = ["public/.htaccess"] + Dir["#{root}/public/**/*"]
+      test_files = ["config/cucumber.yml"]
       
-      files = base_dirs + text_files + environments + bundler_compatibility_files + schema_file + scripts + public_files
+      files = base_dirs + text_files + environments + bundler_compatibility_files + schema_file + scripts + public_files + test_files
       files.map! { |f| f = $1 if f =~ %r{^#{root}/(.+)$}; f }
       files.sort!
       
