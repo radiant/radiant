@@ -33,7 +33,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency "highline",        "~> 1.6.2"
   s.add_dependency "rack",            "~> 1.1.1"
   s.add_dependency "rack-cache",      "~> 1.0.2"
-  s.add_dependency "rake",            "~> 0.8.7"
+  s.add_dependency "rake",            "> 0.8.6"
   s.add_dependency "radius",          "~> 0.7.1"
   s.add_dependency "will_paginate",   "~> 2.3.11"
   s.add_dependency "stringex",        "~> 1.3.0"
