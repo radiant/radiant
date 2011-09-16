@@ -163,11 +163,8 @@ unless File.directory? "#{RAILS_ROOT}/app"
           File.open(tmps[env_file], 'w') do |f|
             app_name        = File.basename(File.expand_path(RAILS_ROOT))
             radiant_version = Radiant::Version.to_s
-            sqlite_version = if Gem.loaded_specs['sqlite3']
-              Gem.loaded_specs['sqlite3'].version.to_s
-            else
-              '1.3.3'
-            end
+            sqlite_version  = Gem.loaded_specs['sqlite3'].version.to_s
+            db              = 'sqlite3'
             f.write ERB.new(File.read(gens[env_file])).result(binding)
           end
           next if File.exist?(instances[env_file]) && FileUtils.compare_file(instances[env_file], tmps[env_file])
