@@ -75,9 +75,8 @@ class InstanceGenerator < Rails::Generator::Base
 
       # Instance Gemfile
       m.template "instance_gemfile", "Gemfile", :assigns => {
-        :radiant_path => RADIANT_ROOT,
         :radiant_version => Radiant::Version.to_s,
-        :sqlite_version => Gem.loaded_specs['sqlite3'].version.to_s,
+        :sqlite_version  => Gem.loaded_specs['sqlite3'].version.to_s,
         :db => options[:db]
       }
 
