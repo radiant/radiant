@@ -60,6 +60,7 @@ class Admin::PagesController < Admin::ResourceController
           if request.referer =~ %r{/admin/pages/(\d+)/edit}
             page = Page.find($1).becomes(page_class)
             page.update_attributes(params[:page])
+            page.published_at ||= Time.now
           else
             page = page_class.new(params[:page])
             page.published_at = page.updated_at = page.created_at = Time.now
