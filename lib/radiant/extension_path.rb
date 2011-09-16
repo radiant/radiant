@@ -126,6 +126,14 @@ module Radiant
       check_subdirectory("app/metal")
     end
 
+    # Returns a list of all the rake task files found within this extension root.
+    #
+    def rake_task_paths
+      if check_subdirectory("lib/tasks")
+        Dir[File.join("#{path}","lib/tasks/**","*.rake")] 
+      end
+    end
+
     # Returns a list of extension subdirectories that should be marked for eager loading. At the moment that
     # includes all the controller, model and helper paths. The main purpose here is to ensure that extension
     # controllers are loaded before running cucumber features, and there may be a better way to achieve that.
@@ -172,7 +180,7 @@ module Radiant
           enabled.map{|ep| ep.send(m)}.flatten.compact
         end
       end
-      [:locale_paths, :view_paths, :metal_paths].each do |m|
+      [:locale_paths, :view_paths, :metal_paths, :rake_task_paths].each do |m|
         define_method(m) do
           enabled.map{|ep| ep.send(m)}.flatten.compact.reverse
         end
