@@ -149,7 +149,7 @@
       remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following snippet?'
     users: 
       remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following user?'
-  this_file_language: "English" 
+  this_file_language: "<%= file_name.capitalize %>" 
   time:
     am: 'am'
     formats:
