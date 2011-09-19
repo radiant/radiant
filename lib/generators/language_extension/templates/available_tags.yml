@@ -1,5 +1,5 @@
 ---
-<%= localization_name %>::
+<%= localization_name %>:
   desc: 
     author:
       Renders the name of the author of the current page.
