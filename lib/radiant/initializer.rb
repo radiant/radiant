@@ -49,10 +49,9 @@ module Radiant
     # * to notice that some gems and plugins are in fact radiant extensions 
     # * to notice that some radiant extensions add load paths (for plugins, controllers, metal, etc)
     
-    attr_accessor :extension_paths, :ignored_extensions, :view_paths
+    attr_accessor :extension_paths, :ignored_extensions
 
     def initialize #:nodoc:
-      self.view_paths = []
       self.extension_paths = default_extension_paths
       self.ignored_extensions = []
       super
@@ -382,22 +381,19 @@ module Radiant
       admin.initialize_nav
     end
     
-    # Adds extension view paths and then hooks them into ActionMailer and ActionController
+    # This adds extension view paths to the standard Rails::Initializer method. 
+    # In environments that don't cache templates it reloads the path set on each request, 
+    # so that new extension paths are noticed without a restart.
     #
     def initialize_framework_views
-      view_paths = [].tap do |arr|
-        arr << configuration.view_path unless configuration.view_paths.include?(configuration.view_path)
-        arr.concat(configuration.view_paths)
-        arr.concat(extension_loader.paths(:view))
-        arr.reverse!
+      view_paths = extension_loader.paths(:view).push(configuration.view_path)
+      if ActionController::Base.view_paths.blank? || !ActionView::Base.cache_template_loading?
+        ActionController::Base.view_paths = ActionView::Base.process_view_paths(view_paths)
       end
-      if configuration.frameworks.include?(:action_mailer) || defined?(ActionMailer::Base)
-        ActionMailer::Base.view_paths = ActionView::Base.process_view_paths(view_paths)
+      if configuration.frameworks.include?(:action_mailer) && ActionMailer::Base.view_paths.blank? || !ActionView::Base.cache_template_loading?
+        ActionMailer::Base.view_paths = ActionView::Base.process_view_paths(view_paths) if configuration.frameworks.include?(:action_mailer)
       end
-      view_paths.each do |vp|
-        ActionController::Base.prepend_view_path(vp) unless ActionController::Base.view_paths.include?(vp)
-      end
-    end
+    end 
 
     # Extends the Rails initializer to make sure that extension controller paths are available when routes 
     # are initialized.
