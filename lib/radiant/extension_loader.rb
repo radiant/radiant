@@ -48,7 +48,7 @@ module Radiant
     #   extension_loader.paths(:controller)    #=> ['extension/app/controllers', 'extension/app/controllers']
     #   extension_loader.paths(:eager_load)    #=> ['extension/app/controllers', 'extension/app/models', 'extension/app/helpers']
     #
-    # For compatibility with the old loader, there are also corresponding +type_paths+ 
+    # For compatibility with the old loader, there are corresponding +type_paths+ methods.
     # There are also (deprecated) +add_type_paths+ methods. 
     #
     def paths(type)
@@ -57,7 +57,7 @@ module Radiant
 
     # Loads but does not activate all the extensions that have been enabled, in the configured order 
     # (which defaults to alphabetically). If an extension fails to load an error will be logged
-    # but application startup will not halt. If an extension doesn't exist, a LoadError will be raised
+    # but application startup will continue. If an extension doesn't exist, a LoadError will be raised
     # and startup will halt.
     #
     def load_extensions
@@ -114,6 +114,8 @@ module Radiant
         ExtensionPath.from_path(path, name)
       end
     
+      # For compatibility with old calls probably still to be found in some extensions.
+      #
       %w{controller model view metal plugin load locale}.each do |type|
         define_method("#{type}_paths".to_sym) do
           paths(type)
