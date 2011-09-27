@@ -33,7 +33,7 @@ describe Admin::RegionsHelper do
     end
     
     it "should capture the passed block, yielding the RegionPartials object and concatenating" do
-      helper.should_receive(:render).and_raise(::ActionView::MissingTemplate.new(Rails.configuration.view_paths, '.'))
+      helper.should_receive(:render).and_raise(::ActionView::MissingTemplate.new(ActionController::Base.view_paths, '.'))
       helper.should_receive(:concat).with("foo")
       helper.should_receive(:capture).and_return("foo")
       helper.render_region(:main)  do |main|
