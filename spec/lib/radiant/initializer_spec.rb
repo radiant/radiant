@@ -9,16 +9,11 @@ describe Radiant::Configuration do
     @configuration.should be_kind_of(Rails::Configuration)
   end
   
-  it "should have view_paths, extensions and extension_paths accessible" do
-    %w{view_paths extensions extension_paths}.each do |m|
+  it "should have extensions and extension_paths accessible" do
+    %w{extensions extension_paths}.each do |m|
       @configuration.should respond_to(m)
       @configuration.should respond_to("#{m}=")
     end
-  end
-  
-  it "should initialize the view paths to an array" do
-    @configuration.view_paths.should_not be_nil
-    @configuration.view_paths.should be_kind_of(Array)
   end
   
   it "should initialize the extension paths" do
