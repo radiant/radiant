@@ -131,7 +131,10 @@ module Radiant
             "#{Dir.pwd}/db/templates/#{filename}"
           ] +
           Dir.glob("#{RADIANT_ROOT}/vendor/extensions/**/db/templates/#{filename}") + 
-          Dir.glob("#{Rails.root}/vendor/extensions/**/db/templates/#{filename}")
+          Dir.glob("#{Rails.root}/vendor/extensions/**/db/templates/#{filename}") +
+          Radiant::Extension.descendants.inject([]) do |r, d|
+            r << "#{d.root}/db/templates/#{filename}"
+          end
         ).find { |name| File.file?(name) }
       end
       
