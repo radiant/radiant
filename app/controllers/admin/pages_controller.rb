@@ -66,6 +66,7 @@ class Admin::PagesController < Admin::ResourceController
             page.published_at = page.updated_at = page.created_at = Time.now
             page.parent = Page.find($1) if request.referer =~ %r{/admin/pages/(\d+)/children/new}
           end
+          page.pagination_parameters = pagination_parameters
           process_with_exception(page)
         end
       end
