@@ -36,8 +36,8 @@ Feature: Managing pages
     Then I should see "Under Construction"
   
   Scenario: Creating child pages
-    Given I am logged in as "existing"
-    And there is a homepage
+    Given there is a homepage
+    And I am logged in as "existing"
     When I go to the "pages" admin page
     And I follow "Add Child"
     And I follow "Normal Page"

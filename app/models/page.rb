@@ -210,7 +210,9 @@ class Page < ActiveRecord::Base
   end
 
   def allowed_children
-    allowed_children_cache.split(',').uniq.map(&:constantize)
+    return @allowed_children if @allowed_children
+    update_allowed_children_cache if allowed_children_cache.blank?
+    @allowed_children = allowed_children_cache.split(',').uniq.map(&:constantize)
   end
 
   class << self

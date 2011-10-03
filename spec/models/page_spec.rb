@@ -348,7 +348,7 @@ describe Page do
 
   describe '#allowed_children' do
     it "should return a unique array of allowable child classes" do
-      page.should_receive(:allowed_children_cache).and_return('Page,CustomFileNotFoundPage,CustomFileNotFoundPage,EnvDumpPage,ArchivePage')
+      page.should_receive(:allowed_children_cache).at_least(:once).and_return('Page,CustomFileNotFoundPage,CustomFileNotFoundPage,EnvDumpPage,ArchivePage')
       children = page.allowed_children
       children.should == [Page, CustomFileNotFoundPage, EnvDumpPage, ArchivePage]
     end
