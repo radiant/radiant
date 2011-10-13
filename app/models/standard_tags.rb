@@ -1198,6 +1198,18 @@ module StandardTags
       else field
     end
   end
+  
+  tag 'site' do |tag|
+    tag.expand
+  end
+  %w(title domain dev_domain).each do |attr|
+    desc %{
+      Returns Radiant::Config['site.#{attr}'] as configured under the Settings tab.
+    }
+    tag "site:#{attr}" do |tag|
+      Radiant::Config["site.#{attr}"]
+    end
+  end  
 
   private
     def render_children_with_pagination(tag, opts={})
