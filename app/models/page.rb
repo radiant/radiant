@@ -7,7 +7,7 @@ class Page < ActiveRecord::Base
   end
 
   # Callbacks
-  before_save :update_virtual, :update_status, :update_allowed_children_cache
+  before_save :update_virtual, :update_status, :set_allowed_children_cache
 
   # Associations
   acts_as_tree :order => 'virtual DESC, title ASC'
@@ -211,8 +211,16 @@ class Page < ActiveRecord::Base
 
   def allowed_children
     return @allowed_children if @allowed_children
-    update_allowed_children_cache if allowed_children_cache.blank?
+    set_allowed_children_cache if allowed_children_cache.blank?
     @allowed_children = allowed_children_cache.split(',').uniq.map(&:constantize)
+  end
+
+  def allowed_children_lookup
+    [default_child, *Page.descendants.sort_by(&:name)].select(&:in_menu?).uniq
+  end
+
+  def set_allowed_children_cache
+    self.allowed_children_cache = allowed_children_lookup.collect(&:name).join(',')
   end
 
   class << self
@@ -322,14 +330,6 @@ class Page < ActiveRecord::Base
 
     def attributes_protected_by_default
       super - [self.class.inheritance_column]
-    end
-    
-    def update_allowed_children_cache
-      self.allowed_children_cache = allowed_children_lookup.collect(&:name).join(',')
-    end
-
-    def allowed_children_lookup
-      [default_child, *Page.descendants.sort_by(&:name)].select(&:in_menu?).uniq
     end
 
     def update_virtual
