@@ -353,13 +353,24 @@ describe Page do
       children.should == [Page, CustomFileNotFoundPage, EnvDumpPage, ArchivePage]
     end
 
+    it 'should return an array of allowable Page subclasses' do
+      page.allowed_children.all?{|klass| klass.ancestors.include?(Page) }
+    end
+  end
+
+  describe '#allowed_children_lookup' do
+    it 'should return the default_child as the first element' do
+      page.allowed_children_lookup.first.should == page.default_child
+    end
+
+    it 'should return a collection containing the default_child and ordered by name Page descendants that are in_menu' do
+      Page.should_receive(:descendants).and_return([ArchivePage, CustomFileNotFoundPage])
+      page.allowed_children_lookup.should == [Page, ArchivePage, CustomFileNotFoundPage]
+    end
+
     it "should reject pages that aren't in the menu" do
       FileNotFoundPage.in_menu false
       page.allowed_children.should_not include(FileNotFoundPage)
-    end
-
-    it 'should return an array of allowable child classes' do
-      page.allowed_children
     end
   end
 end
