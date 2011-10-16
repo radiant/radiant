@@ -9,7 +9,7 @@ class ExtendPagePartContentLimit < ActiveRecord::Migration
 
   def self.down
     if ActiveRecord::Base.connection.adapter_name =~ /m[sy]sql/i
-      change_column :page_parts, :content, :string
+      change_column :page_parts, :content, :text
     end
   end
 end
