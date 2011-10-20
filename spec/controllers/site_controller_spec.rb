@@ -91,7 +91,7 @@ describe SiteController do
 
   describe "scheduling" do    
     before do 
-      @sched_page = Page.find(103)
+      @sched_page = Page.find_by_title('d')
     end    
     it "should not display scheduled pages on live site" do
       @sched_page.published_at = Time.now + 5000
@@ -109,7 +109,7 @@ describe SiteController do
       get :show_page, :url => '/'
       response.body.should == 'Hello world!'
       
-      @sched_page2 = Page.find(103)
+      @sched_page2 = Page.find_by_title('d')
       @sched_page2.status_id.should == 100
     end
     
