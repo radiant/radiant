@@ -227,8 +227,11 @@ class Page < ActiveRecord::Base
     alias_method :in_menu?, :in_menu
     alias_method :in_menu, :in_menu=
 
+    def root
+      find_by_parent_id(nil)
+    end
+
     def find_by_path(path, live = true)
-      root = find_by_parent_id(nil)
       raise MissingRootPageError unless root
       root.find_by_path(path, live)
     end
