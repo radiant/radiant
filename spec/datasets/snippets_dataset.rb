@@ -28,8 +28,8 @@ class SnippetsDataset < Dataset::Base
     
     private
     
-      @@unique_snippet_name_call_count = 0
       def unique_snippet_name
+        @@unique_snippet_name_call_count ||= 0
         @@unique_snippet_name_call_count += 1
         "snippet-#{@@unique_snippet_name_call_count}"
       end

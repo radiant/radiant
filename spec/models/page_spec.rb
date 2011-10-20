@@ -11,11 +11,11 @@ class PageSpecTestPage < Page
     }
   end
 
-  tag 'test1' do
+  tag 'test1' do |tag|
     'Hello world!'
   end
 
-  tag 'test2' do
+  tag 'test2' do |tag|
     'Another test.'
   end
 end

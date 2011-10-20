@@ -49,8 +49,8 @@ class LayoutsDataset < Dataset::Base
 
     private
 
-      @@unique_layout_name_call_count = 0
       def unique_layout_name
+        @@unique_layout_name_call_count ||= 0
         @@unique_layout_name_call_count += 1
         "Layout #{@@unique_layout_name_call_count}"
       end

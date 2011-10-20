@@ -1,3 +1,5 @@
+require 'stringex'
+
 class String
   def symbolize
     self.gsub(/[^A-Za-z0-9]+/, "_").gsub(/(^_+|_+$)/, "").underscore.to_sym
@@ -13,7 +15,7 @@ class String
 
   unless methods.include?('parameterize')
     def parameterize(sep = '-')
-      ActiveSupport::Inflector.parameterize(self, sep)
+      remove_formatting.downcase.replace_whitespace(sep).collapse(sep)
     end
   end
   
