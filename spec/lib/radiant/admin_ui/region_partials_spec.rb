@@ -18,7 +18,7 @@ describe Radiant::AdminUI::RegionPartials do
   end
   
   it "should expose partials via bracket accessor" do
-    block = lambda { "Hello World!" }
+    block = Proc.new { "Hello World!" }
     @rp.main(&block)
     @rp['main'].should === block
   end

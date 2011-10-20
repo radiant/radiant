@@ -47,7 +47,7 @@ describe "Radiant::ResourceResponses" do
     describe "when wrapping a block" do
       it "should evaluate the block in the context of the controller" do
         @instance.send(:instance_variable_set, "@foo", "foo")
-        @instance.wrap(lambda { @foo }).call.should == 'foo'
+        @instance.wrap(Proc.new { @foo }).call.should == 'foo'
       end
     end
     

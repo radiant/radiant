@@ -23,7 +23,7 @@ describe Radiant::Taggable, "when included in a class or module" do
       c.tag 'hello' do 
         "hello world" 
       end
-      c.instance_methods.should include("tag:hello")
+      c.instance_methods.collect {|im| im.to_s}.should include("tag:hello")
     end
     TaggedClass.new.send("tag:hello").should == "hello world"
   end
