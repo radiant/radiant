@@ -916,7 +916,9 @@ describe "Standard Tags" do
       end
 
       it "set to a malformatted regexp should render an error" do
-        page.should render('<r:if_path matches="as(sorted/$">true</r:if_path>').with_error("Malformed regular expression in `matches' argument of `if_path' tag: unmatched (: /as(sorted\\/$/")
+        expected_error = "Malformed regular expression in `matches' argument of `if_path' tag: " + (RUBY_VERSION =~ /^1\.9/ ? "end pattern with unmatched parenthesis: /as(sorted\\/$/i" : "unmatched (: /as(sorted\\/$/")
+        
+        page.should render('<r:if_path matches="as(sorted/$">true</r:if_path>').with_error(expected_error)
       end
 
       it "without 'ignore_case' attribute should ignore case by default" do
@@ -950,7 +952,9 @@ describe "Standard Tags" do
       end
 
       it "set to a malformatted regexp should render an error" do
-        page.should render('<r:unless_path matches="as(sorted/$">true</r:unless_path>').with_error("Malformed regular expression in `matches' argument of `unless_path' tag: unmatched (: /as(sorted\\/$/")
+        expected_error = "Malformed regular expression in `matches' argument of `unless_path' tag: " + (RUBY_VERSION =~ /^1\.9/ ? "end pattern with unmatched parenthesis: /as(sorted\\/$/i" : "unmatched (: /as(sorted\\/$/")
+        
+        page.should render('<r:unless_path matches="as(sorted/$">true</r:unless_path>').with_error(expected_error)
       end
 
       it "without 'ignore_case' attribute should ignore case by default" do

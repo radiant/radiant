@@ -237,7 +237,7 @@ Config definition error: '#{key}' is defined twice:
       if newvalue != self[:value]
         raise ConfigError, "#{self.key} cannot be changed" unless settable? || self[:value].blank?
         if boolean?
-          self[:value] = (newvalue == "0" || newvalue == "false" || newvalue.blank? ) ? "false" : "true"
+          self[:value] = (newvalue == "1" || newvalue == "true") ? "true" : "false"
         else
           self[:value] = newvalue
         end

@@ -53,8 +53,8 @@ class HomePageDataset < Dataset::Base
     end
     
     private
-      @@unique_page_title_call_count = 0
       def unique_page_title
+        @@unique_page_title_call_count ||= 0
         @@unique_page_title_call_count += 1
         "Page #{@@unique_page_title_call_count}"
       end
