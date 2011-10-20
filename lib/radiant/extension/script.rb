@@ -41,7 +41,7 @@ Supports:       Radiant #{supports_radiant_version}
         extension = command[2]
         task = "radiant:extensions:#{extension}:#{command[3].split[0]}"
       else
-        extension = task = command.to_s
+        extension = task = command[0]
       end
       rake_file = File.join(RAILS_ROOT, 'vendor', 'extensions', extension) + '/lib/tasks/' + extension + '_extension_tasks.rake'
       load rake_file if File.exist? rake_file
@@ -343,7 +343,7 @@ module Radiant
       class Help
         def initialize(args=[])
           command = args.shift
-          command = 'help' unless self.class.instance_methods(false).include?(command)
+          command = 'help' unless self.class.instance_methods(false).collect {|im| im.to_s}.include?(command.to_s)
           send(command)
         end
 
@@ -387,7 +387,7 @@ module Radiant
 
         private
           def command_names
-            (Radiant::Extension::Script.constants - ['Util']).sort.map {|n| n.underscore }.join(", ")
+            (Radiant::Extension::Script.constants - ['Util']).sort.map {|n| n.to_s.underscore }.join(", ")
           end
       end
     end

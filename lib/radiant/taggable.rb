@@ -31,7 +31,13 @@ module Radiant::Taggable
   end
   
   def render_tag(name, tag_binding)
-    send "tag:#{name}", tag_binding
+    tag_method_name = "tag:#{name}"
+    
+    if method(tag_method_name).arity == 0
+      send tag_method_name
+    else
+      send tag_method_name, tag_binding
+    end
   end
   
   def tags
