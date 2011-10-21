@@ -37,7 +37,7 @@ module Admin::NodeHelper
         else
           content_tag :li, link_to(name_for[child], new_admin_page_child_path(page, :page_class => child), :title => clean_page_description(child))
         end
-      end
+      end.flatten.join('')
     end
   end
 
