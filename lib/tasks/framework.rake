@@ -63,20 +63,10 @@ unless File.directory? "#{RAILS_ROOT}/app"
 
     desc "Update configs, scripts, html, images, sass, stylesheets and javascripts from Radiant."
     task :update do
-      tasks = %w{scripts javascripts configs static_html images sass stylesheets cached_assets}
+      tasks = %w{scripts javascripts configs static_html images sass stylesheets cached_assets bundle}
       tasks = tasks & ENV['ONLY'].split(',') if ENV['ONLY']
       tasks = tasks - ENV['EXCEPT'].split(',') if ENV['EXCEPT']
-      
-      instance_gemfile_path = RAILS_ROOT + '/Gemfile'
-      puts instance_gemfile_path
-      unless File.exists?(instance_gemfile_path)
-        File.open(instance_gemfile_path, 'w') do |f|
-          radiant_version = Radiant::Version.to_s
-          sqlite_version  = Gem.loaded_specs['sqlite3'].version.to_s
-          f.write ERB.new(File.read("#{File.dirname(__FILE__)}/../generators/instance/templates/instance_gemfile")).result(binding)
-        end
-      end
-        
+
       tasks.each do |task| 
         puts "* Updating #{task}"
         Rake::Task["radiant:update:#{task}"].invoke
@@ -120,6 +110,45 @@ unless File.directory? "#{RAILS_ROOT}/app"
         TaskSupport.cache_admin_js
       end
 
+      desc "Update Gemfile from your current radiant install, backing up if required."
+      task :bundle do
+        require 'erb'
+        file = "#{RAILS_ROOT}/Gemfile"
+        tmpfile = "#{RAILS_ROOT}/Gemfile.tmp"
+        genfile = "#{File.dirname(__FILE__)}/../generators/instance/templates/instance_gemfile"
+        backfile = "#{RAILS_ROOT}/Gemfile.bak"
+        
+        db_gems = {
+          'sqlite3' => 'sqlite3',
+          'mysql' => 'mysql',
+          'pg' => 'postgresql',
+          'db2' => 'db2',
+          'activerecord-sqlserver-adapter' => 'sqlserver'
+        }
+        active_db_gem = db_gems.keys.find { |g| Gem.loaded_specs[g] } || 'sqlite3'
+
+        File.open(tmpfile, 'w') do |f|
+          radiant_version = Radiant::Version.to_s
+          db = db_gems[active_db_gem]
+          f.write ERB.new(File.read(genfile)).result(binding)
+        end
+        
+        unless File.exist?(file) && FileUtils.compare_file(file, tmpfile)
+          warning = ""
+          if File.exist?(file)
+            FileUtils.cp(file, backfile)
+            warning << "** WARNING **
+Your old Gemfile has been saved as Gemfile.bak. If you had radiant extensions or other gems in that file, please copy those lines to the new file. After checking the Gemfile, please run `bundle install` to update your application."
+          else
+            warning << "** WARNING **
+A Gemfile has been created in your application directory. If you have config.gem entries in your old environment.rb (now .bak), please move them to the Gemfile. When you're happy with it, run `bundle install` to install the gems."
+          end
+          FileUtils.cp(tmpfile, file)
+        end
+        FileUtils.rm(tmpfile)
+        puts warning
+      end
+
       desc "Update configuration files from your current radiant install"
       task :configs do
         require 'erb'
@@ -128,43 +157,37 @@ unless File.directory? "#{RAILS_ROOT}/app"
           :development  => "#{RAILS_ROOT}/config/environments/development.rb",
           :test         => "#{RAILS_ROOT}/config/environments/test.rb",
           :cucumber     => "#{RAILS_ROOT}/config/environments/cucumber.rb",
-          :production   => "#{RAILS_ROOT}/config/environments/production.rb",
-          :gemfile      => "#{RAILS_ROOT}/Gemfile"
+          :production   => "#{RAILS_ROOT}/config/environments/production.rb"
         }
         tmps = {
           :env          => "#{RAILS_ROOT}/config/environment.tmp",
           :development  => "#{RAILS_ROOT}/config/environments/development.tmp",
           :test         => "#{RAILS_ROOT}/config/environments/test.tmp",
           :cucumber     => "#{RAILS_ROOT}/config/environments/cucumber.rb",
-          :production   => "#{RAILS_ROOT}/config/environments/production.tmp",
-          :gemfile      => "#{RAILS_ROOT}/Gemfile.tmp"
+          :production   => "#{RAILS_ROOT}/config/environments/production.tmp"
         }
         gens = {
           :env          => "#{File.dirname(__FILE__)}/../generators/instance/templates/instance_environment.rb",
           :development  => "#{File.dirname(__FILE__)}/../../config/environments/development.rb",
           :test         => "#{File.dirname(__FILE__)}/../../config/environments/test.rb",
           :cucumber     => "#{File.dirname(__FILE__)}/../../config/environments/cucumber.rb",
-          :production   => "#{File.dirname(__FILE__)}/../../config/environments/production.rb",
-          :gemfile      => "#{File.dirname(__FILE__)}/../generators/instance/templates/instance_gemfile"
+          :production   => "#{File.dirname(__FILE__)}/../../config/environments/production.rb"
         }
         backups = {
           :env          => "#{RAILS_ROOT}/config/environment.bak",
           :development  => "#{RAILS_ROOT}/config/environments/development.bak",
           :test         => "#{RAILS_ROOT}/config/environments/test.bak",
           :cucumber     => "#{RAILS_ROOT}/config/environments/cucumber.bak",
-          :production   => "#{RAILS_ROOT}/config/environments/production.bak",
-          :gemfile      => "#{RAILS_ROOT}/Gemfile.bak"
+          :production   => "#{RAILS_ROOT}/config/environments/production.bak"
         }
         
         FileUtils.cp("#{File.dirname(__FILE__)}/../generators/instance/templates/instance_boot.rb", RAILS_ROOT + '/config/boot.rb')
         FileUtils.cp("#{File.dirname(__FILE__)}/../../config/preinitializer.rb", RAILS_ROOT + '/config/preinitializer.rb')
         warning = ""
-        [:env, :development, :test, :cucumber, :production, :gemfile].each do |env_file|
+        [:env, :development, :test, :cucumber, :production].each do |env_file|
           File.open(tmps[env_file], 'w') do |f|
             app_name        = File.basename(File.expand_path(RAILS_ROOT))
             radiant_version = Radiant::Version.to_s
-            sqlite_version  = Gem.loaded_specs['sqlite3'].version.to_s
-            db              = 'sqlite3'
             f.write ERB.new(File.read(gens[env_file])).result(binding)
           end
           next if File.exist?(instances[env_file]) && FileUtils.compare_file(instances[env_file], tmps[env_file])
