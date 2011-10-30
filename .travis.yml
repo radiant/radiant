@@ -12,3 +12,7 @@ notifications:
     - ci@spanner.org
     - git@johnmuhl.com
   irc: "irc.freenode.org#radiantcms"
+
+branches:
+  only:
+    - master
