@@ -2,6 +2,7 @@
 
 ## Edge
 
+* 1.9.2 compatibility [Johannes Fahrenkrug, John Muhl]
 * Fix view_path order [William Ross]
 * Extension rake task files loaded directly: no need to copy on update [William Ross]
 * Fake published_at on preview, if necessary [William Ross]
