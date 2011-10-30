@@ -1,0 +1,15 @@
+#!/bin/sh
+
+case $DB in
+  "sqlite" )
+    cp config/database.sqlite.yml config/database.yml;;
+  "mysql" )
+    mysql -e 'create database radiant_test;'
+    cp config/database.mysql.yml config/database.yml;;
+  "postgres" )
+    psql -c 'create database radiant_test;' -U postgres
+    cp config/database.postgresql.yml config/database.yml;;
+esac
+
+bundle exec rake db:migrate
+bundle exec rake db:migrate:extensions

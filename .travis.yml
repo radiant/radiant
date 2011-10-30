@@ -4,10 +4,7 @@ rvm:
 
 script: "bundle exec rake spec"
 
-before_script:
-  - "cp config/database.sqlite.yml config/database.yml"
-  - "bundle exec rake db:migrate"
-  - "bundle exec rake db:migrate:extensions"
+before_script: "./bin/ci/before"
 
 notifications:
   recipients:
@@ -19,3 +16,8 @@ notifications:
 branches:
   only:
     - master
+
+env:
+  - DB=sqlite
+  - DB=mysql
+  - DB=postgres

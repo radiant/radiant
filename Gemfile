@@ -20,4 +20,6 @@ gem "sqlite3", "1.3.4"
 
 if ENV['TRAVIS']
   gemspec :development_group => :test
+  gem "mysql"
+  gem "pg"
 end
