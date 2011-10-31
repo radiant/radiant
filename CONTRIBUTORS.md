@@ -18,6 +18,7 @@ core:
 * Andrew vonderLuft
 * William Ross
 * John Muhl
+* Johannes Fahrenkrug
 
 ## 0.9.1 Refraction
 
