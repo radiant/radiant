@@ -2,6 +2,9 @@
 
 ## Edge
 
+* Add migration to not crop page part content > 64kB in MySql and MSSQL [Benny Degezelle]
+* Add r:site:title, r:site:domain and r:site:dev_domain [Benny Degezelle]
+* Polish language pack generation [Benny Degezelle]
 * 1.9.2 compatibility [Johannes Fahrenkrug, John Muhl]
 * Fix view_path order [William Ross]
 * Extension rake task files loaded directly: no need to copy on update [William Ross]
