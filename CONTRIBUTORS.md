@@ -19,6 +19,18 @@ core:
 * William Ross
 * John Muhl
 * Johannes Fahrenkrug
+* Benny Degezelle
+* Jason Taylor
+* Wes Gamble
+* Michael Stalker
+* Chris Parrish
+* John W. Long
+* Edmund Haselwanter
+* Michal Cichra
+* Jason Garber
+* Samuel Whited
+* vanderhoorn
+* Sean Cribbs
 
 ## 0.9.1 Refraction
 
