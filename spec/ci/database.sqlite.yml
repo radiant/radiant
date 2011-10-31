@@ -1,7 +1,6 @@
 test: &TEST
   adapter: sqlite3
-  database: ":memory:"
-  timeout: 500
+  database: db/radiant_test.db
 
 cucumber:
   <<: *TEST
