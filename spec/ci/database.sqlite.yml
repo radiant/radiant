@@ -1,0 +1,7 @@
+test: &TEST
+  adapter: sqlite3
+  database: ":memory:"
+  timeout: 500
+
+cucumber:
+  <<: *TEST

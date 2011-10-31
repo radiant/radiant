@@ -1,0 +1,7 @@
+test: &TEST
+  adapter: mysql
+  database: radiant_test
+  username:
+
+cucumber:
+  <<: *TEST
