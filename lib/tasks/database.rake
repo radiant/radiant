@@ -30,11 +30,6 @@ namespace :db do
       ActiveRecord::Base.connection.tables.each do |table|
         ActiveRecord::Migration.drop_table table
       end
-      
-      # run migrations  in Radiant.root/db/migrate
-      Rake::Task["db:migrate:radiant"].invoke
-
-      # run migrations  in Rails.root/db/migrate
       Rake::Task["db:migrate"].invoke
     else
       say "Task cancelled."
@@ -64,6 +59,15 @@ To find radiant extensions, please visit http://ext.radiantcms.org.
 }
   end
   
+  desc "Migrate the database through all available migration scripts (looks for db/migrate/* in radiant, in extensions and in your site) and update db/schema.rb by invoking db:schema:dump. Turn off output with VERBOSE=false."
+  task :migrate => :environment do
+    Rake::Task['db:migrate:radiant'].invoke
+    Rake::Task['db:migrate:extensions'].invoke
+    ActiveRecord::Migration.verbose = ENV["VERBOSE"] ? ENV["VERBOSE"] == "true" : true
+    ActiveRecord::Migrator.migrate("db/migrate/", ENV["VERSION"] ? ENV["VERSION"].to_i : nil)
+    Rake::Task["db:schema:dump"].invoke if ActiveRecord::Base.schema_format == :ruby
+  end
+
   namespace :migrate do
     desc "Migrates the database through steps defined in the core radiant distribution. Usual db:migrate options can apply."
     task :radiant => :environment do
