@@ -190,12 +190,13 @@ A Gemfile has been created in your application directory. If you have config.gem
             radiant_version = Radiant::Version.to_s
             f.write ERB.new(File.read(gens[env_file])).result(binding)
           end
-          next if File.exist?(instances[env_file]) && FileUtils.compare_file(instances[env_file], tmps[env_file])
-          FileUtils.cp(instances[env_file], backups[env_file]) if File.exist?(instances[env_file])
-          FileUtils.cp(tmps[env_file], instances[env_file])
-          FileUtils.rm(tmps[env_file])
-          warning << "
+          unless File.exist?(instances[env_file]) && FileUtils.compare_file(instances[env_file], tmps[env_file])
+            FileUtils.cp(instances[env_file], backups[env_file]) if File.exist?(instances[env_file])
+            FileUtils.cp(tmps[env_file], instances[env_file])
+            warning << "
 - #{instances[env_file].sub(/^#{RAILS_ROOT}/, '')}"
+          end
+          FileUtils.rm(tmps[env_file])
         end
         unless warning.blank?
           puts "** WARNING **
