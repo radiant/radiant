@@ -26,3 +26,20 @@ When /^I edit the "([^\"]*)" page$/ do |name|
   page = pages(name.to_sym)
   visit "/admin/pages/#{page.id}/edit"
 end
+
+Given /^I create a homepage$/ do
+  steps %Q{
+    When I go to the "pages" admin page
+    And I follow "New Homepage"
+    Then I should see "New Page"
+    And there should be a "body" part
+    And there should be an "extended" part
+    When I fill in "Page Title" with "My site"
+    And I fill in "Slug" with "/"
+    And I fill in "Breadcrumb" with "My site"
+    And I fill in the "body" content with "Under Construction"
+    And I fill in the "extended" content with "foobar"
+    And I select "Published" from "Status"
+    And I press "Create page"
+  }
+end

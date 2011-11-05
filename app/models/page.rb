@@ -38,8 +38,6 @@ class Page < ActiveRecord::Base
 
   annotate :description
   attr_accessor :request, :response, :pagination_parameters
-  class_inheritable_accessor :in_menu
-  self.in_menu = true
   class_inheritable_accessor :default_child
   self.default_child = self
 
@@ -209,14 +207,8 @@ class Page < ActiveRecord::Base
     self.class.default_child
   end
 
-  def allowed_children
-    return @allowed_children if @allowed_children
-    set_allowed_children_cache if allowed_children_cache.blank?
-    @allowed_children = allowed_children_cache.split(',').uniq.map(&:constantize)
-  end
-
   def allowed_children_lookup
-    [default_child, *Page.descendants.sort_by(&:name)].select(&:in_menu?).uniq
+    [default_child, *Page.descendants.sort_by(&:name)].uniq
   end
 
   def set_allowed_children_cache
@@ -224,8 +216,6 @@ class Page < ActiveRecord::Base
   end
 
   class << self
-    alias_method :in_menu?, :in_menu
-    alias_method :in_menu, :in_menu=
 
     def root
       find_by_parent_id(nil)

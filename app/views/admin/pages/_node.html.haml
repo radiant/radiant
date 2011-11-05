@@ -17,10 +17,10 @@
     - node.actions_column do
       - unless simple
         %td.actions
-          = child_link_for(page)
-          = link_to image('minus') + ' ' + t('remove'), remove_admin_page_url(page), :class => "action"
-          = child_menu_for(page)
+          = page.add_child_option
+          = page.remove_option
 
 - if expanded
   - page.children.each do |child|
+    - child.becomes(child.class_name.constantize) if child.class_name.present?
     = render_node child, :level => level + 1, :simple => simple

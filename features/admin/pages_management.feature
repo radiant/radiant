@@ -17,27 +17,17 @@ Feature: Managing pages
     
   Scenario: Creating a homepage
     Given I am logged in as "existing"
-    Given there are no pages
-    When I go to the "pages" admin page
-    And I follow "New Homepage"
-    Then I should see "New Page"
-    And there should be a "body" part
-    And there should be an "extended" part
-    When I fill in "Page Title" with "My site"
-    And I fill in "Slug" with "/"
-    And I fill in "Breadcrumb" with "My site"
-    And I fill in the "body" content with "Under Construction"
-    And I fill in the "extended" content with "foobar"
-    And I select "Published" from "Status"
-    And I press "Create page"
+    And there are no pages
+    And I create a homepage
     Then I should be on the sitemap
     And I should see "My site"
     When I go to the homepage
     Then I should see "Under Construction"
   
   Scenario: Creating child pages
-    Given there is a homepage
+    Given there are no pages
     And I am logged in as "existing"
+    And I create a homepage
     When I go to the "pages" admin page
     And I follow "Add Child"
     And I follow "Normal Page"
