@@ -2,6 +2,7 @@
 
 ## Edge
 
+* Allow page menus to be overridden by additional modules [Jim Gay]
 * Add migration to not crop page part content > 64kB in MySql and MSSQL [Benny Degezelle]
 * Add r:site:title, r:site:domain and r:site:dev_domain [Benny Degezelle]
 * Polish language pack generation [Benny Degezelle]
