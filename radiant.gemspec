@@ -39,7 +39,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency "will_paginate", "~> 2.3.11"
   s.add_dependency "stringex",      "~> 1.3.0"
 
-  s.add_dependency "radiant-archive-extension",             "~> 1.0.0"
+  s.add_dependency "radiant-archive-extension",             "~> 1.0.4"
   s.add_dependency "radiant-clipped-extension",             "~> 1.0.10"
   s.add_dependency "radiant-debug-extension",               "~> 1.0.0"
   s.add_dependency "radiant-exporter-extension",            "~> 1.0.0"
