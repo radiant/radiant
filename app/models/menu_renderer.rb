@@ -57,7 +57,7 @@ module MenuRenderer
   end
 
   def menu_list
-    view.content_tag :ul, menu_items.to_s, :class => 'menu', :id => "allowed_children_#{id}"
+    view.content_tag :ul, menu_items.join, :class => 'menu', :id => "allowed_children_#{id}"
   end
 
   def remove_link
@@ -85,7 +85,7 @@ module MenuRenderer
   end
 
   def add_child_menu
-    menu_list.to_s
+    menu_list
   end
 
   def add_child_link_with_menu
