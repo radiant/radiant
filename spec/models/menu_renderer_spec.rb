@@ -185,7 +185,7 @@ describe MenuRenderer do
 
   describe '#menu_list' do
     it 'should return a list of all menu items' do
-      special_page.stub!(:menu_items).and_return('-- menu items --')
+      special_page.stub!(:menu_items).and_return(['-- menu items --'])
       special_page.menu_list.should match(/<ul class="menu" id="allowed_children_#{special_page.id}">-- menu items --<\/ul>/)
     end
   end
