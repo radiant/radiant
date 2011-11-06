@@ -112,6 +112,12 @@ describe MenuRenderer do
       special_page.allowed_children_cache = 'Page,SpecialChildPage'
       special_page.allowed_child_classes.should == [Page]
     end
+    it 'should not error when the allowed_children_cache is nil' do
+      special_page.allowed_children_cache = nil
+      lambda{
+        special_page.allowed_child_classes
+      }.should_not raise_error
+    end
   end
 
   describe '#default_child_item' do
