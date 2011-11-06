@@ -9,28 +9,28 @@ require 'action_view'
 
 unless defined?(Page)
   class Page
-    def self.default_child
-      Page
+    class << self
+      def default_child
+        Page
+      end
+      alias_method :description, :to_s
+      alias_method :name, :to_s
     end
     def default_child
       self.class.default_child
     end
-    def self.description
-      'Page'
-    end
     def description
       self.class.description
+    end
+    def class_name
+      self.class.to_s
     end
   end
 end
 unless defined?(I18n)
   class I18n; end
 end
-class AlternatePage < Page
-  def self.description
-    'Alternate Page'
-  end
-end
+class AlternatePage < Page; end
 class SpecialChildPage < Page; end
 class SuperSpecialChildPage < Page; end
 module SpecialTestMenuRenderer; end
@@ -151,11 +151,6 @@ describe MenuRenderer do
 
   describe '#child_items' do
     before do
-      I18n.stub!(:t).with('normal_page', :default => 'Page').and_return('Page')
-      I18n.stub!(:t).with('alternate_page', :default => 'Alternate').and_return('Alternate')
-      I18n.stub!(:t).with('special_child', :default => 'Special Child').and_return('Special Child')
-      I18n.stub!(:t).with('super_special_child', :default => 'Super Special Child').and_return('Super Special Child')
-
       alternate_page.stub!(:allowed_child_classes).and_return [Page, SpecialChildPage, SuperSpecialChildPage]
       AlternatePage.stub!(:default_child).and_return(SpecialChildPage)
       view.new_admin_page_child_path = '/pages/new'

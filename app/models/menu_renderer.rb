@@ -120,14 +120,14 @@ module MenuRenderer
     text = link_text_for_child_class(child_class.name)
     view.link_to text, path, :title => title
   end
-
-  def link_text_for_child_class(class_name)
-    translation_key = if class_name == 'Page' || class_name.blank?
+  
+  def link_text_for_child_class(given_class_name)
+    translation_key = if given_class_name == 'Page' || given_class_name.blank?
       'normal_page'
     else
-      class_name.sub('Page','').underscore
+      given_class_name.sub('Page','').underscore
     end
-    fallback = class_name == 'Page' ? 'Page' : class_name.sub('Page','').titleize
+    fallback = given_class_name == 'Page' ? 'Page' : given_class_name.sub('Page','').titleize
     I18n.t(translation_key, :default => fallback)
   end
 end
