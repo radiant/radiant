@@ -124,7 +124,7 @@ describe MenuRenderer do
     before do
       @link_text = 'New Page Link'
       I18n.should_receive(:t).and_return(@link_text)
-      view.new_admin_page_child_path = '/pages/new'
+      view.stub!(:new_admin_page_child_path).and_return'/pages/new'
       special_page.default_child = SpecialChildPage
     end
     it 'should return a menu item for the default child type' do
@@ -153,11 +153,11 @@ describe MenuRenderer do
     before do
       alternate_page.stub!(:allowed_child_classes).and_return [Page, SpecialChildPage, SuperSpecialChildPage]
       AlternatePage.stub!(:default_child).and_return(SpecialChildPage)
-      view.new_admin_page_child_path = '/pages/new'
+      view.stub!(:new_admin_page_child_path).and_return'/pages/new'
     end
     it 'should return a menu item for each of the child types' do
       child_types = alternate_page.allowed_child_classes - [alternate_page.default_child]
-      child_items_string = alternate_page.child_items.to_s
+      child_items_string = alternate_page.child_items.join
       child_types.each do |child|
         child_items_string.should match(/<li><a.+title="#{child.description}".+>/)
       end
@@ -242,8 +242,8 @@ describe MenuRenderer do
       I18n.stub!(:t).with('add_child').and_return('Add Child')
       special_page.stub!(:default_child).and_return(AlternatePage)
       path = '/pages/new?page_class=' + special_page.default_child.name
-      view.new_admin_page_child_path = path
-      view.image = 'image'
+      view.stub!(:new_admin_page_child_path).and_return path
+      view.stub!(:image).and_return 'image'
       special_page.add_child_link.should match(/<a href="#{Regexp.quote(path)}".*>#{view.image} Add Child/)
     end
   end
@@ -253,8 +253,8 @@ describe MenuRenderer do
       I18n.stub!(:t).with('add_child').and_return('Add Child')
       special_page.stub!(:default_child).and_return(AlternatePage)
       path = '/pages/new?page_class=' + special_page.default_child.name
-      view.new_admin_page_child_path = path
-      view.image = 'image'
+      view.stub!(:new_admin_page_child_path).and_return path
+      view.stub!(:image).and_return 'image'
       special_page.add_child_link_with_menu_hook.should match(/<a href="#allowed_children_#{special_page.id}".*class="[^"]*dropdown">/)
     end
   end

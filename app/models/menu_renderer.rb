@@ -77,11 +77,11 @@ module MenuRenderer
   end
 
   def add_child_link
-    view.link_to view.image('plus') + ' ' + I18n.t('add_child'), view.new_admin_page_child_path(self, :page_class => default_child.name), :class => "action"
+    view.link_to((view.image('plus') + ' ' + I18n.t('add_child')), view.new_admin_page_child_path(self, :page_class => default_child.name), :class => "action")
   end
 
   def add_child_link_with_menu_hook
-    view.link_to view.image('plus') + ' ' + I18n.t('add_child'), "#allowed_children_#{id}", :class => "action dropdown"
+    view.link_to((view.image('plus') + ' ' + I18n.t('add_child')), "#allowed_children_#{id}", :class => "action dropdown")
   end
 
   def add_child_menu
@@ -111,14 +111,14 @@ module MenuRenderer
   end
 
   def menu_item(child_class)
-    view.content_tag :li, menu_link(child_class)
+    view.content_tag(:li, menu_link(child_class))
   end
 
   def menu_link(child_class)
     title = clean_page_description(child_class)
     path = view.new_admin_page_child_path(self, :page_class => child_class.name)
     text = link_text_for_child_class(child_class.name)
-    view.link_to text, path, :title => title
+    view.link_to(text, path, :title => title)
   end
   
   def link_text_for_child_class(given_class_name)
