@@ -19,9 +19,9 @@ config/database.yml to match.
 
 3. Run the database bootstrap rake task:
 
-    % rake production db:bootstrap
+    % bundle exec rake production db:bootstrap
 
-(If you would like bootstrap a development database run `rake db:bootstrap`.)
+(If you would like bootstrap a development database run `bundle exec rake db:bootstrap`.)
 
 4. Radiant is a normal Rails application and you can run it in all the usual
 ways. To test your installation, try running:
