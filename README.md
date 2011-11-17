@@ -60,7 +60,7 @@ This will install the gem with the prerelease name, for example: ‘radiant-0.9.
 
 To run tests you will need to have the following gems installed:
 
-  gem install ZenTest rspec rspec-rails cucumber webrat nokogiri
+  gem install ZenTest rspec rspec-rails cucumber webrat nokogiri sqlite3-ruby
 
 ## Support
 
