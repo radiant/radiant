@@ -48,7 +48,7 @@ module Radiant
         step { Radiant::Config['admin.title'   ] = 'Radiant CMS' }
         step { Radiant::Config['admin.subtitle'] = 'Publishing for Small Teams' }
         step { Radiant::Config['defaults.page.parts' ] = 'body, extended' }
-        step { Radiant::Config['defaults.page.status' ] = 'draft' }
+        step { Radiant::Config['defaults.page.status' ] = 'Draft' }
         step { Radiant::Config['defaults.page.filter' ] = nil }
         step { Radiant::Config['defaults.page.fields'] = 'Keywords, Description' }
         step { Radiant::Config['session_timeout'] = 2.weeks }
