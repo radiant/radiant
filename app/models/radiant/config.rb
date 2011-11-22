@@ -100,6 +100,7 @@ module Radiant
         Radiant::Config.ensure_cache_file
         Rails.cache.write('Radiant::Config',Radiant::Config.to_hash)
         Rails.cache.write('Radiant.cache_mtime', File.mtime(cache_file))
+        Rails.cache.silence!
       end
       
       def cache_file_exists?
