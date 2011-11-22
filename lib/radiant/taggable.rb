@@ -1,7 +1,8 @@
 module Radiant::Taggable
-  mattr_accessor :last_description, :tag_descriptions, :tag_deprecations
+  mattr_accessor :last_description, :tag_descriptions, :tag_deprecations, :tag_methods
   @@tag_descriptions = {}
   @@tag_deprecations = {}
+  @@tag_methods = []
     
   def self.included(base)
     base.extend(ClassMethods)
@@ -31,19 +32,19 @@ module Radiant::Taggable
   end
   
   def render_tag(name, tag_binding)
-    tag_method_name = "tag:#{name}"
-    
-    if method(tag_method_name).arity == 0
-      send tag_method_name
+    tag_method = method("tag:#{name}")
+    if tag_method.arity == 0
+      tag_method.call
     else
-      send tag_method_name, tag_binding
+      tag_method.call(tag_binding)
     end
   end
   
-  def tags
-    Util.tags_in_array(methods)
+  def tag_methods
+    self.class.tag_methods
   end
-  
+  alias :tags :tag_methods
+
   def tag_descriptions(hash=nil)
     self.class.tag_descriptions hash
   end
@@ -61,6 +62,11 @@ module Radiant::Taggable
       super
     end
     
+    def tag_methods
+      Radiant::Taggable.tag_methods
+    end
+    alias :tags :tag_methods
+    
     def tag_descriptions(hash = nil)
       Radiant::Taggable.tag_descriptions[self.name] ||= (hash ||{})
     end
@@ -72,12 +78,9 @@ module Radiant::Taggable
     
     def tag(name, &block)
       self.tag_descriptions[name] = Radiant::Taggable.last_description if Radiant::Taggable.last_description
+      self.tag_methods.push(name)
       Radiant::Taggable.last_description = nil
       define_method("tag:#{name}", &block)
-    end
-    
-    def tags
-      Util.tags_in_array(self.instance_methods)
     end
     
     # Define a tag while also deprecating it. Normal usage:
@@ -115,10 +118,6 @@ module Radiant::Taggable
   end
 
   module Util
-    def self.tags_in_array(array)
-      array.grep(/^tag:/).map { |name| name[4..-1] }.sort
-    end
-    
     def self.strip_leading_whitespace(text)
       text = text.dup
       text.gsub!("\t", "  ")
