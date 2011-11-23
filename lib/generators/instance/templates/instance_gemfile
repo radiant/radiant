@@ -26,7 +26,7 @@ gem "radiant", "~> <%= radiant_version %>"
 
 # Language packs
 # gem "radiant-dutch_language_pack-extension",    "~> 1.0.0"
-# gem "radiant-french_language_pack-extension"',   "~> 1.0.0"
+# gem "radiant-french_language_pack-extension",   "~> 1.0.0"
 # gem "radiant-german_language_pack-extension",   "~> 1.0.0"
 # gem "radiant-italian_language_pack-extension",  "~> 1.0.0"
 # gem "radiant-japanese_language_pack-extension", "~> 1.0.0"
