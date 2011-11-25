@@ -1,4 +1,5 @@
-require 'acts_as_tree'
+# require 'acts_as_tree'
+require 'ancestry'
 require 'annotatable'
 require 'radiant/extension'
 
@@ -7,8 +8,6 @@ class Page < ActiveRecord::Base
   class MissingRootPageError < StandardError
     def initialize(message = 'Database missing root page'); super end
   end
-
-  attr_accessible :lock_version, :parent_id, :class_name, :title, :slug, :breadcrumb, :layout_id, :status_id, :published_at, :parts_attributes
 
   # Callbacks
   before_save :update_virtual, :update_status, :set_allowed_children_cache
@@ -35,19 +34,27 @@ class Page < ActiveRecord::Base
                         length: { maximum: 160 }
 
   validates :status_id, presence: true
+  validates_presence_of :title, :slug, :breadcrumb, :status_id
+  validates_length_of :title, :maximum => 255
+  validates_length_of :slug, :maximum => 100
+  validates_length_of :breadcrumb, :maximum => 160
+  validates_format_of :slug, :with => %r{^([-_.A-Za-z0-9]*|/)$}
+  validates_uniqueness_of :slug, :scope => :ancestry
 
   validate :valid_class_name
-
+  has_ancestry
+  default_scope :order => 'virtual DESC, title ASC'
   include Radiant::Taggable
   include StandardTags
+  include DeprecatedTags
   include Annotatable
 
   annotate :description
   attr_accessor :request, :response, :pagination_parameters
-  class_attribute :default_child
+  class_inheritable_accessor :default_child
   self.default_child = self
 
-  self.inheritance_column = 'class_name'
+  set_inheritance_column :class_name
 
   def layout_with_inheritance
     unless layout_without_inheritance
@@ -74,6 +81,15 @@ class Page < ActiveRecord::Base
     clean_path(path + '/' + child.slug)
   end
   alias_method :child_url, :child_path
+
+  def headers
+    # Return a blank hash that child classes can override or merge
+    { }
+  end
+  
+  def parent
+    if parent_id.blank? then nil else Page.find(parent_id) end
+  end
 
   def part(name)
     if new_record? or parts.to_a.any?(&:new_record?)
@@ -106,15 +122,15 @@ class Page < ActiveRecord::Base
   def published?
     status == Status[:published]
   end
-
+  
   def scheduled?
     status == Status[:scheduled]
   end
-
+  
   def status
    Status.find(self.status_id)
   end
-
+  
   def status=(value)
     self.status_id = value.id
   end
@@ -130,31 +146,14 @@ class Page < ActiveRecord::Base
 
   def process(request, response)
     @request, @response = request, response
-    set_response_headers(@response)
+    if layout
+      content_type = layout.content_type.to_s.strip
+      @response.headers['Content-Type'] = content_type unless content_type.empty?
+    end
+    headers.each { |k,v| @response.headers[k] = v }
     @response.body = render
     @response.status = response_code
   end
-
-  def headers
-    # Return a blank hash that child classes can override or merge
-    { }
-  end
-
-  def set_response_headers(response)
-    set_content_type(response)
-    headers.each { |k,v| response.headers[k] = v }
-  end
-  private :set_response_headers
-
-  def set_content_type(response)
-    if layout
-      content_type = layout.content_type.to_s.strip
-      if content_type.present?
-        response.headers['Content-Type'] = content_type
-      end
-    end
-  end
-  private :set_content_type
 
   def response_code
     200
@@ -185,37 +184,36 @@ class Page < ActiveRecord::Base
     return nil if virtual?
     path = clean_path(path) if clean
     my_path = self.path
-    if (my_path == path) && (!live or published?)
+    if (my_path == path) && (not live or published?)
       self
     elsif (path =~ /^#{Regexp.quote(my_path)}([^\/]*)/)
-      slug_child = children.where(slug: $1).first
+      slug_child = children.find_by_slug($1)
       if slug_child
-        found = slug_child.find_by_path(path, live, clean)
+        found = slug_child.find_by_url(path, live, clean) # TODO: set to find_by_path after deprecation
         return found if found
       end
       children.each do |child|
-        found = child.find_by_path(path, live, clean)
+        found = child.find_by_url(path, live, clean) # TODO: set to find_by_path after deprecation
         return found if found
       end
-
-      if live
-        file_not_found_names = ([FileNotFoundPage] + FileNotFoundPage.descendants).map(&:name)
-        children.where(status_id: Status[:published].id).where(class_name: file_not_found_names).first
-      else
-        children.first
-      end
+      file_not_found_types = ([FileNotFoundPage] + FileNotFoundPage.descendants)
+      file_not_found_names = file_not_found_types.collect { |x| x.name }
+      condition = (['class_name = ?'] * file_not_found_names.length).join(' or ')
+      condition = "status_id = #{Status[:published].id} and (#{condition})" if live
+      children.find(:first, :conditions => [condition] + file_not_found_names)
     end
   end
+  alias_method :find_by_url, :find_by_path
 
   def update_status
     self.published_at = Time.zone.now if published? && self.published_at == nil
-
+    
     if self.published_at != nil && (published? || scheduled?)
       self[:status_id] = Status[:scheduled].id if self.published_at  > Time.zone.now
       self[:status_id] = Status[:published].id if self.published_at <= Time.zone.now
     end
 
-    true
+    true    
   end
 
   def to_xml(options={}, &block)
@@ -241,8 +239,12 @@ class Page < ActiveRecord::Base
     end
 
     def find_by_path(path, live = true)
-      raise MissingRootPageError unless root
+      raise MissingRootPageError if root.nil?
       root.find_by_path(path, live)
+    end
+    def find_by_url(*args)
+      ActiveSupport::Deprecation.warn("`find_by_url' has been deprecated; use `find_by_path' instead.", caller)
+      find_by_path(*args)
     end
 
     def date_column_names
@@ -263,13 +265,13 @@ class Page < ActiveRecord::Base
       @display_name = @display_name + " - not installed" if missing? && @display_name !~ /not installed/
       @display_name
     end
-
+    
     def display_name=(string)
       display_name(string)
     end
 
     def load_subclasses
-      ([Radiant.root] + Radiant::Extension.descendants.map(&:root)).each do |path|
+      ([RADIANT_ROOT] + Radiant::Extension.descendants.map(&:root)).each do |path|
         Dir["#{path}/app/models/*_page.rb"].each do |page|
           $1.camelize.constantize if page =~ %r{/([^/]+)\.rb}
         end
@@ -355,7 +357,7 @@ class Page < ActiveRecord::Base
     alias_method :clean_url, :clean_path
 
     def parent?
-      !parent.nil?
+      !ancestry.blank?
     end
 
     def lazy_initialize_parser_and_context
