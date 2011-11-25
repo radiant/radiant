@@ -1,5 +1,4 @@
-require 'acts_as_tree'
-
+# require 'acts_as_tree'
 class Page < ActiveRecord::Base
 
   class MissingRootPageError < StandardError
@@ -10,7 +9,7 @@ class Page < ActiveRecord::Base
   before_save :update_virtual, :update_status, :set_allowed_children_cache
 
   # Associations
-  acts_as_tree :order => 'virtual DESC, title ASC'
+  # acts_as_tree :order => 'virtual DESC, title ASC'
   has_many :parts, :class_name => 'PagePart', :order => 'id', :dependent => :destroy
   accepts_nested_attributes_for :parts, :allow_destroy => true
   has_many :fields, :class_name => 'PageField', :order => 'id', :dependent => :destroy
@@ -27,10 +26,11 @@ class Page < ActiveRecord::Base
   validates_length_of :breadcrumb, :maximum => 160
 
   validates_format_of :slug, :with => %r{^([-_.A-Za-z0-9]*|/)$}
-  validates_uniqueness_of :slug, :scope => :parent_id
+  validates_uniqueness_of :slug, :scope => :ancestry
 
   validate :valid_class_name
 
+  has_ancestry
   include Radiant::Taggable
   include StandardTags
   include DeprecatedTags
@@ -218,7 +218,7 @@ class Page < ActiveRecord::Base
   class << self
 
     def root
-      find_by_parent_id(nil)
+      find_by_ancestry(nil)
     end
 
     def find_by_path(path, live = true)

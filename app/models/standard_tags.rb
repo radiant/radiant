@@ -1224,11 +1224,11 @@ module StandardTags
       result = []
       tag.locals.previous_headers = {}
       displayed_children = paging ? findable.paginate(options.merge(paging)) : findable.all(options)
-      displayed_children.each_with_index do |item, i|
+      displayed_children.each do |item|
         tag.locals.child = item
         tag.locals.page = item
-        tag.locals.first_child = i == 0
-        tag.locals.last_child = i == displayed_children.length - 1
+        tag.locals.first_child = item == displayed_children.first
+        tag.locals.last_child = item == displayed_children.last
         result << tag.expand
       end
       if paging && displayed_children.total_pages > 1

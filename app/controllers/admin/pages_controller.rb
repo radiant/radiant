@@ -19,7 +19,7 @@ class Admin::PagesController < Admin::ResourceController
   end
 
   def index
-    @homepage = Page.find_by_parent_id(nil)
+    @homepage = Page.root
     response_for :plural
   end
 
@@ -40,7 +40,7 @@ class Admin::PagesController < Admin::ResourceController
       if params[:page_id].blank?
         self.model.slug = '/'
       end
-      self.model.parent_id = params[:page_id]
+#      self.model.parent_id = params[:page_id]
     end
 
     def model_class
