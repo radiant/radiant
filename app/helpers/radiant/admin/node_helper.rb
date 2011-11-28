@@ -12,7 +12,7 @@ module Radiant::Admin::NodeHelper
   end
 
   def homepage
-    @homepage ||= Page.find_by_parent_id(nil)
+    @homepage ||= Page.root
   end
 
   def show_all?
