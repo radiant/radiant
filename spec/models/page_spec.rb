@@ -658,7 +658,7 @@ describe Page, "class find_by_path" do
 
   it 'should raise an exception when root page is missing' do
     pages(:home).destroy
-    Page.find_by_parent_id().should be_nil
+    Page.find_by_ancestry().should be_nil
     lambda { Page.find_by_path "/" }.should raise_error(Page::MissingRootPageError, 'Database missing root page')
   end
 end

@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe DeprecatedTags do
 
   before do
-    @page = Page.new(:slug => "/", :parent_id => nil, :title => 'Home')
+    @page = Page.new(:slug => "/", :ancestry => nil, :title => 'Home')
     @keywords = PageField.new(:name => 'Keywords', :content => "Home, Page")
     @description = PageField.new(:name => 'Description', :content => 'The homepage')
     @escaped_keywords = PageField.new(:name => 'Keywords', :content => "sweet & harmonious biscuits")
