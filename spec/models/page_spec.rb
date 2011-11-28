@@ -741,7 +741,9 @@ describe Page, "class find_by_path" do
   end
 
   it 'should raise an exception when root page is missing' do
-    expect{Page.find_by_path("/")}.to raise_error(Page::MissingRootPageError, 'Database missing root page')
+    pages(:home).destroy
+    Page.find_by_ancestry().should be_nil
+    lambda { Page.find_by_path "/" }.should raise_error(Page::MissingRootPageError, 'Database missing root page')
   end
 end
 

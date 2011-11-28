@@ -1057,7 +1057,7 @@ describe "Standard Tags" do
 
   describe "Field tags" do
     subject{
-      p = Page.new(:slug => "/", :parent_id => nil, :title => 'Home')
+      p = Page.new(:slug => "/", :ancestry => nil, :title => 'Home')
       field = PageField.new(:name => 'Field', :content => "Sweet harmonious biscuits")
       blank_field = PageField.new(:name => 'blank', :content => "")
       p.fields = [field, blank_field]

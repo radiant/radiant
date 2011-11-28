@@ -1,7 +1,7 @@
 class HomePageDataset < Dataset::Base
   
   def load
-    create_page "Home", :slug => "/", :parent_id => nil do
+    create_page "Home", :slug => "/", :ancestry => nil do
       create_page_part "body", :content => "Hello world!"
       create_page_part "sidebar", :content => "<r:title /> sidebar."
       create_page_part "extended", :content => "Just a test."
@@ -35,7 +35,13 @@ class HomePageDataset < Dataset::Base
         :status_id => Status[:published].id,
         :published_at => Time.now.to_s(:db)
       }.update(attributes)
-      attributes[:parent_id] = @current_page_id || page_id(:home) unless attributes.has_key?(:parent_id)
+      # attributes[:ancestry] = @current_ancestry || page_id(:home) unless attributes.has_key?(:ancestry)
+      if @current_page_id
+        page = Page.find(@current_page_id)
+        attributes[:ancestry] = [page.ancestry, page.id].delete_if{|v| v.blank?}.join('/')
+      else
+        attributes[:ancestry] = Page.root.nil? ? nil : page_id(:home)
+      end
       attributes
     end
     
