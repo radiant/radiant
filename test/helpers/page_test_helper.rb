@@ -45,7 +45,7 @@ module PageTestHelper
     :slug => 'page',
     :breadcrumb => 'New Page',
     :status_id => '1',
-    :parent_id => nil
+    :ancestry => nil
   }
   
   def page_params(options = {})
