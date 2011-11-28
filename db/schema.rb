@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110902203823) do
+ActiveRecord::Schema.define(:version => 20111125001223) do
 
   create_table "assets", :force => true do |t|
     t.string   "caption"
@@ -80,7 +80,6 @@ ActiveRecord::Schema.define(:version => 20110902203823) do
     t.string   "breadcrumb",             :limit => 160
     t.string   "class_name",             :limit => 25
     t.integer  "status_id",                             :default => 1,     :null => false
-    t.integer  "parent_id"
     t.integer  "layout_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -90,11 +89,12 @@ ActiveRecord::Schema.define(:version => 20110902203823) do
     t.boolean  "virtual",                               :default => false, :null => false
     t.integer  "lock_version",                          :default => 0
     t.string   "allowed_children_cache",                :default => ""
+    t.string   "ancestry"
   end
 
+  add_index "pages", ["ancestry"], :name => "index_pages_on_ancestry"
   add_index "pages", ["class_name"], :name => "altered_pages_class_name"
-  add_index "pages", ["parent_id"], :name => "altered_pages_parent_id"
-  add_index "pages", ["slug", "parent_id"], :name => "altered_pages_child_slug"
+  add_index "pages", ["slug"], :name => "altered_pages_child_slug"
   add_index "pages", ["virtual", "status_id"], :name => "altered_pages_published"
 
   create_table "sessions", :force => true do |t|
