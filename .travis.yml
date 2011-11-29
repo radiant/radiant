@@ -13,10 +13,6 @@ notifications:
     - git@johnmuhl.com
   irc: "irc.freenode.org#radiantcms"
 
-branches:
-  only:
-    - master
-
 env:
   - DB=sqlite
   - DB=mysql
