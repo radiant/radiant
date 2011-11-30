@@ -44,6 +44,7 @@ class Page < ActiveRecord::Base
   validate :valid_class_name
   has_ancestry
   default_scope :order => 'virtual DESC, title ASC'
+
   include Radiant::Taggable
   include StandardTags
   include DeprecatedTags

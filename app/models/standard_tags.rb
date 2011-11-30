@@ -833,7 +833,7 @@ module StandardTags
     noself = (tag.attr['noself'] == 'true')
     breadcrumbs = []
     breadcrumbs.unshift page.breadcrumb unless noself
-    page.ancestors.each do |ancestor|
+    page.ancestors.reverse.each do |ancestor|
       tag.locals.page = ancestor
       if nolinks
         breadcrumbs.unshift tag.render('breadcrumb')
@@ -1215,8 +1215,12 @@ module StandardTags
       parent_ids = tag.locals.parent_ids
 
       conditions = options[:conditions]
-      conditions.first << " AND parent_id IN (?)"
-      conditions << parent_ids
+      conditions.first << " AND ("
+      parent_ids.each do |pid|
+        conditions.first << " OR " unless pid == parent_ids.first
+        conditions.first << "ancestry LIKE '%#{pid}'"
+      end
+      conditions.first << ")"
       options
     end
 

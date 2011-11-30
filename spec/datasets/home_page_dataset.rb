@@ -35,7 +35,6 @@ class HomePageDataset < Dataset::Base
         :status_id => Status[:published].id,
         :published_at => Time.now.to_s(:db)
       }.update(attributes)
-      # attributes[:ancestry] = @current_ancestry || page_id(:home) unless attributes.has_key?(:ancestry)
       if @current_page_id
         page = Page.find(@current_page_id)
         attributes[:ancestry] = [page.ancestry, page.id].delete_if{|v| v.blank?}.join('/')
