@@ -257,7 +257,7 @@ describe Admin::PagesController do
     it "should set the @page variable" do
       home = pages(:home)
       new_page = home.class.new_with_defaults
-      new_page.parent_id = home.id
+      new_page.ancestry = home.id
       Page.stub!(:new_with_defaults).and_return(new_page)
       get :new, :page_id => home.id
       assigns(:page).should == new_page

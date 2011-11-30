@@ -1,4 +1,5 @@
 # require 'acts_as_tree'
+require 'ancestry'
 class Page < ActiveRecord::Base
 
   class MissingRootPageError < StandardError
@@ -31,6 +32,8 @@ class Page < ActiveRecord::Base
   validate :valid_class_name
 
   has_ancestry
+  default_scope :order => 'virtual DESC, title ASC'
+  
   include Radiant::Taggable
   include StandardTags
   include DeprecatedTags
@@ -72,6 +75,10 @@ class Page < ActiveRecord::Base
   def headers
     # Return a blank hash that child classes can override or merge
     { }
+  end
+  
+  def parent
+    if parent_id.blank? then nil else Page.find(parent_id) end
   end
 
   def part(name)
@@ -222,7 +229,7 @@ class Page < ActiveRecord::Base
     end
 
     def find_by_path(path, live = true)
-      raise MissingRootPageError unless root
+      raise MissingRootPageError if root.nil?
       root.find_by_path(path, live)
     end
     def find_by_url(*args)
@@ -340,7 +347,7 @@ class Page < ActiveRecord::Base
     alias_method :clean_url, :clean_path
 
     def parent?
-      !parent.nil?
+      !ancestry.blank?
     end
 
     def lazy_initialize_parser_and_context
