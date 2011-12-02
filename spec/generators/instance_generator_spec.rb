@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + "/extension_generators_spec_helper"
 shared_examples_for "all instance generators" do
   # Check for directories
   %w(config config/environments config/initializers db log script vendor/plugins vendor/extensions
-    public public/images public/stylesheets public/images/admin public/stylesheets/admin public/stylesheets/sass
+    public public/images public/stylesheets public/images/admin public/stylesheets/sass
     public/stylesheets/sass/admin script/performance script/process).each do |dir|
     it "should have a #{dir} directory" do
       ''.should have_generated_directory(dir)
@@ -40,20 +40,14 @@ shared_examples_for "all instance generators" do
     end
   end
   
-  # Check for admin sass/css
-  %w(main.css modules/_links.sass 
+  # Check for admin sass
+  %w(modules/_links.sass 
     partials/_avatars.sass partials/_footer.sass partials/_layout.sass main.sass 
     _base.sass partials/_forms.sass partials/_messages.sass partials/_content.sass 
     partials/_header.sass partials/_popup.sass partials/_tabcontrol.sass partials/_dateinput.sass 
     partials/_toolbar.sass).each do |file|
-    if file.ends_with?('.css')
-      it "should have a #{file} css file" do
-        'public/stylesheets/admin'.should have_generated_file(file)
-      end
-    elsif file.ends_with?('.sass')
-      it "should have a #{file} sass file" do 
-        'public/stylesheets/sass/admin'.should have_generated_file(file)
-      end
+    it "should have a #{file} sass file" do 
+      'public/stylesheets/sass/admin'.should have_generated_file(file)
     end
   end
   
