@@ -4,10 +4,11 @@ class ConfigDataset < Dataset::Base
     Radiant::Config['admin.title'] = 'Radiant CMS' 
     Radiant::Config['admin.subtitle'] = 'Publishing for Small Teams'
     Radiant::Config['defaults.page.parts'] = 'body, extended'
-    Radiant::Config['defaults.page.status'] = 'draft'
+    Radiant::Config['defaults.page.status'] = 'Draft'
     Radiant::Config['defaults.page.filter'] = nil
-    Radiant::Config['defaults.page.fields'] = 'keywords, description'
+    Radiant::Config['defaults.page.fields'] = 'Keywords, Description'
     Radiant::Config['defaults.snippet.filter'] = nil
     Radiant::Config['session_timeout'] = 2.weeks
+    Radiant::Config['default_locale'] = 'en'
   end
 end
