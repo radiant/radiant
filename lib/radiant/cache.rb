@@ -89,7 +89,8 @@ module Radiant
   end
 end
 
-# Add our classes as fake constants in the right place
+# Rack::Cache will look for a constant matching the uri scheme given to the :metastore and :entitystore options
+# when initialising the Middleware
 class Rack::Cache::EntityStore
   RADIANT = Radiant::Cache::EntityStore
 end
