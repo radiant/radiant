@@ -2,9 +2,9 @@ rvm:
   - 1.8.7
   - 1.9.2
 
-script: "bundle exec rake spec"
+before_script: "./bin/ci/before_script"
 
-before_script: "./bin/ci/before"
+script: "bundle exec rake spec"
 
 notifications:
   recipients:
