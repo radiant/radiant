@@ -166,7 +166,7 @@ module Radiant
       #
       def enabled
         enabled_extensions = Radiant.configuration.enabled_extensions
-        @@known_paths.values_at(*enabled_extensions)
+        @@known_paths.values_at(*enabled_extensions).compact
       end
       
       # Returns a list of the root paths to all the enabled extensions, in the configured order.
