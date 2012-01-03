@@ -21,5 +21,5 @@ gem "sqlite3", "1.3.4"
 if ENV['TRAVIS']
   gemspec :development_group => :test
   gem "mysql"
-  gem "pg"
+  gem "pg", "0.12.0" # 0.12.1 breaks is broken on ruby 1.8.7
 end
