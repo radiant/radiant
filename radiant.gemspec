@@ -32,7 +32,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency "delocalize",    "~> 0.2.3"
   s.add_dependency "haml",          "~> 3.1.1"
   s.add_dependency "highline",      "1.6.2"
-  s.add_dependency "rack",          "~> 1.1"
+  s.add_dependency "rack",          "~> 1.1.1"
   s.add_dependency "rack-cache",    "~> 1.0.2"
   s.add_dependency "rake",          ">= 0.8.7"
   s.add_dependency "radius",        "~> 0.7.1"
