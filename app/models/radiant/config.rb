@@ -54,7 +54,7 @@ module Radiant
     # dev.host                  :: the hostname where draft pages are viewable
     # local.timezone            :: the timezone name (`rake -D time` for full list)
     #                              used to correct displayed times
-    # dev.cache                 :: used to disable caching in dev mode
+    # dev.cache                 :: enable caching in dev mode
     # page.edit.published_date? :: when true, shows the datetime selector
     #                              for published date on the page edit screen
     #
