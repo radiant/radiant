@@ -77,7 +77,7 @@ describe SiteController do
   end
   
   ['draft','hidden'].each do |type|
-    it "it should display #{type} pages on default dev site when dev.host specified" do
+    it "should display #{type} pages on default dev site when dev.host specified" do
       controller.config = { 'dev.host' => 'mysite.com' }
       request.host = 'dev.mysite.com'
       get :show_page, :url => type
@@ -154,9 +154,10 @@ describe SiteController do
       response.headers['ETag'].should be_blank
     end
     
-    it "should prevent upstream caching in dev mode" do
+    it "should respect config for upstream caching in dev mode" do
       request.host = "dev.site.com"
-      
+      controller.config = { 'dev.cache?' => false }
+
       get :show_page, :url => '/'
       response.headers['Cache-Control'].should =~ /private/
       response.headers['Cache-Control'].should =~ /no-cache/
