@@ -55,6 +55,7 @@ en:
         filter: "snippet filter"
     dev:
       host: "dev site domain name"
+      cache?: "cache dev site"
     local:
       timezone: "local timezone"
     site:
