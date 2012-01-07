@@ -3,6 +3,8 @@ rvm:
   - 1.9.2
   - 1.9.3
 
+before_install: "gem install bundler --pre"
+
 before_script: "./bin/ci/before_script"
 
 script: "bundle exec rake spec"
