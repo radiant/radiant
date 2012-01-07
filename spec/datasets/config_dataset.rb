@@ -8,7 +8,6 @@ class ConfigDataset < Dataset::Base
     Radiant::Config['defaults.page.filter'] = nil
     Radiant::Config['defaults.page.fields'] = 'Keywords, Description'
     Radiant::Config['defaults.snippet.filter'] = nil
-    Radiant::Config['defaults.dev.cache?'] = true
     Radiant::Config['session_timeout'] = 2.weeks
     Radiant::Config['default_locale'] = 'en'
   end
