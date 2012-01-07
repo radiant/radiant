@@ -11,3 +11,4 @@ esac
 
 bundle exec rake db:migrate
 bundle exec rake db:migrate:extensions
+gem install bundler --pre
