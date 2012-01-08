@@ -657,8 +657,10 @@ describe "Standard Tags" do
     end
 
     it "should pass HTML attributes to the <a> tag" do
-      expected = '<a href="/assorted/" class="test" id="assorted">Assorted</a>'
-      page.should render('<r:link class="test" id="assorted" />').as(expected)
+      input = '<r:link class="test" id="assorted" />'
+      page.should render(input).matching(/\ class="test"/)
+      page.should render(input).matching(/\ href="\/assorted\/"/)
+      page.should render(input).matching(/\ id="assorted"/)
     end
 
     it "should add the anchor attribute to the link as a URL anchor" do
