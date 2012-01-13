@@ -87,6 +87,7 @@ shared_examples_for "all instance generators" do
       'config/initializers'.should_not have_generated_file(file)
     end
   end 
+  
 end
 
 describe "IntanceGenerator" do
@@ -103,6 +104,12 @@ describe "IntanceGenerator" do
 
     after(:all) do
       FileUtils.rm_rf Dir["#{RADIANT_ROOT}"]
+    end
+    
+    # Check for Gemfile.lock
+    # We only check for it here because bundler will fail on most systems to install stuff like the ibm_db gem.
+    it "should have run bundler and created a Gemfile.lock" do
+      ''.should have_generated_file('Gemfile.lock')
     end
   end
 

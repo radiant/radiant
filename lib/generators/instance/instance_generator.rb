@@ -1,5 +1,21 @@
 require 'rbconfig'
 
+# Small addition to enable the enqueing of "bundle install"
+class Rails::Generator::Commands::Create
+  def run_bundler(destination_root)
+    # thanks to http://spectator.in/2011/01/28/bundler-in-subshells/
+    bundler_vars = %w(BUNDLE_GEMFILE RUBYOPT )
+    command = %{"#{Gem.ruby}" -rubygems "#{Gem.bin_path('bundler', 'bundle')}" install --gemfile="#{File.join(File.expand_path(destination_root), 'Gemfile')}"}
+    begin
+      bundled_env = ENV.to_hash
+      bundler_vars.each{ |var| ENV.delete(var) }
+      print `#{command}`
+    ensure
+      ENV.replace(bundled_env)
+    end
+  end
+end
+
 class InstanceGenerator < Rails::Generator::Base
   DEFAULT_SHEBANG = File.join(Config::CONFIG['bindir'],
                               Config::CONFIG['ruby_install_name'])
@@ -94,6 +110,9 @@ class InstanceGenerator < Rails::Generator::Base
       }
       m.template "instance_boot.rb", "config/boot.rb"
       m.file "instance_radiant_config.rb", "config/initializers/radiant_config.rb"
+      
+      # Run bundler
+      m.run_bundler @destination_root
       
       m.readme radiant_root("INSTALL.md")
     end
