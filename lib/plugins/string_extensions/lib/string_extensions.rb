@@ -4,6 +4,12 @@ class String
   def symbolize
     self.gsub(/[^A-Za-z0-9]+/, "_").gsub(/(^_+|_+$)/, "").underscore.to_sym
   end
+
+  # This is a hack. It allows our bootstrap rake task to run with a version of highline
+  # that expects a parse method on String (1.6.9).
+  def self.parse(txt)
+    txt[/\w+/]
+  end
   
   def titlecase
     self.gsub(/((?:^|\s)[a-z])/) { $1.upcase }
