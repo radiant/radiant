@@ -8,10 +8,4 @@ describe "String extensions" do
     str.slugify.should == expected
     str.slugerize.should == expected
   end
-
-  it 'should parse a string by returning word text' do
-    str = " test12 "
-    expected = "test12"
-    String.parse(str).should == expected
-  end
 end
