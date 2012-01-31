@@ -11,5 +11,10 @@ class ConvertPageMetas < ActiveRecord::Migration
   def self.down
     add_column :pages, :description, :string
     add_column :pages, :keywords, :string
+    Page.all.each do |page|
+      page.description = page.field('description').content
+      page.keywords = page.field('keywords').content
+      page.save
+    end
   end
 end
