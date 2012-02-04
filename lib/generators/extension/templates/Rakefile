@@ -13,7 +13,7 @@ Rake::TestTask.new(:test) do |t|
 end
 
 desc 'Generate documentation for the <%= file_name %> extension.'
-RDoc:Task.new(:rdoc) do |rdoc|
+RDoc::Task.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title    = '<%= class_name %>'
   rdoc.options << '--line-numbers' << '--inline-source'
