@@ -118,6 +118,12 @@ describe MenuRenderer do
         special_page.allowed_child_classes
       }.should_not raise_error
     end
+    it 'should not raise error when the allowed_children_cache is unable to find a class' do
+      special_page.allowed_children_cache = 'Page, SpecialChildPa' #the last class name is truncated by limit in database
+      lambda{
+        special_page.allowed_child_classes
+      }.should_not raise_error
+    end
   end
 
   describe '#default_child_item' do
