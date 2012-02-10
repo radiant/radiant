@@ -99,17 +99,15 @@ describe "IntanceGenerator" do
     it_should_behave_like "all instance generators"
 
     before(:all) do
-      with_radiant_root_as_base_root { suppress_stdout { run_generator('instance', [RAILS_ROOT]) } }
+      @generator_output = with_radiant_root_as_base_root { suppress_stdout { run_generator('instance', [RAILS_ROOT]) } }
     end
 
     after(:all) do
       FileUtils.rm_rf Dir["#{RADIANT_ROOT}"]
     end
     
-    # Check for Gemfile.lock
-    # We only check for it here because bundler will fail on most systems to install stuff like the ibm_db gem.
-    it "should have run bundler and created a Gemfile.lock" do
-      ''.should have_generated_file('Gemfile.lock')
+    it "should have run bundle install" do
+      @generator_output.should =~ /Fetching (source index for|gem metadata from)/
     end
   end
 
