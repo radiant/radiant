@@ -107,7 +107,7 @@ describe "IntanceGenerator" do
     end
     
     it "should have run bundle install" do
-      @generator_output.should =~ /Fetching source index for/
+      @generator_output.should =~ /Fetching (source index for|gem metadata from)/
     end
   end
 
