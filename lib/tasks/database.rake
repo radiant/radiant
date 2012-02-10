@@ -49,12 +49,18 @@ namespace :db do
     Rake::Task['db:migrate:extensions'].invoke
     Rake::Task['radiant:extensions:update_all'].invoke
     puts %{
+Your Radiant application is ready to use. Run `script/server -e production` to
+start the server. Your site will then be running at http://localhost:3000
 
-Your radiant application is now complete. You can test it by running script/server and directing a web browser to http://localhost:3000/.
+You can access the administrative interface at http://localhost:3000/admin
 
-To add radiant extensions, just add gem lines to your application's Gemfile and run bundle install again. 
+You may also need to set permissions on the public and cache directories so that
+your Web server can access those directories with the user that it runs under.
 
-To find radiant extensions, please visit http://ext.radiantcms.org.
+To add more extensions just add them to your Gemfile and run `bundle install`.
+If an extension is not available as a gem use `script/extension install name`.
+
+Visit http://ext.radiantcms.org to find more extensions.
 
 }
   end
