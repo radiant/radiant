@@ -35,8 +35,15 @@ module MenuRenderer
   end
 
   def allowed_child_classes
-    (allowed_children_cache.to_s.split(',') - Array(excluded_class_names)).map{|name|name.constantize rescue nil}.compact
+    (allowed_children_cache.to_s.split(',') - Array(excluded_class_names)).map do |name|
+      begin
+        name.constantize
+      rescue LoadError, NameError => e
+        nil
+      end
+    end.compact
   end
+
 
   def default_child_item
     menu_item(default_child)
