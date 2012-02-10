@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111016150725) do
+ActiveRecord::Schema.define(:version => 20110902203823) do
 
   create_table "assets", :force => true do |t|
     t.string   "caption"
@@ -89,7 +89,7 @@ ActiveRecord::Schema.define(:version => 20111016150725) do
     t.integer  "updated_by_id"
     t.boolean  "virtual",                               :default => false, :null => false
     t.integer  "lock_version",                          :default => 0
-    t.text     "allowed_children_cache",                :default => ""
+    t.string   "allowed_children_cache",                :default => ""
   end
 
   add_index "pages", ["class_name"], :name => "altered_pages_class_name"
