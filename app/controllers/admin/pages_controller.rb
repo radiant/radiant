@@ -1,7 +1,7 @@
 class Admin::PagesController < Admin::ResourceController
   before_filter :initialize_meta_rows_and_buttons, :only => [:new, :edit, :create, :update]
   before_filter :count_deleted_pages, :only => [:destroy]
-  
+  skip_before_filter :verify_authenticity_token, :only => [:preview]
   class PreviewStop < ActiveRecord::Rollback
     def message
       'Changes not saved!'
