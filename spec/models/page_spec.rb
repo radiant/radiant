@@ -18,6 +18,10 @@ class PageSpecTestPage < Page
   tag 'test2' do |tag|
     'Another test.'
   end
+  
+  tag 'frozen_string' do |tag|
+    'Brain'.freeze
+  end
 end
 
 describe Page, 'validations' do
@@ -443,6 +447,11 @@ describe Page, "rendering" do
   it 'should render custom pages with tags' do
     create_page "Test Page", :body => "<r:test1 /> <r:test2 />", :class_name => "PageSpecTestPage"
     pages(:test_page).should render_as('Hello world! Another test. body.')
+  end
+  
+  it 'should render custom pages with tags that return frozen strings' do
+    create_page "Test Page", :body => "<r:frozen_string />", :class_name => "PageSpecTestPage"
+    pages(:test_page).should render_as('Brain')
   end
   
   it 'should render blank when containing no content' do
