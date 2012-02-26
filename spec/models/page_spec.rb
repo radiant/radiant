@@ -451,7 +451,7 @@ describe Page, "rendering" do
   
   it 'should render custom pages with tags that return frozen strings' do
     create_page "Test Page", :body => "<r:frozen_string />", :class_name => "PageSpecTestPage"
-    pages(:test_page).should render_as('Brain')
+    pages(:test_page).should render_as('Brain body')
   end
   
   it 'should render blank when containing no content' do
