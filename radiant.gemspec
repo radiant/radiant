@@ -45,7 +45,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency "radiant-debug-extension",               "~> 1.0.2"
   s.add_dependency "radiant-exporter-extension",            "~> 1.0.2"
   s.add_dependency "radiant-markdown_filter-extension",     "~> 1.0.2"
-  s.add_dependency "radiant-sheets-extension",              "~> 1.0.8"
+  s.add_dependency "radiant-sheets-extension",              "~> 1.0.9"
   s.add_dependency "radiant-site_templates-extension",      "~> 1.0.4"
   s.add_dependency "radiant-smarty_pants_filter-extension", "~> 1.0.2"
   s.add_dependency "radiant-textile_filter-extension",      "~> 1.0.4"
