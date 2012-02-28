@@ -747,10 +747,11 @@ module StandardTags
 
   desc %{
     Renders the date based on the current page (by default when it was published or created).
-    The format attribute uses the same formating codes used by the Ruby @strftime@ function. By
-    default it's set to @%A, %B %d, %Y@.  The @for@ attribute selects which date to render.  Valid
-    options are @published_at@, @created_at@, @updated_at@, and @now@. @now@ will render the
-    current date/time, regardless of the  page.
+    The format attribute uses the same formating codes used by the Ruby @strftime@ function.
+    By default it's set to @%A, %B %d, %Y@. You may also use the string @rfc1123@ as a shortcut
+    for @%a, %d %b %Y %H:%M:%S GMT@ (non-localized). The @for@ attribute selects which date to
+    render. Valid options are @published_at@, @created_at@, @updated_at@, and @now@. @now@ will
+    render the current date/time, regardless of the page.
 
     *Usage:*
 
@@ -772,9 +773,14 @@ module StandardTags
     else
       page.published_at || page.created_at
     end
-    @i18n_date_format_keys ||= (I18n.config.backend.send(:translations)[I18n.locale][:date][:formats].keys rescue [])
+    case format
+    when 'rfc1123'
+      CGI.rfc1123_date(date.to_time)
+    else
+      @i18n_date_format_keys ||= (I18n.config.backend.send(:translations)[I18n.locale][:date][:formats].keys rescue [])
     format = @i18n_date_format_keys.include?(format.to_sym) ? format.to_sym : format
-    I18n.l date, :format => format
+      I18n.l date, :format => format
+    end
   end
 
   desc %{
@@ -969,20 +975,6 @@ module StandardTags
   }
   tag "escape_html" do |tag|
     CGI.escapeHTML(tag.expand)
-  end
-
-  desc %{
-    Outputs the published date using the format mandated by RFC 1123. (Ideal for RSS feeds.)
-
-    *Usage:*
-
-    <pre><code><r:rfc1123_date /></code></pre>
-  }
-  tag "rfc1123_date" do |tag|
-    page = tag.locals.page
-    if date = page.published_at || page.created_at
-      CGI.rfc1123_date(date.to_time)
-    end
   end
 
   desc %{
