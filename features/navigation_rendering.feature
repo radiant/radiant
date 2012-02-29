@@ -9,7 +9,7 @@ Feature: Rendering the navigation tag
     And I follow "Main"
     And I fill in the "layout_content" content with the text
     """
-    <r:navigation urls="First: /first | Another: /another | Parent: /parent">
+    <r:navigation paths="First: /first | Another: /another | Parent: /parent">
       <r:normal><a href="<r:path />"><r:title /></a></r:normal>
       <r:here><strong><r:title /></strong></r:here>
       <r:selected><strong><a href="<r:path />"><r:title /></a></strong></r:selected>
