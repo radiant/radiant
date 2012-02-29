@@ -40,16 +40,6 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency "will_paginate", "~> 2.3.11"
   s.add_dependency "stringex",      "~> 1.3.0"
 
-  s.add_dependency "radiant-archive-extension",             "~> 1.0.7"
-  s.add_dependency "radiant-clipped-extension",             "~> 1.0.16"
-  s.add_dependency "radiant-debug-extension",               "~> 1.0.2"
-  s.add_dependency "radiant-exporter-extension",            "~> 1.0.2"
-  s.add_dependency "radiant-markdown_filter-extension",     "~> 1.0.2"
-  s.add_dependency "radiant-sheets-extension",              "~> 1.0.9"
-  s.add_dependency "radiant-site_templates-extension",      "~> 1.0.4"
-  s.add_dependency "radiant-smarty_pants_filter-extension", "~> 1.0.2"
-  s.add_dependency "radiant-textile_filter-extension",      "~> 1.0.4"
-
   s.add_development_dependency "cucumber-rails",    "~> 0.3.2"
   s.add_development_dependency "database_cleaner",  "~> 0.6.5"
   s.add_development_dependency "hoe",               "1.5.1"
