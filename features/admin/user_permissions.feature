@@ -117,15 +117,3 @@ Feature: User authentication and permissions
       | existing  |
       | another   |
       | designer |
-  
-  Scenario Outline: Anyone can export YAML
-    Given I am logged in as "<username>"
-    When I go to the export page
-    Then I should see "id:"
-    
-    Examples:
-      | username  |
-      | admin     |
-      | existing  |
-      | another   |
-      | designer |
