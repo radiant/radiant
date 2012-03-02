@@ -24,6 +24,12 @@ class PageSpecTestPage < Page
   end
 end
 
+class VirtualSpecPage < Page
+  def virtual?
+    true
+  end
+end
+
 describe Page, 'validations' do
   dataset :pages
   test_helper :validations
@@ -82,9 +88,9 @@ describe Page, 'validations' do
   end
 
   it 'should allow mass assignment for class name' do
-    @page.attributes = { :class_name => 'ArchivePage' }
+    @page.attributes = { :class_name => 'PageSpecTestPage' }
     assert_valid @page
-    @page.class_name.should == 'ArchivePage'
+    @page.class_name.should == 'PageSpecTestPage'
   end
 
   it 'should not be valid when class name is not a descendant of page' do
@@ -103,7 +109,7 @@ describe Page, 'validations' do
 
   it 'should be valid when class name is page or empty or nil' do
     [nil, '', 'Page'].each do |value|
-      @page = ArchivePage.new(page_params)
+      @page = PageSpecTestPage.new(page_params)
       @page.class_name = value
       assert_valid @page
       @page.class_name.should == value
@@ -356,8 +362,8 @@ describe Page do
     end
 
     it 'should return a collection containing the default_child and ordered by name Page descendants that are in_menu' do
-      Page.should_receive(:descendants).and_return([ArchivePage, CustomFileNotFoundPage])
-      page.allowed_children_lookup.should == [Page, ArchivePage, CustomFileNotFoundPage]
+      Page.should_receive(:descendants).and_return([PageSpecTestPage, CustomFileNotFoundPage])
+      page.allowed_children_lookup.should == [Page, CustomFileNotFoundPage, PageSpecTestPage]
     end
   end
 end
@@ -366,12 +372,12 @@ describe Page, "before save filter" do
   dataset :home_page
 
   before :each do
-    Page.create(page_params(:title =>"Month Index", :class_name => "ArchiveMonthIndexPage"))
+    Page.create(page_params(:title =>"Month Index", :class_name => "VirtualSpecPage"))
     @page = Page.find_by_title("Month Index")
   end
 
   it 'should set the class name correctly' do
-    @page.should be_kind_of(ArchiveMonthIndexPage)
+    @page.should be_kind_of(VirtualSpecPage)
   end
 
   it 'should set the virtual bit correctly' do
@@ -381,14 +387,14 @@ describe Page, "before save filter" do
 
   it 'should update virtual based on new class name' do
     # turn a regular page into a virtual page
-    @page.class_name = "ArchiveMonthIndexPage"
+    @page.class_name = "VirtualSpecPage"
     @page.save.should == true
     @page.virtual?.should == true
     @page.send(:read_attribute, :virtual).should == true
 
    # turn a virtual page into a non-virtual one
    ["", nil, "Page", "PageSpecTestPage"].each do |value|
-      @page = ArchiveYearIndexPage.create(page_params)
+      @page = PageSpecTestPage.create(page_params)
       @page.class_name = value
       @page.save.should == true
       @page = Page.find @page.id
@@ -602,11 +608,11 @@ end
 
 describe Page, 'loading subclasses after bootstrap' do
   it "should find subclasses in extensions" do
-    defined?(ArchivePage).should_not be_nil
+    defined?(BasicExtensionPage).should_not be_nil
   end
 
   it "should not adjust the display name of subclasses found in extensions" do
-    ArchivePage.display_name.should_not match(/not installed/)
+    BasicExtensionPage.display_name.should_not match(/not installed/)
   end
 end
 
