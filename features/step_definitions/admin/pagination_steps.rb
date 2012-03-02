@@ -1,13 +1,3 @@
-Given /^There are many snippets$/ do
-  100.times do |i|
-    Snippet.create(:name => "snippet_#{i}", :content => "This is snippet #{i}")
-  end
-end
-
-Given /^There are few snippets$/ do
-  #
-end
-
 Then /^I should not see pagination controls$/ do
   response.body.should_not have_tag('div.pagination')
 end
@@ -33,12 +23,4 @@ end
 Then /^I should mention the request parameters$/ do
   puts "!!  params: #{request.params.inspect}"
   true
-end
-
-Then /^I should see all the snippets$/ do
-  Snippet.all.each do |snippet|
-    response.body.should have_tag('tr.snippet') do
-      with_tag("a", :text => snippet.name)
-    end
-  end
 end
