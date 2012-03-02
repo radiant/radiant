@@ -18,7 +18,6 @@ Feature: Rich configuration
 		And I should see "Page Parts"
 		And I should see "Page Fields"
 		And I should see "Page Status"
-		And I should see "Snippet Filter"
 		And I should see "Allow Password Reset"
 		
   Scenario: Editing configuration
