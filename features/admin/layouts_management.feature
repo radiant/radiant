@@ -1,4 +1,4 @@
-Feature: Managing snippets
+Feature: Managing layouts
   In order to properly display the content 
   As a designer I want to manage the layouts
   

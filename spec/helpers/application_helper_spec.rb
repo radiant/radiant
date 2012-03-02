@@ -94,7 +94,6 @@ describe ApplicationHelper do
     helper.stub!(:request).and_return(request)
     request.stub!(:request_uri).and_return("/admin/pages")
     helper.nav_link_to("Pages", "/admin/pages").should =~ /<strong>/
-    helper.nav_link_to("Snippets", "/admin/snippets").should_not =~ /<strong>/
   end
   
   it "should render an admin link without translation" do

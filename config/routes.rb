@@ -6,7 +6,6 @@ ActionController::Routing::Routes.draw do |map|
       pages.resources :children, :controller => "pages"
     end
     admin.resources :layouts
-    admin.resources :snippets
     admin.resources :users
   end
   map.preview 'admin/preview', :controller => 'admin/pages', :action => 'preview', :conditions => {:method => [:post, :put]}

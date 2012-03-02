@@ -1,10 +1,9 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
-describe Admin::SnippetsController do
-  dataset :users, :snippets
+describe Admin::UsersController do
 
   it "should be paginated" do
-    Admin::SnippetsController.paginated.should be_true
+    Admin::UsersController.paginated.should be_true
     controller.paginated?.should be_true
   end
 
@@ -13,7 +12,7 @@ describe Admin::SnippetsController do
   # describe "with pagination settings from paginate_models" do
   #   it "should override defaults" do
   #     Radiant.config['admin.pagination.per_page'] = ""
-  #     Admin::SnippetsController.send :paginate_models, {:per_page => 5, :inner_window => 12}
+  #     Admin::UsersController.send :paginate_models, {:per_page => 5, :inner_window => 12}
   #     controller.pagination_parameters.should == {:page => 1, :per_page => 5}
   #     controller.will_paginate_options.should == {:inner_window => 12, :param_name => :p}
   #   end

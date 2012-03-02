@@ -400,7 +400,7 @@ describe Page, "before save filter" do
 end
 
 describe Page, "rendering" do
-  dataset :pages, :markup_pages, :snippets, :layouts
+  dataset :pages, :markup_pages, :layouts
   test_helper :render
 
   before :each do
@@ -430,18 +430,6 @@ describe Page, "rendering" do
 
   it "should render blank when given a non-existent part" do
     @page.render_part(:empty).should == ''
-  end
-
-  it 'should render a snippet' do
-    @page.render_snippet(snippets(:first)).should == 'test'
-  end
-
-  it 'should render a snippet with a filter' do
-    @page.render_snippet(snippets(:markdown)).should match(%r{<p><strong>markdown</strong></p>})
-  end
-
-  it 'should render a snippet with a tag' do
-    @page.render_snippet(snippets(:radius)).should == 'Home'
   end
 
   it 'should render custom pages with tags' do

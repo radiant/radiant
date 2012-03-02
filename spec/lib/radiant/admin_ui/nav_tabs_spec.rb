@@ -30,10 +30,10 @@ describe Radiant::AdminUI::NavTab do
   describe "inserting sub-items in specific places" do
     before :each do
       @pages    = Radiant::AdminUI::NavSubItem.new("Pages",    "/admin/pages")
-      @snippets = Radiant::AdminUI::NavSubItem.new("Snippets", "/admin/snippets")
+      @things   = Radiant::AdminUI::NavSubItem.new("Things",   "/admin/things")
       @comments = Radiant::AdminUI::NavSubItem.new("Comments", "/admin/comments")
       @tab << @pages
-      @tab << @snippets
+      @tab << @things
     end
 
     it "should insert at the end by default" do
@@ -42,7 +42,7 @@ describe Radiant::AdminUI::NavTab do
     end
     
     it "should insert before the specified sub-item" do
-      @tab.add(@comments, :before => :snippets)
+      @tab.add(@comments, :before => :things)
       @tab[1].should == @comments
     end
     
