@@ -1,5 +1,5 @@
 class UserActionObserver < ActiveRecord::Observer
-  observe User, Page, Layout, Snippet
+  observe User, Page, Layout
   
   def current_user=(user)
     self.class.current_user = user

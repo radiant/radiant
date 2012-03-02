@@ -40,8 +40,6 @@ module NavigationHelpers
       login_path(:format => format)
     when /preferences/i
       admin_preferences_path(:format => format)
-    when /snippets/i
-      admin_snippets_path(:format => format)
     when /login/i
       login_path(:format => format)
     when /users/i
@@ -50,8 +48,6 @@ module NavigationHelpers
       admin_pages_path(:format => format)
     when /layouts/i
       admin_layouts_path(:format => format)
-    when /snippets/i
-      admin_snippets_path(:format => format)
     when /users/i
       admin_users_path(:format => format)
     when /configuration/i

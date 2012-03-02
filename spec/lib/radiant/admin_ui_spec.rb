@@ -26,12 +26,12 @@ describe Radiant::AdminUI do
     @admin.initialize_nav
     @admin.nav.should have(3).items
     @admin.nav[:content].should have(1).items
-    @admin.nav[:design].should have(2).items
+    @admin.nav[:design].should have(1).items
     @admin.nav[:settings].should have(4).items
   end
 
   it "should have collections of Region Sets for every controller" do
-    %w{page snippet layout user}.each do |collection|
+    %w{page layout user}.each do |collection|
       @admin.should respond_to(collection)
       @admin.should respond_to(collection.pluralize)
       @admin.send(collection).should_not be_nil
@@ -60,21 +60,6 @@ describe Radiant::AdminUI do
     page.children.should === page.index
     page._part.should === page.edit
     page.new.should === page.edit
-  end
-
-  it "should load the default snippet regions" do
-    snippet = @admin.snippet
-    snippet.edit.should_not be_nil
-    snippet.edit.main.should == %w{edit_header edit_form}
-    snippet.edit.form.should == %w{edit_title edit_content edit_filter}
-    snippet.edit.form_bottom.should == %w{edit_buttons edit_timestamp}
-    snippet.index.should_not be_nil
-    snippet.index.top.should == %w{}
-    snippet.index.thead.should == %w{title_header actions_header}
-    snippet.index.tbody.should == %w{title_cell actions_cell}
-    snippet.index.bottom.should == %w{new_button}
-
-    snippet.new.should == snippet.edit
   end
 
   it "should load the default layout regions" do
