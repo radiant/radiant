@@ -103,7 +103,7 @@ Feature: User authentication and permissions
     Given I am logged in as "admin"
     When I follow "Settings"
     And I follow "Extensions"
-    Then I should see "Debug"
+    Then I should see "Basic"
   
   Scenario Outline: Non-admin users cannot see extensions
     Given I am logged in as "<username>"
