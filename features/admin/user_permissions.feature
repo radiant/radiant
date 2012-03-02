@@ -46,7 +46,7 @@ Feature: User authentication and permissions
     Given I am logged in as "<username>"
     And I should see "Design"
     When I follow "Design" within "#navigation"
-    And I follow "Layouts"
+    # And I follow "Layouts"
     And I should not see "You must have designer privileges"
     And I follow "Main"
     Then I should see "Edit Layout"
