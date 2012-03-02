@@ -25,6 +25,7 @@ gem "sqlite3", "1.3.4", :group => [:development, :test]
 # gem "radiant-sheets-extension",              "~> 1.0.9"
 # gem "radiant-site_templates-extension",      "~> 1.0.4"
 # gem "radiant-smarty_pants_filter-extension", "~> 1.0.2"
+# gem "radiant-snippets-extension", :git => 'git://github.com/radiant/radiant-snippets-extension.git'
 # gem "radiant-textile_filter-extension",      "~> 1.0.4"
 
 if ENV['TRAVIS']
