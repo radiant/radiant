@@ -1,3 +1,18 @@
+unless defined?(TextileFilter)
+  class TextileFilter < TextFilter
+    def filter(text)
+      text + ' - Filtered with TEXTILE!'
+    end
+  end
+end
+unless defined?(MarkdownFilter)
+  class MarkdownFilter < TextFilter
+    def filter(text)
+      text + ' - Filtered with MARKDOWN!'
+    end
+  end
+end
+
 class MarkupPagesDataset < Dataset::Base
   uses :home_page
   
