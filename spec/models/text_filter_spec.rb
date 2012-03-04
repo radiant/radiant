@@ -22,7 +22,7 @@ describe TextFilter do
   end
 
   it 'should return an array of filter_names of all available filters' do
-    TextFilter.descendants_names.should include("Markdown", "Really Custom", "Reverse", "Textile")
+    TextFilter.descendants_names.should include("Pseudo Markdown", "Pseudo Textile", "Really Custom", "Reverse")
   end
 
   it 'should filter text with base filter' do
