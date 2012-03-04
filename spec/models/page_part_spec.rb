@@ -15,9 +15,9 @@ describe PagePart do
   end
   
   it "should take the filter from the default filter" do
-    Radiant::Config['defaults.page.filter'] = "Textile"
+    Radiant::Config['defaults.page.filter'] = "Pseudo Textile"
     part = PagePart.new :name => 'new-part'
-    part.filter_id.should == "Textile"
+    part.filter_id.should == "Pseudo Textile"
   end
 
   it "shouldn't override existing page_parts filters with the default filter" do
@@ -50,11 +50,11 @@ describe PagePart, 'filter' do
   specify 'getting and setting' do
     @part = page_parts(:textile_body)
     original = @part.filter
-    original.should be_kind_of(TextileFilter)
+    original.should be_kind_of(PseudoTextileFilter)
     
     @part.filter.should equal(original)
     
-    @part.filter_id = 'Markdown'
-    @part.filter.should be_kind_of(MarkdownFilter)
+    @part.filter_id = 'Pseudo Markdown'
+    @part.filter.should be_kind_of(PseudoMarkdownFilter)
   end
 end
