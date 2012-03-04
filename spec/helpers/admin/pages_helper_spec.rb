@@ -38,11 +38,6 @@ describe Admin::PagesHelper do
       helper.filter.should be_kind_of(TextFilter)
     end
     
-    it "should render the filter reference" do
-      helper.stub!(:filter).and_return(TextileFilter)
-      helper.filter_reference.should == TextileFilter.description
-    end
-    
     it "should render the filter reference for complex filter names" do
       MarkdownPlusFilter.stub!(:description).and_return("Markdown rocks!")
       helper.stub!(:filter).and_return(MarkdownPlusFilter)
