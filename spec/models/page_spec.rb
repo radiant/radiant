@@ -418,7 +418,7 @@ describe Page, "rendering" do
   end
 
   it 'should render with a filter' do
-    pages(:textile).render.should == '<p>Some <strong>Textile</strong> content.</p>'
+    pages(:textile).render.should == 'Some *Textile* content. - Filtered with TEXTILE!'
   end
 
   it 'should render with tags' do
