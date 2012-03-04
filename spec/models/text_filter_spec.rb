@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe TextFilter do
   class ReverseFilter < TextFilter
@@ -22,7 +22,7 @@ describe TextFilter do
   end
 
   it 'should return an array of filter_names of all available filters' do
-    TextFilter.descendants_names.should include("Markdown", "Really Custom", "Reverse", "SmartyPants", "Textile")
+    TextFilter.descendants_names.should include("Markdown", "Really Custom", "Reverse", "Textile")
   end
 
   it 'should filter text with base filter' do
