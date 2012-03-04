@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe Admin::ReferencesHelper do
+  class BasicFilter < TextFilter; end
   class CustomFilter < TextFilter
     filter_name "Really Custom"
   end
@@ -35,8 +36,8 @@ describe Admin::ReferencesHelper do
     end
 
     it "should return the filter object for the named filter" do
-      params[:filter_name] = "Textile"
-      helper.filter.should == TextileFilter
+      params[:filter_name] = "Basic"
+      helper.filter.should == BasicFilter
     end
 
     it "should return the filter object for a custom named filter" do
@@ -58,8 +59,8 @@ describe Admin::ReferencesHelper do
       end
 
       it "should return the name of the set filter" do
-        params[:filter_name] = "Textile"
-        helper._display_name.should == "Textile"
+        params[:filter_name] = "Basic"
+        helper._display_name.should == "Basic"
       end
 
       it "should return <none> when no filter is set" do
@@ -94,12 +95,12 @@ describe Admin::ReferencesHelper do
     end
 
     it "should render a helpful message when the description is blank" do
-      TextileFilter.should_receive(:description).and_return('')
+      BasicFilter.should_receive(:description).and_return('')
       helper.filter_reference.should == "There is no documentation on this filter."
     end
 
     it "should render the filter's description when available" do
-      helper.filter_reference.should == TextileFilter.description
+      helper.filter_reference.should == BasicFilter.description
     end
 
     it "should render a helpful message when no filter is selected" do
