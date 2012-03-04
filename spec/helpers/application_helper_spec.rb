@@ -174,7 +174,7 @@ describe ApplicationHelper do
 
   it "should return filter options for select" do
     helper.filter_options_for_select.should =~ %r{<option value=\"\">&lt;none&gt;</option>}
-    helper.filter_options_for_select.should =~ %r{<option value=\"Markdown\">Markdown</option>}
+    helper.filter_options_for_select.should =~ %r{<option value=\"Basic\">Basic</option>}
   end 
 
   it "should include the regions helper" do
