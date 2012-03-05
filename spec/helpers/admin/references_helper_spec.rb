@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../spec_helper'
+require 'spec_helper'
 
 describe Admin::ReferencesHelper do
   class BasicFilter < TextFilter; end
@@ -91,7 +91,7 @@ describe Admin::ReferencesHelper do
     before :each do
       helper.send(:instance_variable_set, :@filter, nil)
       params[:type] = 'filters'
-      params[:filter_name] = 'Textile'
+      params[:filter_name] = 'Basic'
     end
 
     it "should render a helpful message when the description is blank" do
@@ -100,6 +100,7 @@ describe Admin::ReferencesHelper do
     end
 
     it "should render the filter's description when available" do
+      BasicFilter.should_receive(:description).at_least(:once).and_return('This is basic stuff.')
       helper.filter_reference.should == BasicFilter.description
     end
 
