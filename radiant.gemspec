@@ -18,33 +18,23 @@ a general purpose content managment system--not merely a blogging engine.}
   s.files = Dir['**/*','.gitignore', 'public/.htaccess', 'log/.keep', 'vendor/extensions/.keep'] - ignores
   s.homepage = %q{http://radiantcms.org}
   s.rdoc_options = ["--title", "Radiant -- Publishing for Small Teams", "--line-numbers", "--main", "README", "--exclude", "app", "--exclude", "bin", "--exclude", "config", "--exclude", "db", "--exclude", "features", "--exclude", "lib", "--exclude", "log", "--exclude", "pkg", "--exclude", "public", "--exclude", "script", "--exclude", "spec", "--exclude", "test", "--exclude", "tmp", "--exclude", "vendor"]
-  s.require_paths = ["lib"]
-  s.rubyforge_project = %q{radiant}
-  s.rubygems_version = %q{1.3.7}
   s.summary = %q{A no-fluff content management system designed for small teams.}
 
-  s.add_dependency "tzinfo",        "~> 0.3.31"
-  s.add_dependency "rails",         "~> 2.3.14"
-  s.add_dependency "rdoc",          ">= 3.9.2"
-  s.add_dependency "acts_as_tree",  "~> 0.1.1"
+  s.add_dependency "rails",         "~> 3.2.0"
   s.add_dependency "bundler",       ">= 1.0.0"
-  s.add_dependency "compass",       "~> 0.11.1"
-  s.add_dependency "delocalize",    "~> 0.2.3"
-  s.add_dependency "haml",          "~> 3.1.1"
-  s.add_dependency "highline",      "~> 1.6.10"
-  s.add_dependency "rack",          "~> 1.1.1"
-  s.add_dependency "rack-cache",    "~> 1.0.2"
-  s.add_dependency "rake",          ">= 0.8.7"
-  s.add_dependency "radius",        "~> 0.7.3"
-  s.add_dependency "RedCloth",      "~> 4.2.0"
-  s.add_dependency "will_paginate", "~> 2.3.11"
-  s.add_dependency "stringex",      "~> 1.3.0"
+  s.add_dependency "compass"
+  s.add_dependency "delocalize"
+  s.add_dependency "haml"
+  s.add_dependency "rack"
+  s.add_dependency "rack-cache"
+  s.add_dependency "rake"
+  s.add_dependency "radius"
+  s.add_dependency "will_paginate"
 
-  s.add_development_dependency "cucumber-rails",    "~> 0.3.2"
-  s.add_development_dependency "database_cleaner",  "~> 0.6.5"
-  s.add_development_dependency "webrat",            "~> 0.7.3"
-  s.add_development_dependency "rspec",             "~> 1.3.1"
-  s.add_development_dependency "rspec-rails",       "~> 1.3.3"
-  s.add_development_dependency "test-unit",         "1.2.3"
-  s.add_development_dependency "ZenTest",           "4.6.0"
+  s.add_development_dependency "cucumber-rails"
+  s.add_development_dependency "database_cleaner"
+  s.add_development_dependency "capybara"
+  s.add_development_dependency "rspec"
+  s.add_development_dependency "rspec-rails"
+  s.add_development_dependency "ZenTest"
 end
