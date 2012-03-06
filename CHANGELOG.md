@@ -1,6 +1,6 @@
 # Change Log
 
-## Edge
+## 1.0.1 (March 6, 2012)
 
 * Ruby 1.9.3 compatibility [Jim Gay]
 * Allow page menus to be overridden by additional modules [Jim Gay]
