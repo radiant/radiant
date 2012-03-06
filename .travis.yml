@@ -1,5 +1,4 @@
 rvm:
-  - 1.8.7
   - 1.9.3
 
 before_install: "gem install bundler --pre"
@@ -12,6 +11,7 @@ notifications:
   recipients:
     - ci@spanner.org
     - git@johnmuhl.com
+    - jim+travis@saturnflyer.com
   irc: "irc.freenode.org#radiantcms"
 
 env:
