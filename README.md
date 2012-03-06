@@ -12,12 +12,12 @@ Radiant features:
 * The ability to arrange pages in a hierarchy
 * Flexible templating with layouts, snippets, page parts, and a custom tagging
   language (Radius: http://radius.rubyforge.org)
-* A simple user management/permissions system
-* Support for Markdown and Textile as well as traditional HTML (it's easy to
-  create other filters)
-* An advanced plugin system
-* Operates in two modes: dev and production depending on the URL
-* A caching system which expires pages every 5 minutes
+* Add a simple user management/permissions system, or bring your own
+* Support for multiple filtering syntax languages including Markdown and Textile as 
+  well as traditional HTML (it's easy to create other filters)
+* An advanced extension system
+* Preview content before going live
+* A flexible caching system (which by default expires pages every 5 minutes)
 * Built using Ruby on Rails
 * And much more...
 
@@ -42,25 +42,10 @@ Install the prerelease gem with the following command:
 
     $ gem install radiant --prerelease
 
-This will install the gem with the prerelease name, for example: ‘radiant-0.9.0.rc2’.
-
-### Upgrading an Existing Project to a newer version
-
-1. Update the Radiant assets from in your project:
-
-    $ rake radiant:update
-
-2. Migrate the database:
-
-    $ rake production db:migrate
-
-3. Restart the web server
-
 ## Development Requirements
 
-To run tests you will need to have the following gems installed:
-
-  gem install ZenTest rspec rspec-rails cucumber webrat nokogiri sqlite3-ruby
+To run tests you will need to uncomment the "gemspec" line in the Gemfile
+and run "bundle install". Then run "bundle install rake spec".
 
 ## Support
 
