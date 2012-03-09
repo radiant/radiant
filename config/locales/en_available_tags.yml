@@ -320,7 +320,7 @@ attributes to the @<r:javascript>@ tag.
         
 *Usage:*
         
-<pre><code><r:javascript slug=\"site.css\" as=\"inline\" 
+<pre><code><r:javascript slug=\"site.js\" as=\"inline\" 
   type=\"text/custom\" id=\"my_id\" />
 <r:javascript slug=\"other.js\" as=\"link\" /></code></pre>
 
