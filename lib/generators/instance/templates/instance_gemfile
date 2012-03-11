@@ -33,7 +33,7 @@ gem "radiant", "~> <%= radiant_version %>"
 <%= '# ' unless db == 'sqlserver' %>gem "activerecord-sqlserver-adapter", "~> 3.1.0"
 
 # Default Extensions
-gem "radiant-snippets-extnesion",			 "~> 1.0.1"
+gem "radiant-snippets-extension",			 "~> 1.0.1"
 gem "radiant-archive-extension",             "~> 1.0.7"
 gem "radiant-clipped-extension",             "~> 1.0.16"
 gem "radiant-debug-extension",               "~> 1.0.2"
