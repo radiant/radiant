@@ -105,6 +105,10 @@ describe DeprecatedTags do
       end
     end
   end
+
+  it '<r:rfc1123_date> should render an RFC1123-compatible date' do
+    page(:dated).should render('<r:rfc1123_date />').as('Wed, 11 Jan 2006 00:00:00 GMT')
+  end
   
   describe "<r:navigation>" do
       it "should render with deprecated url attribute" do

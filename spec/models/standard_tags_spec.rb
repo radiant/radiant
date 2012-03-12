@@ -613,6 +613,10 @@ describe "Standard Tags" do
       page.should render('<r:date format="%d %b %Y" />').as('11 Jan 2006')
     end
 
+    it "should render an RFC1123-compatible date if the 'format' attribute is set to 'rfc1123'" do
+      page.should render('<r:date format="rfc1123" />').as('Wed, 11 Jan 2006 00:00:00 GMT')
+    end
+
     it "should format the published date according to localized format" do
       page.should render('<r:date format="short" />').as(I18n.l(page.published_at, :format => :short))
     end
@@ -879,10 +883,6 @@ describe "Standard Tags" do
 
   it '<r:escape_html> should escape HTML-related characters into entities' do
     page.should render('<r:escape_html><strong>a bold move</strong></r:escape_html>').as('&lt;strong&gt;a bold move&lt;/strong&gt;')
-  end
-
-  it '<r:rfc1123_date> should render an RFC1123-compatible date' do
-    page(:dated).should render('<r:rfc1123_date />').as('Wed, 11 Jan 2006 00:00:00 GMT')
   end
 
   describe "<r:breadcrumbs>" do
