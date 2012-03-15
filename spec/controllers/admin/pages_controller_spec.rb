@@ -294,7 +294,7 @@ describe Admin::PagesController do
       lambda{ next_updated_at <=> final_updated_at }.should be_true
     end
     
-    RUBY_VERSION =~ /1\.9/
+    if RUBY_VERSION =~ /1\.9/
       it 'should convert form input to UTF-8' do
         # When using Radiant with Ruby 1.9, the strings that come in from forms are ASCII-8BIT encoded.
         # That causes problems, especially when using special chars and with certain DBs, like DB2
