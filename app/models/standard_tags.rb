@@ -734,7 +734,11 @@ module StandardTags
     email = User.find_by_name(name).email
     default = "#{request.protocol}#{request.host_with_port}/images/admin/avatar_#{([size.to_i] * 2).join('x')}.png"
     unless email.blank?
-      url = 'http://www.gravatar.com/avatar.php?'
+      if (request.protocol == "https://")
+        url = "https://secure.gravatar.com/avatar.php?"
+      else
+        url = 'http://www.gravatar.com/avatar.php?'
+      end
       url << "gravatar_id=#{Digest::MD5.new.update(email)}"
       url << "&rating=#{rating}"
       url << "&size=#{size.to_i}"
