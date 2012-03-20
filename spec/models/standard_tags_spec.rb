@@ -583,6 +583,13 @@ describe "Standard Tags" do
       page.should render('<r:gravatar />').as('http://www.gravatar.com/avatar.php?gravatar_id=e64c7d89f26bd1972efa854d13d7dd61&rating=G&size=32&default=http://testhost.tld/images/admin/avatar_32x32.png')
     end
 
+    it "should respect requests via SSL" do
+      request = ActionController::TestRequest.new
+      request.env['HTTPS'] = 'on'
+
+      page.should render('<r:gravatar />').as('https://secure.gravatar.com/avatar.php?gravatar_id=e64c7d89f26bd1972efa854d13d7dd61&rating=G&size=32&default=http://testhost.tld/images/admin/avatar_32x32.png')
+    end
+
     it "should render the Gravatar URL of the name user" do
       page.should render('<r:gravatar name="Admin" />').as('http://www.gravatar.com/avatar.php?gravatar_id=e64c7d89f26bd1972efa854d13d7dd61&rating=G&size=32&default=http://testhost.tld/images/admin/avatar_32x32.png')
     end
