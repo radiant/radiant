@@ -724,6 +724,7 @@ module StandardTags
 
     <pre><code><r:gravatar [name="User Name"]
         [rating="G | PG | R | X"]
+        [secure="true"]
         [size="32px"] /></code></pre>
   }
   tag 'gravatar' do |tag|
@@ -731,10 +732,11 @@ module StandardTags
     name = (tag.attr['name'] || page.created_by.name)
     rating = (tag.attr['rating'] || 'G')
     size = (tag.attr['size'] || '32px')
+    secure = (tag.attr['secure'] || 'false')
     email = User.find_by_name(name).email
     default = "#{request.protocol}#{request.host_with_port}/images/admin/avatar_#{([size.to_i] * 2).join('x')}.png"
     unless email.blank?
-      if (request.protocol == "https://")
+      if (secure == "true" || request.protocol == "https://")
         url = "https://secure.gravatar.com/avatar.php?"
       else
         url = 'http://www.gravatar.com/avatar.php?'
