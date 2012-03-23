@@ -1098,6 +1098,13 @@ describe "Standard Tags" do
     end
     
   end
+  
+  describe "Site tags" do
+    subject { page(:home) }
+    it { should render('<r:site:title />').as('Your site title')}
+    it { should render('<r:site:host />').as('www.example.com')}
+    it { should render('<r:site:dev_host />').as('')}
+  end
 
   private
 

@@ -1127,15 +1127,25 @@ module StandardTags
   tag 'site' do |tag|
     tag.expand
   end
-  %w(title domain dev_domain).each do |attr|
-    desc %{
-      Returns Radiant::Config['site.#{attr}'] as configured under the Settings tab.
-    }
-    tag "site:#{attr}" do |tag|
-      Radiant::Config["site.#{attr}"]
-    end
-  end  
-
+  desc %{
+    Returns Radiant::Config['site.title'] as configured under the Settings tab.
+  }
+  tag "site:title" do |tag|
+    Radiant::Config["site.title"]
+  end
+  desc %{
+    Returns Radiant::Config['site.host'] as configured under the Settings tab.
+  }
+  tag "site:host" do |tag|
+    Radiant::Config["site.host"]
+  end
+  desc %{
+    Returns Radiant::Config['dev.host'] as configured under the Settings tab.
+  }
+  tag "site:dev_host" do |tag|
+    Radiant::Config["dev.host"]
+  end
+  
   private
     def render_children_with_pagination(tag, opts={})
       if opts[:aggregate]
