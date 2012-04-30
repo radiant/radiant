@@ -732,7 +732,7 @@ module StandardTags
     name = (tag.attr['name'] || page.created_by.name)
     rating = (tag.attr['rating'] || 'G')
     size = (tag.attr['size'] || '32px')
-    secure = (tag.attr['secure'] || 'false')
+    secure = tag.attr['secure']
     email = User.find_by_name(name).email
     default = "#{request.protocol}#{request.host_with_port}/images/admin/avatar_#{([size.to_i] * 2).join('x')}.png"
     unless email.blank?
