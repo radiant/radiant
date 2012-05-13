@@ -580,22 +580,11 @@ describe "Standard Tags" do
 
   describe "<r:gravatar>" do
     it "should render the Gravatar URL of author of the current page" do
-      page.should render('<r:gravatar />').as('http://www.gravatar.com/avatar.php?gravatar_id=e64c7d89f26bd1972efa854d13d7dd61&rating=G&size=32&default=http://testhost.tld/images/admin/avatar_32x32.png')
-    end
-
-    it "should render an HTTPS URL when the 'secure' attribute is set to 'true'" do
-      page.should render('<r:gravatar secure="true" />').as('https://secure.gravatar.com/avatar.php?gravatar_id=e64c7d89f26bd1972efa854d13d7dd61&rating=G&size=32&default=http://testhost.tld/images/admin/avatar_32x32.png')
-    end
-
-    it "should respect requests via SSL" do
-      request = ActionController::TestRequest.new
-      request.env['HTTPS'] = 'on'
-
-      page.should render('<r:gravatar />').as('https://secure.gravatar.com/avatar.php?gravatar_id=e64c7d89f26bd1972efa854d13d7dd61&rating=G&size=32&default=http://testhost.tld/images/admin/avatar_32x32.png')
+      page.should render('<r:gravatar />').as('//gravatar.com/avatar.php/e64c7d89f26bd1972efa854d13d7dd61?rating=G&size=32&default=http://testhost.tld/images/admin/avatar_32x32.png')
     end
 
     it "should render the Gravatar URL of the name user" do
-      page.should render('<r:gravatar name="Admin" />').as('http://www.gravatar.com/avatar.php?gravatar_id=e64c7d89f26bd1972efa854d13d7dd61&rating=G&size=32&default=http://testhost.tld/images/admin/avatar_32x32.png')
+      page.should render('<r:gravatar name="Admin" />').as('//gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?rating=G&size=32&default=http://testhost.tld/images/admin/avatar_32x32.png')
     end
 
     it "should render the default avatar when the user has not set an email address" do
