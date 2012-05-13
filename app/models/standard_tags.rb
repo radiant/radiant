@@ -736,7 +736,7 @@ module StandardTags
     unless email.blank?
       url = '//gravatar.com/avatar/'
       url << "#{Digest::MD5.new.update(email)}?"
-      url << "&rating=#{rating}"
+      url << "rating=#{rating}"
       url << "&size=#{size.to_i}"
       url << "&default=#{default}"
       url

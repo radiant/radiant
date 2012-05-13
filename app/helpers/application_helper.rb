@@ -193,7 +193,7 @@ module ApplicationHelper
       # Build the Gravatar url.
       url = '//gravatar.com/avatar/'
       url << "#{Digest::MD5.new.update(email)}?"
-      url << "&rating=#{options[:rating]}" if options[:rating]
+      url << "rating=#{options[:rating]}" if options[:rating]
       url << "&size=#{options[:size]}" if options[:size]
       url << "&default=#{options[:default]}" if options[:default]
       url
