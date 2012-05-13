@@ -580,7 +580,7 @@ describe "Standard Tags" do
 
   describe "<r:gravatar>" do
     it "should render the Gravatar URL of author of the current page" do
-      page.should render('<r:gravatar />').as('//gravatar.com/avatar.php/e64c7d89f26bd1972efa854d13d7dd61?rating=G&size=32&default=http://testhost.tld/images/admin/avatar_32x32.png')
+      page.should render('<r:gravatar />').as('//gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?rating=G&size=32&default=http://testhost.tld/images/admin/avatar_32x32.png')
     end
 
     it "should render the Gravatar URL of the name user" do
