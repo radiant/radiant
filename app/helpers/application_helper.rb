@@ -191,8 +191,8 @@ module ApplicationHelper
     
     unless email.blank?
       # Build the Gravatar url.
-      url = 'http://www.gravatar.com/avatar.php?'
-      url << "gravatar_id=#{Digest::MD5.new.update(email)}" 
+      url = '//gravatar.com/avatar/'
+      url << "#{Digest::MD5.new.update(email)}?"
       url << "&rating=#{options[:rating]}" if options[:rating]
       url << "&size=#{options[:size]}" if options[:size]
       url << "&default=#{options[:default]}" if options[:default]
