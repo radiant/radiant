@@ -186,7 +186,7 @@ module ApplicationHelper
     
     # Default image url to be used when no gravatar is found
     # or when an image exceeds the rating parameter.
-    default_avatar_url = "#{request.protocol}#{request.host_with_port}/images/admin/avatar_#{([options[:size].to_i] * 2).join('x')}.png"
+    default_avatar_url = "#{request.protocol}#{request.host_with_port}#{ActionController::Base.relative_url_root}/images/admin/avatar_#{([options[:size].to_i] * 2).join('x')}.png"
     options[:default] ||= default_avatar_url
     
     unless email.blank?
