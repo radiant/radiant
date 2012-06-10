@@ -31,7 +31,7 @@ document.observe('dom:loaded', function() {
       preview_tools.style['opacity'] = 1
       body.addClassName('clipped')
       form.target = frame.id
-      form.action = '/admin/preview'
+      form.action = relative_url_root + '/admin/preview'
       form.submit()
     } finally {
       form.target = oldTarget
