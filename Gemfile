@@ -17,6 +17,8 @@ gem "sqlite3", "1.3.4", :group => [:development, :test], :platform => :ruby
 # run `bundle install`.
 
 # gemspec
+# gem "compass-rails", "~> 1.0.3"
+
 # gem "radiant-archive-extension",             "~> 1.0.7"
 # gem "radiant-clipped-extension",             "~> 1.0.16"
 # gem "radiant-debug-extension",               "~> 1.0.2"
