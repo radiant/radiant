@@ -292,6 +292,7 @@ module Radiant
       Rails::Rack::Metal.metal_paths = ["#{RADIANT_ROOT}/app/metal"] # reset Rails default to RADIANT_ROOT
       Rails::Rack::Metal.metal_paths += plugin_loader.engine_metal_paths
       Rails::Rack::Metal.metal_paths += extension_loader.paths(:metal)
+      Rails::Rack::Metal.metal_paths.uniq!
     
       configuration.middleware.insert_before(
         :"ActionController::ParamsParser",
