@@ -4,6 +4,7 @@ source :rubygems
 # If new versions of your installed gems are available, run `bundle update`
 
 gem "radiant", "~> <%= radiant_version %>"
+gem "compass-rails", "~> 1.0.3"
 
 # alternatively, in development
 # gem "radiant", :path => "/path/to/radiant/root"
