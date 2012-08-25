@@ -25,7 +25,7 @@ gem "sqlite3", "1.3.5", :group => [:development, :test], :platform => :ruby
 # gem "radiant-exporter-extension",            "~> 1.1.0"
 # gem "radiant-markdown_filter-extension",     "~> 1.0.2"
 # gem "radiant-sheets-extension",              "~> 1.0.9"
-# gem "radiant-snippets-extension",            "~> 1.0.1"
+# gem "radiant-snippets-extension",            "~> 1.0.2"
 # gem "radiant-site_templates-extension",      "~> 1.0.4"
 # gem "radiant-smarty_pants_filter-extension", "~> 1.0.2"
 # gem "radiant-textile_filter-extension",      "~> 1.0.4"
