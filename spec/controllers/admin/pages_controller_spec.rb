@@ -1,3 +1,5 @@
+#encoding: utf-8
+
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe Admin::PagesController do
@@ -290,6 +292,21 @@ describe Admin::PagesController do
       put :update, :id => page_id(:home), :page => {:breadcrumb => 'Homepage'} and sleep(1)
       final_updated_at = pages(:home).updated_at
       lambda{ next_updated_at <=> final_updated_at }.should be_true
+    end
+    
+    if RUBY_VERSION =~ /1\.9/
+      it 'should convert form input to UTF-8' do
+        # When using Radiant with Ruby 1.9, the strings that come in from forms are ASCII-8BIT encoded.
+        # That causes problems, especially when using special chars and with certain DBs, like DB2
+        #
+        # See http://stackoverflow.com/questions/8268778/rails-2-3-9-encoding-of-query-parameters
+        # See https://rails.lighthouseapp.com/projects/8994/tickets/4807
+        # See http://jasoncodes.com/posts/ruby19-rails2-encodings
+      
+        put :update, :id => page_id(:home), :page => {:breadcrumb => 'Homepage', :parts_attributes => {'0' => {:id => pages(:home).parts[0].id, :content => 'Ümlautö'.force_encoding('ASCII-8BIT')}}} and sleep(1)
+        params['page']['parts_attributes']['0']['content'].encoding.to_s.should == 'UTF-8'
+        params['page']['parts_attributes']['0']['content'].should == 'Ümlautö'
+      end
     end
   end
   
