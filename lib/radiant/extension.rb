@@ -108,7 +108,8 @@ module Radiant
       def activate_extension
         return if instance.active?
         instance.activate if instance.respond_to? :activate
-        ActionController::Routing::Routes.add_configuration_file(instance.routing_file) if instance.routed?
+        ActionController::Routing::Routes.configuration_files.unshift(instance.routing_file) if instance.routed?
+        ActionController::Routing::Routes.reload
         instance.active = true
       end
       alias :activate :activate_extension
