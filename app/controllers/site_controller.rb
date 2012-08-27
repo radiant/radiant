@@ -3,10 +3,12 @@ class SiteController < ApplicationController
 
   skip_before_filter :verify_authenticity_token
   no_login_required
-  cattr_writer :cache_timeout
 
+  def self.cache_timeout=(val)
+    Radiant::PageResponseCacheDirector.cache_timeout=(val)
+  end
   def self.cache_timeout
-    @@cache_timeout ||= 5.minutes
+    Radiant::PageResponseCacheDirector.cache_timeout
   end
 
   def show_page
@@ -28,6 +30,21 @@ class SiteController < ApplicationController
     redirect_to welcome_url
   end
 
+  def cacheable_request?
+    (request.head? || request.get?) && live?
+  end
+  hide_action :cacheable_request?
+
+  def set_expiry(time, options={})
+    expires_in time, options
+  end
+  hide_action :set_expiry
+
+  def set_etag(val)
+    headers['ETag'] = val
+  end
+  hide_action :set_expiry
+
   private
     def batch_page_status_refresh
       @changed_pages = []
@@ -44,12 +61,19 @@ class SiteController < ApplicationController
     end
 
     def set_cache_control
-      if (request.head? || request.get?) && @page.cache? && live?
-        expires_in self.class.cache_timeout, :public => true, :private => false
-      else
-        expires_in nil, :private => true, "no-cache" => true
-        headers['ETag'] = ''
+      response_cache_director(@page).set_cache_control
+    end
+
+    def response_cache_director(page)
+      klass_name = "Radiant::#{page.class}ResponseCacheDirector"
+      begin
+        klass = klass_name.constantize
+      rescue NameError, LoadError
+        director_klass = "Radiant::PageResponseCacheDirector"
+        eval(%Q{class #{klass_name} < #{director_klass}; end}, TOPLEVEL_BINDING)
+        klass = director_klass.constantize
       end
+      klass.new(page, self)
     end
 
     def find_page(url)
