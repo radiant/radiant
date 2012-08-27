@@ -2,6 +2,14 @@
 
 ## Edge
 
+* Allow loading of snippets from the file system [Jim Gay]
+* Moved to compass-rails [Jim Gay]
+* Fixed avatar tags for HTTP and HTTPS [Sam Whited]
+* Updated r:date and deprecated r:rfc1123_date [Sam Whited]
+* Address UTF-8 params encoding in 1.9 [Johannes Fahrenkrug]
+
+## 1.0.1 (March 6, 2012)
+
 * Ruby 1.9.3 compatibility [Jim Gay]
 * Allow page menus to be overridden by additional modules [Jim Gay]
 * Add migration to not crop page part content > 64kB in MySql and MSSQL [Benny Degezelle]
