@@ -69,11 +69,6 @@ class Page < ActiveRecord::Base
   end
   alias_method :child_url, :child_path
 
-  def headers
-    # Return a blank hash that child classes can override or merge
-    { }
-  end
-
   def part(name)
     if new_record? or parts.to_a.any?(&:new_record?)
       parts.to_a.find {|p| p.name == name.to_s }
@@ -129,14 +124,31 @@ class Page < ActiveRecord::Base
 
   def process(request, response)
     @request, @response = request, response
-    if layout
-      content_type = layout.content_type.to_s.strip
-      @response.headers['Content-Type'] = content_type unless content_type.empty?
-    end
-    headers.each { |k,v| @response.headers[k] = v }
+    set_response_headers(@response)
     @response.body = render
     @response.status = response_code
   end
+
+  def headers
+    # Return a blank hash that child classes can override or merge
+    { }
+  end
+
+  def set_response_headers(response)
+    set_content_type(response)
+    headers.each { |k,v| response.headers[k] = v }
+  end
+  private :set_response_headers
+
+  def set_content_type(response)
+    if layout
+      content_type = layout.content_type.to_s.strip
+      if content_type.present?
+        response.headers['Content-Type'] = content_type
+      end
+    end
+  end
+  private :set_content_type
 
   def response_code
     200
