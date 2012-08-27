@@ -1,19 +1,18 @@
-begin
-  require "rubygems"
-  require "bundler"
-rescue LoadError
-  raise "Could not load the bundler gem. Install it with `gem install bundler`."
-end
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
+# Lessens Debians need to edit.
+require "rubygems" rescue nil
 
-if Gem::Version.new(Bundler::VERSION) <= Gem::Version.new("1.0.0")
-  raise RuntimeError, "Your bundler version is too old for Rails 2.3. " +
-   "Run `gem install bundler` to upgrade."
-end
+# Since Bundler is not really a 'must have' for Rails development just send off
+# a warning and see if the sytem continues to load, the user can optionally use
+# RADIANT_NOWARNINGS to disable it.
 
-begin
-  # Set up load paths for all bundled gems
-  ENV["BUNDLE_GEMFILE"] = File.expand_path("../../Gemfile", __FILE__)
-  Bundler.setup
-rescue Bundler::GemNotFound => e
-  raise RuntimeError, "Bundler couldn't find some gems: #{e}. Did you run `bundle install`?"
+if File.file?(ENV['BUNDLE_GEMFILE'])
+  begin
+    require 'bundler/setup'
+  rescue LoadError
+    unless ENV['RADIANT_NOWARNINGS'] == true
+      $stderr.puts 'WARNING: It seems you do not have Bundler installed.'
+      $stderr.puts 'WARNING: You can install it by doing `gem install bundler`'
+    end
+  end
 end
