@@ -124,10 +124,6 @@ module Radiant
         subclass.extension_name = subclass.name.to_name('Extension')
       end
 
-      def route_definitions
-        @route_definitions ||= []
-      end
-
       def migrate_from(extension_name, until_migration=nil)
         instance.migrates_from[extension_name] = until_migration
       end
