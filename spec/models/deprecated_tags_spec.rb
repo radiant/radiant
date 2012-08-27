@@ -108,7 +108,8 @@ describe DeprecatedTags do
 
   describe "<r:rfc1123_date>" do
     it 'should render an RFC1123-compatible date' do
-      page(:dated).should render('<r:rfc1123_date />').as('Wed, 11 Jan 2006 00:00:00 GMT')
+      @page.published_at = Time.new 2006, 1, 11
+      @page.should render('<r:rfc1123_date />').as('Wed, 11 Jan 2006 00:00:00 GMT')
     end
   end
   
