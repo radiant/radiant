@@ -46,14 +46,6 @@ describe Radiant::Extension do
     SuperExtension.extension_name.should == "Super"
   end
   
-  it "should store route definitions defined in a block" do
-    Radiant::Extension.should respond_to(:define_routes)
-    my_block = proc {|map| map.stuff "stuff", :controller => "admin/pages" }
-    Radiant::Extension.define_routes(&my_block)
-    Radiant::Extension.route_definitions.should be_instance_of(Array)
-    Radiant::Extension.route_definitions.first.should == my_block
-  end
-
   it "should expose configuration object" do
     SuperExtension.extension_config do |config|
       config.should eql(Rails.configuration)
