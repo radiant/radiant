@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + "/../spec_helper"
 
-describe described_class do
+describe Radiant::TaskSupport do
   describe "self.config_export" do
     before do
       @yaml_file = "#{Rails.root}/tmp/config/radiant_config.yml"
