@@ -103,7 +103,7 @@ namespace 'radiant' do
 
   desc "Generates cached assets from source files"
   task :generate_cached_assets do
-    TaskSupport.cache_admin_js
+    Radiant::TaskSupport.cache_admin_js
   end
 
   desc "Publish the release files to RubyForge."

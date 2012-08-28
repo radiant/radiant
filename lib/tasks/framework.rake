@@ -107,7 +107,7 @@ unless File.directory? "#{RAILS_ROOT}/app"
 
       desc "Update the cached assets for the admin UI"
       task :cached_assets do
-        TaskSupport.cache_admin_js
+        Radiant::TaskSupport.cache_admin_js
       end
 
       desc "Update Gemfile from your current radiant install, backing up if required."
