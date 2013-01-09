@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-require File.expand_path(__FILE__ + '/../lib/radiant.rb')
+require File.expand_path(__FILE__ + '/../lib/radiant/version.rb')
 Gem::Specification.new do |s|
   s.name = %q{radiant}
   s.version = Radiant::Version.to_s
