@@ -1,6 +1,7 @@
 config/database.yml
 db/*.db
 log/*.log
+spec/dummy/log/*
 pkg
 tmp/*
 .DS_Store
