@@ -25,7 +25,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.license = %q{MIT}
 
   s.add_dependency "tzinfo",        "~> 0.3.31"
-  s.add_dependency "rails",         "~> 2.3.14"
+  s.add_dependency "rails",         "~> 2.3.15"
   s.add_dependency "rdoc",          ">= 3.9.2"
   s.add_dependency "acts_as_tree",  "~> 0.1.1"
   s.add_dependency "bundler",       ">= 1.0.0"
