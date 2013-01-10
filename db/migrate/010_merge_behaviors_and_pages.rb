@@ -1,6 +1,6 @@
 class MergeBehaviorsAndPages < ActiveRecord::Migration
   class OldPage < ActiveRecord::Base
-    set_table_name 'pages'
+    self.table_name = 'pages'
   end
   
   @@page_map = {
