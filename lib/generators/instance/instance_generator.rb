@@ -17,8 +17,8 @@ class Rails::Generator::Commands::Create
 end
 
 class InstanceGenerator < Rails::Generator::Base
-  DEFAULT_SHEBANG = File.join(Config::CONFIG['bindir'],
-                              Config::CONFIG['ruby_install_name'])
+  DEFAULT_SHEBANG = File.join(RbConfig::CONFIG['bindir'],
+                              RbConfig::CONFIG['ruby_install_name'])
   
   DATABASES = %w( mysql postgresql sqlite3 sqlserver db2 )
   
