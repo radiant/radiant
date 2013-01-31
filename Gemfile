@@ -7,7 +7,7 @@ source :rubygems
 # requires radiant and therefore pulls in every
 # dependency mentioned in radiant.gemspec.
 
-gem "rails",   "2.3.15"
+gem "rails",   "2.3.16"
 gem "sqlite3", "1.3.5", :group => [:development, :test], :platform => :ruby
 
 # When radiant is installed as a gem you can run all of

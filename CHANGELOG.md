@@ -1,6 +1,8 @@
 # Change Log
 
-## Edge
+## 1.1.2
+
+* Move to Rails 2.3.16
 
 * Allow loading of snippets from the file system [Jim Gay]
 * Moved to compass-rails [Jim Gay]
