@@ -1,3 +1,5 @@
+require File.expand_path('../../../../lib/radiant/pagination/controller', __FILE__)
+
 module Radiant
   class SiteController < Radiant::ApplicationController
     include Radiant::Pagination::Controller
