@@ -38,7 +38,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency "rake",          "~> 10.0.3"
   s.add_dependency "radius",        "~> 0.7.3"
   s.add_dependency "RedCloth",      "~> 4.2.0"
-  s.add_dependency "will_paginate", "~> 2.3.11"
+  s.add_dependency "will_paginate", "~> 3.0.4"
   s.add_dependency "stringex",      "~> 1.3.0"
 
   s.add_development_dependency "cucumber-rails",    "~> 0.3.2"
