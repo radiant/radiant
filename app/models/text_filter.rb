@@ -1,5 +1,5 @@
 require 'simpleton'
-require 'annotate'
+require 'annotatable'
 class TextFilter
   include Simpleton
   include Annotatable
