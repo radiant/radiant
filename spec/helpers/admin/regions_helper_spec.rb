@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 require 'ostruct'
 
-describe Admin::RegionsHelper do
+describe Radiant::RegionsHelper do
   before :each do
     @controller_name = 'page'
     @controller.stub!(:controller_name).and_return(@controller_name)
@@ -12,7 +12,7 @@ describe Admin::RegionsHelper do
     @region_set_mock = Radiant::AdminUI::RegionSet.new
     @admin.stub!(:page).and_return(OpenStruct.new(:edit => @region_set_mock))
   end
-  
+
   it "should initialize relevant region variables" do
     helper.lazy_initialize_region_set
     @controller_name == 'page'
@@ -26,12 +26,12 @@ describe Admin::RegionsHelper do
       helper.stub!(:capture).and_return("foo")
       helper.lazy_initialize_region_set
     end
-    
+
     it "should render a region with no default partials" do
       helper.should_receive(:render).with(:partial => "test").and_return("foo")
       helper.render_region(:main).should == "foo"
     end
-    
+
     it "should capture the passed block, yielding the RegionPartials object and concatenating" do
       helper.should_receive(:render).and_raise(::ActionView::MissingTemplate.new(ActionController::Base.view_paths, '.'))
       helper.should_receive(:concat).with("foo")

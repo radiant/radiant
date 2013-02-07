@@ -1,0 +1,2 @@
+module Radiant::WelcomeHelper
+end

@@ -4,7 +4,7 @@ class MarkdownPlusFilter
   # dummy filter class
 end
 
-describe Admin::PagesHelper do
+describe Radiant::PagesHelper do
   dataset :users_and_pages
 
   before :each do
@@ -37,7 +37,7 @@ describe Admin::PagesHelper do
       helper.instance_variable_set :@page, pages(:home)
       helper.filter.should be_kind_of(TextFilter)
     end
-    
+
     it "should render the filter reference for complex filter names" do
       MarkdownPlusFilter.stub!(:description).and_return("Markdown rocks!")
       helper.stub!(:filter).and_return(MarkdownPlusFilter)
@@ -53,7 +53,7 @@ describe Admin::PagesHelper do
   it "should find the homepage" do
     helper.homepage.should == pages(:home)
   end
-  
+
   it "should render javascript for the page editing form" do
     helper.should respond_to(:page_edit_javascripts)
   end

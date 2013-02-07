@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Admin::ReferencesHelper do
+describe Radiant::ReferencesHelper do
   class BasicFilter < TextFilter; end
   class CustomFilter < TextFilter
     filter_name "Really Custom"

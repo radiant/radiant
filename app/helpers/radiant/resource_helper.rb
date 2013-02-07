@@ -1,0 +1,2 @@
+module Radiant::ResourceHelper
+end

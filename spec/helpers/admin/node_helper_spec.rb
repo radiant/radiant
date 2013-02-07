@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
-describe Admin::NodeHelper do
+describe Radiant::NodeHelper do
   dataset :users_and_pages
 
   before :each do
@@ -63,7 +63,7 @@ describe Admin::NodeHelper do
     helper.should_receive(:image).with("page", :class => "icon", :alt => '', :title => '')
     helper.icon
   end
-  
+
   it "should display the virtual icon if the current node is virtual" do
     assigns[:current_node] = @page
     @page.should_receive(:virtual?).and_return(true)
@@ -106,6 +106,6 @@ describe Admin::NodeHelper do
             :style => 'display: none;')
     helper.spinner
   end
-  
+
 
 end

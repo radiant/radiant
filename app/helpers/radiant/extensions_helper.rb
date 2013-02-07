@@ -1,0 +1,2 @@
+module Radiant::ExtensionsHelper
+end
