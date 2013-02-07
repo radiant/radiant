@@ -16,7 +16,7 @@ module Radiant
       self.use_x_sendfile = options.delete(:use_x_sendfile) if options[:use_x_sendfile]
       self.use_x_accel_redirect = options.delete(:use_x_accel_redirect) if options[:use_x_accel_redirect]
       Rack::Cache.new(app, {
-          :private_headers => ['Authorization'],
+          :private_headers => ['Authorization','Cookie'],
           :entitystore => "radiant:tmp/cache/entity",
           :metastore => "radiant:tmp/cache/meta",
           :verbose => false,
@@ -38,7 +38,7 @@ module Radiant
       def clear
         Dir[File.join(self.root, "*")].each {|file| FileUtils.rm_rf(file) }
       end
-      
+
       def write(body)
         # Verify that the cache directory exists before attempting to write
         FileUtils.mkdir_p(self.root, :mode => 0755) unless File.directory?(self.root)
