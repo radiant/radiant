@@ -34,8 +34,8 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency "delocalize",    "~> 0.2.3"
   s.add_dependency "haml",          "~> 3.1.1"
   s.add_dependency "highline",      "~> 1.6.10"
-  s.add_dependency "rack",          "~> 1.1.6"
-  s.add_dependency "rack-cache",    "~> 1.2.0"
+  s.add_dependency "rack",          "~> 1.4.5"
+  s.add_dependency "rack-cache",    "~> 1.2"
   s.add_dependency "rake",          ">= 0.8.7"
   s.add_dependency "radius",        "~> 0.7.3"
   s.add_dependency "RedCloth",      "~> 4.2.0"
@@ -48,5 +48,5 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_development_dependency "rspec",             "~> 1.3.1"
   s.add_development_dependency "rspec-rails",       "~> 1.3.3"
   s.add_development_dependency "test-unit",         "1.2.3"
-  s.add_development_dependency "ZenTest",           "4.6.0"
+  s.add_development_dependency "ZenTest",           "4.9.0"
 end
