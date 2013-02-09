@@ -1,10 +1,21 @@
 # Change Log
 
+## 1.1.3
+
+* Bump rack dependency to 1.1.6 [Jim Gay]
+* Fixed errors from using rake 10.0.3 and old gem package tasks [Jim Gay]
+
 ## 1.1.2
 
-* Move to Rails 2.3.16
+* Move to Rails 2.3.16 [Jim Gay]
 
+## 1.1.1
+
+* Move to Rails 2.3.15 [Jim Gay]
 * Allow loading of snippets from the file system [Jim Gay]
+* Move Snippets to the radiant-snippets-extension [Jim Gay]
+* Move exporting feature to the radiant-exporter-extension [Jim Gay]
+* Updated r:gravatar to respect serving via SSL [Sam Whited]
 * Moved to compass-rails [Jim Gay]
 * Fixed avatar tags for HTTP and HTTPS [Sam Whited]
 * Updated r:date and deprecated r:rfc1123_date [Sam Whited]
