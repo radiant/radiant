@@ -11,7 +11,7 @@ GEM
     activeresource (2.3.16)
       activesupport (= 2.3.16)
     activesupport (2.3.16)
-    rack (1.1.5)
+    rack (1.1.6)
     rails (2.3.16)
       actionmailer (= 2.3.16)
       actionpack (= 2.3.16)
