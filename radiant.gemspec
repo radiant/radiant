@@ -41,11 +41,11 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency "will_paginate", "~> 3.0.4"
   s.add_dependency "stringex",      "~> 1.3.0"
 
-  s.add_development_dependency "cucumber-rails",    "~> 0.3.2"
-  s.add_development_dependency "database_cleaner",  "~> 0.6.5"
-  s.add_development_dependency "webrat",            "~> 0.7.3"
+  s.add_development_dependency "cucumber-rails",    "~> 1.3.0"
+  s.add_development_dependency "database_cleaner",  "~> 0.9.1"
+  s.add_development_dependency "capybara",          "~> 2.0.2"
   s.add_development_dependency "rspec",             "~> 2.12.0"
-  s.add_development_dependency "rspec-rails",       "~> 2.12.1"
-  s.add_development_dependency "ZenTest",           "4.6.0"
-  s.add_development_dependency "sqlite3",            "1.3.5"
+  s.add_development_dependency "rspec-rails",       "~> 2.12.2"
+  s.add_development_dependency "ZenTest",           "4.9.0"
+  s.add_development_dependency "sqlite3",            "1.3.7"
 end
