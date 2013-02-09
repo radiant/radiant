@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'rake/testtask'
 require 'rdoc/task'
-require 'rake/gempackagetask'
+require 'rubygems/package_task'
 require 'radiant'
 
 PKG_NAME = 'radiant'
@@ -31,7 +31,7 @@ namespace 'radiant' do
     s.rubyforge_project = RUBY_FORGE_PROJECT
     s.platform = Gem::Platform::RUBY
     s.bindir = 'bin'
-    s.executables = (Dir['bin/*'] + Dir['scripts/*']).map { |file| File.basename(file) } 
+    s.executables = (Dir['bin/*'] + Dir['scripts/*']).map { |file| File.basename(file) }
     s.add_dependency 'rake', '>= 0.8.3'
     s.add_dependency 'rack', '~> 1.1.0' # No longer bundled in actionpack
     s.add_dependency 'compass', '~> 0.10.4'
