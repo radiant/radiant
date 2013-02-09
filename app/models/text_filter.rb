@@ -1,5 +1,7 @@
 require 'simpleton'
 require 'annotatable'
+require 'string_extensions'
+
 class TextFilter
   include Simpleton
   include Annotatable
