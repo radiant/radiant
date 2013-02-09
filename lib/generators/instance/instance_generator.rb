@@ -1,4 +1,5 @@
 require 'rbconfig'
+require 'rails/generators'
 
 # Small addition to enable the enqueing of "bundle install"
 class Rails::Generator::Commands::Create
@@ -16,12 +17,12 @@ class Rails::Generator::Commands::Create
   end
 end
 
-class InstanceGenerator < Rails::Generator::Base
+class InstanceGenerator < Rails::Generators::Base
   DEFAULT_SHEBANG = File.join(RbConfig::CONFIG['bindir'],
                               RbConfig::CONFIG['ruby_install_name'])
-  
+
   DATABASES = %w( mysql postgresql sqlite3 sqlserver db2 )
-  
+
   MYSQL_SOCKET_LOCATIONS = [
     "/tmp/mysql.sock",                        # default
     "/var/run/mysqld/mysqld.sock",            # debian/gentoo
@@ -32,7 +33,7 @@ class InstanceGenerator < Rails::Generator::Base
     "/opt/local/var/run/mysql4/mysqld.sock",  # mac + darwinports + mysql4
     "/opt/local/var/run/mysql5/mysqld.sock"   # mac + darwinports + mysql5
   ]
-    
+
   default_options :db => "sqlite3", :shebang => DEFAULT_SHEBANG, :freeze => false
 
   def initialize(runtime_args, runtime_options = {})
@@ -44,16 +45,16 @@ class InstanceGenerator < Rails::Generator::Base
 
   def manifest
     # The absolute location of the Radiant files
-    root = File.expand_path(RADIANT_ROOT) 
-    
+    root = File.expand_path(RADIANT_ROOT)
+
     # Use /usr/bin/env if no special shebang was specified
     script_options     = { :chmod => 0755, :shebang => options[:shebang] == DEFAULT_SHEBANG ? nil : options[:shebang] }
     dispatcher_options = { :chmod => 0755, :shebang => options[:shebang] }
-    
+
     record do |m|
       # Root directory
       m.directory ""
-      
+
       # Standard files and directories
       base_dirs = %w(config config/environments config/initializers db log script public vendor/plugins vendor/extensions)
       text_files = %w(CHANGELOG.md CONTRIBUTORS.md LICENSE.md INSTALL.md README.md)
@@ -63,11 +64,11 @@ class InstanceGenerator < Rails::Generator::Base
       scripts = Dir["#{root}/script/**/*"].reject { |f| f =~ /(destroy|generate|plugin)$/ }
       public_files = ["public/.htaccess"] + Dir["#{root}/public/**/*"]
       test_files = ["config/cucumber.yml"]
-      
+
       files = base_dirs + text_files + environments + bundler_compatibility_files + schema_file + scripts + public_files + test_files
       files.map! { |f| f = $1 if f =~ %r{^#{root}/(.+)$}; f }
       files.sort!
-      
+
       files.each do |file|
         case
         when File.directory?("#{root}/#{file}")
@@ -80,10 +81,10 @@ class InstanceGenerator < Rails::Generator::Base
           m.file radiant_root(file), file
         end
       end
-      
+
       # script/generate
       m.file "instance_generate", "script/generate", script_options
-      
+
       # database.yml and .htaccess
       m.template "databases/#{options[:db]}.yml", "config/database.yml", :assigns => {
         :app_name => File.basename(File.expand_path(@destination_root)),
@@ -110,10 +111,10 @@ class InstanceGenerator < Rails::Generator::Base
       }
       m.template "instance_boot.rb", "config/boot.rb"
       m.file "instance_radiant_config.rb", "config/initializers/radiant_config.rb"
-      
+
       # Run bundler
       m.run_bundler @destination_root
-      
+
       m.readme radiant_root("INSTALL.md")
     end
   end
@@ -134,7 +135,7 @@ class InstanceGenerator < Rails::Generator::Base
             "Preconfigure for selected database (options: #{DATABASES.join(", ")}).",
             "Default: sqlite3") { |v| options[:db] = v }
     end
-    
+
     def mysql_socket_location
       RUBY_PLATFORM =~ /mswin32/ ? MYSQL_SOCKET_LOCATIONS.find { |f| File.exists?(f) } : nil
     end
@@ -144,5 +145,5 @@ class InstanceGenerator < Rails::Generator::Base
     def radiant_root(filename = '')
       File.join("..", "..", "..", "..", filename)
     end
-  
+
 end

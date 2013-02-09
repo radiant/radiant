@@ -5,7 +5,7 @@ require 'fileutils'
 require 'tempfile'
 require 'rspec'
 require File.join(BASE_ROOT, 'spec/matchers/generator_matchers')
-require File.join(BASE_ROOT, 'lib/plugins/string_extensions/lib/string_extensions')
+require File.join(BASE_ROOT, 'lib/string_extensions')
 
 unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
   # this is so we can require ActiveSupport
