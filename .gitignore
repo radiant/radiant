@@ -1,9 +1,12 @@
 config/database.yml
 db/*.db
+spec/dummy/db/*
 log/*.log
+spec/dummy/log/*
 spec/dummy/log/*
 pkg
 tmp/*
+spec/tmp/*
 .DS_Store
 .svn
 TAGS
