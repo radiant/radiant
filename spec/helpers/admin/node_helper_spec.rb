@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
 describe Radiant::NodeHelper do
-  dataset :users_and_pages
+  #dataset :users_and_pages
 
   before :each do
     @cookies = {}

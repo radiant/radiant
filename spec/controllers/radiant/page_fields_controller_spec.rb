@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe Radiant::PageFieldsController do
-  dataset :users
+  #dataset :users
 
   before do
     login_as :admin

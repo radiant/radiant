@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe Radiant::ReferencesController do
-  dataset :users
+  #dataset :users
 
   before :each do
     login_as :existing

@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe Radiant::PreferencesController do
-  dataset :users
+  #dataset :users
 
   it "should allow you to view your preferences" do
     user = login_as(:non_admin)

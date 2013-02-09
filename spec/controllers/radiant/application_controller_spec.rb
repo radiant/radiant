@@ -2,7 +2,6 @@ require 'spec_helper'
 
 # http://blog.davidchelimsky.net/articles/2007/06/03/oxymoron-testing-behaviour-of-abstractions
 describe Radiant::ApplicationController do
-  dataset :users
 
   it 'should include LoginSystem' do
     ApplicationController.included_modules.should include(LoginSystem)

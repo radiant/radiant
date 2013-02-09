@@ -1,13 +1,13 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe UserActionObserver do
-  dataset :users, :pages_with_layouts
-  
+  #dataset :users, :pages_with_layouts
+
   before(:each) do
     @user = users(:existing)
     UserActionObserver.current_user = @user
   end
-  
+
   it 'should observe create' do
     [
       User.create!(user_params),
@@ -17,7 +17,7 @@ describe UserActionObserver do
       model.created_by.should == @user
     end
   end
-  
+
   it 'should observe update' do
     [
       users(:existing),

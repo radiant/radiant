@@ -18,7 +18,7 @@ class PageSpecTestPage < Page
   tag 'test2' do |tag|
     'Another test.'
   end
-  
+
   tag 'frozen_string' do |tag|
     'Brain'.freeze
   end
@@ -31,27 +31,27 @@ class VirtualSpecPage < Page
 end
 
 describe Page, 'validations' do
-  dataset :pages
+  #dataset :pages
   test_helper :validations
-  
+
   let(:page){ Page.new(page_params)}
 
   before :each do
     @page = @model = Page.new(page_params)
   end
-  
+
   it 'should not be valid with a slug length greater than 100 characters' do
     page.valid?.should be_true
     page.slug = 'x'*101
     page.valid?.should be_false
   end
-  
+
   it 'should not be valid with a title length greater than 255 characters' do
     page.valid?.should be_true
     page.title = 'x'*256
     page.valid?.should be_false
   end
-  
+
   it 'should not be valid with a breadcrumb length greater than 160 characters' do
     page.valid?.should be_true
     page.breadcrumb = 'x'*161
@@ -125,7 +125,7 @@ describe Page, "behaviors" do
 end
 
 describe Page, "layout" do
-  dataset :pages_with_layouts
+  #dataset :pages_with_layouts
 
   it 'should be accessible' do
     @page = pages(:first)
@@ -141,8 +141,8 @@ describe Page, "layout" do
 end
 
 describe Page do
-  dataset :pages
-  
+  #dataset :pages
+
   let(:page){ pages(:first ) }
   let(:home){ pages(:home) }
   let(:parent){ pages(:parent) }
@@ -162,7 +162,7 @@ describe Page do
     page.destroy
     PagePart.find_by_page_id(id).should be_nil
   end
-  
+
   describe '#part' do
     it 'should find the part with a name of the given string' do
       page.part('body').should == page.parts.find_by_name('body')
@@ -193,7 +193,7 @@ describe Page do
       page.field(:description).should == field
     end
   end
-  
+
   describe '#has_part?' do
     it 'should return true for a valid part' do
       page.has_part?('body').should == true
@@ -204,7 +204,7 @@ describe Page do
       page.has_part?(:obviously_false_part_name).should == false
     end
   end
-  
+
   describe '#inherits_part?' do
     it 'should return true if any ancestor page has a part of the given name' do
       child.has_part?(:sidebar).should be_false
@@ -215,7 +215,7 @@ describe Page do
       home.inherits_part?(:sidebar).should be_false
     end
   end
-  
+
   describe '#has_or_inherits_part?' do
     it 'should return true if the current page or any ancestor has a part of the given name' do
       child.has_or_inherits_part?(:sidebar).should be_true
@@ -240,7 +240,7 @@ describe Page do
       page.dirty?.should be_true
     end
   end
-  
+
   describe '#published?' do
     it "should be true when the status is Status[:published]" do
       page.status = Status[:published]
@@ -251,7 +251,7 @@ describe Page do
       page.published?.should be_false
     end
   end
-  
+
   describe '#scheduled?' do
     it "should be true when the status is Status[:scheduled]" do
       page.status = Status[:scheduled]
@@ -267,7 +267,7 @@ describe Page do
     it 'should change its status to scheduled with a date in the future' do
       new_page = Page.new(page_params(:status_id => '100', :published_at => '2020-1-1'))
       new_page.save
-      new_page.status_id.should == 90 
+      new_page.status_id.should == 90
     end
     it 'should set the status to published when the date is in the past' do
       scheduled_time = Time.zone.now - 1.year
@@ -282,8 +282,8 @@ describe Page do
       I18n.locale = :en
     end
   end
-  
-  context 'when setting the status' do  
+
+  context 'when setting the status' do
     it 'should set published_at when given the published status id' do
       page = Page.new(page_params(:status_id => '100', :published_at => nil))
       page.status_id = Status[:published].id
@@ -303,7 +303,7 @@ describe Page do
       new_page.published_at.should == expected
     end
   end
-    
+
   describe '#path' do
     it "should start with a slash" do
       page.path.should match(/^\//)
@@ -315,13 +315,13 @@ describe Page do
       page.path.should match(/\/$/)
     end
   end
-  
+
   describe '#child_path' do
     it 'should return the #path for the given child' do
       parent.child_path(child).should == '/parent/child/'
     end
   end
-  
+
   describe '#status' do
     it 'should return the Status with the id of the page status_id' do
       home.status.should == Status.find(home.status_id)
@@ -369,7 +369,7 @@ describe Page do
 end
 
 describe Page, "before save filter" do
-  dataset :home_page
+  #dataset :home_page
 
   before :each do
     Page.create(page_params(:title =>"Month Index", :class_name => "VirtualSpecPage"))
@@ -406,7 +406,7 @@ describe Page, "before save filter" do
 end
 
 describe Page, "rendering" do
-  dataset :pages, :markup_pages, :layouts
+  #dataset :pages, :markup_pages, :layouts
   test_helper :render
 
   before :each do
@@ -442,19 +442,19 @@ describe Page, "rendering" do
     create_page "Test Page", :body => "<r:test1 /> <r:test2 />", :class_name => "PageSpecTestPage"
     pages(:test_page).should render_as('Hello world! Another test. body.')
   end
-  
+
   it 'should render custom pages with tags that return frozen strings' do
     create_page "Test Page", :body => "<r:frozen_string />", :class_name => "PageSpecTestPage"
     pages(:test_page).should render_as('Brain body.')
   end
-  
+
   it 'should render blank when containing no content' do
     Page.new.should render_as('')
   end
 end
 
 describe Page, "#find_by_path" do
-  dataset :pages, :file_not_found
+  #dataset :pages, :file_not_found
 
   before :each do
     @page = pages(:home)
@@ -617,7 +617,7 @@ describe Page, 'loading subclasses after bootstrap' do
 end
 
 describe Page, "class which is applied to a page but not defined" do
-  dataset :pages
+  #dataset :pages
 
   before :each do
     Object.send(:const_set, :ClassNotDefinedPage, Class.new(Page){ def self.missing?; false end })
@@ -637,14 +637,14 @@ describe Page, "class which is applied to a page but not defined" do
   it "should adjust the display name to indicate that the page type is not installed" do
     ClassNotDefinedPage.display_name.should match(/not installed/)
   end
-  
+
   after :each do
     Object.send(:remove_const, :ClassNotDefinedPage)
   end
 end
 
 describe Page, "class find_by_path" do
-  dataset :pages, :file_not_found
+  #dataset :pages, :file_not_found
 
   it 'should find the home page' do
     Page.find_by_path('/').should == pages(:home)
@@ -667,7 +667,7 @@ describe Page, "class find_by_path" do
 end
 
 describe Page, "processing" do
-  dataset :pages_with_layouts
+  #dataset :pages_with_layouts
 
   before :all do
     @request = ActionController::TestRequest.new :url => '/page/'

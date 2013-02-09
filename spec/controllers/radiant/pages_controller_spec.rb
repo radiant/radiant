@@ -3,7 +3,7 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe Radiant::PagesController do
-  dataset :users, :pages
+  #dataset :users, :pages
 
   before :each do
     login_as :existing
@@ -62,7 +62,7 @@ describe Radiant::PagesController do
   end
 
   describe "viewing the sitemap" do
-    integrate_views
+
 
     it "should render when the homepage is present" do
       get :index
@@ -231,7 +231,7 @@ describe Radiant::PagesController do
   end
 
   describe "prompting page removal" do
-    integrate_views
+
 
     # TODO: This should be in a view or integration spec
     it "should render the expanded descendants of the page being removed" do

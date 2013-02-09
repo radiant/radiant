@@ -1,7 +1,7 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe Radiant::SiteController do
-  dataset :pages
+  #dataset :pages
 
   it "should find and render home page" do
     get :show_page, :url => ''

@@ -45,7 +45,7 @@ class ConditionalAccessController < LoginRequiredController
 end
 
 describe 'Login System:', :type => :controller do
-  dataset :users
+  #dataset :users
 
   before do
     map = ActionController::Routing::RouteSet::Mapper.new(ActionController::Routing::Routes)

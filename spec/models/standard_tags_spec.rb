@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Standard Tags" do
-  dataset :users_and_pages, :file_not_found
+  #dataset :users_and_pages, :file_not_found
 
   it '<r:page> should allow access to the current page' do
     page(:home)
@@ -107,7 +107,7 @@ describe "Standard Tags" do
         page.should render('<r:children:each paginated="true" inner_window="1" outer_window="0"><r:slug /> </r:children:each>').not_matching(/\?p=2/)
       end
     end
-    
+
     it 'should error with invalid "limit" attribute' do
       message = "`limit' attribute must be a positive number"
       page.should render(page_children_each_tags(%{limit="a"})).with_error(message)
@@ -380,18 +380,18 @@ describe "Standard Tags" do
         it 'should not render the contained block if the current or ancestor pages do not have all of the specified parts' do
           page(:guests).should render('<r:if_content part="favors, madeup" inherit="true">true</r:if_content>').as('')
         end
-        
+
         describe "with find attribute set to 'any'" do
           it 'should render the contained block if the current or ancestor pages have any of the specified parts' do
             page(:guests).should render('<r:if_content part="favors, madeup" inherit="true" find="any">true</r:if_content>').as('true')
           end
-          
+
           it 'should still render the contained block if first of the specified parts has not been found' do
             page(:guests).should render('<r:if_content part="madeup, favors" inherit="true" find="any">true</r:if_content>').as('true')
           end
         end
       end
-      
+
       describe "with inherit attribute set to 'false'" do
         it 'should render the contained block if the current page has the specified parts' do
           page(:guests).should render('<r:if_content part="favors, games" inherit="false">true</r:if_content>').as('')
@@ -431,12 +431,12 @@ describe "Standard Tags" do
       it "should not render the contained block if the specified part does not exist but does exist on an ancestor" do
         page.should render('<r:unless_content part="sidebar" inherit="true">false</r:unless_content>').as('')
       end
-      
+
       describe "with find attribute set to 'any'" do
         it 'should not render the contained block if the current or ancestor pages have any of the specified parts' do
           page(:guests).should render('<r:unless_content part="favors, madeup" inherit="true" find="any">true</r:unless_content>').as('')
         end
-        
+
         it 'should still not render the contained block if first of the specified parts has not been found' do
           page(:guests).should render('<r:unless_content part="madeup, favors" inherit="true" find="any">true</r:unless_content>').as('')
         end
@@ -505,19 +505,19 @@ describe "Standard Tags" do
       pages(:home).should render('<r:aggregate paths="/parent/child; /first;">true</r:aggregate>').as('true')
     end
   end
-  
+
   describe "<r:aggregate:children>" do
     it "should expand its contents" do
-      pages(:home).should render('<r:aggregate paths="/parent/child; /first;"><r:children>true</r:children></r:aggregate>').as('true') 
+      pages(:home).should render('<r:aggregate paths="/parent/child; /first;"><r:children>true</r:children></r:aggregate>').as('true')
     end
   end
-  
+
   describe "<r:aggregate:children:count>" do
     it "should display the number of aggregated children" do
       pages(:home).should render('<r:aggregate paths="/news; /assorted"><r:children:count /></r:aggregate>').as('14')
     end
   end
-  
+
   describe "<r:aggregate:children:each>" do
     it "should loop through each child from the given paths" do
       pages(:home).should render('<r:aggregate paths="/parent; /news"><r:children:each by="title"><r:title/> </r:children:each></r:aggregate>').as('Article Article 2 Article 3 Article 4 Child Child 2 Child 3 ')
@@ -531,7 +531,7 @@ describe "Standard Tags" do
     it "should limit the number of results with the given 'limit' attribute" do
       pages(:home).should render('<r:aggregate paths="/assorted; /news"><r:children:each by="slug" order="desc" limit="3"><r:slug /> </r:children:each></r:aggregate>').as('j i h ')
     end
-    
+
 
     describe 'with paginated="true"' do
       it 'should limit correctly the result set' do
@@ -558,7 +558,7 @@ describe "Standard Tags" do
       end
     end
   end
-  
+
   describe "<r:aggregate:each>" do
     it "should loop through each of the given aggregate paths" do
       pages(:home).should render('<r:aggregate paths="/parent/child; /first; /assorted;"><r:each><r:title /> </r:each></r:aggregate>').as('Child First Assorted ')
@@ -688,7 +688,7 @@ describe "Standard Tags" do
   it '<r:comment> should render nothing it contains' do
     page.should render('just a <r:comment>small </r:comment>test').as('just a test')
   end
-  
+
   describe '<r:hide>' do
     it "should not display it's contents" do
       page.should render('just a <r:hide>small </r:hide>test').as('just a test')
@@ -856,7 +856,7 @@ describe "Standard Tags" do
 
       it "set to a malformatted regexp should render an error" do
         expected_error = "Malformed regular expression in `matches' argument of `if_path' tag: " + (RUBY_VERSION =~ /^1\.9/ ? "end pattern with unmatched parenthesis: /as(sorted\\/$/i" : "unmatched (: /as(sorted\\/$/")
-        
+
         page.should render('<r:if_path matches="as(sorted/$">true</r:if_path>').with_error(expected_error)
       end
 
@@ -892,7 +892,7 @@ describe "Standard Tags" do
 
       it "set to a malformatted regexp should render an error" do
         expected_error = "Malformed regular expression in `matches' argument of `unless_path' tag: " + (RUBY_VERSION =~ /^1\.9/ ? "end pattern with unmatched parenthesis: /as(sorted\\/$/i" : "unmatched (: /as(sorted\\/$/")
-        
+
         page.should render('<r:unless_path matches="as(sorted/$">true</r:unless_path>').with_error(expected_error)
       end
 
@@ -941,7 +941,7 @@ describe "Standard Tags" do
     it "should reset the counter" do
       page.should render('<r:cycle values="first, second" /> <r:cycle values="first, second" reset="true"/>').as('first first')
     end
-    
+
     it { should render('<r:cycle /> <r:cycle />').as('0 1') }
     it { should render('<r:cycle start="3" /> <r:cycle start="3" /> <r:cycle start="3" />').as('3 4 5') }
     it { should render('<r:cycle start="3" /> <r:cycle name="other" /> <r:cycle start="3" />').as('3 0 4') }
@@ -957,7 +957,7 @@ describe "Standard Tags" do
     it "should not render the contained block when not on the dev site" do
       page.should render('-<r:if_dev>dev</r:if_dev>-').as('--')
     end
-    
+
     it "should not render the contained block when no request is present" do
       page(:devtags).render_part('if_dev').should_not have_text('dev')
     end
@@ -1092,9 +1092,9 @@ describe "Standard Tags" do
       it { should render('<r:unless_field name="blank" matches="[^\s]">Not here</r:unless_field>').as('Not here') }
       it { should render('<r:unless_field name="bogus" matches="something">Not here</r:unless_field>').as('Not here') }
     end
-    
+
   end
-  
+
   describe "Site tags" do
     subject { page(:home) }
     it { should render('<r:site:title />').as('Your site title')}

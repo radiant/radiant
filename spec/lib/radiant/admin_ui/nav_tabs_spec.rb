@@ -40,17 +40,17 @@ describe Radiant::AdminUI::NavTab do
       @tab << @comments
       @tab.last.should == @comments
     end
-    
+
     it "should insert before the specified sub-item" do
       @tab.add(@comments, :before => :things)
       @tab[1].should == @comments
     end
-    
+
     it "should insert after the specified sub-item" do
       @tab.add(@comments, :after => :pages)
       @tab[1].should == @comments
     end
-    
+
     it "should raise an error if a sub-item of the same name already exists" do
       @tab << @comments
       lambda { @tab << @comments.dup }.should raise_error(Radiant::AdminUI::DuplicateTabNameError)
@@ -58,13 +58,13 @@ describe Radiant::AdminUI::NavTab do
   end
 
   describe "visibility" do
-    dataset :users
-    
+    #dataset :users
+
     it "should not be visible by default" do
       User.all.each {|user| @tab.should_not be_visible(user) }
     end
   end
-  
+
   it "should warn about using the deprecated add method" do
     ActiveSupport::Deprecation.should_receive(:warn)
     @tab.add("Pages", "/admin/pages")
@@ -87,49 +87,49 @@ describe Radiant::AdminUI::NavSubItem do
   it "should have a URL" do
     @subitem.url.should == "/admin/pages"
   end
-  
+
   describe "generating a relative url" do
     it "should return the original url when no relative_url_root is set" do
       @subitem.relative_url.should == "/admin/pages"
     end
-    
+
     it "should make the url relative to the relative_url_root when set" do
       ActionController::Base.relative_url_root = '/radiant'
       @subitem.relative_url.should == "/radiant/admin/pages"
     end
-    
+
     after :each do
       ActionController::Base.relative_url_root = nil
     end
   end
-  
+
   it "should have a tab accessor" do
     @subitem.should respond_to(:tab)
     @subitem.should respond_to(:tab=)
     @subitem.tab.should == @tab
   end
-  
+
   describe "visibility" do
-    dataset :users
+    #dataset :users
     before :each do
       @controller = Admin::UsersController.new
       Admin::UsersController.stub!(:new).and_return(@controller)
     end
-    
+
     it "should check the visibility against the controller permissions" do
       User.all.each {|user| @subitem.should be_visible(user) }
     end
-    
+
     describe "when the controller limits access to the action" do
       before :each do
         @subitem.url.sub!('pages', 'users')
       end
-      
+
       it "should not be visible if the user lacks access" do
         @controller.stub!(:current_user).and_return(users(:existing))
         @subitem.should_not be_visible(users(:existing))
       end
-      
+
       it "should be visible if the user has access" do
         @controller.stub!(:current_user).and_return(users(:admin))
         @subitem.should be_visible(users(:admin))

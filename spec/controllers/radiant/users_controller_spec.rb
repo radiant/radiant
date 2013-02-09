@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
 describe Radiant::UsersController do
-  dataset :users
+  #dataset :users
 
   it "should be a ResourceController" do
     controller.should be_kind_of(Radiant::ResourceController)
