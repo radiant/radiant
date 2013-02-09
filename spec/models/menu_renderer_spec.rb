@@ -1,5 +1,5 @@
-require 'spec'
-require 'spec/autorun'
+require 'rspec'
+require 'rspec/autorun'
 require 'ostruct'
 $: << File.expand_path(__FILE__ + '../../../../app/models')
 require 'menu_renderer'
@@ -104,6 +104,7 @@ describe MenuRenderer do
 
   describe '#allowed_child_classes' do
     it 'should return a collection of classes to be used for child pages' do
+      MenuRenderer.instance_variable_set(:@excluded_class_names,[])
       special_page.allowed_children_cache = 'Page,SpecialChildPage'
       special_page.allowed_child_classes.should == [Page, SpecialChildPage]
     end

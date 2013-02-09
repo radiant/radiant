@@ -127,7 +127,7 @@ module MenuRenderer
     text = link_text_for_child_class(child_class.name)
     view.link_to(text, path, :title => title)
   end
-  
+
   def link_text_for_child_class(given_class_name)
     translation_key = if given_class_name == 'Page' || given_class_name.blank?
       'normal_page'
