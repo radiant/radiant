@@ -1,4 +1,7 @@
-require File.dirname(__FILE__) + "/../../spec_helper"
+require "spec_helper"
+extensions_path = File.expand_path('../../../fixtures/extensions', __FILE__)
+$: << extensions_path
+require "basic/basic_extension"
 
 describe Radiant::Extension do
 
@@ -6,7 +9,7 @@ describe Radiant::Extension do
     Radiant::Extension.included_modules.should include(Simpleton)
     Radiant::Extension.should respond_to(:instance)
   end
-  
+
   it "should annotate version, description, url, path and extension_name" do
     Radiant::Extension.included_modules.should include(Annotatable)
     %w{version description url path extension_name}.each do |attribute|
@@ -18,20 +21,20 @@ describe Radiant::Extension do
     BasicExtension.instance.should respond_to(:admin)
     BasicExtension.admin.should == Radiant::AdminUI.instance
   end
-  
+
   it "should have a migrator" do
     BasicExtension.instance.should respond_to(:migrator)
     BasicExtension.migrator.superclass.should == Radiant::ExtensionMigrator
   end
-  
+
   it "should have a migrations path" do
     BasicExtension.migrations_path.should == "#{RADIANT_ROOT}/test/fixtures/extensions/basic/db/migrate"
   end
-  
+
   describe BasicExtension do
     its(:routing_file) { should match '/extensions/basic/config/routes.rb' }
   end
-  
+
   context "when the routing_file exists" do
     subject { RoutedExtension }
     it { should be_routed }
@@ -40,12 +43,12 @@ describe Radiant::Extension do
     subject { UnroutedExtension }
     it { should_not be_routed }
   end
-  
+
   it "should set the extension_name in subclasses" do
     Kernel.module_eval { class SuperExtension < Radiant::Extension; end }
     SuperExtension.extension_name.should == "Super"
   end
-  
+
   it "should expose configuration object" do
     SuperExtension.extension_config do |config|
       config.should eql(Rails.configuration)
@@ -61,7 +64,7 @@ describe Radiant::Extension do
     }
     BasicExtension.admin.nav['Design'].length.should == start_length + 1
   end
-  
+
   it "should allow the ordering of nav tabs after other tabs" do
     nav = BasicExtension.admin.nav
     BasicExtension.class_eval {
@@ -71,7 +74,7 @@ describe Radiant::Extension do
     content = nav["content"]
     nav.index(assets).should == (nav.index(content) + 1)
   end
-  
+
   it "should allow the ordering of nav tabs before other tabs" do
     nav = BasicExtension.admin.nav
     BasicExtension.class_eval {
@@ -81,7 +84,7 @@ describe Radiant::Extension do
     design = nav["Design"]
     nav.index(assets).should == (nav.index(design) - 1)
   end
-  
+
   it "should allow the addition of tabs" do
     start_length = BasicExtension.admin.nav.length
     BasicExtension.class_eval {
@@ -125,7 +128,7 @@ describe Radiant::Extension, "when inactive" do
     BasicExtension.activate
     BasicExtension.active?.should == true
   end
-  
+
 end
 
 describe Radiant::Extension, "when active" do
@@ -140,5 +143,5 @@ describe Radiant::Extension, "when active" do
     defined?(Multiple).should_not be_nil
     defined?(NormalPlugin).should_not be_nil
   end
-  
+
 end
