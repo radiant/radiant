@@ -9,7 +9,10 @@ if ENV['TRAVIS']
   gem "pg"
 end
 
-# gem "debugger"
+group :development, :test, :cucumber do
+  gem "rspec-rails"
+  gem "debugger"
+end
 
 # gem "radiant-archive-extension",             "~> 1.0.7"
 # gem "radiant-clipped-extension",             "~> 1.1.0"
