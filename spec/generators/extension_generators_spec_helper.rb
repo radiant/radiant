@@ -92,12 +92,12 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
 
     # Silences the logger temporarily and returns the output as a String.
     def silence_generator
-      logger_original = Rails::Generator::Base.logger
-      myout = StringIO.new
-      Rails::Generator::Base.logger = Rails::Generator::SimpleLogger.new(myout)
+      # logger_original = Rails::Generators::Base.logger
+      # myout = StringIO.new
+      # Rails::Generators::Base.logger = Rails::Generators::SimpleLogger.new(myout)
       yield if block_given?
-      Rails::Generator::Base.logger = logger_original
-      myout.string
+      # Rails::Generators::Base.logger = logger_original
+      # myout.string
     end
 
     # Run the block with RADIANT_ROOT replaced with BASE_ROOT
