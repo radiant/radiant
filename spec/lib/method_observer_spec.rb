@@ -1,8 +1,9 @@
-require File.dirname(__FILE__) + "/../spec_helper"
+require "spec_helper"
+require 'method_observer'
 
 describe MethodObserver do
-  
-  class TestObserver < MethodObserver    
+
+  class TestObserver < MethodObserver
     def before_observed_method(*args, &block); end
     def after_observed_method(*args); end
   end
@@ -20,16 +21,16 @@ describe MethodObserver do
     @observer = TestObserver.new
     @observer.observe(@object)
   end
-  
+
   it "should permit only one object to be observed" do
     lambda { @observer.observe(@object)}.should raise_error(MethodObserver::ObserverCannotObserveTwiceError)
   end
-  
+
   it "should have a target equal to the observed object" do
     @observer.should respond_to(:target)
     @observer.target.should == @object
   end
-  
+
   it "should invoke the before_ method before the object's method is invoked" do
     @observer.should_receive(:before_observed_method) do
       @observer.result.should be_nil
@@ -37,7 +38,7 @@ describe MethodObserver do
     @object.observed_method.should == :success
     @observer.result.should == :success
   end
-  
+
   it "should invoke the after_ method after the object's method is invoked" do
     @observer.should_receive(:after_observed_method) do
       @observer.result.should == :success
