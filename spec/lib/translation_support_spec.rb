@@ -1,4 +1,5 @@
-require File.dirname(__FILE__) + "/../spec_helper"
+require "spec_helper"
+require "translation_support"
 
 describe TranslationSupport do
   describe 'self.get_translation_keys' do
