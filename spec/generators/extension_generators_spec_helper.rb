@@ -158,7 +158,7 @@ end
 
 Git = Module.new unless defined?(::Git)
 
-Rspec.configure do |config|
+RSpec.configure do |config|
   config.include(Spec::Matchers::GeneratorMatchers)
 end
 
