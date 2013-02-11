@@ -1,4 +1,5 @@
-require File.dirname(__FILE__) + "/../spec_helper"
+require "spec_helper"
+require "radiant/task_support"
 
 describe Radiant::TaskSupport do
   describe "self.config_export" do
