@@ -47,16 +47,6 @@ end
 describe 'Login System:', :type => :controller do
   #dataset :users
 
-  before do
-    map = ActionController::Routing::RouteSet::Mapper.new(ActionController::Routing::Routes)
-    map.connect ':controller/:action/:id'
-    ActionController::Routing::Routes.named_routes.install
-  end
-
-  after do
-    ActionController::Routing::Routes.reload
-  end
-
   describe NoLoginRequiredController do
     it "should not require authentication" do
       get :index
