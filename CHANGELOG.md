@@ -2,6 +2,7 @@
 
 ## 1.1.3
 
+* Remove the notion of Radiant instances [Jim Gay]
 * Bump rack dependency to 1.1.6 [Jim Gay]
 * Fixed errors from using rake 10.0.3 and old gem package tasks [Jim Gay]
 
