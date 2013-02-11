@@ -9,6 +9,8 @@ if ENV['TRAVIS']
   gem "pg"
 end
 
+# gem "debugger"
+
 # gem "radiant-archive-extension",             "~> 1.0.7"
 # gem "radiant-clipped-extension",             "~> 1.1.0"
 # gem "radiant-debug-extension",               "~> 1.0.2"
