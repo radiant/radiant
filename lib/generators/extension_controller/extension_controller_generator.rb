@@ -1,17 +1,17 @@
 require 'rails_generator/base'
 require 'rails_generator/generators/components/controller/controller_generator'
 
-class ExtensionControllerGenerator < ControllerGenerator
-  
+class ExtensionControllerGenerator < Rails::Generators::Base
+
   attr_accessor :extension_name
   default_options :with_test_unit => false
-  
+
   def initialize(runtime_args, runtime_options = {})
     runtime_args = runtime_args.dup
     @extension_name = runtime_args.shift
     super(runtime_args, runtime_options)
   end
-  
+
   def manifest
     if extension_uses_rspec?
       rspec_manifest
@@ -19,7 +19,7 @@ class ExtensionControllerGenerator < ControllerGenerator
       super
     end
   end
-  
+
   def rspec_manifest
     record do |m|
       # Check for class naming collisions.
@@ -58,27 +58,27 @@ class ExtensionControllerGenerator < ControllerGenerator
       end
     end
   end
-  
+
   def banner
     "Usage: #{$0} #{spec.name} ExtensionName #{spec.name.camelize}Name [options]"
   end
-  
+
   def extension_path
     File.join('vendor', 'extensions', @extension_name.underscore)
   end
-  
+
   def destination_root
     File.join(RAILS_ROOT, extension_path)
   end
-  
+
   def extension_uses_rspec?
     File.exists?(File.join(destination_root, 'spec')) && !options[:with_test_unit]
   end
-  
+
   def add_options!(opt)
     opt.separator ''
     opt.separator 'Options:'
-    opt.on("--with-test-unit", 
+    opt.on("--with-test-unit",
            "Use Test::Unit tests instead sof RSpec.") { |v| options[:with_test_unit] = v }
   end
 end
