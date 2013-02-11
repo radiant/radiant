@@ -3,7 +3,7 @@ db/*.db
 spec/dummy/db/*
 log/*.log
 spec/dummy/log/*
-spec/dummy/log/*
+spec/dummy/tmp/*
 pkg
 tmp/*
 spec/tmp/*
