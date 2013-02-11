@@ -1,4 +1,5 @@
-require File.dirname(__FILE__) + "/../../spec_helper"
+require "spec_helper"
+require "radiant/extension_loader"
 
 describe Radiant::ExtensionLoader do
 
@@ -51,7 +52,7 @@ describe Radiant::ExtensionLoader do
       end
     end
   end
-  
+
   describe "activating extensions" do
     it "should activate extensions" do
       extensions = [BasicExtension, OverridingExtension]
@@ -82,21 +83,21 @@ describe Radiant::ExtensionLoader do
       @config = mock("rails config")
       @observer = Radiant::ExtensionLoader::DependenciesObserver.new(@config)
     end
-  
+
     it "should be a MethodObserver" do
       @observer.should be_kind_of(MethodObserver)
     end
-  
+
     it "should attach to the clear method" do
       @observer.should respond_to(:before_clear)
       @observer.should respond_to(:after_clear)
     end
-  
+
     it "should deactivate extensions before clear" do
       Radiant::ExtensionLoader.should_receive(:deactivate_extensions)
       @observer.before_clear
     end
-  
+
     it "should load and activate extensions after clear" do
       Radiant::ExtensionLoader.should_receive(:load_extensions)
       Radiant::ExtensionLoader.should_receive(:activate_extensions)
