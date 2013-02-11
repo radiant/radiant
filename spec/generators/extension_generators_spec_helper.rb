@@ -10,7 +10,7 @@ require File.join(BASE_ROOT, 'lib/string_extensions')
 unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
   # this is so we can require ActiveSupport
   $:.unshift File.join(BASE_ROOT, 'vendor/rails/activesupport/lib')
-  # This is so the initializer and Rails::Generator is properly found
+  # This is so the initializer and Rails::Generators is properly found
   $:.unshift File.join(BASE_ROOT, 'vendor/rails/railties/lib')
   require 'active_support'
 
@@ -80,7 +80,7 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
   module GeneratorSpecHelperMethods
     # Instantiates the Generator.
     def build_generator(name, params)
-      Rails::Generator::Base.instance(name, params)
+      Rails::Generators::Base.new(name, params)
     end
 
     # Runs the +create+ command (like the command line does).
