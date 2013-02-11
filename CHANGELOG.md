@@ -2,6 +2,7 @@
 
 ## 1.1.3
 
+* Move to Rails 2.3.17 [Jim Gay]
 * Bump rack dependency to 1.1.6 [Jim Gay]
 * Fixed errors from using rake 10.0.3 and old gem package tasks [Jim Gay]
 
