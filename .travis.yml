@@ -1,5 +1,7 @@
 rvm:
   - 1.9.3
+  - ruby-head
+  - jruby-19mode
 
 before_install: "gem install bundler --pre"
 
@@ -16,3 +18,8 @@ notifications:
 env:
   - DB=mysql
   - DB=postgres
+
+matrix:
+  allow_failures:
+    - rvm: ruby-head
+    - rvm: jruby-19mode
