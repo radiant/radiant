@@ -77,7 +77,7 @@ describe ApplicationHelper do
   it "should determine whether a given url matches the current url" do
     request = mock("request")
     helper.stub!(:request).and_return(request)
-    request.stub!(:request_uri).and_return("/foo/bar")
+    request.stub!(:fullpath).and_return("/foo/bar")
     helper.current_url?("/foo/bar/").should_not be_false
     helper.current_url?("/foo//bar").should_not be_false
     helper.current_url?("/baz/bam").should_not be_true
@@ -92,7 +92,7 @@ describe ApplicationHelper do
   it "should render an admin navigation link" do
     request = mock("request")
     helper.stub!(:request).and_return(request)
-    request.stub!(:request_uri).and_return("/admin/pages")
+    request.stub!(:fullpath).and_return("/admin/pages")
     helper.nav_link_to("Pages", "/admin/pages").should =~ /<strong>/
   end
 

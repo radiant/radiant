@@ -21,40 +21,40 @@ module RenderTestHelper
     message = "expected error message <#{expected_error_message.inspect}> but was <#{e.message.inspect}>"
     assert_block(message) { expected_error_message === e.message }
   end
-  
+
   def assert_headers(expected_headers, url = nil)
     setup_page(url)
     headers = @page.headers
     message = "<#{expected_headers.inspect}> expected but was <#{headers.inspect}>"
     assert_block(message) { expected_headers == headers }
   end
-  
+
   def assert_page_renders(page_name, expected, message = nil)
     page = pages(page_name)
     output = page.render
     message = "<#{expected.inspect}> expected, but was <#{output.inspect}>"
     assert_block(message) { expected == output }
   end
-  
+
   def assert_snippet_renders(snippet_name, expected, message = nil)
     snippet = snippets(snippet_name)
     output = @page.render_snippet(snippet)
     message = "<#{expected.inspect}> expected, but was <#{output.inspect}>"
     assert_block(message) { expected == output }
   end
-  
+
   private
-  
+
     def get_render_output(input, url, host = nil)
       setup_page(url, host)
       @page.send(:parse, input)
     end
-    
+
     def setup_page(url = nil, host = nil)
       @page.request = ActionController::TestRequest.new
-      @page.request.request_uri = (url || @page.url)
+      @page.request.fullpath = (url || @page.url)
       @page.request.host = host || "testhost.tld"
       @page.response = ActionController::TestResponse.new
     end
-  
+
 end

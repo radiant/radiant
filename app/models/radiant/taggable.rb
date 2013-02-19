@@ -24,9 +24,10 @@ module Radiant::Taggable
           @params ||= request.parameters unless request.nil?
         end
 
-        def request_uri
-          @request_url ||= request.request_uri unless request.nil?
+        def fullpath
+          @fullpath ||= request.fullpath unless request.nil?
         end
+        alias_method :fullpath, :request_uri
     end
   end
 

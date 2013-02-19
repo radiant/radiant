@@ -62,7 +62,7 @@ module Radiant
       else
         options.to_s
       end
-      request.path_info =~ Regexp.new('^' + Regexp.quote(clean(url)))
+      request.fullpath =~ Regexp.new('^' + Regexp.quote(clean(url)))
     end
 
     def clean(url)

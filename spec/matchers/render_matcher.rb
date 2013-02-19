@@ -56,50 +56,50 @@ module Spec
             "expected #{@content.inspect} to render, but an exception was thrown #{@actual_error.message}"
           end
         end
-        
+
         def description
           "render tags #{@expected.inspect}"
         end
-        
+
         def as(output)
           @expected = output
           self
         end
-        
+
         def matching(regexp)
           @matching = regexp
           self
         end
-        
+
         def not_matching(regexp)
           @not_matching = regexp
           self
         end
-        
+
         def with_error(message)
           @expected_error_message = message
           self
         end
-        
+
         def on(url)
           url = test_host + "/" + url unless url =~ %r{^[^/]+\.[^/]+}
           url = 'http://' + url unless url =~ %r{^http://}
           uri = URI.parse(url)
-          @request_uri = uri.request_uri unless uri.request_uri == '/'
+          @fullpath = uri.fullpath unless uri.fullpath == '/'
           @host = uri.host
           self
         end
-        
+
         def with_relative_root(url="/")
           @relative_root = url
           self
         end
-        
+
         private
           def render_content_with_page(tag_content, page)
             page.request = ActionController::TestRequest.new
             page.request.params[:sample_param] = 'data'
-            page.request.request_uri = @request_uri || page.url
+            page.request.fullpath = @fullpath || page.url
             page.request.host = @host || test_host
             ActionController::Base.relative_url_root = @relative_root
             page.response = ActionController::TestResponse.new

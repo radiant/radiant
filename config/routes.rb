@@ -1,5 +1,4 @@
 Radiant::Engine.routes.draw do
-
   namespace :admin do
     resources :pages do
       resources :children, :controller => 'pages'
