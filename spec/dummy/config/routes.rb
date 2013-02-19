@@ -1,3 +1,3 @@
 Rails.application.routes.draw do
-  mount Radiant::Engine => "/radiant"
+  mount Radiant::Engine => "/"
 end
