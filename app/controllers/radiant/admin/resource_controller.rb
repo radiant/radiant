@@ -2,7 +2,16 @@ require 'will_paginate'
 require 'radiant/resource_responses'
 module Radiant
   class Admin::ResourceController < ::Radiant::AdminController
-    extend Radiant::ResourceResponses
+    class_attribute :responses
+
+    def self.responses
+      @responses ||= Radiant::ResourceResponses::Collector.new
+      self.responses = @responses
+      yield @responses if block_given?
+      @responses
+    end
+
+    include Radiant::ResourceResponses::InstanceMethods
 
     helper_method :model, :current_object, :models, :current_objects, :model_symbol, :plural_model_symbol, :model_class, :model_name, :plural_model_name
     before_filter :populate_format

@@ -1,3 +1,4 @@
+require 'radiant/admin_ui'
 module Radiant
   module ApplicationHelper
     include Radiant::RegionsHelper

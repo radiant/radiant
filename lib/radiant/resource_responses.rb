@@ -1,17 +1,6 @@
 require 'ostruct'
 module Radiant
   module ResourceResponses
-    def self.extended(base)
-      base.send :class_attribute, :responses
-      base.send :include, InstanceMethods
-    end
-
-    def responses
-      r = (self.responses = read_inheritable_attribute(:responses) || Collector.new)
-      yield r if block_given?
-      r
-    end
-
     module InstanceMethods
       def response_for(action)
         responses = self.class.responses.send(action)
