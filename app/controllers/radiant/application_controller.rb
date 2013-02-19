@@ -5,22 +5,16 @@ module Radiant
   class ApplicationController < ::ApplicationController
     include ::LoginSystem
 
-    protect_from_forgery
-
-    before_filter :set_current_user
     before_filter :set_timezone
-    before_filter :set_user_locale
-    before_filter :set_javascripts_and_stylesheets
     before_filter :force_utf8_params if RUBY_VERSION =~ /1\.9/
-    before_filter :set_standard_body_style, :only => [:new, :edit, :update, :create]
 
-    attr_accessor :config, :cache
-    attr_reader :pagination_parameters
+    attr_accessor :radiant_config, :cache
+    attr_reader :pagination_parameters, :radiant_config
     helper_method :pagination_parameters
 
     def initialize
       super
-      @config = Radiant::Config
+      @radiant_config = Radiant::Config
     end
 
     # helpers to include additional assets from actions or views
@@ -62,27 +56,8 @@ module Radiant
 
     private
 
-      def set_current_user
-        UserActionObserver.instance.current_user = current_user
-      end
-
-      def set_user_locale
-        I18n.locale = current_user && !current_user.locale.blank? ? current_user.locale : Radiant::Config['default_locale']
-      end
-
       def set_timezone
         Time.zone = Radiant::Config['local.timezone'] || Time.zone_default
-      end
-
-      def set_javascripts_and_stylesheets
-        @stylesheets ||= []
-        @stylesheets.concat %w(admin/main)
-        @javascripts ||= []
-      end
-
-      def set_standard_body_style
-        @body_classes ||= []
-        @body_classes.concat(%w(reversed))
       end
 
       # When using Radiant with Ruby 1.9, the strings that come in from forms are ASCII-8BIT encoded.

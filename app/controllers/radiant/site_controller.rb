@@ -1,11 +1,11 @@
-require File.expand_path('../../../../lib/radiant/pagination/controller', __FILE__)
+path = File.expand_path('../../../../lib/radiant/pagination/controller', __FILE__)
+require path
 
 module Radiant
   class SiteController < Radiant::ApplicationController
     include Radiant::Pagination::Controller
 
     skip_before_filter :verify_authenticity_token
-    no_login_required
 
     def self.cache_timeout=(val)
       Radiant::PageResponseCacheDirector.cache_timeout=(val)
@@ -90,7 +90,7 @@ module Radiant
       end
 
       def dev?
-        request.host == @config['dev.host'] || request.host =~ /^dev\./
+        request.host == radiant_config['dev.host'] || request.host =~ /^dev\./
       end
 
       def live?
