@@ -7,6 +7,7 @@ module Radiant
 
     before_filter :set_timezone
     before_filter :force_utf8_params if RUBY_VERSION =~ /1\.9/
+    before_filter :set_javascripts_and_stylesheets
 
     attr_accessor :cache
     attr_reader :pagination_parameters, :detail
@@ -55,6 +56,12 @@ module Radiant
     end
 
     private
+
+      def set_javascripts_and_stylesheets
+        @stylesheets ||= []
+        @stylesheets.concat %w(admin/main)
+        @javascripts ||= []
+      end
 
       def set_timezone
         Time.zone = Radiant::Config['local.timezone'] || Time.zone_default

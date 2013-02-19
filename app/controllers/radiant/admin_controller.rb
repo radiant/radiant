@@ -7,7 +7,6 @@ module Radiant
 
     before_filter :set_current_user
     before_filter :set_user_locale
-    before_filter :set_javascripts_and_stylesheets
     before_filter :set_standard_body_style, :only => [:new, :edit, :update, :create]
 
   private
@@ -18,12 +17,6 @@ module Radiant
 
     def set_user_locale
       I18n.locale = current_user && !current_user.locale.blank? ? current_user.locale : Radiant::Config['default_locale']
-    end
-
-    def set_javascripts_and_stylesheets
-      @stylesheets ||= []
-      @stylesheets.concat %w(admin/main)
-      @javascripts ||= []
     end
 
     def set_standard_body_style
