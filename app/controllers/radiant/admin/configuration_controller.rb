@@ -6,7 +6,7 @@ module Radiant
     # Note that configuration is routed as a singular resource so we only deal with show/edit/update
     # and the show and edit views determine what set of config values is shown and made editable.
 
-    before_filter :initialize_config
+    before_filter :initialize_detail
 
     only_allow_access_to :edit, :update,
       :when => [:admin],
@@ -25,7 +25,7 @@ module Radiant
     def update
       if params[:config]
         begin
-          Radiant.config.transaction do
+          Radiant.detail.transaction do
             params["config"].each_pair do |key, value|
               @editable_config[key] = Radiant::Config.find_or_create_by_key(key)
               @editable_config[key].value = value      # validation sets errors on @editable_config['key'] that the helper methods will pick up
@@ -44,8 +44,8 @@ module Radiant
 
   protected
 
-    def initialize_config
-      @editable_config = {}
+    def initialize_detail
+      @editable_detail = {}
     end
 
   end

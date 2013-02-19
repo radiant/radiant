@@ -8,13 +8,13 @@ module Radiant
     before_filter :set_timezone
     before_filter :force_utf8_params if RUBY_VERSION =~ /1\.9/
 
-    attr_accessor :radiant_config, :cache
-    attr_reader :pagination_parameters, :radiant_config
+    attr_accessor :cache
+    attr_reader :pagination_parameters, :detail
     helper_method :pagination_parameters
 
     def initialize
       super
-      @radiant_config = Radiant::Config
+      @detail = Radiant::Config
     end
 
     # helpers to include additional assets from actions or views

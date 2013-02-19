@@ -2,7 +2,7 @@ module Radiant
   module ApplicationHelper
     include Radiant::RegionsHelper
 
-    def config
+    def detail
       Radiant::Config
     end
 
@@ -11,11 +11,11 @@ module Radiant
     end
 
     def title
-      config['admin.title'] || 'Radiant CMS'
+      detail['admin.title'] || 'Radiant CMS'
     end
 
     def subtitle
-      config['admin.subtitle'] || 'Publishing for Small Teams'
+      detail['admin.subtitle'] || 'Publishing for Small Teams'
     end
 
     def logged_in?
@@ -208,7 +208,7 @@ module Radiant
     def pagination_for(list, options={})
       if list.respond_to? :total_pages
         options = {
-          :max_per_page => config['pagination.max_per_page'] || 500,
+          :max_per_page => detail['pagination.max_per_page'] || 500,
           :depaginate => true
         }.merge(options.symbolize_keys)
         depaginate = options.delete(:depaginate)                                     # supply :depaginate => false to omit the 'show all' link

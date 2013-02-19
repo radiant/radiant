@@ -2,6 +2,7 @@
 
 # 2.x
 
+* Rename Radiant.config to Radiant.detail [Jim Gay]
 * Remove InheritableClassAttributes [Jim Gay]
 * Remove specific autotest support [Jim Gay]
 * Remove the notion of Radiant instances [Jim Gay]

@@ -11,25 +11,25 @@
       - render_region :form do |form|
         - form.edit_site do
           %fieldset
-            %h3 Site  
-            - Radiant.config.site_settings.each do |site_setting|
+            %h3 Site
+            - Radiant.detail.site_settings.each do |site_setting|
               %p
                 = edit_config site_setting
-  
+
         - form.edit_defaults do
           %fieldset
             %h3 Defaults
-            - Radiant.config.default_settings.each do |default_setting|
+            - Radiant.detail.default_settings.each do |default_setting|
               %p
                 = edit_config default_setting
-  
+
         - form.edit_users do
           %fieldset
             %h3 Passwords
-            - Radiant.config.user_settings.each do |user_setting|
+            - Radiant.detail.user_settings.each do |user_setting|
               %p
                 = edit_config user_setting
-    
+
       - render_region :form_bottom do |form_bottom|
         - form_bottom.edit_buttons do
           .buttons

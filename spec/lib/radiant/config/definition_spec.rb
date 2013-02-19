@@ -50,14 +50,14 @@ describe "Radiant::Config::Definition" do
       :allow_blank => false
     })
   end
-  after :each do 
+  after :each do
     Radiant::Cache.clear
-    Radiant.config.clear_definitions!
+    Radiant.detail.clear_definitions!
   end
 
   describe "basic definition" do
     before do
-      Radiant.config.define('test', @basic)
+      Radiant.detail.define('test', @basic)
       @setting = Radiant::Config.find_by_key('test')
     end
 
@@ -67,7 +67,7 @@ describe "Radiant::Config::Definition" do
       Radiant::Config['test'].should == 'quite testy'
     end
   end
-  
+
   describe "validating" do
     before do
       Radiant::Config.define('valid', @validating)
@@ -110,24 +110,24 @@ describe "Radiant::Config::Definition" do
       Radiant::Config.define('later', @selecting_at_runtime)
       Radiant::Config.define('required', @selecting_required)
     end
-    
+
     it "should identify itself as a selector" do
       Radiant::Config.find_by_key('not').selector?.should be_false
       Radiant::Config.find_by_key('now').selector?.should be_true
     end
-    
+
     it "should offer a list of options" do
       Radiant::Config.find_by_key('required').selection.should have(3).items
       Radiant::Config.find_by_key('now').selection.include?(["", ""]).should be_true
       Radiant::Config.find_by_key('now').selection.include?(["m", "Monkey"]).should be_true
       Radiant::Config.find_by_key('now').selection.include?(["g", "Goat"]).should be_true
     end
-        
+
     it "should run a supplied selection block" do
       @enclosed = "testing"
       Radiant::Config.find_by_key('later').selection.include?(["testing", "testing"]).should be_true
     end
-    
+
     it "should normalise the options to a list of pairs" do
       Radiant::Config.find_by_key('hashed').selection.is_a?(Hash).should be_false
       Radiant::Config.find_by_key('hashed').selection.include?(["monkey", "Definitely a monkey"]).should be_true
@@ -137,19 +137,19 @@ describe "Radiant::Config::Definition" do
       Radiant::Config.find_by_key('required').selection.should have(3).items
       Radiant::Config.find_by_key('required').selection.include?(["", ""]).should be_false
     end
-    
+
   end
-  
+
   describe "protecting" do
     before do
       Radiant::Config.define('required', @present)
       Radiant::Config.define('fixed', @protected)
     end
-    
+
     it "should raise a ConfigError when a protected value is set" do
       lambda{ Radiant::Config['fixed'] = "different" }.should raise_error(Radiant::Config::ConfigError)
     end
-    
+
     it "should raise a validation error when a required value is made blank" do
       lambda{ Radiant::Config['required'] = "" }.should raise_error
     end

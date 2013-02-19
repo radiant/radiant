@@ -12,17 +12,17 @@ module Radiant
 
   class Config < ActiveRecord::Base
     #
-    # The Radiant.config model class is stored in the database (and cached) but emulates a hash 
+    # The Radiant.detail model class is stored in the database (and cached) but emulates a hash
     # with simple bracket methods that allow you to get and set values like so:
     #
-    #   Radiant.config['setting.name'] = 'value'
-    #   Radiant.config['setting.name'] #=> "value"
+    #   Radiant.detail['setting.name'] = 'value'
+    #   Radiant.detail['setting.name'] #=> "value"
     #
     # Config entries can be used freely as general-purpose global variables unless a definition
-    # has been given for that key, in which case restrictions and defaults may apply. The restrictions  
-    # can take the form of validations, requirements, permissions or permitted options. They are 
+    # has been given for that key, in which case restrictions and defaults may apply. The restrictions
+    # can take the form of validations, requirements, permissions or permitted options. They are
     # declared by calling Radiant::Config#define:
-    # 
+    #
     #   # setting must be either 'foo', 'bar' or 'blank'
     #   define('admin.name', :select_from => ['foo', 'bar'])
     #
@@ -34,14 +34,14 @@ module Radiant
     #
     # Which almost always happens in a block like this:
     #
-    #   Radiant.config do |config|
+    #   Radiant.detail do |config|
     #     config.namespace('user', :allow_change => true) do |user|
     #       user.define 'allow_password_reset?', :default => true
     #     end
     #   end
     #
     # and usually in a config/radiant_config.rb file either in radiant itself, in the application directory
-    # or in an extension. Radiant currently defines the following settings and makes them editable by 
+    # or in an extension. Radiant currently defines the following settings and makes them editable by
     # admin users on the site configuration page:
     #
     # admin.title               :: the title of the admin system
@@ -59,9 +59,9 @@ module Radiant
     #
     # Helper methods are defined in ConfigurationHelper that will display config entry values
     # or edit fields:
-    # 
+    #
     #   # to display label and value, where label comes from looking up the config key in the active locale
-    #   show_setting('admin.name') 
+    #   show_setting('admin.name')
     #
     #   # to display an appropriate checkbox, text field or select box with label as above:
     #   edit_setting('admin.name)
@@ -70,9 +70,9 @@ module Radiant
     self.table_name = 'config'
     after_save :update_cache
     attr_reader :definition
-    
+
     class ConfigError < RuntimeError; end
-    
+
     class << self
       def [](key)
         if table_exists?
@@ -91,55 +91,55 @@ module Radiant
           setting.value = value
         end
       end
-      
+
       def to_hash
         Hash[ *find(:all).map { |pair| [pair.key, pair.value] }.flatten ]
       end
-      
+
       def initialize_cache
         Radiant::Config.ensure_cache_file
         Rails.cache.write('Radiant::Config',Radiant::Config.to_hash)
         Rails.cache.write('Radiant.cache_mtime', File.mtime(cache_file))
         Rails.cache.silence!
       end
-      
+
       def cache_file_exists?
         File.file?(cache_file)
       end
-      
+
       def stale_cache?
         return true unless Radiant::Config.cache_file_exists?
         Rails.cache.read('Radiant.cache_mtime') != File.mtime(cache_file)
       end
-      
+
       def ensure_cache_file
         FileUtils.mkpath(cache_path)
         FileUtils.touch(cache_file)
       end
-      
+
       def cache_path
         "#{Rails.root}/tmp"
       end
-      
+
       def cache_file
         cache_file = File.join(cache_path,'radiant_config_cache.txt')
       end
-      
+
       def site_settings
         @site_settings ||= %w{ site.title site.host dev.host local.timezone }
       end
-      
+
       def default_settings
         @default_settings ||= %w{ defaults.locale defaults.page.filter defaults.page.parts defaults.page.fields defaults.page.status defaults.snippet.filter }
       end
-      
+
       def user_settings
         @user_settings ||= ['user.allow_password_reset?']
       end
-      
+
       # A convenient drying method for specifying a prefix and options common to several settings.
-      # 
-      #   Radiant.config do |config| 
+      #
+      #   Radiant.detail do |config|
       #     config.namespace('secret', :allow_display => false) do |secret|
       #       secret.define('identity', :default => 'batman')      # defines 'secret.identity'
       #       secret.define('lair', :default => 'batcave')         # defines 'secret.lair'
@@ -151,7 +151,7 @@ module Radiant
         prefix = [options[:prefix], prefix].join('.') if options[:prefix]
         with_options(options.merge(:prefix => prefix), &block)
       end
-      
+
       # Declares a setting definition that will constrain and support the use of a particular config entry.
       #
       #   define('setting.key', options)
@@ -167,7 +167,7 @@ module Radiant
       #
       # From the main radiant config/initializers/radiant_config.rb:
       #
-      #   Radiant.config do |config|
+      #   Radiant.detail do |config|
       #     config.define 'defaults.locale', :select_from => lambda { Radiant::AvailableLocales.locales }, :allow_blank => true
       #     config.define 'defaults.page.parts', :default => "Body,Extended"
       #     ...
@@ -206,31 +206,31 @@ Config definition error: '#{key}' is defined twice:
           end
         end
       end
-      
+
       def definitions
         Radiant.config_definitions
       end
-      
+
       def definition_for(key)
         definitions[key] ||= Radiant::Config::Definition.new(:empty => true)
       end
-      
+
       def clear_definitions!
         Radiant.config_definitions = {}
       end
-      
+
     end
-    
+
     # The usual way to use a config item:
     #
-    #    Radiant.config['key'] = value
+    #    Radiant.detail['key'] = value
     #
     # is equivalent to this:
     #
     #   Radiant::Config.find_or_create_by_key('key').value = value
     #
     # Calling value= also applies any validations and restrictions that are found in the associated definition.
-    # so this will raise a ConfigError if you try to change a protected config entry or a RecordInvalid if you 
+    # so this will raise a ConfigError if you try to change a protected config entry or a RecordInvalid if you
     # set a value that is not among those permitted.
     #
     def value=(param)
@@ -249,15 +249,15 @@ Config definition error: '#{key}' is defined twice:
 
     # Requesting a config item:
     #
-    #    key = Radiant.config['key']
+    #    key = Radiant.detail['key']
     #
     # is equivalent to this:
     #
     #   key = Radiant::Config.find_or_create_by_key('key').value
     #
-    # If the config item is boolean the response will be true or false. For items with :type => :integer it will be an integer, 
+    # If the config item is boolean the response will be true or false. For items with :type => :integer it will be an integer,
     # for everything else a string.
-    # 
+    #
     def value
       if boolean?
         checked?
@@ -278,26 +278,26 @@ Config definition error: '#{key}' is defined twice:
     def boolean?
       definition.boolean? || self.key.ends_with?("?")
     end
-    
+
     # Returns true if the item is boolean and true.
     #
     def checked?
       return nil if self[:value].nil?
       boolean? && self[:value] == "true"
     end
-    
+
     # Returns true if the item defintion includes a :select_from parameter that limits the range of permissible options.
     #
     def selector?
       definition.selector?
     end
-    
+
     # Returns a name corresponding to the current setting value, if the setting definition includes a select_from parameter.
     #
     def selected_value
       definition.selected(value)
     end
-    
+
     def update_cache
       Radiant::Config.initialize_cache
     end

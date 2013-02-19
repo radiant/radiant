@@ -1,4 +1,4 @@
-Radiant.config do |config|
+Radiant.detail do |config|
   config.define 'admin.title', :default => "Radiant CMS"
   config.define 'dev.host'
   config.define 'local.timezone', :allow_change => true, :select_from => lambda { ActiveSupport::TimeZone::MAPPING.keys.sort }
@@ -14,4 +14,4 @@ Radiant.config do |config|
   config.define 'site.title', :default => "Your site title", :allow_blank => false
   config.define 'site.host', :default => "www.example.com", :allow_blank => false
   config.define 'user.allow_password_reset?', :default => true
-end 
+end

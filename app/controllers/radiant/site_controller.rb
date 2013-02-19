@@ -90,7 +90,7 @@ module Radiant
       end
 
       def dev?
-        request.host == radiant_config['dev.host'] || request.host =~ /^dev\./
+        request.host == detail['dev.host'] || request.host =~ /^dev\./
       end
 
       def live?
