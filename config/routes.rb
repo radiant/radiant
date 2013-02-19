@@ -27,13 +27,10 @@ Radiant::Engine.routes.draw do
     match 'reference/:type(.:format)' => 'radiant/references#show', :as => :reference
   end
 
-  match 'admin' => 'radiant/welcome#index', :as => :admin
-  match 'admin/welcome' => 'radiant/welcome#index', :as => :welcome
-  match 'admin/login' => 'radiant/welcome#login', :as => :login
-  match 'admin/logout' => 'radiant/welcome#logout', :as => :logout
-
-  match 'admin/export' => 'radiant/export#yaml', :as => :export
-  match 'admin/export/yaml' => 'radiant/export#yaml', :as => :export_yaml
+  match 'admin' => 'admin/welcome#index', :as => :admin
+  match 'admin/welcome' => 'admin/welcome#index', :as => :welcome
+  match 'admin/login' => 'admin/welcome#login', :as => :login
+  match 'admin/logout' => 'admin/welcome#logout', :as => :logout
 
   root :to => 'site#show_page'
 
