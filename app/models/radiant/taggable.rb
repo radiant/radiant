@@ -27,7 +27,6 @@ module Radiant::Taggable
         def fullpath
           @fullpath ||= request.fullpath unless request.nil?
         end
-        alias_method :fullpath, :request_uri
     end
   end
 
