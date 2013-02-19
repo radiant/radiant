@@ -3,7 +3,7 @@
 #single_form
   %h1= t('please_login')
 
-  - form_tag login_url do
+  = form_tag login_url do
     %p
       %label{:for=>"username_or_email"}= t('username_or_email')
       = text_field_tag "username_or_email", @username_or_email, :class => 'textbox activate', :maxlength => 40, :size => 40
