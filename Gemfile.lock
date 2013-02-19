@@ -15,7 +15,7 @@ PATH
       compass (~> 0.12.2)
       compass-rails (~> 1.0.3)
       delocalize (~> 0.2.3)
-      haml (~> 3.1.1)
+      haml (~> 4.0.0)
       highline (~> 1.6.10)
       rack (~> 1.4.5)
       rack-cache (~> 1.2.0)
@@ -104,7 +104,8 @@ GEM
     fssm (0.2.10)
     gherkin (2.11.6)
       json (>= 1.7.6)
-    haml (3.1.8)
+    haml (4.0.0)
+      tilt
     highline (1.6.15)
     hike (1.2.1)
     i18n (0.6.1)
