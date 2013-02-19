@@ -118,7 +118,7 @@ module Radiant
     # the per_page figure can be set in several ways:
     # request parameter > declared by paginate_models > default set in config entry @admin.pagination.per_page@ > overall default of 50
     def pagination_parameters
-      pp = params[:pp] || Radiant.config['admin.pagination.per_page']
+      pp = params[:pp] || Radiant.detail['admin.pagination.per_page']
       pp = (self.class.default_per_page || 50) if pp.blank?
       {
         :page => (params[:p] || 1).to_i,
