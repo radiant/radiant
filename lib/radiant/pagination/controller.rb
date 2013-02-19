@@ -1,3 +1,4 @@
+require 'will_paginate/view_helpers'
 module Radiant
   module Pagination
     module Controller
