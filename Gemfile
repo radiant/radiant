@@ -1,4 +1,4 @@
-source :rubygems
+source "https://rubygems.org"
 
 gemspec
 # gem "compass-rails", "~> 1.0.3"
