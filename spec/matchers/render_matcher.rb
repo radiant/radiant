@@ -1,12 +1,12 @@
 module Spec
   module Rails
     module Matchers
-      
+
       class RenderTags
         def initialize(content = nil)
           @content = content
         end
-        
+
         def matches?(page)
           @actual = render_content_with_page(@content, page)
           if @expected.kind_of?(Regexp)
@@ -28,12 +28,12 @@ module Spec
             false
           end
         end
-        
+
         def failure_message
-          action = case 
+          action = case
           when @expected
             "render as #{@expected.inspect}"
-          when @not_matching          
+          when @not_matching
             "render but not match #{@not_matching.inspect}"
           else
             "render and match #{@matching.inspect}"
@@ -109,12 +109,12 @@ module Spec
               page.send(:parse, tag_content)
             end
           end
-          
+
           def test_host
             "testhost.tld"
           end
       end
-      
+
       # page.should render(input).as(output)
       # page.should render(input).as(output).on(url)
       # page.should render(input).matching(/hello world/)
@@ -122,12 +122,12 @@ module Spec
       def render(input)
         RenderTags.new(input)
       end
-      
+
       # page.should render_as(output)
       def render_as(output)
         RenderTags.new.as(output)
       end
-      
+
     end
   end
 end
