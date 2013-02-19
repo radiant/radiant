@@ -2,7 +2,7 @@
 
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-describe Radiant::PagesController do
+describe Radiant::Admin::PagesController do
   #dataset :users, :pages
 
   before :each do

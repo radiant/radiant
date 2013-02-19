@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
-describe Radiant::LayoutsController do
+describe Radiant::Admin::LayoutsController do
   #dataset :users, :pages_with_layouts
 
   before :each do
@@ -8,7 +8,7 @@ describe Radiant::LayoutsController do
   end
 
   it "should be a ResourceController" do
-    controller.should be_kind_of(Radiant::ResourceController)
+    controller.should be_kind_of(Radiant::Admin::ResourceController)
   end
 
   it "should handle Layouts" do
