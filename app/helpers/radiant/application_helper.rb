@@ -142,6 +142,7 @@ module Radiant
     end
 
     def admin
+      require 'radiant/admin_ui'
       Radiant::AdminUI.instance
     end
 
