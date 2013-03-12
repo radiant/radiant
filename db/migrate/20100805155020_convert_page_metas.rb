@@ -1,5 +1,6 @@
 class ConvertPageMetas < ActiveRecord::Migration
   def self.up
+    Page.before_save.clear # no callbacks
     Page.all.each do |page|
       page.fields.create(:name => 'Keywords', :content => page.keywords)
       page.fields.create(:name => 'Description', :content => page.description)
