@@ -188,19 +188,25 @@ module Radiant
 
       # Default image url to be used when no gravatar is found
       # or when an image exceeds the rating parameter.
-      default_avatar_url = "#{request.protocol}#{request.host_with_port}#{ActionController::Base.relative_url_root}/images/admin/avatar_#{([options[:size].to_i] * 2).join('x')}.png"
+      local_avatar_url = "/images/admin/avatar_#{([options[:size].to_i] * 2).join('x')}.png"
+      default_avatar_url = "#{request.protocol}#{request.host_with_port}#{ActionController::Base.relative_url_root}#{local_avatar_url}"
       options[:default] ||= default_avatar_url
 
       unless email.blank?
-        # Build the Gravatar url.
-        url = '//gravatar.com/avatar/'
+        # Build the Gravatar url. 
+        url = '//gravatar.com/avatar/'  
         url << "#{Digest::MD5.new.update(email)}?"
         url << "rating=#{options[:rating]}" if options[:rating]
         url << "&size=#{options[:size]}" if options[:size]
         url << "&default=#{options[:default]}" if options[:default]
-        url
+        # Test the Gravatar url
+        require 'open-uri'
+        begin; open "http:#{url}", :proxy => true
+        rescue; local_avatar_url
+        else; url
+        end
       else
-        default_avatar_url
+        local_avatar_url
       end
     end
 

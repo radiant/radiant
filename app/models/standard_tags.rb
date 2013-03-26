@@ -730,17 +730,25 @@ module StandardTags
     name = (tag.attr['name'] || page.created_by.name)
     rating = (tag.attr['rating'] || 'G')
     size = (tag.attr['size'] || '32px')
-    email = User.find_by_name(name).email
-    default = "#{request.protocol}#{request.host_with_port}/images/admin/avatar_#{([size.to_i] * 2).join('x')}.png"
+    user = User.find_by_name(name)
+    email = user ? user.email : nil
+    local_avatar_url = "/images/admin/avatar_#{([size.to_i] * 2).join('x')}.png"    
+    default_avatar_url = "#{request.protocol}#{request.host_with_port}#{local_avatar_url}"
+        
     unless email.blank?
       url = '//gravatar.com/avatar/'
       url << "#{Digest::MD5.new.update(email)}?"
       url << "rating=#{rating}"
       url << "&size=#{size.to_i}"
-      url << "&default=#{default}"
-      url
+      url << "&default=#{default_avatar_url}"
+      # Test the Gravatar url
+      require 'open-uri'
+      begin; open "http:#{url}", :proxy => true
+      rescue; local_avatar_url
+      else; url
+      end
     else
-      default
+      local_avatar_url
     end
   end
 
