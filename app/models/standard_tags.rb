@@ -732,7 +732,7 @@ module StandardTags
     size = (tag.attr['size'] || '32px')
     user = User.find_by_name(name)
     email = user ? user.email : nil
-    local_avatar_url = "/images/admin/avatar_#{([size.to_i] * 2).join('x')}.png"    
+    local_avatar_url = "/assets/admin/avatar_#{([size.to_i] * 2).join('x')}.png"    
     default_avatar_url = "#{request.protocol}#{request.host_with_port}#{local_avatar_url}"
         
     unless email.blank?

@@ -27,7 +27,7 @@ module Radiant
         set_cache_control
         @performed_render ||= true
       else
-        render :template => 'site/not_found', :status => 404
+        render :template => 'radiant/site/not_found', :status => 404
       end
     rescue Page::MissingRootPageError
       redirect_to welcome_url

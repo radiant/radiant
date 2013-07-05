@@ -2,11 +2,11 @@ var Popup = {
   
   // Borders
   BorderThickness: 8,
-  BorderImage: '/images/popup_border_background.png',
-  BorderTopLeftImage: '/images/popup_border_top_left.png',
-  BorderTopRightImage: '/images/popup_border_top_right.png',
-  BorderBottomLeftImage: '/images/popup_border_bottom_left.png',
-  BorderBottomRightImage: '/images/popup_border_bottom_right.png',
+  BorderImage: '/assets/popup_border_background.png',
+  BorderTopLeftImage: '/assets/popup_border_top_left.png',
+  BorderTopRightImage: '/assets/popup_border_top_right.png',
+  BorderBottomLeftImage: '/assets/popup_border_bottom_left.png',
+  BorderBottomRightImage: '/assets/popup_border_bottom_right.png',
   
   // CSS Classes
   PopupClass: 'popup',

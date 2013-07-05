@@ -188,7 +188,7 @@ module Radiant
 
       # Default image url to be used when no gravatar is found
       # or when an image exceeds the rating parameter.
-      local_avatar_url = "/images/admin/avatar_#{([options[:size].to_i] * 2).join('x')}.png"
+      local_avatar_url = "/assets/admin/avatar_#{([options[:size].to_i] * 2).join('x')}.png"
       default_avatar_url = "#{request.protocol}#{request.host_with_port}#{ActionController::Base.relative_url_root}#{local_avatar_url}"
       options[:default] ||= default_avatar_url
 
