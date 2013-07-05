@@ -48,48 +48,4 @@ describe Radiant::TaskSupport do
     end
   end
 
-  describe "self.cache_files" do
-    before do
-      @files = [ 'a.txt', 'b.txt' ]
-      @dir = "#{Rails.root}/tmp/cache_files_test"
-      @cache_file = 'all.txt'
-
-      FileUtils.mkdir_p(@dir)
-      FileUtils.rm_rf(File.join(@dir, '*.txt'))
-      @files.each do |f_name|
-        File.open(File.join(@dir, f_name), "w+") do |f|
-          f.write("Contents of '#{f_name}'")
-        end
-      end
-    end
-
-    it "should create a cache file containing the contents of the specified files" do
-      described_class.cache_files(@dir, @files, @cache_file)
-      cache_path = File.join(@dir, @cache_file)
-      File.should exist(cache_path)
-      File.read(cache_path).should == "Contents of 'a.txt'\n\nContents of 'b.txt'"
-    end
-  end
-
-  describe "self.find_admin_js" do
-    it "should return an array of JS files" do
-      js_files = described_class.find_admin_js
-      js_files.should_not be_empty
-      js_files.each { |f| f.should =~ /^[^\/]+.js$/ }
-    end
-  end
-
-  describe "self.cache_admin_js" do
-    before do
-      @js_files = [ 'a.js','b.js' ]
-      described_class.stub!(:find_admin_js).and_return(@js_files)
-      described_class.stub!(:cache_files)
-    end
-
-    it "should cache all admin JS files as 'all.js'" do
-      described_class.should_receive(:cache_files).with(
-        "#{Rails.root}/public/javascripts/admin", @js_files, 'all.js')
-      described_class.cache_admin_js
-    end
-  end
 end
