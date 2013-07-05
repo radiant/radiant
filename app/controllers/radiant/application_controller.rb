@@ -64,7 +64,7 @@ module Radiant
       end
 
       def set_timezone
-        Time.zone = Radiant::Config['local.timezone'] || Time.zone_default
+        Time.zone = Radiant.detail['local.timezone'] || Time.zone_default
       end
 
       # When using Radiant with Ruby 1.9, the strings that come in from forms are ASCII-8BIT encoded.
