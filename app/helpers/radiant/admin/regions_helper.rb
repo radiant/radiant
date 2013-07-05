@@ -1,5 +1,5 @@
 require 'radiant/admin_ui/region_partials'
-module Radiant::RegionsHelper
+module Radiant::Admin::RegionsHelper
   def render_region(region, options={}, &block)
     lazy_initialize_region_set
     default_partials = Radiant::AdminUI::RegionPartials.new(self)

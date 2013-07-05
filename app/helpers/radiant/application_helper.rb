@@ -1,7 +1,7 @@
 require 'radiant/admin_ui'
 module Radiant
   module ApplicationHelper
-    include Radiant::RegionsHelper
+    include Radiant::Admin::RegionsHelper
 
     def detail
       Radiant::Config

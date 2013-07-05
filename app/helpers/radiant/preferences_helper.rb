@@ -1,3 +1,0 @@
-module Radiant::PreferencesHelper
-
-end

@@ -1,6 +1,6 @@
 require "RedCloth"
 
-module Radiant::ReferencesHelper
+module Radiant::Admin::ReferencesHelper
   def tag_reference
     String.new.tap do |output|
       class_of_page.tag_descriptions.sort.each do |tag_name, description|

@@ -1,4 +1,4 @@
-module Radiant::LayoutsHelper
+module Radiant::Admin::LayoutsHelper
   def layout_edit_javascripts
     <<-CODE
     var tagReferenceWindows = {};

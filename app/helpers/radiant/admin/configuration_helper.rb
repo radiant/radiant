@@ -1,4 +1,4 @@
-module Radiant::ConfigurationHelper
+module Radiant::Admin::ConfigurationHelper
   # Defines helper methods for use in the admin interface when displaying or editing configuration.
 
   # Renders the setting as label and value:

@@ -1,6 +1,6 @@
-module Radiant::PagesHelper
-  include Radiant::NodeHelper
-  include Radiant::ReferencesHelper
+module Radiant::Admin::PagesHelper
+  include Radiant::Admin::NodeHelper
+  include Radiant::Admin::ReferencesHelper
 
   def class_of_page
     @page.class

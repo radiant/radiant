@@ -1,4 +1,4 @@
-module Radiant::NodeHelper
+module Radiant::Admin::NodeHelper
 
   def render_node(page, locals = {})
     @current_node = page
