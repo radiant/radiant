@@ -1,5 +1,7 @@
 class PagePart < ActiveRecord::Base
 
+  attr_accessible :name, :filter_id, :content
+
   # Default Order
   default_scope :order => 'name'
 

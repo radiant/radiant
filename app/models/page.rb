@@ -7,6 +7,8 @@ class Page < ActiveRecord::Base
     def initialize(message = 'Database missing root page'); super end
   end
 
+  attr_accessible :lock_version, :parent_id, :class_name, :title, :slug, :breadcrumb, :layout_id, :status_id, :published_at, :parts_attributes
+
   # Callbacks
   before_save :update_virtual, :update_status, :set_allowed_children_cache
 
