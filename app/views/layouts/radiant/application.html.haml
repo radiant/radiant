@@ -9,8 +9,8 @@
     = javascript_include_tag "admin/all"
     - @javascripts.uniq.each do |javascript|
       = javascript_include_tag javascript
-    - if @content_for_page_scripts
-      = javascript_tag @content_for_page_scripts
+    - if content_for? :page_scripts
+      = javascript_tag(yield :page_scripts).html_safe
     - if @content_for_page_css
       %style{:type => "text/css"}= @content_for_page_css
     = yield :meta
@@ -43,8 +43,8 @@
           #error
             %p= flash[:error]
         #content
-          = find_and_preserve(yield)
+          != find_and_preserve(yield.html_safe)
 
-      - if @content_for_popups
+      - if content_for? :popups
         #popups
           = yield :popups
