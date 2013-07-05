@@ -8,7 +8,7 @@ module Radiant::Admin::NodeHelper
       page.extend(*page.menu_renderer_modules)
     end
     locals.reverse_merge!(:level => 0, :simple => false).merge!(:page => page)
-    render :partial => 'admin/pages/node', :locals =>  locals
+    render :partial => 'radiant/admin/pages/node', :locals =>  locals
   end
 
   def homepage
