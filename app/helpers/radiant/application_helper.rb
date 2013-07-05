@@ -101,7 +101,7 @@ module Radiant
           html << %{#{t('timestamp.by')} <strong>#{name}</strong> } if name
           html << %{#{t('timestamp.at')} #{timestamp(time)}} if time
           html << %{</p>}
-          html
+          html.html_safe
         end
       end
     end
