@@ -1,8 +1,11 @@
+require 'radiant/available_locales'
+
 module Radiant
   class Admin::PreferencesController < ::Radiant::AdminController
     before_filter :load_user
 
     def initialize
+      super
       @controller_name = 'user'
       @template_name = 'preferences'
     end
