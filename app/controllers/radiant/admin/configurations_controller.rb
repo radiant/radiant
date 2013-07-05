@@ -29,8 +29,8 @@ module Radiant
         begin
           Radiant.detail.transaction do
             params["config"].each_pair do |key, value|
-              @editable_config[key] = Radiant::Config.find_or_create_by_key(key)
-              @editable_config[key].value = value      # validation sets errors on @editable_config['key'] that the helper methods will pick up
+              @editable_detail[key] = Radiant::Config.find_or_create_by_key(key)
+              @editable_detail[key].value = value      # validation sets errors on @editable_config['key'] that the helper methods will pick up
             end
             redirect_to :action => :show
           end
