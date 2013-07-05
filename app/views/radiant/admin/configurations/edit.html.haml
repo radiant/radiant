@@ -24,11 +24,11 @@
                 = edit_config default_setting
 
         - form.edit_users do
-          %fieldset
-            %h3 Passwords
-            - Radiant.detail.user_settings.each do |user_setting|
-              %p
-                = edit_config user_setting
+          / %fieldset
+          /   %h3 Passwords
+          /   - Radiant.detail.user_settings.each do |user_setting|
+          /     %p
+          /       = edit_config user_setting
 
       - render_region :form_bottom do |form_bottom|
         - form_bottom.edit_buttons do

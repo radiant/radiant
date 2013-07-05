@@ -1,4 +1,4 @@
-module Radiant::Admin::ConfigurationHelper
+module Radiant::Admin::ConfigurationsHelper
   # Defines helper methods for use in the admin interface when displaying or editing configuration.
 
   # Renders the setting as label and value:
@@ -20,8 +20,8 @@ module Radiant::Admin::ConfigurationHelper
       html << content_tag(:span, value, :id => domkey, :class => options[:class])
     end
     html << content_tag(:span, " #{t("units.#{setting.units}")}", :class => 'units') if setting.units
-    html << content_tag(:span, " #{t('warning')}: #{[setting.errors.on(:value)].flatten.first}", :class => 'warning') if setting.errors.on(:value)
-    html
+    html << content_tag(:span, " #{t('warning')}: #{[setting.errors.messages[:value]].flatten.first}", :class => 'warning') if setting.errors.messages[:value]
+    html.html_safe
   end
 
   # Renders the setting as label and appropriate input field:
@@ -59,11 +59,11 @@ module Radiant::Admin::ConfigurationHelper
       html << content_tag(:label, title, :for => domkey)
       html << text_field_tag(name, value, :class => 'textbox', :id => domkey)
     end
-    if setting.errors.on(:value)
-      html << content_tag(:span, [setting.errors.on(:value)].flatten.first, :class => 'error')
+    if setting.errors.messages[:value]
+      html << content_tag(:span, [setting.errors.messages[:value]].flatten.first, :class => 'error')
       html = content_tag(:span, html, :class => "error-with-field")
     end
-    html
+    html.html_safe
   end
 
   def setting_for(key)

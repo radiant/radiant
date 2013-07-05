@@ -1,5 +1,7 @@
+require 'radiant/config/definition'
+   
 module Radiant
-  class Admin::ConfigurationController < ::Radiant::AdminController
+  class Admin::ConfigurationsController < ::Radiant::AdminController
 
     # Admin::ConfigurationController handles the batch-updating of Radiant::Config entries.
     # It accepts any set of config name-value pairs but is accessible only to administrators.
