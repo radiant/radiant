@@ -15,7 +15,7 @@
       .drawer_contents#attributes
         %table.fieldset
           = render :partial => "meta_row", :collection => @meta, :locals => {:f => fields}
-          = render :partial => 'admin/page_fields/page_field', :collection => @page.fields
+          = render :partial => 'radiant/admin/page_fields/page_field', :collection => @page.fields
           = render_region :extended_metadata, :locals => {:f => fields}
       .drawer_handle
         %a.toggle{:href=>'#attributes', :rel=>"toggle[attributes]", :class=>"#{(meta_errors? ? 'less' : 'more')}"}= meta_label
@@ -26,7 +26,7 @@
           %a.popup{:href=> '#add_part_popup', :title=>t('add_part')}
             = image('add_tab', :alt=>t('add_part'), :title=>"")
       #pages.pages
-        = render :partial => 'admin/page_parts/page_part', :collection => @page.parts
+        = render :partial => 'radiant/admin/page_parts/page_part', :collection => @page.parts
     = render_region :parts_bottom, :locals => {:f => fields}
 
 .set
