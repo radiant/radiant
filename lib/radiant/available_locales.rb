@@ -4,7 +4,7 @@ module Radiant::AvailableLocales
   #
   def self.locales
     available_locales = {}
-    Radiant.configuration.i18n.load_path.each do |path|
+    Rails.configuration.i18n.load_path.each do |path|
       if File.exists?(path) && path !~ /_available_tags/
         locale_yaml = YAML.load_file(path)
         stem = File.basename(path, '.yml')
