@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 require 'ostruct'
 
-describe Radiant::RegionsHelper do
+describe Radiant::Admin::RegionsHelper do
   before :each do
     @controller_name = 'page'
     @controller.stub!(:controller_name).and_return(@controller_name)

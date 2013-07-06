@@ -4,7 +4,7 @@ class MarkdownPlusFilter
   # dummy filter class
 end
 
-describe Radiant::PagesHelper do
+describe Radiant::Admin::PagesHelper do
   #dataset :users_and_pages
 
   before :each do

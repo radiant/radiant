@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
-describe Radiant::NodeHelper do
+describe Radiant::Admin::NodeHelper do
   #dataset :users_and_pages
 
   before :each do
