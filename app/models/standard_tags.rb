@@ -1255,7 +1255,7 @@ module StandardTags
     def build_regexp_for(tag, attribute_name)
       ignore_case = tag.attr.has_key?('ignore_case') && tag.attr['ignore_case']=='false' ? nil : true
       begin
-        regexp = Regexp.new(tag.attr['matches'], ignore_case)
+        regexp = Regexp.new(tag.attr[attribute_name], ignore_case)
       rescue RegexpError => e
         raise TagError.new("Malformed regular expression in `#{attribute_name}' argument of `#{tag.name}' tag: #{e.message}")
       end
