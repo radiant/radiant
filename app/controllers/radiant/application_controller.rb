@@ -16,7 +16,7 @@ module Radiant
 
     def initialize
       super
-      @detail = Radiant::Config
+      @detail = Radiant.detail
     end
 
     # helpers to include additional assets from actions or views
