@@ -1,8 +1,14 @@
 RADIANT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), "..")) unless defined? RADIANT_ROOT
 
 module Radiant
-  def self.detail
-    Radiant::Config
+  class << self
+    def detail
+      Radiant::Config
+    end
+    def configuration
+      yield Rails.configuration if block_given?
+      Rails.configuration
+    end
   end
 end
 
