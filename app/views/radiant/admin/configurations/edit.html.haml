@@ -6,7 +6,7 @@
     %h1 Configuration
 
   - main.edit_form do
-    - form_for :config, :url => admin_configuration_url, :html => {"data-onsubmit_status"=>"Saving changes&#8230;", :method => :put} do |f|
+    = form_for :config, :url => admin_configuration_url, :html => {"data-onsubmit_status"=>"Saving changes&#8230;", :method => :put} do |f|
       = render_region :form_top
       - render_region :form do |form|
         - form.edit_site do
