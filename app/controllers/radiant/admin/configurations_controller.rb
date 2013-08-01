@@ -1,5 +1,3 @@
-require 'radiant/config/definition'
-   
 module Radiant
   class Admin::ConfigurationsController < ::Radiant::AdminController
 

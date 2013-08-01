@@ -1,6 +1,5 @@
 require_dependency 'radiant'
 require 'login_system'
-require 'radiant/config/definition'
 
 module Radiant
   class ApplicationController < ::ApplicationController
