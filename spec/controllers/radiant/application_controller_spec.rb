@@ -11,14 +11,6 @@ describe Radiant::ApplicationController do
     controller.config.should == Radiant::Config
   end
 
-  it 'should set the current user for the UserActionObserver' do
-    Radiant::ApplicationController._process_action_callbacks.find(:set_current_user).should_not be_nil
-    UserActionObserver.current_user = nil
-    controller.should_receive(:current_user).and_return(users(:admin))
-    controller.send :set_current_user
-    UserActionObserver.current_user.should == users(:admin)
-  end
-
   it 'should initialize the javascript and stylesheets arrays' do
       Radiant::ApplicationController._process_action_callbacks.find(:set_javascripts_and_stylesheets).should_not be_nil
     controller.send :set_javascripts_and_stylesheets
