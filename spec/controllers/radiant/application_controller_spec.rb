@@ -7,8 +7,8 @@ describe Radiant::ApplicationController do
     Radiant::ApplicationController.included_modules.should include(LoginSystem)
   end
 
-  it 'should initialize config' do
-    controller.config.should == Radiant::Config
+  it 'should initialize detail' do
+    controller.detail.should == Radiant::Config
   end
 
   it 'should initialize the javascript and stylesheets arrays' do
