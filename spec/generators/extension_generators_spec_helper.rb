@@ -28,10 +28,11 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
       class Column
         attr_reader :name, :default, :type, :limit, :null, :sql_type, :precision, :scale
 
-        def initialize(name, default, sql_type = nil)
+        def initialize(name, default, sql_type = nil, null = true)
           @name = name
           @default = default
           @type = @sql_type = sql_type
+          @null = null
         end
 
         def human_name
