@@ -4,6 +4,9 @@ require File.expand_path("../dummy/config/environment.rb",  __FILE__)
 
 require 'rspec/rails'
 
+require 'dataset'
+require 'dataset/extensions/rspec'
+
 ENGINE_RAILS_ROOT=File.join(File.dirname(__FILE__), '../')
 
 # Requires supporting ruby files with custom matchers and macros, etc,
@@ -15,4 +18,6 @@ RSpec.configure do |config|
 
   config.before(:each, type: :controller) { @routes = Radiant::Engine.routes }
   config.before(:each, type: :routing)    { @routes = Radiant::Engine.routes }
+
+  config.datasets_directory = "#{RADIANT_ROOT}/spec/datasets"
 end
