@@ -1,4 +1,4 @@
-module Spec
+module RSpec
   module Matchers
     class AutotestMappingMatcher
       def initialize(specs)
