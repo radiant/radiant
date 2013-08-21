@@ -10,7 +10,7 @@ module Admin::ConfigurationHelper
     setting = setting_for(key)
     setting.valid?
     domkey = key.gsub(/\W/, '_')
-    html = ""
+    html = ''.html_safe
     html << content_tag(:label, t("config.#{key}").titlecase, :for => domkey)
     if setting.boolean?
       value = setting.checked? ? t('yes') : t('no')
@@ -47,7 +47,7 @@ module Admin::ConfigurationHelper
     title = t("config.#{key}").titlecase
     title << content_tag(:span, " (#{t("units.#{setting.units}")})", :class => 'units') if setting.units
     value = params[key.to_sym].nil? ? setting.value : params[key.to_sym]
-    html = ""
+    html = ''.html_safe
     if setting.boolean?
       html << hidden_field_tag(name, 0)
       html << check_box_tag(name, 1, value, :class => 'setting', :id => domkey)
