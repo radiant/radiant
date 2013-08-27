@@ -36,7 +36,6 @@ class Page < ActiveRecord::Base
 
   include Radiant::Taggable
   include StandardTags
-  include DeprecatedTags
   include Annotatable
 
   annotate :description
