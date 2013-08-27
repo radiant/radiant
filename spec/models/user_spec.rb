@@ -1,20 +1,111 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe User, "validations" do
-  #dataset :users
+  dataset :users
   test_helper :validations
 
   before :each do
     @model = @user = User.new(user_params)
-    @user.confirm_password = false
   end
 
-  it 'should validate length of' do
-    assert_invalid :name, 'this must not be longer than 100 characters', 'x' * 101
-    assert_valid :name, 'x' * 100
+  describe 'name' do
 
-    assert_invalid :email, 'this must not be longer than 255 characters', ('x' * 247) + '@test.com'
-    assert_valid :email, ('x' * 246) + '@test.com'
+    let(:user){ User.new(user_params) }
+
+    it 'is invalid when longer than 100 characters' do
+      user.name = 'x' * 101
+      expect(user.errors_on(:name)).to include('this must not be longer than 100 characters')
+    end
+
+    it 'is invalid when blank' do
+      user.name = ''
+      expect(user.errors_on(:name)).to include("this must not be blank")
+    end
+
+    it 'is valid when 100 characters or shorter' do
+      user.name = 'x' * 100
+      expect(user.errors).to be_blank
+    end
+
+  end
+
+  describe 'email' do
+
+    let(:user){ User.new(user_params) }
+
+    it 'is invalid when longer than 255 characters' do
+      user.email = ('x' * 247) + '@test.com'
+      expect(user.errors_on(:email)).to include('this must not be longer than 255 characters')
+    end
+
+    it 'is valid when blank' do
+      user.email = nil
+      expect(user).to have(0).errors_on(:email)
+    end
+
+    it 'is valid when 100 characters or shorter' do
+      user.name = ('x' * 246) + '@test.com'
+      expect(user.errors_on(:email)).to be_blank
+    end
+
+    it 'is invalid when in the incorrect format' do
+      ['@test.com', 'test@', 'testtest.com', 'test@test', 'test me@test.com', 'test@me.c'].each do |address|
+        user.email = address
+        expect(user.errors_on(:email)).to include('this is not a valid e-mail address')
+      end
+    end
+
+  end
+
+  describe 'login' do
+
+    let(:user){ User.new(user_params) }
+
+    it 'is invalid when longer than 40 characters' do
+      user.login = 'x' * 41
+      expect(user).to have(1).error_on(:login)
+    end
+
+    it 'is valid when blank' do
+      user.login = nil
+      expect(user).to have(0).errors_on(:login)
+    end
+
+    it 'is invalid when shorter than 3 characters' do
+      user.login = 'xx'
+      expect(user).to have(1).error_on(:login)
+    end
+
+    it 'is valid when 40 characters or shorter' do
+      user.login = 'x' * 40
+      expect(user).to have(0).errors_on(:login)
+    end
+  end
+
+  describe 'password' do
+
+    let(:user){ User.new(user_params) }
+
+    it 'is invalid when longer than 40 characters' do
+      user.password = 'x' * 41
+      expect(user.errors_on(:password)).to include('this must not be longer than 40 characters')
+    end
+
+    it 'is invalid when shorter than 5 characters' do
+      user.password = 'x' * 4
+      expect(user.errors_on(:password)).to include('this must be at least 5 characters long')
+    end
+
+    it 'is valid when 40 characters or shorter' do
+      user.password = 'x' * 40
+      expect(user).to have(0).errors_on(:password)
+    end
+
+    it 'ensures the confirmation matches' do
+      user.password = 'test'
+      user.password_confirmation = 'not correct'
+      expect(user.errors_on(:password)).to include('this must match confirmation')
+    end
   end
 
 
@@ -32,47 +123,6 @@ describe User, "validations" do
     end
   end
 
-  it 'should validate length ranges' do
-    {
-      :login => 3..40,
-      :password => 5..40
-    }.each do |field, range|
-      max = 'x' * range.max
-      min = 'x' * range.min
-      one_over = 'x' + max
-      one_under = min[1..-1]
-      assert_invalid field, ('this must not be longer than %d characters' % range.max), one_over
-      assert_invalid field, ('this must be at least %d characters long' % range.min), one_under
-      assert_valid field, max, min
-    end
-  end
-
-  it 'should validate length ranges on existing' do
-    @user.save.should == true
-    {
-      :password => 5..40
-    }.each do |field, range|
-      max = 'x' * range.max
-      min = 'x' * range.min
-      one_over = 'x' + max
-      one_under = min[1..-1]
-      assert_invalid field, ('this must not be longer than %d characters' % range.max), one_over
-      assert_invalid field, ('this must be at least %d characters long' % range.min), one_under
-      assert_valid field, max, min
-    end
-  end
-
-  it 'should validate presence' do
-    [:name, :login, :password, :password_confirmation].each do |field|
-      assert_invalid field, 'this must not be blank', '', ' ', nil
-    end
-  end
-
-  it 'should validate confirmation' do
-    @user.confirm_password = true
-    assert_invalid :password, 'this must match confirmation', 'test'
-  end
-
   it 'should validate uniqueness' do
     assert_invalid :login, 'this login is already in use', 'existing'
   end
@@ -85,20 +135,17 @@ describe User, "validations" do
 end
 
 describe User do
-  #dataset :users
+  dataset :users
 
   before :each do
     @user = User.new(user_params)
-    @user.confirm_password = false
   end
 
   it 'should confirm the password by default' do
     @user = User.new
-    @user.confirm_password?.should == true
   end
 
   it 'should save password encrypted' do
-    @user.confirm_password = true
     @user.password_confirmation = @user.password = 'test_password'
     @user.save!
     @user.password.should == @user.sha1('test_password')
@@ -160,7 +207,7 @@ describe User do
 end
 
 describe User, "class methods" do
-  #dataset :users
+  dataset :users
 
   it 'should authenticate with correct username and password' do
     expected = users(:existing)
@@ -184,7 +231,7 @@ describe User, "class methods" do
 end
 
 describe User, "roles" do
-  #dataset :users
+  dataset :users
 
   it "should not have a non-existent role" do
     users(:existing).has_role?(:foo).should be_false

@@ -37,7 +37,6 @@ class UsersDataset < Dataset::Base
         :name => 'John Doe',
         :login => 'jdoe',
         :password => 'password',
-        :password_confirmation => 'password',
         :email => 'jdoe@gmail.com'
       }.merge(options)
     end

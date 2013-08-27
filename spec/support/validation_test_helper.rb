@@ -11,7 +11,7 @@ module ValidationTestHelper
       end
     end
   end
-  
+
   def assert_invalid(field, message, *values)
     __model_check__
     values.flatten.each do |value|
@@ -24,16 +24,21 @@ module ValidationTestHelper
       end
     end
   end
-  
+
   def __model_check__
     raise "@model must be assigned in order to use validation assertions" if @model.nil?
-    
-    o = @model.dup
-    raise "@model must be valid before calling a validation assertion, instead @model contained the following errors #{o.errors.instance_variable_get('@errors').inspect}" unless o.valid?
+
+    o = @model.class.new(@model.attributes)
+    raise "@model must be valid before calling a validation assertion, instead @model contained the following errors #{o.errors.messages}" unless o.valid?
   end
-  
+
+  def __copy_attributes__(first, second)
+    second.instance_variable_set('@attributes', first.attributes.dup)
+    second
+  end
+
   def __setup_model__(field, value)
-    o = @model.dup
+    o = @model.class.new(@model.attributes)
     attributes = o.instance_variable_get('@attributes')
     o.instance_variable_set('@attributes', attributes.dup)
     o.send("#{field}=", value)
