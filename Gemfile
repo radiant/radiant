@@ -11,7 +11,7 @@ end
 
 group :development, :test, :cucumber do
   gem "rspec-rails"
-  gem "debugger"
+  gem "pry-debugger"
   gem "dataset", :git => "https://github.com/radiant/dataset.git"
 end
 
