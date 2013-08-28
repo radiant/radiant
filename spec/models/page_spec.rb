@@ -470,52 +470,75 @@ describe Page, "rendering" do
   end
 end
 
-describe Page, "#find_by_path" do
-  #dataset :pages, :file_not_found
-
-  before :each do
-    @page = pages(:home)
+unless defined?(::CustomFileNotFoundPage)
+  class ::CustomFileNotFoundPage < FileNotFoundPage
   end
+end
+
+describe Page, "#find_by_path" do
+  test_helper :page
+
+  let(:home){ Page.create!(page_params(:slug => '/', :published_at => Time.now)) }
+  let(:parent){ home.children.create!(page_params(:slug => 'parent', :published_at => Time.now))}
+  let(:child){ parent.children.create!(page_params(:slug => 'child', :published_at => Time.now))}
+  let(:grandchild){ child.children.create!(page_params(:slug => 'grandchild', :published_at => Time.now))}
+  let(:great_grandchild){ grandchild.children.create!(page_params(:slug => 'great-grandchild', :published_at => Time.now))}
+  let(:file_not_found){ FileNotFoundPage.create!(page_params(parent_id: home.id, :slug => '404', :published_at => Time.now))}
+  let(:drafts){ home.children.create!(page_params(:slug => 'drafts', :status => Status[:draft])) }
+  let(:lonely_draft_file_not_found){ FileNotFoundPage.create!(page_params(:parent_id => drafts.id, :status_id => Status[:draft].id)) }
+  let(:gallery){ home.children.create!(page_params(:slug => 'gallery'))}
+  let(:draft){ home.children.create!(page_params(:slug => 'draft')) }
+  let(:no_picture){ FileNotFoundPage.create!(page_params(:slug => 'no-picture', :parent_id => gallery.id, :class_name => 'CustomFileNotFoundPage'))}
 
   it 'should allow you to find the home page' do
-    @page.find_by_path('/').should == @page
+    expect(home.find_by_path('/')).to eq(home)
   end
 
   it 'should allow you to find deeply nested pages' do
-    @page.find_by_path('/parent/child/grandchild/great-grandchild/').should == pages(:great_grandchild)
+    # ensure great_grandchild exists:
+    great_grandchild
+    expect(home.find_by_path('/parent/child/grandchild/great-grandchild/')).to eq(great_grandchild)
   end
 
   it 'should not allow you to find virtual pages' do
-    @page.find_by_path('/virtual/').should == pages(:file_not_found)
+    file_not_found
+    expect(home.find_by_path('/virtual/')).to eq(file_not_found)
   end
 
   it 'should find the FileNotFoundPage when a page does not exist' do
-    @page.find_by_path('/nothing-doing/').should == pages(:file_not_found)
+    file_not_found
+    expect(home.find_by_path('/nothing-doing/')).to eq(file_not_found)
   end
 
   it 'should find a draft FileNotFoundPage in dev mode' do
-    @page.find_by_path('/drafts/no-page-here', false).should == pages(:lonely_draft_file_not_found)
+    lonely_draft_file_not_found
+    expect(home.find_by_path('/drafts/no-page-here', false)).to eq(lonely_draft_file_not_found.becomes(FileNotFoundPage))
   end
 
   it 'should not find a draft FileNotFoundPage in live mode' do
-    @page.find_by_path('/drafts/no-page-here').should_not == pages(:lonely_draft_file_not_found)
+    lonely_draft_file_not_found
+    expect(home.find_by_path('/drafts/no-page-here', true)).to_not eq(lonely_draft_file_not_found)
   end
 
   it 'should find a custom file not found page' do
-    @page.find_by_path('/gallery/nothing-doing').should == pages(:no_picture)
+    no_picture
+    expect(home.find_by_path('/gallery/nothing-doing')).to eq(no_picture.becomes(CustomFileNotFoundPage))
   end
 
   it 'should not find draft pages in live mode' do
-    @page.find_by_path('/draft/').should == pages(:file_not_found)
+    file_not_found
+    home.find_by_path('/draft/').should == file_not_found
   end
 
   it 'should find draft pages in dev mode' do
-    @page.find_by_path('/draft/', false).should == pages(:draft)
+    draft
+    expect(home.find_by_path('/draft/', false)).to eq(draft)
   end
 
   it "should use the top-most published 404 page by default" do
-    @page.find_by_path('/foo').should == pages(:file_not_found)
-    @page.find_by_path('/foo/bar').should == pages(:file_not_found)
+    file_not_found
+    home.find_by_path('/foo').should == file_not_found
+    home.find_by_path('/foo/bar').should == file_not_found
   end
 end
 
@@ -672,7 +695,7 @@ describe Page, "class find_by_path" do
   end
 
   it 'should not find draft pages in live mode' do
-    Page.find_by_path('/draft/').should == pages(:file_not_found)
+    Page.find_by_path('/draft/').should == file_not_found
     Page.find_by_path('/draft/', false).should == pages(:draft)
   end
 

@@ -184,26 +184,27 @@ class Page < ActiveRecord::Base
     return nil if virtual?
     path = clean_path(path) if clean
     my_path = self.path
-    if (my_path == path) && (not live or published?)
+    if (my_path == path) && (!live or published?)
       self
     elsif (path =~ /^#{Regexp.quote(my_path)}([^\/]*)/)
-      slug_child = children.find_by_slug($1)
+      slug_child = children.where(slug: $1).first
       if slug_child
-        found = slug_child.find_by_url(path, live, clean) # TODO: set to find_by_path after deprecation
+        found = slug_child.find_by_path(path, live, clean) # TODO: set to find_by_path after deprecation
         return found if found
       end
       children.each do |child|
-        found = child.find_by_url(path, live, clean) # TODO: set to find_by_path after deprecation
+        found = child.find_by_path(path, live, clean) # TODO: set to find_by_path after deprecation
         return found if found
       end
-      file_not_found_types = ([FileNotFoundPage] + FileNotFoundPage.descendants)
-      file_not_found_names = file_not_found_types.collect { |x| x.name }
-      condition = (['class_name = ?'] * file_not_found_names.length).join(' or ')
-      condition = "status_id = #{Status[:published].id} and (#{condition})" if live
-      children.find(:first, :conditions => [condition] + file_not_found_names)
+
+      if live
+        file_not_found_names = ([FileNotFoundPage] + FileNotFoundPage.descendants).map(&:name)
+        children.where(status_id: Status[:published].id).where(class_name: file_not_found_names).first
+      else
+        children.first
+      end
     end
   end
-  alias_method :find_by_url, :find_by_path
 
   def update_status
     self.published_at = Time.zone.now if published? && self.published_at == nil
@@ -241,10 +242,6 @@ class Page < ActiveRecord::Base
     def find_by_path(path, live = true)
       raise MissingRootPageError unless root
       root.find_by_path(path, live)
-    end
-    def find_by_url(*args)
-      ActiveSupport::Deprecation.warn("`find_by_url' has been deprecated; use `find_by_path' instead.", caller)
-      find_by_path(*args)
     end
 
     def date_column_names
