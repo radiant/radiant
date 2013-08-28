@@ -141,13 +141,6 @@ describe Page, 'validations' do
   end
 end
 
-describe Page, "behaviors" do
-  it 'should include' do
-    Page.included_modules.should include(StandardTags)
-    Page.included_modules.should include(Annotatable)
-  end
-end
-
 describe Page, "layout" do
   #dataset :pages_with_layouts
 
