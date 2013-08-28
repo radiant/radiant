@@ -2,6 +2,7 @@
 
 # 2.x
 
+* Remove r:navigation:url to be replaced with r:navigatin:path [Jim Gay]
 * Rename Radiant.config to Radiant.detail [Jim Gay]
 * Remove InheritableClassAttributes [Jim Gay]
 * Remove specific autotest support [Jim Gay]
