@@ -31,88 +31,112 @@ class VirtualSpecPage < Page
 end
 
 describe Page, 'validations' do
-  #dataset :pages
-  test_helper :validations
+  test_helper :page
 
   let(:page){ Page.new(page_params)}
 
-  before :each do
-    @page = @model = Page.new(page_params)
-  end
+  describe 'breadcrumb' do
 
-  it 'should not be valid with a slug length greater than 100 characters' do
-    page.valid?.should be_true
-    page.slug = 'x'*101
-    page.valid?.should be_false
-  end
+    let(:page){ Page.new(page_params) }
 
-  it 'should not be valid with a title length greater than 255 characters' do
-    page.valid?.should be_true
-    page.title = 'x'*256
-    page.valid?.should be_false
-  end
-
-  it 'should not be valid with a breadcrumb length greater than 160 characters' do
-    page.valid?.should be_true
-    page.breadcrumb = 'x'*161
-    page.valid?.should be_false
-  end
-
-  it 'should validate length of' do
-    {
-      :title => 255,
-      :slug => 100,
-      :breadcrumb => 160
-    }.each do |field, max|
-      assert_invalid field, ('this must not be longer than %d characters' % max), 'x' * (max + 1)
-      assert_valid field, 'x' * max
+    it 'is invalid when longer than 160 characters' do
+      page.breadcrumb = 'x' * 161
+      expect(page.errors_on(:breadcrumb)).to include('this must not be longer than 160 characters')
     end
-  end
 
-  it 'should validate presence of' do
-    [:title, :slug, :breadcrumb].each do |field|
-      assert_invalid field, 'this must not be blank', '', ' ', nil
+    it 'is invalid when blank' do
+      page.breadcrumb = ''
+      expect(page.errors_on(:breadcrumb)).to include("this must not be blank")
     end
+
+    it 'is valid when 160 characters or shorter' do
+      page.breadcrumb = 'x' * 160
+      expect(page.errors_on(:breadcrumb)).to be_blank
+    end
+
   end
 
-  it 'should validate format of' do
-    @page.parent = pages(:home)
-    assert_valid :slug, 'abc', 'abcd-efg', 'abcd_efg', 'abc.html', '/', '123'
-    assert_invalid :slug, 'this does not match the expected format', 'abcd efg', ' abcd', 'abcd/efg'
+  describe 'slug' do
+
+    let(:page){ Page.new(page_params) }
+
+    it 'is invalid when longer than 100 characters' do
+      page.slug = 'x' * 101
+      expect(page.errors_on(:slug)).to include('this must not be longer than 100 characters')
+    end
+
+    it 'is invalid when blank' do
+      page.slug = ''
+      expect(page.errors_on(:slug)).to include("this must not be blank")
+    end
+
+    it 'is valid when 100 characters or shorter' do
+      page.slug = 'x' * 100
+      expect(page.errors_on(:slug)).to be_blank
+    end
+
+    it 'is invalid when in the incorrect format' do
+      ['this does not match the expected format', 'abcd efg', ' abcd', 'abcd/efg'].each do |sample|
+        page.slug = sample
+        expect(page.errors_on(:slug)).to include('this does not match the expected format')
+      end
+    end
+
+    it 'is invalid when the same value exists with the same parent' do
+      page.parent_id = 1
+      page.save!
+      other = Page.new(page_params.merge(:parent_id => 1))
+      expect{other.save!}.to raise_error(ActiveRecord::RecordInvalid)
+      expect(other.errors_on(:slug)).to include(I18n.t('activerecord.errors.models.page.attributes.slug.taken'))
+    end
+
   end
 
-  it 'should validate uniqueness of' do
-    @page.parent = pages(:parent)
-    assert_invalid :slug, 'this slug is already in use by a sibling of this page', 'child', 'child-2', 'child-3'
-    assert_valid :slug, 'child-4'
+  describe 'title' do
+
+    let(:page){ Page.new(page_params) }
+
+    it 'is invalid when longer than 255 characters' do
+      page.title = 'x' * 256
+      expect(page.errors_on(:title)).to include('this must not be longer than 255 characters')
+    end
+
+    it 'is invalid when blank' do
+      page.title = ''
+      expect(page.errors_on(:title)).to include("this must not be blank")
+    end
+
+    it 'is valid when 255 characters or shorter' do
+      page.title = 'x' * 255
+      expect(page.errors_on(:title)).to be_blank
+    end
+
   end
 
-  it 'should allow mass assignment for class name' do
-    @page.attributes = { :class_name => 'PageSpecTestPage' }
-    assert_valid @page
-    @page.class_name.should == 'PageSpecTestPage'
-  end
+  describe 'class_name' do
+    it 'should allow mass assignment for class name' do
+      page.attributes = { :class_name => 'PageSpecTestPage' }
+      expect(page.errors_on(:class_name)).to be_blank
+      expect(page.class_name).to be_eql('PageSpecTestPage')
+    end
 
-  it 'should not be valid when class name is not a descendant of page' do
-    @page.class_name = 'Object'
-    @page.valid?.should == false
-    assert_not_nil @page.errors.on(:class_name)
-    @page.errors.on(:class_name).should == 'must be set to a valid descendant of Page'
-  end
+    it 'should not be valid when class name is not a descendant of page' do
+      page.class_name = 'Object'
+      expect(page.errors_on(:class_name)).to include('must be set to a valid descendant of Page')
+    end
 
-  it 'should not be valid when class name is not a descendant of page and it is set through mass assignment' do
-    @page.attributes = {:class_name => 'Object' }
-    @page.valid?.should == false
-    assert_not_nil @page.errors.on(:class_name)
-    @page.errors.on(:class_name).should == 'must be set to a valid descendant of Page'
-  end
+    it 'should not be valid when class name is not a descendant of page and it is set through mass assignment' do
+      page.attributes = {:class_name => 'Object' }
+      expect(page.errors_on(:class_name)).to include('must be set to a valid descendant of Page')
+    end
 
-  it 'should be valid when class name is page or empty or nil' do
-    [nil, '', 'Page'].each do |value|
-      @page = PageSpecTestPage.new(page_params)
-      @page.class_name = value
-      assert_valid @page
-      @page.class_name.should == value
+    it 'should be valid when class name is page or empty or nil' do
+      [nil, '', 'Page'].each do |value|
+        page = PageSpecTestPage.new(page_params)
+        page.class_name = value
+        expect(page.errors_on(:class_name)).to be_blank
+        expect(page.class_name).to be_eql(value)
+      end
     end
   end
 end
