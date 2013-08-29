@@ -8,11 +8,5 @@ FactoryGirl.define do
     factory :page_with_layout do
       layout
     end
-    
-    # :parent_id => nil
-    
-    # factory :admin_user do
-    #       spree_roles { [Spree::Role.find_by(name: 'admin') || create(:role, name: 'admin')] }
-    #     end
   end
 end
