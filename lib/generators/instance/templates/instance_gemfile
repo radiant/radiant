@@ -1,4 +1,4 @@
-source :rubygems
+source 'https://rubygems.org'
 
 # If you make any changes in this file, please run `bundle install`.
 # If new versions of your installed gems are available, run `bundle update`
