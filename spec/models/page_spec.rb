@@ -140,7 +140,7 @@ describe Page, "layout" do
   let(:child_page){ FactoryGirl.build(:page) do |child|
       child.parent_id = page_with_layout.id
     end }
-  
+
   it 'should be accessible' do
     page_with_layout.layout.name.should == "Main Layout"
   end
@@ -234,11 +234,19 @@ describe Page do
   end
 
   describe '#has_or_inherits_part?' do
+    let(:child){
+      FactoryGirl.build(:page) do |child|
+        child.parent_id = page.id
+      end
+    }
+    before do
+      page.parts.create(:name => 'sidebar')
+    end
     it 'should return true if the current page or any ancestor has a part of the given name' do
-      child.has_or_inherits_part?(:sidebar).should be_true
+      expect(child.has_or_inherits_part?(:sidebar)).to be_true
     end
     it 'should return false if the current part or any ancestor does not have a part of the given name' do
-      child.has_or_inherits_part?(:obviously_false_part_name).should be_false
+      expect(child.has_or_inherits_part?(:obviously_false_part_name)).to be_false
     end
   end
 
