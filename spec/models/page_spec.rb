@@ -319,23 +319,27 @@ describe Page do
   end
 
   context 'when setting the status' do
+    let(:page){ FactoryGirl.build(:page, :status_id => Status[:published].id, :published_at => nil) }
+    let(:scheduled){ FactoryGirl.build(:page, :status_id => Status[:scheduled].id, :published_at => (Time.current + 1.day)) }
+
     it 'should set published_at when given the published status id' do
-      page = Page.new(page_params(:status_id => '100', :published_at => nil))
-      page.status_id = Status[:published].id
       page.save
-      page.published_at.utc.day.should == Time.now.utc.day
+
+      expect(page.published_at.utc.day).to eq(Time.now.utc.day)
     end
+
     it 'should change its status to draft when set to draft' do
-      scheduled = pages(:scheduled)
-      scheduled.status_id = '1'
+      scheduled.status_id = Status[:draft].id
       scheduled.save
-      scheduled.status_id.should == 1
+
+      expect(scheduled.status_id).to eq(Status[:draft].id)
     end
+
     it 'should not update published_at when already published' do
-      new_page = Page.new(page_params(:status_id => Status[:published].id))
-      expected = new_page.published_at
-      new_page.save
-      new_page.published_at.should == expected
+      page.save
+
+      page.save
+      expect(page.published_at_changed?).to be_false
     end
   end
 
@@ -359,7 +363,7 @@ describe Page do
 
   describe '#status' do
     test_helper :page
-    let(:home){ Page.create!(page_params(:slug => '/', :published_at => Time.now)) }
+    let(:home){ FactoryGirl.create(:page, :slug => '/', :published_at => Time.current) }
 
     it 'should return the Status with the id of the page status_id' do
       expect(home.status).to eq(Status.find(home.status_id))
