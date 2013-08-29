@@ -341,15 +341,16 @@ describe Page do
   end
 
   describe '#status' do
-    it 'should return the Status with the id of the page status_id' do
-      home.status.should == Status.find(home.status_id)
-    end
-  end
+    test_helper :page
+    let(:home){ Page.create!(page_params(:slug => '/', :published_at => Time.now)) }
 
-  describe '#status=' do
+    it 'should return the Status with the id of the page status_id' do
+      expect(home.status).to eq(Status.find(home.status_id))
+    end
+
     it 'should set the status_id to the id of the given Status' do
       home.status = Status[:draft]
-      home.status_id.should == Status[:draft].id
+      expect(home.status_id).to eq(Status[:draft].id)
     end
   end
 
