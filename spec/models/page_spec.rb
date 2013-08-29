@@ -33,11 +33,9 @@ end
 describe Page, 'validations' do
   test_helper :page
 
-  let(:page){ Page.new(page_params)}
+  let(:page){ FactoryGirl.build(:page) }
 
   describe 'breadcrumb' do
-
-    let(:page){ Page.new(page_params) }
 
     it 'is invalid when longer than 160 characters' do
       page.breadcrumb = 'x' * 161
@@ -57,8 +55,6 @@ describe Page, 'validations' do
   end
 
   describe 'slug' do
-
-    let(:page){ Page.new(page_params) }
 
     it 'is invalid when longer than 100 characters' do
       page.slug = 'x' * 101
@@ -93,8 +89,6 @@ describe Page, 'validations' do
   end
 
   describe 'title' do
-
-    let(:page){ Page.new(page_params) }
 
     it 'is invalid when longer than 255 characters' do
       page.title = 'x' * 256
@@ -142,38 +136,35 @@ describe Page, 'validations' do
 end
 
 describe Page, "layout" do
-  #dataset :pages_with_layouts
-
+  let(:page_with_layout){ FactoryGirl.create(:page_with_layout) }
+  let(:child_page){ FactoryGirl.build(:page) do |child|
+      child.parent_id = page_with_layout.id
+    end }
+  
   it 'should be accessible' do
-    @page = pages(:first)
-    @page.layout_id.should == layout_id(:main)
-    @page.layout.name.should == "Main"
+    page_with_layout.layout.name.should == "Main Layout"
   end
 
   it 'should be inherited' do
-    @page = pages(:inherited_layout)
-    @page.layout_id.should == nil
-    @page.layout.should == @page.parent.layout
+    child_page.layout_id.should == nil
+    child_page.layout.should == page_with_layout.layout
   end
 end
 
 describe Page do
-  #dataset :pages
-
-  let(:page){ pages(:first ) }
-  let(:home){ pages(:home) }
+  let(:page){ FactoryGirl.create(:page) }
   let(:parent){ pages(:parent) }
   let(:child){ pages(:child) }
   let(:part){ page.parts(:body) }
 
   describe '#parts' do
     it 'should return PageParts with a page_id of the page id' do
-      home.parts.sort_by{|p| p.name }.should == PagePart.find_all_by_page_id(home.id).sort_by{|p| p.name }
+      page.parts.sort_by{|p| p.name }.should == PagePart.find_all_by_page_id(page.id).sort_by{|p| p.name }
     end
   end
 
   it 'should destroy dependant parts' do
-    page.parts.create(page_part_params(:name => 'test'))
+    page.parts << FactoryGirl.build(:page_part, name: 'test')
     page.parts.find_by_name('test').should_not be_nil
     id = page.id
     page.destroy
@@ -213,6 +204,7 @@ describe Page do
 
   describe '#has_part?' do
     it 'should return true for a valid part' do
+      page.parts.build(:name => 'body', :content => 'Hello world!')
       page.has_part?('body').should == true
       page.has_part?(:body).should == true
     end
@@ -224,12 +216,20 @@ describe Page do
 
   describe '#inherits_part?' do
     it 'should return true if any ancestor page has a part of the given name' do
+      page.parts.create(:name => 'sidebar')
+      child = FactoryGirl.build(:page) do |child|
+        child.parent_id = page.id
+      end
       child.has_part?(:sidebar).should be_false
       child.inherits_part?(:sidebar).should be_true
     end
     it 'should return false if any ancestor page does not have a part of the given name' do
-      home.has_part?(:sidebar).should be_true
-      home.inherits_part?(:sidebar).should be_false
+      child = FactoryGirl.build(:page) do |child|
+        child.parent_id = page.id
+      end
+      child.parts.build(:name => 'sidebar')
+      child.has_part?(:sidebar).should be_true
+      child.inherits_part?(:sidebar).should be_false
     end
   end
 
@@ -356,7 +356,7 @@ describe Page do
   its(:virtual?){ should be_false }
 
   it 'should support optimistic locking' do
-    p1, p2 = Page.find(page_id(:first)), Page.find(page_id(:first))
+    p1, p2 = Page.find(page.id), Page.find(page.id)
     p1.update_attributes!(:breadcrumb => "foo")
     lambda { p2.update_attributes!(:breadcrumb => "blah") }.should raise_error(ActiveRecord::StaleObjectError)
   end
@@ -707,12 +707,13 @@ describe Page, "class find_by_path" do
 end
 
 describe Page, "processing" do
-  #dataset :pages_with_layouts
 
   before :all do
     @request = ActionController::TestRequest.new :url => '/page/'
     @response = ActionController::TestResponse.new
-    @page = pages(:home)
+    @page = FactoryGirl.build(:page) do |page|
+      page.parts.build(:name => 'body', :content => 'Hello world!')
+    end
   end
 
   it 'should set response body' do
@@ -730,7 +731,8 @@ describe Page, "processing" do
   end
 
   it 'should set content type based on layout' do
-    @page = pages(:utf8)
+    @page = FactoryGirl.build(:page)
+    @page.layout = FactoryGirl.build(:utf8_layout)
     @page.process(@request, @response)
     @response.should be_success
     @response.headers['Content-Type'].should == 'text/html;charset=utf8'
