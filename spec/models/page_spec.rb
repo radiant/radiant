@@ -685,25 +685,33 @@ describe Page, "class which is applied to a page but not defined" do
 end
 
 describe Page, "class find_by_path" do
-  #dataset :pages, :file_not_found
+  test_helper :page
+
+  let(:home){ Page.create!(page_params(:slug => '/', :published_at => Time.now)) }
+  let(:parent){ home.children.create!(page_params(:slug => 'parent', :published_at => Time.now))}
+  let(:child){ parent.children.create!(page_params(:slug => 'child', :published_at => Time.now))}
+  let(:draft){ home.children.create!(page_params(:slug => 'draft', :status_id => Status[:draft].id)) }
+  let(:file_not_found){ FileNotFoundPage.create!(page_params(parent_id: home.id, :slug => '404', :published_at => Time.now))}
 
   it 'should find the home page' do
-    Page.find_by_path('/').should == pages(:home)
+    home
+    expect(Page.find_by_path('/')).to eq(home)
   end
 
   it 'should find children' do
-    Page.find_by_path('/parent/child/').should == pages(:child)
+    child
+    expect(Page.find_by_path('/parent/child/')).to eq(child)
   end
 
   it 'should not find draft pages in live mode' do
-    Page.find_by_path('/draft/').should == file_not_found
-    Page.find_by_path('/draft/', false).should == pages(:draft)
+    file_not_found
+    draft
+    expect(Page.find_by_path('/draft/')).to eq(file_not_found)
+    expect(Page.find_by_path('/draft/', false)).to eq(draft)
   end
 
   it 'should raise an exception when root page is missing' do
-    pages(:home).destroy
-    Page.find_by_parent_id().should be_nil
-    lambda { Page.find_by_path "/" }.should raise_error(Page::MissingRootPageError, 'Database missing root page')
+    expect{Page.find_by_path("/")}.to raise_error(Page::MissingRootPageError, 'Database missing root page')
   end
 end
 
