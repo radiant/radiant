@@ -289,22 +289,32 @@ describe Page do
   end
 
   context 'when setting the published_at date' do
+    let(:future){ Time.current + 20.years }
+    let(:past){ Time.current - 1.year }
+    let(:future_scheduled){
+      FactoryGirl.build(:page, :status_id => Status[:published].id, :published_at => future)
+    }
+    let(:past_scheduled){
+      FactoryGirl.build(:page, :status_id => Status[:scheduled].id, :published_at => past)
+    }
+
     it 'should change its status to scheduled with a date in the future' do
-      new_page = Page.new(page_params(:status_id => '100', :published_at => '2020-1-1'))
-      new_page.save
-      new_page.status_id.should == 90
+      future_scheduled.save
+
+      expect(future_scheduled.status_id).to eq(Status[:scheduled].id)
     end
+
     it 'should set the status to published when the date is in the past' do
-      scheduled_time = Time.zone.now - 1.year
-      p = Page.new(page_params(:status_id => '90', :published_at => scheduled_time))
-      p.save
-      p.status_id.should == 100
+      past_scheduled.save
+
+      expect(past_scheduled.status_id).to eq(Status[:published].id)
     end
+
     it 'should interpret the input date correctly when the current language is not English' do
       I18n.locale = :nl
       page.update_attribute(:published_at, "17 mei 2011")
-      #page.published_at.month.should == 5
       I18n.locale = :en
+      expect(page.published_at.to_s(:db)).to eq('2013-05-17 00:00:00')
     end
   end
 
