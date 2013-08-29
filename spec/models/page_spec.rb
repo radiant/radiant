@@ -505,19 +505,18 @@ unless defined?(::CustomFileNotFoundPage)
 end
 
 describe Page, "#find_by_path" do
-  test_helper :page
-
-  let(:home){ Page.create!(page_params(:slug => '/', :published_at => Time.now)) }
-  let(:parent){ home.children.create!(page_params(:slug => 'parent', :published_at => Time.now))}
-  let(:child){ parent.children.create!(page_params(:slug => 'child', :published_at => Time.now))}
-  let(:grandchild){ child.children.create!(page_params(:slug => 'grandchild', :published_at => Time.now))}
-  let(:great_grandchild){ grandchild.children.create!(page_params(:slug => 'great-grandchild', :published_at => Time.now))}
-  let(:file_not_found){ FileNotFoundPage.create!(page_params(parent_id: home.id, :slug => '404', :published_at => Time.now))}
-  let(:drafts){ home.children.create!(page_params(:slug => 'drafts', :status => Status[:draft])) }
-  let(:lonely_draft_file_not_found){ FileNotFoundPage.create!(page_params(:parent_id => drafts.id, :status_id => Status[:draft].id)) }
-  let(:gallery){ home.children.create!(page_params(:slug => 'gallery'))}
-  let(:draft){ home.children.create!(page_params(:slug => 'draft')) }
-  let(:no_picture){ FileNotFoundPage.create!(page_params(:slug => 'no-picture', :parent_id => gallery.id, :class_name => 'CustomFileNotFoundPage'))}
+  let(:home){ FactoryGirl.create(:page, :slug => '/', :published_at => Time.now, :status_id => Status[:published].id) }
+  let(:parent){ FactoryGirl.create(:page, :parent => home, :slug => 'parent', :published_at => Time.now, :status_id => Status[:published].id)}
+  let(:child){ FactoryGirl.create(:page, :parent => parent, :slug => 'child', :published_at => Time.now, :status_id => Status[:published].id)}
+  let(:grandchild){ FactoryGirl.create(:page, :parent => child, :slug => 'grandchild', :published_at => Time.now, :status_id => Status[:published].id)}
+  let(:great_grandchild){ FactoryGirl.create(:page, :parent => grandchild, :slug => 'great-grandchild', :published_at => Time.now, :status_id => Status[:published].id)}
+  let(:virtual){ FactoryGirl.create(:page, :parent_id => home.id, :slug => 'virtual', :virtual => true) }
+  let(:file_not_found){ FactoryGirl.create(:file_not_found_page, parent_id: home.id, :slug => '404', :published_at => Time.now, :status_id => Status[:published].id)}
+  let(:drafts){ FactoryGirl.create(:page, :parent => home, :slug => 'drafts', :status_id => Status[:draft].id) }
+  let(:lonely_draft_file_not_found){ FactoryGirl.create(:file_not_found_page, :parent_id => drafts.id, :status_id => Status[:draft].id) }
+  let(:gallery){ FactoryGirl.create(:page, :parent => home, :slug => 'gallery', :status_id => Status[:published].id)}
+  let(:draft){ FactoryGirl.create(:page, :parent => home, :slug => 'draft', :status_id => Status[:published].id) }
+  let(:no_picture){ FactoryGirl.create(:file_not_found_page, :slug => 'no-picture', :parent_id => gallery.id, :class_name => 'CustomFileNotFoundPage', :status_id => Status[:published].id)}
 
   it 'should allow you to find the home page' do
     expect(home.find_by_path('/')).to eq(home)
@@ -530,6 +529,7 @@ describe Page, "#find_by_path" do
   end
 
   it 'should not allow you to find virtual pages' do
+    virtual
     file_not_found
     expect(home.find_by_path('/virtual/')).to eq(file_not_found)
   end
@@ -541,7 +541,7 @@ describe Page, "#find_by_path" do
 
   it 'should find a draft FileNotFoundPage in dev mode' do
     lonely_draft_file_not_found
-    expect(home.find_by_path('/drafts/no-page-here', false)).to eq(lonely_draft_file_not_found.becomes(FileNotFoundPage))
+    expect(home.find_by_path('/drafts/no-page-here', false)).to eq(lonely_draft_file_not_found)
   end
 
   it 'should not find a draft FileNotFoundPage in live mode' do
