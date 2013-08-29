@@ -142,18 +142,19 @@ describe Page, 'validations' do
 end
 
 describe Page, "layout" do
-  #dataset :pages_with_layouts
+  test_helper :page
+
+  let(:layout){ Layout.create!(name: 'Layout') }
+  let(:page){ Page.create!(page_params(layout_id: layout.id)) }
+  let(:inherits_layout){ Page.create!(page_params(parent_id: page.id, slug: 'inherited-layout')) }
 
   it 'should be accessible' do
-    @page = pages(:first)
-    @page.layout_id.should == layout_id(:main)
-    @page.layout.name.should == "Main"
+    page.layout.should == layout
   end
 
   it 'should be inherited' do
-    @page = pages(:inherited_layout)
-    @page.layout_id.should == nil
-    @page.layout.should == @page.parent.layout
+    expect(inherits_layout.layout_id).to be_nil
+    expect(inherits_layout.layout).to eq(page.layout)
   end
 end
 
