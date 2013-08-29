@@ -4,8 +4,8 @@ require File.expand_path("../dummy/config/environment.rb",  __FILE__)
 
 require 'rspec/rails'
 
-require 'dataset'
-require 'dataset/extensions/rspec'
+require 'factory_girl'
+FactoryGirl.find_definitions
 
 ENGINE_RAILS_ROOT=File.join(File.dirname(__FILE__), '../')
 
@@ -19,6 +19,4 @@ RSpec.configure do |config|
 
   config.before(:each, type: :controller) { @routes = Radiant::Engine.routes }
   config.before(:each, type: :routing)    { @routes = Radiant::Engine.routes }
-
-  config.datasets_directory = "#{RADIANT_ROOT}/spec/datasets"
 end
