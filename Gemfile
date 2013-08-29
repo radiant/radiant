@@ -12,7 +12,7 @@ end
 group :development, :test, :cucumber do
   gem "rspec-rails"
   gem "pry-debugger"
-  gem "dataset", :git => "https://github.com/radiant/dataset.git"
+  gem "factory_girl"
 end
 
 # gem "radiant-archive-extension",             "~> 1.0.7"
