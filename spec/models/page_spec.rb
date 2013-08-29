@@ -344,14 +344,20 @@ describe Page do
   end
 
   describe '#path' do
+
+    let(:home){ FactoryGirl.create(:page, :slug => '/', :published_at => Time.now) }
+    let(:parent){ FactoryGirl.create(:page, :parent => home, :slug => 'parent', :published_at => Time.now) }
+    let(:child){ FactoryGirl.create(:page, :parent => parent, :slug => 'child', :published_at => Time.now) }
+    let(:grandchild){ FactoryGirl.create(:page, :parent => child, :slug => 'grandchild', :published_at => Time.now) }
+
     it "should start with a slash" do
-      page.path.should match(/^\//)
+      expect(home.path).to match(/\A\//)
     end
     it "should return a string with the current page's slug catenated with it's ancestor's slugs and delimited by slashes" do
-      pages(:grandchild).path.should == '/parent/child/grandchild/'
+      expect(grandchild.path).to eq('/parent/child/grandchild/')
     end
     it 'should end with a slash' do
-      page.path.should match(/\/$/)
+      expect(page.path).to match(/\/\z/)
     end
   end
 
