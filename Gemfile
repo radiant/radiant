@@ -1,4 +1,4 @@
-source :rubygems
+source 'https://rubygems.org'
 
 # This is the minimum of dependency required to run
 # the radiant instance generator, which is (normally)
@@ -7,7 +7,7 @@ source :rubygems
 # requires radiant and therefore pulls in every
 # dependency mentioned in radiant.gemspec.
 
-gem "rails",   "2.3.17"
+gem "rails",   "2.3.18"
 gem "sqlite3", "1.3.5", :group => [:development, :test], :platform => :ruby
 
 # When radiant is installed as a gem you can run all of
