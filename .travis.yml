@@ -11,6 +11,8 @@ before_install: "gem install bundler --pre"
 
 before_script: "./bin/ci/before_script"
 
+bundler_args: ''
+
 script: "bundle exec rake spec"
 
 notifications:
