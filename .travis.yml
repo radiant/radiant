@@ -5,7 +5,7 @@ rvm:
 branches:
   only:
     - master
-    - 1.1.3
+    - 1.x
 
 before_install: "gem install bundler --pre"
 
@@ -17,6 +17,7 @@ notifications:
   recipients:
     - ci@spanner.org
     - git@johnmuhl.com
+    - ci@monkeypatch.be
   irc: "irc.freenode.org#radiantcms"
 
 env:
