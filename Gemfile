@@ -5,8 +5,10 @@ begin
   require 'rubygems/source_index'
   unless ::Gem.respond_to?(:source_index)
     puts "Patching old rubygems for source_index"
-    def ::Gem.source_index
-      @@source_index ||= Gem::SourceIndex.new Gem::Specification.dirs
+    module ::Gem
+      def self.source_index
+        @@source_index ||= Gem::SourceIndex.new Gem::Specification.dirs
+      end
     end
   end
 rescue LoadError
