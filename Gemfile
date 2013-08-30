@@ -3,34 +3,34 @@ require 'rubygems'
 # The following attempts to overcome deprecations in rubygems required by rails 2
 begin
   require 'rubygems/source_index'
-  unless Gem.respond_to?(:source_index)
+  unless ::Gem.respond_to?(:source_index)
     puts "Patching old rubygems for source_index"
-    def Gem.source_index
+    def ::Gem.source_index
       @@source_index ||= Gem::SourceIndex.new Gem::Specification.dirs
     end
   end
 rescue LoadError
 
-  unless Gem.respond_to?(:source_index)
-    module Gem
+  unless ::Gem.respond_to?(:source_index)
+    module ::Gem
       def self.source_index
         sources
       end
     end
   end
 
-  unless Gem.respond_to?(:cache)
-    module Gem
+  unless ::Gem.respond_to?(:cache)
+    module ::Gem
       def self.cache
         sources
       end
     end
   end
 
-  module Gem
-    SourceIndex ||= Specification
+  module ::Gem
+    ::Gem::SourceIndex ||= ::Gem::Specification
 
-    class SourceList
+    class ::Gem::SourceList
       # If you want vendor gems, this is where to start writing code.
       def search( *args ); []; end
       def each( &block ); end
@@ -38,6 +38,7 @@ rescue LoadError
     end
   end
 end
+
 source 'https://rubygems.org'
 
 # This is the minimum of dependency required to run
