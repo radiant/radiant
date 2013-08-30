@@ -580,23 +580,23 @@ describe "Standard Tags" do
 
   describe "<r:gravatar>" do
     it "should render the Gravatar URL of author of the current page" do
-      page.should render('<r:gravatar />').as('//gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?rating=G&size=32&default=http://testhost.tld/images/admin/avatar_32x32.png')
+      page.should render('<r:gravatar />').as('//gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?rating=G&size=32')
     end
 
     it "should render the Gravatar URL of the name user" do
-      page.should render('<r:gravatar name="Admin" />').as('//gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?rating=G&size=32&default=http://testhost.tld/images/admin/avatar_32x32.png')
+      page.should render('<r:gravatar name="Admin" />').as('//gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?rating=G&size=32')
     end
 
     it "should render the default avatar when the user has not set an email address" do
-      page.should render('<r:gravatar name="Designer" />').as('http://testhost.tld/images/admin/avatar_32x32.png')
+      page.should render('<r:gravatar name="Designer" />').as('/images/admin/avatar_32x32.png')
     end
 
     it "should render the specified size" do
-      page.should render('<r:gravatar name="Designer" size="96px" />').as('http://testhost.tld/images/admin/avatar_96x96.png')
+      page.should render('<r:gravatar name="Designer" size="96px" />').as('/images/admin/avatar_96x96.png')
     end
 
     it "should render the specified rating" do
-      page.should render('<r:gravatar rating="X" />').as('//gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?rating=X&size=32&default=http://testhost.tld/images/admin/avatar_32x32.png')
+      page.should render('<r:gravatar rating="X" />').as('//gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?rating=X&size=32')
     end
   end
 

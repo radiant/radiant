@@ -4,7 +4,7 @@
 
 * Update versions for several extensions in the generated Gemfile [Benny Degezelle]
 * Move snippet configuration into snippets extension [Benny Degezelle]
-* Get default gravatar image locally when fire walled [Andrew Vonderluft]
+* Get default gravatar image locally when fire walled [Andrew Vonderluft, Benny Degezelle]
 * Fix migration problems concerning allowed_children_cache [Andrew Vonderluft]
 * Prevent spec errors on generated extensions [Andrew Vonderluft]
 

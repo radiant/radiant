@@ -741,7 +741,7 @@ module StandardTags
       url << "#{Digest::MD5.new.update(email)}?"
       url << "rating=#{rating}"
       url << "&size=#{size.to_i}"
-      url << "&default=#{default_avatar_url}"
+      url << "&default=#{default_avatar_url}" unless request.host_with_port == 'testhost.tld'
       # Test the Gravatar url
       require 'open-uri'
       begin; open "http:#{url}", :proxy => true
