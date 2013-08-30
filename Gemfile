@@ -30,7 +30,7 @@ rescue LoadError
   end
 
   module ::Gem
-    ::Gem::SourceIndex ||= ::Gem::Specification
+    ::Gem::SourceIndex = ::Gem::Specification
 
     class ::Gem::SourceList
       # If you want vendor gems, this is where to start writing code.

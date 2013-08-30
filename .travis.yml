@@ -7,7 +7,10 @@ branches:
     - master
     - 1.x
 
-before_install: "gem install bundler --pre"
+before_install:
+  - gem install rubygems-update --version 1.8.25
+  - update_rubygems --version=1.8.25
+  - "gem install bundler --pre"
 
 before_script: "./bin/ci/before_script"
 
