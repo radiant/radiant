@@ -1,45 +1,4 @@
-require 'rubygems'
 
-# The following attempts to overcome deprecations in rubygems required by rails 2
-begin
-  require 'rubygems/source_index'
-  unless ::Gem.respond_to?(:source_index)
-    puts "Patching old rubygems for source_index"
-    module ::Gem
-      def self.source_index
-        @@source_index ||= Gem::SourceIndex.new Gem::Specification.dirs
-      end
-    end
-  end
-rescue LoadError
-
-  unless ::Gem.respond_to?(:source_index)
-    module ::Gem
-      def self.source_index
-        sources
-      end
-    end
-  end
-
-  unless ::Gem.respond_to?(:cache)
-    module ::Gem
-      def self.cache
-        sources
-      end
-    end
-  end
-
-  module ::Gem
-    ::Gem::SourceIndex = ::Gem::Specification
-
-    class ::Gem::SourceList
-      # If you want vendor gems, this is where to start writing code.
-      def search( *args ); []; end
-      def each( &block ); end
-      include Enumerable
-    end
-  end
-end
 
 source 'https://rubygems.org'
 
