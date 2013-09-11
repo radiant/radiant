@@ -9,5 +9,8 @@ case $DB in
     cp spec/ci/database.postgresql.yml config/database.yml;;
 esac
 
+gem install rubygems-update -v="1.8.26"
+update_rubygems -v=1.8.26
+
 bundle exec rake db:migrate
 bundle exec rake db:migrate:extensions
