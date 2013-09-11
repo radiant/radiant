@@ -67,7 +67,7 @@ module Radiant
       env = ENV["RAILS_ENV"] || RAILS_ENV
       paths = [Rails.root + 'vendor/extensions']
       paths.unshift(Radiant.root + "vendor/extensions") unless Rails.root == Radiant.root
-      paths.unshift(Radiant.root + "test/fixtures/extensions") if env == "test"
+      paths.unshift(Radiant.root + "test/fixtures/extensions") if env =~ /test|cucumber/
       paths
     end
     
