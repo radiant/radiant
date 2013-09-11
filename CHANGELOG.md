@@ -2,6 +2,7 @@
 
 ## 1.1.4
 
+* Remove autotest support [Jim Gay]
 * Bump to Rails 2.3.18 [Jim Gay]
 * Update versions for several extensions in the generated Gemfile [Benny Degezelle]
 * Move snippet configuration into snippets extension [Benny Degezelle]
