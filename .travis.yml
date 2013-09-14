@@ -1,6 +1,11 @@
 rvm:
   - 1.8.7
   - 1.9.3
+  - 2.0.3
+
+matrix:
+  allow_failures:
+    - rvm: 2.0.3
 
 branches:
   only:
@@ -10,7 +15,7 @@ branches:
 before_install:
   - gem install rubygems-update --version 1.8.26
   - update_rubygems --version=1.8.26
-  - "gem install bundler --pre"
+  - gem install bundler --pre
 
 before_script: "./bin/ci/before_script"
 
