@@ -36,6 +36,20 @@ class User < ActiveRecord::Base
     def unprotected_attributes=(array)
       @unprotected_attributes = array.map{|att| att.to_sym }
     end
+
+    def authenticate(login_or_email, password)
+      user = from_access_name(login_or_email)
+      user && user.authenticated?(password) && user
+    end
+
+    private
+
+    def from_access_name(name)
+      table = self.arel_table
+      where(
+        table[:login].eq(name).or(table[:email].eq(name))
+      ).first
+    end
   end
 
   def has_role?(role)
@@ -44,11 +58,6 @@ class User < ActiveRecord::Base
 
   def sha1(phrase)
     Digest::SHA1.hexdigest("--#{salt}--#{phrase}--")
-  end
-
-  def self.authenticate(login_or_email, password)
-    user = find(:first, :conditions => ["login = ? OR email = ?", login_or_email, login_or_email])
-    user if user && user.authenticated?(password)
   end
 
   def authenticated?(password)

@@ -194,16 +194,18 @@ end
 
 describe User, "class methods" do
 
+  let(:existing){ FactoryGirl.build(:user, login: 'existing', email: 'existing@example.com', password: 'password') }
+
   it 'should authenticate with correct username and password' do
-    expected = users(:existing)
+    existing.save!
     user = User.authenticate('existing', 'password')
-    expect(user).to be_eql(expected)
+    expect(user).to be_eql(existing)
   end
 
   it 'should authenticate with correct email and password' do
-    expected = users(:existing)
+    existing.save!
     user = User.authenticate('existing@example.com', 'password')
-    expect(user).to be_eql(expected)
+    expect(user).to be_eql(existing)
   end
 
   it 'should not authenticate with bad password' do
@@ -217,17 +219,21 @@ end
 
 describe User, "roles" do
 
+  let(:admin){ FactoryGirl.build(:user, admin: true) }
+  let(:designer){ FactoryGirl.build(:user, designer: true) }
+  let(:existing){ FactoryGirl.build(:user) }
+
   it "should not have a non-existent role" do
-    expect(users(:existing).has_role?(:foo)).to be_false
+    expect(existing.has_role?(:foo)).to be_false
   end
 
   it "should not have a role for which the corresponding method returns false" do
-    expect(users(:existing).has_role?(:designer)).to be_false
-    expect(users(:existing).has_role?(:admin)).to be_false
+    expect(existing.has_role?(:designer)).to be_false
+    expect(existing.has_role?(:admin)).to be_false
   end
 
   it "should have a role for which the corresponding method returns true" do
-    expect(users(:designer).has_role?(:designer)).to be_true
-    expect(users(:admin).has_role?(:admin)).to be_true
+    expect(designer.has_role?(:designer)).to be_true
+    expect(admin.has_role?(:admin)).to be_true
   end
 end
