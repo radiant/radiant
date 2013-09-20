@@ -362,6 +362,11 @@ describe Page do
   end
 
   describe '#child_path' do
+
+    let(:home){ FactoryGirl.create(:page, :slug => '/', :published_at => Time.now) }
+    let(:parent){ FactoryGirl.create(:page, :parent => home, :slug => 'parent', :published_at => Time.now) }
+    let(:child){ FactoryGirl.create(:page, :parent => parent, :slug => 'child', :published_at => Time.now) }
+
     it 'should return the #path for the given child' do
       parent.child_path(child).should == '/parent/child/'
     end
