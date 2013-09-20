@@ -21,5 +21,4 @@ env:
 
 matrix:
   allow_failures:
-    - rvm: 2.0.0
     # - rvm: jruby-19mode
