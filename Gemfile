@@ -9,11 +9,6 @@ if ENV['TRAVIS']
   gem "pg"
 end
 
-group :development, :test, :cucumber do
-  gem "rspec-rails"
-  gem "factory_girl"
-end
-
 group :development do
   gem "pry-debugger"
 end
