@@ -11,8 +11,11 @@ end
 
 group :development, :test, :cucumber do
   gem "rspec-rails"
-  gem "pry-debugger"
   gem "factory_girl"
+end
+
+group :development do
+  gem "pry-debugger"
 end
 
 # gem "radiant-archive-extension",             "~> 1.0.7"
