@@ -193,7 +193,6 @@ describe User do
 end
 
 describe User, "class methods" do
-  dataset :users
 
   it 'should authenticate with correct username and password' do
     expected = users(:existing)
@@ -217,7 +216,6 @@ describe User, "class methods" do
 end
 
 describe User, "roles" do
-  dataset :users
 
   it "should not have a non-existent role" do
     expect(users(:existing).has_role?(:foo)).to be_false

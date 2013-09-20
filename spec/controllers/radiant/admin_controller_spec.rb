@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe Radiant::AdminController do
-  dataset :users
+  let(:admin){ 'admin' }
 
   it 'should set the current user for the UserActionObserver' do
     UserActionObserver.current_user = nil
-    controller.should_receive(:current_user).and_return(users(:admin))
+    controller.should_receive(:current_user).and_return(admin)
     controller.send :set_current_user
-    UserActionObserver.current_user.should == users(:admin)
+    UserActionObserver.current_user.should == admin
   end
 end
