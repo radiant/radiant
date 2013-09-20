@@ -7,6 +7,8 @@ before_install: "rm -f Gemfile.lock"
 
 before_script: "./bin/ci/before_script"
 
+bundler_args: "--without development"
+
 script: "bundle exec rake spec"
 
 notifications:
