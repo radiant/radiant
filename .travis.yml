@@ -3,8 +3,6 @@ rvm:
   - 2.0.0
   # - jruby-19mode
 
-before_install: "rm -f Gemfile.lock"
-
 before_script: "./bin/ci/before_script"
 
 bundler_args: "--without development"
