@@ -1,7 +1,7 @@
 rvm:
   - 1.9.3
   - 2.0.0
-  - jruby-19mode
+  # - jruby-19mode
 
 before_install: "rm -f Gemfile.lock"
 
@@ -24,4 +24,4 @@ env:
 matrix:
   allow_failures:
     - rvm: 2.0.0
-    - rvm: jruby-19mode
+    # - rvm: jruby-19mode
