@@ -9,6 +9,10 @@ module Radiant
       yield Rails.configuration if block_given?
       Rails.configuration
     end
+
+    def root
+      RADIANT_ROOT
+    end
   end
 end
 

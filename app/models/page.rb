@@ -1,5 +1,6 @@
 require 'acts_as_tree'
 require 'annotatable'
+require 'radiant/extension'
 
 class Page < ActiveRecord::Base
 
@@ -268,7 +269,7 @@ class Page < ActiveRecord::Base
     end
 
     def load_subclasses
-      ([RADIANT_ROOT] + Radiant::Extension.descendants.map(&:root)).each do |path|
+      ([Radiant.root] + Radiant::Extension.descendants.map(&:root)).each do |path|
         Dir["#{path}/app/models/*_page.rb"].each do |page|
           $1.camelize.constantize if page =~ %r{/([^/]+)\.rb}
         end

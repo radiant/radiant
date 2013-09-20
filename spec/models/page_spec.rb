@@ -658,11 +658,8 @@ describe Page, "class" do
 end
 
 describe Page, "loading subclasses before bootstrap" do
-  before :each do
-    Page.connection.should_receive(:tables).and_return([])
-  end
-
   it "should not attempt to search for missing subclasses" do
+    Page.connection.stub(:tables).and_return([])
     Page.connection.should_not_receive(:select_values).with("SELECT DISTINCT class_name FROM pages WHERE class_name <> '' AND class_name IS NOT NULL")
     Page.load_subclasses
   end
