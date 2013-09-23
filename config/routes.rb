@@ -24,7 +24,7 @@ Radiant::Engine.routes.draw do
     resources :extensions,  :only => :index
     resources :page_parts,  :only => :create
     resources :page_fields, :only => :create
-    match 'reference/:type(.:format)' => 'radiant/references#show', :as => :reference
+    get 'reference/:type(.:format)' => 'radiant/references#show', :as => :reference
   end
 
   get 'admin' => 'admin/welcome#index', :as => :admin
