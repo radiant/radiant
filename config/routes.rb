@@ -27,16 +27,16 @@ Radiant::Engine.routes.draw do
     match 'reference/:type(.:format)' => 'radiant/references#show', :as => :reference
   end
 
-  match 'admin' => 'admin/welcome#index', :as => :admin
-  match 'admin/welcome' => 'admin/welcome#index', :as => :welcome
-  match 'admin/login' => 'admin/welcome#login', :as => :login
-  match 'admin/logout' => 'admin/welcome#logout', :as => :logout
+  get 'admin' => 'admin/welcome#index', :as => :admin
+  get 'admin/welcome' => 'admin/welcome#index', :as => :welcome
+  get 'admin/login' => 'admin/welcome#login', :as => :login
+  get 'admin/logout' => 'admin/welcome#logout', :as => :logout
 
   root :to => 'site#show_page'
 
-  match 'error/404' => 'site#not_found', :as => :not_found
-  match 'error/500' => 'site#error', :as => :error
+  get 'error/404' => 'site#not_found', :as => :not_found
+  get 'error/500' => 'site#error', :as => :error
 
   # main catch-all route
-  match '*url' => 'site#show_page'
+  get '*url' => 'site#show_page'
 end
