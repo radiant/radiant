@@ -63,7 +63,7 @@ module Radiant
       end
 
       def set_timezone
-        Time.zone = Radiant.detail['local.timezone'] || Time.zone_default
+        Time.zone = Radiant.detail['local.timezone'].presence || Time.zone_default
       end
 
   end
