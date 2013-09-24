@@ -1,7 +1,8 @@
 source "https://rubygems.org"
 
 gemspec
-# gem "compass-rails", "~> 1.0.3"
+gem "protected_attributes"
+gem "rails-observers"
 
 if ENV['TRAVIS']
   gemspec :development_group => :test
