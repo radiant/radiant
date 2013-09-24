@@ -13,6 +13,8 @@ before_install:
 
 before_script: "./bin/ci/before_script"
 
+bundler_args: ''
+
 script: "bundle exec rake spec --trace"
 
 notifications:
