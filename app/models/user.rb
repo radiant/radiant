@@ -26,7 +26,7 @@ class User < ActiveRecord::Base
   validates :login, length: { minimum: 3, maximum: 40 }, allow_nil: true
 
   validates :email, length: { maximum: 255 },
-                    format: /^$|^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i
+                    format: /\A$|^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
 
   class << self
     def unprotected_attributes
