@@ -31,6 +31,4 @@ notifications:
   irc: "irc.freenode.org#radiantcms"
 
 env:
-  - DB=mysql
-  - DB=postgres
   - DB=sqlite
