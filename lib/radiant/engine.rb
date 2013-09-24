@@ -3,7 +3,7 @@ require 'will_paginate'
 require 'string_extensions'
 
 module Radiant
-  class Engine < Rails::Engine
+  class Engine < ::Rails::Engine
     isolate_namespace Radiant
 
     config.generators do |g|
