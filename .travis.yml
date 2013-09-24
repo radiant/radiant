@@ -33,3 +33,4 @@ notifications:
 env:
   - DB=mysql
   - DB=postgres
+  - DB=sqlite
