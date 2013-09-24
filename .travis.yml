@@ -10,11 +10,8 @@ branches:
 before_install:
   - gem install rubygems-update --version 1.8.26
   - update_rubygems --version=1.8.26
-  - gem install bundler --pre
 
 before_script: "./bin/ci/before_script"
-
-bundler_args: ''
 
 script: "bundle exec rake spec --trace"
 
