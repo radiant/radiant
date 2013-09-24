@@ -4,8 +4,7 @@ Radiant is a no-fluff, open source content management system designed for
 small teams. It is similar to Textpattern or MovableType, but is a general
 purpose content management system (not just a blogging engine).
 
-[![Build Status](https://secure.travis-ci.org/radiant/radiant.png?branch=master)](http://travis-ci.org/radiant/radiant)
-[![Dependency Status](https://gemnasium.com/radiant/radiant.png)](https://gemnasium.com/radiant/radiant)
+[![Build Status](https://secure.travis-ci.org/radiant/radiant.png?branch=1.x)](http://travis-ci.org/radiant/radiant)
 
 Radiant features:
 
