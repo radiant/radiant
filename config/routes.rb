@@ -29,7 +29,7 @@ Radiant::Engine.routes.draw do
 
   get 'admin' => 'admin/welcome#index', :as => :admin
   get 'admin/welcome' => 'admin/welcome#index', :as => :welcome
-  get 'admin/login' => 'admin/welcome#login', :as => :login
+  match 'admin/login' => 'admin/welcome#login', :as => :login, via: [:get, :post]
   get 'admin/logout' => 'admin/welcome#logout', :as => :logout
 
   root :to => 'site#show_page'
