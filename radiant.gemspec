@@ -29,7 +29,6 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency "acts_as_tree",    "~> 0.1"
   s.add_dependency "compass",         "~> 0.12"
   s.add_dependency "compass-rails",   "~> 1.0"
-  # s.add_dependency "delocalize",      "~> 0.3"
   s.add_dependency "haml",            "~> 4.0"
   s.add_dependency "highline",        "~> 1.6"
   s.add_dependency "rack-cache",      "~> 1.2"

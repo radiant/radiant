@@ -1,7 +1,6 @@
 source "https://rubygems.org"
 
 gemspec
-gem "delocalize", github: "wanchic/delocalize"
 gem "protected_attributes"
 gem "rails-observers"
 
