@@ -1,5 +1,4 @@
-path = File.expand_path('../../../../lib/radiant/pagination/controller', __FILE__)
-require path
+require 'radiant/pagination/controller'
 
 module Radiant
   class SiteController < Radiant::ApplicationController
