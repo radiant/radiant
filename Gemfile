@@ -1,8 +1,8 @@
 source "https://rubygems.org"
 
 gemspec
-gem "protected_attributes"
-gem "rails-observers"
+# gem "protected_attributes"
+# gem "rails-observers"
 
 if ENV['TRAVIS']
   gemspec :development_group => :test
