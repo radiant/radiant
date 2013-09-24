@@ -1,8 +1,9 @@
 source "https://rubygems.org"
 
 gemspec
-# gem "protected_attributes"
-# gem "rails-observers"
+gem "delocalize", github: "wanchic/delocalize"
+gem "protected_attributes"
+gem "rails-observers"
 
 if ENV['TRAVIS']
   gemspec :development_group => :test
