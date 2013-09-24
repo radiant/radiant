@@ -11,6 +11,7 @@ if ENV['TRAVIS']
 end
 
 group :development do
+  gem "autotest-rails"
   gem "pry-debugger"
 end
 
