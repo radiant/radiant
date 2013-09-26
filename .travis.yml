@@ -1,13 +1,14 @@
 rvm:
-  - 1.9.3
   - 2.0.0
-  # - jruby-19mode
+  - 1.9.3
 
-before_script: "./bin/ci/before_script"
+before_install: rm -f Gemfile
 
-bundler_args: "--without development"
+before_script: bin/ci/before_script
 
-script: "bundle exec rake spec"
+bundler_args: --without development
+
+script: bundle exec rake spec
 
 notifications:
   recipients:
@@ -19,6 +20,6 @@ env:
   - DB=mysql
   - DB=postgres
 
-matrix:
-  allow_failures:
-    # - rvm: jruby-19mode
+gemfile:
+  - rails40.gemfile
+  - rails32.gemfile
