@@ -21,4 +21,4 @@ rerun.txt
 radiant-*.gem
 .rvmrc
 .bundle
-Gemfile.lock
+*.lock
