@@ -32,12 +32,6 @@ class Page < ActiveRecord::Base
                         length: { maximum: 160 }
 
   validates :status_id, presence: true
-  validates_presence_of :title, :slug, :breadcrumb, :status_id
-  validates_length_of :title, :maximum => 255
-  validates_length_of :slug, :maximum => 100
-  validates_length_of :breadcrumb, :maximum => 160
-  validates_format_of :slug, :with => %r{^([-_.A-Za-z0-9]*|/)$}
-  validates_uniqueness_of :slug, :scope => :ancestry
 
   validate :valid_class_name
   has_ancestry
