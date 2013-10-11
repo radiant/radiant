@@ -833,7 +833,7 @@ module StandardTags
     noself = (tag.attr['noself'] == 'true')
     breadcrumbs = []
     breadcrumbs.unshift page.breadcrumb unless noself
-    page.ancestors.reverse.each do |ancestor|
+    page.ancestors.each do |ancestor|
       tag.locals.page = ancestor
       if nolinks
         breadcrumbs.unshift tag.render('breadcrumb')
@@ -1152,11 +1152,11 @@ module StandardTags
       result = []
       tag.locals.previous_headers = {}
       displayed_children = paging ? findable.paginate(options.merge(paging)) : findable.all(options)
-      displayed_children.each do |item|
+      displayed_children.each_with_index do |item, i|
         tag.locals.child = item
         tag.locals.page = item
-        tag.locals.first_child = item == displayed_children.first
-        tag.locals.last_child = item == displayed_children.last
+        tag.locals.first_child = i == 0
+        tag.locals.last_child = i == displayed_children.length - 1
         result << tag.expand
       end
       if paging && displayed_children.total_pages > 1

@@ -72,13 +72,7 @@ class Page < ActiveRecord::Base
   def child_path(child)
     clean_path(path + '/' + child.slug)
   end
-  alias_method :child_url, :child_path
 
-  def headers
-    # Return a blank hash that child classes can override or merge
-    { }
-  end
-  
   def parent
     if parent_id.blank? then nil else Page.find(parent_id) end
   end
@@ -134,7 +128,6 @@ class Page < ActiveRecord::Base
       clean_path(slug)
     end
   end
-  alias_method :url, :path
 
   def process(request, response)
     @request, @response = request, response
@@ -232,7 +225,7 @@ class Page < ActiveRecord::Base
     end
 
     def find_by_path(path, live = true)
-      raise MissingRootPageError if root.nil?
+      raise MissingRootPageError unless root
       root.find_by_path(path, live)
     end
 
