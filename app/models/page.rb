@@ -1,4 +1,3 @@
-# require 'acts_as_tree'
 require 'ancestry'
 require 'annotatable'
 require 'radiant/extension'
