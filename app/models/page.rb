@@ -12,7 +12,6 @@ class Page < ActiveRecord::Base
   before_save :update_virtual, :update_status, :set_allowed_children_cache
 
   # Associations
-  acts_as_tree :order => 'virtual DESC, title ASC'
   has_many :parts, :class_name => 'PagePart', :order => 'id', :dependent => :destroy
   accepts_nested_attributes_for :parts, :allow_destroy => true
   has_many :fields, :class_name => 'PageField', :order => 'id', :dependent => :destroy
@@ -281,7 +280,7 @@ class Page < ActiveRecord::Base
           begin
             p.constantize
           rescue NameError, LoadError
-            eval(%Q{class #{p} < Page; acts_as_tree; def self.missing?; true end end}, TOPLEVEL_BINDING)
+            eval(%Q{class #{p} < Page; has_ancestry; def self.missing?; true end end}, TOPLEVEL_BINDING)
           end
         end
       end
