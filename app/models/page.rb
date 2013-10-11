@@ -140,6 +140,17 @@ class Page < ActiveRecord::Base
     @response.status = response_code
   end
 
+  def headers
+    # Return a blank hash that child classes can override or merge
+    { }
+  end
+
+  def set_response_headers(response)
+    set_content_type(response)
+    headers.each { |k,v| response.headers[k] = v }
+  end
+  private :set_response_headers
+
   def response_code
     200
   end
