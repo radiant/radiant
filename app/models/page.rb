@@ -265,13 +265,13 @@ class Page < ActiveRecord::Base
       @display_name = @display_name + " - not installed" if missing? && @display_name !~ /not installed/
       @display_name
     end
-    
+
     def display_name=(string)
       display_name(string)
     end
 
     def load_subclasses
-      ([RADIANT_ROOT] + Radiant::Extension.descendants.map(&:root)).each do |path|
+      ([Radiant.root] + Radiant::Extension.descendants.map(&:root)).each do |path|
         Dir["#{path}/app/models/*_page.rb"].each do |page|
           $1.camelize.constantize if page =~ %r{/([^/]+)\.rb}
         end
