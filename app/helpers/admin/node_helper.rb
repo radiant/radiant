@@ -75,7 +75,7 @@ module Admin::NodeHelper
   end
 
   def node_title
-    %{<span class="title">#{ h(@current_node.title) }</span>}
+    %{<span class="title">#{ h(@current_node.title) }</span>}.html_safe
   end
 
   def page_type

@@ -1,10 +1,8 @@
 - pages = @page.children.count > 1 ? t('pages') : t('page')
 
-%h1
-  = t('remove_pages', :pages => pages)
+%h1= t('remove_pages', :pages => pages)
 
-%p 
-  = t('text.pages.remove_warning', :pages => pages)
+%p= t('text.pages.remove_warning', :pages => pages).html_safe
     
 .inset
   %table.index#site_map
