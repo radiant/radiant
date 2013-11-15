@@ -7,7 +7,7 @@
             = icon
             = node_title
           - else
-            = expander(level) + link_to("#{icon} #{node_title}", edit_admin_page_url(page), :title => page.path)
+            = expander(level) + link_to(raw("#{icon} #{node_title}"), edit_admin_page_url(page), :title => page.path)
             = page_type
             = spinner
     - node.status_column do

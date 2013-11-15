@@ -10,7 +10,7 @@ module Admin::ReferencesHelper
                         :description =>  RedCloth.new(Radiant::Taggable::Util.strip_leading_whitespace(value)).to_html
                        })
       end
-    end
+    end.html_safe
   end
 
   def filter_reference

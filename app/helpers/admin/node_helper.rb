@@ -66,7 +66,7 @@ module Admin::NodeHelper
             :title => '')
     else
       ""
-    end
+    end.html_safe
   end
 
   def icon
@@ -84,7 +84,7 @@ module Admin::NodeHelper
       ""
     else
       %{<span class="info">(#{ h(display_name) })</span>}
-    end
+    end.html_safe
   end
 
   def spinner
