@@ -833,17 +833,17 @@ module StandardTags
     nolinks = (tag.attr['nolinks'] == 'true')
     noself = (tag.attr['noself'] == 'true')
     breadcrumbs = []
-    breadcrumbs.unshift page.breadcrumb unless noself
+    breadcrumbs.unshift page.breadcrumb.html_safe unless noself
     page.ancestors.each do |ancestor|
       tag.locals.page = ancestor
       if nolinks
         breadcrumbs.unshift tag.render('breadcrumb')
       else
-        breadcrumbs.unshift %{<a href="#{tag.render('path')}">#{tag.render('breadcrumb')}</a>}
+        breadcrumbs.unshift link_to(tag.render('breadcrumb'), tag.render('path'))
       end
     end
     separator = tag.attr['separator'] || ' &gt; '
-    breadcrumbs.join(separator)
+    breadcrumbs.join(separator.html_safe)
   end
 
   desc %{
