@@ -814,7 +814,7 @@ module StandardTags
     attributes = options.inject('') { |s, (k, v)| s << %{#{k.downcase}="#{v}" } }.strip
     attributes = " #{attributes}" unless attributes.empty?
     text = tag.double? ? tag.expand : tag.render('title')
-    %{<a href="#{tag.render('path')}#{anchor}"#{attributes}>#{text}</a>}
+    %{<a href="#{tag.render('path')}#{anchor}"#{attributes}>#{text}</a>}.html_safe
   end
 
   desc %{

@@ -167,7 +167,7 @@ class Page < ActiveRecord::Base
     if part
       parse_object(part)
     else
-      ''
+      ''.html_safe
     end
   end
 
@@ -364,7 +364,7 @@ class Page < ActiveRecord::Base
     end
 
     def parse(text)
-      lazy_initialize_parser_and_context.parse(text)
+      lazy_initialize_parser_and_context.parse(text).html_safe
     end
 
     def parse_object(object)

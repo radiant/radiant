@@ -34,9 +34,9 @@ module Radiant::Taggable
     tag_method_name = "tag:#{name}"
     tag_method = method(tag_method_name)
     if tag_method.arity == 0
-      tag_method.call
+      h(tag_method.call)
     else
-      tag_method.call tag_binding
+      h(tag_method.call tag_binding)
     end
   end
   
