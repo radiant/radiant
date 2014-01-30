@@ -36,7 +36,6 @@ module StandardTags
   tag 'path' do |tag|
     relative_url_for(tag.locals.page.path, tag.globals.page.request)
   end
-  deprecated_tag 'url', :substitute => 'path', :deadline => '1.2'
 
   desc %{
     Gives access to a page's children.
@@ -633,7 +632,6 @@ module StandardTags
        tag.expand
     end
   end
-  deprecated_tag 'if_url', :substitute => 'if_path', :deadline => '1.2'
 
   desc %{
     The opposite of the @if_path@ tag.
@@ -649,7 +647,6 @@ module StandardTags
         tag.expand
     end
   end
-  deprecated_tag 'unless_url', :substitute => 'unless_path', :deadline => '1.2'
 
   desc %{
     Renders the contained elements if the current contextual page is either the actual page or one of its parents.
