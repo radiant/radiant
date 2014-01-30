@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.2.0
+
+* Remove deprecated r:url, r:if_url and r:unless_url tags [Benny Degezelle]
+* Use the rails_xss gem to prevent cross-site scripting [Michael Noack, Benny Degezelle]
+
 ## 1.1.4
 
 * Remove autotest support [Jim Gay]
