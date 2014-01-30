@@ -75,7 +75,7 @@ module Admin::NodeHelper
   end
 
   def node_title
-    %{<span class="title">#{ h(@current_node.title) }</span>}.html_safe
+    content_tag :span, @current_node.title, :class => 'title'
   end
 
   def page_type
@@ -83,8 +83,8 @@ module Admin::NodeHelper
     if display_name == 'Page'
       ""
     else
-      %{<span class="info">(#{ h(display_name) })</span>}
-    end.html_safe
+      content_tag :span, "(#{display_name})".html_safe, :class => 'info'
+    end
   end
 
   def spinner

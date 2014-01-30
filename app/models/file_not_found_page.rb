@@ -14,7 +14,7 @@ class FileNotFoundPage < Page
   }
   
   tag "attempted_url" do |tag|
-    CGI.escapeHTML(request.request_uri) unless request.nil?
+    request.request_uri unless request.nil?
   end
    
   def virtual?

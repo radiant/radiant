@@ -7,7 +7,7 @@ module DeprecatedTags
     if tag.double?
       tag.expand
     else
-      tag.render('description', tag.attr) + tag.render('keywords', tag.attr)
+      tag.render('description', tag.attr) + tag.render('keywords', tag.attr).html_safe
     end
   end
 
@@ -18,7 +18,7 @@ module DeprecatedTags
       "<meta name=\"description\" content=\"#{description}\" />"
     else
       description
-    end
+    end.html_safe
   end
 
   deprecated_tag 'meta:keywords', :deadline => '2.0' do |tag|
@@ -28,7 +28,7 @@ module DeprecatedTags
       "<meta name=\"keywords\" content=\"#{keywords}\" />"
     else
       keywords
-    end
+    end.html_safe
   end
 
   deprecated_tag "rfc1123_date", :deadline => '2.0' do |tag|

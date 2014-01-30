@@ -131,7 +131,7 @@ module StandardTags
   }
   tag 'pagination' do |tag|
     if tag.locals.paginated_list
-      will_paginate(tag.locals.paginated_list, will_paginate_options(tag))
+      will_paginate(tag.locals.paginated_list, will_paginate_options(tag)).html_safe
     end
   end
 
@@ -750,7 +750,7 @@ module StandardTags
       end
     else
       local_avatar_url
-    end
+    end.html_safe
   end
 
   desc %{
@@ -839,11 +839,11 @@ module StandardTags
       if nolinks
         breadcrumbs.unshift tag.render('breadcrumb')
       else
-        breadcrumbs.unshift link_to(tag.render('breadcrumb'), tag.render('path'))
+        breadcrumbs.unshift tag.render('link:breadcrumb')
       end
     end
     separator = tag.attr['separator'] || ' &gt; '
-    breadcrumbs.join(separator.html_safe)
+    breadcrumbs.join(separator).html_safe
   end
 
   desc %{
@@ -965,7 +965,7 @@ module StandardTags
       end
     end
     between = hash.has_key?(:between) ? hash[:between].call : ' '
-    result.reject { |i| i.blank? }.join(between)
+    result.reject { |i| i.blank? }.join(between).html_safe
   end
   [:normal, :here, :selected, :between].each do |symbol|
     tag "navigation:#{symbol}" do |tag|
@@ -1170,7 +1170,7 @@ module StandardTags
         tag.locals.paginated_list = displayed_children
         result << tag.render('pagination', tag.attr.dup)
       end
-      result.flatten.join('')
+      result.flatten.join('').html_safe
     end
     
     def children_find_options(tag)
