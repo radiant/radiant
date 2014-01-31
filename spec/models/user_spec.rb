@@ -80,7 +80,7 @@ describe User, "validations" do
       user.save!
       second = User.new(user_params)
       expect(second.login).to be_eql(user.login)
-      expect(user.save!).to raise_error
+      second.should have(1).errors_on(:login)
     end
   end
 
