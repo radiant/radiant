@@ -28,6 +28,8 @@ module Radiant
     config.view_paths = []
     config.extension_dependencies = []
     
+    config.active_record.observers = 'Radiant::UserActionObserver'
+    
     initializer 'radiant.configuraton' do |app|
       config.extension_paths = default_extension_paths
     end

@@ -1,5 +1,5 @@
-class UserActionObserver < ActiveRecord::Observer
-  observe User, Page, Layout
+class Radiant::UserActionObserver < ActiveRecord::Observer
+  observe :user, :page, :layout
   
   def current_user=(user)
     self.class.current_user = user
