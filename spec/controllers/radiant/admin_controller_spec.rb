@@ -4,9 +4,9 @@ describe Radiant::AdminController do
   let(:admin){ 'admin' }
 
   it 'should set the current user for the UserActionObserver' do
-    UserActionObserver.current_user = nil
+    Radiant::UserActionObserver.current_user = nil
     controller.should_receive(:current_user).and_return(admin)
     controller.send :set_current_user
-    UserActionObserver.current_user.should == admin
+    Radiant::UserActionObserver.current_user.should == admin
   end
 end
