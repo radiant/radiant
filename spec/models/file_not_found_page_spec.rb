@@ -4,7 +4,7 @@ describe FileNotFoundPage do
   #dataset :file_not_found
   test_helper :render
 
-  let(:file_not_found){ pages(:file_not_found) }
+  let(:file_not_found){ FactoryGirl.create(:file_not_found_page) }
 
   its(:allowed_children){ should == [] }
 
