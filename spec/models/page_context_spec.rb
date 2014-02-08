@@ -17,22 +17,25 @@ describe PageContext do
   end
 
   it 'should give tags access to the request' do
+    @page.save!
+    another = FactoryGirl.create(:published_page, :parent_id => @page.id, :title => 'Another')
     @context.define_tag("if_request") { |tag| tag.expand if tag.locals.page.request }
     parse('<r:if_request>tada!</r:if_request>').should match(/^$/)
 
     @page.request = ActionDispatch::TestRequest.new
-    parse('<r:if_request>tada!</r:if_request>').should include("tada!")
-    parse('<r:find url="/another/"><r:if_request>tada!</r:if_request></r:find>').should include("tada!")
+    parse('<r:if_request>tada!</r:if_request>').should include("tada!")    
+    parse('<r:find path="/another/"><r:if_request>tada!</r:if_request></r:find>').should include("tada!")
   end
 
   it 'should give tags access to the response' do
     @page.save!
+    another = FactoryGirl.create(:published_page, :parent_id => @page.id, :title => 'Another')
     @context.define_tag("if_response") { |tag| tag.expand if tag.locals.page.response }
     parse('<r:if_response>tada!</r:if_response>').should match(/^$/)
 
     @page.response = ActionDispatch::TestRequest.new
     parse('<r:if_response>tada!</r:if_response>').should include("tada!")
-    parse('<r:find url="/another/"><r:if_response>tada!</r:if_response></r:find>').should include("tada!")
+    parse('<r:find path="/another/"><r:if_response>tada!</r:if_response></r:find>').should include("tada!")
   end
 
   private
