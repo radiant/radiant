@@ -1,10 +1,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe PageContext do
-  #dataset :pages
-
   before :each do
-    @page = pages(:radius)
+    @page = FactoryGirl.build(:home)
     @context = PageContext.new(@page)
     @parser = Radius::Parser.new(@context, :tag_prefix => 'r')
     @context = @parser.context
@@ -22,16 +20,17 @@ describe PageContext do
     @context.define_tag("if_request") { |tag| tag.expand if tag.locals.page.request }
     parse('<r:if_request>tada!</r:if_request>').should match(/^$/)
 
-    @page.request = ActionController::TestRequest.new
+    @page.request = ActionDispatch::TestRequest.new
     parse('<r:if_request>tada!</r:if_request>').should include("tada!")
     parse('<r:find url="/another/"><r:if_request>tada!</r:if_request></r:find>').should include("tada!")
   end
 
   it 'should give tags access to the response' do
+    @page.save!
     @context.define_tag("if_response") { |tag| tag.expand if tag.locals.page.response }
     parse('<r:if_response>tada!</r:if_response>').should match(/^$/)
 
-    @page.response = ActionController::TestResponse.new
+    @page.response = ActionDispatch::TestRequest.new
     parse('<r:if_response>tada!</r:if_response>').should include("tada!")
     parse('<r:find url="/another/"><r:if_response>tada!</r:if_response></r:find>').should include("tada!")
   end
@@ -45,13 +44,11 @@ describe PageContext do
 end
 
 describe PageContext, "when errors are not being raised" do
-  #dataset :pages
-
   before :each do
-    @page = pages(:radius)
+    @page = FactoryGirl.build(:home)
     @context = PageContext.new(@page)
     @parser = Radius::Parser.new(@context, :tag_prefix => 'r')
-    @parser.context.stub!(:raise_errors?).and_return(false)
+    @parser.context.stub(:raise_errors?).and_return(false)
     @context = @parser.context
   end
 
