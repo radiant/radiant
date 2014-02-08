@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
 describe Radiant::Admin::WelcomeController do
+  routes { Radiant::Engine.routes }
   #dataset :users
 
   it "should redirect to page tree on get to /admin/welcome" do
@@ -33,7 +34,7 @@ describe Radiant::Admin::WelcomeController do
     before do
       Radiant::Config['session_timeout'] = 2.weeks
       @user = users(:admin)
-      controller.stub!(:current_user).and_return(@user)
+      controller.stub(:current_user).and_return(@user)
     end
 
     after do
@@ -89,7 +90,7 @@ describe Radiant::Admin::WelcomeController do
 
   describe "without a user" do
     it "should gracefully handle logout" do
-      controller.stub!(:current_member).and_return(nil)
+      controller.stub(:current_member).and_return(nil)
       get :logout
       response.should redirect_to(login_url)
     end

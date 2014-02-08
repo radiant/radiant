@@ -1,9 +1,13 @@
 require "spec_helper"
 
 describe Radiant::Admin::ExtensionsController do
-
+  routes { Radiant::Engine.routes }
+  
+  test_helper :user
+  include AuthenticationHelper
+  
   before :each do
-    login_as :admin
+    login_as :user
   end
 
   it "should require login for all actions" do

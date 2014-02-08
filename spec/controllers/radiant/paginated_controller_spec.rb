@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
 describe Radiant::Admin::UsersController do
+  routes { Radiant::Engine.routes }
 
   it "should be paginated" do
     Radiant::Admin::UsersController.paginated.should be_true

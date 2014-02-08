@@ -32,33 +32,33 @@ describe Radiant::ApplicationController do
 
   describe 'self.template_name' do
     it "should return 'index' when the controller action_name is 'index'" do
-      controller.stub!(:action_name).and_return('index')
+      controller.stub(:action_name).and_return('index')
       controller.template_name.should == 'index'
     end
     ['new', 'create'].each do |action|
       it "should return 'new' when the action_name is #{action}" do
-      controller.stub!(:action_name).and_return(action)
+      controller.stub(:action_name).and_return(action)
       controller.template_name.should == 'new'
       end
     end
     ['edit', 'update'].each do |action|
       it "should return 'edit' when the action_name is #{action}" do
-      controller.stub!(:action_name).and_return(action)
+      controller.stub(:action_name).and_return(action)
       controller.template_name.should == 'edit'
       end
     end
     ['remove', 'destroy'].each do |action|
       it "should return 'remove' when the action_name is #{action}" do
-      controller.stub!(:action_name).and_return(action)
+      controller.stub(:action_name).and_return(action)
       controller.template_name.should == 'remove'
       end
     end
     it "should return 'show' when the action_name is show" do
-      controller.stub!(:action_name).and_return('show')
+      controller.stub(:action_name).and_return('show')
       controller.template_name.should == 'show'
     end
     it "should return the action_name when the action_name is a non-standard name" do
-      controller.stub!(:action_name).and_return('other')
+      controller.stub(:action_name).and_return('other')
       controller.template_name.should == 'other'
     end
   end

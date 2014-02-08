@@ -1,6 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe Radiant::Admin::PreferencesController do
+  routes { Radiant::Engine.routes }
   #dataset :users
 
   it "should allow you to view your preferences" do

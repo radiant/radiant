@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe Radiant::SiteController do
+  routes { Radiant::Engine.routes }
   #dataset :pages
 
   it "should find and render home page" do
@@ -37,8 +38,8 @@ describe Radiant::SiteController do
     page = pages(:first)
     param_name = WillPaginate::ViewHelpers.pagination_options[:param_name] || :p
     pagination_parameters = {param_name => 3, :per_page => 100}
-    controller.stub!(:pagination_parameters).and_return(pagination_parameters)
-    controller.stub!(:find_page).and_return(page)
+    controller.stub(:pagination_parameters).and_return(pagination_parameters)
+    controller.stub(:find_page).and_return(page)
 
     get :show_page, :url => 'first/'
 
@@ -137,7 +138,7 @@ describe Radiant::SiteController do
     end
 
     it "should return a not-modified response when the sent etag matches" do
-      response.stub!(:etag).and_return("foobar")
+      response.stub(:etag).and_return("foobar")
       request.if_none_match = 'foobar'
       get :show_page, :url => '/'
       response.response_code.should == 304
@@ -174,7 +175,7 @@ describe Radiant::SiteController do
   describe "pagination" do
     it "should pass through pagination parameters to the page" do
       @page = pages(:home)
-      Page.stub!(:find_by_path).and_return(@page)
+      Page.stub(:find_by_path).and_return(@page)
       @page.should_receive(:pagination_parameters=).with({:page => '3', :per_page => '12'})
       get :show_page, :url => '/', :page => '3', :per_page => '12'
     end

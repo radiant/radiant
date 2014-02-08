@@ -3,6 +3,7 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe Radiant::Admin::PagesController do
+  routes { Radiant::Engine.routes }
   #dataset :users, :pages
 
   before :each do
@@ -204,7 +205,7 @@ describe Radiant::Admin::PagesController do
         'parts_attributes' => [{'content' => 'TEST', 'id' => body_id.to_s}] } }
     }
     it 'should render the page with changes' do
-      request.stub!(:referer).and_return("/admin/pages/#{preview_page.id}/edit")
+      request.stub(:referer).and_return("/admin/pages/#{preview_page.id}/edit")
       post :preview, preview_params
       response.body.should eql('TEST')
     end
@@ -212,7 +213,7 @@ describe Radiant::Admin::PagesController do
     describe 'new child' do
       it 'should not save any changes' do
         page_count = Page.count
-        request.stub!(:referer).and_return("/admin/pages/#{preview_page.id}/edit")
+        request.stub(:referer).and_return("/admin/pages/#{preview_page.id}/edit")
         post :preview, preview_params
         Page.count.should == page_count
       end
@@ -220,7 +221,7 @@ describe Radiant::Admin::PagesController do
     # TODO: transactional fixtures must be turned off for this to be able to test the transactions properly
     # describe 'edit existing page' do
     #   it 'should not save any changes' do
-    #     request.stub!(:referer).and_return("/admin/pages/#{preview_page.id}/edit")
+    #     request.stub(:referer).and_return("/admin/pages/#{preview_page.id}/edit")
     #     original_date = preview_page.updated_at
     #     put :preview, preview_params
     #     non_updated_page = Page.find(preview_page.id)
@@ -260,7 +261,7 @@ describe Radiant::Admin::PagesController do
       home = pages(:home)
       new_page = home.class.new_with_defaults
       new_page.parent_id = home.id
-      Page.stub!(:new_with_defaults).and_return(new_page)
+      Page.stub(:new_with_defaults).and_return(new_page)
       get :new, :page_id => home.id
       assigns(:page).should == new_page
     end
@@ -277,7 +278,7 @@ describe Radiant::Admin::PagesController do
 
      it "should instantiate a new page of the given class" do
        PagesControllerSpecPage = Class.new(Page)
-       PagesControllerSpecPage.stub!(:default_page_parts).and_return(PagePart.new :name => "my_part")
+       PagesControllerSpecPage.stub(:default_page_parts).and_return(PagePart.new :name => "my_part")
        get :new, :page_id => page_id(:home), :page_class => 'PagesControllerSpecPage'
        assigns(:page).parts.map(&:name).should include('my_part')
      end
