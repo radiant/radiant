@@ -51,10 +51,10 @@ module RenderTestHelper
     end
 
     def setup_page(url = nil, host = nil)
-      @page.request = ActionController::TestRequest.new
-      @page.request.fullpath = (url || @page.url)
+      @page.request = ActionDispatch::TestRequest.new
+      @page.request.path = (url || @page.url)
       @page.request.host = host || "testhost.tld"
-      @page.response = ActionController::TestResponse.new
+      @page.response = ActionDispatch::TestResponse.new
     end
 
 end
