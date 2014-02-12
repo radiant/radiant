@@ -25,8 +25,8 @@ describe Radiant::PageResponseCacheDirector do
   let(:non_cacheable_params){ {:private => true, "no-cache" => true} }
   let(:cacheable_params){ {:public => true, :private => false} }
   let(:listener){ l = OpenStruct.new()
-    l.stub!(:set_etag)
-    l.stub!(:set_expiry)
+    l.stub(:set_etag)
+    l.stub(:set_expiry)
     l
   }
   let(:page){ OpenStruct.new }
@@ -44,8 +44,8 @@ describe Radiant::PageResponseCacheDirector do
   end
 
   it 'sets the cacheable response to the default timeout' do
-    listener.stub!(:cacheable_request?).and_return(true)
-    page.stub!(:cache?).and_return(true)
+    listener.stub(:cacheable_request?).and_return(true)
+    page.stub(:cache?).and_return(true)
 
     director = described_class.new(page, listener)
 
@@ -54,9 +54,9 @@ describe Radiant::PageResponseCacheDirector do
   end
 
   it 'sets the cacheable response to the page timeout' do
-    listener.stub!(:cacheable_request?).and_return(true)
-    page.stub!(:cache?).and_return(true)
-    page.stub!(:cache_timeout).and_return(14.days)
+    listener.stub(:cacheable_request?).and_return(true)
+    page.stub(:cache?).and_return(true)
+    page.stub(:cache_timeout).and_return(14.days)
 
     director = described_class.new(page, listener)
 
@@ -65,7 +65,7 @@ describe Radiant::PageResponseCacheDirector do
   end
 
   it 'is not cacheable if the listener request is not cacheable' do
-    listener.stub!(:cacheable_request?).and_return(false)
+    listener.stub(:cacheable_request?).and_return(false)
     director = described_class.new(page, listener)
 
     listener.should_receive(:set_expiry).with(nil, non_cacheable_params)
@@ -73,8 +73,8 @@ describe Radiant::PageResponseCacheDirector do
   end
 
   it 'is not cacheable if the page is not cacheable' do
-    listener.stub!(:cacheable_request?).and_return(true)
-    page.stub!(:cache?).and_return(false)
+    listener.stub(:cacheable_request?).and_return(true)
+    page.stub(:cache?).and_return(false)
     director = described_class.new(page, listener)
 
     listener.should_receive(:set_expiry).with(nil, non_cacheable_params)
