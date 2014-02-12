@@ -1,15 +1,13 @@
-require File.dirname(__FILE__) + "/../spec_helper"
+require File.dirname(__FILE__) + "/../../spec_helper"
 
-describe ApplicationHelper do
-  #dataset :users
-
+describe Radiant::ApplicationHelper do
+  
   before :each do
-    Radiant::Initializer.run :initialize_default_admin_tabs
-    helper.stub!(:request).and_return(ActionController::TestRequest.new)
+    helper.stub(:request).and_return(ActionDispatch::TestRequest.new)
   end
 
   it "should have the Radiant::Config" do
-    helper.config.should == Radiant::Config
+    helper.detail.should == Radiant::Config
   end
 
   it "should use the default title if not configured" do
@@ -17,7 +15,7 @@ describe ApplicationHelper do
   end
 
   it "should use the stored title if configured" do
-    helper.config['admin.title'] = "My Title"
+    helper.detail['admin.title'] = "My Title"
     helper.title.should == "My Title"
   end
 
@@ -26,7 +24,7 @@ describe ApplicationHelper do
   end
 
   it "should use the stored title if configured" do
-    helper.config['admin.subtitle'] = "My Subtitle"
+    helper.detail['admin.subtitle'] = "My Subtitle"
     helper.subtitle.should == "My Subtitle"
   end
 
@@ -36,7 +34,7 @@ describe ApplicationHelper do
   end
 
   it "should be logged in when authenticated" do
-    helper.should_receive(:current_user).and_return(users(:existing))
+    helper.should_receive(:current_user).and_return(FactoryGirl.build(:user))
     helper.logged_in?.should be_true
   end
 
@@ -76,8 +74,8 @@ describe ApplicationHelper do
 
   it "should determine whether a given url matches the current url" do
     request = mock("request")
-    helper.stub!(:request).and_return(request)
-    request.stub!(:fullpath).and_return("/foo/bar")
+    helper.stub(:request).and_return(request)
+    request.stub(:fullpath).and_return("/foo/bar")
     helper.current_url?("/foo/bar/").should_not be_false
     helper.current_url?("/foo//bar").should_not be_false
     helper.current_url?("/baz/bam").should_not be_true
@@ -91,8 +89,8 @@ describe ApplicationHelper do
 
   it "should render an admin navigation link" do
     request = mock("request")
-    helper.stub!(:request).and_return(request)
-    request.stub!(:fullpath).and_return("/admin/pages")
+    helper.stub(:request).and_return(request)
+    request.stub(:fullpath).and_return("/admin/pages")
     helper.nav_link_to("Pages", "/admin/pages").should =~ /<strong>/
   end
 
@@ -109,12 +107,12 @@ describe ApplicationHelper do
   end
 
   it "should determine whether the current user is an admin" do
-    helper.should_receive(:current_user).at_least(1).times.and_return(users(:admin))
+    helper.should_receive(:current_user).at_least(1).times.and_return(FactoryGirl.build(:admin))
     helper.admin?.should be_true
   end
 
   it "should determine whether the current user is a designer" do
-    helper.should_receive(:current_user).at_least(1).times.and_return(users(:designer))
+    helper.should_receive(:current_user).at_least(1).times.and_return(FactoryGirl.build(:designer))
     helper.designer?.should be_true
   end
 
@@ -125,7 +123,7 @@ describe ApplicationHelper do
   it "should render an updated timestamp for a model" do
     model = mock_model(Page)
     model.should_receive(:new_record?).and_return(false)
-    model.should_receive(:updated_by).and_return(users(:admin))
+    model.should_receive(:updated_by).and_return(FactoryGirl.build(:admin))
     model.should_receive(:updated_at).and_return(Time.local(2008, 3, 30, 10, 30))
     helper.updated_stamp(model).should == %{<p class="updated_line">Last Updated by <strong>Admin</strong> at 10:30 am on March 30, 2008</p>}
   end
@@ -145,12 +143,12 @@ describe ApplicationHelper do
   end
 
   it "should provide a meta_label of 'Less' when meta_errors? is true" do
-    helper.stub!(:meta_errors?).and_return(true)
+    helper.stub(:meta_errors?).and_return(true)
     helper.meta_label.should == 'Less'
   end
 
   it "should provide a meta_label of 'More' when meta_errors? is false" do
-    helper.stub!(:meta_errors?).and_return(false)
+    helper.stub(:meta_errors?).and_return(false)
     helper.meta_label.should == 'More'
   end
 
@@ -186,7 +184,7 @@ describe ApplicationHelper do
       @override_css_path = "#{Rails.root}/public/stylesheets/admin/overrides.css"
       @override_sass_path = "#{Rails.root}/public/stylesheets/sass/admin/overrides.sass"
       @override_js_path = "#{Rails.root}/public/javascripts/admin/overrides.js"
-      File.stub!(:exist?)
+      File.stub(:exist?)
     end
     it "should render a link to the overrides.css file when it exists" do
       File.should_receive(:exist?).with(@override_css_path).and_return(true)
@@ -219,10 +217,10 @@ describe ApplicationHelper do
   #   before do
   #     @collection = WillPaginate::Collection.new(1, 10, 100)
   #     request = mock("request")
-  #     helper.stub!(:request).and_return(request)
-  #     helper.stub!(:will_paginate_options).and_return({})
-  #     helper.stub!(:will_paginate).and_return("pagination of some kind")
-  #     helper.stub!(:link_to).and_return("link")
+  #     helper.stub(:request).and_return(request)
+  #     helper.stub(:will_paginate_options).and_return({})
+  #     helper.stub(:will_paginate).and_return("pagination of some kind")
+  #     helper.stub(:link_to).and_return("link")
   #   end
   #
   #   it "should render pagination controls for a supplied list" do
