@@ -30,6 +30,13 @@ class VirtualSpecPage < Page
   end
 end
 
+class ReverseFilter < TextFilter
+  description %{Reverses text.}
+  def filter(text)
+    text.reverse
+  end
+end
+
 describe Page, 'validations' do
   test_helper :page
 
@@ -469,7 +476,7 @@ describe Page, "rendering" do
   end
 
   it 'should render with a filter' do
-    pages(:textile).render.should == 'Some *Textile* content. - Filtered with TEXTILE!'
+    reverse_filtered.render.should == '!dlrow olleH'
   end
 
   it 'should render with tags' do
