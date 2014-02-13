@@ -451,7 +451,6 @@ describe Page, "before save filter" do
 
    # turn a virtual page into a non-virtual one
    ["", nil, "Page", "PageSpecTestPage"].each do |value|
-      @page = PageSpecTestPage.create(page_params)
       @page.class_name = value
       @page.save.should == true
       @page = Page.find @page.id
