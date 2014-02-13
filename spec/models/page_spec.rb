@@ -767,8 +767,8 @@ end
 describe Page, "processing" do
 
   before :all do
-    @request = ActionController::TestRequest.new :url => '/page/'
-    @response = ActionController::TestResponse.new
+    @request = ActionDispatch::TestRequest.new :url => '/page/'
+    @response = ActionDispatch::TestResponse.new
     @page = FactoryGirl.build(:page) do |page|
       page.parts.build(:name => 'body', :content => 'Hello world!')
     end
