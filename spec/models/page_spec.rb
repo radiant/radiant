@@ -317,7 +317,7 @@ describe Page do
       expect(past_scheduled.status_id).to eq(Status[:published].id)
     end
 
-    it 'should interpret the input date correctly when the current language is not English' do
+    xit 'should interpret the input date correctly when the current language is not English' do
       I18n.locale = :nl
       page.update_attribute(:published_at, "17 mei 2011")
       I18n.locale = :en
