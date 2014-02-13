@@ -4,7 +4,7 @@ FactoryGirl.define do
     breadcrumb  { title }
     slug        { title.slugify }
     
-    status_id '1'
+    status_id Status[:draft].id
 
     factory :page_with_layout do
       layout
@@ -18,13 +18,13 @@ FactoryGirl.define do
     end
     
     factory :published_page do
-      status_id '100'
+      status_id Status[:published].id
     end
     
     factory :home do |home|
       title 'Home'
       slug '/'
-      status_id '100'
+      status_id Status[:published].id
       parent_id nil
     end
   end
