@@ -420,7 +420,7 @@ describe Page do
     end
 
     it 'should return a collection containing the default_child and ordered by name Page descendants that are in_menu' do
-      Page.should_receive(:descendants).and_return([PageSpecTestPage, CustomFileNotFoundPage])
+      Page.should_receive(:descendants).at_least(:once).and_return([PageSpecTestPage, CustomFileNotFoundPage])
       page.allowed_children_lookup.should == [Page, CustomFileNotFoundPage, PageSpecTestPage]
     end
   end
