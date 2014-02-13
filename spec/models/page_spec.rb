@@ -736,11 +736,11 @@ end
 describe Page, "class find_by_path" do
   test_helper :page
 
-  let(:home){ Page.create!(page_params(:slug => '/', :published_at => Time.now)) }
-  let(:parent){ home.children.create!(page_params(:slug => 'parent', :published_at => Time.now))}
-  let(:child){ parent.children.create!(page_params(:slug => 'child', :published_at => Time.now))}
+  let(:home){ Page.create!(page_params(:slug => '/', :status_id => Status[:published].id)) }
+  let(:parent){ home.children.create!(page_params(:slug => 'parent', :status_id => Status[:published].id))}
+  let(:child){ parent.children.create!(page_params(:slug => 'child', :status_id => Status[:published].id))}
   let(:draft){ home.children.create!(page_params(:slug => 'draft', :status_id => Status[:draft].id)) }
-  let(:file_not_found){ FileNotFoundPage.create!(page_params(parent_id: home.id, :slug => '404', :published_at => Time.now))}
+  let(:file_not_found){ FileNotFoundPage.create!(page_params(parent_id: home.id, :slug => '404', :status_id => Status[:published].id))}
 
   it 'should find the home page' do
     home
