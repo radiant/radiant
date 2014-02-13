@@ -6,8 +6,8 @@ class PageSpecTestPage < Page
   def headers
     {
       'cool' => 'beans',
-      'request' => @request.inspect[20..30],
-      'response' => @response.inspect[20..31]
+      'request' => @request.inspect[18..28],
+      'response' => @response.inspect[18..29]
     }
   end
 
