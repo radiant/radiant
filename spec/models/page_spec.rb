@@ -427,10 +427,9 @@ describe Page do
 end
 
 describe Page, "before save filter" do
-  #dataset :home_page
 
   before :each do
-    Page.create(page_params(:title =>"Month Index", :class_name => "VirtualSpecPage"))
+    Page.create(FactoryGirl.attributes_for(:page, :title =>"Month Index", :class_name => "VirtualSpecPage"))
     @page = Page.find_by_title("Month Index")
   end
 
@@ -464,15 +463,30 @@ describe Page, "before save filter" do
 end
 
 describe Page, "rendering" do
-  #dataset :pages, :markup_pages, :layouts
   test_helper :render
-
-  before :each do
-    @page = pages(:home)
-  end
-
+  let(:hello_world){
+    FactoryGirl.build(:page) do |page|
+      page.parts.build(:name => 'body', :content => 'Hello world!')
+    end
+  }
+  let(:reverse_filtered){
+    FactoryGirl.build(:page) do |page|
+      page.parts.build(:name => 'body', :content => 'Hello world!', :filter_id => 'Reverse')
+    end
+  }
+  let(:radius){
+    FactoryGirl.build(:page, :title => 'Radius') do |page|
+      page.parts.build(:name => 'body', :content => '<r:title />')
+    end
+  }
+  let(:test_page){
+    PageSpecTestPage.create(FactoryGirl.attributes_for(:page, :title => "Test Page")) do |page|
+      page.parts.build(:name => 'body', :content => '<r:test1 /> <r:test2 />')
+    end
+  }
+  
   it 'should render' do
-    @page.render.should == 'Hello world!'
+    hello_world.render.should == 'Hello world!'
   end
 
   it 'should render with a filter' do
@@ -480,30 +494,29 @@ describe Page, "rendering" do
   end
 
   it 'should render with tags' do
-    pages(:radius).render.should == "Radius body."
+    radius.render.should == "Radius"
   end
 
   it 'should render with a layout' do
-    @page.update_attribute(:layout_id, layout_id(:main))
-    @page.render.should == "<html>\n  <head>\n    <title>Home</title>\n  </head>\n  <body>\n    Hello world!\n  </body>\n</html>\n"
+    hello_world.update_attribute(:layout_id, FactoryGirl.create(:layout).id)
+    hello_world.render.should == "<html>\n  <head>\n    <title>Page</title>\n  </head>\n  <body>\n    Hello world!\n  </body>\n</html>\n"
   end
 
   it 'should render a part' do
-    @page.render_part(:body).should == "Hello world!"
+    hello_world.render_part(:body).should == "Hello world!"
   end
 
   it "should render blank when given a non-existent part" do
-    @page.render_part(:empty).should == ''
+    hello_world.render_part(:empty).should == ''
   end
 
   it 'should render custom pages with tags' do
-    create_page "Test Page", :body => "<r:test1 /> <r:test2 />", :class_name => "PageSpecTestPage"
-    pages(:test_page).should render_as('Hello world! Another test. body.')
+    test_page.should render_as('Hello world! Another test.')
   end
 
   it 'should render custom pages with tags that return frozen strings' do
-    create_page "Test Page", :body => "<r:frozen_string />", :class_name => "PageSpecTestPage"
-    pages(:test_page).should render_as('Brain body.')
+    test_page.part(:body).update_attribute :content, '<r:frozen_string />'
+    test_page.should render_as('Brain')
   end
 
   it 'should render blank when containing no content' do
@@ -638,7 +651,7 @@ describe Page, "class" do
 
   it "should expose default page parts" do
     override = PagePart.new(:name => 'override')
-    Page.stub!(:default_page_parts).and_return([override])
+    Page.stub(:default_page_parts).and_return([override])
     @page = Page.new_with_defaults({})
     @page.parts.should eql([override])
   end
@@ -699,7 +712,7 @@ describe Page, "class which is applied to a page but not defined" do
 
   before :each do
     Object.send(:const_set, :ClassNotDefinedPage, Class.new(Page){ def self.missing?; false end })
-    create_page "Class Not Defined", :class_name => "ClassNotDefinedPage"
+    FactoryGirl.create(:page, :title => "Class Not Defined", :class_name => "ClassNotDefinedPage")
     Object.send(:remove_const, :ClassNotDefinedPage)
     Page.load_subclasses
   end
@@ -768,8 +781,7 @@ describe Page, "processing" do
   end
 
   it 'should set headers and pass request and response' do
-    create_page "Test Page", :class_name => "PageSpecTestPage"
-    @page = pages(:test_page)
+    @page = PageSpecTestPage.create(FactoryGirl.attributes_for(:page, :title => "Test Page"))
     @page.process(@request, @response)
     @response.headers['cool'].should == 'beans'
     @response.headers['request'].should == 'TestRequest'
