@@ -44,19 +44,33 @@ module Radiant
     # or in an extension. Radiant currently defines the following settings and makes them editable by
     # admin users on the site configuration page:
     #
-    # admin.title               :: the title of the admin system
-    # admin.subtitle            :: the subtitle of the admin system
+    # dev.host                  :: the 'dev' host which can be used to see draft pages
+    #                              or content surrounded by <r:if_dev> tags
+    # local.timezone            :: the time zone to be used for timestamps
+    # defaults.locale           :: the default locale to be used for the backend
     # defaults.page.parts       :: a comma separated list of default page parts
     # defaults.page.status      :: a string representation of the default page status
     # defaults.page.filter      :: the default filter to use on new page parts
     # defaults.page.fields      :: a comma separated list of the default page fields
-    # defaults.snippet.filter   :: the default filter to use on new snippets
     # dev.host                  :: the hostname where draft pages are viewable
     # local.timezone            :: the timezone name (`rake -D time` for full list)
     #                              used to correct displayed times
-    # page.edit.published_date? :: when true, shows the datetime selector
-    #                              for published date on the page edit screen
+    # site.title                :: the title to be returned by <r:site:title />
+    # site.host                 :: the host to be returned by <r:site:host />
+    # user.allow_password_reset?:: whether or not users can request a password reset
+    #                           :: (not implemented yet)
+    
+    # The following settings are also defined by default, but are only editable through
+    # the Rails console or in the database:
     #
+    # admin.title                    :: the title of the admin system
+    # admin.subtitle                 :: the subtitle of the admin system
+    # admin.pagination.per_page      :: the default number of items to be shown per page
+    # pagination.param_name          :: the pagination 'page' param name for 
+    #                                   <r:children:each paginated="true">...</r:children:each>
+    # pagination.per_page_param_name :: the pagination 'per_page' param name for
+    #                                   <r:children:each paginated="true">...</r:children:each>
+    
     # Helper methods are defined in ConfigurationHelper that will display config entry values
     # or edit fields:
     #
