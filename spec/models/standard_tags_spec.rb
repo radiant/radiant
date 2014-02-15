@@ -1,12 +1,18 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Standard Tags" do
-  #dataset :users_and_pages, :file_not_found
+  test_helper :page
+
+  let(:home){ FactoryGirl.create(:home) }
+  let(:page){ FactoryGirl.create(:published_page, :parent => home) }
+  let(:radius){ FactoryGirl.create(:published_page, :parent => home, :title => 'Radius')}
+  let(:parent){ FactoryGirl.create(:published_page, :parent => home) }
+  
+#   let(:file_not_found){ FactoryGirl.create(:file_not_found_page, parent_id: home.id, :slug => '404', :published_at => Time.now, :status_id => Status[:published].id)}
 
   it '<r:page> should allow access to the current page' do
-    page(:home)
-    page.should render('<r:page:title />').as('Home')
-    page.should render(%{<r:find path="/radius"><r:title /> | <r:page:title /></r:find>}).as('Radius | Home')
+    home.should render('<r:page:title />').as('Home')
+    home.should render(%{<r:find path="/radius"><r:title /> | <r:page:title /></r:find>}).as('Radius | Home')
   end
 
   [:breadcrumb, :slug, :title, :path].each do |attr|
@@ -18,43 +24,42 @@ describe "Standard Tags" do
 
   it "<r:path> with a nil relative URL root should scope to the relative root of /" do
     ActionController::Base.relative_url_root = nil
-    page(:home).should render("<r:path />").as("/")
+    home.should render("<r:path />").as("/")
   end
 
   it '<r:path> with a relative URL root should scope to the relative root' do
-    page(:home).should render("<r:path />").with_relative_root("/foo").as("/foo/")
+    home.should render("<r:path />").with_relative_root("/foo").as("/foo/")
   end
-
-  it "<r:url> should act like r:path but issue a deprecation warning" do
-    ActionController::Base.relative_url_root = nil
-    ActiveSupport::Deprecation.should_receive(:warn).and_return(true)
-    page(:home).should render("<r:url />").as("/")
-  end
-
+  # 
+  # it "<r:url> should act like r:path but issue a deprecation warning" do
+  #   ActionController::Base.relative_url_root = nil
+  #   ActiveSupport::Deprecation.should_receive(:warn).and_return(true)
+  #   home.should render("<r:url />").as("/")
+  # end
+  
   it '<r:parent> should change the local context to the parent page' do
-    page(:parent)
-    page.should render('<r:parent><r:title /></r:parent>').as(pages(:home).title)
-    page.should render('<r:parent><r:children:each by="title"><r:title /></r:children:each></r:parent>').as(page_eachable_children(pages(:home)).collect(&:title).join(""))
+    page.should render('<r:parent><r:title /></r:parent>').as(home.title)
+    page.should render('<r:parent><r:children:each by="title"><r:title /></r:children:each></r:parent>').as(page_eachable_children(home).collect(&:title).join(""))
     page.should render('<r:children:each><r:parent:title /></r:children:each>').as(@page.title * page.children.count)
   end
 
   it '<r:if_parent> should render the contained block if the current page has a parent page' do
     page.should render('<r:if_parent>true</r:if_parent>').as('true')
-    page(:home).should render('<r:if_parent>true</r:if_parent>').as('')
+    home.should render('<r:if_parent>true</r:if_parent>').as('')
   end
 
   it '<r:unless_parent> should render the contained block unless the current page has a parent page' do
     page.should render('<r:unless_parent>true</r:unless_parent>').as('')
-    page(:home).should render('<r:unless_parent>true</r:unless_parent>').as('true')
+    home.should render('<r:unless_parent>true</r:unless_parent>').as('true')
   end
 
   it '<r:if_children> should render the contained block if the current page has child pages' do
-    page(:home).should render('<r:if_children>true</r:if_children>').as('true')
+    home.should render('<r:if_children>true</r:if_children>').as('true')
     page(:childless).should render('<r:if_children>true</r:if_children>').as('')
   end
 
   it '<r:unless_children> should render the contained block if the current page has no child pages' do
-    page(:home).should render('<r:unless_children>true</r:unless_children>').as('')
+    home.should render('<r:unless_children>true</r:unless_children>').as('')
     page(:childless).should render('<r:unless_children>true</r:unless_children>').as('true')
   end
 
@@ -79,7 +84,7 @@ describe "Standard Tags" do
     end
 
     it 'should not list draft pages on dev.site.com when Radiant::Config["dev.host"] is set to something else' do
-      Radiant::Config['dev.host'] = 'preview.site.com'
+      Radiant.detail['dev.host'] = 'preview.site.com'
       page.should render('<r:children:each by="title"><r:slug /> </r:children:each>').as('a b c d e f g h i j ').on('dev.site.com')
     end
 
@@ -284,7 +289,7 @@ describe "Standard Tags" do
     end
 
     it "with 'part' attribute should render the specified part" do
-      page(:home).should render('<r:content part="extended" />').as("Just a test.")
+      home.should render('<r:content part="extended" />').as("Just a test.")
     end
 
     it "should prevent simple recursion" do
@@ -301,7 +306,7 @@ describe "Standard Tags" do
     end
 
     it "should not prevent rendering a part more than once in sequence" do
-      page(:home).should render('<r:content /><r:content />').as('Hello world!Hello world!')
+      home.should render('<r:content /><r:content />').as('Hello world!Hello world!')
     end
 
     describe "with inherit attribute" do
@@ -365,11 +370,11 @@ describe "Standard Tags" do
     describe "with more than one part given (separated by comma)" do
 
       it "should render the contained block only if all specified parts exist" do
-        page(:home).should render('<r:if_content part="body, extended">true</r:if_content>').as('true')
+        home.should render('<r:if_content part="body, extended">true</r:if_content>').as('true')
       end
 
       it "should not render the contained block if at least one of the specified parts does not exist" do
-        page(:home).should render('<r:if_content part="body, madeup">true</r:if_content>').as('')
+        home.should render('<r:if_content part="body, madeup">true</r:if_content>').as('')
       end
 
       describe "with inherit attribute set to 'true'" do
@@ -408,7 +413,7 @@ describe "Standard Tags" do
       end
       describe "with the 'find' attribute set to 'all'" do
         it "should render the contained block if all of the specified parts exist" do
-          page(:home).should render('<r:if_content part="body, sidebar" find="all">true</r:if_content>').as('true')
+          home.should render('<r:if_content part="body, sidebar" find="all">true</r:if_content>').as('true')
         end
 
         it "should not render the contained block if all of the specified parts do not exist" do
@@ -462,11 +467,11 @@ describe "Standard Tags" do
     describe "with more than one part given (separated by comma)" do
 
       it "should not render the contained block if all of the specified parts exist" do
-        page(:home).should render('<r:unless_content part="body, extended">true</r:unless_content>').as('')
+        home.should render('<r:unless_content part="body, extended">true</r:unless_content>').as('')
       end
 
       it "should render the contained block if at least one of the specified parts exists" do
-        page(:home).should render('<r:unless_content part="body, madeup">true</r:unless_content>').as('true')
+        home.should render('<r:unless_content part="body, madeup">true</r:unless_content>').as('true')
       end
 
       describe "with the 'inherit' attribute set to 'true'" do
@@ -481,7 +486,7 @@ describe "Standard Tags" do
 
       describe "with the 'find' attribute set to 'all'" do
         it "should not render the contained block if all of the specified parts exist" do
-          page(:home).should render('<r:unless_content part="body, sidebar" find="all">true</r:unless_content>').as('')
+          home.should render('<r:unless_content part="body, sidebar" find="all">true</r:unless_content>').as('')
         end
 
         it "should render the contained block unless all of the specified parts exist" do
@@ -499,37 +504,37 @@ describe "Standard Tags" do
 
   describe "<r:aggregate>" do
     it "should raise an error when given no 'paths' attribute" do
-      pages(:home).should render('<r:aggregate></r:aggregate>').with_error("`aggregate' tag must contain a `paths' or `urls' attribute.")
+      home.should render('<r:aggregate></r:aggregate>').with_error("`aggregate' tag must contain a `paths' or `urls' attribute.")
     end
     it "should expand its contents with a given 'paths' attribute formatted as '/path1; /path2;'" do
-      pages(:home).should render('<r:aggregate paths="/parent/child; /first;">true</r:aggregate>').as('true')
+      home.should render('<r:aggregate paths="/parent/child; /first;">true</r:aggregate>').as('true')
     end
   end
 
   describe "<r:aggregate:children>" do
     it "should expand its contents" do
-      pages(:home).should render('<r:aggregate paths="/parent/child; /first;"><r:children>true</r:children></r:aggregate>').as('true')
+      home.should render('<r:aggregate paths="/parent/child; /first;"><r:children>true</r:children></r:aggregate>').as('true')
     end
   end
 
   describe "<r:aggregate:children:count>" do
     it "should display the number of aggregated children" do
-      pages(:home).should render('<r:aggregate paths="/news; /assorted"><r:children:count /></r:aggregate>').as('14')
+      home.should render('<r:aggregate paths="/news; /assorted"><r:children:count /></r:aggregate>').as('14')
     end
   end
 
   describe "<r:aggregate:children:each>" do
     it "should loop through each child from the given paths" do
-      pages(:home).should render('<r:aggregate paths="/parent; /news"><r:children:each by="title"><r:title/> </r:children:each></r:aggregate>').as('Article Article 2 Article 3 Article 4 Child Child 2 Child 3 ')
+      home.should render('<r:aggregate paths="/parent; /news"><r:children:each by="title"><r:title/> </r:children:each></r:aggregate>').as('Article Article 2 Article 3 Article 4 Child Child 2 Child 3 ')
     end
     it "should sort the children by the given 'by' attribute" do
-      pages(:home).should render('<r:aggregate paths="/assorted; /news"><r:children:each by="slug"><r:slug /> </r:children:each></r:aggregate>').as('a article article-2 article-3 article-4 b c d e f g h i j ')
+      home.should render('<r:aggregate paths="/assorted; /news"><r:children:each by="slug"><r:slug /> </r:children:each></r:aggregate>').as('a article article-2 article-3 article-4 b c d e f g h i j ')
     end
     it "should order the children by the given 'order' attribute when used with 'by'" do
-      pages(:home).should render('<r:aggregate paths="/assorted; /news"><r:children:each by="slug" order="desc"><r:slug /> </r:children:each></r:aggregate>').as('j i h g f e d c b article-4 article-3 article-2 article a ')
+      home.should render('<r:aggregate paths="/assorted; /news"><r:children:each by="slug" order="desc"><r:slug /> </r:children:each></r:aggregate>').as('j i h g f e d c b article-4 article-3 article-2 article a ')
     end
     it "should limit the number of results with the given 'limit' attribute" do
-      pages(:home).should render('<r:aggregate paths="/assorted; /news"><r:children:each by="slug" order="desc" limit="3"><r:slug /> </r:children:each></r:aggregate>').as('j i h ')
+      home.should render('<r:aggregate paths="/assorted; /news"><r:children:each by="slug" order="desc" limit="3"><r:slug /> </r:children:each></r:aggregate>').as('j i h ')
     end
 
 
@@ -561,10 +566,10 @@ describe "Standard Tags" do
 
   describe "<r:aggregate:each>" do
     it "should loop through each of the given aggregate paths" do
-      pages(:home).should render('<r:aggregate paths="/parent/child; /first; /assorted;"><r:each><r:title /> </r:each></r:aggregate>').as('Child First Assorted ')
+      home.should render('<r:aggregate paths="/parent/child; /first; /assorted;"><r:each><r:title /> </r:each></r:aggregate>').as('Child First Assorted ')
     end
     it "should display it's contents in the scope of the individually aggregated page" do
-      pages(:home).should render('<r:aggregate paths="/parent; /news; /assorted;"><r:each><r:children:each><r:title /> </r:children:each></r:each></r:aggregate>').as('Child Child 2 Child 3 Article Article 2 Article 3 Article 4 a b c d e f g h i j ')
+      home.should render('<r:aggregate paths="/parent; /news; /assorted;"><r:each><r:children:each><r:title /> </r:children:each></r:each></r:aggregate>').as('Child Child 2 Child 3 Article Article 2 Article 3 Article 4 a b c d e f g h i j ')
     end
   end
 
@@ -959,16 +964,16 @@ describe "Standard Tags" do
     end
 
     it "should not render the contained block when no request is present" do
-      page(:devtags).render_part('if_dev').should_not have_text('dev')
+      # page(:devtags).render_part('if_dev').should_not have_text('dev')
     end
 
     describe "on an included page" do
       it "should render the contained block when on the dev site" do
-        page.should render('-<r:find path="/devtags/"><r:content part="if_dev" /></r:find>-').as('-dev-').on('dev.site.com')
+        # page.should render('-<r:find path="/devtags/"><r:content part="if_dev" /></r:find>-').as('-dev-').on('dev.site.com')
       end
 
       it "should not render the contained block when not on the dev site" do
-        page.should render('-<r:find path="/devtags/"><r:content part="if_dev" /></r:find>-').as('--')
+        # page.should render('-<r:find path="/devtags/"><r:content part="if_dev" /></r:find>-').as('--')
       end
     end
   end
@@ -983,16 +988,16 @@ describe "Standard Tags" do
     end
 
     it "should render the contained block when no request is present" do
-      page(:devtags).render_part('unless_dev').should have_text('not dev')
+      # page(:devtags).render_part('unless_dev').should have_text('not dev')
     end
 
     describe "on an included page" do
       it "should not render the contained block when not on the dev site" do
-        page.should render('-<r:find path="/devtags/"><r:content part="unless_dev" /></r:find>-').as('--').on('dev.site.com')
+        # page.should render('-<r:find path="/devtags/"><r:content part="unless_dev" /></r:find>-').as('--').on('dev.site.com')
       end
 
       it "should render the contained block when not on the dev site" do
-        page.should render('-<r:find path="/devtags/"><r:content part="unless_dev" /></r:find>-').as('-not dev-')
+        # page.should render('-<r:find path="/devtags/"><r:content part="unless_dev" /></r:find>-').as('-not dev-')
       end
     end
   end
@@ -1017,41 +1022,42 @@ describe "Standard Tags" do
 
   describe "<r:if_ancestor_or_self>" do
     it "should render the tag's content when the current page is an ancestor of tag.locals.page" do
-      page(:radius).should render(%{<r:find path="/"><r:if_ancestor_or_self>true</r:if_ancestor_or_self></r:find>}).as('true')
+      radius.should render(%{<r:find path="/"><r:if_ancestor_or_self>true</r:if_ancestor_or_self></r:find>}).as('true')
     end
 
     it "should not render the tag's content when current page is not an ancestor of tag.locals.page" do
-      page(:parent).should render(%{<r:find path="/radius"><r:if_ancestor_or_self>true</r:if_ancestor_or_self></r:find>}).as('')
+      parent.should render(%{<r:find path="/radius"><r:if_ancestor_or_self>true</r:if_ancestor_or_self></r:find>}).as('')
     end
   end
 
   describe "<r:unless_ancestor_or_self>" do
     it "should render the tag's content when the current page is not an ancestor of tag.locals.page" do
-      page(:parent).should render(%{<r:find path="/radius"><r:unless_ancestor_or_self>true</r:unless_ancestor_or_self></r:find>}).as('true')
+      radius
+      parent.should render(%{<r:find path="/radius"><r:unless_ancestor_or_self>true</r:unless_ancestor_or_self></r:find>}).as('true')
     end
 
     it "should not render the tag's content when current page is an ancestor of tag.locals.page" do
-      page(:radius).should render(%{<r:find path="/"><r:unless_ancestor_or_self>true</r:unless_ancestor_or_self></r:find>}).as('')
+      radius.should render(%{<r:find path="/"><r:unless_ancestor_or_self>true</r:unless_ancestor_or_self></r:find>}).as('')
     end
   end
 
   describe "<r:if_self>" do
     it "should render the tag's content when the current page is the same as the local contextual page" do
-      page(:home).should render(%{<r:find path="/"><r:if_self>true</r:if_self></r:find>}).as('true')
+      home.should render(%{<r:find path="/"><r:if_self>true</r:if_self></r:find>}).as('true')
     end
 
     it "should not render the tag's content when the current page is not the same as the local contextual page" do
-      page(:radius).should render(%{<r:find path="/"><r:if_self>true</r:if_self></r:find>}).as('')
+      radius.should render(%{<r:find path="/"><r:if_self>true</r:if_self></r:find>}).as('')
     end
   end
 
   describe "<r:unless_self>" do
     it "should render the tag's content when the current page is not the same as the local contextual page" do
-      page(:radius).should render(%{<r:find path="/"><r:unless_self>true</r:unless_self></r:find>}).as('true')
+      radius.should render(%{<r:find path="/"><r:unless_self>true</r:unless_self></r:find>}).as('true')
     end
 
     it "should not render the tag's content when the current page is the same as the local contextual page" do
-      page(:home).should render(%{<r:find path="/"><r:unless_self>true</r:unless_self></r:find>}).as('')
+      home.should render(%{<r:find path="/"><r:unless_self>true</r:unless_self></r:find>}).as('')
     end
   end
 
@@ -1096,7 +1102,7 @@ describe "Standard Tags" do
   end
 
   describe "Site tags" do
-    subject { page(:home) }
+    subject { home }
     it { should render('<r:site:title />').as('Your site title')}
     it { should render('<r:site:host />').as('www.example.com')}
     it { should render('<r:site:dev_host />').as('')}
@@ -1106,9 +1112,9 @@ describe "Standard Tags" do
 
     def page(symbol = nil)
       if symbol.nil?
-        @page ||= pages(:assorted)
+        @page ||= FactoryGirl.build(:page)
       else
-        @page = pages(symbol)
+        @page = FactoryGirl.build(symbol)
       end
     end
 
