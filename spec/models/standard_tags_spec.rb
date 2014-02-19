@@ -5,16 +5,20 @@ describe "Standard Tags" do
 
   let!(:home){ FactoryGirl.create(:home) do |page|
     page.created_by = FactoryGirl.create(:admin)
+    page.parts.create(:name => "body", :content => "Hello world!")
+    page.parts.create(:name => "sidebar", :content => "<r:title /> sidebar.")
+    page.parts.create(:name => "extended", :content => "Just a test.")
+    page.parts.create(:name => "titles", :content => "<r:title /> <r:page:title />")
   end}
   let(:page){ FactoryGirl.create(:published_page, :parent => home, :title => 'Page') }
   let(:radius){ FactoryGirl.create(:published_page, :parent => home, :title => 'Radius')}
   
-  let(:parent){ FactoryGirl.create(:published_page, :parent => home, :title => 'Parent') }
-  let(:child){ FactoryGirl.create(:published_page, :parent => parent, :title => 'Child') }
-  let(:grandchild){ FactoryGirl.create(:published_page, :parent => child, :title => 'Grandchild') }
+  let(:parent){ FactoryGirl.create(:page_with_body_page_part, :parent => home, :title => 'Parent') }
+  let(:child){ FactoryGirl.create(:page_with_body_page_part, :parent => parent, :title => 'Child') }
+  let(:grandchild){ FactoryGirl.create(:page_with_body_and_sidebar_parts, :parent => child, :title => 'Grandchild') }
   let(:great_grandchild){ FactoryGirl.create(:published_page, :parent => grandchild, :title => 'Great Grandchild') }
-  let(:child_2){ FactoryGirl.create(:published_page, :parent => parent, :title => 'Child 2') }
-  let(:child_3){ FactoryGirl.create(:published_page, :parent => parent, :title => 'Child 3') }
+  let(:child_2){ FactoryGirl.create(:page_with_body_page_part, :parent => parent, :title => 'Child 2') }
+  let(:child_3){ FactoryGirl.create(:page_with_body_page_part, :parent => parent, :title => 'Child 3') }
   
   let(:news){ FactoryGirl.create(:published_page, :parent => home, :title => 'News') }
   dates = ['2000-12-01 08:41:07', '2001-02-09 08:42:04', '2001-02-24 12:02:43', '2001-03-06 03:32:31']
@@ -44,6 +48,14 @@ describe "Standard Tags" do
       page.parts.create(:name => 'if_dev', :content => "<r:if_dev>dev</r:if_dev>")
       page.parts.create(:name => 'unless_dev', :content => "<r:unless_dev>not dev</r:unless_dev>")
     end }
+    
+  let(:recursive_parts){ FactoryGirl.create(:published_page, :parent => home, :title => 'Recursive parts') do |page|
+    page.parts.create(:name => "body", :content => "<r:content />")
+    page.parts.create(:name => "one", :content => '<r:content part="two" />')
+    page.parts.create(:name => "two", :content => '<r:content part="one" />')
+    page.parts.create(:name => "repeat", :content => '<r:content part="beat"/><r:content part="beat"/>')
+    page.parts.create(:name => "beat", :content => 'x')
+  end}
 #   let(:file_not_found){ FactoryGirl.create(:file_not_found_page, parent_id: home.id, :slug => '404', :published_at => Time.now, :status_id => Status[:published].id)}
 
   it '<r:page> should allow access to the current page' do
@@ -376,7 +388,7 @@ describe "Standard Tags" do
 
       describe "set to 'true'" do
         it "should render an ancestor's part" do
-          page.should render('<r:content part="sidebar" inherit="true" />').as('Assorted sidebar.')
+          assorted.should render('<r:content part="sidebar" inherit="true" />').as('Assorted sidebar.')
         end
         it "should render nothing when no ancestor has the part" do
           page.should render('<r:content part="part_that_doesnt_exist" inherit="true" />').as('')
@@ -384,19 +396,18 @@ describe "Standard Tags" do
 
         describe "and contextual attribute" do
           it "set to 'true' should render the part in the context of the current page" do
-            page(:parent).should render('<r:content part="sidebar" inherit="true" contextual="true" />').as('Parent sidebar.')
-            page(:child).should render('<r:content part="sidebar" inherit="true" contextual="true" />').as('Child sidebar.')
-            page(:grandchild).should render('<r:content part="sidebar" inherit="true" contextual="true" />').as('Grandchild sidebar.')
+            parent.should render('<r:content part="sidebar" inherit="true" contextual="true" />').as('Parent sidebar.')
+            child.should render('<r:content part="sidebar" inherit="true" contextual="true" />').as('Child sidebar.')
+            grandchild.should render('<r:content part="sidebar" inherit="true" contextual="true" />').as('Grandchild sidebar.')
           end
 
           it "set to 'false' should render the part in the context of its containing page" do
-            page(:parent).should render('<r:content part="sidebar" inherit="true" contextual="false" />').as('Home sidebar.')
+            parent.should render('<r:content part="sidebar" inherit="true" contextual="false" />').as('Home sidebar.')
           end
 
           it "should maintain the global page" do
-            page(:first)
-            page.should render('<r:content part="titles" inherit="true" contextual="true"/>').as('First First')
-            page.should render('<r:content part="titles" inherit="true" contextual="false"/>').as('Home First')
+            page.should render('<r:content part="titles" inherit="true" contextual="true"/>').as('Page Page')
+            page.should render('<r:content part="titles" inherit="true" contextual="false"/>').as('Home Page')
           end
         end
       end
@@ -414,17 +425,16 @@ describe "Standard Tags" do
   end
 
   describe "<r:if_content>" do
-
     it "without 'part' attribute should render the contained block if the 'body' part exists" do
-      page.should render('<r:if_content>true</r:if_content>').as('true')
+      home.should render('<r:if_content>true</r:if_content>').as('true')
     end
 
     it "should render the contained block if the specified part exists" do
-      page.should render('<r:if_content part="body">true</r:if_content>').as('true')
+      home.should render('<r:if_content part="body">true</r:if_content>').as('true')
     end
 
     it "should not render the contained block if the specified part does not exist" do
-      page.should render('<r:if_content part="asdf">true</r:if_content>').as('')
+      home.should render('<r:if_content part="asdf">true</r:if_content>').as('')
     end
 
     describe "with more than one part given (separated by comma)" do
@@ -439,45 +449,45 @@ describe "Standard Tags" do
 
       describe "with inherit attribute set to 'true'" do
         it 'should render the contained block if the current or ancestor pages have the specified parts' do
-          page(:guests).should render('<r:if_content part="favors, extended" inherit="true">true</r:if_content>').as('true')
+          child.should render('<r:if_content part="body, sidebar" inherit="true">true</r:if_content>').as('true')
         end
 
         it 'should not render the contained block if the current or ancestor pages do not have all of the specified parts' do
-          page(:guests).should render('<r:if_content part="favors, madeup" inherit="true">true</r:if_content>').as('')
+          child.should render('<r:if_content part="body, madeup" inherit="true">true</r:if_content>').as('')
         end
 
         describe "with find attribute set to 'any'" do
           it 'should render the contained block if the current or ancestor pages have any of the specified parts' do
-            page(:guests).should render('<r:if_content part="favors, madeup" inherit="true" find="any">true</r:if_content>').as('true')
+            child.should render('<r:if_content part="body, madeup" inherit="true" find="any">true</r:if_content>').as('true')
           end
 
           it 'should still render the contained block if first of the specified parts has not been found' do
-            page(:guests).should render('<r:if_content part="madeup, favors" inherit="true" find="any">true</r:if_content>').as('true')
+            child.should render('<r:if_content part="madeup, body" inherit="true" find="any">true</r:if_content>').as('true')
           end
         end
       end
 
       describe "with inherit attribute set to 'false'" do
         it 'should render the contained block if the current page has the specified parts' do
-          page(:guests).should render('<r:if_content part="favors, games" inherit="false">true</r:if_content>').as('')
+          grandchild.should render('<r:if_content part="body, sidebar" inherit="false">true</r:if_content>').as('true')
         end
 
         it 'should not render the contained block if the current or ancestor pages do not have all of the specified parts' do
-          page(:guests).should render('<r:if_content part="favors, madeup" inherit="false">true</r:if_content>').as('')
+          child.should render('<r:if_content part="body, sidebar" inherit="false">true</r:if_content>').as('')
         end
       end
       describe "with the 'find' attribute set to 'any'" do
         it "should render the contained block if any of the specified parts exist" do
-          page.should render('<r:if_content part="body, asdf" find="any">true</r:if_content>').as('true')
+          child.should render('<r:if_content part="body, asdf" find="any">true</r:if_content>').as('true')
         end
       end
       describe "with the 'find' attribute set to 'all'" do
         it "should render the contained block if all of the specified parts exist" do
-          home.should render('<r:if_content part="body, sidebar" find="all">true</r:if_content>').as('true')
+          grandchild.should render('<r:if_content part="body, sidebar" find="all">true</r:if_content>').as('true')
         end
 
-        it "should not render the contained block if all of the specified parts do not exist" do
-          page.should render('<r:if_content part="asdf, madeup" find="all">true</r:if_content>').as('')
+        it "should not render the contained block if any of the specified parts do not exist" do
+          child.should render('<r:if_content part="body, madeup" find="all">true</r:if_content>').as('')
         end
       end
     end
@@ -486,42 +496,42 @@ describe "Standard Tags" do
   describe "<r:unless_content>" do
     describe "with inherit attribute set to 'true'" do
       it 'should not render the contained block if the current or ancestor pages have the specified parts' do
-        page(:guests).should render('<r:unless_content part="favors, extended" inherit="true">true</r:unless_content>').as('')
+        child.should render('<r:unless_content part="body, sidebar" inherit="true">true</r:unless_content>').as('')
       end
 
       it 'should render the contained block if the current or ancestor pages do not have the specified parts' do
-        page(:guests).should render('<r:unless_content part="madeup, imaginary" inherit="true">true</r:unless_content>').as('true')
+        child.should render('<r:unless_content part="madeup, imaginary" inherit="true">true</r:unless_content>').as('true')
       end
 
       it "should not render the contained block if the specified part does not exist but does exist on an ancestor" do
-        page.should render('<r:unless_content part="sidebar" inherit="true">false</r:unless_content>').as('')
+        child.should render('<r:unless_content part="sidebar" inherit="true">false</r:unless_content>').as('')
       end
 
       describe "with find attribute set to 'any'" do
         it 'should not render the contained block if the current or ancestor pages have any of the specified parts' do
-          page(:guests).should render('<r:unless_content part="favors, madeup" inherit="true" find="any">true</r:unless_content>').as('')
+          child.should render('<r:unless_content part="sidebar, madeup" inherit="true" find="any">true</r:unless_content>').as('')
         end
 
         it 'should still not render the contained block if first of the specified parts has not been found' do
-          page(:guests).should render('<r:unless_content part="madeup, favors" inherit="true" find="any">true</r:unless_content>').as('')
+          child.should render('<r:unless_content part="madeup, sidebar" inherit="true" find="any">true</r:unless_content>').as('')
         end
       end
     end
 
     it "without 'part' attribute should not render the contained block if the 'body' part exists" do
-      page.should render('<r:unless_content>false</r:unless_content>').as('')
+      home.should render('<r:unless_content>false</r:unless_content>').as('')
     end
 
     it "should not render the contained block if the specified part exists" do
-      page.should render('<r:unless_content part="body">false</r:unless_content>').as('')
+      home.should render('<r:unless_content part="body">false</r:unless_content>').as('')
     end
 
     it "should render the contained block if the specified part does not exist" do
-      page.should render('<r:unless_content part="asdf">false</r:unless_content>').as('false')
+      home.should render('<r:unless_content part="asdf">false</r:unless_content>').as('false')
     end
 
     it "should render the contained block if the specified part does not exist but does exist on an ancestor" do
-      page.should render('<r:unless_content part="sidebar">false</r:unless_content>').as('false')
+      child.should render('<r:unless_content part="sidebar">false</r:unless_content>').as('false')
     end
 
     describe "with more than one part given (separated by comma)" do
@@ -540,7 +550,7 @@ describe "Standard Tags" do
         end
 
         it "should not render the contained block if all of the specified parts are present on the current or ancestor pages" do
-          page(:party).should render('<r:unless_content part="favors, extended" inherit="true">true</r:unless_content>').as('')
+          great_grandchild.should render('<r:unless_content part="body, sidebar" inherit="true">true</r:unless_content>').as('')
         end
       end
 
@@ -581,47 +591,56 @@ describe "Standard Tags" do
 
   describe "<r:aggregate:children:count>" do
     it "should display the number of aggregated children" do
-      news; article; article_1; article_2; article_3; article4; assorted
+      news; article; article_2; article_3; article_4
+      assorted; a; b; c; d; e; f; g; h; i; j
       home.should render('<r:aggregate paths="/news; /assorted"><r:children:count /></r:aggregate>').as('14')
     end
   end
 
   describe "<r:aggregate:children:each>" do
     it "should loop through each child from the given paths" do
-      news; article; article_1; article_2; article_3; article4; parent; child; child_2; child_3
+      news; article; article_2; article_3; article_4; parent; child; child_2; child_3
       home.should render('<r:aggregate paths="/parent; /news"><r:children:each by="title"><r:title/> </r:children:each></r:aggregate>').as('Article Article 2 Article 3 Article 4 Child Child 2 Child 3 ')
     end
     it "should sort the children by the given 'by' attribute" do
-      news; article; article_1; article_2; article_3; article4; 
+      news; article; article_2; article_3; article_4
+      assorted; a; b; c; d; e; f; g; h; i; j
       home.should render('<r:aggregate paths="/assorted; /news"><r:children:each by="slug"><r:slug /> </r:children:each></r:aggregate>').as('a article article-2 article-3 article-4 b c d e f g h i j ')
     end
     it "should order the children by the given 'order' attribute when used with 'by'" do
-      news; article; article_1; article_2; article_3; article4; 
+      news; article; article_2; article_3; article_4
+      assorted; a; b; c; d; e; f; g; h; i; j
       home.should render('<r:aggregate paths="/assorted; /news"><r:children:each by="slug" order="desc"><r:slug /> </r:children:each></r:aggregate>').as('j i h g f e d c b article-4 article-3 article-2 article a ')
     end
     it "should limit the number of results with the given 'limit' attribute" do
-      news; article; article_1; article_2; article_3; article4; 
+      news; article; article_2; article_3; article_4
+      assorted; a; b; c; d; e; f; g; h; i; j
       home.should render('<r:aggregate paths="/assorted; /news"><r:children:each by="slug" order="desc" limit="3"><r:slug /> </r:children:each></r:aggregate>').as('j i h ')
     end
 
-
     describe 'with paginated="true"' do
       it 'should limit correctly the result set' do
+        news; article; article_2; article_3; article_4
+        assorted; a; b; c; d; e; f; g; h; i; j
         page.pagination_parameters = {:page => 1, :per_page => 10}
         page.should render('<r:aggregate paths="/assorted; /news"><r:children:each paginated="true" per_page="10"><r:slug /> </r:children:each></r:aggregate>').matching(/article article-2 article-3 article-4 a b c d e f /)
         page.should render('<r:aggregate paths="/assorted; /news"><r:children:each paginated="true" per_page="2"><r:slug /> </r:children:each></r:aggregate>').not_matching(/article article-2 article-3/)
       end
       it 'should display a pagination control block' do
+        news; article; article_2; article_3; article_4
+        assorted; a; b; c; d; e; f; g; h; i; j
         page.pagination_parameters = {:page => 1, :per_page => 1}
         page.should render('<r:aggregate paths="/assorted; /news"><r:children:each paginated="true"><r:slug /> </r:children:each></r:aggregate>').matching(/div class="pagination"/)
       end
       it 'should link to the correct paginated page' do
-        home.pagination_parameters = {:page => 1, :per_page => 1}
-        home.should render('<r:find path="/assorted"><r:children:each paginated="true"><r:slug /> </r:children:each></r:find>').matching(%r{href="/another})
+        assorted; a; b; c; d; e; f; g; h; i; j
+        page.pagination_parameters = {:page => 1, :per_page => 1}
+        page.should render('<r:find path="/assorted"><r:children:each paginated="true"><r:slug /> </r:children:each></r:find>').matching(%r{href="/page})
       end
       it 'should pass through selected will_paginate parameters' do
+        assorted; a; b; c; d; e; f; g; h; i; j
         news
-        assorted.pagination_parameters = {:page => 5, :per_page => 1}
+        page.pagination_parameters = {:page => 5, :per_page => 1}
         page.should render('<r:aggregate paths="/assorted; /news"><r:children:each paginated="true" separator="not that likely a choice"><r:slug /> </r:children:each></r:aggregate>').matching(/not that likely a choice/)
         page.should render('<r:aggregate paths="/assorted; /news"><r:children:each paginated="true" previous_label="before"><r:slug /> </r:children:each></r:aggregate>').matching(/before/)
         page.should render('<r:aggregate paths="/assorted; /news"><r:children:each paginated="true" next_label="after"><r:slug /> </r:children:each></r:aggregate>').matching(/after/)
