@@ -69,7 +69,8 @@ module StandardTags
   }
   tag 'children:first' do |tag|
     options = children_find_options(tag)
-    children = tag.locals.children.find(:all, options)
+    order = options.delete(:order)
+    children = tag.locals.children.reorder(order).find(:all, options)
     if first = children.first
       tag.locals.page = first
       tag.expand
@@ -86,7 +87,8 @@ module StandardTags
   }
   tag 'children:last' do |tag|
     options = children_find_options(tag)
-    children = tag.locals.children.find(:all, options)
+    order = options.delete(:order)
+    children = tag.locals.children.reorder(order).find(:all, options)
     if last = children.last
       tag.locals.page = last
       tag.expand
@@ -374,8 +376,9 @@ module StandardTags
 
   tag "aggregate:each:children:each" do |tag|
     options = children_find_options(tag)
+    order = options.delete(:order)
     result = []
-    children = tag.locals.children
+    children = tag.locals.children.reorder(order)
     tag.locals.previous_headers = {}
     children.find(:all, options).each do |item|
       tag.locals.child = item
