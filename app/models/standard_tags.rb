@@ -4,6 +4,7 @@ module StandardTags
 
   require "will_paginate/view_helpers"
   include WillPaginate::ViewHelpers
+  require "radiant/pagination/link_renderer"
 
   class TagError < StandardError; end
   class RequiredAttributeError < StandardError; end
