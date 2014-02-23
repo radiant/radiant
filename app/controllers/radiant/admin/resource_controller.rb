@@ -126,21 +126,23 @@ module Radiant
       }
     end
 
+    rescue_from ActiveRecord::RecordInvalid, :with => :invalid
+    rescue_from ActiveRecord::StaleObjectError, :with => :stale
+    rescue_from ActiveRecord::RecordNotFound, :with => :not_found
     protected
-
-      def rescue_action(exception)
-        case exception
-        when ActiveRecord::RecordInvalid
-          response_for :invalid
-        when ActiveRecord::StaleObjectError
-          response_for :stale
-        when ActiveRecord::RecordNotFound
-          response_for :not_found
-        else
-          super
-        end
+    
+      def invalid
+        response_for :invalid
       end
 
+      def stale
+        response_for :stale
+      end
+
+      def not_found
+        response_for :not_found
+      end
+    
       def model_class
         self.class.model_class
       end
