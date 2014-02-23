@@ -3,7 +3,7 @@ module Radiant
     protect_from_forgery
 
     # from login system
-    prepend_before_filter :authenticate, :authorize
+    prepend_before_filter :authorize, :authenticate
 
     before_filter :set_current_user
     before_filter :set_user_locale
