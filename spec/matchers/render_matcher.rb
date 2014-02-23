@@ -85,7 +85,7 @@ module RSpec
           url = test_host + "/" + url unless url =~ %r{^[^/]+\.[^/]+}
           url = 'http://' + url unless url =~ %r{^http://}
           uri = URI.parse(url)
-          @fullpath = uri.fullpath unless uri.fullpath == '/'
+          @fullpath = uri.path unless uri.path == '/'
           @host = uri.host
           self
         end
@@ -97,12 +97,12 @@ module RSpec
 
         private
           def render_content_with_page(tag_content, page)
-            page.request = ActionController::TestRequest.new
+            page.request = ActionDispatch::TestRequest.new
             page.request.params[:sample_param] = 'data'
-            page.request.fullpath = @fullpath || page.url
+            page.request.path = @fullpath || page.url
             page.request.host = @host || test_host
             ActionController::Base.relative_url_root = @relative_root
-            page.response = ActionController::TestResponse.new
+            page.response = ActionDispatch::TestResponse.new
             if tag_content.nil?
               page.render
             else
