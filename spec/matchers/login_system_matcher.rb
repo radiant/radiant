@@ -10,7 +10,7 @@ module RSpec
           proc.call
           @response = @example.response
           @was_redirect = @response.redirect?
-          @was_redirect_to_login = @response.redirect_url_match?("/admin/login")
+          @was_redirect_to_login = @response.location =~ /admin\/login/
           @was_redirect && @was_redirect_to_login
         end
 
