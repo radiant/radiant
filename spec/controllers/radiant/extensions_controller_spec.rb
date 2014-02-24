@@ -7,7 +7,7 @@ describe Radiant::Admin::ExtensionsController do
   include AuthenticationHelper
   
   before :each do
-    login_as :user
+    login_as :admin
   end
 
   it "should require login for all actions" do
