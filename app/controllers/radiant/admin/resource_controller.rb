@@ -1,5 +1,6 @@
 require 'will_paginate'
 require 'radiant/resource_responses'
+require 'radiant/cache'
 module Radiant
   class Admin::ResourceController < ::Radiant::AdminController
     class_attribute :responses
