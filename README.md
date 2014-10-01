@@ -26,16 +26,16 @@ Radiant features:
 
 ## License
 
-Radiant is released under the MIT license and is copyright (c) 2006-2012
-John W. Long and Sean Cribbs. A copy of the MIT license can be found in the
-LICENSE file.
+Radiant is released under the MIT license and is copyright (c) 2006-2014
+John W. Long, Sean Cribbs, and Jim Gay. A copy of the MIT license can be
+found in the LICENSE file.
 
 ## Installation and Setup
 
 Radiant is a traditional Ruby on Rails application, meaning that you can
 configure and run it the way you would a normal Rails application.
 
-See the INSTALL file for more details.
+See the [INSTALL](INSTALL.md) file for more details.
 
 ### Installation of a Prerelease
 
@@ -76,6 +76,6 @@ http://wiki.github.com/radiant/radiant/
 
 Enjoy!
 
---
-The Radiant Dev Team
+--  
+The Radiant Dev Team  
 http://radiantcms.org
