@@ -36,7 +36,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency "radius",          "~> 0.7"
   s.add_dependency "RedCloth",        "~> 4.2"
   s.add_dependency "stringex",        "~> 1.3"
-  s.add_dependency "tzinfo",          "~> 0.3"
+  s.add_dependency "tzinfo",          "~> 0.3.29"
   s.add_dependency "will_paginate",   "~> 3.0"
 
   s.add_development_dependency "cucumber-rails",    "~> 1.4"
