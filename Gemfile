@@ -10,7 +10,7 @@ end
 
 group :development do
   gem "autotest-rails"
-  gem "pry-debugger"
+  gem "pry-byebug"
 end
 
 # gem "radiant-archive-extension",             "~> 1.0.7"
