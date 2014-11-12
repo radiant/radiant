@@ -78,11 +78,11 @@ describe MenuRenderer do
 
   describe '#additional_menu_features?' do
     it 'should be true if there is another renderer module' do
-      special_page.additional_menu_features?.should be_true
+      special_page.additional_menu_features?.should be true
     end
     it 'should not be true if there is no additional renderer module' do
       special_page.class_name = 'MoreSpecialTestPage'
-      special_page.additional_menu_features?.should_not be_true
+      special_page.additional_menu_features?.should_not be true
     end
   end
 
@@ -219,11 +219,11 @@ describe MenuRenderer do
   describe '#add_child_disabled?' do
     it 'should return true if there are no allowed_child_classes' do
       special_page.stub(:allowed_child_classes).and_return([])
-      special_page.add_child_disabled?.should be_true
+      special_page.add_child_disabled?.should be true
     end
     it 'should return false if there are allowed_child_classes' do
       special_page.stub(:allowed_child_classes).and_return(['yes'])
-      special_page.add_child_disabled?.should be_false
+      special_page.add_child_disabled?.should be false
     end
   end
 

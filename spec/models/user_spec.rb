@@ -224,16 +224,16 @@ describe User, "roles" do
   let(:existing){ FactoryGirl.build(:user) }
 
   it "should not have a non-existent role" do
-    expect(existing.has_role?(:foo)).to be_false
+    expect(existing.has_role?(:foo)).to be false
   end
 
   it "should not have a role for which the corresponding method returns false" do
-    expect(existing.has_role?(:designer)).to be_false
-    expect(existing.has_role?(:admin)).to be_false
+    expect(existing.has_role?(:designer)).to be false
+    expect(existing.has_role?(:admin)).to be false
   end
 
   it "should have a role for which the corresponding method returns true" do
-    expect(designer.has_role?(:designer)).to be_true
-    expect(admin.has_role?(:admin)).to be_true
+    expect(designer.has_role?(:designer)).to be true
+    expect(admin.has_role?(:admin)).to be true
   end
 end

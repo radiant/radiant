@@ -227,16 +227,16 @@ describe Page do
       child = FactoryGirl.build(:page) do |child|
         child.parent_id = page.id
       end
-      child.has_part?(:sidebar).should be_false
-      child.inherits_part?(:sidebar).should be_true
+      child.has_part?(:sidebar).should be false
+      child.inherits_part?(:sidebar).should be true
     end
     it 'should return false if any ancestor page does not have a part of the given name' do
       child = FactoryGirl.build(:page) do |child|
         child.parent_id = page.id
       end
       child.parts.build(:name => 'sidebar')
-      child.has_part?(:sidebar).should be_true
-      child.inherits_part?(:sidebar).should be_false
+      child.has_part?(:sidebar).should be true
+      child.inherits_part?(:sidebar).should be false
     end
   end
 
@@ -250,10 +250,10 @@ describe Page do
       page.parts.create(:name => 'sidebar')
     end
     it 'should return true if the current page or any ancestor has a part of the given name' do
-      expect(child.has_or_inherits_part?(:sidebar)).to be_true
+      expect(child.has_or_inherits_part?(:sidebar)).to be true
     end
     it 'should return false if the current part or any ancestor does not have a part of the given name' do
-      expect(child.has_or_inherits_part?(:obviously_false_part_name)).to be_false
+      expect(child.has_or_inherits_part?(:obviously_false_part_name)).to be false
     end
   end
 
@@ -267,31 +267,31 @@ describe Page do
 
   it "should dirty the page object when only changing parts" do
     lambda do
-      page.dirty?.should be_false
+      page.dirty?.should be false
       page.parts = [PagePart.new(:name => 'body', :content => 'Hello, world!')]
-      page.dirty?.should be_true
+      page.dirty?.should be true
     end
   end
 
   describe '#published?' do
     it "should be true when the status is Status[:published]" do
       page.status = Status[:published]
-      page.published?.should be_true
+      page.published?.should be true
     end
     it "should be false when the status is not Status[:published]" do
       page.status = Status[:draft]
-      page.published?.should be_false
+      page.published?.should be false
     end
   end
 
   describe '#scheduled?' do
     it "should be true when the status is Status[:scheduled]" do
       page.status = Status[:scheduled]
-      page.scheduled?.should be_true
+      page.scheduled?.should be true
     end
     it "should be false when the status is not Status[:scheduled]" do
       page.status = Status[:published]
-      page.scheduled?.should be_false
+      page.scheduled?.should be false
     end
   end
 
@@ -346,7 +346,7 @@ describe Page do
       page.save
 
       page.save
-      expect(page.published_at_changed?).to be_false
+      expect(page.published_at_changed?).to be false
     end
   end
 
@@ -393,8 +393,8 @@ describe Page do
     end
   end
 
-  its(:cache?){ should be_true }
-  its(:virtual?){ should be_false }
+  its(:cache?){ should be true }
+  its(:virtual?){ should be false }
 
   it 'should support optimistic locking' do
     p1, p2 = Page.find(page.id), Page.find(page.id)
