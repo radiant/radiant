@@ -944,7 +944,7 @@ describe "Standard Tags" do
       end
 
       it "set to a malformatted regexp should render an error" do
-        expected_error = "Malformed regular expression in `matches' argument of `if_path' tag: " + (RUBY_VERSION =~ /^1\.9/ ? "end pattern with unmatched parenthesis: /p(ge\\/$/i" : "unmatched (: /p(ge\\/$/")
+        expected_error = "Malformed regular expression in `matches' argument of `if_path' tag: " + (RUBY_VERSION =~ /^1\.9/ ? "unmatched (: /p(ge\\/$/" :  "end pattern with unmatched parenthesis: /p(ge\\/$/i")
         page.should render('<r:if_path matches="p(ge/$">true</r:if_path>').with_error(expected_error)
       end
 
@@ -979,7 +979,7 @@ describe "Standard Tags" do
       end
 
       it "set to a malformatted regexp should render an error" do
-        expected_error = "Malformed regular expression in `matches' argument of `unless_path' tag: " + (RUBY_VERSION =~ /^1\.9/ ? "end pattern with unmatched parenthesis: /p(ge\\/$/i" : "unmatched (: /p(ge\\/$/")
+        expected_error = "Malformed regular expression in `matches' argument of `unless_path' tag: " + (RUBY_VERSION =~ /^1\.9/ ? "unmatched (: /p(ge\\/$/" :  "end pattern with unmatched parenthesis: /p(ge\\/$/i")
         page.should render('<r:unless_path matches="p(ge/$">true</r:unless_path>').with_error(expected_error)
       end
 
