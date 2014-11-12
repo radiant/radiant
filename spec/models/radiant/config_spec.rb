@@ -13,7 +13,7 @@ describe Radiant::Config do
 
   describe "before the table exists, as in case of before bootstrap" do
     before :each do
-      @config.stub!(:table_exists?).and_return(false)
+      @config.stub(:table_exists?).and_return(false)
       @config.should_not_receive(:find_by_key)
       @config.should_not_receive(:find_or_initialize_by_key)
     end

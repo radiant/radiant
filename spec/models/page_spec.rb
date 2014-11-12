@@ -796,7 +796,7 @@ describe Page, "processing" do
   end
 
   it "should copy custom headers into the response" do
-    @page.stub!(:headers).and_return({"X-Extra-Header" => "This is my header"})
+    @page.stub(:headers).and_return({"X-Extra-Header" => "This is my header"})
     @page.process(@request, @response)
     @response.header['X-Extra-Header'].should == "This is my header"
   end
@@ -807,7 +807,7 @@ describe Page, "processing" do
   end
 
   it "should set the response code to the result of the response_code method on the page" do
-    @page.stub!(:response_code).and_return(404)
+    @page.stub(:response_code).and_return(404)
     @page.process(@request, @response)
     @response.response_code.should == 404
   end
