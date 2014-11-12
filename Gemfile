@@ -10,8 +10,8 @@ end
 
 group :development do
   gem "autotest-rails"
-  gem "pry-byebug"
 end
+gem 'pry-byebug', :group => [:development, :test]
 
 # gem "radiant-archive-extension",             "~> 1.0.7"
 # gem "radiant-clipped-extension",             "~> 1.1.0"
