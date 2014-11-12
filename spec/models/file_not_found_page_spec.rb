@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/../spec_helper'
+require 'rspec/its'
 
 describe FileNotFoundPage do
   #dataset :file_not_found
