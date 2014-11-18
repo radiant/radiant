@@ -1,4 +1,3 @@
-require File.dirname(__FILE__) + "/../../../spec_helper"
 require 'radiant/extension/script'
 
 describe "Radiant::Extension::Script" do
