@@ -111,10 +111,12 @@ describe Radiant::AdminUI::NavSubItem do
   end
 
   describe "visibility" do
-    #dataset :users
+    let(:admin){ FactoryGirl.build(:user, admin: true) }
+    let(:existing){ FactoryGirl.build(:user) }
+
     before :each do
-      @controller = Admin::UsersController.new
-      Admin::UsersController.stub!(:new).and_return(@controller)
+      @controller = Radiant::Admin::UsersController.new
+      Radiant::Admin::UsersController.stub(:new).and_return(@controller)
     end
 
     it "should check the visibility against the controller permissions" do
@@ -127,13 +129,13 @@ describe Radiant::AdminUI::NavSubItem do
       end
 
       it "should not be visible if the user lacks access" do
-        @controller.stub!(:current_user).and_return(users(:existing))
-        @subitem.should_not be_visible(users(:existing))
+        @controller.stub(:current_user).and_return(existing)
+        @subitem.should_not be_visible(existing)
       end
 
       it "should be visible if the user has access" do
-        @controller.stub!(:current_user).and_return(users(:admin))
-        @subitem.should be_visible(users(:admin))
+        @controller.stub(:current_user).and_return(admin)
+        @subitem.should be_visible(admin)
       end
     end
   end
