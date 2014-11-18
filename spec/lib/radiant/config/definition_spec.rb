@@ -1,5 +1,3 @@
-require File.dirname(__FILE__) + "/../../../spec_helper"
-
 describe "Radiant::Config::Definition" do
   before :each do
     Radiant::Config.initialize_cache
@@ -79,7 +77,7 @@ describe "Radiant::Config::Definition" do
     it "should validate against the supplied block" do
       setting = Radiant::Config.find_by_key('valid')
       lambda{setting.value = "Ape"}.should raise_error
-      setting.valid?.should be_false
+      setting.valid?.should be false
       setting.errors.on(:value).should == "That's no monkey"
     end
 
@@ -112,30 +110,30 @@ describe "Radiant::Config::Definition" do
     end
 
     it "should identify itself as a selector" do
-      Radiant::Config.find_by_key('not').selector?.should be_false
-      Radiant::Config.find_by_key('now').selector?.should be_true
+      Radiant::Config.find_by_key('not').selector?.should be false
+      Radiant::Config.find_by_key('now').selector?.should be true
     end
 
     it "should offer a list of options" do
       Radiant::Config.find_by_key('required').selection.should have(3).items
-      Radiant::Config.find_by_key('now').selection.include?(["", ""]).should be_true
-      Radiant::Config.find_by_key('now').selection.include?(["m", "Monkey"]).should be_true
-      Radiant::Config.find_by_key('now').selection.include?(["g", "Goat"]).should be_true
+      Radiant::Config.find_by_key('now').selection.include?(["", ""]).should be true
+      Radiant::Config.find_by_key('now').selection.include?(["m", "Monkey"]).should be true
+      Radiant::Config.find_by_key('now').selection.include?(["g", "Goat"]).should be true
     end
 
     it "should run a supplied selection block" do
       @enclosed = "testing"
-      Radiant::Config.find_by_key('later').selection.include?(["testing", "testing"]).should be_true
+      Radiant::Config.find_by_key('later').selection.include?(["testing", "testing"]).should be true
     end
 
     it "should normalise the options to a list of pairs" do
-      Radiant::Config.find_by_key('hashed').selection.is_a?(Hash).should be_false
-      Radiant::Config.find_by_key('hashed').selection.include?(["monkey", "Definitely a monkey"]).should be_true
+      Radiant::Config.find_by_key('hashed').selection.is_a?(Hash).should be false
+      Radiant::Config.find_by_key('hashed').selection.include?(["monkey", "Definitely a monkey"]).should be true
     end
 
     it "should not include a blank option if allow_blank is false" do
       Radiant::Config.find_by_key('required').selection.should have(3).items
-      Radiant::Config.find_by_key('required').selection.include?(["", ""]).should be_false
+      Radiant::Config.find_by_key('required').selection.include?(["", ""]).should be false
     end
 
   end
