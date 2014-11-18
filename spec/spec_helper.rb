@@ -7,6 +7,7 @@ require File.expand_path("../dummy/config/environment.rb",  __FILE__)
 SPEC_ROOT = File.dirname(__FILE__)
 
 require 'rspec/rails'
+require 'rspec/its'
 require 'rspec/collection_matchers'
 
 require 'factory_girl'
