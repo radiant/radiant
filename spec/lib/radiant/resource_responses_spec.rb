@@ -39,9 +39,9 @@ describe "Radiant::ResourceResponses" do
       @klass.responses do |r|
         r.plural.default(&@default)
       end
-      @responder = mock('responder')
+      @responder = double('responder')
       @instance = @klass.new
-      @instance.stub!(:respond_to).and_yield(@responder)
+      @instance.stub(:respond_to).and_yield(@responder)
     end
 
     describe "when wrapping a block" do
@@ -179,7 +179,7 @@ describe Radiant::ResourceResponses::Response do
   
   describe "prepared with some formats" do
     before :each do
-      @responder = mock("responder")
+      @responder = double("responder")
       @pblock = lambda { 'foo' }
       @response.publish(:xml, :json, &@pblock)
       @iblock = lambda { 'iphone' }

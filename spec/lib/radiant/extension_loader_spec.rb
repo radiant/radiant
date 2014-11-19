@@ -4,14 +4,14 @@ require "radiant/extension_loader"
 describe Radiant::ExtensionLoader do
 
   before :each do
-    $LOAD_PATH.stub!(:unshift)
-    @observer = mock("observer")
-    @configuration = mock("configuration")
-    Radiant.stub!(:configuration).and_return(@configuration)
-    @admin = mock("admin_ui")
-    @initializer = mock("initializer")
-    @initializer.stub!(:configuration).and_return(@configuration)
-    @initializer.stub!(:admin).and_return(@admin)
+    $LOAD_PATH.stub(:unshift)
+    @observer = double("observer")
+    @configuration = double("configuration")
+    Radiant.stub(:configuration).and_return(@configuration)
+    @admin = double("admin_ui")
+    @initializer = double("initializer")
+    @initializer.stub(:configuration).and_return(@configuration)
+    @initializer.stub(:admin).and_return(@admin)
     @loader = Radiant::ExtensionLoader.send(:new)
     @loader.initializer = @initializer
     @extensions = %w{basic overriding load_order_blue load_order_green load_order_red}
@@ -19,7 +19,7 @@ describe Radiant::ExtensionLoader do
       paths[ext.to_sym] = File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/#{ext}")
     end
     @extension_paths[:git_ext] = File.expand_path("#{RADIANT_ROOT}/test/fixtures/gems/radiant-gem_ext-extension-61e0ad14a3ae")
-    @loader.stub!(:known_extension_paths).and_return(@extension_paths)
+    @loader.stub(:known_extension_paths).and_return(@extension_paths)
     Radiant::AdminUI.instance.initialize_nav
   end
 
@@ -43,7 +43,7 @@ describe Radiant::ExtensionLoader do
   describe "loading extensions" do
     it "should load and initialize" do
       extensions = [:basic, :overriding]
-      @configuration.stub!(:enabled_extensions).and_return(extensions)
+      @configuration.stub(:enabled_extensions).and_return(extensions)
       @loader.load_extensions
       extensions.each do |ext|
         ext_class = Object.const_get(ext.to_s.camelize + "Extension")
@@ -59,14 +59,14 @@ describe Radiant::ExtensionLoader do
       @loader.extensions = extensions
       @initializer.should_receive(:initialize_views)
       @loader.activate_extensions
-      extensions.all?(&:active?).should be_true
+      extensions.all?(&:active?).should be true
     end
 
     it "should deactivate extensions" do
       extensions = [BasicExtension, OverridingExtension]
       @loader.extensions = extensions
       @loader.deactivate_extensions
-      extensions.any?(&:active?).should be_false
+      extensions.any?(&:active?).should be false
     end
 
     it "should (re)load Page subclasses on activation" do
@@ -80,7 +80,7 @@ describe Radiant::ExtensionLoader do
 
   describe Radiant::ExtensionLoader::DependenciesObserver do
     before :each do
-      @config = mock("rails config")
+      @config = double("rails config")
       @observer = Radiant::ExtensionLoader::DependenciesObserver.new(@config)
     end
 
