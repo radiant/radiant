@@ -10,8 +10,9 @@ end
 
 group :development do
   gem "autotest-rails"
-  gem "pry-debugger"
 end
+gem 'pry-debugger', :group => [:development, :test] if RUBY_VERSION < "2.0.0"
+gem 'pry-byebug', :group => [:development, :test] if RUBY_VERSION >= "2.0.0"
 
 # gem "radiant-archive-extension",             "~> 1.0.7"
 # gem "radiant-clipped-extension",             "~> 1.1.0"

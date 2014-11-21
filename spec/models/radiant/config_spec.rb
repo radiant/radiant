@@ -13,7 +13,7 @@ describe Radiant::Config do
 
   describe "before the table exists, as in case of before bootstrap" do
     before :each do
-      @config.stub!(:table_exists?).and_return(false)
+      @config.stub(:table_exists?).and_return(false)
       @config.should_not_receive(:find_by_key)
       @config.should_not_receive(:find_or_initialize_by_key)
     end
@@ -52,7 +52,7 @@ describe Radiant::Config do
     cache_file = File.join(Rails.root,'tmp','radiant_config_cache.txt')
     FileUtils.rm_rf(cache_file) if File.exist?(cache_file)
     Radiant::Config.initialize_cache
-    File.file?(cache_file).should be_true
+    File.file?(cache_file).should be true
   end
 
   it "should find the value in the cache with []" do
@@ -97,12 +97,12 @@ describe Radiant::Config do
     end
 
     it "should return true or false" do
-      @config['false?'].should be_false
-      @config['true?'].should be_true
+      @config['false?'].should be false
+      @config['true?'].should be true
     end
 
     it "should return false for values that are not 'true'" do
-      @config['junk?'].should be_false
+      @config['junk?'].should be false
     end
   end
 
@@ -113,9 +113,9 @@ describe Radiant::Config do
 
     it "should not protect or constrain" do
       c = get_config("impromptu.storage")
-      c.allow_blank?.should be_true
-      c.visible?.should be_true
-      c.settable?.should be_true
+      c.allow_blank?.should be true
+      c.visible?.should be true
+      c.settable?.should be true
     end
   end
 
@@ -132,7 +132,7 @@ describe Radiant::Config do
 
     it "should protect when the definition requires it" do
       definition = get_config('testing.protected')
-      definition.settable?.should be_false
+      definition.settable?.should be_falsey
       lambda { definition.value = "something else" }.should raise_error(Radiant::Config::ConfigError)
     end
   end

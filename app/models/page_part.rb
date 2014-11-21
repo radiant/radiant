@@ -1,5 +1,5 @@
 class PagePart < ActiveRecord::Base
-
+  after_initialize :set_filter_id_from_config
   attr_accessible :name, :filter_id, :content
 
   # Default Order
@@ -13,7 +13,7 @@ class PagePart < ActiveRecord::Base
   validates_length_of :name, :maximum => 100
   validates_length_of :filter_id, :maximum => 25, :allow_nil => true
 
-  def after_initialize
+  def set_filter_id_from_config
     self.filter_id ||= Radiant::Config['defaults.page.filter'] if new_record?
   end
 

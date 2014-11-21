@@ -4,7 +4,7 @@ require "translation_support"
 describe TranslationSupport do
   describe 'self.get_translation_keys' do
     before do
-      @language_root = RADIANT_ROOT + '/test/fixtures/extensions/locale/config/locales'
+      @language_root = RADIANT_ROOT + '/spec/fixtures/extensions/locale/config/locales'
     end
     it "should return the word set for the given language root" do
       TranslationSupport.get_translation_keys(@language_root).should == {"base:test"=>" 'yes!'"}
