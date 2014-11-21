@@ -1,6 +1,3 @@
-require 'pry'
-require 'byebug' if RUBY_VERSION >= "2.0.0"
-
 # Configure Rails Envinronment
 ENV["RAILS_ENV"] = "test"
 require File.expand_path("../dummy/config/environment.rb",  __FILE__)
