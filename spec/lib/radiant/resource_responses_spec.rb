@@ -1,5 +1,3 @@
-require File.dirname(__FILE__) + "/../../spec_helper"
-
 describe "Radiant::ResourceResponses" do
   before :each do
     @klass = Class.new(ApplicationController)
