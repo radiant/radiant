@@ -7,11 +7,11 @@ describe Radiant::TaskSupport do
       @yaml_file = "#{Rails.root}/tmp/config/radiant_config.yml"
       FileUtils.rm_rf(File.dirname(@yaml_file))
       Radiant::Config['test_data'] = 'test string'
-      File.exist?(@yaml_file).should be_false
+      File.exist?(@yaml_file).should be false
     end
     it "should create a YAML file in config/radiant_config.yml" do
       described_class.config_export(@yaml_file)
-      File.exist?(@yaml_file).should be_true
+      File.exist?(@yaml_file).should be true
     end
     it "should create YAML equal to Radiant::Config.to_hash" do
       described_class.config_export(@yaml_file)
