@@ -23,6 +23,5 @@ spec/datasets/tmp
 rerun.txt
 *.swp
 radiant-*.gem
-.rvmrc
 .bundle
 *.lock
