@@ -1,6 +1,7 @@
 .rvmrc
 .ruby-version
 .ruby-gemset
+.rspec-local
 config/database.yml
 db/*.db
 spec/dummy/db/*
