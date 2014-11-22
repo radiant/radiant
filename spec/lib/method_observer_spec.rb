@@ -16,8 +16,8 @@ describe MethodObserver do
 
   before :each do
     @object = TestObject.new
-    @object.stub!(:before_result=).and_return(nil)
-    @object.stub!(:after_result=).and_return(:success)
+    @object.stub(:before_result=).and_return(nil)
+    @object.stub(:after_result=).and_return(:success)
     @observer = TestObserver.new
     @observer.observe(@object)
   end

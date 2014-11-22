@@ -87,7 +87,7 @@ describe 'Login System:', :type => :controller do
     describe ".login_from_cookie" do
       before do
         Time.zone = 'UTC'
-        Radiant::Config.stub!(:[]).with('session_timeout').and_return(2.weeks)
+        Radiant::Config.stub(:[]).with('session_timeout').and_return(2.weeks)
       end
 
       it "should not login user if no cookie found" do
@@ -100,7 +100,7 @@ describe 'Login System:', :type => :controller do
           @user = users(:admin)
           User.should_receive(:find_by_session_token).and_return(@user)
           @cookies = { :session_token => 12345 }
-          controller.stub!(:cookies).and_return(@cookies)
+          controller.stub(:cookies).and_return(@cookies)
         end
 
         after do
