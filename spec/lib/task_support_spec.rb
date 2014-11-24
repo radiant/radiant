@@ -7,11 +7,11 @@ describe Radiant::TaskSupport do
       @yaml_file = "#{Rails.root}/tmp/config/radiant_config.yml"
       FileUtils.rm_rf(File.dirname(@yaml_file))
       Radiant::Config['test_data'] = 'test string'
-      File.exist?(@yaml_file).should be_false
+      File.exist?(@yaml_file).should be false
     end
     it "should create a YAML file in config/radiant_config.yml" do
       described_class.config_export(@yaml_file)
-      File.exist?(@yaml_file).should be_true
+      File.exist?(@yaml_file).should be true
     end
     it "should create YAML equal to Radiant::Config.to_hash" do
       described_class.config_export(@yaml_file)
@@ -31,7 +31,7 @@ describe Radiant::TaskSupport do
     it "should load from the given YAML path" do
       @yaml = "--- \ndefaults.page.parts: body, extended\n"
       @hash = {}
-      YAML.stub!(:load_file).and_return(@yaml)
+      YAML.stub(:load_file).and_return(@yaml)
       YAML.should_receive(:load).with(@yaml).and_return(@hash)
       described_class.config_import(@yaml_file)
     end
@@ -41,7 +41,7 @@ describe Radiant::TaskSupport do
       Radiant::Config.to_hash.should == YAML.load(YAML.load_file(@yaml_file))
     end
     it "should roll back if an invalid config setting is imported" do
-      Radiant.config_definitions['defaults.page.status'].stub!(:select_from).and_return(['Draft'])
+      Radiant.config_definitions['defaults.page.status'].stub(:select_from).and_return(['Draft'])
       Radiant::Config['defaults.page.status'] = "Draft"
       lambda{described_class.config_import(@bad_yaml_file)}.should_not raise_error
       Radiant::Config['defaults.page.status'].should == "Draft"

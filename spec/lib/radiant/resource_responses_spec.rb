@@ -1,5 +1,3 @@
-require File.dirname(__FILE__) + "/../../spec_helper"
-
 describe "Radiant::ResourceResponses" do
   before :each do
     @klass = Class.new(ApplicationController)
@@ -39,9 +37,9 @@ describe "Radiant::ResourceResponses" do
       @klass.responses do |r|
         r.plural.default(&@default)
       end
-      @responder = mock('responder')
+      @responder = double('responder')
       @instance = @klass.new
-      @instance.stub!(:respond_to).and_yield(@responder)
+      @instance.stub(:respond_to).and_yield(@responder)
     end
 
     describe "when wrapping a block" do
@@ -179,7 +177,7 @@ describe Radiant::ResourceResponses::Response do
   
   describe "prepared with some formats" do
     before :each do
-      @responder = mock("responder")
+      @responder = double("responder")
       @pblock = lambda { 'foo' }
       @response.publish(:xml, :json, &@pblock)
       @iblock = lambda { 'iphone' }
@@ -189,16 +187,16 @@ describe Radiant::ResourceResponses::Response do
     end
     
     it "should iterate over the publish formats" do
-      @responder.should_receive(:xml).with(&@pblock).once.ordered
-      @responder.should_receive(:json).with(&@pblock).once.ordered
+      expect(@responder).to receive(:xml) {|a| a == @pblock}.once.ordered
+      expect(@responder).to receive(:json) {|a| a == @pblock}.once.ordered
       @response.each_published do |format, block|
         @responder.send(format, &@block)
       end
     end
 
     it "should iterate over the regular formats" do
-      @responder.should_receive(:iphone).with(&@iblock).once.ordered
-      @responder.should_receive(:popup).with(&@popblock).once.ordered
+      expect(@responder).to receive(:iphone) {|a| a == @iblock}.once.ordered
+      expect(@responder).to receive(:popup) {|a| a == @popblock}.once.ordered
       @response.each_format do |format, block|
         @responder.send(format, &@block)
       end

@@ -1,4 +1,3 @@
-require File.dirname(__FILE__) + "/../../../spec_helper"
 require 'radiant/extension/script'
 
 describe "Radiant::Extension::Script" do
@@ -52,35 +51,35 @@ describe "Radiant::Extension::Script::Util" do
 
   it "should determine whether an extension is installed" do
     # Bad coupling, but will work by default
-    @script = mock('script action')
+    @script = double('script action')
     @script.extend Radiant::Extension::Script::Util
     @script.extension_name = 'basic'
     @script.should be_installed
   end
 
   it "should determine whether an extension is not installed" do
-    @script = mock('script action',:extension_paths => ['/path/to/extension/html_tags'])
+    @script = double('script action',:extension_paths => ['/path/to/extension/html_tags'])
     @script.extend Radiant::Extension::Script::Util
     @script.extension_name = 'tags'
     @script.should_not be_installed
   end
 
   it "should determine whether an extension is installed" do
-    @script = mock('script action',:extension_paths => ['tags'])
+    @script = double('script action',:extension_paths => ['tags'])
     @script.extend Radiant::Extension::Script::Util
     @script.extension_name = 'tags'
     @script.should be_installed
   end
 
   it "should determine whether an extension is installed" do
-    @script = mock('script action',:extension_paths => ['/path/to/extension/tags'])
+    @script = double('script action',:extension_paths => ['/path/to/extension/tags'])
     @script.extend Radiant::Extension::Script::Util
     @script.extension_name = 'tags'
     @script.should be_installed
   end
 
   it "should determine whether an extension is installed on windows system" do
-    @script = mock('script action',:extension_paths => ['c:\path\to\extension\tags'])
+    @script = double('script action',:extension_paths => ['c:\path\to\extension\tags'])
     @script.extend Radiant::Extension::Script::Util
     @script.extension_name = 'tags'
     @script.should be_installed
@@ -92,18 +91,18 @@ describe "Radiant::Extension::Script::Util" do
   end
 
   it "should find an extension of the given name from the web service" do
-    @ext_mock = mock("Extension", :name => 'page_attachments')
-    should_receive(:load_extensions).and_return([@ext_mock])
+    @ext_double = double("Extension", :name => 'page_attachments')
+    should_receive(:load_extensions).and_return([@ext_double])
     self.extension_name = 'page_attachments'
-    find_extension.should == @ext_mock
+    find_extension.should == @ext_double
   end
 end
 
 describe "Radiant::Extension::Script::Install" do
 
   before :each do
-    @extension = mock('Extension', :install => true, :name => 'page_attachments')
-    Registry::Extension.stub!(:find).and_return([@extension])
+    @extension = double('Extension', :install => true, :name => 'page_attachments')
+    Registry::Extension.stub(:find).and_return([@extension])
   end
 
   it "should read the extension name from the command line" do
@@ -127,8 +126,8 @@ end
 
 describe "Radiant::Extension::Script::Uninstall" do
   before :each do
-    @extension = mock('Extension', :uninstall => true, :name => 'basic')
-    Registry::Extension.stub!(:find).and_return([@extension])
+    @extension = double('Extension', :uninstall => true, :name => 'basic')
+    Registry::Extension.stub(:find).and_return([@extension])
   end
 
   it "should read the extension name from the command line" do
@@ -148,8 +147,8 @@ end
 
 describe "Radiant::Extension::Script::Info" do
   before :each do
-    @extension = mock('Extension', :uninstall => true, :name => 'archive', :inspect => '')
-    Registry::Extension.stub!(:find).and_return([@extension])
+    @extension = double('Extension', :uninstall => true, :name => 'archive', :inspect => '')
+    Registry::Extension.stub(:find).and_return([@extension])
   end
 
   it "should read the extension name from the command line" do
@@ -255,7 +254,7 @@ end
 
 describe "Registry::Uninstaller" do
   before :each do
-    @extension = mock('Extension', :name => 'example')
+    @extension = double('Extension', :name => 'example')
     @uninstaller = Registry::Uninstaller.new(@extension)
   end
 
@@ -278,12 +277,12 @@ end
 
 describe "Registry::Checkout" do
   before :each do
-    @extension = mock("Extension", :name => 'example', :repository_url => 'http://localhost/')
+    @extension = double("Extension", :name => 'example', :repository_url => 'http://localhost/')
     @checkout = Registry::Checkout.new(@extension)
     @methods = [:copy_to_vendor_extensions, :migrate, :update].each do |method|
-      @checkout.stub!(method).and_return(true)
+      @checkout.stub(method).and_return(true)
     end
-    @checkout.stub!(:cd).and_yield
+    @checkout.stub(:cd).and_yield
   end
 
   it "should set the name and url" do
@@ -302,7 +301,7 @@ describe "Registry::Checkout" do
   end
 
   it "should checkout the source" do
-    @checkout.stub!(:checkout_command).and_return('echo')
+    @checkout.stub(:checkout_command).and_return('echo')
     @checkout.should_receive(:cd)
     @checkout.should_receive(:system).with('echo')
     @checkout.checkout
@@ -313,10 +312,10 @@ end
 
 describe "Registry::Download" do
   before :each do
-    @extension = mock("Extension", :name => 'example', :download_url => 'http://localhost/example.pkg')
+    @extension = double("Extension", :name => 'example', :download_url => 'http://localhost/example.pkg')
     @download = Registry::Download.new(@extension)
     @methods = [:copy_to_vendor_extensions, :migrate, :update].each do |method|
-      @download.stub!(method).and_return(true)
+      @download.stub(method).and_return(true)
     end
   end
 
@@ -341,7 +340,7 @@ describe "Registry::Download" do
   end
 
   it "should download the file" do
-    @file = mock('file')
+    @file = double('file')
     File.should_receive(:open).with(/example\.pkg/, 'w').and_yield(@file)
     @download.should_receive(:open).and_return(StringIO.new('test'))
     @file.should_receive(:write).with('test')
@@ -351,15 +350,15 @@ end
 
 describe "Registry::Git" do
   before :each do
-    @extension = mock("Extension", :name => 'example', :repository_url => 'http://localhost/')
+    @extension = double("Extension", :name => 'example', :repository_url => 'http://localhost/')
     @git = Registry::Git.new(@extension)
-    @git.stub!(:system)
-    @git.stub!(:cd).and_yield
+    @git.stub(:system)
+    @git.stub(:cd).and_yield
   end
 
   describe "when the Radiant project is not stored in git" do
     before :each do
-      File.stub!(:directory?).with(".git").and_return(false)
+      File.stub(:directory?).with(".git").and_return(false)
     end
 
     it "should use git to clone the repository" do
@@ -367,7 +366,7 @@ describe "Registry::Git" do
     end
 
     it "should initialize and update submodules" do
-      Dir.stub!(:tmpdir).and_return('/tmp')
+      Dir.stub(:tmpdir).and_return('/tmp')
       @git.should_receive(:cd).with("/tmp").ordered
       @git.should_receive(:system).with("git clone http://localhost/ example").ordered
       @git.should_receive(:cd).with("/tmp/example").ordered
@@ -385,7 +384,7 @@ describe "Registry::Git" do
 
   describe "when the Radiant project is stored in git" do
     before :each do
-      File.stub!(:directory?).with(".git").and_return(true)
+      File.stub(:directory?).with(".git").and_return(true)
     end
 
     it "should add the extension as a submodule and initialize and update its submodules" do
@@ -405,7 +404,7 @@ end
 
 describe "Registry::Subversion" do
   before :each do
-    @extension = mock("Extension", :name => 'example', :repository_url => 'http://localhost/')
+    @extension = double("Extension", :name => 'example', :repository_url => 'http://localhost/')
     @svn = Registry::Subversion.new(@extension)
   end
 
@@ -416,13 +415,13 @@ end
 
 describe "Registry::Gem" do
   before :each do
-    @extension = mock("Extension", :name => 'example', :download_url => 'http://localhost/example-1.0.0.gem')
+    @extension = double("Extension", :name => 'example', :download_url => 'http://localhost/example-1.0.0.gem')
     @gem = Registry::Gem.new(@extension)
   end
 
   it "should download the gem and install it if it is not already installed" do
     @gem.should_receive(:gem).and_raise(::Gem::LoadError.new)
-    @file = mock('file')
+    @file = double('file')
     File.should_receive(:open).with(/example-1.0.0\.gem/, 'w').and_yield(@file)
     @gem.should_receive(:open).and_return(StringIO.new('test'))
     @file.should_receive(:write).with('test')
@@ -447,7 +446,7 @@ end
 
 describe "Registry::Tarball" do
   before :each do
-    @extension = mock("Extension", :name => 'example', :download_url => 'http://localhost/example-1.0.0.tar')
+    @extension = double("Extension", :name => 'example', :download_url => 'http://localhost/example-1.0.0.tar')
     @tar = Registry::Tarball.new(@extension)
   end
 
@@ -460,7 +459,7 @@ end
 
 describe "Registry::Gzip" do
   before :each do
-    @extension = mock("Extension", :name => 'example', :download_url => 'http://localhost/example-1.0.0.tar.gz')
+    @extension = double("Extension", :name => 'example', :download_url => 'http://localhost/example-1.0.0.tar.gz')
     @gzip = Registry::Gzip.new(@extension)
   end
 
@@ -474,7 +473,7 @@ end
 
 describe "Registry::Bzip2" do
   before :each do
-    @extension = mock("Extension", :name => 'example', :download_url => 'http://localhost/example-1.0.0.tar.bz2')
+    @extension = double("Extension", :name => 'example', :download_url => 'http://localhost/example-1.0.0.tar.bz2')
     @gzip = Registry::Bzip2.new(@extension)
   end
 
@@ -489,7 +488,7 @@ end
 
 describe "Registry::Zip" do
   before :each do
-    @extension = mock("Extension", :name => 'example', :download_url => 'http://localhost/example-1.0.0.zip')
+    @extension = double("Extension", :name => 'example', :download_url => 'http://localhost/example-1.0.0.zip')
     @zip = Registry::Zip.new(@extension)
   end
 

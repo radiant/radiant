@@ -60,9 +60,9 @@ describe 'Radiant::Configuration' do
 
   describe "discovering gem extensions" do
     before do
-      @spec = mock(Gem::Specification)
-      @spec.stub!(:full_gem_path).and_return(File.join(RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-extension-0.0.0)))
-      Gem.stub!(:loaded_specs).and_return({
+      @spec = double(Gem::Specification)
+      @spec.stub(:full_gem_path).and_return(File.join(RADIANT_ROOT, %w(test fixtures gems radiant-gem_ext-extension-0.0.0)))
+      Gem.stub(:loaded_specs).and_return({
         'radiant-extension_gem-extension' => @spec,
         'ordinary_gem' => @spec
       })

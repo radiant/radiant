@@ -8,19 +8,19 @@ end
 
 describe Radiant::Version do
   it "should have a constant for the major revision" do
-    lambda { Radiant::Version::Major }.should_not raise_error(NameError)
+    lambda { Radiant::Version::Major }.should_not raise_error
   end
   
   it "should have a constant for the minor revision" do
-    lambda { Radiant::Version::Minor }.should_not raise_error(NameError)
+    lambda { Radiant::Version::Minor }.should_not raise_error
   end
 
   it "should have a constant for the tiny revision" do
-    lambda { Radiant::Version::Tiny }.should_not raise_error(NameError)
+    lambda { Radiant::Version::Tiny }.should_not raise_error
   end
 
   it "should have a constant for the patch revision" do
-    lambda { Radiant::Version::Patch }.should_not raise_error(NameError)
+    lambda { Radiant::Version::Patch }.should_not raise_error
   end
   
   it "should join the revisions into the version number" do

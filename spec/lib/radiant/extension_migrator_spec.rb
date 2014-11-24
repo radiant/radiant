@@ -57,7 +57,7 @@ describe Radiant::ExtensionMigrator do
     it 'should migrate in the order of the specified extension load order' do
       BasicExtension.migrator.should_receive(:migrate).once
       UpgradingExtension.migrator.should_receive(:migrate).once
-      Rails.configuration.stub!(:enabled_extensions).and_return([:basic, :upgrading])
+      Rails.configuration.stub(:enabled_extensions).and_return([:basic, :upgrading])
       Radiant::ExtensionMigrator.migrate_extensions
     end
   end

@@ -69,13 +69,13 @@ describe Radiant::ExtensionPath do
   describe "looking for load paths" do
     before do
       Radiant::ExtensionPath.clear_paths!
-      @configuration = mock("configuration")
-      Radiant.stub!(:configuration).and_return(@configuration)
+      @configuration = double("configuration")
+      Radiant.stub(:configuration).and_return(@configuration)
       @extensions = %w{basic overriding}
       @extensions.each do |ext|
         Radiant::ExtensionPath.from_path(File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/#{ext}"))
       end
-      @configuration.stub!(:enabled_extensions).and_return(@extensions.map(&:to_sym))
+      @configuration.stub(:enabled_extensions).and_return(@extensions.map(&:to_sym))
     end
     
     describe "in an individual extension root" do
@@ -87,13 +87,13 @@ describe Radiant::ExtensionPath do
       end
       
       it "should report paths that exist" do
-        File.directory?(Radiant::ExtensionPath.find(:basic).plugin_paths).should be_true
-        File.directory?(Radiant::ExtensionPath.find(:basic).metal_paths).should be_true
-        File.directory?(Radiant::ExtensionPath.find(:basic).model_paths).should be_true
-        File.directory?(Radiant::ExtensionPath.find(:basic).view_paths).should be_true
-        File.directory?(Radiant::ExtensionPath.find(:overriding).plugin_paths).should be_true
-        File.directory?(Radiant::ExtensionPath.find(:overriding).metal_paths).should be_true
-        File.directory?(Radiant::ExtensionPath.find(:overriding).view_paths).should be_true
+        File.directory?(Radiant::ExtensionPath.find(:basic).plugin_paths).should be true
+        File.directory?(Radiant::ExtensionPath.find(:basic).metal_paths).should be true
+        File.directory?(Radiant::ExtensionPath.find(:basic).model_paths).should be true
+        File.directory?(Radiant::ExtensionPath.find(:basic).view_paths).should be true
+        File.directory?(Radiant::ExtensionPath.find(:overriding).plugin_paths).should be true
+        File.directory?(Radiant::ExtensionPath.find(:overriding).metal_paths).should be true
+        File.directory?(Radiant::ExtensionPath.find(:overriding).view_paths).should be true
       end
       it "should not report paths that don't exist" do
         Radiant::ExtensionPath.find(:basic).locale_paths.should be_nil
@@ -108,7 +108,7 @@ describe Radiant::ExtensionPath do
         it "should return collected #{meth}" do
           Radiant::ExtensionPath.should respond_to(meth)
           Radiant::ExtensionPath.send(meth).should be_instance_of(Array)
-          Radiant::ExtensionPath.send(meth).all? { |f| File.directory?(f) }.should be_true
+          Radiant::ExtensionPath.send(meth).all? { |f| File.directory?(f) }.should be true
         end
       end
 

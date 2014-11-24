@@ -1,12 +1,10 @@
-require 'pry'
-require 'byebug' if RUBY_VERSION >= "2.0.0"
-
 # Configure Rails Envinronment
 ENV["RAILS_ENV"] = "test"
 require File.expand_path("../dummy/config/environment.rb",  __FILE__)
 SPEC_ROOT = File.dirname(__FILE__)
 
 require 'rspec/rails'
+require 'rspec/its'
 require 'rspec/collection_matchers'
 
 require 'factory_girl'

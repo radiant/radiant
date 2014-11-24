@@ -1,4 +1,3 @@
-require File.dirname(__FILE__) + "/../../spec_helper"
 require 'ostruct'
 
 describe Radiant::Taggable, "when included in a class or module" do
@@ -166,9 +165,9 @@ describe Radiant::Taggable, "when included in a module with deprecated tags" do
 
   before :each do
     @object = OldTestObject.new
-    @tag_binding = mock('tag_binding')
-    @tag_binding.stub!(:attr).and_return({:name => 'testy'})
-    @tag_binding.stub!(:block).and_return(nil)
+    @tag_binding = double('tag_binding')
+    @tag_binding.stub(:attr).and_return({:name => 'testy'})
+    @tag_binding.stub(:block).and_return(nil)
   end
 
   it "should have a collection of defined tags" do
@@ -197,7 +196,7 @@ describe Radiant::Taggable, "when included in a module with deprecated tags" do
         ActiveSupport::Deprecation.should_receive(:warn) { |*args|
           args.first =~ /will be removed in radiant 9\.0/
         }
-        @tag_binding.stub!(:render)
+        @tag_binding.stub(:render)
         @object.render_tag(:old_busted, @tag_binding)
       end
     end
