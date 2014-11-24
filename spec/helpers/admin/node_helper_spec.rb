@@ -5,13 +5,13 @@ describe Radiant::Admin::NodeHelper do
 
   before :each do
     @cookies = {}
-    helper.stub!(:cookies).and_return(@cookies)
-    helper.stub!(:homepage).and_return(nil)
     @errors = double("errors")
+    helper.stub(:cookies).and_return(@cookies)
+    helper.stub(:homepage).and_return(nil)
     @page = mock_model(Page, :class_name => 'Page')
-    @page.stub!(:sheet?).and_return(false) # core extension alters the behavior
-    helper.stub!(:image).and_return('')
-    helper.stub!(:admin?).and_return(true)
+    @page.stub(:sheet?).and_return(false) # core extension alters the behavior
+    helper.stub(:image).and_return('')
+    helper.stub(:admin?).and_return(true)
     helper.instance_variable_set(:@page, @page)
   end
 

@@ -9,10 +9,10 @@ describe Radiant::Admin::PagesHelper do
 
   before :each do
     @page = mock_model(Page)
-    @page.stub!(:errors).and_return(@errors)
-    helper.stub!(:image).and_return('')
-    helper.stub!(:admin?).and_return(true)
     @errors = double("errors")
+    @page.stub(:errors).and_return(@errors)
+    helper.stub(:image).and_return('')
+    helper.stub(:admin?).and_return(true)
     helper.instance_variable_set(:@page, @page)
   end
 
@@ -39,8 +39,8 @@ describe Radiant::Admin::PagesHelper do
     end
 
     it "should render the filter reference for complex filter names" do
-      MarkdownPlusFilter.stub!(:description).and_return("Markdown rocks!")
-      helper.stub!(:filter).and_return(MarkdownPlusFilter)
+      MarkdownPlusFilter.stub(:description).and_return("Markdown rocks!")
+      helper.stub(:filter).and_return(MarkdownPlusFilter)
       helper.filter_reference.should == "Markdown rocks!"
     end
   end
