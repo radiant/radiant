@@ -6,6 +6,7 @@ SPEC_ROOT = File.dirname(__FILE__)
 require 'rspec/rails'
 require 'rspec/its'
 require 'rspec/collection_matchers'
+require 'rspec/active_model/mocks'
 
 require 'factory_girl'
 FactoryGirl.find_definitions
