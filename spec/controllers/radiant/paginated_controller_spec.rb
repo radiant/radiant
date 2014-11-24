@@ -4,8 +4,8 @@ describe Radiant::Admin::UsersController do
   routes { Radiant::Engine.routes }
 
   it "should be paginated" do
-    Radiant::Admin::UsersController.paginated.should be_true
-    controller.paginated?.should be_true
+    Radiant::Admin::UsersController.paginated.should be true
+    controller.paginated?.should be true
   end
 
   ## I need to redo these with mock classes
