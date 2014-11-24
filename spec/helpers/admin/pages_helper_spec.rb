@@ -9,22 +9,22 @@ describe Radiant::Admin::PagesHelper do
 
   before :each do
     @page = mock_model(Page)
-    @errors = mock("errors")
-    @page.stub!(:errors).and_return(@errors)
-    helper.stub!(:image).and_return('')
-    helper.stub!(:admin?).and_return(true)
+    @errors = double("errors")
+    @page.stub(:errors).and_return(@errors)
+    helper.stub(:image).and_return('')
+    helper.stub(:admin?).and_return(true)
     helper.instance_variable_set(:@page, @page)
   end
 
   it "should have meta errors if the page has errors on the slug" do
     @errors.should_receive(:[]).with(:slug).and_return("Error")
-    helper.meta_errors?.should be_true
+    helper.meta_errors?.should be true
   end
 
   it "should have meta errors if the page has errors on the breadcrumb" do
     @errors.should_receive(:[]).with(:slug).and_return(nil)
     @errors.should_receive(:[]).with(:breadcrumb).and_return("Error")
-    helper.meta_errors?.should be_true
+    helper.meta_errors?.should be true
   end
 
   it "should render the tag reference" do
@@ -39,8 +39,8 @@ describe Radiant::Admin::PagesHelper do
     end
 
     it "should render the filter reference for complex filter names" do
-      MarkdownPlusFilter.stub!(:description).and_return("Markdown rocks!")
-      helper.stub!(:filter).and_return(MarkdownPlusFilter)
+      MarkdownPlusFilter.stub(:description).and_return("Markdown rocks!")
+      helper.stub(:filter).and_return(MarkdownPlusFilter)
       helper.filter_reference.should == "Markdown rocks!"
     end
   end

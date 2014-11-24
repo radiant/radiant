@@ -5,13 +5,13 @@ describe Radiant::Admin::NodeHelper do
 
   before :each do
     @cookies = {}
-    @errors = mock("errors")
-    helper.stub!(:cookies).and_return(@cookies)
-    helper.stub!(:homepage).and_return(nil)
+    @errors = double("errors")
+    helper.stub(:cookies).and_return(@cookies)
+    helper.stub(:homepage).and_return(nil)
     @page = mock_model(Page, :class_name => 'Page')
-    @page.stub!(:sheet?).and_return(false) # core extension alters the behavior
-    helper.stub!(:image).and_return('')
-    helper.stub!(:admin?).and_return(true)
+    @page.stub(:sheet?).and_return(false) # core extension alters the behavior
+    helper.stub(:image).and_return('')
+    helper.stub(:admin?).and_return(true)
     helper.instance_variable_set(:@page, @page)
   end
 
@@ -24,13 +24,13 @@ describe Radiant::Admin::NodeHelper do
   it "should show all nodes when on the remove action" do
     assigns[:controller] = @controller
     @controller.should_receive(:action_name).and_return("remove")
-    helper.show_all?.should be_true
+    helper.show_all?.should be true
   end
 
   it "should not show all nodes automatically when not in the remove action" do
     assigns[:controller] = @controller
     @controller.should_receive(:action_name).and_return("index")
-    helper.show_all?.should be_false
+    helper.show_all?.should be false
   end
 
   it "should determine which rows to expand" do
@@ -40,7 +40,7 @@ describe Radiant::Admin::NodeHelper do
 
   it "should determine whether the current node should be expanded" do
     helper.should_receive(:show_all?).and_return(true)
-    helper.expanded.should be_true
+    helper.expanded.should be true
   end
 
   it "should determine the left padding for the current level" do
@@ -51,7 +51,7 @@ describe Radiant::Admin::NodeHelper do
 
   it "should determine the class of a parent node" do
     assigns[:current_node] = @page
-    child = mock("child")
+    child = double("child")
     @page.should_receive(:children).and_return([child])
     helper.should_receive(:expanded).and_return(true)
     helper.children_class.should == " children_visible"
@@ -85,7 +85,7 @@ describe Radiant::Admin::NodeHelper do
 
   it "should render the page type if it's not Page" do
     assigns[:current_node] = @page
-    @class = mock("Class")
+    @class = double("Class")
     @page.should_receive(:class).and_return(@class)
     @class.should_receive(:display_name).and_return("Special")
     helper.page_type.should ==  %{<span class="info">(Special)</span>}
