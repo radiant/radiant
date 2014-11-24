@@ -160,6 +160,6 @@ end
 Git = Module.new unless defined?(::Git)
 
 RSpec.configure do |config|
-  config.include(Spec::Matchers::GeneratorMatchers)
+  config.include(RSpec::Matchers::GeneratorMatchers)
 end
 
