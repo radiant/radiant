@@ -9,10 +9,10 @@ describe Radiant::Admin::PagesHelper do
 
   before :each do
     @page = mock_model(Page)
-    @errors = mock("errors")
     @page.stub!(:errors).and_return(@errors)
     helper.stub!(:image).and_return('')
     helper.stub!(:admin?).and_return(true)
+    @errors = double("errors")
     helper.instance_variable_set(:@page, @page)
   end
 

@@ -5,9 +5,9 @@ describe Radiant::Admin::NodeHelper do
 
   before :each do
     @cookies = {}
-    @errors = mock("errors")
     helper.stub!(:cookies).and_return(@cookies)
     helper.stub!(:homepage).and_return(nil)
+    @errors = double("errors")
     @page = mock_model(Page, :class_name => 'Page')
     @page.stub!(:sheet?).and_return(false) # core extension alters the behavior
     helper.stub!(:image).and_return('')
@@ -51,7 +51,7 @@ describe Radiant::Admin::NodeHelper do
 
   it "should determine the class of a parent node" do
     assigns[:current_node] = @page
-    child = mock("child")
+    child = double("child")
     @page.should_receive(:children).and_return([child])
     helper.should_receive(:expanded).and_return(true)
     helper.children_class.should == " children_visible"
@@ -85,7 +85,7 @@ describe Radiant::Admin::NodeHelper do
 
   it "should render the page type if it's not Page" do
     assigns[:current_node] = @page
-    @class = mock("Class")
+    @class = double("Class")
     @page.should_receive(:class).and_return(@class)
     @class.should_receive(:display_name).and_return("Special")
     helper.page_type.should ==  %{<span class="info">(Special)</span>}

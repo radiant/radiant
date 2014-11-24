@@ -73,7 +73,7 @@ describe Radiant::ApplicationHelper do
   end
 
   it "should determine whether a given url matches the current url" do
-    request = mock("request")
+    request = double("request")
     helper.stub(:request).and_return(request)
     request.stub(:fullpath).and_return("/foo/bar")
     helper.current_url?("/foo/bar/").should_not be_false
@@ -88,7 +88,7 @@ describe Radiant::ApplicationHelper do
   end
 
   it "should render an admin navigation link" do
-    request = mock("request")
+    request = double("request")
     helper.stub(:request).and_return(request)
     request.stub(:fullpath).and_return("/admin/pages")
     helper.nav_link_to("Pages", "/admin/pages").should =~ /<strong>/
@@ -216,7 +216,7 @@ describe Radiant::ApplicationHelper do
   # describe "pagination" do
   #   before do
   #     @collection = WillPaginate::Collection.new(1, 10, 100)
-  #     request = mock("request")
+  #     request = double("request")
   #     helper.stub(:request).and_return(request)
   #     helper.stub(:will_paginate_options).and_return({})
   #     helper.stub(:will_paginate).and_return("pagination of some kind")
