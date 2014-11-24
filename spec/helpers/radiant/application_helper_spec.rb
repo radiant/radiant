@@ -30,12 +30,12 @@ describe Radiant::ApplicationHelper do
 
   it "should not be logged in before authentication" do
     helper.should_receive(:current_user).and_return(nil)
-    helper.logged_in?.should be_false
+    helper.logged_in?.should be false
   end
 
   it "should be logged in when authenticated" do
     helper.should_receive(:current_user).and_return(FactoryGirl.build(:user))
-    helper.logged_in?.should be_true
+    helper.logged_in?.should be true
   end
 
   it "should create a button for a new model" do
@@ -76,10 +76,10 @@ describe Radiant::ApplicationHelper do
     request = double("request")
     helper.stub(:request).and_return(request)
     request.stub(:fullpath).and_return("/foo/bar")
-    helper.current_url?("/foo/bar/").should_not be_false
-    helper.current_url?("/foo//bar").should_not be_false
-    helper.current_url?("/baz/bam").should_not be_true
-    helper.current_url?(:controller => "admin/pages", :action => "index").should_not be_true
+    helper.current_url?("/foo/bar/").should_not be false
+    helper.current_url?("/foo//bar").should_not be false
+    helper.current_url?("/baz/bam").should_not be true
+    helper.current_url?(:controller => "admin/pages", :action => "index").should_not be true
   end
 
   it "should clean a url" do
@@ -108,12 +108,12 @@ describe Radiant::ApplicationHelper do
 
   it "should determine whether the current user is an admin" do
     helper.should_receive(:current_user).at_least(1).times.and_return(FactoryGirl.build(:admin))
-    helper.admin?.should be_true
+    helper.admin?.should be true
   end
 
   it "should determine whether the current user is a designer" do
     helper.should_receive(:current_user).at_least(1).times.and_return(FactoryGirl.build(:designer))
-    helper.designer?.should be_true
+    helper.designer?.should be true
   end
 
   it "should render a Javascript snippet that focuses a given field" do
@@ -139,7 +139,7 @@ describe Radiant::ApplicationHelper do
   end
 
   it "should not have meta errors" do
-    helper.meta_errors?.should be_false
+    helper.meta_errors?.should be false
   end
 
   it "should provide a meta_label of 'Less' when meta_errors? is true" do

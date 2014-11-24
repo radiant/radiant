@@ -24,13 +24,13 @@ describe Radiant::Admin::NodeHelper do
   it "should show all nodes when on the remove action" do
     assigns[:controller] = @controller
     @controller.should_receive(:action_name).and_return("remove")
-    helper.show_all?.should be_true
+    helper.show_all?.should be true
   end
 
   it "should not show all nodes automatically when not in the remove action" do
     assigns[:controller] = @controller
     @controller.should_receive(:action_name).and_return("index")
-    helper.show_all?.should be_false
+    helper.show_all?.should be false
   end
 
   it "should determine which rows to expand" do
@@ -40,7 +40,7 @@ describe Radiant::Admin::NodeHelper do
 
   it "should determine whether the current node should be expanded" do
     helper.should_receive(:show_all?).and_return(true)
-    helper.expanded.should be_true
+    helper.expanded.should be true
   end
 
   it "should determine the left padding for the current level" do

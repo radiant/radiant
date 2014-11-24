@@ -18,13 +18,13 @@ describe Radiant::Admin::PagesHelper do
 
   it "should have meta errors if the page has errors on the slug" do
     @errors.should_receive(:[]).with(:slug).and_return("Error")
-    helper.meta_errors?.should be_true
+    helper.meta_errors?.should be true
   end
 
   it "should have meta errors if the page has errors on the breadcrumb" do
     @errors.should_receive(:[]).with(:slug).and_return(nil)
     @errors.should_receive(:[]).with(:breadcrumb).and_return("Error")
-    helper.meta_errors?.should be_true
+    helper.meta_errors?.should be true
   end
 
   it "should render the tag reference" do
