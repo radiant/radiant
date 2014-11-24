@@ -13,7 +13,6 @@ script: bundle exec rake spec
 notifications:
   recipients:
     - ci@spanner.org
-    - git@johnmuhl.com
   irc: "irc.freenode.org#radiantcms"
 
 env:
