@@ -2,6 +2,8 @@ source "https://rubygems.org"
 
 gemspec
 
+gem 'combustion', '~> 0.5.3', :group => :test
+
 if ENV['TRAVIS']
   gemspec :development_group => :test
   gem "mysql"
