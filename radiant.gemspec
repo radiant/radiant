@@ -26,6 +26,7 @@ a general purpose content managment system--not merely a blogging engine.}
 
   s.add_dependency "rails",           ">= 4.2"
   s.add_dependency "activeresource",  ">= 3.2"
+  s.add_dependency "protected_attributes", "~> 1.1.3"
   s.add_dependency "acts_as_tree",    "~> 0.1"
   s.add_dependency "compass",         "~> 1.0.3"
   s.add_dependency "compass-rails",   "~> 2.0.4"
