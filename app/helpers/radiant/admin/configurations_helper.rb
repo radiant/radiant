@@ -11,16 +11,16 @@ module Radiant::Admin::ConfigurationsHelper
     setting.valid?
     domkey = key.gsub(/\W/, '_')
     html = ""
-    html << content_tag(:label, t("config.#{key}").titlecase, :for => domkey)
+    html << content_tag(:label, t("config.#{key}").titlecase, for: domkey)
     if setting.boolean?
       value = setting.checked? ? t('yes') : t('no')
-      html << content_tag(:span, value, :id => domkey, :class => "#{value} #{options[:class]}")
+      html << content_tag(:span, value, id: domkey, class: "#{value} #{options[:class]}")
     else
       value = setting.selected_value || setting.value
-      html << content_tag(:span, value, :id => domkey, :class => options[:class])
+      html << content_tag(:span, value, id: domkey, class: options[:class])
     end
-    html << content_tag(:span, " #{t("units.#{setting.units}")}", :class => 'units') if setting.units
-    html << content_tag(:span, " #{t('warning')}: #{[setting.errors.messages[:value]].flatten.first}", :class => 'warning') if setting.errors.messages[:value]
+    html << content_tag(:span, " #{t("units.#{setting.units}")}", class: 'units') if setting.units
+    html << content_tag(:span, " #{t('warning')}: #{[setting.errors.messages[:value]].flatten.first}", class: 'warning') if setting.errors.messages[:value]
     html.html_safe
   end
 
@@ -45,23 +45,23 @@ module Radiant::Admin::ConfigurationsHelper
     domkey = key.gsub(/\W/, '_')
     name = "config[#{key}]"
     title = t("config.#{key}").titlecase
-    title << content_tag(:span, " (#{t("units.#{setting.units}")})", :class => 'units') if setting.units
+    title << content_tag(:span, " (#{t("units.#{setting.units}")})", class: 'units') if setting.units
     value = params[key.to_sym].nil? ? setting.value : params[key.to_sym]
     html = ""
     if setting.boolean?
       html << hidden_field_tag(name, 0)
-      html << check_box_tag(name, 1, value, :class => 'setting', :id => domkey)
-      html << content_tag(:label, title, :class => 'checkbox', :for => domkey)
+      html << check_box_tag(name, 1, value, class: 'setting', id: domkey)
+      html << content_tag(:label, title, class: 'checkbox', for: domkey)
     elsif setting.selector?
-      html << content_tag(:label, title, :for => domkey)
-      html << select_tag(name, options_for_select(setting.definition.selection, value), :class => 'setting', :id => domkey)
+      html << content_tag(:label, title, for: domkey)
+      html << select_tag(name, options_for_select(setting.definition.selection, value), class: 'setting', id: domkey)
     else
-      html << content_tag(:label, title, :for => domkey)
-      html << text_field_tag(name, value, :class => 'textbox', :id => domkey)
+      html << content_tag(:label, title, for: domkey)
+      html << text_field_tag(name, value, class: 'textbox', id: domkey)
     end
     if setting.errors.messages[:value]
-      html << content_tag(:span, [setting.errors.messages[:value]].flatten.first, :class => 'error')
-      html = content_tag(:span, html, :class => "error-with-field")
+      html << content_tag(:span, [setting.errors.messages[:value]].flatten.first, class: 'error')
+      html = content_tag(:span, html, class: "error-with-field")
     end
     html.html_safe
   end

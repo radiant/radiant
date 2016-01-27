@@ -4,7 +4,7 @@ require 'rails_generator/generators/components/mailer/mailer_generator'
 class ExtensionMailerGenerator < MailerGenerator
   
   attr_accessor :extension_name
-  default_options :with_test_unit => false
+  default_options with_test_unit: false
   
   def initialize(runtime_args, runtime_options = {})
     runtime_args = runtime_args.dup
@@ -38,7 +38,7 @@ class ExtensionMailerGenerator < MailerGenerator
         view_path     = File.join('app/views', "#{relative_path}.erb")
 
         m.template "mailer:view.erb", view_path,
-                   :assigns => { :action => action, :path => view_path }
+                   assigns: { action: action, path: view_path }
       end
     end
   end

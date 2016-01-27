@@ -53,7 +53,7 @@ Supports:       Radiant #{supports_radiant_version}
       FileUtils
     end
     
-    delegate :cd, :cp_r, :rm_r, :to => :file_utils
+    delegate :cd, :cp_r, :rm_r, to: :file_utils
   end
 
   class Installer < Action

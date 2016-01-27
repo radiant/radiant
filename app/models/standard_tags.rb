@@ -36,7 +36,7 @@ module StandardTags
   tag 'path' do |tag|
     relative_url_for(tag.locals.page.path, tag.globals.page.request)
   end
-  deprecated_tag 'url', :substitute => 'path', :deadline => '1.2'
+  deprecated_tag 'url', substitute: 'path', deadline: '1.2'
 
   desc %{
     Gives access to a page's children.
@@ -315,7 +315,7 @@ module StandardTags
     <pre><code><r:if_children [status="published"]>...</r:if_children></code></pre>
   }
   tag "if_children" do |tag|
-    children = tag.locals.page.children.count(:conditions => children_find_options(tag)[:conditions])
+    children = tag.locals.page.children.count(conditions: children_find_options(tag)[:conditions])
     tag.expand if children > 0
   end
 
@@ -330,7 +330,7 @@ module StandardTags
     <pre><code><r:unless_children [status="published"]>...</r:unless_children></code></pre>
   }
   tag "unless_children" do |tag|
-    children = tag.locals.page.children.count(:conditions => children_find_options(tag)[:conditions])
+    children = tag.locals.page.children.count(conditions: children_find_options(tag)[:conditions])
     tag.expand unless children > 0
   end
 
@@ -424,7 +424,7 @@ module StandardTags
     </r:aggregate></code></pre>
   }
   tag "aggregate:children:each" do |tag|
-    render_children_with_pagination(tag, :aggregate => true)
+    render_children_with_pagination(tag, aggregate: true)
   end
 
   desc %{
@@ -566,7 +566,7 @@ module StandardTags
     part_name = tag_part_name(tag)
     parts_arr = part_name.split(',')
     inherit = boolean_attr_or_error(tag, 'inherit', 'false')
-    find = attr_or_error(tag, :attribute_name => 'find', :default => 'all', :values => 'any, all')
+    find = attr_or_error(tag, attribute_name: 'find', default: 'all', values: 'any, all')
     expandable = true
     one_found = false
     parts_arr.each do |name|
@@ -601,7 +601,7 @@ module StandardTags
     part_name = tag_part_name(tag)
     parts_arr = part_name.split(',')
     inherit = boolean_attr_or_error(tag, 'inherit', false)
-    find = attr_or_error(tag, :attribute_name => 'find', :default => 'all', :values => 'any, all')
+    find = attr_or_error(tag, attribute_name: 'find', default: 'all', values: 'any, all')
     expandable, all_found = true, true
     parts_arr.each do |name|
       part_page = tag.locals.page
@@ -636,7 +636,7 @@ module StandardTags
        tag.expand
     end
   end
-  deprecated_tag 'if_url', :substitute => 'if_path', :deadline => '1.2'
+  deprecated_tag 'if_url', substitute: 'if_path', deadline: '1.2'
 
   desc %{
     The opposite of the @if_path@ tag.
@@ -652,7 +652,7 @@ module StandardTags
         tag.expand
     end
   end
-  deprecated_tag 'unless_url', :substitute => 'unless_path', :deadline => '1.2'
+  deprecated_tag 'unless_url', substitute: 'unless_path', deadline: '1.2'
 
   desc %{
     Renders the contained elements if the current contextual page is either the actual page or one of its parents.
@@ -747,7 +747,7 @@ module StandardTags
       url << "&default=#{default_avatar_url}" unless request.host_with_port == 'testhost.tld'
       # Test the Gravatar url
       require 'open-uri'
-      begin; open "http:#{url}", :proxy => true
+      begin; open "http:#{url}", proxy: true
       rescue; local_avatar_url
       else; url
       end
@@ -790,7 +790,7 @@ module StandardTags
     else
       @i18n_date_format_keys ||= (I18n.config.backend.send(:translations)[I18n.locale][:date][:formats].keys rescue [])
     format = @i18n_date_format_keys.include?(format.to_sym) ? format.to_sym : format
-      I18n.l date, :format => format
+      I18n.l date, format: format
     end
   end
 
@@ -1237,7 +1237,7 @@ module StandardTags
     def will_paginate_options(tag)
       attr = tag.attr.symbolize_keys
       if attr[:paginated] == 'true'
-        attr.slice(:class, :previous_label, :next_label, :inner_window, :outer_window, :separator, :per_page).merge({:renderer => Radiant::Pagination::LinkRenderer.new(tag.globals.page.path)})
+        attr.slice(:class, :previous_label, :next_label, :inner_window, :outer_window, :separator, :per_page).merge({renderer: Radiant::Pagination::LinkRenderer.new(tag.globals.page.path)})
       else
         {}
       end
@@ -1278,7 +1278,7 @@ module StandardTags
     end
 
     def boolean_attr_or_error(tag, attribute_name, default)
-      attribute = attr_or_error(tag, :attribute_name => attribute_name, :default => default.to_s, :values => 'true, false')
+      attribute = attr_or_error(tag, attribute_name: attribute_name, default: default.to_s, values: 'true, false')
       (attribute.to_s.downcase == 'true') ? true : false
     end
 

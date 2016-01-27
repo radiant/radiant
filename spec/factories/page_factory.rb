@@ -12,7 +12,7 @@ FactoryGirl.define do
       page_parts
     end
 
-    factory :file_not_found_page, :class => FileNotFoundPage do
+    factory :file_not_found_page, class: FileNotFoundPage do
     end
     
     factory :published_page do
@@ -30,12 +30,12 @@ FactoryGirl.define do
       # end
       
       factory :page_with_body_page_part do
-        after(:create) { |page| page.parts.create(:name => 'body', :content => "#{page.title} body.") }
+        after(:create) { |page| page.parts.create(name: 'body', content: "#{page.title} body.") }
       end
       
       factory :page_with_body_and_sidebar_parts do
-        after(:create) { |page| page.parts.create(:name => 'body', :content => "#{page.title} body.") }
-        after(:create) { |page| page.parts.create(:name => 'sidebar', :content => "#{page.title} sidebar.") }
+        after(:create) { |page| page.parts.create(name: 'body', content: "#{page.title} body.") }
+        after(:create) { |page| page.parts.create(name: 'sidebar', content: "#{page.title} sidebar.") }
       end
     end
     

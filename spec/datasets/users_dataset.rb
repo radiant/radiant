@@ -3,14 +3,14 @@ class UsersDataset < Dataset::Base
   def load
     create_user "Existing"
     create_user "Another"
-    create_user "Admin", :admin => true
-    create_user "Designer", :designer => true, :email => ''
-    create_user "Non_admin", :admin => false
+    create_user "Admin", admin: true
+    create_user "Designer", designer: true, email: ''
+    create_user "Non_admin", admin: false
   end
 
   helpers do
     def create_user(name, attributes={})
-      user = create_model :user, name.downcase.to_sym, user_attributes(attributes.update(:name => name))
+      user = create_model :user, name.downcase.to_sym, user_attributes(attributes.update(name: name))
       if user.nil?
         throw "Error creating user #dataset for #{name}"
       end
@@ -23,10 +23,10 @@ class UsersDataset < Dataset::Base
       end
 
       attributes = {
-        :name => name,
-        :email => "#{name.downcase}@example.com",
-        :login => name.downcase,
-        :password => "password"
+        name: name,
+        email: "#{name.downcase}@example.com",
+        login: name.downcase,
+        password: "password"
       }.merge(attributes)
       attributes[:password_confirmation] = attributes[:password]
       attributes
@@ -34,10 +34,10 @@ class UsersDataset < Dataset::Base
 
     def user_params(options = {})
       {
-        :name => 'John Doe',
-        :login => 'jdoe',
-        :password => 'password',
-        :email => 'jdoe@gmail.com'
+        name: 'John Doe',
+        login: 'jdoe',
+        password: 'password',
+        email: 'jdoe@gmail.com'
       }.merge(options)
     end
 

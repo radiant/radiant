@@ -7,8 +7,8 @@ module Radiant::Admin::NodeHelper
     if page.additional_menu_features?
       page.extend(*page.menu_renderer_modules)
     end
-    locals.reverse_merge!(:level => 0, :simple => false).merge!(:page => page)
-    render :partial => 'radiant/admin/pages/node', :locals =>  locals
+    locals.reverse_merge!(level: 0, simple: false).merge!(page: page)
+    render partial: 'radiant/admin/pages/node', locals:  locals
   end
 
   def homepage
@@ -62,8 +62,8 @@ module Radiant::Admin::NodeHelper
   def expander(level)
     unless @current_node.children.empty? or level == 0
       image((expanded ? "collapse" : "expand"),
-            :class => "expander", :alt => 'toggle children',
-            :title => '')
+            class: "expander", alt: 'toggle children',
+            title: '')
     else
       ""
     end
@@ -71,7 +71,7 @@ module Radiant::Admin::NodeHelper
 
   def icon
     icon_name = @current_node.virtual? ? 'virtual_page' : 'page'
-    image(icon_name, :class => "icon", :alt => '', :title => '')
+    image(icon_name, class: "icon", alt: '', title: '')
   end
 
   def node_title
@@ -89,8 +89,8 @@ module Radiant::Admin::NodeHelper
 
   def spinner
     image('spinner.gif',
-            :class => 'busy', :id => "busy_#{@current_node.id}",
-            :alt => "",  :title => "",
-            :style => 'display: none;')
+            class: 'busy', id: "busy_#{@current_node.id}",
+            alt: "",  title: "",
+            style: 'display: none;')
   end
 end

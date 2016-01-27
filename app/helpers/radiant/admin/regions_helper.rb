@@ -5,11 +5,11 @@ module Radiant::Admin::RegionsHelper
     default_partials = Radiant::AdminUI::RegionPartials.new(self)
     if block_given?
       block.call(default_partials)
-      (options[:locals] ||= {}).merge!(:defaults => default_partials)
+      (options[:locals] ||= {}).merge!(defaults: default_partials)
     end
     output = @region_set[region].compact.map do |partial|
       begin
-        render options.merge(:partial => partial)
+        render options.merge(partial: partial)
       rescue ::ActionView::MissingTemplate # couldn't find template
         default_partials[partial]
       rescue ::ActionView::TemplateError => e # error in template

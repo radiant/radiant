@@ -24,19 +24,19 @@ module Radiant
     # declared by calling Radiant::Config#define:
     #
     #   # setting must be either 'foo', 'bar' or 'blank'
-    #   define('admin.name', :select_from => ['foo', 'bar'])
+    #   define('admin.name', select_from: ['foo', 'bar'])
     #
     #   # setting is (and must be) chosen from the names of currently available layouts
-    #   define('shop.layout', :select_from => lambda { Layout.all.map{|l| [l.name,l.id]} }, :alow_blank => false)
+    #   define('shop.layout', select_from: lambda { Layout.all.map{|l| [l.name,l.id]} }, alow_blank: false)
     #
     #   # setting cannot be changed at runtime
-    #   define('setting.important', :default => "something", :allow_change => false)
+    #   define('setting.important', default: "something", allow_change: false)
     #
     # Which almost always happens in a block like this:
     #
     #   Radiant.detail do |config|
-    #     config.namespace('user', :allow_change => true) do |user|
-    #       user.define 'allow_password_reset?', :default => true
+    #     config.namespace('user', allow_change: true) do |user|
+    #       user.define 'allow_password_reset?', default: true
     #     end
     #   end
     #
@@ -154,16 +154,16 @@ module Radiant
       # A convenient drying method for specifying a prefix and options common to several settings.
       #
       #   Radiant.detail do |config|
-      #     config.namespace('secret', :allow_display => false) do |secret|
-      #       secret.define('identity', :default => 'batman')      # defines 'secret.identity'
-      #       secret.define('lair', :default => 'batcave')         # defines 'secret.lair'
-      #       secret.define('longing', :default => 'vindication')  # defines 'secret.longing'
+      #     config.namespace('secret', allow_display: false) do |secret|
+      #       secret.define('identity', default: 'batman')      # defines 'secret.identity'
+      #       secret.define('lair', default: 'batcave')         # defines 'secret.lair'
+      #       secret.define('longing', default: 'vindication')  # defines 'secret.longing'
       #     end
       #   end
       #
       def namespace(prefix, options = {}, &block)
         prefix = [options[:prefix], prefix].join('.') if options[:prefix]
-        with_options(options.merge(:prefix => prefix), &block)
+        with_options(options.merge(prefix: prefix), &block)
       end
 
       # Declares a setting definition that will constrain and support the use of a particular config entry.
@@ -182,14 +182,14 @@ module Radiant
       # From the main radiant config/initializers/radiant_config.rb:
       #
       #   Radiant.detail do |config|
-      #     config.define 'defaults.locale', :select_from => lambda { Radiant::AvailableLocales.locales }, :allow_blank => true
-      #     config.define 'defaults.page.parts', :default => "Body,Extended"
+      #     config.define 'defaults.locale', select_from: lambda { Radiant::AvailableLocales.locales }, allow_blank: true
+      #     config.define 'defaults.page.parts', default: "Body,Extended"
       #     ...
       #   end
       #
       # It's also possible to reuse a definition by passing it to define:
       #
-      #   choose_layout = Radiant::Config::Definition.new(:select_from => lambda {Layout.all.map{|l| [l.name, l.d]}})
+      #   choose_layout = Radiant::Config::Definition.new(select_from: lambda {Layout.all.map{|l| [l.name, l.d]}})
       #   define "my.layout", choose_layout
       #   define "your.layout", choose_layout
       #
@@ -209,7 +209,7 @@ Config definition error: '#{key}' is defined twice:
 2. #{definitions[key].definer}
         } unless definitions[key].nil? || definitions[key].empty?
 
-        definition ||= Radiant::Config::Definition.new(options.merge(:definer => called_from))
+        definition ||= Radiant::Config::Definition.new(options.merge(definer: called_from))
         definitions[key] = definition
 
         if self[key].nil? && !definition.default.nil?
@@ -226,7 +226,7 @@ Config definition error: '#{key}' is defined twice:
       end
 
       def definition_for(key)
-        definitions[key] ||= Radiant::Config::Definition.new(:empty => true)
+        definitions[key] ||= Radiant::Config::Definition.new(empty: true)
       end
 
       def clear_definitions!
@@ -269,7 +269,7 @@ Config definition error: '#{key}' is defined twice:
     #
     #   key = Radiant::Config.find_or_create_by_key('key').value
     #
-    # If the config item is boolean the response will be true or false. For items with :type => :integer it will be an integer,
+    # If the config item is boolean the response will be true or false. For items with type: :integer it will be an integer,
     # for everything else a string.
     #
     def value
@@ -287,7 +287,7 @@ Config definition error: '#{key}' is defined twice:
       @definition ||= self.class.definition_for(self.key)
     end
 
-    # Returns true if the item key ends with '?' or the definition specifies :type => :boolean.
+    # Returns true if the item key ends with '?' or the definition specifies type: :boolean.
     #
     def boolean?
       definition.boolean? || self.key.ends_with?("?")
@@ -316,7 +316,7 @@ Config definition error: '#{key}' is defined twice:
       Radiant::Config.initialize_cache
     end
 
-    delegate :default, :type, :allow_blank?, :hidden?, :visible?, :settable?, :selection, :notes, :units, :to => :definition
+    delegate :default, :type, :allow_blank?, :hidden?, :visible?, :settable?, :selection, :notes, :units, to: :definition
 
     def validate
       definition.validate(self)
@@ -337,8 +337,8 @@ Config definition error: '#{key}' is defined twice:
       # The actual defining is done by Radiant::Config#define and usually in a block like this:
       #
       #   Radiant::Config.prepare do |config|
-      #     config.namespace('users', :allow_change => true) do |users|
-      #       users.define 'allow_password_reset?', :label => 'Allow password reset?'
+      #     config.namespace('users', allow_change: true) do |users|
+      #       users.define 'allow_password_reset?', label: 'Allow password reset?'
       #     end
       #   end
       #
@@ -357,7 +357,7 @@ Config definition error: '#{key}' is defined twice:
         !!empty
       end
       
-      # Returns true if the definition included a :type => :boolean parameter. Config entries that end in '?' are automatically 
+      # Returns true if the definition included a type: :boolean parameter. Config entries that end in '?' are automatically 
       # considered boolean, whether a type is declared or not. config.boolean? may therefore differ from config.definition.boolean?
       #
       def boolean?
@@ -370,7 +370,7 @@ Config definition error: '#{key}' is defined twice:
         !select_from.blank?   
       end
       
-      # Returns true if the definition included a :type => :integer parameter
+      # Returns true if the definition included a type: :integer parameter
       def integer?
         type == :integer
       end

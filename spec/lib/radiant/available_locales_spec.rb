@@ -8,7 +8,7 @@ describe Radiant::AvailableLocales do
   end
 
   it "should load the default locales" do
-    @locales.should include(["English", "en"])
+    expect(@locales).to include(["English", "en"])
   end
 
 end

@@ -8,61 +8,61 @@ describe Radiant::ExtensionPath do
 
   describe "recording a vendored extension" do
     it "should parse the name of the extension from the path" do
-      ep.name.should == 'basic'
+      expect(ep.name).to eq('basic')
     end
     
     it "should return the basename of the extension file that should be required" do
-      ep.required.should == File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/basic/basic_extension")
+      expect(ep.required).to eq(File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/basic/basic_extension"))
     end
     
     it "should return the extension path" do
-      ep.path.should == File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/basic")
-      ep.to_s.should == File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/basic")
+      expect(ep.path).to eq(File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/basic"))
+      expect(ep.to_s).to eq(File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/basic"))
     end
     
     it "should store the extension path object" do
-      Radiant::ExtensionPath.find(:basic).path.should == ep.path
-      Radiant::ExtensionPath.for(:basic).should == File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/basic")
+      expect(Radiant::ExtensionPath.find(:basic).path).to eq(ep.path)
+      expect(Radiant::ExtensionPath.for(:basic)).to eq(File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/basic"))
     end
   end
 
   describe "recording a gem extension" do
     it "should parse the name of the extension from the gem path" do
-      gem_ep.name.should == 'gem_ext'
+      expect(gem_ep.name).to eq('gem_ext')
     end
 
     it "should return the name of the extension file" do
-      gem_ep.required.should == "/imaginary/test/path/gems/radiant-gem_ext-extension-0.0.0/gem_ext_extension"
+      expect(gem_ep.required).to eq("/imaginary/test/path/gems/radiant-gem_ext-extension-0.0.0/gem_ext_extension")
     end
 
     it "should return the extension path" do
-      gem_ep.path.should == "/imaginary/test/path/gems/radiant-gem_ext-extension-0.0.0"
-      gem_ep.to_s.should == "/imaginary/test/path/gems/radiant-gem_ext-extension-0.0.0"
+      expect(gem_ep.path).to eq("/imaginary/test/path/gems/radiant-gem_ext-extension-0.0.0")
+      expect(gem_ep.to_s).to eq("/imaginary/test/path/gems/radiant-gem_ext-extension-0.0.0")
     end
 
     it "should store the extension path object" do
-      Radiant::ExtensionPath.find(:gem_ext).path.should == gem_ep.path
-      Radiant::ExtensionPath.for(:gem_ext).should == "/imaginary/test/path/gems/radiant-gem_ext-extension-0.0.0"
+      expect(Radiant::ExtensionPath.find(:gem_ext).path).to eq(gem_ep.path)
+      expect(Radiant::ExtensionPath.for(:gem_ext)).to eq("/imaginary/test/path/gems/radiant-gem_ext-extension-0.0.0")
     end
   end
 
   describe "recording a git-repository extension" do
     it "should parse the name of the extension from the gem path" do
-      git_ep.name.should == 'git_ext'
+      expect(git_ep.name).to eq('git_ext')
     end
 
     it "should return the name of the extension file" do
-      git_ep.required.should == "/imaginary/test/path/vendor/extensions/radiant-git_ext-extension-61e0ad14a3ae/git_ext_extension"
+      expect(git_ep.required).to eq("/imaginary/test/path/vendor/extensions/radiant-git_ext-extension-61e0ad14a3ae/git_ext_extension")
     end
 
     it "should return the extension path" do
-      git_ep.path.should == "/imaginary/test/path/vendor/extensions/radiant-git_ext-extension-61e0ad14a3ae"
-      git_ep.to_s.should == "/imaginary/test/path/vendor/extensions/radiant-git_ext-extension-61e0ad14a3ae"
+      expect(git_ep.path).to eq("/imaginary/test/path/vendor/extensions/radiant-git_ext-extension-61e0ad14a3ae")
+      expect(git_ep.to_s).to eq("/imaginary/test/path/vendor/extensions/radiant-git_ext-extension-61e0ad14a3ae")
     end
 
     it "should store the extension path object" do
-      Radiant::ExtensionPath.find(:git_ext).path.should == git_ep.path
-      Radiant::ExtensionPath.for(:git_ext).should == "/imaginary/test/path/vendor/extensions/radiant-git_ext-extension-61e0ad14a3ae"
+      expect(Radiant::ExtensionPath.find(:git_ext).path).to eq(git_ep.path)
+      expect(Radiant::ExtensionPath.for(:git_ext)).to eq("/imaginary/test/path/vendor/extensions/radiant-git_ext-extension-61e0ad14a3ae")
     end
   end
 
@@ -70,60 +70,60 @@ describe Radiant::ExtensionPath do
     before do
       Radiant::ExtensionPath.clear_paths!
       @configuration = double("configuration")
-      Radiant.stub(:configuration).and_return(@configuration)
+      allow(Radiant).to receive(:configuration).and_return(@configuration)
       @extensions = %w{basic overriding}
       @extensions.each do |ext|
         Radiant::ExtensionPath.from_path(File.expand_path("#{RADIANT_ROOT}/test/fixtures/extensions/#{ext}"))
       end
-      @configuration.stub(:enabled_extensions).and_return(@extensions.map(&:to_sym))
+      allow(@configuration).to receive(:enabled_extensions).and_return(@extensions.map(&:to_sym))
     end
     
     describe "in an individual extension root" do
       [:load_paths, :plugin_paths, :controller_paths, :view_paths, :metal_paths, :locale_paths].each do |meth|
         it "should respond to #{meth}" do
           ep = Radiant::ExtensionPath.find(:basic)
-          ep.should respond_to(meth)
+          expect(ep).to respond_to(meth)
         end
       end
       
       it "should report paths that exist" do
-        File.directory?(Radiant::ExtensionPath.find(:basic).plugin_paths).should be true
-        File.directory?(Radiant::ExtensionPath.find(:basic).metal_paths).should be true
-        File.directory?(Radiant::ExtensionPath.find(:basic).model_paths).should be true
-        File.directory?(Radiant::ExtensionPath.find(:basic).view_paths).should be true
-        File.directory?(Radiant::ExtensionPath.find(:overriding).plugin_paths).should be true
-        File.directory?(Radiant::ExtensionPath.find(:overriding).metal_paths).should be true
-        File.directory?(Radiant::ExtensionPath.find(:overriding).view_paths).should be true
+        expect(File.directory?(Radiant::ExtensionPath.find(:basic).plugin_paths)).to be true
+        expect(File.directory?(Radiant::ExtensionPath.find(:basic).metal_paths)).to be true
+        expect(File.directory?(Radiant::ExtensionPath.find(:basic).model_paths)).to be true
+        expect(File.directory?(Radiant::ExtensionPath.find(:basic).view_paths)).to be true
+        expect(File.directory?(Radiant::ExtensionPath.find(:overriding).plugin_paths)).to be true
+        expect(File.directory?(Radiant::ExtensionPath.find(:overriding).metal_paths)).to be true
+        expect(File.directory?(Radiant::ExtensionPath.find(:overriding).view_paths)).to be true
       end
       it "should not report paths that don't exist" do
-        Radiant::ExtensionPath.find(:basic).locale_paths.should be_nil
-        Radiant::ExtensionPath.find(:overriding).controller_paths.should be_nil
-        Radiant::ExtensionPath.find(:overriding).model_paths.should be_nil
-        Radiant::ExtensionPath.find(:overriding).locale_paths.should be_nil
+        expect(Radiant::ExtensionPath.find(:basic).locale_paths).to be_nil
+        expect(Radiant::ExtensionPath.find(:overriding).controller_paths).to be_nil
+        expect(Radiant::ExtensionPath.find(:overriding).model_paths).to be_nil
+        expect(Radiant::ExtensionPath.find(:overriding).locale_paths).to be_nil
       end
     end
 
     describe "across the set of enabled extensions" do
       [:load_paths, :plugin_paths, :controller_paths, :view_paths, :metal_paths, :locale_paths].each do |meth|
         it "should return collected #{meth}" do
-          Radiant::ExtensionPath.should respond_to(meth)
-          Radiant::ExtensionPath.send(meth).should be_instance_of(Array)
-          Radiant::ExtensionPath.send(meth).all? { |f| File.directory?(f) }.should be true
+          expect(Radiant::ExtensionPath).to respond_to(meth)
+          expect(Radiant::ExtensionPath.send(meth)).to be_instance_of(Array)
+          expect(Radiant::ExtensionPath.send(meth).all? { |f| File.directory?(f) }).to be true
         end
       end
 
       it "should return view_paths in inverse load order" do
-        Radiant::ExtensionPath.view_paths.should == [
+        expect(Radiant::ExtensionPath.view_paths).to eq([
          "#{RADIANT_ROOT}/test/fixtures/extensions/overriding/app/views",
          "#{RADIANT_ROOT}/test/fixtures/extensions/basic/app/views"
-        ]
+        ])
       end
 
       it "should return metal_paths in inverse load order" do
-        Radiant::ExtensionPath.metal_paths.should == [
+        expect(Radiant::ExtensionPath.metal_paths).to eq([
          "#{RADIANT_ROOT}/test/fixtures/extensions/overriding/app/metal",
          "#{RADIANT_ROOT}/test/fixtures/extensions/basic/app/metal"
-        ]
+        ])
       end
     end
 

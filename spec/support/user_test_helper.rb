@@ -1,14 +1,14 @@
 module UserTestHelper
   VALID_USER_PARAMS = {
-    :name => 'John Doe',
-    :login => 'jdoe',
-    :password => 'coolness',
-    :email => 'jdoe@gmail.com'
+    name: 'John Doe',
+    login: 'jdoe',
+    password: 'coolness',
+    email: 'jdoe@gmail.com'
   }
 
   def user_params(options = {})
     params = VALID_USER_PARAMS.dup
-    params.merge!(:login => @user_login) if @user_login
+    params.merge!(login: @user_login) if @user_login
     params.merge!(options)
   end
 

@@ -4,38 +4,38 @@ describe PageContext do
   before :each do
     @page = FactoryGirl.build(:home)
     @context = PageContext.new(@page)
-    @parser = Radius::Parser.new(@context, :tag_prefix => 'r')
+    @parser = Radius::Parser.new(@context, tag_prefix: 'r')
     @context = @parser.context
   end
 
   it 'should raise an error when it encounters a missing tag' do
-    lambda { @parser.parse('<r:missing />') }.should raise_error(StandardTags::TagError)
+    expect { @parser.parse('<r:missing />') }.to raise_error(StandardTags::TagError)
   end
 
   it 'should initialize correctly' do
-    @page.should equal(@context.page)
+    expect(@page).to equal(@context.page)
   end
 
   it 'should give tags access to the request' do
     @page.save!
-    another = FactoryGirl.create(:published_page, :parent_id => @page.id, :title => 'Another')
+    another = FactoryGirl.create(:published_page, parent_id: @page.id, title: 'Another')
     @context.define_tag("if_request") { |tag| tag.expand if tag.locals.page.request }
-    parse('<r:if_request>tada!</r:if_request>').should match(/^$/)
+    expect(parse('<r:if_request>tada!</r:if_request>')).to match(/^$/)
 
     @page.request = ActionDispatch::TestRequest.new
-    parse('<r:if_request>tada!</r:if_request>').should include("tada!")    
-    parse('<r:find path="/another/"><r:if_request>tada!</r:if_request></r:find>').should include("tada!")
+    expect(parse('<r:if_request>tada!</r:if_request>')).to include("tada!")    
+    expect(parse('<r:find path="/another/"><r:if_request>tada!</r:if_request></r:find>')).to include("tada!")
   end
 
   it 'should give tags access to the response' do
     @page.save!
-    another = FactoryGirl.create(:published_page, :parent_id => @page.id, :title => 'Another')
+    another = FactoryGirl.create(:published_page, parent_id: @page.id, title: 'Another')
     @context.define_tag("if_response") { |tag| tag.expand if tag.locals.page.response }
-    parse('<r:if_response>tada!</r:if_response>').should match(/^$/)
+    expect(parse('<r:if_response>tada!</r:if_response>')).to match(/^$/)
 
     @page.response = ActionDispatch::TestRequest.new
-    parse('<r:if_response>tada!</r:if_response>').should include("tada!")
-    parse('<r:find path="/another/"><r:if_response>tada!</r:if_response></r:find>').should include("tada!")
+    expect(parse('<r:if_response>tada!</r:if_response>')).to include("tada!")
+    expect(parse('<r:find path="/another/"><r:if_response>tada!</r:if_response></r:find>')).to include("tada!")
   end
 
   private
@@ -50,20 +50,20 @@ describe PageContext, "when errors are not being raised" do
   before :each do
     @page = FactoryGirl.build(:home)
     @context = PageContext.new(@page)
-    @parser = Radius::Parser.new(@context, :tag_prefix => 'r')
-    @parser.context.stub(:raise_errors?).and_return(false)
+    @parser = Radius::Parser.new(@context, tag_prefix: 'r')
+    allow(@parser.context).to receive(:raise_errors?).and_return(false)
     @context = @parser.context
   end
 
   it 'should output an error when it encounters a missing tag' do
-    @parser.parse('<r:missing />').should include("undefined tag `missing'")
+    expect(@parser.parse('<r:missing />')).to include("undefined tag `missing'")
   end
 
   it 'should pop the stack when an error occurs' do
 
-    @context.current_nesting.should be_empty
+    expect(@context.current_nesting).to be_empty
     @parser.context.define_tag("error") { |tag| raise "Broken!" }
-    @parser.parse("<r:error/>").should match(/Broken\!/)
-    @context.current_nesting.should be_empty
+    expect(@parser.parse("<r:error/>")).to match(/Broken\!/)
+    expect(@context.current_nesting).to be_empty
   end
 end

@@ -12,17 +12,17 @@ describe Radiant::Admin::ReferencesHelper do
     end
 
     it "should return Page when the class_name was not sent" do
-      helper.class_of_page.should == Page
+      expect(helper.class_of_page).to eq(Page)
     end
 
     it "should return the named class when sent class_name" do
       params[:class_name] = "FileNotFoundPage"
-      helper.class_of_page.should == FileNotFoundPage
+      expect(helper.class_of_page).to eq(FileNotFoundPage)
     end
 
     it "should return Page when the class_name is blank" do
       params[:class_name] = ''
-      helper.class_of_page.should == Page
+      expect(helper.class_of_page).to eq(Page)
     end
   end
 
@@ -32,22 +32,22 @@ describe Radiant::Admin::ReferencesHelper do
     end
 
     it "should return nil when no filter is set" do
-      helper.filter.should be_nil
+      expect(helper.filter).to be_nil
     end
 
     it "should return the filter object for the named filter" do
       params[:filter_name] = "Basic"
-      helper.filter.should == BasicFilter
+      expect(helper.filter).to eq(BasicFilter)
     end
 
     it "should return the filter object for a custom named filter" do
       params[:filter_name] = "Really Custom"
-      helper.filter.should == CustomFilter
+      expect(helper.filter).to eq(CustomFilter)
     end
 
     it "should return nil when the set filter is blank" do
       params[:filter_name] = ' '
-      helper.filter.should be_nil
+      expect(helper.filter).to be_nil
     end
   end
 
@@ -60,12 +60,12 @@ describe Radiant::Admin::ReferencesHelper do
 
       it "should return the name of the set filter" do
         params[:filter_name] = "Basic"
-        helper._display_name.should == "Basic"
+        expect(helper._display_name).to eq("Basic")
       end
 
       it "should return <none> when no filter is set" do
         params[:filter_name] = nil
-        helper._display_name.should == "<none>"
+        expect(helper._display_name).to eq("<none>")
       end
     end
 
@@ -77,12 +77,12 @@ describe Radiant::Admin::ReferencesHelper do
 
       it "should return the display name of the page class" do
         params[:class_name] = "FileNotFoundPage"
-        helper._display_name.should == "File Not Found"
+        expect(helper._display_name).to eq("File Not Found")
       end
 
       it "should return Page when <normal> is chosen" do
         params[:class_name] = nil
-        helper._display_name.should == "Page"
+        expect(helper._display_name).to eq("Page")
       end
     end
   end
@@ -95,18 +95,18 @@ describe Radiant::Admin::ReferencesHelper do
     end
 
     it "should render a helpful message when the description is blank" do
-      BasicFilter.should_receive(:description).and_return('')
-      helper.filter_reference.should == "There is no documentation on this filter."
+      expect(BasicFilter).to receive(:description).and_return('')
+      expect(helper.filter_reference).to eq("There is no documentation on this filter.")
     end
 
     it "should render the filter's description when available" do
-      BasicFilter.should_receive(:description).at_least(:once).and_return('This is basic stuff.')
-      helper.filter_reference.should == BasicFilter.description
+      expect(BasicFilter).to receive(:description).at_least(:once).and_return('This is basic stuff.')
+      expect(helper.filter_reference).to eq(BasicFilter.description)
     end
 
     it "should render a helpful message when no filter is selected" do
       params[:filter_name] = nil
-      helper.filter_reference.should == "There is no filter on the current page part."
+      expect(helper.filter_reference).to eq("There is no filter on the current page part.")
     end
   end
 
@@ -119,8 +119,8 @@ describe Radiant::Admin::ReferencesHelper do
 
     it "should render the tag reference partial for each tag description" do
       count = Page.tag_descriptions.size
-      helper.should_receive(:render).exactly(count).times.and_return("desc")
-      helper.tag_reference.should == "desc" * count
+      expect(helper).to receive(:render).exactly(count).times.and_return("desc")
+      expect(helper.tag_reference).to eq("desc" * count)
     end
   end
 end

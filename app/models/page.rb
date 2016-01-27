@@ -14,14 +14,14 @@ class Page < ActiveRecord::Base
   before_save :update_virtual, :update_status, :set_allowed_children_cache
 
   # Associations
-  acts_as_tree :order => 'virtual DESC, title ASC'
-  has_many :parts, :class_name => 'PagePart', :order => 'id', :dependent => :destroy
-  accepts_nested_attributes_for :parts, :allow_destroy => true
-  has_many :fields, :class_name => 'PageField', :order => 'id', :dependent => :destroy
-  accepts_nested_attributes_for :fields, :allow_destroy => true
+  acts_as_tree order: 'virtual DESC, title ASC'
+  has_many :parts, class_name: 'PagePart', order: 'id', dependent: :destroy
+  accepts_nested_attributes_for :parts, allow_destroy: true
+  has_many :fields, class_name: 'PageField', order: 'id', dependent: :destroy
+  accepts_nested_attributes_for :fields, allow_destroy: true
   belongs_to :layout
-  belongs_to :created_by, :class_name => 'User'
-  belongs_to :updated_by, :class_name => 'User'
+  belongs_to :created_by, class_name: 'User'
+  belongs_to :updated_by, class_name: 'User'
 
   # Validations
   validates :title, presence: true,
@@ -219,7 +219,7 @@ class Page < ActiveRecord::Base
   end
 
   def to_xml(options={}, &block)
-    super(options.reverse_merge(:include => :parts), &block)
+    super(options.reverse_merge(include: :parts), &block)
   end
 
   def default_child
@@ -316,14 +316,14 @@ class Page < ActiveRecord::Base
       def default_page_parts(config = Radiant::Config)
         default_parts = config['defaults.page.parts'].to_s.strip.split(/\s*,\s*/)
         default_parts.map do |name|
-          PagePart.new(:name => name, :filter_id => config['defaults.page.filter'])
+          PagePart.new(name: name, filter_id: config['defaults.page.filter'])
         end
       end
 
       def default_page_fields(config = Radiant::Config)
         default_fields = config['defaults.page.fields'].to_s.strip.split(/\s*,\s*/)
         default_fields.map do |name|
-          PageField.new(:name => name)
+          PageField.new(name: name)
         end
       end
   end
@@ -361,7 +361,7 @@ class Page < ActiveRecord::Base
     def lazy_initialize_parser_and_context
       unless @parser and @context
         @context = PageContext.new(self)
-        @parser = Radius::Parser.new(@context, :tag_prefix => 'r')
+        @parser = Radius::Parser.new(@context, tag_prefix: 'r')
       end
       @parser
     end

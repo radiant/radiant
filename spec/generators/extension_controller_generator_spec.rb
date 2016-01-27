@@ -12,34 +12,34 @@ describe "ExtensionControllerGenerator with normal options" do
   end
 
   it 'should generate the controller file in the correct location' do
-    'vendor/extensions/example'.should have_generated_controller_for('Events') do |body|
+    expect('vendor/extensions/example').to have_generated_controller_for('Events') do |body|
       %w(show new index).each do |name|
-        body.should have_method(name)
+        expect(body).to have_method(name)
       end
     end
   end
 
   it 'should generate the controller spec file in the correct location' do
-    'vendor/extensions/example'.should have_generated_controller_spec_for('Events')
+    expect('vendor/extensions/example').to have_generated_controller_spec_for('Events')
   end
 
   it 'should generate the helper file in the correct location' do
-    'vendor/extensions/example'.should have_generated_helper_for('Events')
+    expect('vendor/extensions/example').to have_generated_helper_for('Events')
   end
 
   it 'should generate the helper spec file in the correct location' do
-    'vendor/extensions/example'.should have_generated_helper_spec_for('Events')
+    expect('vendor/extensions/example').to have_generated_helper_spec_for('Events')
   end
 
   it 'should generate the view files in the correct location' do
     %w(show new index).each do |action|
-      'vendor/extensions/example'.should have_generated_view_for('Events', action)
+      expect('vendor/extensions/example').to have_generated_view_for('Events', action)
     end
   end
 
   it 'should generate the view spec files in the correct location' do
     %w(show new index).each do |action|
-      'vendor/extensions/example'.should have_generated_view_spec_for('Events', action)
+      expect('vendor/extensions/example').to have_generated_view_spec_for('Events', action)
     end
   end
 
@@ -66,24 +66,24 @@ describe "ExtensionControllerGenerator with test unit" do
   end
 
   it 'should generate the controller file in the correct location' do
-    'vendor/extensions/example'.should have_generated_controller_for('Events') do |body|
+    expect('vendor/extensions/example').to have_generated_controller_for('Events') do |body|
       %w(show new index).each do |name|
-        body.should have_method(name)
+        expect(body).to have_method(name)
       end
     end
   end
 
   it 'should generate the controller spec file in the correct location' do
-    'vendor/extensions/example'.should have_generated_functional_test_for('Events')
+    expect('vendor/extensions/example').to have_generated_functional_test_for('Events')
   end
 
   it 'should generate the helper file in the correct location' do
-    'vendor/extensions/example'.should have_generated_helper_for('Events')
+    expect('vendor/extensions/example').to have_generated_helper_for('Events')
   end
 
   it 'should generate the view files in the correct location' do
     %w(show new index).each do |action|
-      'vendor/extensions/example'.should have_generated_view_for('Events', action)
+      expect('vendor/extensions/example').to have_generated_view_for('Events', action)
     end
   end
 

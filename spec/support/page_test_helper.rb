@@ -41,17 +41,17 @@ end
 module PageTestHelper
   
   VALID_PAGE_PARAMS = {
-    :title => 'New Page',
-    :slug => 'page',
-    :breadcrumb => 'New Page',
-    :status_id => '1',
-    :parent_id => nil
+    title: 'New Page',
+    slug: 'page',
+    breadcrumb: 'New Page',
+    status_id: '1',
+    parent_id: nil
   }
   
   def page_params(options = {})
     params = VALID_PAGE_PARAMS.dup
-    params.merge!(:title => @page_title) if @page_title
-    params.merge!(:status_id => '5')
+    params.merge!(title: @page_title) if @page_title
+    params.merge!(status_id: '5')
     params.merge!(options)
   end
   

@@ -46,7 +46,7 @@ module LoginSystem
         permissions = self.class.controller_permissions[action]
         flash[:error] = permissions[:denied_message] || 'Access denied.'
         respond_to do |format|
-          format.html { redirect_to(permissions[:denied_url] || { :action => :index }) }
+          format.html { redirect_to(permissions[:denied_url] || { action: :index }) }
           format.any(:xml, :json) { head :forbidden }
         end
         false
@@ -78,7 +78,7 @@ module LoginSystem
     end
 
     def set_session_cookie(user = current_user)
-      cookies[:session_token] = { :value => user.session_token , :expires => Radiant::Config['session_timeout'].to_i.from_now.utc }
+      cookies[:session_token] = { value: user.session_token , expires: Radiant::Config['session_timeout'].to_i.from_now.utc }
     end
 
   module ClassMethods
