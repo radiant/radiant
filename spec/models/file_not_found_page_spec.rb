@@ -7,7 +7,10 @@ describe FileNotFoundPage do
 
   let(:file_not_found){ FactoryGirl.create(:file_not_found_page) }
 
-  its(:allowed_children){ should == [] }
+  describe '#allowed_children' do
+    subject { super().allowed_children }
+    it { is_expected.to eq([]) }
+  end
 
   describe '<r:attempted_url>' do
     it 'should have a working url tag' do
@@ -22,15 +25,15 @@ describe FileNotFoundPage do
   end
 
   it 'should be a virtual page' do
-    file_not_found.should be_virtual
+    expect(file_not_found).to be_virtual
   end
 
   it 'should not be cached' do
-    file_not_found.should_not be_cache
+    expect(file_not_found).not_to be_cache
   end
 
   it 'should return a 404 status code' do
-    file_not_found.response_code.should == 404
+    expect(file_not_found.response_code).to eq(404)
   end
 
 end

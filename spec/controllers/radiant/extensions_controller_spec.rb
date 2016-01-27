@@ -12,7 +12,7 @@ describe Radiant::Admin::ExtensionsController do
 
   it "should require login for all actions" do
     logout
-    lambda { get :index }.should require_login
+    expect { get :index }.to require_login
   end
 
   describe "GET to /admin/extensions" do
@@ -21,19 +21,19 @@ describe Radiant::Admin::ExtensionsController do
     end
 
     it "should be successful" do
-      response.should be_success
+      expect(response).to be_success
     end
 
     it "should render the index template" do
-      response.should render_template("index")
+      expect(response).to render_template("index")
     end
 
     it "should list all extensions" do
-      assigns[:extensions].sort_by(&:name).should == Radiant::Extension.descendants.sort_by(&:name)
+      expect(assigns[:extensions].sort_by(&:name)).to eq(Radiant::Extension.descendants.sort_by(&:name))
     end
 
     it "should pre-set the template name" do
-      assigns[:template_name].should == 'index'
+      expect(assigns[:template_name]).to eq('index')
     end
   end
 end

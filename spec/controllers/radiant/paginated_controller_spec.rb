@@ -4,8 +4,8 @@ describe Radiant::Admin::UsersController do
   routes { Radiant::Engine.routes }
 
   it "should be paginated" do
-    Radiant::Admin::UsersController.paginated.should be true
-    controller.paginated?.should be true
+    expect(Radiant::Admin::UsersController.paginated).to be true
+    expect(controller.paginated?).to be true
   end
 
   ## I need to redo these with mock classes
@@ -29,8 +29,8 @@ describe Radiant::Admin::UsersController do
   describe "without configuration" do
     it "should have pagination defaults" do
       Radiant.detail['admin.pagination.per_page'] = nil
-      controller.pagination_parameters.should == {page: 1, per_page: 50}
-      controller.will_paginate_options.should == {param_name: :p}
+      expect(controller.pagination_parameters).to eq({page: 1, per_page: 50})
+      expect(controller.will_paginate_options).to eq({param_name: :p})
     end
   end
 

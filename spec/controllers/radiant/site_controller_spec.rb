@@ -6,57 +6,57 @@ describe Radiant::SiteController do
 
   it "should find and render home page" do
     get :show_page, url: ''
-    response.should be_success
-    response.body.should == 'Hello world!'
+    expect(response).to be_success
+    expect(response.body).to eq('Hello world!')
   end
 
   it "should find a page one level deep" do
     get :show_page, url: 'first/'
-    response.should be_success
-    response.body.should == 'First body.'
+    expect(response).to be_success
+    expect(response.body).to eq('First body.')
   end
 
   it "should find a page two levels deep" do
     get :show_page, url: 'parent/child/'
-    response.should be_success
-    response.body.should == 'Child body.'
+    expect(response).to be_success
+    expect(response.body).to eq('Child body.')
   end
 
   it "should show page not found" do
     get :show_page, url: 'a/non-existant/page'
-    response.response_code.should == 404
-    response.should render_template('site/not_found')
+    expect(response.response_code).to eq(404)
+    expect(response).to render_template('site/not_found')
   end
 
   it "should redirect to admin if missing root" do
-    Page.should_receive(:find_by_path).and_raise(Page::MissingRootPageError)
+    expect(Page).to receive(:find_by_path).and_raise(Page::MissingRootPageError)
     get :show_page, url: '/'
-    response.should redirect_to(welcome_url)
+    expect(response).to redirect_to(welcome_url)
   end
 
   it "should pass pagination parameters to the page" do
     page = pages(:first)
     param_name = WillPaginate::ViewHelpers.pagination_options[:param_name] || :p
     pagination_parameters = {param_name => 3, per_page: 100}
-    controller.stub(:pagination_parameters).and_return(pagination_parameters)
-    controller.stub(:find_page).and_return(page)
+    allow(controller).to receive(:pagination_parameters).and_return(pagination_parameters)
+    allow(controller).to receive(:find_page).and_return(page)
 
     get :show_page, url: 'first/'
 
-    page.pagination_parameters.should == pagination_parameters
+    expect(page.pagination_parameters).to eq(pagination_parameters)
   end
 
   it "should parse pages with Radius" do
     get :show_page, url: 'radius'
-    response.should be_success
-    response.body.should == 'Radius body.'
+    expect(response).to be_success
+    expect(response.body).to eq('Radius body.')
   end
 
   it "should render 404 if page is not published status" do
     ['draft', 'hidden'].each do |url|
       get :show_page, url: url
-      response.should be_missing
-      response.should render_template('site/not_found')
+      expect(response).to be_missing
+      expect(response).to render_template('site/not_found')
     end
   end
 
@@ -64,7 +64,7 @@ describe Radiant::SiteController do
     request.host = "dev.site.com"
     ['draft', 'hidden'].each do |url|
       get :show_page, url: url
-      response.should be_success
+      expect(response).to be_success
     end
   end
 
@@ -73,7 +73,7 @@ describe Radiant::SiteController do
     request.host = 'mysite.com'
     ['draft', 'hidden'].each do |url|
       get :show_page, url: url
-      response.should be_success
+      expect(response).to be_success
     end
   end
 
@@ -82,12 +82,12 @@ describe Radiant::SiteController do
       controller.config = { 'dev.host' => 'mysite.com' }
       request.host = 'dev.mysite.com'
       get :show_page, url: type
-      response.should_not be_missing
+      expect(response).not_to be_missing
     end
   end
 
   it "should not require login" do
-    lambda { get :show_page, url: '/' }.should_not require_login
+    expect { get :show_page, url: '/' }.not_to require_login
   end
 
   describe "scheduling" do
@@ -99,8 +99,8 @@ describe Radiant::SiteController do
       @sched_page.save
       request.host = 'mysite.com'
       get :show_page, url: @sched_page.slug
-      response.response_code.should == 404
-      response.should render_template('site/not_found')
+      expect(response.response_code).to eq(404)
+      expect(response).to render_template('site/not_found')
     end
 
     it "should update status of scheduled pages on home page" do
@@ -108,10 +108,10 @@ describe Radiant::SiteController do
       @sched_page.status_id = 90
 
       get :show_page, url: '/'
-      response.body.should == 'Hello world!'
+      expect(response.body).to eq('Hello world!')
 
       @sched_page2 = Page.find_by_title('d')
-      @sched_page2.status_id.should == 100
+      expect(@sched_page2.status_id).to eq(100)
     end
 
   end
@@ -119,64 +119,64 @@ describe Radiant::SiteController do
   describe "caching" do
     it "should add a default Cache-Control header with public and max-age of 5 minutes" do
       get :show_page, url: '/'
-      response.headers['Cache-Control'].should =~ /public/
-      response.headers['Cache-Control'].should =~ /max-age=300/
+      expect(response.headers['Cache-Control']).to match(/public/)
+      expect(response.headers['Cache-Control']).to match(/max-age=300/)
     end
 
     it "should pass along the etag set by the page" do
       get :show_page, url: '/'
-      response.headers['ETag'].should be
+      expect(response.headers['ETag']).to be
     end
 
     %w{put post delete}.each do |method|
       it "should prevent upstream caching on #{method.upcase} requests" do
         send(method, :show_page, url: '/')
-        response.headers['Cache-Control'].should =~ /private/
-        response.headers['Cache-Control'].should =~ /no-cache/
-        response.headers['ETag'].should be_blank
+        expect(response.headers['Cache-Control']).to match(/private/)
+        expect(response.headers['Cache-Control']).to match(/no-cache/)
+        expect(response.headers['ETag']).to be_blank
       end
     end
 
     it "should return a not-modified response when the sent etag matches" do
-      response.stub(:etag).and_return("foobar")
+      allow(response).to receive(:etag).and_return("foobar")
       request.if_none_match = 'foobar'
       get :show_page, url: '/'
-      response.response_code.should == 304
-      response.body.should be_blank
+      expect(response.response_code).to eq(304)
+      expect(response.body).to be_blank
     end
 
     it "should prevent upstream caching when the page should not be cached" do
       @page = pages(:home)
-      Page.should_receive(:find_by_path).and_return(@page)
-      @page.should_receive(:cache?).and_return(false)
+      expect(Page).to receive(:find_by_path).and_return(@page)
+      expect(@page).to receive(:cache?).and_return(false)
       get :show_page, url: '/'
-      response.headers['Cache-Control'].should =~ /private/
-      response.headers['Cache-Control'].should =~ /no-cache/
-      response.headers['ETag'].should be_blank
+      expect(response.headers['Cache-Control']).to match(/private/)
+      expect(response.headers['Cache-Control']).to match(/no-cache/)
+      expect(response.headers['ETag']).to be_blank
     end
 
     it "should prevent upstream caching in dev mode" do
       request.host = "dev.site.com"
 
       get :show_page, url: '/'
-      response.headers['Cache-Control'].should =~ /private/
-      response.headers['Cache-Control'].should =~ /no-cache/
-      response.headers['ETag'].should be_blank
+      expect(response.headers['Cache-Control']).to match(/private/)
+      expect(response.headers['Cache-Control']).to match(/no-cache/)
+      expect(response.headers['ETag']).to be_blank
     end
 
     it "should set the default cache timeout (max-age) to a value assigned by the user" do
       SiteController.cache_timeout = 10.minutes
       get :show_page, url: '/'
-      response.headers['Cache-Control'].should =~ /public/
-      response.headers['Cache-Control'].should =~ /max-age=600/
+      expect(response.headers['Cache-Control']).to match(/public/)
+      expect(response.headers['Cache-Control']).to match(/max-age=600/)
     end
   end
 
   describe "pagination" do
     it "should pass through pagination parameters to the page" do
       @page = pages(:home)
-      Page.stub(:find_by_path).and_return(@page)
-      @page.should_receive(:pagination_parameters=).with({page: '3', per_page: '12'})
+      allow(Page).to receive(:find_by_path).and_return(@page)
+      expect(@page).to receive(:pagination_parameters=).with({page: '3', per_page: '12'})
       get :show_page, url: '/', page: '3', per_page: '12'
     end
   end

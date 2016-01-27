@@ -10,7 +10,7 @@ describe Radiant::Admin::ReferencesController do
 
   it "should render the associated template on GET to show" do
     xhr :get, :show, type: 'tags'
-    response.should be_success
-    response.should render_template('tags')
+    expect(response).to be_success
+    expect(response).to render_template('tags')
   end
 end

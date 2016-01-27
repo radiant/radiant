@@ -12,8 +12,8 @@ describe Radiant::Taggable, "when included in a class or module" do
 
   it "should add tag definition methods to the class" do
     [TaggedClass, TaggedModule].each do |c|
-      c.should respond_to(:tag)
-      c.should respond_to(:desc)
+      expect(c).to respond_to(:tag)
+      expect(c).to respond_to(:desc)
     end
   end
 
@@ -22,15 +22,15 @@ describe Radiant::Taggable, "when included in a class or module" do
       c.tag 'hello' do
         "hello world"
       end
-      c.instance_methods.collect {|im| im.to_s}.should include("tag:hello")
+      expect(c.instance_methods.collect {|im| im.to_s}).to include("tag:hello")
     end
-    TaggedClass.new.send("tag:hello").should == "hello world"
+    expect(TaggedClass.new.send("tag:hello")).to eq("hello world")
   end
 
   it "should store tag descriptions filtered without Textile, so that translations can be applied" do
     [TaggedClass, TaggedModule].each do |c|
       c.desc "A simple tag."
-      Radiant::Taggable.last_description.should == "A simple tag."
+      expect(Radiant::Taggable.last_description).to eq("A simple tag.")
     end
   end
 
@@ -40,8 +40,8 @@ describe Radiant::Taggable, "when included in a class or module" do
       c.tag "hello" do
         "hello world"
       end
-      c.tag_descriptions['hello'].should =~ /Bonjour!/
-      Radiant::Taggable.last_description.should be_nil
+      expect(c.tag_descriptions['hello']).to match(/Bonjour!/)
+      expect(Radiant::Taggable.last_description).to be_nil
     end
   end
 
@@ -92,30 +92,30 @@ describe Radiant::Taggable, "when included in a module with defined tags" do
   end
 
   it "should have a collection of defined tags" do
-    MyTags.should respond_to(:tags)
-    MyTags.tags.should == ['hello', 'page_index_path', 'test']
+    expect(MyTags).to respond_to(:tags)
+    expect(MyTags.tags).to eq(['hello', 'page_index_path', 'test'])
   end
 
   it "should add tags to an included class" do
-    TestObject.should respond_to(:tags)
-    TestObject.tags.should == ['hello', 'page_index_path', 'test']
+    expect(TestObject).to respond_to(:tags)
+    expect(TestObject.tags).to eq(['hello', 'page_index_path', 'test'])
   end
 
   it "should merge tag descriptions with an included class" do
-    TestObject.tag_descriptions["test"].should == MyTags.tag_descriptions["test"]
+    expect(TestObject.tag_descriptions["test"]).to eq(MyTags.tag_descriptions["test"])
   end
 
   it "should render a defined tag on an instance of an included class" do
-    @object.should respond_to(:render_tag)
-    @object.render_tag(:test, {}).should == "My new test"
+    expect(@object).to respond_to(:render_tag)
+    expect(@object.render_tag(:test, {})).to eq("My new test")
   end
 
   it "should render a defined tag on an instance of an included class with a given tag binding" do
-    @object.render_tag(:hello, @tag_binding).should == "Hello, John!"
+    expect(@object.render_tag(:hello, @tag_binding)).to eq("Hello, John!")
   end
 
   it "should render a url helper called in a tag definition" do
-    @object.render_tag(:page_index_path, {}).should == "/admin/pages"
+    expect(@object.render_tag(:page_index_path, {})).to eq("/admin/pages")
   end
 
 end
@@ -135,7 +135,7 @@ describe Radiant::Taggable, "when included in a module with defined tags which i
 
   it 'should render a param value used in a tag' do
     page(:home)
-    page.should render('<r:param_value />').as('data')
+    expect(page).to render('<r:param_value />').as('data')
   end
 
   private
@@ -166,37 +166,37 @@ describe Radiant::Taggable, "when included in a module with deprecated tags" do
   before :each do
     @object = OldTestObject.new
     @tag_binding = double('tag_binding')
-    @tag_binding.stub(:attr).and_return({name: 'testy'})
-    @tag_binding.stub(:block).and_return(nil)
+    allow(@tag_binding).to receive(:attr).and_return({name: 'testy'})
+    allow(@tag_binding).to receive(:block).and_return(nil)
   end
 
   it "should have a collection of defined tags" do
-    OldTestObject.should respond_to(:tags)
-    OldTestObject.tags.should =~ ['new_hotness', 'old_testy', 'old_busted']
+    expect(OldTestObject).to respond_to(:tags)
+    expect(OldTestObject.tags).to match_array(['new_hotness', 'old_testy', 'old_busted'])
   end
 
   ::ActiveSupport::Deprecation.silence do
     describe 'rendering a deprecated tag with no substitute' do
       it "should warn and render" do
-        ActiveSupport::Deprecation.should_receive(:warn).and_return(true)
-        @object.render_tag(:old_testy, @tag_binding).should == "just an old test"
+        expect(ActiveSupport::Deprecation).to receive(:warn).and_return(true)
+        expect(@object.render_tag(:old_testy, @tag_binding)).to eq("just an old test")
       end
     end
 
     describe 'rendering a deprecated tag with substitution' do
       it "should warn and substitute" do
-        ActiveSupport::Deprecation.should_receive(:warn).and_return(true)
-        @tag_binding.should_receive(:render).with("new_hotness", {name: 'testy'}).and_return("stubbed tag")
-        @object.render_tag(:old_busted, @tag_binding).should == "stubbed tag"
+        expect(ActiveSupport::Deprecation).to receive(:warn).and_return(true)
+        expect(@tag_binding).to receive(:render).with("new_hotness", {name: 'testy'}).and_return("stubbed tag")
+        expect(@object.render_tag(:old_busted, @tag_binding)).to eq("stubbed tag")
       end
     end
 
     describe 'rendering a deprecated tag with an expiry deadline' do
       it "should warn with deadline" do
-        ActiveSupport::Deprecation.should_receive(:warn) { |*args|
+        expect(ActiveSupport::Deprecation).to receive(:warn) { |*args|
           args.first =~ /will be removed in radiant 9\.0/
         }
-        @tag_binding.stub(:render)
+        allow(@tag_binding).to receive(:render)
         @object.render_tag(:old_busted, @tag_binding)
       end
     end
@@ -237,6 +237,6 @@ Let's try a small code example:
 
 Nice job! It really, really, really
 works.}
-    Radiant::Taggable::Util.strip_leading_whitespace(markup).should == result
+    expect(Radiant::Taggable::Util.strip_leading_whitespace(markup)).to eq(result)
   end
 end

@@ -15,13 +15,13 @@ describe Radiant::AdminUI::RegionPartials do
   end
 
   it "should return a string when the specified partial does not exist" do
-    @rp['foo'].should == "<strong>`foo' default partial not found!</strong>"
+    expect(@rp['foo']).to eq("<strong>`foo' default partial not found!</strong>")
   end
 
   it "should expose partials via bracket accessor" do
     block = Proc.new { "Hello World!" }
     @rp.main(&block)
-    @rp['main'].should === block
+    expect(@rp['main']).to be === block
   end
 
   it "should capture a block when passed" do
@@ -29,8 +29,8 @@ describe Radiant::AdminUI::RegionPartials do
       "Hello, World!"
     end
 
-    @template.block.should be_kind_of(Proc)
-    @template.block.should === @rp.edit_extended_metadata
-    @template.block.call.should == "Hello, World!"
+    expect(@template.block).to be_kind_of(Proc)
+    expect(@template.block).to be === @rp.edit_extended_metadata
+    expect(@template.block.call).to eq("Hello, World!")
   end
 end

@@ -7,37 +7,37 @@ describe Radiant::Admin::PreferencesController do
   it "should allow you to view your preferences" do
     user = login_as(:non_admin)
     get :edit
-    response.should be_success
+    expect(response).to be_success
     assigned_user = assigns(:user)
-    assigned_user.should == user
-    assigned_user.object_id.should_not == user.object_id
-    assigned_user.email.should == 'non_admin@example.com'
+    expect(assigned_user).to eq(user)
+    expect(assigned_user.object_id).not_to eq(user.object_id)
+    expect(assigned_user.email).to eq('non_admin@example.com')
   end
 
   it "should allow you to save your preferences" do
     login_as :non_admin
     put :update, user: { password: '', password_confirmation: '', email: 'updated@gmail.com' }
     user = users(:non_admin)
-    response.should redirect_to(admin_configuration_path)
-    user.email.should == 'updated@gmail.com'
+    expect(response).to redirect_to(admin_configuration_path)
+    expect(user.email).to eq('updated@gmail.com')
   end
 
   it "should not allow you to update your role through the preferences page" do
     login_as :non_admin
     put :update, 'user' => { admin: true }
-    response.should be_success
-    flash[:error].should match(/bad form data/i)
+    expect(response).to be_success
+    expect(flash[:error]).to match(/bad form data/i)
   end
 
   it "should allow you to change your password" do
     login_as :non_admin
     put :update, { user: { password: 'funtimes', password_confirmation: 'funtimes' } }
     user = users(:non_admin)
-    user.password.should == user.sha1('funtimes')
+    expect(user.password).to eq(user.sha1('funtimes'))
   end
 
   it "should use the User.unprotected_attributes for checking valid_params?" do
-    User.should_receive(:unprotected_attributes).at_least(:once).and_return([:password, :password_confirmation, :email])
+    expect(User).to receive(:unprotected_attributes).at_least(:once).and_return([:password, :password_confirmation, :email])
     login_as :non_admin
     put :update, { user: { password: 'funtimes', password_confirmation: 'funtimes' } }
   end
@@ -48,11 +48,11 @@ describe Radiant::Admin::PreferencesController do
     end
     it "should return 'reversed' when the action_name is 'edit'" do
       get :edit
-      assigns[:body_classes].should == ['reversed']
+      expect(assigns[:body_classes]).to eq(['reversed'])
     end
     it "should return 'reversed' when the action_name is 'show'" do
       get :show
-      assigns[:body_classes].should == ['reversed']
+      expect(assigns[:body_classes]).to eq(['reversed'])
     end
   end
 end

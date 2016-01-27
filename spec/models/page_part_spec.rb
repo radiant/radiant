@@ -26,7 +26,7 @@ describe PagePart do
   it "should take the filter from the default filter" do
     Radiant.detail['defaults.page.filter'] = "Pseudo Textile"
     part = PagePart.new name: 'new-part'
-    part.filter_id.should == "Pseudo Textile"
+    expect(part.filter_id).to eq("Pseudo Textile")
   end
 
   it "shouldn't override existing page_parts filters with the default filter" do
@@ -34,7 +34,7 @@ describe PagePart do
     selected_filter_name = TextFilter.descendants.first.filter_name
     Radiant.detail['defaults.page.filter'] = selected_filter_name
     @part.reload
-    @part.filter_id.should_not == selected_filter_name
+    expect(@part.filter_id).not_to eq(selected_filter_name)
   end
 
   it 'should validate length of' do
@@ -60,11 +60,11 @@ describe PagePart, 'filter' do
     # page = FactoryGirl.build(:page)
     @part = FactoryGirl.build(:page_part, name: 'body', filter_id: 'Pseudo Textile')
     original = @part.filter
-    original.should be_kind_of(PseudoTextileFilter)
+    expect(original).to be_kind_of(PseudoTextileFilter)
 
-    @part.filter.should equal(original)
+    expect(@part.filter).to equal(original)
 
     @part.filter_id = 'Pseudo Markdown'
-    @part.filter.should be_kind_of(PseudoMarkdownFilter)
+    expect(@part.filter).to be_kind_of(PseudoMarkdownFilter)
   end
 end

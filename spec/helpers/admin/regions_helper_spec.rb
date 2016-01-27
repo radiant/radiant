@@ -4,13 +4,13 @@ require 'ostruct'
 describe Radiant::Admin::RegionsHelper do
   before :each do
     @controller_name = 'page'
-    @controller.stub(:controller_name).and_return(@controller_name)
-    @controller.stub(:template_name).and_return('edit')
+    allow(@controller).to receive(:controller_name).and_return(@controller_name)
+    allow(@controller).to receive(:template_name).and_return('edit')
     assigns[:controller_name] = @controller_name
     @admin = Radiant::AdminUI.instance
-    helper.stub(:admin).and_return(@admin)
+    allow(helper).to receive(:admin).and_return(@admin)
     @region_set_mock = Radiant::AdminUI::RegionSet.new
-    @admin.stub(:page).and_return(OpenStruct.new(edit: @region_set_mock))
+    allow(@admin).to receive(:page).and_return(OpenStruct.new(edit: @region_set_mock))
   end
 
   it "should initialize relevant region variables" do
@@ -23,21 +23,21 @@ describe Radiant::Admin::RegionsHelper do
   describe "rendering a region" do
     before :each do
       @region_set_mock.add :main, "test"
-      helper.stub(:capture).and_return("foo")
+      allow(helper).to receive(:capture).and_return("foo")
       helper.lazy_initialize_region_set
     end
 
     it "should render a region with no default partials" do
-      helper.should_receive(:render).with(partial: "test").and_return("foo")
-      helper.render_region(:main).should == "foo"
+      expect(helper).to receive(:render).with(partial: "test").and_return("foo")
+      expect(helper.render_region(:main)).to eq("foo")
     end
 
     it "should capture the passed block, yielding the RegionPartials object and concatenating" do
-      helper.should_receive(:render).and_raise(::ActionView::MissingTemplate.new(ActionController::Base.view_paths, '.'))
-      helper.should_receive(:concat).with("foo")
-      helper.should_receive(:capture).and_return("foo")
+      expect(helper).to receive(:render).and_raise(::ActionView::MissingTemplate.new(ActionController::Base.view_paths, '.'))
+      expect(helper).to receive(:concat).with("foo")
+      expect(helper).to receive(:capture).and_return("foo")
       helper.render_region(:main)  do |main|
-        main.should be_kind_of(Radiant::AdminUI::RegionPartials)
+        expect(main).to be_kind_of(Radiant::AdminUI::RegionPartials)
         main.test do
           "foo"
         end

@@ -6,101 +6,101 @@ describe Radiant::AdminUI do
   end
 
   it "should be a Simpleton" do
-    Radiant::AdminUI.included_modules.should include(Simpleton)
-    Radiant::AdminUI.should respond_to(:instance)
+    expect(Radiant::AdminUI.included_modules).to include(Simpleton)
+    expect(Radiant::AdminUI).to respond_to(:instance)
   end
 
   it "should have a nav structure" do
-    @admin.nav.should be_kind_of(Radiant::AdminUI::NavTab)
+    expect(@admin.nav).to be_kind_of(Radiant::AdminUI::NavTab)
   end
 
   it "should create a new nav tab" do
-    @admin.nav_tab("Content").should be_kind_of(Radiant::AdminUI::NavTab)
+    expect(@admin.nav_tab("Content")).to be_kind_of(Radiant::AdminUI::NavTab)
   end
   
   it "should create a new nav item" do
-    @admin.nav_item("Foo", "/admin/foo").should be_kind_of(Radiant::AdminUI::NavSubItem)
+    expect(@admin.nav_item("Foo", "/admin/foo")).to be_kind_of(Radiant::AdminUI::NavSubItem)
   end
   
   it "should load the default navigation tabs and sub-items" do
     @admin.initialize_nav
-    @admin.nav.should have(3).items
-    @admin.nav[:content].should have(1).items
-    @admin.nav[:design].should have(1).items
-    @admin.nav[:settings].should have(4).items
+    expect(@admin.nav.size).to eq(3)
+    expect(@admin.nav[:content].size).to eq(1)
+    expect(@admin.nav[:design].size).to eq(1)
+    expect(@admin.nav[:settings].size).to eq(4)
   end
 
   it "should have collections of Region Sets for every controller" do
     %w{page layout user}.each do |collection|
-      @admin.should respond_to(collection)
-      @admin.should respond_to(collection.pluralize)
-      @admin.send(collection).should_not be_nil
-      @admin.send(collection).should be_kind_of(OpenStruct)
+      expect(@admin).to respond_to(collection)
+      expect(@admin).to respond_to(collection.pluralize)
+      expect(@admin.send(collection)).not_to be_nil
+      expect(@admin.send(collection)).to be_kind_of(OpenStruct)
     end
   end
 
   it "should load the default page regions" do
     page = @admin.page
     %w{edit remove children index}.each do |action|
-      page.send(action).should_not be_nil
-      page.send(action).should be_kind_of(Radiant::AdminUI::RegionSet)
+      expect(page.send(action)).not_to be_nil
+      expect(page.send(action)).to be_kind_of(Radiant::AdminUI::RegionSet)
     end
-    page.edit.main.should == %w{edit_header edit_form edit_popups}
-    page.edit.form.should == %w{edit_title edit_extended_metadata
-                                edit_page_parts}
-    page.edit.layout.should == %w{edit_layout edit_type edit_status
-                                  edit_published_at}
-    page.edit.parts_bottom.should == %w{}
-    page.edit.form_bottom.should == %w{edit_buttons edit_timestamp}
-    page.index.sitemap_head.should == %w{title_column_header
+    expect(page.edit.main).to eq(%w{edit_header edit_form edit_popups})
+    expect(page.edit.form).to eq(%w{edit_title edit_extended_metadata
+                                edit_page_parts})
+    expect(page.edit.layout).to eq(%w{edit_layout edit_type edit_status
+                                  edit_published_at})
+    expect(page.edit.parts_bottom).to eq(%w{})
+    expect(page.edit.form_bottom).to eq(%w{edit_buttons edit_timestamp})
+    expect(page.index.sitemap_head).to eq(%w{title_column_header
                                         status_column_header
-                                        actions_column_header}
-    page.index.node.should == %w{title_column status_column actions_column}
-    page.remove.should === page.index
-    page.children.should === page.index
-    page._part.should === page.edit
-    page.new.should === page.edit
+                                        actions_column_header})
+    expect(page.index.node).to eq(%w{title_column status_column actions_column})
+    expect(page.remove).to be === page.index
+    expect(page.children).to be === page.index
+    expect(page._part).to be === page.edit
+    expect(page.new).to be === page.edit
   end
 
   it "should load the default layout regions" do
     layout = @admin.layout
-    layout.edit.should_not be_nil
-    layout.edit.main.should == %w{edit_header edit_form}
-    layout.edit.form.should == %w{edit_title edit_extended_metadata
-                                  edit_content}
-    layout.edit.form_bottom.should == %w{reference_links edit_buttons edit_timestamp}
-    layout.index.should_not be_nil
-    layout.index.top.should == %w{}
-    layout.index.thead.should == %w{title_header actions_header}
-    layout.index.tbody.should == %w{title_cell actions_cell}
-    layout.index.bottom.should == %w{new_button}
+    expect(layout.edit).not_to be_nil
+    expect(layout.edit.main).to eq(%w{edit_header edit_form})
+    expect(layout.edit.form).to eq(%w{edit_title edit_extended_metadata
+                                  edit_content})
+    expect(layout.edit.form_bottom).to eq(%w{reference_links edit_buttons edit_timestamp})
+    expect(layout.index).not_to be_nil
+    expect(layout.index.top).to eq(%w{})
+    expect(layout.index.thead).to eq(%w{title_header actions_header})
+    expect(layout.index.tbody).to eq(%w{title_cell actions_cell})
+    expect(layout.index.bottom).to eq(%w{new_button})
     
-    layout.new.should == layout.edit
+    expect(layout.new).to eq(layout.edit)
   end
 
   it "should load the default user regions" do
     user = @admin.user
-    user.edit.should_not be_nil
-    user.edit.main.should == %w{edit_header edit_form}
-    user.edit.form.should == %w{edit_name edit_email edit_username
-                                edit_password edit_roles edit_locale edit_notes}
-    user.edit.form_bottom.should == %w{edit_buttons edit_timestamp}
-    user.index.should_not be_nil
-    user.index.thead.should == %w{title_header roles_header actions_header}
-    user.index.tbody.should == %w{title_cell roles_cell actions_cell}
-    user.index.bottom.should == %w{new_button}
-    user.preferences.main.should == %w{edit_header edit_form}
-    user.preferences.form.should == %w{edit_name edit_email edit_username edit_password edit_locale}
-    user.preferences.form_bottom.should == %w{edit_buttons}
+    expect(user.edit).not_to be_nil
+    expect(user.edit.main).to eq(%w{edit_header edit_form})
+    expect(user.edit.form).to eq(%w{edit_name edit_email edit_username
+                                edit_password edit_roles edit_locale edit_notes})
+    expect(user.edit.form_bottom).to eq(%w{edit_buttons edit_timestamp})
+    expect(user.index).not_to be_nil
+    expect(user.index.thead).to eq(%w{title_header roles_header actions_header})
+    expect(user.index.tbody).to eq(%w{title_cell roles_cell actions_cell})
+    expect(user.index.bottom).to eq(%w{new_button})
+    expect(user.preferences.main).to eq(%w{edit_header edit_form})
+    expect(user.preferences.form).to eq(%w{edit_name edit_email edit_username edit_password edit_locale})
+    expect(user.preferences.form_bottom).to eq(%w{edit_buttons})
     
-    user.new.should == user.edit
+    expect(user.new).to eq(user.edit)
   end
   
   it "should load the default extension regions" do
     ext = @admin.extension
-    ext.index.should_not be_nil
-    ext.index.thead.should == %w{title_header website_header version_header}
-    ext.index.tbody.should == %w{title_cell website_cell version_cell}
+    expect(ext.index).not_to be_nil
+    expect(ext.index.thead).to eq(%w{title_header website_header version_header})
+    expect(ext.index.tbody).to eq(%w{title_cell website_cell version_cell})
   end
 end
 

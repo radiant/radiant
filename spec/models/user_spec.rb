@@ -35,7 +35,7 @@ describe User, "validations" do
 
     it 'is valid when blank' do
       user.email = nil
-      expect(user).to have(0).errors_on(:email)
+      expect(user.errors_on(:email).size).to eq(0)
     end
 
     it 'is valid when 100 characters or shorter' do
@@ -58,29 +58,29 @@ describe User, "validations" do
 
     it 'is invalid when longer than 40 characters' do
       user.login = 'x' * 41
-      expect(user).to have(1).error_on(:login)
+      expect(user.error_on(:login).size).to eq(1)
     end
 
     it 'is valid when blank' do
       user.login = nil
-      expect(user).to have(0).errors_on(:login)
+      expect(user.errors_on(:login).size).to eq(0)
     end
 
     it 'is invalid when shorter than 3 characters' do
       user.login = 'xx'
-      expect(user).to have(1).error_on(:login)
+      expect(user.error_on(:login).size).to eq(1)
     end
 
     it 'is valid when 40 characters or shorter' do
       user.login = 'x' * 40
-      expect(user).to have(0).errors_on(:login)
+      expect(user.errors_on(:login).size).to eq(0)
     end
 
     it 'is invalid if another User exists with the same login' do
       user.save!
       second = User.new(user_params)
       expect(second.login).to be_eql(user.login)
-      second.should have(1).errors_on(:login)
+      expect(second.errors_on(:login).size).to eq(1)
     end
   end
 
@@ -100,7 +100,7 @@ describe User, "validations" do
 
     it 'is valid when 40 characters or shorter' do
       user.password = 'x' * 40
-      expect(user).to have(0).errors_on(:password)
+      expect(user.errors_on(:password).size).to eq(0)
     end
 
     it 'ensures the confirmation matches' do
@@ -165,7 +165,7 @@ describe User do
 
   describe ".remember_me" do
     before do
-      Radiant::Config.stub(:[]).with('session_timeout').and_return(2.weeks)
+      allow(Radiant::Config).to receive(:[]).with('session_timeout').and_return(2.weeks)
       user.save
       user.remember_me
       user.reload
@@ -179,7 +179,7 @@ describe User do
   describe ".forget_me" do
 
     before do
-      Radiant::Config.stub(:[]).with('session_timeout').and_return(2.weeks)
+      allow(Radiant::Config).to receive(:[]).with('session_timeout').and_return(2.weeks)
       user.save
       user.remember_me
     end
