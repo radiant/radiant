@@ -8,7 +8,7 @@ describe Radiant::Admin::NodeHelper do
     @errors = double("errors")
     helper.stub(:cookies).and_return(@cookies)
     helper.stub(:homepage).and_return(nil)
-    @page = mock_model(Page, :class_name => 'Page')
+    @page = mock_model(Page, class_name: 'Page')
     @page.stub(:sheet?).and_return(false) # core extension alters the behavior
     helper.stub(:image).and_return('')
     helper.stub(:admin?).and_return(true)
@@ -16,7 +16,7 @@ describe Radiant::Admin::NodeHelper do
   end
 
   it "should render a sitemap node" do
-    helper.should_receive(:render).with(:partial => "admin/pages/node", :locals => {:level => 0, :simple => false, :page => @page}).and_return(@current_node)
+    helper.should_receive(:render).with(partial: "admin/pages/node", locals: {level: 0, simple: false, page: @page}).and_return(@current_node)
     helper.render_node(@page)
     helper.assigns[:current_node] == @page
   end
@@ -60,14 +60,14 @@ describe Radiant::Admin::NodeHelper do
   it "should display an icon for the current node" do
     assigns[:current_node] = @page
     @page.should_receive(:virtual?).and_return(false)
-    helper.should_receive(:image).with("page", :class => "icon", :alt => '', :title => '')
+    helper.should_receive(:image).with("page", class: "icon", alt: '', title: '')
     helper.icon
   end
 
   it "should display the virtual icon if the current node is virtual" do
     assigns[:current_node] = @page
     @page.should_receive(:virtual?).and_return(true)
-    helper.should_receive(:image).with("virtual_page", :class => "icon", :alt => '', :title => '')
+    helper.should_receive(:image).with("virtual_page", class: "icon", alt: '', title: '')
     helper.icon
   end
 
@@ -101,9 +101,9 @@ describe Radiant::Admin::NodeHelper do
     assigns[:current_node] = @page
     @page.should_receive(:id).and_return(1)
     helper.should_receive(:image).with('spinner.gif',
-            :class => 'busy', :id => "busy_1",
-            :alt => "",  :title => "",
-            :style => 'display: none;')
+            class: 'busy', id: "busy_1",
+            alt: "",  title: "",
+            style: 'display: none;')
     helper.spinner
   end
 

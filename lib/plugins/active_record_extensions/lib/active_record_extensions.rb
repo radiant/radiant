@@ -6,7 +6,7 @@ class ActiveRecord::Base
     configuration = args.extract_options!
     validates_each(args, configuration) do |record, attr_name, value|
       page = Page.find_by_path(value)
-      record.errors.add(attr_name, :page_not_found, :default => configuration[:message]) if page.nil? || page.is_a?(FileNotFoundPage)
+      record.errors.add(attr_name, :page_not_found, default: configuration[:message]) if page.nil? || page.is_a?(FileNotFoundPage)
     end
   end
   

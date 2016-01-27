@@ -26,7 +26,7 @@ module Radiant
         set_cache_control
         @performed_render ||= true
       else
-        render :template => 'radiant/site/not_found', :status => 404
+        render template: 'radiant/site/not_found', status: 404
       end
     rescue Page::MissingRootPageError
       redirect_to welcome_url
@@ -50,7 +50,7 @@ module Radiant
     private
       def batch_page_status_refresh
         @changed_pages = []
-        @pages = Page.find(:all, :conditions => {:status_id => Status[:scheduled].id})
+        @pages = Page.find(:all, conditions: {status_id: Status[:scheduled].id})
         @pages.each do |page|
           if page.published_at <= Time.now
              page.status_id = Status[:published].id
@@ -59,7 +59,7 @@ module Radiant
           end
         end
 
-        expires_in nil, :private=>true, "no-cache" => true if @changed_pages.length > 0
+        expires_in nil, private:true, "no-cache" => true if @changed_pages.length > 0
       end
 
       def set_cache_control

@@ -48,7 +48,7 @@ module Radiant
     def rescue_action_in_public(exception)
       case exception
         when ActiveRecord::RecordNotFound, ActionController::UnknownController, ActionController::UnknownAction, ActionController::RoutingError
-          render :template => "radiant/site/not_found", :status => 404
+          render template: "radiant/site/not_found", status: 404
         else
           super
       end

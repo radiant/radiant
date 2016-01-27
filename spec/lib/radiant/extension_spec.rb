@@ -68,7 +68,7 @@ describe Radiant::Extension do
   it "should allow the ordering of nav tabs after other tabs" do
     nav = BasicExtension.admin.nav
     BasicExtension.class_eval {
-      tab "Assets", :before => "Design"
+      tab "Assets", before: "Design"
     }
     assets = nav["Assets"]
     content = nav["content"]
@@ -78,7 +78,7 @@ describe Radiant::Extension do
   it "should allow the ordering of nav tabs before other tabs" do
     nav = BasicExtension.admin.nav
     BasicExtension.class_eval {
-      tab "Assets", :before => "Design"
+      tab "Assets", before: "Design"
     }
     assets = nav["Assets"]
     design = nav["Design"]

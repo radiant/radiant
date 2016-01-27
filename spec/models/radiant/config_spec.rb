@@ -32,7 +32,7 @@ describe Radiant::Config do
   end
 
   it "should recreate the cache after a record is saved" do
-    Radiant::Config.create!(:key => 'cache', :value => 'true')
+    Radiant::Config.create!(key: 'cache', value: 'true')
     Rails.cache.read('Radiant::Config').should == Radiant::Config.to_hash
   end
 
@@ -144,6 +144,6 @@ describe Radiant::Config do
   def set(key, value)
     setting = get_config(key)
     setting.destroy if setting
-    Radiant::Config.create!(:key => key, :value => value)
+    Radiant::Config.create!(key: key, value: value)
   end
 end

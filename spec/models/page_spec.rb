@@ -88,7 +88,7 @@ describe Page, 'validations' do
     it 'is invalid when the same value exists with the same parent' do
       page.parent_id = 1
       page.save!
-      other = Page.new(page_params.merge(:parent_id => 1))
+      other = Page.new(page_params.merge(parent_id: 1))
       expect{other.save!}.to raise_error(ActiveRecord::RecordInvalid)
       expect(other.errors_on(:slug)).to include(I18n.t('activerecord.errors.models.page.attributes.slug.taken'))
     end
@@ -116,7 +116,7 @@ describe Page, 'validations' do
 
   describe 'class_name' do
     it 'should allow mass assignment for class name' do
-      page.attributes = { :class_name => 'PageSpecTestPage' }
+      page.attributes = { class_name: 'PageSpecTestPage' }
       expect(page.errors_on(:class_name)).to be_blank
       expect(page.class_name).to be_eql('PageSpecTestPage')
     end
@@ -127,7 +127,7 @@ describe Page, 'validations' do
     end
 
     it 'should not be valid when class name is not a descendant of page and it is set through mass assignment' do
-      page.attributes = {:class_name => 'Object' }
+      page.attributes = {class_name: 'Object' }
       expect(page.errors_on(:class_name)).to include('must be set to a valid descendant of Page')
     end
 
@@ -186,7 +186,7 @@ describe Page do
       page.part(:body).should == page.parts.find_by_name('body')
     end
     it 'should access unsaved parts by name' do
-      part = PagePart.new(:name => "test")
+      part = PagePart.new(name: "test")
       page.parts << part
       page.part('test').should == part
       page.part(:test).should == part
@@ -198,12 +198,12 @@ describe Page do
 
   describe '#field' do
     it "should find a field" do
-      page.fields.create(:name => 'keywords', :content => 'radiant')
+      page.fields.create(name: 'keywords', content: 'radiant')
       page.field(:keywords).should == page.fields.find_by_name('keywords')
     end
 
     it "should find an unsaved field" do
-      field = PageField.new(:name => 'description', :content => 'radiant')
+      field = PageField.new(name: 'description', content: 'radiant')
       page.fields << field
       page.field(:description).should == field
     end
@@ -211,7 +211,7 @@ describe Page do
 
   describe '#has_part?' do
     it 'should return true for a valid part' do
-      page.parts.build(:name => 'body', :content => 'Hello world!')
+      page.parts.build(name: 'body', content: 'Hello world!')
       page.has_part?('body').should == true
       page.has_part?(:body).should == true
     end
@@ -223,7 +223,7 @@ describe Page do
 
   describe '#inherits_part?' do
     it 'should return true if any ancestor page has a part of the given name' do
-      page.parts.create(:name => 'sidebar')
+      page.parts.create(name: 'sidebar')
       child = FactoryGirl.build(:page) do |child|
         child.parent_id = page.id
       end
@@ -234,7 +234,7 @@ describe Page do
       child = FactoryGirl.build(:page) do |child|
         child.parent_id = page.id
       end
-      child.parts.build(:name => 'sidebar')
+      child.parts.build(name: 'sidebar')
       child.has_part?(:sidebar).should be true
       child.inherits_part?(:sidebar).should be false
     end
@@ -247,7 +247,7 @@ describe Page do
       end
     }
     before do
-      page.parts.create(:name => 'sidebar')
+      page.parts.create(name: 'sidebar')
     end
     it 'should return true if the current page or any ancestor has a part of the given name' do
       expect(child.has_or_inherits_part?(:sidebar)).to be true
@@ -258,7 +258,7 @@ describe Page do
   end
 
   it "should accept new page parts as an array of PageParts" do
-    page.parts = [PagePart.new(:name => 'body', :content => 'Hello, world!')]
+    page.parts = [PagePart.new(name: 'body', content: 'Hello, world!')]
     page.parts.size.should == 1
     page.parts.first.should be_kind_of(PagePart)
     page.parts.first.name.should == 'body'
@@ -268,7 +268,7 @@ describe Page do
   it "should dirty the page object when only changing parts" do
     lambda do
       page.dirty?.should be false
-      page.parts = [PagePart.new(:name => 'body', :content => 'Hello, world!')]
+      page.parts = [PagePart.new(name: 'body', content: 'Hello, world!')]
       page.dirty?.should be true
     end
   end
@@ -299,10 +299,10 @@ describe Page do
     let(:future){ Time.current + 20.years }
     let(:past){ Time.current - 1.year }
     let(:future_scheduled){
-      FactoryGirl.build(:page, :status_id => Status[:published].id, :published_at => future)
+      FactoryGirl.build(:page, status_id: Status[:published].id, published_at: future)
     }
     let(:past_scheduled){
-      FactoryGirl.build(:page, :status_id => Status[:scheduled].id, :published_at => past)
+      FactoryGirl.build(:page, status_id: Status[:scheduled].id, published_at: past)
     }
 
     it 'should change its status to scheduled with a date in the future' do
@@ -326,8 +326,8 @@ describe Page do
   end
 
   context 'when setting the status' do
-    let(:page){ FactoryGirl.build(:page, :status_id => Status[:published].id, :published_at => nil) }
-    let(:scheduled){ FactoryGirl.build(:page, :status_id => Status[:scheduled].id, :published_at => (Time.current + 1.day)) }
+    let(:page){ FactoryGirl.build(:page, status_id: Status[:published].id, published_at: nil) }
+    let(:scheduled){ FactoryGirl.build(:page, status_id: Status[:scheduled].id, published_at: (Time.current + 1.day)) }
 
     it 'should set published_at when given the published status id' do
       page.save
@@ -352,10 +352,10 @@ describe Page do
 
   describe '#path' do
 
-    let(:home){ FactoryGirl.create(:page, :slug => '/', :published_at => Time.now) }
-    let(:parent){ FactoryGirl.create(:page, :parent => home, :slug => 'parent', :published_at => Time.now) }
-    let(:child){ FactoryGirl.create(:page, :parent => parent, :slug => 'child', :published_at => Time.now) }
-    let(:grandchild){ FactoryGirl.create(:page, :parent => child, :slug => 'grandchild', :published_at => Time.now) }
+    let(:home){ FactoryGirl.create(:page, slug: '/', published_at: Time.now) }
+    let(:parent){ FactoryGirl.create(:page, parent: home, slug: 'parent', published_at: Time.now) }
+    let(:child){ FactoryGirl.create(:page, parent: parent, slug: 'child', published_at: Time.now) }
+    let(:grandchild){ FactoryGirl.create(:page, parent: child, slug: 'grandchild', published_at: Time.now) }
 
     it "should start with a slash" do
       expect(home.path).to match(/\A\//)
@@ -370,9 +370,9 @@ describe Page do
 
   describe '#child_path' do
 
-    let(:home){ FactoryGirl.create(:page, :slug => '/', :published_at => Time.now) }
-    let(:parent){ FactoryGirl.create(:page, :parent => home, :slug => 'parent', :published_at => Time.now) }
-    let(:child){ FactoryGirl.create(:page, :parent => parent, :slug => 'child', :published_at => Time.now) }
+    let(:home){ FactoryGirl.create(:page, slug: '/', published_at: Time.now) }
+    let(:parent){ FactoryGirl.create(:page, parent: home, slug: 'parent', published_at: Time.now) }
+    let(:child){ FactoryGirl.create(:page, parent: parent, slug: 'child', published_at: Time.now) }
 
     it 'should return the #path for the given child' do
       parent.child_path(child).should == '/parent/child/'
@@ -381,7 +381,7 @@ describe Page do
 
   describe '#status' do
     test_helper :page
-    let(:home){ FactoryGirl.create(:page, :slug => '/', :published_at => Time.current) }
+    let(:home){ FactoryGirl.create(:page, slug: '/', published_at: Time.current) }
 
     it 'should return the Status with the id of the page status_id' do
       expect(home.status).to eq(Status.find(home.status_id))
@@ -398,8 +398,8 @@ describe Page do
 
   it 'should support optimistic locking' do
     p1, p2 = Page.find(page.id), Page.find(page.id)
-    p1.update_attributes!(:breadcrumb => "foo")
-    lambda { p2.update_attributes!(:breadcrumb => "blah") }.should raise_error(ActiveRecord::StaleObjectError)
+    p1.update_attributes!(breadcrumb: "foo")
+    lambda { p2.update_attributes!(breadcrumb: "blah") }.should raise_error(ActiveRecord::StaleObjectError)
   end
 
   describe '.default_child' do
@@ -429,7 +429,7 @@ end
 describe Page, "before save filter" do
 
   before :each do
-    Page.create(FactoryGirl.attributes_for(:page, :title =>"Month Index", :class_name => "VirtualSpecPage"))
+    Page.create(FactoryGirl.attributes_for(:page, title:"Month Index", class_name: "VirtualSpecPage"))
     @page = Page.find_by_title("Month Index")
   end
 
@@ -465,22 +465,22 @@ describe Page, "rendering" do
   test_helper :render
   let(:hello_world){
     FactoryGirl.build(:page) do |page|
-      page.parts.build(:name => 'body', :content => 'Hello world!')
+      page.parts.build(name: 'body', content: 'Hello world!')
     end
   }
   let(:reverse_filtered){
     FactoryGirl.build(:page) do |page|
-      page.parts.build(:name => 'body', :content => 'Hello world!', :filter_id => 'Reverse')
+      page.parts.build(name: 'body', content: 'Hello world!', filter_id: 'Reverse')
     end
   }
   let(:radius){
-    FactoryGirl.build(:page, :title => 'Radius') do |page|
-      page.parts.build(:name => 'body', :content => '<r:title />')
+    FactoryGirl.build(:page, title: 'Radius') do |page|
+      page.parts.build(name: 'body', content: '<r:title />')
     end
   }
   let(:test_page){
-    PageSpecTestPage.create(FactoryGirl.attributes_for(:page, :title => "Test Page")) do |page|
-      page.parts.build(:name => 'body', :content => '<r:test1 /> <r:test2 />')
+    PageSpecTestPage.create(FactoryGirl.attributes_for(:page, title: "Test Page")) do |page|
+      page.parts.build(name: 'body', content: '<r:test1 /> <r:test2 />')
     end
   }
   
@@ -529,18 +529,18 @@ unless defined?(::CustomFileNotFoundPage)
 end
 
 describe Page, "#find_by_path" do
-  let(:home){ FactoryGirl.create(:page, :slug => '/', :published_at => Time.now, :status_id => Status[:published].id) }
-  let(:parent){ FactoryGirl.create(:page, :parent => home, :slug => 'parent', :published_at => Time.now, :status_id => Status[:published].id)}
-  let(:child){ FactoryGirl.create(:page, :parent => parent, :slug => 'child', :published_at => Time.now, :status_id => Status[:published].id)}
-  let(:grandchild){ FactoryGirl.create(:page, :parent => child, :slug => 'grandchild', :published_at => Time.now, :status_id => Status[:published].id)}
-  let(:great_grandchild){ FactoryGirl.create(:page, :parent => grandchild, :slug => 'great-grandchild', :published_at => Time.now, :status_id => Status[:published].id)}
-  let(:virtual){ FactoryGirl.create(:page, :parent_id => home.id, :slug => 'virtual', :virtual => true) }
-  let(:file_not_found){ FactoryGirl.create(:file_not_found_page, parent_id: home.id, :slug => '404', :published_at => Time.now, :status_id => Status[:published].id)}
-  let(:drafts){ FactoryGirl.create(:page, :parent => home, :slug => 'drafts', :status_id => Status[:draft].id) }
-  let(:lonely_draft_file_not_found){ FactoryGirl.create(:file_not_found_page, :parent_id => drafts.id, :status_id => Status[:draft].id) }
-  let(:gallery){ FactoryGirl.create(:page, :parent => home, :slug => 'gallery', :status_id => Status[:published].id)}
-  let(:draft){ FactoryGirl.create(:page, :parent => home, :slug => 'draft', :status_id => Status[:published].id) }
-  let(:no_picture){ FactoryGirl.create(:file_not_found_page, :slug => 'no-picture', :parent_id => gallery.id, :class_name => 'CustomFileNotFoundPage', :status_id => Status[:published].id)}
+  let(:home){ FactoryGirl.create(:page, slug: '/', published_at: Time.now, status_id: Status[:published].id) }
+  let(:parent){ FactoryGirl.create(:page, parent: home, slug: 'parent', published_at: Time.now, status_id: Status[:published].id)}
+  let(:child){ FactoryGirl.create(:page, parent: parent, slug: 'child', published_at: Time.now, status_id: Status[:published].id)}
+  let(:grandchild){ FactoryGirl.create(:page, parent: child, slug: 'grandchild', published_at: Time.now, status_id: Status[:published].id)}
+  let(:great_grandchild){ FactoryGirl.create(:page, parent: grandchild, slug: 'great-grandchild', published_at: Time.now, status_id: Status[:published].id)}
+  let(:virtual){ FactoryGirl.create(:page, parent_id: home.id, slug: 'virtual', virtual: true) }
+  let(:file_not_found){ FactoryGirl.create(:file_not_found_page, parent_id: home.id, slug: '404', published_at: Time.now, status_id: Status[:published].id)}
+  let(:drafts){ FactoryGirl.create(:page, parent: home, slug: 'drafts', status_id: Status[:draft].id) }
+  let(:lonely_draft_file_not_found){ FactoryGirl.create(:file_not_found_page, parent_id: drafts.id, status_id: Status[:draft].id) }
+  let(:gallery){ FactoryGirl.create(:page, parent: home, slug: 'gallery', status_id: Status[:published].id)}
+  let(:draft){ FactoryGirl.create(:page, parent: home, slug: 'draft', status_id: Status[:published].id) }
+  let(:no_picture){ FactoryGirl.create(:file_not_found_page, slug: 'no-picture', parent_id: gallery.id, class_name: 'CustomFileNotFoundPage', status_id: Status[:published].id)}
 
   it 'should allow you to find the home page' do
     expect(home.find_by_path('/')).to eq(home)
@@ -649,7 +649,7 @@ describe Page, "class" do
   end
 
   it "should expose default page parts" do
-    override = PagePart.new(:name => 'override')
+    override = PagePart.new(name: 'override')
     Page.stub(:default_page_parts).and_return([override])
     @page = Page.new_with_defaults({})
     @page.parts.should eql([override])
@@ -711,7 +711,7 @@ describe Page, "class which is applied to a page but not defined" do
 
   before :each do
     Object.send(:const_set, :ClassNotDefinedPage, Class.new(Page){ def self.missing?; false end })
-    FactoryGirl.create(:page, :title => "Class Not Defined", :class_name => "ClassNotDefinedPage")
+    FactoryGirl.create(:page, title: "Class Not Defined", class_name: "ClassNotDefinedPage")
     Object.send(:remove_const, :ClassNotDefinedPage)
     Page.load_subclasses
   end
@@ -736,11 +736,11 @@ end
 describe Page, "class find_by_path" do
   test_helper :page
 
-  let(:home){ Page.create!(page_params(:slug => '/', :status_id => Status[:published].id)) }
-  let(:parent){ home.children.create!(page_params(:slug => 'parent', :status_id => Status[:published].id))}
-  let(:child){ parent.children.create!(page_params(:slug => 'child', :status_id => Status[:published].id))}
-  let(:draft){ home.children.create!(page_params(:slug => 'draft', :status_id => Status[:draft].id)) }
-  let(:file_not_found){ FileNotFoundPage.create!(page_params(parent_id: home.id, :slug => '404', :status_id => Status[:published].id))}
+  let(:home){ Page.create!(page_params(slug: '/', status_id: Status[:published].id)) }
+  let(:parent){ home.children.create!(page_params(slug: 'parent', status_id: Status[:published].id))}
+  let(:child){ parent.children.create!(page_params(slug: 'child', status_id: Status[:published].id))}
+  let(:draft){ home.children.create!(page_params(slug: 'draft', status_id: Status[:draft].id)) }
+  let(:file_not_found){ FileNotFoundPage.create!(page_params(parent_id: home.id, slug: '404', status_id: Status[:published].id))}
 
   it 'should find the home page' do
     home
@@ -767,10 +767,10 @@ end
 describe Page, "processing" do
 
   before :all do
-    @request = ActionDispatch::TestRequest.new :url => '/page/'
+    @request = ActionDispatch::TestRequest.new url: '/page/'
     @response = ActionDispatch::TestResponse.new
     @page = FactoryGirl.build(:page) do |page|
-      page.parts.build(:name => 'body', :content => 'Hello world!')
+      page.parts.build(name: 'body', content: 'Hello world!')
     end
   end
 
@@ -780,7 +780,7 @@ describe Page, "processing" do
   end
 
   it 'should set headers and pass request and response' do
-    @page = PageSpecTestPage.create(FactoryGirl.attributes_for(:page, :title => "Test Page"))
+    @page = PageSpecTestPage.create(FactoryGirl.attributes_for(:page, title: "Test Page"))
     @page.process(@request, @response)
     @response.headers['cool'].should == 'beans'
     @response.headers['request'].should == 'TestRequest'

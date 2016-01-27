@@ -1,7 +1,7 @@
 module Radiant
   class Admin::PagesController < ::Radiant::Admin::ResourceController
-    before_filter :initialize_meta_rows_and_buttons, :only => [:new, :edit, :create, :update]
-    before_filter :count_deleted_pages, :only => [:destroy]
+    before_filter :initialize_meta_rows_and_buttons, only: [:new, :edit, :create, :update]
+    before_filter :count_deleted_pages, only: [:destroy]
 
     class PreviewStop < ActiveRecord::Rollback
       def message
@@ -15,7 +15,7 @@ module Radiant
         @template_name = 'index'
         self.models = Page.find(params[:page_id]).children.all
         response.headers['Content-Type'] = 'text/html;charset=utf-8'
-        render :action => 'children.html.haml', :layout => false
+        render action: 'children.html.haml', layout: false
       end
     end
 
@@ -33,7 +33,7 @@ module Radiant
     def preview
       render_preview
     rescue PreviewStop => exception
-      render :text => exception.message unless @performed_render
+      render text: exception.message unless @performed_render
     end
 
     private
@@ -84,8 +84,8 @@ module Radiant
       def initialize_meta_rows_and_buttons
         @buttons_partials ||= []
         @meta ||= []
-        @meta << {:field => "slug", :type => "text_field", :args => [{:class => 'textbox', :maxlength => 100}]}
-        @meta << {:field => "breadcrumb", :type => "text_field", :args => [{:class => 'textbox', :maxlength => 160}]}
+        @meta << {field: "slug", type: "text_field", args: [{class: 'textbox', maxlength: 100}]}
+        @meta << {field: "breadcrumb", type: "text_field", args: [{class: 'textbox', maxlength: 160}]}
       end
   end
 end

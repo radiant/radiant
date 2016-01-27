@@ -10,7 +10,7 @@ describe Radiant::Admin::RegionsHelper do
     @admin = Radiant::AdminUI.instance
     helper.stub(:admin).and_return(@admin)
     @region_set_mock = Radiant::AdminUI::RegionSet.new
-    @admin.stub(:page).and_return(OpenStruct.new(:edit => @region_set_mock))
+    @admin.stub(:page).and_return(OpenStruct.new(edit: @region_set_mock))
   end
 
   it "should initialize relevant region variables" do
@@ -28,7 +28,7 @@ describe Radiant::Admin::RegionsHelper do
     end
 
     it "should render a region with no default partials" do
-      helper.should_receive(:render).with(:partial => "test").and_return("foo")
+      helper.should_receive(:render).with(partial: "test").and_return("foo")
       helper.render_region(:main).should == "foo"
     end
 

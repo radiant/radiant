@@ -39,28 +39,28 @@ describe Radiant::ApplicationHelper do
   it "should create a button for a new model" do
     model = mock_model(Page)
     model.should_receive(:new_record?).and_return(true)
-    helper.should_receive(:submit_tag).with("Create Page", :class => 'button', :accesskey=>"S")
+    helper.should_receive(:submit_tag).with("Create Page", class: 'button', accesskey:"S")
     helper.save_model_button(model)
   end
 
   it "should create a button for an existing model" do
     model = mock_model(Page)
     model.should_receive(:new_record?).and_return(false)
-    helper.should_receive(:submit_tag).with("Save Changes", :class => 'button', :accesskey=>"S")
+    helper.should_receive(:submit_tag).with("Save Changes", class: 'button', accesskey:"S")
     helper.save_model_button(model)
   end
 
   it "should create a button with custom options" do
     model = mock_model(Page)
     model.should_receive(:new_record?).and_return(false)
-    helper.should_receive(:submit_tag).with("Save Changes", :class => 'custom', :accesskey=>"S")
-    helper.save_model_button(model, :class => 'custom')
+    helper.should_receive(:submit_tag).with("Save Changes", class: 'custom', accesskey:"S")
+    helper.save_model_button(model, class: 'custom')
   end
 
   it "should create a button with a custom label" do
     model = mock_model(Page)
-    helper.should_receive(:submit_tag).with("Create PAGE", :class => 'button', :accesskey=>"S")
-    helper.save_model_button(model, :label => "Create PAGE")
+    helper.should_receive(:submit_tag).with("Create PAGE", class: 'button', accesskey:"S")
+    helper.save_model_button(model, label: "Create PAGE")
   end
 
   it "should create a save and continue button" do
@@ -77,7 +77,7 @@ describe Radiant::ApplicationHelper do
     helper.current_url?("/foo/bar/").should_not be false
     helper.current_url?("/foo//bar").should_not be false
     helper.current_url?("/baz/bam").should_not be true
-    helper.current_url?(:controller => "admin/pages", :action => "index").should_not be true
+    helper.current_url?(controller: "admin/pages", action: "index").should_not be true
   end
 
   it "should clean a url" do
@@ -132,8 +132,8 @@ describe Radiant::ApplicationHelper do
 
   it "should determine whether a meta area item should be visible" do
     helper.meta_visible(:meta_more).should be_empty
-    helper.meta_visible(:meta_less).should == {:style => "display: none"}
-    helper.meta_visible(:meta).should == {:style => "display: none"}
+    helper.meta_visible(:meta_less).should == {style: "display: none"}
+    helper.meta_visible(:meta).should == {style: "display: none"}
   end
 
   it "should not have meta errors" do
@@ -222,7 +222,7 @@ describe Radiant::ApplicationHelper do
   #   end
   #
   #   it "should render pagination controls for a supplied list" do
-  #     helper.pagination_for(@collection).should have_tag('div.pagination').with_tag('span.current', :text => '1')
+  #     helper.pagination_for(@collection).should have_tag('div.pagination').with_tag('span.current', text: '1')
   #   end
   #
   #   it "should include a depagination link by default" do
@@ -230,11 +230,11 @@ describe Radiant::ApplicationHelper do
   #   end
   #
   #   it "should omit the depagination link when :depaginate is false" do
-  #     helper.pagination_for(@collection, :depaginate => false).should_not have_tag('div.depaginate')
+  #     helper.pagination_for(@collection, depaginate: false).should_not have_tag('div.depaginate')
   #   end
   #
   #   it "should omit the depagination link when the :max_list_length is exceeded" do
-  #     helper.pagination_for(@collection, :depaginate => true, :max_list_length => 5).should_not have_tag('div.depaginate')
+  #     helper.pagination_for(@collection, depaginate: true, max_list_length: 5).should_not have_tag('div.depaginate')
   #   end
   #
   #   it "should use the max_list_length config item when no other value is specified" do
@@ -244,7 +244,7 @@ describe Radiant::ApplicationHelper do
   #
   #   it "should disregard list length when max_list_length is false" do
   #     Radiant::Config['pagination.max_list_length'] = 50
-  #     helper.pagination_for(@collection, :max_list_length => false).should_not have_tag('div.depaginate')
+  #     helper.pagination_for(@collection, max_list_length: false).should_not have_tag('div.depaginate')
   #   end
   #
   # end

@@ -4,7 +4,7 @@ class StubController < ActionController::Base
   include LoginSystem
 
   def rescue_action(e); raise e; end
-  def index; render :text => 'just a test'; end
+  def index; render text: 'just a test'; end
 end
 
 class NoLoginRequiredController < StubController;  no_login_required; end
@@ -17,34 +17,34 @@ class LoginRequiredGrandChildController < NoLoginRequiredChildController; login_
 
 class PrivilegedUsersOnlyController < LoginRequiredController
   only_allow_access_to :edit, :new,
-                       :when => [:admin, :designer],
-                       :denied_url => '/login_required',
-                       :denied_message => 'Fun.'
-  def edit; render :text => 'just a test'; end
-  def new; render :text => 'just a test'; end
+                       when: [:admin, :designer],
+                       denied_url: '/login_required',
+                       denied_message: 'Fun.'
+  def edit; render text: 'just a test'; end
+  def new; render text: 'just a test'; end
 end
 
 class AdminOnlyController < LoginRequiredController
     only_allow_access_to :edit,
-                         :when => :admin,
-                         :denied_url => '/login_required',
-                         :denied_message => 'Fun.'
-    def edit; render :text => 'just a test'; end
+                         when: :admin,
+                         denied_url: '/login_required',
+                         denied_message: 'Fun.'
+    def edit; render text: 'just a test'; end
 end
 
 class ConditionalAccessController < LoginRequiredController
     attr_writer :condition
-    only_allow_access_to :edit, :if => :condition?,
-                         :denied_url => '/login_required',
-                         :denied_message => 'Fun.'
+    only_allow_access_to :edit, if: :condition?,
+                         denied_url: '/login_required',
+                         denied_message: 'Fun.'
 
-    def edit; render :text => 'just a test'; end
+    def edit; render text: 'just a test'; end
     def condition?
       @condition ||= false
     end
 end
 
-describe 'Login System:', :type => :controller do
+describe 'Login System:', type: :controller do
   #dataset :users
 
   describe NoLoginRequiredController do
@@ -99,7 +99,7 @@ describe 'Login System:', :type => :controller do
         before do
           @user = users(:admin)
           User.should_receive(:find_by_session_token).and_return(@user)
-          @cookies = { :session_token => 12345 }
+          @cookies = { session_token: 12345 }
           controller.stub(:cookies).and_return(@cookies)
         end
 

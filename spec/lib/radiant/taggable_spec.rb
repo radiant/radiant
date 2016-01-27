@@ -160,13 +160,13 @@ describe Radiant::Taggable, "when included in a module with deprecated tags" do
     deprecated_tag "old_testy" do "just an old test"; end
 
     desc %{This tag deprecated in favour of the tag 'new_hotness'.}
-    deprecated_tag "old_busted", :substitute => 'new_hotness', :version => '9.0'
+    deprecated_tag "old_busted", substitute: 'new_hotness', version: '9.0'
   end
 
   before :each do
     @object = OldTestObject.new
     @tag_binding = double('tag_binding')
-    @tag_binding.stub(:attr).and_return({:name => 'testy'})
+    @tag_binding.stub(:attr).and_return({name: 'testy'})
     @tag_binding.stub(:block).and_return(nil)
   end
 
@@ -186,7 +186,7 @@ describe Radiant::Taggable, "when included in a module with deprecated tags" do
     describe 'rendering a deprecated tag with substitution' do
       it "should warn and substitute" do
         ActiveSupport::Deprecation.should_receive(:warn).and_return(true)
-        @tag_binding.should_receive(:render).with("new_hotness", {:name => 'testy'}).and_return("stubbed tag")
+        @tag_binding.should_receive(:render).with("new_hotness", {name: 'testy'}).and_return("stubbed tag")
         @object.render_tag(:old_busted, @tag_binding).should == "stubbed tag"
       end
     end

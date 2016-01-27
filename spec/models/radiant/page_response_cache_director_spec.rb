@@ -22,8 +22,8 @@ describe Radiant::PageResponseCacheDirector do
     described_class.cache_timeout.should_not == old_timeout
   end
 
-  let(:non_cacheable_params){ {:private => true, "no-cache" => true} }
-  let(:cacheable_params){ {:public => true, :private => false} }
+  let(:non_cacheable_params){ {private: true, "no-cache" => true} }
+  let(:cacheable_params){ {public: true, private: false} }
   let(:listener){ l = OpenStruct.new()
     l.stub(:set_etag)
     l.stub(:set_expiry)

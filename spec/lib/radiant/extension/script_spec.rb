@@ -58,28 +58,28 @@ describe "Radiant::Extension::Script::Util" do
   end
 
   it "should determine whether an extension is not installed" do
-    @script = double('script action',:extension_paths => ['/path/to/extension/html_tags'])
+    @script = double('script action',extension_paths: ['/path/to/extension/html_tags'])
     @script.extend Radiant::Extension::Script::Util
     @script.extension_name = 'tags'
     @script.should_not be_installed
   end
 
   it "should determine whether an extension is installed" do
-    @script = double('script action',:extension_paths => ['tags'])
+    @script = double('script action',extension_paths: ['tags'])
     @script.extend Radiant::Extension::Script::Util
     @script.extension_name = 'tags'
     @script.should be_installed
   end
 
   it "should determine whether an extension is installed" do
-    @script = double('script action',:extension_paths => ['/path/to/extension/tags'])
+    @script = double('script action',extension_paths: ['/path/to/extension/tags'])
     @script.extend Radiant::Extension::Script::Util
     @script.extension_name = 'tags'
     @script.should be_installed
   end
 
   it "should determine whether an extension is installed on windows system" do
-    @script = double('script action',:extension_paths => ['c:\path\to\extension\tags'])
+    @script = double('script action',extension_paths: ['c:\path\to\extension\tags'])
     @script.extend Radiant::Extension::Script::Util
     @script.extension_name = 'tags'
     @script.should be_installed
@@ -91,7 +91,7 @@ describe "Radiant::Extension::Script::Util" do
   end
 
   it "should find an extension of the given name from the web service" do
-    @ext_double = double("Extension", :name => 'page_attachments')
+    @ext_double = double("Extension", name: 'page_attachments')
     should_receive(:load_extensions).and_return([@ext_double])
     self.extension_name = 'page_attachments'
     find_extension.should == @ext_double
@@ -101,7 +101,7 @@ end
 describe "Radiant::Extension::Script::Install" do
 
   before :each do
-    @extension = double('Extension', :install => true, :name => 'page_attachments')
+    @extension = double('Extension', install: true, name: 'page_attachments')
     Registry::Extension.stub(:find).and_return([@extension])
   end
 
@@ -126,7 +126,7 @@ end
 
 describe "Radiant::Extension::Script::Uninstall" do
   before :each do
-    @extension = double('Extension', :uninstall => true, :name => 'basic')
+    @extension = double('Extension', uninstall: true, name: 'basic')
     Registry::Extension.stub(:find).and_return([@extension])
   end
 
@@ -147,7 +147,7 @@ end
 
 describe "Radiant::Extension::Script::Info" do
   before :each do
-    @extension = double('Extension', :uninstall => true, :name => 'archive', :inspect => '')
+    @extension = double('Extension', uninstall: true, name: 'archive', inspect: '')
     Registry::Extension.stub(:find).and_return([@extension])
   end
 
@@ -254,7 +254,7 @@ end
 
 describe "Registry::Uninstaller" do
   before :each do
-    @extension = double('Extension', :name => 'example')
+    @extension = double('Extension', name: 'example')
     @uninstaller = Registry::Uninstaller.new(@extension)
   end
 
@@ -277,7 +277,7 @@ end
 
 describe "Registry::Checkout" do
   before :each do
-    @extension = double("Extension", :name => 'example', :repository_url => 'http://localhost/')
+    @extension = double("Extension", name: 'example', repository_url: 'http://localhost/')
     @checkout = Registry::Checkout.new(@extension)
     @methods = [:copy_to_vendor_extensions, :migrate, :update].each do |method|
       @checkout.stub(method).and_return(true)
@@ -312,7 +312,7 @@ end
 
 describe "Registry::Download" do
   before :each do
-    @extension = double("Extension", :name => 'example', :download_url => 'http://localhost/example.pkg')
+    @extension = double("Extension", name: 'example', download_url: 'http://localhost/example.pkg')
     @download = Registry::Download.new(@extension)
     @methods = [:copy_to_vendor_extensions, :migrate, :update].each do |method|
       @download.stub(method).and_return(true)
@@ -350,7 +350,7 @@ end
 
 describe "Registry::Git" do
   before :each do
-    @extension = double("Extension", :name => 'example', :repository_url => 'http://localhost/')
+    @extension = double("Extension", name: 'example', repository_url: 'http://localhost/')
     @git = Registry::Git.new(@extension)
     @git.stub(:system)
     @git.stub(:cd).and_yield
@@ -404,7 +404,7 @@ end
 
 describe "Registry::Subversion" do
   before :each do
-    @extension = double("Extension", :name => 'example', :repository_url => 'http://localhost/')
+    @extension = double("Extension", name: 'example', repository_url: 'http://localhost/')
     @svn = Registry::Subversion.new(@extension)
   end
 
@@ -415,7 +415,7 @@ end
 
 describe "Registry::Gem" do
   before :each do
-    @extension = double("Extension", :name => 'example', :download_url => 'http://localhost/example-1.0.0.gem')
+    @extension = double("Extension", name: 'example', download_url: 'http://localhost/example-1.0.0.gem')
     @gem = Registry::Gem.new(@extension)
   end
 
@@ -446,7 +446,7 @@ end
 
 describe "Registry::Tarball" do
   before :each do
-    @extension = double("Extension", :name => 'example', :download_url => 'http://localhost/example-1.0.0.tar')
+    @extension = double("Extension", name: 'example', download_url: 'http://localhost/example-1.0.0.tar')
     @tar = Registry::Tarball.new(@extension)
   end
 
@@ -459,7 +459,7 @@ end
 
 describe "Registry::Gzip" do
   before :each do
-    @extension = double("Extension", :name => 'example', :download_url => 'http://localhost/example-1.0.0.tar.gz')
+    @extension = double("Extension", name: 'example', download_url: 'http://localhost/example-1.0.0.tar.gz')
     @gzip = Registry::Gzip.new(@extension)
   end
 
@@ -473,7 +473,7 @@ end
 
 describe "Registry::Bzip2" do
   before :each do
-    @extension = double("Extension", :name => 'example', :download_url => 'http://localhost/example-1.0.0.tar.bz2')
+    @extension = double("Extension", name: 'example', download_url: 'http://localhost/example-1.0.0.tar.bz2')
     @gzip = Registry::Bzip2.new(@extension)
   end
 
@@ -488,7 +488,7 @@ end
 
 describe "Registry::Zip" do
   before :each do
-    @extension = double("Extension", :name => 'example', :download_url => 'http://localhost/example-1.0.0.zip')
+    @extension = double("Extension", name: 'example', download_url: 'http://localhost/example-1.0.0.zip')
     @zip = Registry::Zip.new(@extension)
   end
 

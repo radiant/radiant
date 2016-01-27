@@ -50,7 +50,7 @@ describe MenuRenderer do
   }
   let(:special_page){
     special_page_class = SpecialChildPage
-    special_page = OpenStruct.new(:class_name => 'SpecialTestPage', :view => view, :class => special_page_class)
+    special_page = OpenStruct.new(class_name: 'SpecialTestPage', view: view, class: special_page_class)
     special_page.extend MenuRenderer
     special_page
   }

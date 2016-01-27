@@ -1,6 +1,6 @@
 class AddVirtualColumnToPage < ActiveRecord::Migration
   def self.up
-    add_column "pages", "virtual", :boolean, :null => false, :default => false
+    add_column "pages", "virtual", :boolean, null: false, default: false
   end
 
   def self.down

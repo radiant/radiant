@@ -25,7 +25,7 @@ describe PagePart do
 
   it "should take the filter from the default filter" do
     Radiant.detail['defaults.page.filter'] = "Pseudo Textile"
-    part = PagePart.new :name => 'new-part'
+    part = PagePart.new name: 'new-part'
     part.filter_id.should == "Pseudo Textile"
   end
 
@@ -39,8 +39,8 @@ describe PagePart do
 
   it 'should validate length of' do
     {
-      :name => 100,
-      :filter_id => 25
+      name: 100,
+      filter_id: 25
     }.each do |field, max|
       @part.send("#{field}=", 'x' * max)
       expect(@part.errors_on(field)).to be_blank
@@ -58,7 +58,7 @@ end
 describe PagePart, 'filter' do
   specify 'getting and setting' do
     # page = FactoryGirl.build(:page)
-    @part = FactoryGirl.build(:page_part, :name => 'body', :filter_id => 'Pseudo Textile')
+    @part = FactoryGirl.build(:page_part, name: 'body', filter_id: 'Pseudo Textile')
     original = @part.filter
     original.should be_kind_of(PseudoTextileFilter)
 

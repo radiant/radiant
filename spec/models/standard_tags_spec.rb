@@ -5,58 +5,58 @@ describe "Standard Tags" do
 
   let!(:home){ FactoryGirl.create(:home) do |page|
     page.created_by = FactoryGirl.create(:admin)
-    page.parts.create(:name => "body", :content => "Hello world!")
-    page.parts.create(:name => "sidebar", :content => "<r:title /> sidebar.")
-    page.parts.create(:name => "extended", :content => "Just a test.")
-    page.parts.create(:name => "titles", :content => "<r:title /> <r:page:title />")
+    page.parts.create(name: "body", content: "Hello world!")
+    page.parts.create(name: "sidebar", content: "<r:title /> sidebar.")
+    page.parts.create(name: "extended", content: "Just a test.")
+    page.parts.create(name: "titles", content: "<r:title /> <r:page:title />")
   end}
-  let(:page){ FactoryGirl.create(:published_page, :parent => home, :title => 'Page') }
-  let(:radius){ FactoryGirl.create(:published_page, :parent => home, :title => 'Radius')}
+  let(:page){ FactoryGirl.create(:published_page, parent: home, title: 'Page') }
+  let(:radius){ FactoryGirl.create(:published_page, parent: home, title: 'Radius')}
   
-  let(:parent){ FactoryGirl.create(:page_with_body_page_part, :parent => home, :title => 'Parent') }
-  let(:child){ FactoryGirl.create(:page_with_body_page_part, :parent => parent, :title => 'Child') }
-  let(:grandchild){ FactoryGirl.create(:page_with_body_and_sidebar_parts, :parent => child, :title => 'Grandchild') }
-  let(:great_grandchild){ FactoryGirl.create(:published_page, :parent => grandchild, :title => 'Great Grandchild') }
-  let(:child_2){ FactoryGirl.create(:page_with_body_page_part, :parent => parent, :title => 'Child 2') }
-  let(:child_3){ FactoryGirl.create(:page_with_body_page_part, :parent => parent, :title => 'Child 3') }
+  let(:parent){ FactoryGirl.create(:page_with_body_page_part, parent: home, title: 'Parent') }
+  let(:child){ FactoryGirl.create(:page_with_body_page_part, parent: parent, title: 'Child') }
+  let(:grandchild){ FactoryGirl.create(:page_with_body_and_sidebar_parts, parent: child, title: 'Grandchild') }
+  let(:great_grandchild){ FactoryGirl.create(:published_page, parent: grandchild, title: 'Great Grandchild') }
+  let(:child_2){ FactoryGirl.create(:page_with_body_page_part, parent: parent, title: 'Child 2') }
+  let(:child_3){ FactoryGirl.create(:page_with_body_page_part, parent: parent, title: 'Child 3') }
   
-  let(:news){ FactoryGirl.create(:published_page, :parent => home, :title => 'News') }
+  let(:news){ FactoryGirl.create(:published_page, parent: home, title: 'News') }
   dates = ['2000-12-01 08:41:07', '2001-02-09 08:42:04', '2001-02-24 12:02:43', '2001-03-06 03:32:31']
   dates.each do |date|
     title = "Article#{(' ' + (dates.index(date) + 1).to_s) unless date == dates.first}"
     let(title.downcase.gsub(' ', '_').to_sym){
-      FactoryGirl.create(:published_page, :published_at => DateTime.parse(date), :title => title, :parent => news)
+      FactoryGirl.create(:published_page, published_at: DateTime.parse(date), title: title, parent: news)
     }
   end
-  let(:draft){ FactoryGirl.create(:page, :title => "Draft", :parent => news, :status => Status[:draft]) }
+  let(:draft){ FactoryGirl.create(:page, title: "Draft", parent: news, status: Status[:draft]) }
   
-  let(:assorted){ FactoryGirl.create(:published_page, :parent => home, :title => 'Assorted') }
+  let(:assorted){ FactoryGirl.create(:published_page, parent: home, title: 'Assorted') }
   breadcrumbs = %w(f e d c b a j i h g)
   %w(a b c d e f g h i j).each_with_index do |name, i|
     let(name.to_sym){
-      FactoryGirl.create(:published_page, :breadcrumb => breadcrumbs[i], :published_at => Time.now - (10 - i).minutes, :title => name, :parent => assorted)
+      FactoryGirl.create(:published_page, breadcrumb: breadcrumbs[i], published_at: Time.now - (10 - i).minutes, title: name, parent: assorted)
     }
   end
-  let(:assorted_draft){ FactoryGirl.create(:published_page, :parent => home, :title => "Assorted Draft", :status_id => Status[:draft].id, :slug => "draft") }
-  let(:assorted_draft){ FactoryGirl.create(:published_page, :parent => home, :title => "Assorted Virtual", :class_name => "VirtualPage", :virtual => true, :slug => "virtual") }
+  let(:assorted_draft){ FactoryGirl.create(:published_page, parent: home, title: "Assorted Draft", status_id: Status[:draft].id, slug: "draft") }
+  let(:assorted_draft){ FactoryGirl.create(:published_page, parent: home, title: "Assorted Virtual", class_name: "VirtualPage", virtual: true, slug: "virtual") }
     
   date = Time.utc(2006, 1, 11)
-  let(:dated){ FactoryGirl.create(:published_page, :parent => home, :title => 'Dated', :published_at => date, :created_at => (date - 1.day), :updated_at => (date + 1.day))}
-  let(:scheduled){ FactoryGirl.create(:page, :parent => home, :title => 'Scheduled', :published_at => (Time.now + 1.day), :status_id => Status[:scheduled].id)}
+  let(:dated){ FactoryGirl.create(:published_page, parent: home, title: 'Dated', published_at: date, created_at: (date - 1.day), updated_at: (date + 1.day))}
+  let(:scheduled){ FactoryGirl.create(:page, parent: home, title: 'Scheduled', published_at: (Time.now + 1.day), status_id: Status[:scheduled].id)}
   
-  let(:devtags){ FactoryGirl.create(:published_page, :parent => home, :title => 'Devtags') do |page|
-      page.parts.create(:name => 'if_dev', :content => "<r:if_dev>dev</r:if_dev>")
-      page.parts.create(:name => 'unless_dev', :content => "<r:unless_dev>not dev</r:unless_dev>")
+  let(:devtags){ FactoryGirl.create(:published_page, parent: home, title: 'Devtags') do |page|
+      page.parts.create(name: 'if_dev', content: "<r:if_dev>dev</r:if_dev>")
+      page.parts.create(name: 'unless_dev', content: "<r:unless_dev>not dev</r:unless_dev>")
     end }
     
-  let(:recursive_parts){ FactoryGirl.create(:published_page, :parent => home, :title => 'Recursive parts') do |page|
-    page.parts.create(:name => "body", :content => "<r:content />")
-    page.parts.create(:name => "one", :content => '<r:content part="two" />')
-    page.parts.create(:name => "two", :content => '<r:content part="one" />')
-    page.parts.create(:name => "repeat", :content => '<r:content part="beat"/><r:content part="beat"/>')
-    page.parts.create(:name => "beat", :content => 'x')
+  let(:recursive_parts){ FactoryGirl.create(:published_page, parent: home, title: 'Recursive parts') do |page|
+    page.parts.create(name: "body", content: "<r:content />")
+    page.parts.create(name: "one", content: '<r:content part="two" />')
+    page.parts.create(name: "two", content: '<r:content part="one" />')
+    page.parts.create(name: "repeat", content: '<r:content part="beat"/><r:content part="beat"/>')
+    page.parts.create(name: "beat", content: 'x')
   end}
-#   let(:file_not_found){ FactoryGirl.create(:file_not_found_page, parent_id: home.id, :slug => '404', :published_at => Time.now, :status_id => Status[:published].id)}
+#   let(:file_not_found){ FactoryGirl.create(:file_not_found_page, parent_id: home.id, slug: '404', published_at: Time.now, status_id: Status[:published].id)}
 
   it '<r:page> should allow access to the current page' do
     radius
@@ -130,23 +130,23 @@ describe "Standard Tags" do
     describe 'with paginated="true"' do
       it 'should limit correctly the result set' do
         a; b; c; d; e; f; g; h; i; j
-        assorted.pagination_parameters = {:page => 1, :per_page => 10}
+        assorted.pagination_parameters = {page: 1, per_page: 10}
         assorted.should render('<r:children:each paginated="true" per_page="10"><r:slug /> </r:children:each>').as('a b c d e f g h i j ')
         assorted.should render('<r:children:each paginated="true" per_page="2"><r:slug /> </r:children:each>').not_matching(/a b c/)
       end
       it 'should display a pagination control block' do
         a; b; c; d; e; f; g; h; i; j
-        assorted.pagination_parameters = {:page => 1, :per_page => 1}
+        assorted.pagination_parameters = {page: 1, per_page: 1}
         assorted.should render('<r:children:each paginated="true"><r:slug /> </r:children:each>').matching(/div class="pagination"/)
       end
       it 'should link to the correct paginated page' do
         assorted; a; b; c; d; e; f; g; h; i; j
-        page.pagination_parameters = {:page => 1, :per_page => 1}
+        page.pagination_parameters = {page: 1, per_page: 1}
         page.should render('<r:find path="/assorted"><r:children:each paginated="true"><r:slug /> </r:children:each></r:find>').matching(%r{href="/page})
       end
       it 'should pass through selected will_paginate parameters' do
         assorted; a; b; c; d; e; f; g; h; i; j
-        assorted.pagination_parameters = {:page => 5, :per_page => 1}
+        assorted.pagination_parameters = {page: 5, per_page: 1}
         assorted.should render('<r:children:each paginated="true" separator="not that likely a choice"><r:slug /> </r:children:each>').matching(/not that likely a choice/)
         assorted.should render('<r:children:each paginated="true" previous_label="before"><r:slug /> </r:children:each>').matching(/before/)
         assorted.should render('<r:children:each paginated="true" next_label="after"><r:slug /> </r:children:each>').matching(/after/)
@@ -622,25 +622,25 @@ describe "Standard Tags" do
       it 'should limit correctly the result set' do
         news; article; article_2; article_3; article_4
         assorted; a; b; c; d; e; f; g; h; i; j
-        page.pagination_parameters = {:page => 1, :per_page => 10}
+        page.pagination_parameters = {page: 1, per_page: 10}
         page.should render('<r:aggregate paths="/assorted; /news"><r:children:each paginated="true" per_page="10"><r:slug /> </r:children:each></r:aggregate>').matching(/article article-2 article-3 article-4 a b c d e f /)
         page.should render('<r:aggregate paths="/assorted; /news"><r:children:each paginated="true" per_page="2"><r:slug /> </r:children:each></r:aggregate>').not_matching(/article article-2 article-3/)
       end
       it 'should display a pagination control block' do
         news; article; article_2; article_3; article_4
         assorted; a; b; c; d; e; f; g; h; i; j
-        page.pagination_parameters = {:page => 1, :per_page => 1}
+        page.pagination_parameters = {page: 1, per_page: 1}
         page.should render('<r:aggregate paths="/assorted; /news"><r:children:each paginated="true"><r:slug /> </r:children:each></r:aggregate>').matching(/div class="pagination"/)
       end
       it 'should link to the correct paginated page' do
         assorted; a; b; c; d; e; f; g; h; i; j
-        page.pagination_parameters = {:page => 1, :per_page => 1}
+        page.pagination_parameters = {page: 1, per_page: 1}
         page.should render('<r:find path="/assorted"><r:children:each paginated="true"><r:slug /> </r:children:each></r:find>').matching(%r{href="/page})
       end
       it 'should pass through selected will_paginate parameters' do
         assorted; a; b; c; d; e; f; g; h; i; j
         news
-        page.pagination_parameters = {:page => 5, :per_page => 1}
+        page.pagination_parameters = {page: 5, per_page: 1}
         page.should render('<r:aggregate paths="/assorted; /news"><r:children:each paginated="true" separator="not that likely a choice"><r:slug /> </r:children:each></r:aggregate>').matching(/not that likely a choice/)
         page.should render('<r:aggregate paths="/assorted; /news"><r:children:each paginated="true" previous_label="before"><r:slug /> </r:children:each></r:aggregate>').matching(/before/)
         page.should render('<r:aggregate paths="/assorted; /news"><r:children:each paginated="true" next_label="after"><r:slug /> </r:children:each></r:aggregate>').matching(/after/)
@@ -702,7 +702,7 @@ describe "Standard Tags" do
     end
 
     it "should format the published date according to localized format" do
-      dated.should render('<r:date format="short" />').as(I18n.l(dated.published_at, :format => :short))
+      dated.should render('<r:date format="short" />').as(I18n.l(dated.published_at, format: :short))
     end
 
     describe "with 'for' attribute" do
@@ -1090,8 +1090,8 @@ describe "Standard Tags" do
   end
 
   describe "<r:status>" do
-    let(:hidden){ FactoryGirl.build(:page, :status => Status[:hidden])}
-    let(:draft){ FactoryGirl.build(:page, :status => Status[:draft])}
+    let(:hidden){ FactoryGirl.build(:page, status: Status[:hidden])}
+    let(:draft){ FactoryGirl.build(:page, status: Status[:draft])}
     
     it "should render the status of the current page" do
       status_tag = "<r:status/>"
@@ -1153,9 +1153,9 @@ describe "Standard Tags" do
 
   describe "Field tags" do
     subject{
-      p = Page.new(:slug => "/", :parent_id => nil, :title => 'Home')
-      field = PageField.new(:name => 'Field', :content => "Sweet harmonious biscuits")
-      blank_field = PageField.new(:name => 'blank', :content => "")
+      p = Page.new(slug: "/", parent_id: nil, title: 'Home')
+      field = PageField.new(name: 'Field', content: "Sweet harmonious biscuits")
+      blank_field = PageField.new(name: 'blank', content: "")
       p.fields = [field, blank_field]
       p
     }

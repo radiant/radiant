@@ -13,7 +13,7 @@ module Radiant::Taggable
         end
         class << new_base
           def default_url_options
-            {:controller => "site", :action => "show_page", :only_path => true}
+            {controller: "site", action: "show_page", only_path: true}
           end
         end
         new_base.tag_descriptions.merge! self.tag_descriptions
@@ -82,7 +82,7 @@ module Radiant::Taggable
 
     # Define a tag while also deprecating it. Normal usage:
     #
-    #   deprecated_tag 'old:way', :substitute => 'new:way', :deadline => '1.1.1'
+    #   deprecated_tag 'old:way', substitute: 'new:way', deadline: '1.1.1'
     #
     # If no substitute is given then a warning will be issued but nothing rendered.
     # If a deadline version is provided then it will be mentioned in the deprecation warnings.

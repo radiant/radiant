@@ -32,13 +32,13 @@ module Radiant
     # scenarios it is desirable to leave Radiant's cache enabled and in
     # the default configuration.
     require 'radiant/cache'
-    config.middleware.insert_after Rack::Sendfile, Radiant::Cache, :verbose => true
+    config.middleware.insert_after Rack::Sendfile, Radiant::Cache, verbose: true
 
     # Configure generators values. Many other options are available, be sure to check the documentation.
     config.generators do |g|
       g.orm             :active_record
       g.template_engine :haml
-      g.test_framework  :rspec, :fixture => false
+      g.test_framework  :rspec, fixture: false
     end
 
     # Configure the default encoding used in templates for Ruby 1.9.

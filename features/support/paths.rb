@@ -16,7 +16,7 @@ module NavigationHelpers
   def path_to(page_name, format=nil)
     PathMatchers.each do |path_matcher, value|
       if path_matcher =~ normalize_page_name(page_name)
-        return send(value, {:format => format})
+        return send(value, {format: format})
       end
     end
     case normalize_page_name(page_name)
@@ -35,25 +35,25 @@ module NavigationHelpers
     when /great-grandchild/
       '/parent/child/grandchild/great-grandchild'
     when /sitemap/i
-      admin_pages_path(:format => format)
+      admin_pages_path(format: format)
     when /login/i
-      login_path(:format => format)
+      login_path(format: format)
     when /preferences/i
-      admin_preferences_path(:format => format)
+      admin_preferences_path(format: format)
     when /login/i
-      login_path(:format => format)
+      login_path(format: format)
     when /users/i
-      admin_users_path(:format => format)
+      admin_users_path(format: format)
     when /pages/i
-      admin_pages_path(:format => format)
+      admin_pages_path(format: format)
     when /layouts/i
-      admin_layouts_path(:format => format)
+      admin_layouts_path(format: format)
     when /users/i
-      admin_users_path(:format => format)
+      admin_users_path(format: format)
     when /configuration/i
-      admin_configuration_path(:format => format)
+      admin_configuration_path(format: format)
     when /extensions/i
-      admin_extensions_path(:format => format)
+      admin_extensions_path(format: format)
     else
       raise "Can't find mapping from \"#{page_name}\" to a path.\n" +
         "Now, go and add a mapping in #{__FILE__}"

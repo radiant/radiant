@@ -9,7 +9,7 @@ describe Radiant::Admin::PageFieldsController do
   end
 
   it "should assign a PageField object" do
-    xhr :post, :create, :page_field => {:name => "Keywords"}
+    xhr :post, :create, page_field: {name: "Keywords"}
     meta = assigns(:page_field)
     meta.should be_kind_of(PageField)
     meta.name.should eql('Keywords')

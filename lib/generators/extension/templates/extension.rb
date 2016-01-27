@@ -11,7 +11,7 @@ class <%= class_name %> < Radiant::Extension
 
   def activate
     # tab 'Content' do
-    #   add_item "<%= extension_name %>", "/admin/<%= file_name %>", :after => "Pages"
+    #   add_item "<%= extension_name %>", "/admin/<%= file_name %>", after: "Pages"
     # end
   end
 end

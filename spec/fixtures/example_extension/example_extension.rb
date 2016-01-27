@@ -7,7 +7,7 @@ class ExampleExtension < Radiant::Extension
   url "http://example.com/example"
   
   def activate
-    # admin.tabs.add "Example", "/admin/example", :after => "Layouts", :visibility => [:all]
+    # admin.tabs.add "Example", "/admin/example", after: "Layouts", visibility: [:all]
   end
   
   def deactivate

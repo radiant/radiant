@@ -52,7 +52,7 @@ describe Annotatable, "with annotations defined on a parent class" do
   class ParentClass
     include Annotatable
     annotate :description, :url
-    annotate :another, :inherit => true
+    annotate :another, inherit: true
     description "A parent class"
     url "http://test.host"
     another "I'm inherited!"

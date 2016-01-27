@@ -43,12 +43,12 @@ describe Radiant::AdminUI::NavTab do
     end
 
     it "should insert before the specified sub-item" do
-      @tab.add(@comments, :before => :things)
+      @tab.add(@comments, before: :things)
       @tab[1].should == @comments
     end
 
     it "should insert after the specified sub-item" do
-      @tab.add(@comments, :after => :pages)
+      @tab.add(@comments, after: :pages)
       @tab[1].should == @comments
     end
 

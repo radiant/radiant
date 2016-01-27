@@ -24,22 +24,22 @@ module Radiant
     end
 
     def onsubmit_status(model)
-      model.new_record? ? t('creating_status', :model => t(model.class.name.downcase)) : "#{I18n.t('saving_changes')}&#8230;"
+      model.new_record? ? t('creating_status', model: t(model.class.name.downcase)) : "#{I18n.t('saving_changes')}&#8230;"
     end
 
     def save_model_button(model, options = {})
       model_name = model.class.name.underscore
       human_model_name = model_name.humanize.titlecase
       options[:label] ||= model.new_record? ?
-        t('buttons.create', :name => t(model_name, :default => human_model_name), :default => 'Create ' + human_model_name) :
-        t('buttons.save_changes', :default => 'Save Changes')
+        t('buttons.create', name: t(model_name, default: human_model_name), default: 'Create ' + human_model_name) :
+        t('buttons.save_changes', default: 'Save Changes')
       options[:class] ||= "button"
       options[:accesskey] ||= 'S'
       submit_tag options.delete(:label), options
     end
 
     def save_model_and_continue_editing_button(model)
-      submit_tag t('buttons.save_and_continue'), :name => 'continue', :class => 'button', :accesskey => "s"
+      submit_tag t('buttons.save_and_continue'), name: 'continue', class: 'button', accesskey: "s"
     end
 
     def current_item?(item)
@@ -108,7 +108,7 @@ module Radiant
 
     def timestamp(time)
       # time.strftime("%I:%M %p on %B %e, %Y").sub("AM", 'am').sub("PM", 'pm')
-      I18n.localize(time, :format => :timestamp)
+      I18n.localize(time, format: :timestamp)
     end
 
     def meta_visible(symbol)
@@ -118,7 +118,7 @@ module Radiant
       when :meta, :meta_less
         meta_errors?
       end
-      v ? {} : {:style => "display: none"}
+      v ? {} : {style: "display: none"}
     end
 
     def meta_errors?
@@ -159,7 +159,7 @@ module Radiant
     end
 
     def translate_with_default(name)
-      t(name.underscore.downcase, :default => name)
+      t(name.underscore.downcase, default: name)
     end
 
     def available_locales_select
@@ -201,7 +201,7 @@ module Radiant
         url << "&default=#{options[:default]}" if options[:default]
         # Test the Gravatar url
         require 'open-uri'
-        begin; open "http:#{url}", :proxy => true
+        begin; open "http:#{url}", proxy: true
         rescue; local_avatar_url
         else; url
         end
@@ -216,16 +216,16 @@ module Radiant
     def pagination_for(list, options={})
       if list.respond_to? :total_pages
         options = {
-          :max_per_page => detail['pagination.max_per_page'] || 500,
-          :depaginate => true
+          max_per_page: detail['pagination.max_per_page'] || 500,
+          depaginate: true
         }.merge(options.symbolize_keys)
-        depaginate = options.delete(:depaginate)                                     # supply :depaginate => false to omit the 'show all' link
-        depagination_limit = options.delete(:max_per_page)                           # supply :max_per_page => false to include the 'show all' link no matter how large the collection
+        depaginate = options.delete(:depaginate)                                     # supply depaginate: false to omit the 'show all' link
+        depagination_limit = options.delete(:max_per_page)                           # supply max_per_page: false to include the 'show all' link no matter how large the collection
         html = will_paginate(list, will_paginate_options.merge(options))
         if depaginate && list.total_pages > 1 && (!depagination_limit.blank? || list.total_entries <= depagination_limit.to_i)
-          html << content_tag(:div, link_to(t('show_all'), :pp => 'all'), :class => 'depaginate')
+          html << content_tag(:div, link_to(t('show_all'), pp: 'all'), class: 'depaginate')
         elsif depaginate && list.total_entries > depagination_limit.to_i
-          html = content_tag(:div, link_to("paginate", :p => 1), :class => 'pagination')
+          html = content_tag(:div, link_to("paginate", p: 1), class: 'pagination')
         end
         html
       end

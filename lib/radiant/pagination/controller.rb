@@ -18,8 +18,8 @@ module Radiant
 
       def pagination_parameters
         {
-          :page => params[WillPaginate::ViewHelpers.pagination_options[:param_name]] || 1,
-          :per_page => params[WillPaginate::ViewHelpers.pagination_options[:per_page_param_name]] || Radiant::Config['pagination.per_page'] || 20
+          page: params[WillPaginate::ViewHelpers.pagination_options[:param_name]] || 1,
+          per_page: params[WillPaginate::ViewHelpers.pagination_options[:per_page_param_name]] || Radiant::Config['pagination.per_page'] || 20
         }
       end
 

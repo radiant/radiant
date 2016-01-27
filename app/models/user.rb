@@ -4,14 +4,14 @@ class User < ActiveRecord::Base
 
   attr_accessible :name, :password_confirmation, :locale, :login, :password, :email
 
-  has_many :pages, :foreign_key => :created_by_id
+  has_many :pages, foreign_key: :created_by_id
 
   # Default Order
-  default_scope :order => 'name'
+  default_scope order: 'name'
 
   # Associations
-  belongs_to :created_by, :class_name => 'User'
-  belongs_to :updated_by, :class_name => 'User'
+  belongs_to :created_by, class_name: 'User'
+  belongs_to :updated_by, class_name: 'User'
 
   # Validations # TODO: remove unique validation in code
   validates_uniqueness_of :login

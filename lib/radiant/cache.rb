@@ -5,11 +5,11 @@ module Radiant
   module Cache
     def self.new(backend, options = {})
       Rack::Cache.new(backend, {
-        :entitystore => "file:tmp/cache/entity",
-        :metastore => "file:tmp/cache/meta",
-        :verbose => false,
-        :allow_reload => false,
-        :allow_revalidate => false
+        entitystore: "file:tmp/cache/entity",
+        metastore: "file:tmp/cache/meta",
+        verbose: false,
+        allow_reload: false,
+        allow_revalidate: false
       }.merge(options))
     end
 

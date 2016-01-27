@@ -8,7 +8,7 @@ class <%= class_name %> < ActionMailer::Base
     from       ''
     sent_on    sent_at
     
-    body       :greeting => 'Hi,'
+    body       greeting: 'Hi,'
   end
 <% end -%>
 

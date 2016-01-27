@@ -36,25 +36,25 @@ describe Radiant::AdminUI::RegionSet do
 
     it "should add a partial before a specified partial" do
       @region_set.add :main, "two"
-      @region_set.add :main, "three", :before => "two"
+      @region_set.add :main, "three", before: "two"
       @region_set.main.should == ["one", "three", "two"]
     end
 
     it "should add a partial after a specified partial" do
       @region_set.add :main, "two"
-      @region_set.add :main, "three", :after => "one"
+      @region_set.add :main, "three", after: "one"
       @region_set.main.should == ["one", "three", "two"]
     end
 
     it "should add a partial at the end if the before partial is not found" do
       @region_set.add :main, "two"
-      @region_set.add :main, "three", :before => "foo"
+      @region_set.add :main, "three", before: "foo"
       @region_set.main.should == ["one", "two", "three"]
     end
 
     it "should add a partial at the end if the after partial is not found" do
       @region_set.add :main, "two"
-      @region_set.add :main, "three", :after => "foo"
+      @region_set.add :main, "three", after: "foo"
       @region_set.main.should == ["one", "two", "three"]
     end
   end

@@ -4,7 +4,7 @@ describe PageContext do
   before :each do
     @page = FactoryGirl.build(:home)
     @context = PageContext.new(@page)
-    @parser = Radius::Parser.new(@context, :tag_prefix => 'r')
+    @parser = Radius::Parser.new(@context, tag_prefix: 'r')
     @context = @parser.context
   end
 
@@ -18,7 +18,7 @@ describe PageContext do
 
   it 'should give tags access to the request' do
     @page.save!
-    another = FactoryGirl.create(:published_page, :parent_id => @page.id, :title => 'Another')
+    another = FactoryGirl.create(:published_page, parent_id: @page.id, title: 'Another')
     @context.define_tag("if_request") { |tag| tag.expand if tag.locals.page.request }
     parse('<r:if_request>tada!</r:if_request>').should match(/^$/)
 
@@ -29,7 +29,7 @@ describe PageContext do
 
   it 'should give tags access to the response' do
     @page.save!
-    another = FactoryGirl.create(:published_page, :parent_id => @page.id, :title => 'Another')
+    another = FactoryGirl.create(:published_page, parent_id: @page.id, title: 'Another')
     @context.define_tag("if_response") { |tag| tag.expand if tag.locals.page.response }
     parse('<r:if_response>tada!</r:if_response>').should match(/^$/)
 
@@ -50,7 +50,7 @@ describe PageContext, "when errors are not being raised" do
   before :each do
     @page = FactoryGirl.build(:home)
     @context = PageContext.new(@page)
-    @parser = Radius::Parser.new(@context, :tag_prefix => 'r')
+    @parser = Radius::Parser.new(@context, tag_prefix: 'r')
     @parser.context.stub(:raise_errors?).and_return(false)
     @context = @parser.context
   end

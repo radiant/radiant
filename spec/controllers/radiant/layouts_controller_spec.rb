@@ -26,12 +26,12 @@ describe Radiant::Admin::LayoutsController do
 
   describe "show" do
     it "should redirect to the edit action" do
-      get :show, :id => 1
+      get :show, id: 1
       response.should redirect_to(edit_admin_layout_path(1))
     end
 
     it "should show xml when format is xml" do
-      get :show, :id => layout.id, :format => "xml"
+      get :show, id: layout.id, format: "xml"
       response.body.should == layout.to_xml
     end
   end
@@ -39,7 +39,7 @@ describe Radiant::Admin::LayoutsController do
   describe "with invalid page id" do
     [:edit, :remove].each do |action|
       before do
-        @parameters = {:id => 999}
+        @parameters = {id: 999}
       end
       it "should redirect the #{action} action to the index action" do
         get action, @parameters
@@ -68,10 +68,10 @@ describe Radiant::Admin::LayoutsController do
     end
   end
 
-  { :get => [:index, :new, :edit, :remove],
-    :post => [:create],
-    :put => [:update],
-    :delete => [:destroy] }.each do |method, actions|
+  { get: [:index, :new, :edit, :remove],
+    post: [:create],
+    put: [:update],
+    delete: [:destroy] }.each do |method, actions|
     actions.each do |action|
       it "should require login to access the #{action} action" do
         logout
@@ -80,30 +80,30 @@ describe Radiant::Admin::LayoutsController do
 
       it "should allow access to designers for the #{action} action" do
         lambda {
-          send(method, action, :id => layout.id)
-        }.should restrict_access(:allow => [designer],
-                                 :url => '/admin/pages')
+          send(method, action, id: layout.id)
+        }.should restrict_access(allow: [designer],
+                                 url: '/admin/pages')
       end
 
       it "should allow access to admins for the #{action} action" do
         lambda {
-          send(method, action, :id => layout.id)
-        }.should restrict_access(:allow => [designer],
-                                 :url => '/admin/pages')
+          send(method, action, id: layout.id)
+        }.should restrict_access(allow: [designer],
+                                 url: '/admin/pages')
       end
 
       it "should deny non-designers and non-admins for the #{action} action" do
         lambda {
-          send(method, action, :id => layout.id)
-        }.should restrict_access(:deny => non_admin,
-                                 :url => '/admin/pages')
+          send(method, action, id: layout.id)
+        }.should restrict_access(deny: non_admin,
+                                 url: '/admin/pages')
       end
     end
   end
 
   it "should clear the page cache when saved" do
     Radiant::Cache.should_receive(:clear)
-    put :update, :id => utf8_layout.id, :layout => {:content_type => "application/xhtml+xml;charset=utf8"}
+    put :update, id: utf8_layout.id, layout: {content_type: "application/xhtml+xml;charset=utf8"}
   end
 
 end

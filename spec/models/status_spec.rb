@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Status, "attributes" do
   before :all do
-    @status = Status.new(:id => 1, :name => 'Test')
+    @status = Status.new(id: 1, name: 'Test')
   end
   
   specify 'id' do

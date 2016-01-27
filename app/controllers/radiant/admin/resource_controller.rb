@@ -17,9 +17,9 @@ module Radiant
     helper_method :model, :current_object, :models, :current_objects, :model_symbol, :plural_model_symbol, :model_class, :model_name, :plural_model_name
     before_filter :populate_format
     before_filter :never_cache
-    before_filter :load_models, :only => :index
-    before_filter :load_model, :only => [:new, :create, :edit, :update, :remove, :destroy]
-    after_filter :clear_model_cache, :only => [:create, :update, :destroy]
+    before_filter :load_models, only: :index
+    before_filter :load_model, only: [:new, :create, :edit, :update, :remove, :destroy]
+    after_filter :clear_model_cache, only: [:create, :update, :destroy]
 
     cattr_reader :paginated
     cattr_accessor :default_per_page, :will_paginate_options
@@ -27,8 +27,8 @@ module Radiant
     responses do |r|
       # Equivalent respond_to block for :plural responses:
       # respond_to do |wants|
-      #   wants.xml { render :xml => models }
-      #   wants.json { render :json => models }
+      #   wants.xml { render xml: models }
+      #   wants.json { render json: models }
       #   wants.any
       # end
       r.plural.publish(:xml, :json) { render format_symbol => models }
@@ -37,15 +37,15 @@ module Radiant
       r.singular.default { redirect_to edit_model_path if action_name == "show" }
 
       r.not_found.publish(:xml, :json) { head :not_found }
-      r.not_found.default { announce_not_found; redirect_to :action => "index" }
+      r.not_found.default { announce_not_found; redirect_to action: "index" }
 
-      r.invalid.publish(:xml, :json) { render format_symbol => model.errors, :status => :unprocessable_entity }
-      r.invalid.default { announce_validation_errors; render :action => template_name }
+      r.invalid.publish(:xml, :json) { render format_symbol => model.errors, status: :unprocessable_entity }
+      r.invalid.default { announce_validation_errors; render action: template_name }
 
       r.stale.publish(:xml, :json) { head :conflict }
-      r.stale.default { announce_update_conflict; render :action => template_name }
+      r.stale.default { announce_update_conflict; render action: template_name }
 
-      r.create.publish(:xml, :json) { render format_symbol => model, :status => :created, :location => url_for(:format => format_symbol, :id => model) }
+      r.create.publish(:xml, :json) { render format_symbol => model, status: :created, location: url_for(format: format_symbol, id: model) }
       r.create.default { redirect_to continue_url(params) }
 
       r.update.publish(:xml, :json) { head :ok }
@@ -90,11 +90,11 @@ module Radiant
     # eg.
     #
     # Class MyController < Radiant::ResourceController
-    #   paginate_models :per_page => 100
+    #   paginate_models per_page: 100
 
     def self.paginate_models(options={})
       @@paginated = true
-      @@will_paginate_options = options.slice(:class, :previous_label, :next_label, :inner_window, :outer_window, :separator, :container).merge(:param_name => :p)
+      @@will_paginate_options = options.slice(:class, :previous_label, :next_label, :inner_window, :outer_window, :separator, :container).merge(param_name: :p)
       @@default_per_page = options[:per_page]
     end
 
@@ -122,14 +122,14 @@ module Radiant
       pp = params[:pp] || Radiant.detail['admin.pagination.per_page']
       pp = (self.class.default_per_page || 50) if pp.blank?
       {
-        :page => (params[:p] || 1).to_i,
-        :per_page => pp.to_i
+        page: (params[:p] || 1).to_i,
+        per_page: pp.to_i
       }
     end
 
-    rescue_from ActiveRecord::RecordInvalid, :with => :invalid
-    rescue_from ActiveRecord::StaleObjectError, :with => :stale
-    rescue_from ActiveRecord::RecordNotFound, :with => :not_found
+    rescue_from ActiveRecord::RecordInvalid, with: :invalid
+    rescue_from ActiveRecord::StaleObjectError, with: :stale
+    rescue_from ActiveRecord::RecordNotFound, with: :not_found
     protected
     
       def invalid
@@ -195,11 +195,11 @@ module Radiant
       end
 
       def continue_url(options)
-        options[:redirect_to] || (params[:continue] ? {:action => 'edit', :id => model.id} : index_page_for_model)
+        options[:redirect_to] || (params[:continue] ? {action: 'edit', id: model.id} : index_page_for_model)
       end
 
       def index_page_for_model
-        parts = {:action => "index"}
+        parts = {action: "index"}
         if paginated? && model && i = model_class.all.index(model)
           p = (i / pagination_parameters[:per_page].to_i) + 1
           parts[:p] = p if p && p > 1
@@ -218,15 +218,15 @@ module Radiant
 
       def announce_removed
         ActiveSupport::Deprecation.warn("announce_removed is no longer encouraged in Radiant 0.9.x.", caller)
-        flash[:notice] = t("resource_controller.removed", :humanized_model_name => humanized_model_name)
+        flash[:notice] = t("resource_controller.removed", humanized_model_name: humanized_model_name)
       end
 
       def announce_not_found
-        flash[:notice] = t("resource_controller.not_found", :humanized_model_name => humanized_model_name)
+        flash[:notice] = t("resource_controller.not_found", humanized_model_name: humanized_model_name)
       end
 
       def announce_update_conflict
-        flash.now[:error] =  t("resource_controller.update_conflict", :humanized_model_name => humanized_model_name)
+        flash.now[:error] =  t("resource_controller.update_conflict", humanized_model_name: humanized_model_name)
       end
 
       def clear_model_cache
@@ -242,7 +242,7 @@ module Radiant
       end
 
 
-      # I would like to set this to expires_in(1.minute, :private => true) to allow for more fluid navigation
+      # I would like to set this to expires_in(1.minute, private: true) to allow for more fluid navigation
       # but the annoyance for concurrent authors would be too great.
       def never_cache
         expires_now

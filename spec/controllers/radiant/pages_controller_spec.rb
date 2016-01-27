@@ -11,21 +11,21 @@ describe Radiant::Admin::PagesController do
   end
 
   it "should route children to the pages controller" do
-    route_for(:controller => "admin/pages", :page_id => '1',
-      :action => "index").should == '/admin/pages/1/children'
-    route_for(:controller => "admin/pages", :page_id => '1',
-      :action => 'new').should == '/admin/pages/1/children/new'
+    route_for(controller: "admin/pages", page_id: '1',
+      action: "index").should == '/admin/pages/1/children'
+    route_for(controller: "admin/pages", page_id: '1',
+      action: 'new').should == '/admin/pages/1/children/new'
   end
 
   describe "show" do
     it "should redirect to the edit action" do
-      get :show, :id => 1
+      get :show, id: 1
       response.should redirect_to(edit_admin_page_path(params[:id]))
     end
 
     it "should show xml when format is xml" do
       page = Page.first
-      get :show, :id => page.id, :format => "xml"
+      get :show, id: page.id, format: "xml"
       response.body.should == page.to_xml
     end
   end
@@ -33,7 +33,7 @@ describe Radiant::Admin::PagesController do
   describe "with invalid page id" do
     [:edit, :remove].each do |action|
       before do
-        @parameters = {:id => 999}
+        @parameters = {id: 999}
       end
       it "should redirect the #{action} action to the index action" do
         get action, @parameters
@@ -112,7 +112,7 @@ describe Radiant::Admin::PagesController do
     end
 
     it "should render the appropriate children when branch of the site map is expanded via AJAX" do
-      xml_http_request :get, :index, :page_id => page_id(:home), :level => '1'
+      xml_http_request :get, :index, page_id: page_id(:home), level: '1'
       response.should be_success
       assigns(:level).should == 1
       response.body.should_not have_text('<head>')
@@ -125,20 +125,20 @@ describe Radiant::Admin::PagesController do
 
     [:admin, :designer, :non_admin, :existing].each do |user|
       {
-        :post => :create,
-        :put => :update,
-        :delete => :destroy
+        post: :create,
+        put: :update,
+        delete: :destroy
       }.each do |method, action|
         it "should require login to access the #{action} action" do
           logout
-          send method, action, :id => Page.first.id
+          send method, action, id: Page.first.id
           response.should redirect_to('/admin/login')
         end
 
         it "should allow access to #{user.to_s.humanize}s for the #{action} action" do
           login_as user
           controller.should_receive(:paginated?).and_return(false)
-          send method, action, :id => Page.first.id
+          send method, action, id: Page.first.id
           response.should redirect_to('http://test.host/admin/pages')
         end
       end
@@ -151,9 +151,9 @@ describe Radiant::Admin::PagesController do
           when :index
             {}
           when :new
-            {:page_id => page_id(:home)}
+            {page_id: page_id(:home)}
           else
-            {:id => Page.first.id}
+            {id: Page.first.id}
           end
         end
       end
@@ -166,29 +166,29 @@ describe Radiant::Admin::PagesController do
       if action == :show
         it "should request authentication for API access on show" do
           logout
-          get action, :id => page_id(:home), :format => "xml"
+          get action, id: page_id(:home), format: "xml"
           response.response_code.should == 401
         end
       else
         it "should allow access to admins for the #{action} action" do
           lambda {
             send(:get, action, @parameters.call)
-          }.should restrict_access(:allow => [users(:admin)],
-                                   :url => '/admin/pages')
+          }.should restrict_access(allow: [users(:admin)],
+                                   url: '/admin/pages')
         end
 
         it "should allow access to designers for the #{action} action" do
           lambda {
             send(:get, action, @parameters.call)
-          }.should restrict_access(:allow => [users(:designer)],
-                                   :url => '/admin/pages')
+          }.should restrict_access(allow: [users(:designer)],
+                                   url: '/admin/pages')
         end
 
         it "should allow non-designers and non-admins for the #{action} action" do
           lambda {
             send(:get, action, @parameters.call)
-          }.should restrict_access(:allow => [users(:non_admin), users(:existing)],
-                                   :url => '/admin/pages')
+          }.should restrict_access(allow: [users(:non_admin), users(:existing)],
+                                   url: '/admin/pages')
         end
       end
     end
@@ -236,7 +236,7 @@ describe Radiant::Admin::PagesController do
 
     # TODO: This should be in a view or integration spec
     it "should render the expanded descendants of the page being removed" do
-      get :remove, :id => page_id(:parent), :format => 'html' # shouldn't need this!
+      get :remove, id: page_id(:parent), format: 'html' # shouldn't need this!
       rendered_pages = [:parent, :child, :grandchild, :great_grandchild, :child_2, :child_3].map {|p| pages(p) }
       rendered_pages.each do |page|
         response.should have_tag("tr#page_#{page.id}")
@@ -246,14 +246,14 @@ describe Radiant::Admin::PagesController do
 
   describe '#new' do
     it "should initialize meta and buttons_partials in new action" do
-      get :new, :page_id => page_id(:home)
+      get :new, page_id: page_id(:home)
       response.should be_success
       assigns(:meta).should be_kind_of(Array)
       assigns(:buttons_partials).should be_kind_of(Array)
     end
 
     it "should set the parent_id from the parameters" do
-      get :new, :page_id => page_id(:home)
+      get :new, page_id: page_id(:home)
       assigns(:page).parent_id.should == page_id(:home)
     end
 
@@ -262,24 +262,24 @@ describe Radiant::Admin::PagesController do
       new_page = home.class.new_with_defaults
       new_page.parent_id = home.id
       Page.stub(:new_with_defaults).and_return(new_page)
-      get :new, :page_id => home.id
+      get :new, page_id: home.id
       assigns(:page).should == new_page
     end
 
      it "should create a page based on the given param" do
-       get :new, :page_id => page_id(:home), :page_class => 'FileNotFoundPage'
+       get :new, page_id: page_id(:home), page_class: 'FileNotFoundPage'
        assigns(:page).should be_a(FileNotFoundPage)
      end
 
      it "should gracefully handle bogus page params" do
-       get :new, :page_id => page_id(:home), :page_class => 'BogusPage'
+       get :new, page_id: page_id(:home), page_class: 'BogusPage'
        assigns(:page).should be_a(Page)
      end
 
      it "should instantiate a new page of the given class" do
        PagesControllerSpecPage = Class.new(Page)
-       PagesControllerSpecPage.stub(:default_page_parts).and_return(PagePart.new :name => "my_part")
-       get :new, :page_id => page_id(:home), :page_class => 'PagesControllerSpecPage'
+       PagesControllerSpecPage.stub(:default_page_parts).and_return(PagePart.new name: "my_part")
+       get :new, page_id: page_id(:home), page_class: 'PagesControllerSpecPage'
        assigns(:page).parts.map(&:name).should include('my_part')
      end
   end
@@ -287,10 +287,10 @@ describe Radiant::Admin::PagesController do
   describe '#update' do
     it 'should update the page updated_at on every update' do
       start_updated_at = pages(:home).updated_at
-      put :update, :id => page_id(:home), :page => {:breadcrumb => 'Homepage'} and sleep(1)
+      put :update, id: page_id(:home), page: {breadcrumb: 'Homepage'} and sleep(1)
       next_updated_at = pages(:home).updated_at
       lambda{ start_updated_at <=> next_updated_at }.should be_true
-      put :update, :id => page_id(:home), :page => {:breadcrumb => 'Homepage'} and sleep(1)
+      put :update, id: page_id(:home), page: {breadcrumb: 'Homepage'} and sleep(1)
       final_updated_at = pages(:home).updated_at
       lambda{ next_updated_at <=> final_updated_at }.should be_true
     end
@@ -304,7 +304,7 @@ describe Radiant::Admin::PagesController do
         # See https://rails.lighthouseapp.com/projects/8994/tickets/4807
         # See http://jasoncodes.com/posts/ruby19-rails2-encodings
 
-        put :update, :id => page_id(:home), :page => {:breadcrumb => 'Homepage', :parts_attributes => {'0' => {:id => pages(:home).parts[0].id, :content => 'Ümlautö'.force_encoding('ASCII-8BIT')}}} and sleep(1)
+        put :update, id: page_id(:home), page: {breadcrumb: 'Homepage', parts_attributes: {'0' => {id: pages(:home).parts[0].id, content: 'Ümlautö'.force_encoding('ASCII-8BIT')}}} and sleep(1)
         params['page']['parts_attributes']['0']['content'].encoding.to_s.should == 'UTF-8'
         params['page']['parts_attributes']['0']['content'].should == 'Ümlautö'
       end
@@ -312,7 +312,7 @@ describe Radiant::Admin::PagesController do
   end
 
   it "should initialize meta and buttons_partials in edit action" do
-    get :edit, :id => page_id(:home)
+    get :edit, id: page_id(:home)
     response.should be_success
     assigns(:meta).should be_kind_of(Array)
     assigns(:buttons_partials).should be_kind_of(Array)
@@ -320,7 +320,7 @@ describe Radiant::Admin::PagesController do
 
   it "should clear the page cache when saved" do
     Radiant::Cache.should_receive(:clear)
-    put :update, :id => page_id(:home), :page => {:breadcrumb => 'Homepage'}
+    put :update, id: page_id(:home), page: {breadcrumb: 'Homepage'}
   end
 
   describe "@body_classes" do
@@ -329,7 +329,7 @@ describe Radiant::Admin::PagesController do
       assigns[:body_classes].should == ['reversed']
     end
     it "should return 'reversed' when the action_name is 'edit'" do
-      get :edit, :id => 1
+      get :edit, id: 1
       assigns[:body_classes].should == ['reversed']
     end
     it "should return 'reversed' when the action_name is 'create'" do
@@ -337,7 +337,7 @@ describe Radiant::Admin::PagesController do
       assigns[:body_classes].should == ['reversed']
     end
     it "should return 'reversed' when the action_name is 'update'" do
-      put :update, :id => 1
+      put :update, id: 1
       assigns[:body_classes].should == ['reversed']
     end
   end

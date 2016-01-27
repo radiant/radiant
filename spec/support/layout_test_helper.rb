@@ -1,8 +1,8 @@
 module LayoutTestHelper
   
   VALID_LAYOUT_PARAMS = {
-    :name => 'Layout',
-    :content => <<-CONTENT
+    name: 'Layout',
+    content: <<-CONTENT
 <html>
   <head>
     <title><r:title /></title>

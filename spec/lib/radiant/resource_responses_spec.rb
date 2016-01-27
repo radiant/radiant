@@ -33,7 +33,7 @@ describe "Radiant::ResourceResponses" do
   
   describe "responding to configured formats" do
     before :each do
-      @default = lambda { render :text => "Hello, world!" }
+      @default = lambda { render text: "Hello, world!" }
       @klass.responses do |r|
         r.plural.default(&@default)
       end
@@ -56,7 +56,7 @@ describe "Radiant::ResourceResponses" do
     end
     
     it "should apply the publish block to the published formats before the default format" do
-      @pblock = lambda { render :text => 'bar' }
+      @pblock = lambda { render text: 'bar' }
       @klass.responses.plural.publish(:xml, :json, &@pblock)
       @instance.should_receive(:wrap).with(@pblock).twice.and_return(@pblock)
       @instance.should_receive(:wrap).with(@default).and_return(@default)
@@ -67,8 +67,8 @@ describe "Radiant::ResourceResponses" do
     end
     
     it "should apply custom formats before the published and default formats" do
-      @iblock = lambda { render :text => 'baz' }
-      @pblock = lambda { render :text => 'bar' }
+      @iblock = lambda { render text: 'baz' }
+      @pblock = lambda { render text: 'bar' }
       @klass.responses.plural.iphone(&@iblock)
       @klass.responses.plural.publish(:xml, &@pblock)
       @instance.should_receive(:wrap).with(@iblock).and_return(@iblock)
@@ -122,7 +122,7 @@ describe Radiant::ResourceResponses::Response do
   end
   
   it "should duplicate its elements when duplicating" do
-    @response.default { render :text => "foo" }
+    @response.default { render text: "foo" }
     @response.html
     @response.publish(:xml) { render }
     @duplicate = @response.dup
@@ -134,13 +134,13 @@ describe Radiant::ResourceResponses::Response do
   end
 
   it "should accept a default response block" do
-    @block = lambda { render :text => 'foo' }
+    @block = lambda { render text: 'foo' }
     @response.default(&@block)
     @response.default.should == @block
   end
 
   it "should accept a format symbol and block to publish" do
-    @block = lambda { render :xml => object }
+    @block = lambda { render xml: object }
     @response.publish(:xml, &@block) 
     @response.publish_formats.should == [:xml]
     @response.publish_block.should == @block
@@ -165,7 +165,7 @@ describe Radiant::ResourceResponses::Response do
   end
   
   it "should accept an arbitrary format block" do
-    @block = lambda { render :template => "foo" }
+    @block = lambda { render template: "foo" }
     @response.iphone(&@block) 
     @response.blocks[:iphone].should == @block
   end

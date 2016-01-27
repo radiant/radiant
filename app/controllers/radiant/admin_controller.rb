@@ -7,7 +7,7 @@ module Radiant
 
     before_filter :set_current_user
     before_filter :set_user_locale
-    before_filter :set_standard_body_style, :only => [:new, :edit, :update, :create]
+    before_filter :set_standard_body_style, only: [:new, :edit, :update, :create]
 
   private
 
