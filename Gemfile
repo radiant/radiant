@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gemspec
 
-gem 'combustion', '~> 0.5.3', :group => :test
+gem 'combustion', '~> 0.5.4', :group => :test
 
 if ENV['TRAVIS']
   gemspec :development_group => :test
