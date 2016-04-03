@@ -70,7 +70,7 @@ module StandardTags
   tag 'children:first' do |tag|
     options = children_find_options(tag)
     order = options.delete(:order)
-    children = tag.locals.children.reorder(order).find(:all, options)
+    children = tag.locals.children.reorder(order).all.where(options)
     if first = children.first
       tag.locals.page = first
       tag.expand
@@ -88,7 +88,7 @@ module StandardTags
   tag 'children:last' do |tag|
     options = children_find_options(tag)
     order = options.delete(:order)
-    children = tag.locals.children.reorder(order).find(:all, options)
+    children = tag.locals.children.reorder(order).all.where(options)
     if last = children.last
       tag.locals.page = last
       tag.expand
@@ -380,7 +380,7 @@ module StandardTags
     result = []
     children = tag.locals.children.reorder(order)
     tag.locals.previous_headers = {}
-    children.find(:all, options).each do |item|
+    children.all.where(options).each do |item|
       tag.locals.child = item
       tag.locals.page = item
       result << tag.expand
@@ -406,7 +406,7 @@ module StandardTags
     options = aggregate_children(tag)
     if ActiveRecord::Base.connection.adapter_name.downcase == 'postgresql'
       options[:group] = Page.columns.map {|c| c.name}.join(', ')
-      Page.find(:all, options).size
+      Page.all.where(options).size
     else
       Page.count(options)
     end
@@ -441,7 +441,7 @@ module StandardTags
   }
   tag "aggregate:children:first" do |tag|
     options = aggregate_children(tag)
-    children = Page.find(:all, options)
+    children = Page.all.where(options)
     if first = children.first
       tag.locals.page = first
       tag.expand
@@ -462,7 +462,7 @@ module StandardTags
   }
   tag "aggregate:children:last" do |tag|
     options = aggregate_children(tag)
-    children = Page.find(:all, options)
+    children = Page.all.where(options)
     if last = children.last
       tag.locals.page = last
       tag.expand

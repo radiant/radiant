@@ -68,7 +68,7 @@ module Radiant::Admin::ConfigurationsHelper
 
   def setting_for(key)
     @editable_config ||= {}    # normally initialized in Admin::ConfigurationController
-    @editable_config[key] ||= Radiant.detail.find_or_create_by_key(key)
+    @editable_config[key] ||= Radiant.detail.find_or_create_by(key: key)
   end
 
   def definition_for(key)

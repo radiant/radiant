@@ -16,8 +16,8 @@ describe Radiant::ExtensionMigrator do
       BasicExtension.migrator.migrate
     end
     expect(BasicExtension.migrator.get_all_versions).to eq([200812131420,200812131421])
-    expect { Person.find(:all) }.not_to raise_error
-    expect { Place.find(:all) }.not_to raise_error
+    expect { Person.all }.not_to raise_error
+    expect { Place.all }.not_to raise_error
     ActiveRecord::Migration.suppress_messages do
       BasicExtension.migrator.migrate(0)
     end
@@ -29,7 +29,7 @@ describe Radiant::ExtensionMigrator do
       SpecialCharactersExtension.migrator.migrate
     end
     expect(SpecialCharactersExtension.migrator.get_all_versions).to eq([1])
-    expect { Person.find(:all) }.not_to raise_error
+    expect { Person.all }.not_to raise_error
     ActiveRecord::Migration.suppress_messages do
       SpecialCharactersExtension.migrator.migrate(0)
     end

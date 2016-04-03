@@ -1,9 +1,10 @@
 class PagePart < ActiveRecord::Base
+  self.table_name = 'page_parts'
   after_initialize :set_filter_id_from_config
   attr_accessible :name, :filter_id, :content
 
   # Default Order
-  default_scope order: 'name'
+  default_scope { order('name') }
 
   # Associations
   belongs_to :page

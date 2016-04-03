@@ -138,7 +138,7 @@ describe Radiant::Config do
   end
 
   def get_config(key)
-    setting = Radiant::Config.find_or_create_by_key(key)
+    setting = Radiant::Config.find_or_create_by(key: key)
   end
 
   def set(key, value)

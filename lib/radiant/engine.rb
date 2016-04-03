@@ -1,5 +1,7 @@
 require 'haml'
 require 'will_paginate'
+require 'rails-observers'
+require 'protected_attributes'
 require 'string_extensions'
 
 module Radiant

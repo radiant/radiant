@@ -2,12 +2,14 @@ require 'digest/sha1'
 
 class User < ActiveRecord::Base
 
+  self.table_name = 'users'
+
   attr_accessible :name, :password_confirmation, :locale, :login, :password, :email
 
   has_many :pages, foreign_key: :created_by_id
 
   # Default Order
-  default_scope order: 'name'
+  default_scope { order('name') }
 
   # Associations
   belongs_to :created_by, class_name: 'User'

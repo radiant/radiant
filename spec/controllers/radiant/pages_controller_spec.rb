@@ -345,7 +345,7 @@ describe Radiant::Admin::PagesController do
   protected
 
     def assert_rendered_nodes_where(&block)
-      wanted, unwanted = Page.find(:all).partition(&block)
+      wanted, unwanted = Page.all.partition(&block)
       wanted.each do |page|
         expect(response).to have_tag("tr[id=page_#{page.id}]")
       end

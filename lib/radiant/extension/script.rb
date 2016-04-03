@@ -289,7 +289,7 @@ module Radiant
         end
 
         def load_extensions
-          Registry::Extension.find(:all)
+          Registry::Extension.all
         end
 
         def find_extension

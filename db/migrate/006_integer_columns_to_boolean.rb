@@ -16,7 +16,7 @@ class IntegerColumnsToBoolean < ActiveRecord::Migration
     model_class = table.singularize.camelize.constantize
     
     announce "saving #{model_class} data"
-    old_values = model_class.find(:all).map do |model|
+    old_values = model_class.all.map do |model|
       [model.id, model.send("#{column}?")]
     end
     

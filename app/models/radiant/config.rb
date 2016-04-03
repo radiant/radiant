@@ -101,13 +101,13 @@ module Radiant
 
       def []=(key, value)
         if table_exists?
-          setting = find_or_initialize_by_key(key)
+          setting = find_or_initialize_by(key: key)
           setting.value = value
         end
       end
 
       def to_hash
-        Hash[ *find(:all).map { |pair| [pair.key, pair.value] }.flatten ]
+        Hash[ *all.map { |pair| [pair.key, pair.value] }.flatten ]
       end
 
       def initialize_cache
@@ -241,7 +241,7 @@ Config definition error: '#{key}' is defined twice:
     #
     # is equivalent to this:
     #
-    #   Radiant::Config.find_or_create_by_key('key').value = value
+    #   Radiant::Config.find_or_create_by(key: 'key').value = value
     #
     # Calling value= also applies any validations and restrictions that are found in the associated definition.
     # so this will raise a ConfigError if you try to change a protected config entry or a RecordInvalid if you
@@ -267,7 +267,7 @@ Config definition error: '#{key}' is defined twice:
     #
     # is equivalent to this:
     #
-    #   key = Radiant::Config.find_or_create_by_key('key').value
+    #   key = Radiant::Config.find_or_create_by(key: 'key').value
     #
     # If the config item is boolean the response will be true or false. For items with type: :integer it will be an integer,
     # for everything else a string.

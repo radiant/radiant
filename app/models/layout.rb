@@ -1,7 +1,7 @@
 class Layout < ActiveRecord::Base
   attr_accessible :lock_version, :name, :content_type, :content
   # Default Order
-  default_scope order: "name"
+  default_scope { order("name") }
 
   # Associations
   has_many :pages
