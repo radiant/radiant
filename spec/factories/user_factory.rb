@@ -12,6 +12,12 @@ FactoryGirl.define do
       email 'admin@example.com'
       admin true
     end
+
+    factory :existing do
+      name 'Existing'
+      login 'existing'
+      email 'existing@example.com'
+    end
   
     factory :designer do
       name 'Designer'
