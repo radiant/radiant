@@ -1,4 +1,5 @@
 class Layout < ActiveRecord::Base
+  self.table_name = "layouts"
   attr_accessible :lock_version, :name, :content_type, :content
   # Default Order
   default_scope { order("name") }

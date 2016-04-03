@@ -81,7 +81,7 @@ class Page < ActiveRecord::Base
     if new_record? or parts.to_a.any?(&:new_record?)
       parts.to_a.find {|p| p.name == name.to_s }
     else
-      parts.find_by_name name.to_s
+      parts.find_by(name: name.to_s)
     end
   end
 
@@ -101,7 +101,7 @@ class Page < ActiveRecord::Base
     if new_record? or fields.any?(&:new_record?)
       fields.detect { |f| f.name.downcase == name.to_s.downcase }
     else
-      fields.find_by_name name.to_s
+      fields.find_by(name: name.to_s)
     end
   end
 
@@ -239,7 +239,7 @@ class Page < ActiveRecord::Base
   class << self
 
     def root
-      find_by_parent_id(nil)
+      find_by(parent_id: nil)
     end
 
     def find_by_path(path, live = true)

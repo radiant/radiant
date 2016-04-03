@@ -315,7 +315,7 @@ module StandardTags
     <pre><code><r:if_children [status="published"]>...</r:if_children></code></pre>
   }
   tag "if_children" do |tag|
-    children = tag.locals.page.children.count(conditions: children_find_options(tag)[:conditions])
+    children = tag.locals.page.children.where(children_find_options(tag)[:conditions]).count
     tag.expand if children > 0
   end
 
@@ -330,7 +330,7 @@ module StandardTags
     <pre><code><r:unless_children [status="published"]>...</r:unless_children></code></pre>
   }
   tag "unless_children" do |tag|
-    children = tag.locals.page.children.count(conditions: children_find_options(tag)[:conditions])
+    children = tag.locals.page.children.where(children_find_options(tag)[:conditions]).count
     tag.expand unless children > 0
   end
 

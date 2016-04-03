@@ -166,7 +166,7 @@ describe Page do
 
   describe '#parts' do
     it 'should return PageParts with a page_id of the page id' do
-      expect(page.parts.sort_by{|p| p.name }).to eq(PagePart.find_all_by_page_id(page.id).sort_by{|p| p.name })
+      expect(page.parts.sort_by{|p| p.name }).to eq(PagePart.where(page_id: page.id).sort_by{|p| p.name })
     end
   end
 
@@ -659,7 +659,7 @@ describe Page, "class" do
     override = PagePart.new(name: 'override')
     allow(Page).to receive(:default_page_parts).and_return([override])
     @page = Page.new_with_defaults({})
-    expect(@page.parts).to eql([override])
+    expect(@page.parts).to match_array([override])
   end
 
   it 'should allow you to get the class name of a descendant class with a string' do
