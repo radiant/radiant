@@ -10,7 +10,7 @@ module Radiant
     end
 
     responses do |r|
-      r.plural.js do
+      r[:plural].js do
         @level = params[:level].to_i
         @template_name = 'index'
         self.models = Page.find(params[:page_id]).children.all

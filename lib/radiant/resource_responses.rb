@@ -3,7 +3,7 @@ module Radiant
   module ResourceResponses
     module InstanceMethods
       def response_for(action)
-        responses = self.class.responses.send(action)
+        responses = self.class.responses.send(:[], action)
         respond_to do |wants|
           responses.each_format do |f, format_block|
             if format_block

@@ -27,32 +27,31 @@ module Radiant
     responses do |r|
       # Equivalent respond_to block for :plural responses:
       # respond_to do |wants|
-      #   wants.xml { render xml: models }
       #   wants.json { render json: models }
       #   wants.any
       # end
-      r.plural.publish(:xml, :json) { render format_symbol => models }
+      r[:plural].publish(:xml, :json) { render format_symbol => models }
 
-      r.singular.publish(:xml, :json) { render format_symbol => model }
-      r.singular.default { redirect_to edit_model_path if action_name == "show" }
+      r[:singular].publish(:xml, :json) { render format_symbol => model }
+      r[:singular].default { redirect_to edit_model_path if action_name == "show" }
 
-      r.not_found.publish(:xml, :json) { head :not_found }
-      r.not_found.default { announce_not_found; redirect_to action: "index" }
+      r[:not_found].publish(:xml, :json) { head :not_found }
+      r[:not_found].default { announce_not_found; redirect_to action: "index" }
 
-      r.invalid.publish(:xml, :json) { render format_symbol => model.errors, status: :unprocessable_entity }
-      r.invalid.default { announce_validation_errors; render action: template_name }
+      r[:invalid].publish(:xml, :json) { render format_symbol => model.errors, status: :unprocessable_entity }
+      r[:invalid].default { announce_validation_errors; render action: template_name }
 
-      r.stale.publish(:xml, :json) { head :conflict }
-      r.stale.default { announce_update_conflict; render action: template_name }
+      r[:stale].publish(:xml, :json) { head :conflict }
+      r[:stale].default { announce_update_conflict; render action: template_name }
 
-      r.create.publish(:xml, :json) { render format_symbol => model, status: :created, location: url_for(format: format_symbol, id: model) }
-      r.create.default { redirect_to continue_url(params) }
+      r[:create].publish(:xml, :json) { render format_symbol => model, status: :created, location: url_for(format: format_symbol, id: model) }
+      r[:create].default { redirect_to continue_url(params) }
 
-      r.update.publish(:xml, :json) { head :ok }
-      r.update.default { redirect_to continue_url(params) }
+      r[:update].publish(:xml, :json) { head :ok }
+      r[:update].default { redirect_to continue_url(params) }
 
-      r.destroy.publish(:xml, :json) { head :deleted }
-      r.destroy.default { redirect_to continue_url(params) }
+      r[:destroy].publish(:xml, :json) { head :deleted }
+      r[:destroy].default { redirect_to continue_url(params) }
     end
 
     def index

@@ -2,7 +2,7 @@ require_dependency 'radiant'
 require 'login_system'
 
 module Radiant
-  class ApplicationController < ::ApplicationController
+  class ApplicationController < ::ActionController::Base
     include ::LoginSystem
 
     before_filter :set_timezone
