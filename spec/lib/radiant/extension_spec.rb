@@ -31,7 +31,7 @@ describe Radiant::Extension do
     expect(BasicExtension.migrations_path).to eq("#{RADIANT_ROOT}/test/fixtures/extensions/basic/db/migrate")
   end
 
-  describe BasicExtension do
+  describe 'BasicExtension' do
     describe '#routing_file' do
       subject { super().routing_file }
       it { is_expected.to match '/extensions/basic/config/routes.rb' }
