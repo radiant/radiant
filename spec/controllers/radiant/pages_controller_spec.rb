@@ -23,10 +23,10 @@ describe Radiant::Admin::PagesController do
       expect(response).to redirect_to(edit_admin_page_path(params[:id]))
     end
 
-    it "should show xml when format is xml" do
+    it "should show json when format is json" do
       page = Page.first
-      get :show, id: page.id, format: "xml"
-      expect(response.body).to eq(page.to_xml)
+      get :show, id: page.id, format: "json"
+      expect(response.body).to eq(page.to_json)
     end
   end
 

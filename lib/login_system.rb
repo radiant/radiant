@@ -32,7 +32,7 @@ module LoginSystem
         session[:return_to] = request.fullpath
         respond_to do |format|
           format.html { redirect_to login_url }
-          format.any(:xml,:json) { request_http_basic_authentication }
+          format.any(:json) { request_http_basic_authentication }
         end
         false
       end
@@ -47,7 +47,7 @@ module LoginSystem
         flash[:error] = permissions[:denied_message] || 'Access denied.'
         respond_to do |format|
           format.html { redirect_to(permissions[:denied_url] || { action: :index }) }
-          format.any(:xml, :json) { head :forbidden }
+          format.any(:json) { head :forbidden }
         end
         false
       end

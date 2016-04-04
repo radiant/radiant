@@ -57,10 +57,9 @@ describe "Radiant::ResourceResponses" do
     
     it "should apply the publish block to the published formats before the default format" do
       @pblock = lambda { render text: 'bar' }
-      @klass.responses.plural.publish(:xml, :json, &@pblock)
+      @klass.responses[:plural].publish(:json, &@pblock)
       expect(@instance).to receive(:wrap).with(@pblock).twice.and_return(@pblock)
       expect(@instance).to receive(:wrap).with(@default).and_return(@default)
-      expect(@responder).to receive(:xml).with(&@pblock).once.ordered
       expect(@responder).to receive(:json).with(&@pblock).once.ordered
       expect(@responder).to receive(:any).with(&@default).once.ordered
       @instance.response_for(:plural)
@@ -69,25 +68,23 @@ describe "Radiant::ResourceResponses" do
     it "should apply custom formats before the published and default formats" do
       @iblock = lambda { render text: 'baz' }
       @pblock = lambda { render text: 'bar' }
-      @klass.responses.plural.iphone(&@iblock)
-      @klass.responses.plural.publish(:xml, &@pblock)
+      @klass.responses[:plural].iphone(&@iblock)
       expect(@instance).to receive(:wrap).with(@iblock).and_return(@iblock)
       expect(@instance).to receive(:wrap).with(@pblock).and_return(@pblock)
       expect(@instance).to receive(:wrap).with(@default).and_return(@default)
       expect(@responder).to receive(:iphone).with(&@iblock).once.ordered
-      expect(@responder).to receive(:xml).with(&@pblock).once.ordered
       expect(@responder).to receive(:any).with(&@default).once.ordered
       @instance.response_for(:plural)
     end
     
     it "should apply the :any format when the default block is blank" do
-      @klass.responses.plural.send(:instance_variable_set, "@default", nil)
+      @klass.responses[:plural].send(:instance_variable_set, "@default", nil)
       expect(@responder).to receive(:any).with(no_args())
       @instance.response_for(:plural)
     end
     
     it "should apply a custom format when no block is given" do
-      @klass.responses.plural.iphone
+      @klass.responses[:plural].iphone
       expect(@instance).to receive(:wrap).with(@default).and_return(@default)
       expect(@responder).to receive(:iphone)
       expect(@responder).to receive(:any)
