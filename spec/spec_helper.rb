@@ -35,3 +35,19 @@ RSpec.configure do |config|
   config.before(:each, type: :controller) { @routes = Radiant::Engine.routes }
   config.before(:each, type: :routing)    { @routes = Radiant::Engine.routes }
 end
+
+def pages(which)
+  Page.find_or_create_by(**FactoryGirl.attributes_for(which))
+end
+
+def users(which)
+  if User.where(login: which).exists?
+    User.where(login: which).first
+  else
+    FactoryGirl.create(which)
+  end
+end
+
+def page_id(which)
+  pages(which).id
+end

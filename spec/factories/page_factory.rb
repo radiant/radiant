@@ -4,6 +4,14 @@ FactoryGirl.define do
     breadcrumb  { title }
     slug        { title.slugify }
 
+    trait :with_parts do
+      page_parts { [FactoryGirl.create(:page_part, name: 'body')] }
+    end
+
+    trait :with_children do
+      children { [FactoryGirl.create(:page, :with_parts)] }
+    end
+
     factory :page_with_layout do
       layout
     end
@@ -15,6 +23,10 @@ FactoryGirl.define do
     factory :file_not_found_page, class: FileNotFoundPage do
     end
     
+    factory :parent do
+
+    end
+
     factory :published_page do
       status_id Status[:published].id
 

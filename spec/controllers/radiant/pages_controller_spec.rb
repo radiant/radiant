@@ -131,14 +131,14 @@ describe Radiant::Admin::PagesController do
       }.each do |method, action|
         it "should require login to access the #{action} action" do
           logout
-          send method, action, id: Page.first.id
+          send method, action, id: page_id(:home)
           expect(response).to redirect_to('/admin/login')
         end
 
         it "should allow access to #{user.to_s.humanize}s for the #{action} action" do
           login_as user
           expect(controller).to receive(:paginated?).and_return(false)
-          send method, action, id: Page.first.id
+          send method, action, id: page_id(:home)
           expect(response).to redirect_to('http://test.host/admin/pages')
         end
       end
@@ -153,7 +153,7 @@ describe Radiant::Admin::PagesController do
           when :new
             {page_id: page_id(:home)}
           else
-            {id: Page.first.id}
+            {id: page_id(:home)}
           end
         end
       end
@@ -163,40 +163,32 @@ describe Radiant::Admin::PagesController do
         expect { send(:get, action, @parameters.call) }.to require_login
       end
 
-      if action == :show
-        it "should request authentication for API access on show" do
-          logout
-          get action, id: page_id(:home), format: "xml"
-          expect(response.response_code).to eq(401)
-        end
-      else
-        it "should allow access to admins for the #{action} action" do
-          expect {
-            send(:get, action, @parameters.call)
-          }.to restrict_access(allow: [users(:admin)],
-                                   url: '/admin/pages')
-        end
+      it "should allow access to admins for the #{action} action" do
+        expect {
+          send(:get, action, @parameters.call)
+        }.to restrict_access(allow: [users(:admin)],
+                                 url: '/admin/pages')
+      end
 
-        it "should allow access to designers for the #{action} action" do
-          expect {
-            send(:get, action, @parameters.call)
-          }.to restrict_access(allow: [users(:designer)],
-                                   url: '/admin/pages')
-        end
+      it "should allow access to designers for the #{action} action" do
+        expect {
+          send(:get, action, @parameters.call)
+        }.to restrict_access(allow: [users(:designer)],
+                                 url: '/admin/pages')
+      end
 
-        it "should allow non-designers and non-admins for the #{action} action" do
-          expect {
-            send(:get, action, @parameters.call)
-          }.to restrict_access(allow: [users(:non_admin), users(:existing)],
-                                   url: '/admin/pages')
-        end
+      it "should allow non-designers and non-admins for the #{action} action" do
+        expect {
+          send(:get, action, @parameters.call)
+        }.to restrict_access(allow: [users(:non_admin), users(:existing)],
+                                 url: '/admin/pages')
       end
     end
   end
 
   describe '#preview' do
 
-    let(:preview_page){ pages(:home) }
+    let(:preview_page){ pages(:home, :with_parts) }
     let(:body_id){ preview_page.part('body').id }
     let(:preview_params){
       {'page' => {

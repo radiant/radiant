@@ -25,6 +25,10 @@ module RSpec
         def negative_failure_message
           "expected not to require login"
         end
+
+        def supports_block_expectations?
+          true
+        end
       end
 
       class ActionRestriction
@@ -55,6 +59,10 @@ module RSpec
             end
           end
           message.to_sentence
+        end
+
+        def supports_block_expectations?
+          true
         end
 
         private
