@@ -9,4 +9,4 @@ case $DB in
     cp spec/ci/database.postgresql.yml config/database.yml;;
 esac
 
-bundle exec rake app:db:migrate
+# bundle exec rake app:db:migrate
