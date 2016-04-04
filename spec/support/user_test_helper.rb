@@ -2,7 +2,7 @@ module UserTestHelper
   VALID_USER_PARAMS = {
     name: 'John Doe',
     login: 'jdoe',
-    password: 'coolness',
+    password: 'password',
     email: 'jdoe@gmail.com'
   }
 

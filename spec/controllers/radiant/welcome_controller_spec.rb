@@ -17,6 +17,7 @@ describe Radiant::Admin::WelcomeController do
   end
 
   it "should set the current user and redirect when login was successful" do
+    users(:admin) # ensure the user exists
     post :login, username_or_email: "admin", password: "password"
     expect(controller.send(:current_user)).to eq(users(:admin))
     expect(response).to be_redirect
