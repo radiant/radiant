@@ -24,7 +24,7 @@ module RSpec
                     tag: /input|select|textarea/,
                     attributes: {name: field_name}
                   },
-                  child: {
+                  sibling: {
                     tag: 'span',
                     attributes: {class: 'error'},
                     content: error_message

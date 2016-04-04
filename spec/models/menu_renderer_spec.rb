@@ -1,5 +1,4 @@
 require 'rspec'
-require 'rspec/autorun'
 require 'ostruct'
 $: << File.expand_path(__FILE__ + '../../../../app/models')
 require 'menu_renderer'
