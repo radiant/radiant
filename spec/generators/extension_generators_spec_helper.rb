@@ -24,22 +24,22 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
       self.timestamped_migrations = true
     end
 
-    module ConnectionAdapters
-      class Column
-        attr_reader :name, :default, :type, :limit, :null, :sql_type, :precision, :scale
-
-        def initialize(name, default, sql_type = nil, null = true)
-          @name = name
-          @default = default
-          @type = @sql_type = sql_type
-          @null = null
-        end
-
-        def human_name
-          @name.humanize
-        end
-      end
-    end
+    # module ConnectionAdapters
+    #   class Column
+    #     attr_reader :name, :default, :type, :limit, :null, :sql_type, :precision, :scale
+    #
+    #     def initialize(name, default, sql_type = nil, null = true)
+    #       @name = name
+    #       @default = default
+    #       @type = @sql_type = sql_type
+    #       @null = null
+    #     end
+    #
+    #     def human_name
+    #       @name.humanize
+    #     end
+    #   end
+    # end
   end
 
   # Mock up necessities from ActionView
