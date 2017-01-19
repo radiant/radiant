@@ -509,6 +509,44 @@ module StandardTags
       output
     end
   end
+  
+  desc %{
+    Renders the numeric index value of an arbitrary array name incrementing this 
+    value after every call.
+    
+    *Usage:* _The following would render '0012'
+    
+    <pre><code><r:index [array="widgets"] /><r:index array="snippets" /><r:index [array="widgets"] /><r:index [array="widgets"] /></code></pre>
+  }
+  tag 'index' do |tag|
+    key = tag.attr['array'] ||= 'array'
+
+    if tag.globals.indexes.present?     # If the global indexes array exists
+      if tag.globals.indexes[key].nil?  # Set the value of that index to zero if not present
+        tag.globals.indexes[key] = 0
+      end
+    else
+      tag.globals.indexes = { key => 0 } # Create the indexes array and that index
+    end  
+
+    index = tag.globals.indexes[key]    # Store the current value for return
+    tag.globals.indexes[key] += 1       # Increment the index value on the global object
+    
+    index                               # Return the stored index
+  end
+  
+  desc %{
+    Resets the counter on an array
+    
+    *Usage:* _The following with render '010'
+    
+    <pre><code><r:index [array="widgets"] /><r:index [array="widgets"] /><r:reset [array="widgets"] /><r:index [array="widgets"] /></code></pre>
+  }
+  tag 'reset' do |tag|
+    key = tag.attr['array'] ||= 'array'
+    tag.globals.indexes[key] = 0
+    nil
+  end
 
   desc %{
     Renders the main content of a page. Use the @part@ attribute to select a specific
