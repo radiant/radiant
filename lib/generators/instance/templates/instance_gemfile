@@ -37,8 +37,6 @@ gem "compass-rails", "~> 1.0.3"
 <%= '# ' unless db == 'sqlserver' %>gem "tiny_tds"
 <%= '# ' unless db == 'sqlserver' %>gem "activerecord-sqlserver-adapter", "~> 3.1.0"
 
-gem "compass-rails", "~> 1.0.3"
-
 # Default Extensions
 gem "radiant-archive-extension",             "~> 1.0.7"
 gem "radiant-clipped-extension",             "~> 1.1.0"
