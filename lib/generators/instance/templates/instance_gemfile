@@ -3,6 +3,10 @@ source 'https://rubygems.org'
 # If you make any changes in this file, please run `bundle install`.
 # If new versions of your installed gems are available, run `bundle update`
 
+gem "rake", "~> 10.4.2"
+gem "rdoc", "~> 4.3.0"
+gem "mime-types", "~> 2.4.3"
+gem "rack-cache", "~> 1.2.0"
 gem "radiant", "~> <%= radiant_version %>"
 gem "compass-rails", "~> 1.0.3"
 
@@ -24,7 +28,7 @@ gem "compass-rails", "~> 1.0.3"
 <%= '# ' unless db == 'mysql' %>gem "mysql", "~> 2.8.1"
 
 # Postgres
-<%= '# ' unless db == 'postgresql' %>gem "pg", "~> 0.11.0"
+<%= '# ' unless db == 'postgresql' %>gem "pg", "~> 0.18.0"
 
 # IBM DB2
 <%= '# ' unless db == 'db2' %>gem "db2", "~> 2.6.2"
