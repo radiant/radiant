@@ -35,5 +35,5 @@ gem "sqlite3", "1.3.5", :group => [:development, :test], :platform => :ruby
 if ENV['TRAVIS']
   gemspec :development_group => :test
   gem "mysql"
-  gem "pg"
+  gem "pg", "~> 0.18.0"
 end

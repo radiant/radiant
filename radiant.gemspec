@@ -26,7 +26,7 @@ a general purpose content managment system--not merely a blogging engine.}
 
   s.add_dependency "tzinfo",        "~> 0.3.31"
   s.add_dependency "rails",         "~> 2.3.18"
-  s.add_dependency "rdoc",          ">= 3.9.2"
+  s.add_dependency "rdoc",          "~> 4.3.0"
   s.add_dependency "acts_as_tree",  "~> 0.1.1"
   s.add_dependency "bundler",       ">= 1.0.0"
   s.add_dependency "compass",       "~> 0.12.2"
@@ -35,7 +35,8 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency "haml",          "~> 3.1.1"
   s.add_dependency "highline",      "~> 1.6.10"
   s.add_dependency "rack",          "~> 1.1.6"
-  s.add_dependency "rack-cache",    "~> 1.2"
+  s.add_dependency "mime-types",    "~> 2.99.3"
+  s.add_dependency "rack-cache",    "~> 1.2.0"
   s.add_dependency "rake",          ">= 0.8.7"
   s.add_dependency "radius",        "~> 0.7.3"
   s.add_dependency "RedCloth",      "~> 4.2.0"
