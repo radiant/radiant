@@ -5,7 +5,7 @@ unless defined? Radiant::Version
     module Version
       Major = '1'
       Minor = '1'
-      Tiny  = '4'
+      Tiny  = '5'
       Patch = nil # set to nil for normal release
 
       class << self
