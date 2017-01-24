@@ -20,6 +20,7 @@ script: bundle exec rake spec
 notifications:
   recipients:
     - avonderluft@avlux.net
+  irc: "irc.freenode.org#radiantcms"
 
 env:
   - DB=sqlite
