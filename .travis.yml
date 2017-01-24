@@ -1,7 +1,7 @@
 rvm:
   - 1.9.3
-  - 2.1.10
-  - 2.3.3
+  # - 2.1.10
+  # - 2.3.3
 
 branches:
   only:
@@ -11,11 +11,11 @@ before_install:
   - gem install rubygems-update --version 1.8.26
   - update_rubygems --version=1.8.26
 
-before_script: "./bin/ci/before_script"
+before_script: bin/ci/before_script
 
-bundler_args: ''
+bundler_args: --without development
 
-script: "bundle exec rake spec"
+script: bundle exec rake spec
 
 notifications:
   recipients:
@@ -23,5 +23,5 @@ notifications:
 
 env:
   - DB=sqlite
-  # - DB=mysql
-  # - DB=postgres
+  - DB=mysql
+  - DB=postgres
