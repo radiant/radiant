@@ -51,6 +51,7 @@ describe MenuRenderer do
     special_page_class = SpecialChildPage
     special_page = OpenStruct.new(class_name: 'SpecialTestPage', view: view, class: special_page_class)
     special_page.extend MenuRenderer
+    special_page.view = view
     special_page
   }
 
@@ -134,12 +135,14 @@ describe MenuRenderer do
       special_page.default_child = SpecialChildPage
     end
     it 'should return a menu item for the default child type' do
-      expect(special_page.default_child_item).to match(/<li><a href="[^"]*".*>#{@link_text}<\/a><\/li>/)
+      expect(special_page.default_child_item).to have_tag("li"){
+        with_tag("a", text: @link_text, with: {href: '/pages/new'})
+      }
     end
     it 'should have a title from the child class description' do
       title_text = 'A very special child...'
       expect(SpecialChildPage).to receive(:description).and_return(title_text)
-      expect(special_page.default_child_item).to match(/<a .*title="#{title_text}">/)
+      expect(special_page.default_child_item).to have_tag("a", with: {title: title_text})
     end
   end
 
@@ -148,10 +151,10 @@ describe MenuRenderer do
       special_page.default_child = SpecialChildPage
     end
     it 'should return a menu item with no content' do
-      expect(special_page.separator_item).to match(/<li[^>]*><\/li>/)
+      expect(special_page.separator_item).to have_tag("li", text: "")
     end
     it 'should have a CSS class set for styling' do
-      expect(special_page.separator_item).to match(/class="separator"/)
+      expect(special_page.separator_item).to have_tag("li", with: {class: "separator"})
     end
   end
 
@@ -165,7 +168,9 @@ describe MenuRenderer do
       child_types = alternate_page.allowed_child_classes - [alternate_page.default_child]
       child_items_string = alternate_page.child_items.join
       child_types.each do |child|
-        expect(child_items_string).to match(/<li><a.+title="#{child.description}".+>/)
+        expect(child_items_string).to have_tag("li"){
+          with_tag("a", with:{title: child.description})
+        }
       end
     end
     it 'should not return a default_child_item' do
@@ -192,7 +197,10 @@ describe MenuRenderer do
   describe '#menu_list' do
     it 'should return a list of all menu items' do
       allow(special_page).to receive(:menu_items).and_return(['-- menu items --'])
-      expect(special_page.menu_list).to match(/<ul class="menu" id="allowed_children_#{special_page.id}">-- menu items --<\/ul>/)
+      expect(special_page.menu_list).to have_tag("ul", 
+          with: {class: "menu", id: "allowed_children_#{special_page.id}"}, 
+          text: '-- menu items --'
+      )
     end
   end
 
@@ -203,7 +211,13 @@ describe MenuRenderer do
       allow(view).to receive(:remove_admin_page_url).and_return(path)
       image = 'image'
       allow(view).to receive(:image).and_return(image)
-      expect(special_page.remove_link).to match(/<a href="#{path}" class="action">#{image} Remove<\/a>/)
+      expect(special_page.remove_link).to have_tag("a", 
+        text: "#{image} Remove",
+        with:{
+          href: path,
+          class: "action"
+        }
+      )
     end
   end
 
@@ -250,7 +264,12 @@ describe MenuRenderer do
       path = '/pages/new?page_class=' + special_page.default_child.name
       allow(view).to receive(:new_admin_page_child_path).and_return path
       allow(view).to receive(:image).and_return 'image'
-      expect(special_page.add_child_link).to match(/<a href="#{Regexp.quote(path)}".*>#{view.image} Add Child/)
+      expect(special_page.add_child_link).to have_tag("a",
+        with: {
+          href: path
+        },
+        text: "#{view.image} Add Child"
+      )
     end
   end
 
@@ -261,7 +280,13 @@ describe MenuRenderer do
       path = '/pages/new?page_class=' + special_page.default_child.name
       allow(view).to receive(:new_admin_page_child_path).and_return path
       allow(view).to receive(:image).and_return 'image'
-      expect(special_page.add_child_link_with_menu_hook).to match(/<a href="#allowed_children_#{special_page.id}".*class="[^"]*dropdown">/)
+      puts special_page.add_child_link_with_menu_hook
+      expect(special_page.add_child_link_with_menu_hook).to have_tag("a",
+        with: {
+          href: "#allowed_children_#{special_page.id}",
+          class: "dropdown"
+        }
+      )
     end
   end
 
