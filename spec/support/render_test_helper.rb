@@ -3,7 +3,7 @@ module RenderTestHelper
   def assert_renders(expected, input, url = nil, host = nil)
     output = get_render_output(input, url, host)
     message = "<#{expected.inspect}> expected but was <#{output.inspect}>"
-    assert_block(message) { expected == output }
+    expect(expected).to eq(output), message
   end
   
   def assert_render_match(regexp, input, url = nil)
