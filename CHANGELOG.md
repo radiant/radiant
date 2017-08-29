@@ -1,6 +1,35 @@
 # Change Log
 
-## Edge
+# 2.x
+
+* Remove r:navigation:url to be replaced with r:navigatin:path [Jim Gay]
+* Rename Radiant.config to Radiant.detail [Jim Gay]
+* Remove InheritableClassAttributes [Jim Gay]
+* Remove specific autotest support [Jim Gay]
+* Remove the notion of Radiant instances [Jim Gay]
+
+## 1.1.3
+
+* Bump rack dependency to 1.1.6 [Jim Gay]
+* Fixed errors from using rake 10.0.3 and old gem package tasks [Jim Gay]
+
+## 1.1.2
+
+* Move to Rails 2.3.16 [Jim Gay]
+
+## 1.1.1
+
+* Move to Rails 2.3.15 [Jim Gay]
+* Allow loading of snippets from the file system [Jim Gay]
+* Move Snippets to the radiant-snippets-extension [Jim Gay]
+* Move exporting feature to the radiant-exporter-extension [Jim Gay]
+* Updated r:gravatar to respect serving via SSL [Sam Whited]
+* Moved to compass-rails [Jim Gay]
+* Fixed avatar tags for HTTP and HTTPS [Sam Whited]
+* Updated r:date and deprecated r:rfc1123_date [Sam Whited]
+* Address UTF-8 params encoding in 1.9 [Johannes Fahrenkrug]
+
+## 1.0.1 (March 6, 2012)
 
 * Ruby 1.9.3 compatibility [Jim Gay]
 * Allow page menus to be overridden by additional modules [Jim Gay]

@@ -1,0 +1,26 @@
+%tr.page{:class =>"level_#{level}#{children_class}#{virtual_class}", :id => "page_#{page.id}"}
+  - render_region :node, :locals => {:page => page, :level => level, :simple => simple} do |node|
+    - node.title_column do
+      %td.name{:style => "padding-left: #{padding_left(level)}px"}
+        %span.w1
+          - if simple
+            = icon
+            = node_title
+          - else
+            != expander(level) + link_to("#{icon} #{node_title}".html_safe, edit_admin_page_url(page), :title => page.path)
+            = page_type
+            = spinner
+    - node.status_column do
+      - unless simple
+        %td.status
+          %span.status{:class => "#{page.status.name.downcase}_status", :title => "#{timestamp(page.published_at) if page.published_at}"}= t(page.status.name.downcase)
+    - node.actions_column do
+      - unless simple
+        %td.actions
+          = page.add_child_option
+          = page.remove_option
+
+- if expanded
+  - page.children.each do |child|
+    - child.becomes(child.class_name.constantize) if child.class_name.present?
+    = render_node child, :level => level + 1, :simple => simple

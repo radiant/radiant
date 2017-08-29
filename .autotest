@@ -1,0 +1,5 @@
+require "autotest/restart"
+
+Autotest.add_hook :run_command do |at|
+  system "clear"
+end

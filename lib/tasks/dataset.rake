@@ -4,7 +4,7 @@ namespace :db do
     task :load => :environment do
       require 'dataset'
       dataset_names = (ENV['DATASETS'] || 'default').split(',')
-      
+
       context = Class.new do
         extend Dataset::ContextClassMethods
         datasets_directory [

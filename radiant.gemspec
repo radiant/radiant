@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-require File.expand_path(__FILE__ + '/../lib/radiant.rb')
+require File.expand_path(__FILE__ + '/../lib/radiant/version.rb')
 Gem::Specification.new do |s|
   s.name = %q{radiant}
   s.version = Radiant::Version.to_s
@@ -22,40 +22,36 @@ a general purpose content managment system--not merely a blogging engine.}
   s.rubyforge_project = %q{radiant}
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{A no-fluff content management system designed for small teams.}
+  s.license = %q{MIT}
 
-  s.add_dependency "tzinfo",        "~> 0.3.31"
-  s.add_dependency "rails",         "~> 2.3.14"
-  s.add_dependency "rdoc",          ">= 3.9.2"
-  s.add_dependency "acts_as_tree",  "~> 0.1.1"
-  s.add_dependency "bundler",       ">= 1.0.0"
-  s.add_dependency "compass",       "~> 0.11.1"
-  s.add_dependency "delocalize",    "~> 0.2.3"
-  s.add_dependency "haml",          "~> 3.1.1"
-  s.add_dependency "highline",      "~> 1.6.10"
-  s.add_dependency "rack",          "~> 1.1.1"
-  s.add_dependency "rack-cache",    "~> 1.0.2"
-  s.add_dependency "rake",          ">= 0.8.7"
-  s.add_dependency "radius",        "~> 0.7.1"
-  s.add_dependency "RedCloth",      "~> 4.2.0"
-  s.add_dependency "will_paginate", "~> 2.3.11"
-  s.add_dependency "stringex",      "~> 1.3.0"
+  s.add_dependency "rails",           ">= 4.2"
+  s.add_dependency "rails-observers", "~> 0.1.2"
+  s.add_dependency "activeresource",  ">= 3.2"
+  s.add_dependency "protected_attributes", "~> 1.1.3"
+  s.add_dependency "acts_as_tree",    "~> 2.4.0"
+  s.add_dependency "compass",         "~> 1.0.3"
+  s.add_dependency "compass-rails",   "~> 2.0.4"
+  s.add_dependency "haml",            "~> 4.0.6"
+  s.add_dependency "highline",        "~> 1.6"
+  s.add_dependency "rack-cache",      "~> 1.2"
+  s.add_dependency "rake",            "~> 10.4"
+  s.add_dependency "radius",          "~> 0.7"
+  s.add_dependency "RedCloth",        "~> 4.2"
+  s.add_dependency "stringex",        "~> 1.3"
+  s.add_dependency "tzinfo",          "~> 1.2.2"
+  s.add_dependency "will_paginate",   "~> 3.1"
 
-  s.add_dependency "radiant-archive-extension",             "~> 1.0.7"
-  s.add_dependency "radiant-clipped-extension",             "~> 1.0.16"
-  s.add_dependency "radiant-debug-extension",               "~> 1.0.2"
-  s.add_dependency "radiant-exporter-extension",            "~> 1.0.2"
-  s.add_dependency "radiant-markdown_filter-extension",     "~> 1.0.2"
-  s.add_dependency "radiant-sheets-extension",              "~> 1.0.6"
-  s.add_dependency "radiant-site_templates-extension",      "~> 1.0.4"
-  s.add_dependency "radiant-smarty_pants_filter-extension", "~> 1.0.2"
-  s.add_dependency "radiant-textile_filter-extension",      "~> 1.0.4"
+  s.add_development_dependency "pry-byebug"
 
-  s.add_development_dependency "cucumber-rails",    "~> 0.3.2"
-  s.add_development_dependency "database_cleaner",  "~> 0.6.5"
-  s.add_development_dependency "hoe",               "1.5.1"
-  s.add_development_dependency "webrat",            "~> 0.7.3"
-  s.add_development_dependency "rspec",             "~> 1.3.1"
-  s.add_development_dependency "rspec-rails",       "~> 1.3.3"
-  s.add_development_dependency "test-unit",         "1.2.3"
-  s.add_development_dependency "ZenTest",           "4.6.0"
+  s.add_development_dependency "cucumber-rails",            "~> 1.4"
+  s.add_development_dependency "database_cleaner",          "~> 1.1"
+  s.add_development_dependency "capybara",                  "~> 2.1"
+  s.add_development_dependency "factory_girl",              "~> 4.7"
+  s.add_development_dependency "rspec",                     "~> 3.4.0"
+  s.add_development_dependency "rspec-rails",               "~> 3.4.2"
+  s.add_development_dependency "rspec-its",                 "~> 1.0"
+  s.add_development_dependency "rspec-collection_matchers", "~> 1.1"
+  s.add_development_dependency "rspec-activemodel-mocks",   "~> 1.0"
+  s.add_development_dependency "combustion",                "~> 0.5.4"
+  s.add_development_dependency "sqlite3",                   "~> 1.3"
 end

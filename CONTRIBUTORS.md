@@ -5,6 +5,12 @@ core:
 
 ## Edge
 
+* Jim Gay
+* Sam Whited
+* Johannes Fahrenkrug
+
+## 1.0.0
+
 * Jeff Casimir
 * Mario Visic
 * Mark Reginald James

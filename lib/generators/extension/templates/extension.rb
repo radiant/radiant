@@ -9,13 +9,9 @@ class <%= class_name %> < Radiant::Extension
 
   # See your config/routes.rb file in this extension to define custom routes
 
-  extension_config do |config|
-    # config is the Radiant.configuration object
-  end
-
   def activate
     # tab 'Content' do
-    #   add_item "<%= extension_name %>", "/admin/<%= file_name %>", :after => "Pages"
+    #   add_item "<%= extension_name %>", "/admin/<%= file_name %>", after: "Pages"
     # end
   end
 end

@@ -41,26 +41,12 @@ Feature: User authentication and permissions
       | admin     |
       | existing  |
       | designer |
-      
-  Scenario Outline: Admins and designers can see and edit snippets
-    Given I am logged in as "<username>"
-    And I should see "Design"
-    When I follow "Design" within "#navigation"
-    And I follow "Snippets"
-    And I should not see "You must have designer privileges"
-    And I follow "first"
-    Then I should see "Edit Snippet"
-    
-    Examples:
-      | username  |
-      | admin     |
-      | designer |
   
   Scenario Outline: Admins and designers can see and edit layouts
     Given I am logged in as "<username>"
     And I should see "Design"
     When I follow "Design" within "#navigation"
-    And I follow "Layouts"
+    # And I follow "Layouts"
     And I should not see "You must have designer privileges"
     And I follow "Main"
     Then I should see "Edit Layout"
@@ -74,17 +60,6 @@ Feature: User authentication and permissions
     Given I am logged in as "<username>"
     And I should not see "Design"
     When I go to the "layouts" admin page
-    Then I should see "You must have designer privileges"
-
-    Examples:
-      | username  |
-      | existing  |
-      | another   |
-  
-  Scenario Outline: Ordinary users cannot edit snippets
-    Given I am logged in as "<username>"
-    And I should not see "Design"
-    When I go to the "snippets" admin page
     Then I should see "You must have designer privileges"
 
     Examples:
@@ -128,7 +103,7 @@ Feature: User authentication and permissions
     Given I am logged in as "admin"
     When I follow "Settings"
     And I follow "Extensions"
-    Then I should see "Archive"
+    Then I should see "Basic"
   
   Scenario Outline: Non-admin users cannot see extensions
     Given I am logged in as "<username>"
@@ -139,18 +114,6 @@ Feature: User authentication and permissions
 
     Examples:
       | username  |
-      | existing  |
-      | another   |
-      | designer |
-  
-  Scenario Outline: Anyone can export YAML
-    Given I am logged in as "<username>"
-    When I go to the export page
-    Then I should see "id:"
-    
-    Examples:
-      | username  |
-      | admin     |
       | existing  |
       | another   |
       | designer |

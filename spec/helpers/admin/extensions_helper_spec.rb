@@ -1,4 +1,4 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
-describe Admin::ExtensionsHelper do
+describe Radiant::Admin::ExtensionsHelper do
 end

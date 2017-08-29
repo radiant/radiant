@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'rake/testtask'
 require 'rdoc/task'
-require 'rake/gempackagetask'
+require 'rubygems/package_task'
 require 'radiant'
 
 PKG_NAME = 'radiant'
@@ -31,7 +31,7 @@ namespace 'radiant' do
     s.rubyforge_project = RUBY_FORGE_PROJECT
     s.platform = Gem::Platform::RUBY
     s.bindir = 'bin'
-    s.executables = (Dir['bin/*'] + Dir['scripts/*']).map { |file| File.basename(file) } 
+    s.executables = (Dir['bin/*'] + Dir['scripts/*']).map { |file| File.basename(file) }
     s.add_dependency 'rake', '>= 0.8.3'
     s.add_dependency 'rack', '~> 1.1.0' # No longer bundled in actionpack
     s.add_dependency 'compass', '~> 0.10.4'
@@ -73,7 +73,7 @@ namespace 'radiant' do
     s.files = files.to_a
   end
 
-  Rake::GemPackageTask.new(spec) do |pkg|
+  Gem::PackageTask.new(spec) do |pkg|
     pkg.need_zip = true
     pkg.need_tar = true
   end
@@ -97,13 +97,6 @@ namespace 'radiant' do
         sh "#{sudo}gem install #{latest}"
       end
     end
-  end
-
-  task :gem => [ :generate_cached_assets ]
-
-  desc "Generates cached assets from source files"
-  task :generate_cached_assets do
-    TaskSupport.cache_admin_js
   end
 
   desc "Publish the release files to RubyForge."

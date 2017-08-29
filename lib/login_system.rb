@@ -2,7 +2,6 @@ module LoginSystem
   def self.included(base)
     base.extend ClassMethods
     base.class_eval do
-      prepend_before_filter :authenticate, :authorize
       helper_method :current_user
     end
   end
@@ -12,28 +11,28 @@ module LoginSystem
     def current_user
       @current_user ||= (login_from_session || login_from_cookie || login_from_http)
     end
-    
+
     def current_user=(value=nil)
       if value && value.is_a?(User)
         @current_user = value
-        session['user_id'] = value.id 
+        session['user_id'] = value.id
       else
         @current_user = nil
         session['user_id'] = nil
       end
       @current_user
     end
-    
+
     def authenticate
       action = params['action'].to_s.intern
       if current_user
         session['user_id'] = current_user.id
         true
       else
-        session[:return_to] = request.request_uri
+        session[:return_to] = request.fullpath
         respond_to do |format|
           format.html { redirect_to login_url }
-          format.any(:xml,:json) { request_http_basic_authentication }
+          format.any(:json) { request_http_basic_authentication }
         end
         false
       end
@@ -47,8 +46,8 @@ module LoginSystem
         permissions = self.class.controller_permissions[action]
         flash[:error] = permissions[:denied_message] || 'Access denied.'
         respond_to do |format|
-          format.html { redirect_to(permissions[:denied_url] || { :action => :index }) }
-          format.any(:xml, :json) { head :forbidden }
+          format.html { redirect_to(permissions[:denied_url] || { action: :index }) }
+          format.any(:json) { head :forbidden }
         end
         false
       end
@@ -79,7 +78,7 @@ module LoginSystem
     end
 
     def set_session_cookie(user = current_user)
-      cookies[:session_token] = { :value => user.session_token , :expires => Radiant::Config['session_timeout'].to_i.from_now.utc }
+      cookies[:session_token] = { value: user.session_token , expires: Radiant::Config['session_timeout'].to_i.seconds.from_now.utc }
     end
 
   module ClassMethods
@@ -89,7 +88,7 @@ module LoginSystem
     end
 
     def login_required?
-      filter_chain.any? {|f| f.method == :authenticate || f.method == :authorize }
+      _process_action_callbacks.any? {|f| f.method == :authenticate || f.method == :authorize }
     end
 
     def login_required
@@ -111,7 +110,7 @@ module LoginSystem
     def controller_permissions
       @controller_permissions ||= Hash.new { |h,k| h[k.to_s.intern] = Hash.new }
     end
-    
+
     def user_has_access_to_action?(user, action, instance=new)
       permissions = controller_permissions[action.to_s.intern]
       case

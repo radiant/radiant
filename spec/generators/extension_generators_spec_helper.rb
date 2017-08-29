@@ -3,14 +3,14 @@ RAILS_ENV = 'test'
 BASE_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '../../'))
 require 'fileutils'
 require 'tempfile'
-require 'spec'
+require 'rspec'
 require File.join(BASE_ROOT, 'spec/matchers/generator_matchers')
-require File.join(BASE_ROOT, 'lib/plugins/string_extensions/lib/string_extensions')
+require File.join(BASE_ROOT, 'lib/string_extensions')
 
 unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
   # this is so we can require ActiveSupport
   $:.unshift File.join(BASE_ROOT, 'vendor/rails/activesupport/lib')
-  # This is so the initializer and Rails::Generator is properly found
+  # This is so the initializer and Rails::Generators is properly found
   $:.unshift File.join(BASE_ROOT, 'vendor/rails/railties/lib')
   require 'active_support'
 
@@ -24,21 +24,22 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
       self.timestamped_migrations = true
     end
 
-    module ConnectionAdapters
-      class Column
-        attr_reader :name, :default, :type, :limit, :null, :sql_type, :precision, :scale
-
-        def initialize(name, default, sql_type = nil)
-          @name = name
-          @default = default
-          @type = @sql_type = sql_type
-        end
-
-        def human_name
-          @name.humanize
-        end
-      end
-    end
+    # module ConnectionAdapters
+    #   class Column
+    #     attr_reader :name, :default, :type, :limit, :null, :sql_type, :precision, :scale
+    #
+    #     def initialize(name, default, sql_type = nil, null = true)
+    #       @name = name
+    #       @default = default
+    #       @type = @sql_type = sql_type
+    #       @null = null
+    #     end
+    #
+    #     def human_name
+    #       @name.humanize
+    #     end
+    #   end
+    # end
   end
 
   # Mock up necessities from ActionView
@@ -66,7 +67,7 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
     RAILS_ROOT = tmp_dir.dup
   end
 
-  require 'initializer'
+  # require 'initializer'
 
   # Mocks out the configuration
   module Rails
@@ -75,12 +76,12 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
     end
   end
 
-  require 'rails_generator'
+  # require 'rails_generator'
 
   module GeneratorSpecHelperMethods
     # Instantiates the Generator.
     def build_generator(name, params)
-      Rails::Generator::Base.instance(name, params)
+      Rails::Generators::Base.new(name, params)
     end
 
     # Runs the +create+ command (like the command line does).
@@ -92,14 +93,14 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
 
     # Silences the logger temporarily and returns the output as a String.
     def silence_generator
-      logger_original = Rails::Generator::Base.logger
-      myout = StringIO.new
-      Rails::Generator::Base.logger = Rails::Generator::SimpleLogger.new(myout)
+      # logger_original = Rails::Generators::Base.logger
+      # myout = StringIO.new
+      # Rails::Generators::Base.logger = Rails::Generators::SimpleLogger.new(myout)
       yield if block_given?
-      Rails::Generator::Base.logger = logger_original
-      myout.string
+      # Rails::Generators::Base.logger = logger_original
+      # myout.string
     end
-    
+
     # Run the block with RADIANT_ROOT replaced with BASE_ROOT
     def with_radiant_root_as_base_root
       prev_radiant_root = RADIANT_ROOT.dup
@@ -110,7 +111,7 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
         RADIANT_ROOT.replace prev_radiant_root
       end
     end
-     
+
     # Run the block with $stdout suppressed
     def suppress_stdout
       original_stdout = $stdout
@@ -127,7 +128,7 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
   shared_examples_for "all generators" do
     before(:all) do
       ActiveRecord::Base.pluralize_table_names = true
-    
+
       FileUtils.mkdir_p "#{RADIANT_ROOT}/app"
       FileUtils.mkdir_p "#{RADIANT_ROOT}/config"
       FileUtils.mkdir_p "#{RADIANT_ROOT}/db"
@@ -138,14 +139,14 @@ unless defined?(::GENERATOR_SUPPORT_LOADED) && ::GENERATOR_SUPPORT_LOADED
         f << "ActionController::Routing::Routes.draw do |map|\n\nend"
       end
     end
-  
+
     after(:all) do
       %w(app db config vendor).each do |dir|
         FileUtils.rm_rf File.join(RADIANT_ROOT, dir)
       end
     end
   end
-  
+
   shared_examples_for "all extension generators" do
     before(:all) do
       FileUtils.mkdir_p "#{RADIANT_ROOT}/vendor/extensions"
@@ -158,7 +159,18 @@ end
 
 Git = Module.new unless defined?(::Git)
 
-Spec::Runner.configure do |config|
-  config.include(Spec::Matchers::GeneratorMatchers)
+RSpec.configure do |config|
+  config.include(RSpec::Matchers::GeneratorMatchers)
+
+  # rspec-rails 3 will no longer automatically infer an example group's spec type
+  # from the file location. You can explicitly opt-in to the feature using this
+  # config option.
+  # To explicitly tag specs without using automatic inference, set the `:type`
+  # metadata manually:
+  #
+  #     describe ThingsController, :type => :controller do
+  #       # Equivalent to being in spec/controllers
+  #     end
+  config.infer_spec_type_from_file_location!
 end
 

@@ -31,11 +31,11 @@ module Radiant
         password = prompt_for_admin_password unless password
       end
       attributes = {
-        :name => name,
-        :login => username,
-        :password => password,
-        :password_confirmation => password,
-        :admin => true
+        name: name,
+        login: username,
+        password: password,
+        password_confirmation: password,
+        admin: true
       }
       admin = User.find_by_login(username)
       admin = User.new unless admin

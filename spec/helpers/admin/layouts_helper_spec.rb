@@ -1,4 +1,4 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
-describe Admin::LayoutsHelper do
+describe Radiant::Admin::LayoutsHelper do
 end

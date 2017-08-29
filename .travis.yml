@@ -1,20 +1,24 @@
 rvm:
-  - 1.8.7
-  - 1.9.2
+  - 2.0.0
   - 1.9.3
 
-before_install: "gem install bundler --pre"
+before_install: rm -f Gemfile
 
-before_script: "./bin/ci/before_script"
+before_script: bin/ci/before_script
 
-script: "bundle exec rake spec"
+bundler_args: --without development
+
+script: bundle exec rake spec
 
 notifications:
   recipients:
     - ci@spanner.org
-    - git@johnmuhl.com
   irc: "irc.freenode.org#radiantcms"
 
 env:
   - DB=mysql
   - DB=postgres
+
+gemfile:
+  - rails40.gemfile
+  - rails32.gemfile

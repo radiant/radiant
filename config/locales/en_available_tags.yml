@@ -320,13 +320,13 @@ attributes to the @<r:javascript>@ tag.
         
 *Usage:*
         
-<pre><code><r:javascript slug=\"site.css\" as=\"inline\" 
+<pre><code><r:javascript slug=\"site.js\" as=\"inline\" 
   type=\"text/custom\" id=\"my_id\" />
 <r:javascript slug=\"other.js\" as=\"link\" /></code></pre>
 
 The above example will produce the following:
         
-<pre><code>            <script type=\"text/custom\" id=\"my_id\">
+<pre><code><script type=\"text/custom\" id=\"my_id\">
 //<![CDATA[
   var your_script = 'this content';
 //]]>
@@ -514,7 +514,7 @@ attributes to the @<r:stylesheet>@ tag.
 
 The above example will produce the following:
         
-<pre><code>            <style type=\"text/custom\" id=\"my_id\">
+<pre><code><style type=\"text/custom\" id=\"my_id\">
 /*<![CDATA[*/
   .your_stylesheet { content: 'here' }
 /*]]>*/

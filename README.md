@@ -1,10 +1,13 @@
 ## Welcome to Radiant
 
+_Radiant is making major changes. The master branch may be broken._
+
 Radiant is a no-fluff, open source content management system designed for
 small teams. It is similar to Textpattern or MovableType, but is a general
 purpose content management system (not just a blogging engine).
 
-[![Build Status](https://secure.travis-ci.org/radiant/radiant.png)](http://travis-ci.org/radiant/radiant)
+[![Build Status](https://secure.travis-ci.org/radiant/radiant.png?branch=master)](http://travis-ci.org/radiant/radiant)
+[![Dependency Status](https://gemnasium.com/radiant/radiant.png)](https://gemnasium.com/radiant/radiant)
 
 Radiant features:
 
@@ -23,16 +26,16 @@ Radiant features:
 
 ## License
 
-Radiant is released under the MIT license and is copyright (c) 2006-2009
-John W. Long and Sean Cribbs. A copy of the MIT license can be found in the
-LICENSE file.
+Radiant is released under the MIT license and is copyright (c) 2006-2014
+John W. Long, Sean Cribbs, and Jim Gay. A copy of the MIT license can be
+found in the LICENSE file.
 
 ## Installation and Setup
 
 Radiant is a traditional Ruby on Rails application, meaning that you can
 configure and run it the way you would a normal Rails application.
 
-See the INSTALL file for more details.
+See the [INSTALL](INSTALL.md) file for more details.
 
 ### Installation of a Prerelease
 
@@ -42,7 +45,7 @@ Install the prerelease gem with the following command:
 
     $ gem install radiant --prerelease
 
-This will install the gem with the prerelease name, for example: ‘radiant-0.9.0.rc2’.
+This will install the gem with the prerelease name, for example: ‘radiant-2.0.0.alpha’.
 
 ### Upgrading an Existing Project to a newer version
 
@@ -55,12 +58,6 @@ This will install the gem with the prerelease name, for example: ‘radiant-0.9.
     $ rake production db:migrate
 
 3. Restart the web server
-
-## Development Requirements
-
-To run tests you will need to have the following gems installed:
-
-  gem install ZenTest rspec rspec-rails cucumber webrat nokogiri sqlite3-ruby
 
 ## Support
 
@@ -79,6 +76,6 @@ http://wiki.github.com/radiant/radiant/
 
 Enjoy!
 
---
-The Radiant Dev Team
+--  
+The Radiant Dev Team  
 http://radiantcms.org

@@ -51,8 +51,6 @@ en:
         filter: "page filter"
         parts: "page parts"
         status: "page status"
-      snippet:
-        filter: "snippet filter"
     dev:
       host: "dev site domain"
     local:
@@ -81,7 +79,6 @@ en:
       - :day
   delete_layout: 'Delete Layout'
   delete_pages: 'Delete %{pages}'
-  delete_snippet: 'Delete Snippet'
   delete_user: 'Delete User'
   description: 'Description'
   design: 'Design'
@@ -93,7 +90,6 @@ en:
   edit_page:  'Edit Page'   
   edit_preferences: 'Edit Preferences'
   edit_settings: 'Edit Settings'
-  edit_snippet: 'Edit Snippet'
   edit_user: 'Edit User'
   email_address: 'E-mail Address'
   extension: 'Extension'
@@ -116,12 +112,10 @@ en:
   new_layout: 'New Layout'    
   new_page: 'New Page'
   new_password: 'New Password'
-  new_snippet: 'New Snippet'
   new_user: 'New User'  
   'no': 'No'
   no_layouts: 'No Layouts'
   no_pages: 'No Pages'
-  no_snippets: 'No Snippets'
   normal_page: 'Normal Page'
   notes: 'Notes'    
   optional: 'Optional'
@@ -158,7 +152,6 @@ en:
   remove_layout: 'Remove Layout'
   remove_page: 'Remove Page'
   remove_pages: 'Remove %{pages}'
-  remove_snippet: 'Remove Snippet'
   remove_tab: 'Remove Tab'
   remove_user: 'Remove user'
   required: 'Required'  
@@ -182,8 +175,6 @@ en:
   settings: 'Settings'
   show_all: 'Show all'
   slug: 'Slug'
-  snippet: 'Snippet'   
-  snippets: 'Snippets'
   status: 'Status'
     # Warnings and info text:
   testing: Testing
@@ -192,8 +183,6 @@ en:
       remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following layout?'   
     pages: 
       remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following %{pages}?'
-    snippets:
-      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following snippet?'
     users: 
       remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following user?'
   this_file_language: "English" 

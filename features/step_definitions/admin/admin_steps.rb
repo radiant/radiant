@@ -1,8 +1,8 @@
 Given(/^I am logged in as "([^\"]*)"$/) do |user|
   puts "The user, #{user}, does not exist" if users(user.to_sym).nil?
   visit '/admin/login'
-  fill_in 'Username', :with => user
-  fill_in 'Password', :with => 'password'
+  fill_in 'Username', with: user
+  fill_in 'Password', with: 'password'
   click_button 'Login'
 end
 
@@ -21,7 +21,7 @@ end
 Then /^"([^\"]*)" should be selected for "([^\"]*)"$/ do |value, field|
   select_box = field_labeled(field)
   response.should have_tag("select##{select_box.id}") do
-    with_tag('option[selected]', :text => value)
+    with_tag('option[selected]', text: value)
   end
 end
 
