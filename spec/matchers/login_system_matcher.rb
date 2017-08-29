@@ -22,7 +22,7 @@ module RSpec
           end
         end
 
-        def negative_failure_message
+        def failure_message_when_negated
           "expected not to require login"
         end
 
