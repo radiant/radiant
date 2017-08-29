@@ -15,6 +15,7 @@ require 'rspec/rails'
 require 'rspec/its'
 require 'rspec/collection_matchers'
 require 'rspec/active_model/mocks'
+require 'rspec-html-matchers'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -31,6 +32,7 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   config.include AuthenticationHelper
+  config.include RSpecHtmlMatchers
 
   config.before(:each, type: :controller) { @routes = Radiant::Engine.routes }
   config.before(:each, type: :routing)    { @routes = Radiant::Engine.routes }
