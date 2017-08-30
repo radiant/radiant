@@ -56,7 +56,7 @@ module StandardTags
   tag 'children:count' do |tag|
     options = children_find_options(tag)
     options.delete(:order) # Order is irrelevant
-    tag.locals.children.count(options)
+    tag.locals.children.where(options.delete(:conditions)).count()
   end
 
   desc %{
