@@ -1156,7 +1156,8 @@ module StandardTags
       result = []
       tag.locals.previous_headers = {}
       order = options.delete(:order)
-      displayed_children = paging ? findable.paginate(options.merge(paging)).reorder(order) : findable.reorder(order).all(options)
+      conditions = options.delete(:conditions)
+      displayed_children = paging ? findable.paginate(options.merge(paging)).reorder(order) : findable.reorder(order).where(conditions).all()
       displayed_children.each_with_index do |item, i|
         tag.locals.child = item
         tag.locals.page = item
