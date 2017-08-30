@@ -25,7 +25,7 @@ describe Radiant::UserActionObserver do
       Page.create(page_params),
       Layout.create(layout_params)
     ].each do |model|
-      model.attributes = model.attributes.dup
+      expect(model.updated_by).to be_nil
       expect(model.save).to eq(true)
       expect(model.updated_by).to eq(user)
     end
