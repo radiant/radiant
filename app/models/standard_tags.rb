@@ -70,7 +70,7 @@ module StandardTags
   tag 'children:first' do |tag|
     options = children_find_options(tag)
     order = options.delete(:order)
-    children = tag.locals.children.reorder(order).all.where(options)
+    children = tag.locals.children.reorder(order).all.limit(options[:limit]).offset(options.delete(:offset)).where(options[:conditions])
     if first = children.first
       tag.locals.page = first
       tag.expand
@@ -88,7 +88,7 @@ module StandardTags
   tag 'children:last' do |tag|
     options = children_find_options(tag)
     order = options.delete(:order)
-    children = tag.locals.children.reorder(order).all.where(options)
+    children = tag.locals.children.reorder(order).all.limit(options[:limit]).offset(options.delete(:offset)).where(options[:conditions])
     if last = children.last
       tag.locals.page = last
       tag.expand
