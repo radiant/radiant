@@ -380,7 +380,7 @@ module StandardTags
     result = []
     children = tag.locals.children.reorder(order)
     tag.locals.previous_headers = {}
-    children.all.where(options).each do |item|
+    children.all.where(options.delete(:conditions)).each do |item|
       tag.locals.child = item
       tag.locals.page = item
       result << tag.expand
@@ -406,9 +406,9 @@ module StandardTags
     options = aggregate_children(tag)
     if ActiveRecord::Base.connection.adapter_name.downcase == 'postgresql'
       options[:group] = Page.columns.map {|c| c.name}.join(', ')
-      Page.all.where(options).size
+      Page.all.where(options.delete(:conditions)).size
     else
-      Page.count(options)
+      Page.where(options.delete(:conditions)).count
     end
   end
   desc %{
