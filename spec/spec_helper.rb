@@ -1,7 +1,7 @@
 # Configure Rails Envinronment
 ENV["RAILS_ENV"] = "test"
 # # require File.expand_path("../internal/config/environment.rb",  __FILE__)
-# SPEC_ROOT = File.dirname(__FILE__)
+SPEC_ROOT = File.dirname(__FILE__)
 #
 
 require 'rubygems'
