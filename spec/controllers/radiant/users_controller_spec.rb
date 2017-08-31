@@ -63,19 +63,19 @@ describe Radiant::Admin::UsersController do
     actions.each do |action|
       it "should require login to access the #{action} action" do
         logout
-        lambda { expect(send(method, action, id: user_id(:existing))).to require_login }
+        lambda { expect(send(method, action, id: users(:existing).id)).to require_login }
       end
 
       it "should allow you to access to #{action} action if you are an admin" do
         expect {
-          send(method, action, id: user_id(:existing))
+          send(method, action, id: users(:existing).id)
         }.to restrict_access(allow: FactoryGirl.create(:admin),
                                  url: '/admin/page')
       end
 
       it "should deny you access to #{action} action if you are not an admin" do
         expect {
-          send(method, action, id: user_id(:existing))
+          send(method, action, id: users(:existing).id)
         }.to restrict_access(deny: [FactoryGirl.create(:designer), FactoryGirl.create(:existing)],
                                  url: '/admin/page')
       end
