@@ -5,7 +5,7 @@ describe Radiant::Admin::UsersController do
   #dataset :users
 
   it "should be a ResourceController" do
-    expect(controller).to be_kind_of(Radiant::ResourceController)
+    expect(controller).to be_kind_of(Radiant::Admin::ResourceController)
   end
 
   it "should handle Users" do
