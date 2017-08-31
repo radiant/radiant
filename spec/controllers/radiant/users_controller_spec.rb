@@ -16,9 +16,8 @@ describe Radiant::Admin::UsersController do
   describe "show" do
     it "should redirect to the edit action" do
       login_as :admin
-      user_id = 1
-      get :show, id: user_id
-      expect(response).to redirect_to(edit_admin_user_path(user_id))
+      get :show, id: users(:existing).id
+      expect(response).to redirect_to(edit_admin_user_path(users(:existing).id))
     end
   end
 
