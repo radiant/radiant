@@ -5,6 +5,7 @@ describe Radiant::SiteController do
   #dataset :pages
 
   it "should find and render home page" do
+    home = FactoryGirl.create(:home)
     get :show_page, url: ''
     expect(response).to be_success
     expect(response.body).to eq('Hello world!')
