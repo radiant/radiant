@@ -47,6 +47,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_development_dependency "database_cleaner",          "~> 1.1"
   s.add_development_dependency "capybara",                  "~> 2.1"
   s.add_development_dependency "factory_girl",              "~> 4.7"
+  s.add_development_dependency "factory_girl_rails",        "~> 4.7"
   s.add_development_dependency "rspec",                     "~> 3.4.0"
   s.add_development_dependency "rspec-rails",               "~> 3.4.2"
   s.add_development_dependency "rspec-its",                 "~> 1.0"

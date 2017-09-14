@@ -24,7 +24,7 @@ Dir[File.join(ENGINE_RAILS_ROOT, "spec/support/**/*.rb")].each {|f| require f }
 Dir[File.join(ENGINE_RAILS_ROOT, "spec/matchers/**/*.rb")].each {|f| require f }
 
 require 'factory_girl'
-FactoryGirl.find_definitions
+require 'factory_girl_rails'
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
