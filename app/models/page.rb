@@ -8,7 +8,7 @@ class Page < ActiveRecord::Base
   before_save :update_published_at, :update_virtual
 
   # Associations
-  acts_as_tree :order => 'virtual DESC, title ASC'
+  acts_as_tree :order => '`virtual` DESC, title ASC'
   has_many :parts, :class_name => 'PagePart', :order => 'id', :dependent => :destroy
   accepts_nested_attributes_for :parts, :allow_destroy => true
   belongs_to :layout
