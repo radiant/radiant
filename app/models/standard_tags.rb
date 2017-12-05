@@ -957,12 +957,12 @@ module StandardTags
       unless status == 'all'
         stat = Status[status]
         unless stat.nil?
-          options[:conditions] = ["(virtual = ?) and (status_id = ?)", false, stat.id]
+          options[:conditions] = ["(`virtual` = ?) and (status_id = ?)", false, stat.id]
         else
           raise TagError.new(%{`status' attribute of `each' tag must be set to a valid status})
         end
       else
-        options[:conditions] = ["virtual = ?", false]
+        options[:conditions] = ["`virtual` = ?", false]
       end
       options
     end
