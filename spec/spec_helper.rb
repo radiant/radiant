@@ -1,7 +1,7 @@
 # Configure Rails Envinronment
 ENV["RAILS_ENV"] = "test"
 # # require File.expand_path("../internal/config/environment.rb",  __FILE__)
-# SPEC_ROOT = File.dirname(__FILE__)
+SPEC_ROOT = File.dirname(__FILE__)
 #
 
 require 'rubygems'
@@ -15,6 +15,7 @@ require 'rspec/rails'
 require 'rspec/its'
 require 'rspec/collection_matchers'
 require 'rspec/active_model/mocks'
+require 'rspec-html-matchers'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -23,7 +24,7 @@ Dir[File.join(ENGINE_RAILS_ROOT, "spec/support/**/*.rb")].each {|f| require f }
 Dir[File.join(ENGINE_RAILS_ROOT, "spec/matchers/**/*.rb")].each {|f| require f }
 
 require 'factory_girl'
-FactoryGirl.find_definitions
+require 'factory_girl_rails'
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
@@ -31,6 +32,7 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   config.include AuthenticationHelper
+  config.include RSpecHtmlMatchers
 
   config.before(:each, type: :controller) { @routes = Radiant::Engine.routes }
   config.before(:each, type: :routing)    { @routes = Radiant::Engine.routes }

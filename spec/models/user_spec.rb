@@ -104,7 +104,7 @@ describe User, "validations" do
     end
 
     it 'ensures the confirmation matches' do
-      user.password = 'test'
+      user.password = 'correct'
       user.password_confirmation = 'not correct'
       expect(user.errors_on(:password_confirmation)).to include("doesn't match Password")
     end
