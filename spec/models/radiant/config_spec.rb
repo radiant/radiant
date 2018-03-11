@@ -125,8 +125,7 @@ describe Radiant::Config do
       load(SPEC_ROOT + "/fixtures/more_settings.rb")
     end
 
-    xit "should validate against the definition" do
-      # TODO: Unclear what the intension is here with this spec, wonder why it should raise Invalid Record error
+    it "should validate against the definition" do
       definition = get_config('testing.validated')
       expect{ @config['testing.validated'] = "pig" }.to raise_error(ActiveRecord::RecordInvalid)
     end
