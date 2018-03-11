@@ -318,7 +318,8 @@ Config definition error: '#{key}' is defined twice:
 
     delegate :default, :type, :allow_blank?, :hidden?, :visible?, :settable?, :selection, :notes, :units, to: :definition
 
-    def validate
+    validate :definition_must_be_valid
+    def definition_must_be_valid
       definition.validate(self)
     end
 

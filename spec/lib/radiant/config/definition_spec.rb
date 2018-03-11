@@ -49,7 +49,7 @@ describe "Radiant::Config::Definition" do
     })
   end
   after :each do
-    Radiant::Cache.clear
+    Radiant::Cache.clear if defined? Radiant::Cache
     Radiant.detail.clear_definitions!
   end
 
@@ -76,9 +76,9 @@ describe "Radiant::Config::Definition" do
 
     it "should validate against the supplied block" do
       setting = Radiant::Config.find_by_key('valid')
-      expect{setting.value = "Ape"}.to raise_error
+      expect{setting.value = "Ape"}.to raise_error(ActiveRecord::RecordInvalid)
       expect(setting.valid?).to be false
-      expect(setting.errors.on(:value)).to eq("That's no monkey")
+      expect(setting.errors[:value]).to include("That's no monkey")
     end
 
     it "should allow a valid value to be set" do
@@ -92,11 +92,11 @@ describe "Radiant::Config::Definition" do
     end
 
     it "should not allow an invalid value to be set" do
-      expect{Radiant::Config['valid'] = "Cow"}.to raise_error
+      expect{Radiant::Config['valid'] = "Cow"}.to raise_error(ActiveRecord::RecordInvalid)
       expect(Radiant::Config['valid']).not_to eq("Cow")
-      expect{Radiant::Config['selecting'] = "Pig"}.to raise_error
-      expect{Radiant::Config['number'] = "Pig"}.to raise_error
-      expect{Radiant::Config['required'] = ""}.to raise_error
+      expect{Radiant::Config['selecting'] = "Pig"}.to raise_error(ActiveRecord::RecordInvalid)
+      expect{Radiant::Config['number'] = "Pig"}.to raise_error(ActiveRecord::RecordInvalid)
+      expect{Radiant::Config['required'] = ""}.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
 
@@ -149,7 +149,7 @@ describe "Radiant::Config::Definition" do
     end
 
     it "should raise a validation error when a required value is made blank" do
-      expect{ Radiant::Config['required'] = "" }.to raise_error
+      expect{ Radiant::Config['required'] = "" }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
 
