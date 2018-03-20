@@ -1,5 +1,5 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
-
+require RADIANT_ROOT + "/lib/radiant/cache"
 describe Radiant::Config do
   before :each do
     Radiant.detail.initialize_cache
