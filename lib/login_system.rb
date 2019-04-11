@@ -70,7 +70,7 @@ module LoginSystem
     end
 
     def login_from_http
-      if [Mime::XML, Mime::JSON].include?(request.format)
+      if [Mime[:xml], Mime[:json].include?(request.format)
         authenticate_with_http_basic do |user_name, password|
           User.authenticate(user_name, password)
         end
