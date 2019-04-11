@@ -18,7 +18,7 @@ module Radiant
       end
 
       def [](id)
-        unless id.kind_of? Fixnum
+        unless id.kind_of? Integer
           self.find {|subnav_item| subnav_item.name.to_s.titleize == id.to_s.titleize }
         else
           super
