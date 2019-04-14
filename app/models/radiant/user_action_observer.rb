@@ -1,4 +1,5 @@
 class Radiant::UserActionObserver < ActiveRecord::Observer
+  # TODO: This should be moved to controller. Should store/retrieve current using session instead of Threads.
   observe :user, :page, :layout
   
   def current_user=(user)

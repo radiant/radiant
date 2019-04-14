@@ -8,7 +8,7 @@ describe Radiant::Config do
     set('foo', 'bar')
   end
   after :each do
-    Radiant::Cache.clear
+    Radiant::Cache.clear if defined?(Radiant::Cache)
   end
 
   describe "before the table exists, as in case of before bootstrap" do
@@ -48,7 +48,7 @@ describe Radiant::Config do
   end
 
   it "should create a cache file when initializing the cache" do
-    Radiant::Cache.clear
+    Radiant::Cache.clear if defined?(Radiant::Cache)
     cache_file = File.join(Rails.root,'tmp','radiant_config_cache.txt')
     FileUtils.rm_rf(cache_file) if File.exist?(cache_file)
     Radiant::Config.initialize_cache

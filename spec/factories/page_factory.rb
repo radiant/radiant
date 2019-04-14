@@ -5,7 +5,7 @@ FactoryGirl.define do
     slug        { title.slugify }
 
     trait :with_parts do
-      page_parts { [FactoryGirl.create(:page_part, name: 'body')] }
+      parts { [FactoryGirl.create(:page_part, name: 'body')] }
     end
 
     trait :with_children do
@@ -56,6 +56,7 @@ FactoryGirl.define do
       slug '/'
       status_id Status[:published].id
       parent_id nil
+      after(:create) { |page| page.parts.create(name: 'body', content: "Hello world!") }
     end
     
   end

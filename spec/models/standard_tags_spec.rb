@@ -596,6 +596,12 @@ describe "Standard Tags" do
       expect(home).to render('<r:aggregate paths="/news; /assorted"><r:children:count /></r:aggregate>').as('14')
     end
   end
+  describe "<r:aggregate:children:first>" do
+    it 'should render its contents in the context of the first child page'
+  end
+  describe "<r:aggregate:children:last>" do
+    it 'should render its contents in the context of the last child page'
+  end
 
   describe "<r:aggregate:children:each>" do
     it "should loop through each child from the given paths" do
