@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Layout do
 
-  let(:layout){ FactoryGirl.build(:layout) }
+  let(:layout){ FactoryBot.build(:layout) }
 
   describe 'name' do
     it 'is invalid when blank' do
@@ -13,7 +13,7 @@ describe Layout do
 
     it 'should validate uniqueness of' do
       layout.save!
-      other = FactoryGirl.build(:layout)
+      other = FactoryBot.build(:layout)
       expect{other.save!}.to raise_error(ActiveRecord::RecordInvalid)
       other.name = 'Something Else'
       expect(other.errors_on(:name)).to be_blank

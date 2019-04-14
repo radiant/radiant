@@ -111,8 +111,8 @@ describe Radiant::AdminUI::NavSubItem do
   end
 
   describe "visibility" do
-    let(:admin){ FactoryGirl.build(:user, admin: true) }
-    let(:existing){ FactoryGirl.build(:user) }
+    let(:admin){ FactoryBot.build(:user, admin: true) }
+    let(:existing){ FactoryBot.build(:user) }
 
     before :each do
       @controller = Radiant::Admin::UsersController.new

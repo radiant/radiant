@@ -69,21 +69,21 @@ describe Radiant::Admin::UsersController do
       it "should allow you to access to #{action} action if you are an admin" do
         expect {
           send(method, action, id: users(:existing).id)
-        }.to restrict_access(allow: FactoryGirl.create(:admin),
+        }.to restrict_access(allow: FactoryBot.create(:admin),
                                  url: '/admin/page')
       end
 
       it "should deny you access to #{action} action if you are not an admin" do
         expect {
           send(method, action, id: users(:existing).id)
-        }.to restrict_access(deny: [FactoryGirl.create(:designer), FactoryGirl.create(:existing)],
+        }.to restrict_access(deny: [FactoryBot.create(:designer), FactoryBot.create(:existing)],
                                  url: '/admin/page')
       end
     end
   end
 
   it "should not allow you to delete yourself" do
-    user = FactoryGirl.create(:admin)
+    user = FactoryBot.create(:admin)
     login_as user
     get :remove, { id: user.id }
     expect(response).to redirect_to(admin_users_url)
@@ -92,7 +92,7 @@ describe Radiant::Admin::UsersController do
   end
 
   it "should not allow you to remove your own admin privilege" do
-    user = FactoryGirl.create(:admin)
+    user = FactoryBot.create(:admin)
     login_as user
     put :update, { id: user.id, user: {admin: false} }
     expect(response).to redirect_to(admin_users_url)

@@ -16,7 +16,7 @@ describe PagePart do
 
   before do
     @original_filter = Radiant.detail['defaults.page.filter']
-    @part = @model = FactoryGirl.build(:page_part)
+    @part = @model = FactoryBot.build(:page_part)
   end
 
   after do
@@ -57,8 +57,8 @@ end
 
 describe PagePart, 'filter' do
   specify 'getting and setting' do
-    # page = FactoryGirl.build(:page)
-    @part = FactoryGirl.build(:page_part, name: 'body', filter_id: 'Pseudo Textile')
+    # page = FactoryBot.build(:page)
+    @part = FactoryBot.build(:page_part, name: 'body', filter_id: 'Pseudo Textile')
     original = @part.filter
     expect(original).to be_kind_of(PseudoTextileFilter)
 

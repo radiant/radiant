@@ -32,7 +32,7 @@ describe Radiant::ApplicationHelper do
   end
 
   it "should be logged in when authenticated" do
-    expect(helper).to receive(:current_user).and_return(FactoryGirl.build(:user))
+    expect(helper).to receive(:current_user).and_return(FactoryBot.build(:user))
     expect(helper.logged_in?).to be true
   end
 
@@ -105,12 +105,12 @@ describe Radiant::ApplicationHelper do
   end
 
   it "should determine whether the current user is an admin" do
-    expect(helper).to receive(:current_user).at_least(1).times.and_return(FactoryGirl.build(:admin))
+    expect(helper).to receive(:current_user).at_least(1).times.and_return(FactoryBot.build(:admin))
     expect(helper.admin?).to be true
   end
 
   it "should determine whether the current user is a designer" do
-    expect(helper).to receive(:current_user).at_least(1).times.and_return(FactoryGirl.build(:designer))
+    expect(helper).to receive(:current_user).at_least(1).times.and_return(FactoryBot.build(:designer))
     expect(helper.designer?).to be true
   end
 
@@ -121,7 +121,7 @@ describe Radiant::ApplicationHelper do
   it "should render an updated timestamp for a model" do
     model = mock_model(Page)
     expect(model).to receive(:new_record?).and_return(false)
-    expect(model).to receive(:updated_by).and_return(FactoryGirl.build(:admin))
+    expect(model).to receive(:updated_by).and_return(FactoryBot.build(:admin))
     expect(model).to receive(:updated_at).and_return(Time.local(2008, 3, 30, 10, 30))
     expect(helper.updated_stamp(model)).to eq(%{<p class="updated_line">Last Updated by <strong>Admin</strong> at 10:30 am on March 30, 2008</p>})
   end

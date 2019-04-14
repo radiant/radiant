@@ -23,8 +23,8 @@ ENGINE_RAILS_ROOT=File.join(File.dirname(__FILE__), '../')
 Dir[File.join(ENGINE_RAILS_ROOT, "spec/support/**/*.rb")].each {|f| require f }
 Dir[File.join(ENGINE_RAILS_ROOT, "spec/matchers/**/*.rb")].each {|f| require f }
 
-require 'factory_girl'
-require 'factory_girl_rails'
+require 'factory_bot'
+require 'factory_bot_rails'
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
@@ -39,14 +39,14 @@ RSpec.configure do |config|
 end
 
 def pages(which)
-  Page.find_or_create_by(**FactoryGirl.attributes_for(which))
+  Page.find_or_create_by(**FactoryBot.attributes_for(which))
 end
 
 def users(which)
   if User.where(login: which).exists?
     User.where(login: which).first
   else
-    FactoryGirl.create(which)
+    FactoryBot.create(which)
   end
 end
 

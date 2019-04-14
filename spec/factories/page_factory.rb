@@ -1,15 +1,15 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :page do
-    title       'Page'
+    title       { 'Page' }
     breadcrumb  { title }
     slug        { title.slugify }
 
     trait :with_parts do
-      parts { [FactoryGirl.create(:page_part, name: 'body')] }
+      parts { [FactoryBot.create(:page_part, name: 'body')] }
     end
 
     trait :with_children do
-      children { [FactoryGirl.create(:page, :with_parts)] }
+      children { [FactoryBot.create(:page, :with_parts)] }
     end
 
     factory :page_with_layout do
@@ -28,7 +28,7 @@ FactoryGirl.define do
     end
 
     factory :published_page do
-      status_id Status[:published].id
+      status_id { Status[:published].id }
 
       factory :article do
         title { generate(:article_title)}
@@ -52,10 +52,10 @@ FactoryGirl.define do
     end
     
     factory :home do |home|
-      title 'Home'
-      slug '/'
-      status_id Status[:published].id
-      parent_id nil
+      title { 'Home' }
+      slug { '/' }
+      status_id { Status[:published].id }
+      parent_id { nil }
       after(:create) { |page| page.parts.create(name: 'body', content: "Hello world!") }
     end
     
