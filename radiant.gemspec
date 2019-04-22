@@ -54,5 +54,5 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_development_dependency "rspec-activemodel-mocks",   "~> 1.0"
   s.add_development_dependency "rspec-html-matchers",       "~> 0.9.1"
   s.add_development_dependency "combustion",                "~> 1.1"
-  s.add_development_dependency "sqlite3",                   "~> 1.3"
+  s.add_development_dependency "sqlite3",                   "~> 1.3.13"
 end
