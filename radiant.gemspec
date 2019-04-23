@@ -23,7 +23,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.summary = %q{A no-fluff content management system designed for small teams.}
   s.license = %q{MIT}
 
-  s.add_dependency "rails",           ">= 4.2"
+  s.add_dependency "rails",           ">= 4.2.5"
   s.add_dependency "rails-observers", "~> 0.1.2"
   s.add_dependency "activeresource",  ">= 3.2"
   s.add_dependency "protected_attributes", "~> 1.1.3"
