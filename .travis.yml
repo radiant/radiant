@@ -23,4 +23,3 @@ env:
 
 gemfile:
   - rails40.gemfile
-  - rails32.gemfile
