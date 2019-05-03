@@ -5,11 +5,11 @@ describe Radiant::Admin::LayoutsController do
   #dataset :users, :pages_with_layouts
   include AuthenticationHelper
   
-  let(:layout){ FactoryGirl.create(:layout) }
-  let(:utf8_layout){ FactoryGirl.create(:utf8_layout) }
-  let(:admin){ FactoryGirl.create(:admin) }
-  let(:non_admin){ FactoryGirl.create(:user) }
-  let(:designer){ FactoryGirl.create(:designer) }
+  let(:layout){ FactoryBot.create(:layout) }
+  let(:utf8_layout){ FactoryBot.create(:utf8_layout) }
+  let(:admin){ FactoryBot.create(:admin) }
+  let(:non_admin){ FactoryBot.create(:user) }
+  let(:designer){ FactoryBot.create(:designer) }
   
   before :each do
     login_as designer

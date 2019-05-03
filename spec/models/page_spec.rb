@@ -40,7 +40,7 @@ end
 describe Page, 'validations' do
   test_helper :page
 
-  let(:page){ FactoryGirl.build(:page) }
+  let(:page){ FactoryBot.build(:page) }
 
   describe 'breadcrumb' do
 
@@ -143,8 +143,8 @@ describe Page, 'validations' do
 end
 
 describe Page, "layout" do
-  let(:page_with_layout){ FactoryGirl.create(:page_with_layout) }
-  let(:child_page){ FactoryGirl.build(:page) do |child|
+  let(:page_with_layout){ FactoryBot.create(:page_with_layout) }
+  let(:child_page){ FactoryBot.build(:page) do |child|
       child.parent_id = page_with_layout.id
     end }
 
@@ -159,7 +159,7 @@ describe Page, "layout" do
 end
 
 describe Page do
-  let(:page){ FactoryGirl.create(:page) }
+  let(:page){ FactoryBot.create(:page) }
   let(:parent){ pages(:parent) }
   let(:child){ pages(:child) }
   let(:part){ page.parts(:body) }
@@ -171,7 +171,7 @@ describe Page do
   end
 
   it 'should destroy dependant parts' do
-    page.parts << FactoryGirl.build(:page_part, name: 'test')
+    page.parts << FactoryBot.build(:page_part, name: 'test')
     expect(page.parts.find_by_name('test')).not_to be_nil
     id = page.id
     page.destroy
@@ -224,14 +224,14 @@ describe Page do
   describe '#inherits_part?' do
     it 'should return true if any ancestor page has a part of the given name' do
       page.parts.create(name: 'sidebar')
-      child = FactoryGirl.build(:page) do |child|
+      child = FactoryBot.build(:page) do |child|
         child.parent_id = page.id
       end
       expect(child.has_part?(:sidebar)).to be false
       expect(child.inherits_part?(:sidebar)).to be true
     end
     it 'should return false if any ancestor page does not have a part of the given name' do
-      child = FactoryGirl.build(:page) do |child|
+      child = FactoryBot.build(:page) do |child|
         child.parent_id = page.id
       end
       child.parts.build(name: 'sidebar')
@@ -242,7 +242,7 @@ describe Page do
 
   describe '#has_or_inherits_part?' do
     let(:child){
-      FactoryGirl.build(:page) do |child|
+      FactoryBot.build(:page) do |child|
         child.parent_id = page.id
       end
     }
@@ -299,10 +299,10 @@ describe Page do
     let(:future){ Time.current + 20.years }
     let(:past){ Time.current - 1.year }
     let(:future_scheduled){
-      FactoryGirl.build(:page, status_id: Status[:published].id, published_at: future)
+      FactoryBot.build(:page, status_id: Status[:published].id, published_at: future)
     }
     let(:past_scheduled){
-      FactoryGirl.build(:page, status_id: Status[:scheduled].id, published_at: past)
+      FactoryBot.build(:page, status_id: Status[:scheduled].id, published_at: past)
     }
 
     it 'should change its status to scheduled with a date in the future' do
@@ -326,8 +326,8 @@ describe Page do
   end
 
   context 'when setting the status' do
-    let(:page){ FactoryGirl.build(:page, status_id: Status[:published].id, published_at: nil) }
-    let(:scheduled){ FactoryGirl.build(:page, status_id: Status[:scheduled].id, published_at: (Time.current + 1.day)) }
+    let(:page){ FactoryBot.build(:page, status_id: Status[:published].id, published_at: nil) }
+    let(:scheduled){ FactoryBot.build(:page, status_id: Status[:scheduled].id, published_at: (Time.current + 1.day)) }
 
     it 'should set published_at when given the published status id' do
       page.save
@@ -352,10 +352,10 @@ describe Page do
 
   describe '#path' do
 
-    let(:home){ FactoryGirl.create(:page, slug: '/', published_at: Time.now) }
-    let(:parent){ FactoryGirl.create(:page, parent: home, slug: 'parent', published_at: Time.now) }
-    let(:child){ FactoryGirl.create(:page, parent: parent, slug: 'child', published_at: Time.now) }
-    let(:grandchild){ FactoryGirl.create(:page, parent: child, slug: 'grandchild', published_at: Time.now) }
+    let(:home){ FactoryBot.create(:page, slug: '/', published_at: Time.now) }
+    let(:parent){ FactoryBot.create(:page, parent: home, slug: 'parent', published_at: Time.now) }
+    let(:child){ FactoryBot.create(:page, parent: parent, slug: 'child', published_at: Time.now) }
+    let(:grandchild){ FactoryBot.create(:page, parent: child, slug: 'grandchild', published_at: Time.now) }
 
     it "should start with a slash" do
       expect(home.path).to match(/\A\//)
@@ -370,9 +370,9 @@ describe Page do
 
   describe '#child_path' do
 
-    let(:home){ FactoryGirl.create(:page, slug: '/', published_at: Time.now) }
-    let(:parent){ FactoryGirl.create(:page, parent: home, slug: 'parent', published_at: Time.now) }
-    let(:child){ FactoryGirl.create(:page, parent: parent, slug: 'child', published_at: Time.now) }
+    let(:home){ FactoryBot.create(:page, slug: '/', published_at: Time.now) }
+    let(:parent){ FactoryBot.create(:page, parent: home, slug: 'parent', published_at: Time.now) }
+    let(:child){ FactoryBot.create(:page, parent: parent, slug: 'child', published_at: Time.now) }
 
     it 'should return the #path for the given child' do
       expect(parent.child_path(child)).to eq('/parent/child/')
@@ -381,7 +381,7 @@ describe Page do
 
   describe '#status' do
     test_helper :page
-    let(:home){ FactoryGirl.create(:page, slug: '/', published_at: Time.current) }
+    let(:home){ FactoryBot.create(:page, slug: '/', published_at: Time.current) }
 
     it 'should return the Status with the id of the page status_id' do
       expect(home.status).to eq(Status.find(home.status_id))
@@ -436,7 +436,7 @@ end
 describe Page, "before save filter" do
 
   before :each do
-    Page.create(FactoryGirl.attributes_for(:page, title:"Month Index", class_name: "VirtualSpecPage"))
+    Page.create(FactoryBot.attributes_for(:page, title:"Month Index", class_name: "VirtualSpecPage"))
     @page = Page.find_by_title("Month Index")
   end
 
@@ -471,22 +471,22 @@ end
 describe Page, "rendering" do
   test_helper :render
   let(:hello_world){
-    FactoryGirl.build(:page) do |page|
+    FactoryBot.build(:page) do |page|
       page.parts.build(name: 'body', content: 'Hello world!')
     end
   }
   let(:reverse_filtered){
-    FactoryGirl.build(:page) do |page|
+    FactoryBot.build(:page) do |page|
       page.parts.build(name: 'body', content: 'Hello world!', filter_id: 'Reverse')
     end
   }
   let(:radius){
-    FactoryGirl.build(:page, title: 'Radius') do |page|
+    FactoryBot.build(:page, title: 'Radius') do |page|
       page.parts.build(name: 'body', content: '<r:title />')
     end
   }
   let(:test_page){
-    PageSpecTestPage.create(FactoryGirl.attributes_for(:page, title: "Test Page")) do |page|
+    PageSpecTestPage.create(FactoryBot.attributes_for(:page, title: "Test Page")) do |page|
       page.parts.build(name: 'body', content: '<r:test1 /> <r:test2 />')
     end
   }
@@ -504,7 +504,7 @@ describe Page, "rendering" do
   end
 
   it 'should render with a layout' do
-    hello_world.update_attribute(:layout_id, FactoryGirl.create(:layout).id)
+    hello_world.update_attribute(:layout_id, FactoryBot.create(:layout).id)
     expect(hello_world.render).to eq("<html>\n  <head>\n    <title>Page</title>\n  </head>\n  <body>\n    Hello world!\n  </body>\n</html>\n")
   end
 
@@ -536,18 +536,18 @@ unless defined?(::CustomFileNotFoundPage)
 end
 
 describe Page, "#find_by_path" do
-  let(:home){ FactoryGirl.create(:page, slug: '/', published_at: Time.now, status_id: Status[:published].id) }
-  let(:parent){ FactoryGirl.create(:page, parent: home, slug: 'parent', published_at: Time.now, status_id: Status[:published].id)}
-  let(:child){ FactoryGirl.create(:page, parent: parent, slug: 'child', published_at: Time.now, status_id: Status[:published].id)}
-  let(:grandchild){ FactoryGirl.create(:page, parent: child, slug: 'grandchild', published_at: Time.now, status_id: Status[:published].id)}
-  let(:great_grandchild){ FactoryGirl.create(:page, parent: grandchild, slug: 'great-grandchild', published_at: Time.now, status_id: Status[:published].id)}
-  let(:virtual){ FactoryGirl.create(:page, parent_id: home.id, slug: 'virtual', virtual: true) }
-  let(:file_not_found){ FactoryGirl.create(:file_not_found_page, parent_id: home.id, slug: '404', published_at: Time.now, status_id: Status[:published].id)}
-  let(:drafts){ FactoryGirl.create(:page, parent: home, slug: 'drafts', status_id: Status[:draft].id) }
-  let(:lonely_draft_file_not_found){ FactoryGirl.create(:file_not_found_page, parent_id: drafts.id, status_id: Status[:draft].id) }
-  let(:gallery){ FactoryGirl.create(:page, parent: home, slug: 'gallery', status_id: Status[:published].id)}
-  let(:draft){ FactoryGirl.create(:page, parent: home, slug: 'draft', status_id: Status[:published].id) }
-  let(:no_picture){ FactoryGirl.create(:file_not_found_page, slug: 'no-picture', parent_id: gallery.id, class_name: 'CustomFileNotFoundPage', status_id: Status[:published].id)}
+  let(:home){ FactoryBot.create(:page, slug: '/', published_at: Time.now, status_id: Status[:published].id) }
+  let(:parent){ FactoryBot.create(:page, parent: home, slug: 'parent', published_at: Time.now, status_id: Status[:published].id)}
+  let(:child){ FactoryBot.create(:page, parent: parent, slug: 'child', published_at: Time.now, status_id: Status[:published].id)}
+  let(:grandchild){ FactoryBot.create(:page, parent: child, slug: 'grandchild', published_at: Time.now, status_id: Status[:published].id)}
+  let(:great_grandchild){ FactoryBot.create(:page, parent: grandchild, slug: 'great-grandchild', published_at: Time.now, status_id: Status[:published].id)}
+  let(:virtual){ FactoryBot.create(:page, parent_id: home.id, slug: 'virtual', virtual: true) }
+  let(:file_not_found){ FactoryBot.create(:file_not_found_page, parent_id: home.id, slug: '404', published_at: Time.now, status_id: Status[:published].id)}
+  let(:drafts){ FactoryBot.create(:page, parent: home, slug: 'drafts', status_id: Status[:draft].id) }
+  let(:lonely_draft_file_not_found){ FactoryBot.create(:file_not_found_page, parent_id: drafts.id, status_id: Status[:draft].id) }
+  let(:gallery){ FactoryBot.create(:page, parent: home, slug: 'gallery', status_id: Status[:published].id)}
+  let(:draft){ FactoryBot.create(:page, parent: home, slug: 'draft', status_id: Status[:published].id) }
+  let(:no_picture){ FactoryBot.create(:file_not_found_page, slug: 'no-picture', parent_id: gallery.id, class_name: 'CustomFileNotFoundPage', status_id: Status[:published].id)}
 
   it 'should allow you to find the home page' do
     expect(home.find_by_path('/')).to eq(home)
@@ -718,7 +718,7 @@ describe Page, "class which is applied to a page but not defined" do
 
   before :each do
     Object.send(:const_set, :ClassNotDefinedPage, Class.new(Page){ def self.missing?; false end })
-    FactoryGirl.create(:page, title: "Class Not Defined", class_name: "ClassNotDefinedPage")
+    FactoryBot.create(:page, title: "Class Not Defined", class_name: "ClassNotDefinedPage")
     Object.send(:remove_const, :ClassNotDefinedPage)
     Page.load_subclasses
   end
@@ -776,7 +776,7 @@ describe Page, "processing" do
   before :all do
     @request = ActionDispatch::TestRequest.new url: '/page/'
     @response = ActionDispatch::TestResponse.new
-    @page = FactoryGirl.build(:page) do |page|
+    @page = FactoryBot.build(:page) do |page|
       page.parts.build(name: 'body', content: 'Hello world!')
     end
   end
@@ -787,7 +787,7 @@ describe Page, "processing" do
   end
 
   it 'should set headers and pass request and response' do
-    @page = PageSpecTestPage.create(FactoryGirl.attributes_for(:page, title: "Test Page"))
+    @page = PageSpecTestPage.create(FactoryBot.attributes_for(:page, title: "Test Page"))
     @page.process(@request, @response)
     expect(@response.headers['cool']).to eq('beans')
     expect(@response.headers['request']).to eq('TestRequest')
@@ -795,8 +795,8 @@ describe Page, "processing" do
   end
 
   it 'should set content type based on layout' do
-    @page = FactoryGirl.build(:page)
-    @page.layout = FactoryGirl.build(:utf8_layout)
+    @page = FactoryBot.build(:page)
+    @page.layout = FactoryBot.build(:utf8_layout)
     @page.process(@request, @response)
     expect(@response).to be_success
     expect(@response.headers['Content-Type']).to eq('text/html;charset=utf8')

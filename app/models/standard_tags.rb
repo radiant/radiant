@@ -56,7 +56,7 @@ module StandardTags
   tag 'children:count' do |tag|
     options = children_find_options(tag)
     options.delete(:order) # Order is irrelevant
-    tag.locals.children.count(options)
+    tag.locals.children.where(options.delete(:conditions)).count()
   end
 
   desc %{
@@ -70,7 +70,7 @@ module StandardTags
   tag 'children:first' do |tag|
     options = children_find_options(tag)
     order = options.delete(:order)
-    children = tag.locals.children.reorder(order).all.where(options)
+    children = tag.locals.children.reorder(order).all.limit(options[:limit]).offset(options.delete(:offset)).where(options[:conditions])
     if first = children.first
       tag.locals.page = first
       tag.expand
@@ -88,7 +88,7 @@ module StandardTags
   tag 'children:last' do |tag|
     options = children_find_options(tag)
     order = options.delete(:order)
-    children = tag.locals.children.reorder(order).all.where(options)
+    children = tag.locals.children.reorder(order).all.limit(options[:limit]).offset(options.delete(:offset)).where(options[:conditions])
     if last = children.last
       tag.locals.page = last
       tag.expand
@@ -380,7 +380,7 @@ module StandardTags
     result = []
     children = tag.locals.children.reorder(order)
     tag.locals.previous_headers = {}
-    children.all.where(options).each do |item|
+    children.all.where(options.delete(:conditions)).each do |item|
       tag.locals.child = item
       tag.locals.page = item
       result << tag.expand
@@ -406,9 +406,9 @@ module StandardTags
     options = aggregate_children(tag)
     if ActiveRecord::Base.connection.adapter_name.downcase == 'postgresql'
       options[:group] = Page.columns.map {|c| c.name}.join(', ')
-      Page.all.where(options).size
+      Page.all.where(options.delete(:conditions)).size
     else
-      Page.count(options)
+      Page.where(options.delete(:conditions)).count
     end
   end
   desc %{
@@ -1156,7 +1156,8 @@ module StandardTags
       result = []
       tag.locals.previous_headers = {}
       order = options.delete(:order)
-      displayed_children = paging ? findable.paginate(options.merge(paging)).reorder(order) : findable.reorder(order).all(options)
+      findable = findable.where(options.delete(:conditions))
+      displayed_children = paging ? findable.paginate(options.merge(paging)).reorder(order) : findable.reorder(order).offset(options.delete(:offset)).limit(options.delete(:limit)).all()
       displayed_children.each_with_index do |item, i|
         tag.locals.child = item
         tag.locals.page = item

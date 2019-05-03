@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe PageContext do
   before :each do
-    @page = FactoryGirl.build(:home)
+    @page = FactoryBot.build(:home)
     @context = PageContext.new(@page)
     @parser = Radius::Parser.new(@context, tag_prefix: 'r')
     @context = @parser.context
@@ -18,7 +18,7 @@ describe PageContext do
 
   it 'should give tags access to the request' do
     @page.save!
-    another = FactoryGirl.create(:published_page, parent_id: @page.id, title: 'Another')
+    another = FactoryBot.create(:published_page, parent_id: @page.id, title: 'Another')
     @context.define_tag("if_request") { |tag| tag.expand if tag.locals.page.request }
     expect(parse('<r:if_request>tada!</r:if_request>')).to match(/^$/)
 
@@ -29,7 +29,7 @@ describe PageContext do
 
   it 'should give tags access to the response' do
     @page.save!
-    another = FactoryGirl.create(:published_page, parent_id: @page.id, title: 'Another')
+    another = FactoryBot.create(:published_page, parent_id: @page.id, title: 'Another')
     @context.define_tag("if_response") { |tag| tag.expand if tag.locals.page.response }
     expect(parse('<r:if_response>tada!</r:if_response>')).to match(/^$/)
 
@@ -48,7 +48,7 @@ end
 
 describe PageContext, "when errors are not being raised" do
   before :each do
-    @page = FactoryGirl.build(:home)
+    @page = FactoryBot.build(:home)
     @context = PageContext.new(@page)
     @parser = Radius::Parser.new(@context, tag_prefix: 'r')
     allow(@parser.context).to receive(:raise_errors?).and_return(false)

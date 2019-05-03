@@ -1,8 +1,9 @@
 rvm:
-  - 2.0.0
-  - 1.9.3
+  - 2.3.4
 
-before_install: rm -f Gemfile
+before_install:
+  - rm -f Gemfile
+  - gem install -v 1.17.3 bundler
 
 before_script: bin/ci/before_script
 
@@ -21,4 +22,3 @@ env:
 
 gemfile:
   - rails40.gemfile
-  - rails32.gemfile

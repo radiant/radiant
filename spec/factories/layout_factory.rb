@@ -1,8 +1,8 @@
-FactoryGirl.define do
+FactoryBot.define do
   
   factory :layout do
-    name 'Main Layout'
-    content <<-CONTENT
+    name { 'Main Layout' }
+    content { <<-CONTENT }
 <html>
   <head>
     <title><r:title /></title>
@@ -14,8 +14,8 @@ FactoryGirl.define do
     CONTENT
     
     factory :utf8_layout do
-      name 'utf8'
-      content_type "text/html;charset=utf8"
+      name { 'utf8' }
+      content_type { "text/html;charset=utf8" }
     end
     
   end

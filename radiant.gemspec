@@ -23,7 +23,7 @@ a general purpose content managment system--not merely a blogging engine.}
   s.summary = %q{A no-fluff content management system designed for small teams.}
   s.license = %q{MIT}
 
-  s.add_dependency "rails",           ">= 4.2"
+  s.add_dependency "rails",           ">= 4.2.5"
   s.add_dependency "rails-observers", "~> 0.1.2"
   s.add_dependency "activeresource",  ">= 3.2"
   s.add_dependency "protected_attributes", "~> 1.1.3"
@@ -45,12 +45,14 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_development_dependency "cucumber-rails",            "~> 1.4"
   s.add_development_dependency "database_cleaner",          "~> 1.1"
   s.add_development_dependency "capybara",                  "~> 2.1"
-  s.add_development_dependency "factory_girl",              "~> 4.7"
+  s.add_development_dependency "factory_bot",               "~> 5.0"
+  s.add_development_dependency "factory_bot_rails",         "~> 5.0"
   s.add_development_dependency "rspec",                     "~> 3.4.0"
   s.add_development_dependency "rspec-rails",               "~> 3.4.2"
   s.add_development_dependency "rspec-its",                 "~> 1.0"
   s.add_development_dependency "rspec-collection_matchers", "~> 1.1"
   s.add_development_dependency "rspec-activemodel-mocks",   "~> 1.0"
-  s.add_development_dependency "combustion",                "~> 0.5.4"
-  s.add_development_dependency "sqlite3",                   "~> 1.3"
+  s.add_development_dependency "rspec-html-matchers",       "~> 0.9.1"
+  s.add_development_dependency "combustion",                "~> 1.1"
+  s.add_development_dependency "sqlite3",                   "~> 1.3.13"
 end

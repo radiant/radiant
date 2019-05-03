@@ -104,7 +104,7 @@ describe User, "validations" do
     end
 
     it 'ensures the confirmation matches' do
-      user.password = 'test'
+      user.password = 'correct'
       user.password_confirmation = 'not correct'
       expect(user.errors_on(:password_confirmation)).to include("doesn't match Password")
     end
@@ -194,7 +194,7 @@ end
 
 describe User, "class methods" do
 
-  let(:existing){ FactoryGirl.build(:user, login: 'existing', email: 'existing@example.com', password: 'password') }
+  let(:existing){ FactoryBot.build(:user, login: 'existing', email: 'existing@example.com', password: 'password') }
 
   it 'should authenticate with correct username and password' do
     existing.save!
@@ -219,9 +219,9 @@ end
 
 describe User, "roles" do
 
-  let(:admin){ FactoryGirl.build(:user, admin: true) }
-  let(:designer){ FactoryGirl.build(:user, designer: true) }
-  let(:existing){ FactoryGirl.build(:user) }
+  let(:admin){ FactoryBot.build(:user, admin: true) }
+  let(:designer){ FactoryBot.build(:user, designer: true) }
+  let(:existing){ FactoryBot.build(:user) }
 
   it "should not have a non-existent role" do
     expect(existing.has_role?(:foo)).to be false

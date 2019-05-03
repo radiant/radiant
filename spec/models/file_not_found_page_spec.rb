@@ -5,7 +5,7 @@ describe FileNotFoundPage do
   #dataset :file_not_found
   test_helper :render
 
-  let(:file_not_found){ FactoryGirl.create(:file_not_found_page) }
+  let(:file_not_found){ FactoryBot.create(:file_not_found_page) }
 
   describe '#allowed_children' do
     subject { super().allowed_children }

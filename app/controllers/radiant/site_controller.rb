@@ -12,7 +12,12 @@ module Radiant
     def self.cache_timeout
       Radiant::PageResponseCacheDirector.cache_timeout
     end
-
+    class Response
+      attr_accessor :status, :headers, :body
+      def initialize
+        self.headers = {}
+      end
+    end
     def show_page
       url = params[:url]
       if Array === url
@@ -22,9 +27,10 @@ module Radiant
       end
       if @page = find_page(url)
         batch_page_status_refresh if (url == "/" || url == "")
-        process_page(@page)
-        set_cache_control
+        response = process_page(@page)
+        set_cache_control      
         @performed_render ||= true
+        render body: response.body, status: response.status, content_type: response.headers['Content-Type']
       else
         render template: 'radiant/site/not_found', status: 404
       end
@@ -84,8 +90,10 @@ module Radiant
       end
 
       def process_page(page)
-        page.pagination_parameters = pagination_parameters
-        page.process(request, response)
+        Response.new.tap do |response|
+          page.pagination_parameters = pagination_parameters
+          page.process(request, response)
+        end
       end
 
       def dev?

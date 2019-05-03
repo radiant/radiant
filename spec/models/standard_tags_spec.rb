@@ -3,60 +3,60 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "Standard Tags" do
   test_helper :page
 
-  let!(:home){ FactoryGirl.create(:home) do |page|
-    page.created_by = FactoryGirl.create(:admin)
+  let!(:home){ FactoryBot.create(:home) do |page|
+    page.created_by = FactoryBot.create(:admin)
     page.parts.create(name: "body", content: "Hello world!")
     page.parts.create(name: "sidebar", content: "<r:title /> sidebar.")
     page.parts.create(name: "extended", content: "Just a test.")
     page.parts.create(name: "titles", content: "<r:title /> <r:page:title />")
   end}
-  let(:page){ FactoryGirl.create(:published_page, parent: home, title: 'Page') }
-  let(:radius){ FactoryGirl.create(:published_page, parent: home, title: 'Radius')}
+  let(:page){ FactoryBot.create(:published_page, parent: home, title: 'Page') }
+  let(:radius){ FactoryBot.create(:published_page, parent: home, title: 'Radius')}
   
-  let(:parent){ FactoryGirl.create(:page_with_body_page_part, parent: home, title: 'Parent') }
-  let(:child){ FactoryGirl.create(:page_with_body_page_part, parent: parent, title: 'Child') }
-  let(:grandchild){ FactoryGirl.create(:page_with_body_and_sidebar_parts, parent: child, title: 'Grandchild') }
-  let(:great_grandchild){ FactoryGirl.create(:published_page, parent: grandchild, title: 'Great Grandchild') }
-  let(:child_2){ FactoryGirl.create(:page_with_body_page_part, parent: parent, title: 'Child 2') }
-  let(:child_3){ FactoryGirl.create(:page_with_body_page_part, parent: parent, title: 'Child 3') }
+  let(:parent){ FactoryBot.create(:page_with_body_page_part, parent: home, title: 'Parent') }
+  let(:child){ FactoryBot.create(:page_with_body_page_part, parent: parent, title: 'Child') }
+  let(:grandchild){ FactoryBot.create(:page_with_body_and_sidebar_parts, parent: child, title: 'Grandchild') }
+  let(:great_grandchild){ FactoryBot.create(:published_page, parent: grandchild, title: 'Great Grandchild') }
+  let(:child_2){ FactoryBot.create(:page_with_body_page_part, parent: parent, title: 'Child 2') }
+  let(:child_3){ FactoryBot.create(:page_with_body_page_part, parent: parent, title: 'Child 3') }
   
-  let(:news){ FactoryGirl.create(:published_page, parent: home, title: 'News') }
+  let(:news){ FactoryBot.create(:published_page, parent: home, title: 'News') }
   dates = ['2000-12-01 08:41:07', '2001-02-09 08:42:04', '2001-02-24 12:02:43', '2001-03-06 03:32:31']
   dates.each do |date|
     title = "Article#{(' ' + (dates.index(date) + 1).to_s) unless date == dates.first}"
     let(title.downcase.gsub(' ', '_').to_sym){
-      FactoryGirl.create(:published_page, published_at: DateTime.parse(date), title: title, parent: news)
+      FactoryBot.create(:published_page, published_at: DateTime.parse(date), title: title, parent: news)
     }
   end
-  let(:draft){ FactoryGirl.create(:page, title: "Draft", parent: news, status: Status[:draft]) }
+  let(:draft){ FactoryBot.create(:page, title: "Draft", parent: news, status: Status[:draft]) }
   
-  let(:assorted){ FactoryGirl.create(:published_page, parent: home, title: 'Assorted') }
+  let(:assorted){ FactoryBot.create(:published_page, parent: home, title: 'Assorted') }
   breadcrumbs = %w(f e d c b a j i h g)
   %w(a b c d e f g h i j).each_with_index do |name, i|
     let(name.to_sym){
-      FactoryGirl.create(:published_page, breadcrumb: breadcrumbs[i], published_at: Time.now - (10 - i).minutes, title: name, parent: assorted)
+      FactoryBot.create(:published_page, breadcrumb: breadcrumbs[i], published_at: Time.now - (10 - i).minutes, title: name, parent: assorted)
     }
   end
-  let(:assorted_draft){ FactoryGirl.create(:published_page, parent: home, title: "Assorted Draft", status_id: Status[:draft].id, slug: "draft") }
-  let(:assorted_draft){ FactoryGirl.create(:published_page, parent: home, title: "Assorted Virtual", class_name: "VirtualPage", virtual: true, slug: "virtual") }
+  let(:assorted_draft){ FactoryBot.create(:published_page, parent: home, title: "Assorted Draft", status_id: Status[:draft].id, slug: "draft") }
+  let(:assorted_draft){ FactoryBot.create(:published_page, parent: home, title: "Assorted Virtual", class_name: "VirtualPage", virtual: true, slug: "virtual") }
     
   date = Time.utc(2006, 1, 11)
-  let(:dated){ FactoryGirl.create(:published_page, parent: home, title: 'Dated', published_at: date, created_at: (date - 1.day), updated_at: (date + 1.day))}
-  let(:scheduled){ FactoryGirl.create(:page, parent: home, title: 'Scheduled', published_at: (Time.now + 1.day), status_id: Status[:scheduled].id)}
+  let(:dated){ FactoryBot.create(:published_page, parent: home, title: 'Dated', published_at: date, created_at: (date - 1.day), updated_at: (date + 1.day))}
+  let(:scheduled){ FactoryBot.create(:page, parent: home, title: 'Scheduled', published_at: (Time.now + 1.day), status_id: Status[:scheduled].id)}
   
-  let(:devtags){ FactoryGirl.create(:published_page, parent: home, title: 'Devtags') do |page|
+  let(:devtags){ FactoryBot.create(:published_page, parent: home, title: 'Devtags') do |page|
       page.parts.create(name: 'if_dev', content: "<r:if_dev>dev</r:if_dev>")
       page.parts.create(name: 'unless_dev', content: "<r:unless_dev>not dev</r:unless_dev>")
     end }
     
-  let(:recursive_parts){ FactoryGirl.create(:published_page, parent: home, title: 'Recursive parts') do |page|
+  let(:recursive_parts){ FactoryBot.create(:published_page, parent: home, title: 'Recursive parts') do |page|
     page.parts.create(name: "body", content: "<r:content />")
     page.parts.create(name: "one", content: '<r:content part="two" />')
     page.parts.create(name: "two", content: '<r:content part="one" />')
     page.parts.create(name: "repeat", content: '<r:content part="beat"/><r:content part="beat"/>')
     page.parts.create(name: "beat", content: 'x')
   end}
-#   let(:file_not_found){ FactoryGirl.create(:file_not_found_page, parent_id: home.id, slug: '404', published_at: Time.now, status_id: Status[:published].id)}
+#   let(:file_not_found){ FactoryBot.create(:file_not_found_page, parent_id: home.id, slug: '404', published_at: Time.now, status_id: Status[:published].id)}
 
   it '<r:page> should allow access to the current page' do
     radius
@@ -596,6 +596,12 @@ describe "Standard Tags" do
       expect(home).to render('<r:aggregate paths="/news; /assorted"><r:children:count /></r:aggregate>').as('14')
     end
   end
+  describe "<r:aggregate:children:first>" do
+    it 'should render its contents in the context of the first child page'
+  end
+  describe "<r:aggregate:children:last>" do
+    it 'should render its contents in the context of the last child page'
+  end
 
   describe "<r:aggregate:children:each>" do
     it "should loop through each child from the given paths" do
@@ -1090,8 +1096,8 @@ describe "Standard Tags" do
   end
 
   describe "<r:status>" do
-    let(:hidden){ FactoryGirl.build(:page, status: Status[:hidden])}
-    let(:draft){ FactoryGirl.build(:page, status: Status[:draft])}
+    let(:hidden){ FactoryBot.build(:page, status: Status[:hidden])}
+    let(:draft){ FactoryBot.build(:page, status: Status[:draft])}
     
     it "should render the status of the current page" do
       status_tag = "<r:status/>"
