@@ -23,7 +23,7 @@ Radiant features:
 
 ## License
 
-Radiant is released under the MIT license and is copyright (c) 2006-2009
+Radiant is released under the MIT license and is copyright (c) 2006-2018
 John W. Long and Sean Cribbs. A copy of the MIT license can be found in the
 LICENSE file.
 
@@ -48,11 +48,11 @@ This will install the gem with the prerelease name, for example: ‘radiant-0.9.
 
 1. Update the Radiant assets from in your project:
 
-    $ rake radiant:update
+        $ rake radiant:update
 
 2. Migrate the database:
 
-    $ rake production db:migrate
+        $ rake production db:migrate
 
 3. Restart the web server
 
@@ -60,7 +60,7 @@ This will install the gem with the prerelease name, for example: ‘radiant-0.9.
 
 To run tests you will need to have the following gems installed:
 
-  gem install ZenTest rspec rspec-rails cucumber webrat nokogiri sqlite3-ruby
+    gem install ZenTest rspec rspec-rails cucumber webrat nokogiri sqlite3-ruby
 
 ## Support
 
