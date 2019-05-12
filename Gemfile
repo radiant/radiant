@@ -1,5 +1,3 @@
-
-
 source 'https://rubygems.org'
 
 # This is the minimum of dependency required to run
