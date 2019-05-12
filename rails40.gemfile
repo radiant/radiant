@@ -1,7 +1,0 @@
-source "https://rubygems.org"
-
-gemspec :development_group => :test
-gem "protected_attributes"
-gem "rails-observers"
-gem "mysql"
-gem "pg"

@@ -1,0 +1,53 @@
+- form_for [:admin, @user] do |f|
+  = hidden_field "user", "lock_version"
+  
+  = render :partial => 'avatar' unless @user.new_record?
+  
+  = render_region :form_top, :locals => {:f => f}
+  
+  - render_region :form, :locals => {:f => f} do |form|
+    - form.edit_name do
+      %p
+        = f.label :name, t('name') 
+        = f.text_field :name, :class => "textbox activate", :size => 32, :maxlength => 100 
+    
+    - form.edit_email do
+      %p
+        = f.label :email, t('email_address') , :class => "optional"
+        = f.text_field "email", :class => 'textbox', :size => 32, :maxlength => 255
+    
+    - form.edit_username do
+      %p
+        = f.label :login, t('username') 
+        = f.text_field "login", :class => "textbox", :size => 32, :maxlength => 40, :autocomplete => 'off'
+    
+    - form.edit_password do
+      = render "password_fields", :f => f
+    
+    - form.edit_roles do
+      %p
+        %label.multi_option= t('roles')
+        = f.check_box "admin", :class => "checkbox"
+        = f.label :admin, t('admin'), :class => "checkbox"
+        = f.check_box "designer", :class => "checkbox"
+        = f.label :designer, t('designer'), :class => "checkbox"
+    
+    - form.edit_locale do
+      %p
+        = f.label :locale, t('language') 
+        = f.select "locale", available_locales_select
+    
+    - form.edit_notes do
+      %p
+        = f.label :notes, t('notes'), :class => "optional"
+        ~ f.text_area "notes", :size => "53x4", :class => "textarea"
+  
+  - render_region :form_bottom, :locals => {:f => f} do |form_bottom|
+    - form_bottom.edit_buttons do
+      .buttons
+        = save_model_button(@user)
+        = save_model_and_continue_editing_button(@user)
+        = t('or')   
+        = link_to t('cancel'), admin_users_path
+    - form_bottom.edit_timestamp do
+      = updated_stamp @user

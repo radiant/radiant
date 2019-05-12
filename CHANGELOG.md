@@ -1,15 +1,18 @@
 # Change Log
 
-# 2.x
+## 1.1.4
 
-* Remove r:navigation:url to be replaced with r:navigatin:path [Jim Gay]
-* Rename Radiant.config to Radiant.detail [Jim Gay]
-* Remove InheritableClassAttributes [Jim Gay]
-* Remove specific autotest support [Jim Gay]
-* Remove the notion of Radiant instances [Jim Gay]
+* Remove autotest support [Jim Gay]
+* Bump to Rails 2.3.18 [Jim Gay]
+* Update versions for several extensions in the generated Gemfile [Benny Degezelle]
+* Move snippet configuration into snippets extension [Benny Degezelle]
+* Get default gravatar image locally when fire walled [Andrew Vonderluft, Benny Degezelle]
+* Fix migration problems concerning allowed_children_cache [Andrew Vonderluft]
+* Prevent spec errors on generated extensions [Andrew Vonderluft]
 
 ## 1.1.3
 
+* Move to Rails 2.3.17 [Jim Gay]
 * Bump rack dependency to 1.1.6 [Jim Gay]
 * Fixed errors from using rake 10.0.3 and old gem package tasks [Jim Gay]
 

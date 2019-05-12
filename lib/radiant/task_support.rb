@@ -37,6 +37,30 @@ module Radiant
         end
       end
 
+      # Write the combined content of files in dir into cache_file in the same dir.
+      #
+      def cache_files(dir, files, cache_file)
+        cache_content = files.collect { |f|
+          File.read(File.join(dir, f)) }.join("\n\n")
+
+        cache_path = File.join(dir, cache_file)
+        File.delete(cache_path) if File.exists?(cache_path)
+        File.open(cache_path, "w+") { |f| f.write(cache_content) }
+      end
+
+      # Reads through the layout file and returns an array of JS filenames
+      #
+      def find_admin_js
+        layout = "#{RADIANT_ROOT}/app/views/layouts/application.html.haml"
+        js_regexp = /javascript_include_tag %w\((.*)\), :cache => 'admin\/all/
+        files = File.open(layout) { |f| f.read.match(js_regexp)[1].split }
+        files.collect { |f| f.split('/').last + '.js' }
+      end
+
+      def cache_admin_js
+        dir = "#{Rails.root}/public/javascripts/admin"
+        cache_files(dir, find_admin_js, 'all.js')
+      end
     end
   end
 end

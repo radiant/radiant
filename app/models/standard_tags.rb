@@ -1,10 +1,10 @@
 module StandardTags
 
   include Radiant::Taggable
+  include LocalTime
 
   require "will_paginate/view_helpers"
   include WillPaginate::ViewHelpers
-  require "radiant/pagination/link_renderer"
 
   class TagError < StandardError; end
   class RequiredAttributeError < StandardError; end
@@ -13,7 +13,7 @@ module StandardTags
     Causes the tags referring to a page's attributes to refer to the current page.
 
     *Usage:*
-
+    
     <pre><code><r:page>...</r:page></code></pre>
   }
   tag 'page' do |tag|
@@ -36,13 +36,13 @@ module StandardTags
   tag 'path' do |tag|
     relative_url_for(tag.locals.page.path, tag.globals.page.request)
   end
-  deprecated_tag 'url', substitute: 'path', deadline: '1.2'
+  deprecated_tag 'url', :substitute => 'path', :deadline => '1.2'
 
   desc %{
     Gives access to a page's children.
 
     *Usage:*
-
+    
     <pre><code><r:children>...</r:children></code></pre>
   }
   tag 'children' do |tag|
@@ -56,7 +56,7 @@ module StandardTags
   tag 'children:count' do |tag|
     options = children_find_options(tag)
     options.delete(:order) # Order is irrelevant
-    tag.locals.children.where(options.delete(:conditions)).count()
+    tag.locals.children.count(options)
   end
 
   desc %{
@@ -64,13 +64,12 @@ module StandardTags
     the first child. Takes the same ordering options as @<r:children:each>@.
 
     *Usage:*
-
+    
     <pre><code><r:children:first>...</r:children:first></code></pre>
   }
   tag 'children:first' do |tag|
     options = children_find_options(tag)
-    order = options.delete(:order)
-    children = tag.locals.children.reorder(order).all.limit(options[:limit]).offset(options.delete(:offset)).where(options[:conditions])
+    children = tag.locals.children.find(:all, options)
     if first = children.first
       tag.locals.page = first
       tag.expand
@@ -82,13 +81,12 @@ module StandardTags
     the last child. Takes the same ordering options as @<r:children:each>@.
 
     *Usage:*
-
+    
     <pre><code><r:children:last>...</r:children:last></code></pre>
   }
   tag 'children:last' do |tag|
     options = children_find_options(tag)
-    order = options.delete(:order)
-    children = tag.locals.children.reorder(order).all.limit(options[:limit]).offset(options.delete(:offset)).where(options[:conditions])
+    children = tag.locals.children.find(:all, options)
     if last = children.last
       tag.locals.page = last
       tag.expand
@@ -98,16 +96,16 @@ module StandardTags
   desc %{
     Cycles through each of the children. Inside this tag all page attribute tags
     are mapped to the current child page.
-
+    
     Supply @paginated="true"@ to paginate the displayed list. will_paginate view helper
     options can also be specified, including @per_page@, @previous_label@, @next_label@,
     @class@, @separator@, @inner_window@ and @outer_window@.
 
     *Usage:*
-
+    
     <pre><code><r:children:each [offset="number"] [limit="number"]
      [by="published_at|updated_at|created_at|slug|title|keywords|description"]
-     [order="asc|desc"]
+     [order="asc|desc"] 
      [status="draft|reviewed|published|hidden|all"]
      [paginated="true"]
      [per_page="number"]
@@ -125,7 +123,7 @@ module StandardTags
     be automatically display only the current page of results, with pagination controls at the bottom.
 
     *Usage:*
-
+    
     <pre><code><r:children:each paginated="true" per_page="50" container="false" previous_label="foo" next_label="bar">
       <r:child>...</r:child>
     </r:children:each>
@@ -143,7 +141,7 @@ module StandardTags
     current child.
 
     *Usage:*
-
+    
     <pre><code><r:children:each>
       <r:child>...</r:child>
     </r:children:each>
@@ -153,81 +151,81 @@ module StandardTags
     tag.locals.page = tag.locals.child
     tag.expand
   end
-
+  
   desc %{
     Renders the tag contents only if the current page is the first child in the context of
     a children:each tag
-
+    
     *Usage:*
-
+    
     <pre><code><r:children:each>
       <r:if_first >
         ...
       </r:if_first>
     </r:children:each>
     </code></pre>
-
+    
   }
   tag 'children:each:if_first' do |tag|
     tag.expand if tag.locals.first_child
   end
 
-
+  
   desc %{
     Renders the tag contents unless the current page is the first child in the context of
     a children:each tag
-
+    
     *Usage:*
-
+    
     <pre><code><r:children:each>
       <r:unless_first >
         ...
       </r:unless_first>
     </r:children:each>
     </code></pre>
-
+    
   }
   tag 'children:each:unless_first' do |tag|
     tag.expand unless tag.locals.first_child
   end
-
+  
   desc %{
     Renders the tag contents only if the current page is the last child in the context of
     a children:each tag
-
+    
     *Usage:*
-
+    
     <pre><code><r:children:each>
       <r:if_last >
         ...
       </r:if_last>
     </r:children:each>
     </code></pre>
-
+    
   }
   tag 'children:each:if_last' do |tag|
     tag.expand if tag.locals.last_child
   end
 
-
+  
   desc %{
     Renders the tag contents unless the current page is the last child in the context of
     a children:each tag
-
+    
     *Usage:*
-
+    
     <pre><code><r:children:each>
       <r:unless_last >
         ...
       </r:unless_last>
     </r:children:each>
     </code></pre>
-
+    
   }
   tag 'children:each:unless_last' do |tag|
     tag.expand unless tag.locals.last_child
   end
-
+  
   desc %{
     Renders the tag contents only if the contents do not match the previous header. This
     is extremely useful for rendering date headers for a list of child pages.
@@ -241,7 +239,7 @@ module StandardTags
     separated list.
 
     *Usage:*
-
+    
     <pre><code><r:children:each>
       <r:header [name="header_name"] [restart="name1[;name2;...]"]>
         ...
@@ -269,7 +267,7 @@ module StandardTags
     Page attribute tags inside this tag refer to the parent of the current page.
 
     *Usage:*
-
+    
     <pre><code><r:parent>...</r:parent></code></pre>
   }
   tag "parent" do |tag|
@@ -283,7 +281,7 @@ module StandardTags
     is not the root page.
 
     *Usage:*
-
+    
     <pre><code><r:if_parent>...</r:if_parent></code></pre>
   }
   tag "if_parent" do |tag|
@@ -296,7 +294,7 @@ module StandardTags
     is the root page.
 
     *Usage:*
-
+    
     <pre><code><r:unless_parent>...</r:unless_parent></code></pre>
   }
   tag "unless_parent" do |tag|
@@ -311,11 +309,11 @@ module StandardTags
     non-virtual pages regardless of status.
 
     *Usage:*
-
+    
     <pre><code><r:if_children [status="published"]>...</r:if_children></code></pre>
   }
   tag "if_children" do |tag|
-    children = tag.locals.page.children.where(children_find_options(tag)[:conditions]).count
+    children = tag.locals.page.children.count(:conditions => children_find_options(tag)[:conditions])
     tag.expand if children > 0
   end
 
@@ -326,21 +324,21 @@ module StandardTags
     regardless of status.
 
     *Usage:*
-
+    
     <pre><code><r:unless_children [status="published"]>...</r:unless_children></code></pre>
   }
   tag "unless_children" do |tag|
-    children = tag.locals.page.children.where(children_find_options(tag)[:conditions]).count
+    children = tag.locals.page.children.count(:conditions => children_find_options(tag)[:conditions])
     tag.expand unless children > 0
   end
-
+  
     desc %{
     Aggregates the children of multiple paths using the @paths@ attribute.
     Useful for combining many different sections/categories into a single
     feed or listing.
-
+    
     *Usage*:
-
+    
     <pre><code><r:aggregate paths="/section1; /section2; /section3"> ... </r:aggregate></code></pre>
   }
   tag "aggregate" do |tag|
@@ -350,13 +348,13 @@ module StandardTags
     tag.locals.parent_ids = parent_ids
     tag.expand
   end
-
+  
   desc %{
     Sets the scope to the individual aggregated page allowing you to
     iterate through each of the listed paths.
-
+    
     *Usage*:
-
+    
     <pre><code><r:aggregate:each paths="/section1; /section2; /section3"> ... </r:aggregate:each></code></pre>
   }
   tag "aggregate:each" do |tag|
@@ -368,47 +366,46 @@ module StandardTags
     end
     aggregates.flatten.join('')
   end
-
+  
   tag "aggregate:each:children" do |tag|
     tag.locals.children = tag.locals.page.children
     tag.expand
   end
-
+  
   tag "aggregate:each:children:each" do |tag|
     options = children_find_options(tag)
-    order = options.delete(:order)
     result = []
-    children = tag.locals.children.reorder(order)
+    children = tag.locals.children
     tag.locals.previous_headers = {}
-    children.all.where(options.delete(:conditions)).each do |item|
+    children.find(:all, options).each do |item|
       tag.locals.child = item
       tag.locals.page = item
       result << tag.expand
     end
     result.flatten.join('')
   end
-
+  
   tag "aggregate:children" do |tag|
     tag.expand
   end
-
+  
   desc %{
     Renders the total count of children of the aggregated pages.  Accepts the
     same options as @<r:children:each />@.
 
     *Usage*:
-
+    
     <pre><code><r:aggregate paths="/section1; /section2; /section3">
       <r:children:count />
     </r:aggregate></code></pre>
-  }
+  }  
   tag "aggregate:children:count" do |tag|
     options = aggregate_children(tag)
     if ActiveRecord::Base.connection.adapter_name.downcase == 'postgresql'
       options[:group] = Page.columns.map {|c| c.name}.join(', ')
-      Page.all.where(options.delete(:conditions)).size
+      Page.find(:all, options).size
     else
-      Page.where(options.delete(:conditions)).count
+      Page.count(options)
     end
   end
   desc %{
@@ -416,7 +413,7 @@ module StandardTags
     same options as the plain @<r:children:each />@.
 
     *Usage*:
-
+    
     <pre><code><r:aggregate paths="/section1; /section2; /section3">
       <r:children:each>
         ...
@@ -424,15 +421,15 @@ module StandardTags
     </r:aggregate></code></pre>
   }
   tag "aggregate:children:each" do |tag|
-    render_children_with_pagination(tag, aggregate: true)
+    render_children_with_pagination(tag, :aggregate => true)
   end
-
+  
   desc %{
     Renders the first child of the aggregated pages.  Accepts the
     same options as @<r:children:each />@.
 
     *Usage*:
-
+    
     <pre><code><r:aggregate paths="/section1; /section2; /section3">
       <r:children:first>
         ...
@@ -441,19 +438,19 @@ module StandardTags
   }
   tag "aggregate:children:first" do |tag|
     options = aggregate_children(tag)
-    children = Page.all.where(options)
+    children = Page.find(:all, options)
     if first = children.first
       tag.locals.page = first
       tag.expand
     end
   end
-
+  
   desc %{
     Renders the last child of the aggregated pages.  Accepts the
     same options as @<r:children:each />@.
 
     *Usage*:
-
+    
     <pre><code><r:aggregate paths="/section1; /section2; /section3">
       <r:children:last>
         ...
@@ -462,7 +459,7 @@ module StandardTags
   }
   tag "aggregate:children:last" do |tag|
     options = aggregate_children(tag)
-    children = Page.all.where(options)
+    children = Page.find(:all, options)
     if last = children.last
       tag.locals.page = last
       tag.expand
@@ -470,15 +467,15 @@ module StandardTags
   end
 
   desc %{
-    Renders a counter value or one of the values given based on a global cycle counter.
-
+    Renders a counter value or one of the values given based on a global cycle counter. 
+    
     To get a numeric counter just use the tag, or specify a start value with @start@.
     Use the @reset@ attribute to reset the cycle to the beginning. Using @reset@ on a
-    numbered cycle will begin at 0. Use the @name@  attribute to track multiple cycles;
+    numbered cycle will begin at 0. Use the @name@  attribute to track multiple cycles; 
     the default is @cycle@.
 
     *Usage:*
-
+    
     <pre><code><r:cycle [values="first, second, third"] [reset="true|false"] [name="cycle"] [start="second"] /></code></pre>
     <pre><code><r:cycle start="3" /></code></pre>
   }
@@ -520,7 +517,7 @@ module StandardTags
     is set to true.
 
     *Usage:*
-
+    
     <pre><code><r:content [part="part_name"] [inherit="true|false"] [contextual="true|false"] /></code></pre>
   }
   tag 'content' do |tag|
@@ -559,14 +556,14 @@ module StandardTags
     By default the @find@ attribute is set to @all@.
 
     *Usage:*
-
+    
     <pre><code><r:if_content [part="part_name, other_part"] [inherit="true"] [find="any"]>...</r:if_content></code></pre>
   }
   tag 'if_content' do |tag|
     part_name = tag_part_name(tag)
     parts_arr = part_name.split(',')
     inherit = boolean_attr_or_error(tag, 'inherit', 'false')
-    find = attr_or_error(tag, attribute_name: 'find', default: 'all', values: 'any, all')
+    find = attr_or_error(tag, :attribute_name => 'find', :default => 'all', :values => 'any, all')
     expandable = true
     one_found = false
     parts_arr.each do |name|
@@ -594,14 +591,14 @@ module StandardTags
     By default the @find@ attribute is set to @all@.
 
     *Usage:*
-
+    
     <pre><code><r:unless_content [part="part_name, other_part"] [inherit="false"] [find="any"]>...</r:unless_content></code></pre>
   }
   tag 'unless_content' do |tag|
     part_name = tag_part_name(tag)
     parts_arr = part_name.split(',')
     inherit = boolean_attr_or_error(tag, 'inherit', false)
-    find = attr_or_error(tag, attribute_name: 'find', default: 'all', values: 'any, all')
+    find = attr_or_error(tag, :attribute_name => 'find', :default => 'all', :values => 'any, all')
     expandable, all_found = true, true
     parts_arr.each do |name|
       part_page = tag.locals.page
@@ -626,7 +623,7 @@ module StandardTags
     match is case sensitive. By default, @ignore_case@ is set to true.
 
     *Usage:*
-
+    
     <pre><code><r:if_path matches="regexp" [ignore_case="true|false"]>...</r:if_path></code></pre>
   }
   tag 'if_path' do |tag|
@@ -636,13 +633,13 @@ module StandardTags
        tag.expand
     end
   end
-  deprecated_tag 'if_url', substitute: 'if_path', deadline: '1.2'
+  deprecated_tag 'if_url', :substitute => 'if_path', :deadline => '1.2'
 
   desc %{
     The opposite of the @if_path@ tag.
 
     *Usage:*
-
+    
     <pre><code><r:unless_path matches="regexp" [ignore_case="true|false"]>...</r:unless_path></code></pre>
   }
   tag 'unless_path' do |tag|
@@ -652,7 +649,7 @@ module StandardTags
         tag.expand
     end
   end
-  deprecated_tag 'unless_url', substitute: 'unless_path', deadline: '1.2'
+  deprecated_tag 'unless_url', :substitute => 'unless_path', :deadline => '1.2'
 
   desc %{
     Renders the contained elements if the current contextual page is either the actual page or one of its parents.
@@ -660,7 +657,7 @@ module StandardTags
     This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is or descends from the current page.
 
     *Usage:*
-
+    
     <pre><code><r:if_ancestor_or_self>...</r:if_ancestor_or_self></code></pre>
   }
   tag "if_ancestor_or_self" do |tag|
@@ -673,7 +670,7 @@ module StandardTags
     This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up unless the child element is or descends from the current page.
 
     *Usage:*
-
+    
     <pre><code><r:unless_ancestor_or_self>...</r:unless_ancestor_or_self></code></pre>
   }
   tag "unless_ancestor_or_self" do |tag|
@@ -686,7 +683,7 @@ module StandardTags
     This is typically used inside another tag (like &lt;r:children:each&gt;) to add conditional mark-up if the child element is the current page.
 
     *Usage:*
-
+    
     <pre><code><r:if_self>...</r:if_self></code></pre>
   }
   tag "if_self" do |tag|
@@ -736,7 +733,7 @@ module StandardTags
     size = (tag.attr['size'] || '32px')
     user = User.find_by_name(name)
     email = user ? user.email : nil
-    local_avatar_url = "/assets/admin/avatar_#{([size.to_i] * 2).join('x')}.png"    
+    local_avatar_url = "/images/admin/avatar_#{([size.to_i] * 2).join('x')}.png"    
     default_avatar_url = "#{request.protocol}#{request.host_with_port}#{local_avatar_url}"
         
     unless email.blank?
@@ -747,7 +744,7 @@ module StandardTags
       url << "&default=#{default_avatar_url}" unless request.host_with_port == 'testhost.tld'
       # Test the Gravatar url
       require 'open-uri'
-      begin; open "http:#{url}", proxy: true
+      begin; open "http:#{url}", :proxy => true
       rescue; local_avatar_url
       else; url
       end
@@ -790,7 +787,7 @@ module StandardTags
     else
       @i18n_date_format_keys ||= (I18n.config.backend.send(:translations)[I18n.locale][:date][:formats].keys rescue [])
     format = @i18n_date_format_keys.include?(format.to_sym) ? format.to_sym : format
-      I18n.l date, format: format
+      I18n.l date, :format => format
     end
   end
 
@@ -806,9 +803,9 @@ module StandardTags
     *Usage:*
 
     <pre><code><r:link [anchor="name"] [other attributes...] /></code></pre>
-
+    
     or
-
+    
     <pre><code><r:link [anchor="name"] [other attributes...]>link text here</r:link></code></pre>
   }
   tag 'link' do |tag|
@@ -824,7 +821,7 @@ module StandardTags
     Renders a trail of breadcrumbs to the current page. The separator attribute
     specifies the HTML fragment that is inserted between each of the breadcrumbs. By
     default it is set to @>@. The boolean @nolinks@ attribute can be specified to render
-    breadcrumbs in plain text, without any links (useful when generating title tag).
+    breadcrumbs in plain text, without any links (useful when generating title tag). 
     Set the boolean @noself@ attribute to omit the present page (useful in page headers).
 
     *Usage:*
@@ -943,8 +940,9 @@ module StandardTags
     hash = tag.locals.navigation = {}
     tag.expand
     raise TagError.new("`navigation' tag must include a `normal' tag") unless hash.has_key? :normal
+    ActiveSupport::Deprecation.warn("The 'urls' attribute of the r:navigation tag has been deprecated in favour of 'paths'. Please update your site.") if tag.attr['urls']
     result = []
-    pairs = (tag.attr['paths']).to_s.split('|').map do |pair|
+    pairs = (tag.attr['paths']||tag.attr['urls']).to_s.split('|').map do |pair|
       parts = pair.split(':')
       value = parts.pop
       key = parts.join(':')
@@ -980,6 +978,11 @@ module StandardTags
       hash = tag.locals.navigation
       hash[symbol]
     end
+  end
+  tag "navigation:url" do |tag|
+    hash = tag.locals.navigation
+    ActiveSupport::Deprecation.warn("The 'r:navigation:url' tag has been deprecated in favour of 'r:navigation:path'. Please update your site.")
+    hash[:path]
   end
 
   desc %{
@@ -1120,7 +1123,7 @@ module StandardTags
       else field
     end
   end
-
+  
   tag 'site' do |tag|
     tag.expand
   end
@@ -1142,7 +1145,7 @@ module StandardTags
   tag "site:dev_host" do |tag|
     Radiant::Config["dev.host"]
   end
-
+  
   private
     def render_children_with_pagination(tag, opts={})
       if opts[:aggregate]
@@ -1155,9 +1158,7 @@ module StandardTags
       paging = pagination_find_options(tag)
       result = []
       tag.locals.previous_headers = {}
-      order = options.delete(:order)
-      findable = findable.where(options.delete(:conditions))
-      displayed_children = paging ? findable.paginate(options.merge(paging)).reorder(order) : findable.reorder(order).offset(options.delete(:offset)).limit(options.delete(:limit)).all()
+      displayed_children = paging ? findable.paginate(options.merge(paging)) : findable.all(options)
       displayed_children.each_with_index do |item, i|
         tag.locals.child = item
         tag.locals.page = item
@@ -1171,7 +1172,7 @@ module StandardTags
       end
       result.flatten.join('')
     end
-
+    
     def children_find_options(tag)
       attr = tag.attr.symbolize_keys
 
@@ -1215,17 +1216,17 @@ module StandardTags
       end
       options
     end
-
+      
     def aggregate_children(tag)
       options = children_find_options(tag)
       parent_ids = tag.locals.parent_ids
-
+    
       conditions = options[:conditions]
       conditions.first << " AND parent_id IN (?)"
       conditions << parent_ids
       options
     end
-
+    
     def pagination_find_options(tag)
       attr = tag.attr.symbolize_keys
       if attr[:paginated] == 'true'
@@ -1234,11 +1235,11 @@ module StandardTags
         false
       end
     end
-
+    
     def will_paginate_options(tag)
       attr = tag.attr.symbolize_keys
       if attr[:paginated] == 'true'
-        attr.slice(:class, :previous_label, :next_label, :inner_window, :outer_window, :separator, :per_page).merge({renderer: Radiant::Pagination::LinkRenderer.new(tag.globals.page.path)})
+        attr.slice(:class, :previous_label, :next_label, :inner_window, :outer_window, :separator, :per_page).merge({:renderer => Radiant::Pagination::LinkRenderer.new(tag.globals.page.path)})
       else
         {}
       end
@@ -1255,7 +1256,7 @@ module StandardTags
     def build_regexp_for(tag, attribute_name)
       ignore_case = tag.attr.has_key?('ignore_case') && tag.attr['ignore_case']=='false' ? nil : true
       begin
-        regexp = Regexp.new(tag.attr[attribute_name], ignore_case)
+        regexp = Regexp.new(tag.attr['matches'], ignore_case)
       rescue RegexpError => e
         raise TagError.new("Malformed regular expression in `#{attribute_name}' argument of `#{tag.name}' tag: #{e.message}")
       end
@@ -1279,7 +1280,7 @@ module StandardTags
     end
 
     def boolean_attr_or_error(tag, attribute_name, default)
-      attribute = attr_or_error(tag, attribute_name: attribute_name, default: default.to_s, values: 'true, false')
+      attribute = attr_or_error(tag, :attribute_name => attribute_name, :default => default.to_s, :values => 'true, false')
       (attribute.to_s.downcase == 'true') ? true : false
     end
 
@@ -1292,7 +1293,7 @@ module StandardTags
       raise TagError.new(%{`#{attribute_name}' attribute of `#{tag.name}' tag must be one of: #{values.join(', ')}}) unless values.include?(attribute)
       return attribute
     end
-
+    
     def required_attr(tag, *attribute_names)
       attr_collection = attribute_names.map{|a| "`#{a}'"}.join(' or ')
       raise TagError.new("`#{tag.name}' tag must contain a #{attr_collection} attribute.") if (tag.attr.keys & attribute_names).blank?
@@ -1306,5 +1307,5 @@ module StandardTags
         request.host =~ /^dev\./
       end
     end
-
+    
 end

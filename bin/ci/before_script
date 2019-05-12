@@ -7,6 +7,9 @@ case $DB in
   "postgres" )
     psql -c 'create database radiant_test;' -U postgres
     cp spec/ci/database.postgresql.yml config/database.yml;;
+  "sqlite" )
+    cp spec/ci/database.sqlite.yml config/database.yml;;
 esac
 
-# bundle exec rake app:db:migrate
+bundle exec rake db:migrate
+bundle exec rake db:migrate:extensions

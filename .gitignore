@@ -1,16 +1,8 @@
-.rvmrc
-.ruby-version
-.ruby-gemset
-.rspec-local
 config/database.yml
 db/*.db
-spec/dummy/db/*
 log/*.log
-spec/dummy/log/*
-spec/dummy/tmp/*
 pkg
 tmp/*
-spec/tmp/*
 .DS_Store
 .svn
 TAGS
@@ -23,5 +15,5 @@ spec/datasets/tmp
 rerun.txt
 *.swp
 radiant-*.gem
+.rvmrc
 .bundle
-*.lock

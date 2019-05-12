@@ -22,7 +22,7 @@ module Radiant
     private
 
     def non_cacheable_response
-      @listener.set_expiry nil, private: true, "no-cache" => true
+      @listener.set_expiry nil, :private => true, "no-cache" => true
       @listener.set_etag('')
     end
 
@@ -32,7 +32,7 @@ module Radiant
         timeout = @page.cache_timeout
       end
 
-      @listener.set_expiry timeout, public: true, private: false
+      @listener.set_expiry timeout, :public => true, :private => false
     end
 
     def cacheable?

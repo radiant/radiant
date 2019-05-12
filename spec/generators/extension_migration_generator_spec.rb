@@ -11,7 +11,7 @@ describe "ExtensionMigrationGenerator with normal options" do
   end
   
   it 'should generate the migration file in the correct location' do
-    expect('vendor/extensions/example').to have_generated_migration('ChangeColumnsInSomeTable')
+    'vendor/extensions/example'.should have_generated_migration('ChangeColumnsInSomeTable')
   end
   
   after(:each) do

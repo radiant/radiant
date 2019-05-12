@@ -15,10 +15,10 @@ class MarkupPagesDataset < Dataset::Base
   
   def load
     create_page "Textile" do
-      create_page_part :textile_body, name: "body", filter_id: "Pseudo Textile", content: "Some *Textile* content."
+      create_page_part :textile_body, :name => "body", :filter_id => "Pseudo Textile", :content => "Some *Textile* content."
     end
     create_page "Markdown" do
-      create_page_part :markdown_body, name: "body", filter_id: "Pseudo Markdown", content: "Some **Markdown** content."
+      create_page_part :markdown_body, :name => "body", :filter_id => "Pseudo Markdown", :content => "Some **Markdown** content."
     end
   end
   

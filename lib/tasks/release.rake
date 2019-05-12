@@ -37,6 +37,7 @@ namespace 'radiant' do
     s.add_dependency 'compass', '~> 0.10.4'
     s.add_dependency 'will_paginate', '~> 2.3.11'
     s.add_dependency 'RedCloth', '>=4.2.0'
+    s.has_rdoc = true
     s.rdoc_options << '--title' << RDOC_TITLE << '--line-numbers' << '--main' << 'README'
     rdoc_excludes = Dir["**"].reject { |f| !File.directory? f }
     rdoc_excludes.each do |e|
@@ -96,6 +97,13 @@ namespace 'radiant' do
         sh "#{sudo}gem install #{latest}"
       end
     end
+  end
+
+  task :gem => [ :generate_cached_assets ]
+
+  desc "Generates cached assets from source files"
+  task :generate_cached_assets do
+    Radiant::TaskSupport.cache_admin_js
   end
 
   desc "Publish the release files to RubyForge."

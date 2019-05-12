@@ -12,12 +12,12 @@ end
 
 Then /^I should see page (\d+) of the results$/ do |p|
   response.body.should have_tag('div.pagination') do
-    with_tag("span.current", text: p)
+    with_tag("span.current", :text => p)
   end
 end
 
 Then /^I should see a depagination link$/ do
-  response.body.should have_tag("a", href: "/admin/readers?pp=all")
+  response.body.should have_tag("a", :href => "/admin/readers?pp=all")
 end
 
 Then /^I should mention the request parameters$/ do

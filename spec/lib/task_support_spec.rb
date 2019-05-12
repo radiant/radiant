@@ -1,5 +1,4 @@
-require "spec_helper"
-require "radiant/task_support"
+require File.dirname(__FILE__) + "/../spec_helper"
 
 describe Radiant::TaskSupport do
   describe "self.config_export" do
@@ -7,15 +6,15 @@ describe Radiant::TaskSupport do
       @yaml_file = "#{Rails.root}/tmp/config/radiant_config.yml"
       FileUtils.rm_rf(File.dirname(@yaml_file))
       Radiant::Config['test_data'] = 'test string'
-      expect(File.exist?(@yaml_file)).to be false
+      File.exist?(@yaml_file).should be_false
     end
     it "should create a YAML file in config/radiant_config.yml" do
       described_class.config_export(@yaml_file)
-      expect(File.exist?(@yaml_file)).to be true
+      File.exist?(@yaml_file).should be_true
     end
     it "should create YAML equal to Radiant::Config.to_hash" do
       described_class.config_export(@yaml_file)
-      expect(YAML.load_file(@yaml_file)).to eq(Radiant::Config.to_hash.to_yaml)
+      YAML.load_file(@yaml_file).should == Radiant::Config.to_hash.to_yaml
     end
   end
   describe "self.config_import" do
@@ -26,26 +25,70 @@ describe Radiant::TaskSupport do
     it "should delete all Radiant::Config when the clear parameter is set to true" do
       Radiant::Config['testing_clear'] = 'true'
       described_class.config_import(@yaml_file, true)
-      expect(Radiant::Config['testing_clear']).to be_nil
+      Radiant::Config['testing_clear'].should be_nil
     end
     it "should load from the given YAML path" do
       @yaml = "--- \ndefaults.page.parts: body, extended\n"
       @hash = {}
-      allow(YAML).to receive(:load_file).and_return(@yaml)
-      expect(YAML).to receive(:load).with(@yaml).and_return(@hash)
+      YAML.stub!(:load_file).and_return(@yaml)
+      YAML.should_receive(:load).with(@yaml).and_return(@hash)
       described_class.config_import(@yaml_file)
     end
     it "should update Radiant::Config with the settings from the given YAML" do
       Radiant::Config.delete_all
       described_class.config_import(@yaml_file)
-      expect(Radiant::Config.to_hash).to eq(YAML.load(YAML.load_file(@yaml_file)))
+      Radiant::Config.to_hash.should == YAML.load(YAML.load_file(@yaml_file))
     end
     it "should roll back if an invalid config setting is imported" do
-      allow(Radiant.config_definitions['defaults.page.status']).to receive(:select_from).and_return(['Draft'])
+      Radiant.config_definitions['defaults.page.status'].stub!(:select_from).and_return(['Draft'])
       Radiant::Config['defaults.page.status'] = "Draft"
-      expect{described_class.config_import(@bad_yaml_file)}.not_to raise_error
-      expect(Radiant::Config['defaults.page.status']).to eq("Draft")
+      lambda{described_class.config_import(@bad_yaml_file)}.should_not raise_error
+      Radiant::Config['defaults.page.status'].should == "Draft"
     end
   end
 
+  describe "self.cache_files" do
+    before do
+      @files = [ 'a.txt', 'b.txt' ]
+      @dir = "#{Rails.root}/tmp/cache_files_test"
+      @cache_file = 'all.txt'
+
+      FileUtils.mkdir_p(@dir)
+      FileUtils.rm_rf(File.join(@dir, '*.txt'))
+      @files.each do |f_name|
+        File.open(File.join(@dir, f_name), "w+") do |f|
+          f.write("Contents of '#{f_name}'")
+        end
+      end
+    end
+
+    it "should create a cache file containing the contents of the specified files" do
+      described_class.cache_files(@dir, @files, @cache_file)
+      cache_path = File.join(@dir, @cache_file)
+      File.should exist(cache_path)
+      File.read(cache_path).should == "Contents of 'a.txt'\n\nContents of 'b.txt'"
+    end
+  end
+
+  describe "self.find_admin_js" do
+    it "should return an array of JS files" do
+      js_files = described_class.find_admin_js
+      js_files.should_not be_empty
+      js_files.each { |f| f.should =~ /^[^\/]+.js$/ }
+    end
+  end
+
+  describe "self.cache_admin_js" do
+    before do
+      @js_files = [ 'a.js','b.js' ]
+      described_class.stub!(:find_admin_js).and_return(@js_files)
+      described_class.stub!(:cache_files)
+    end
+
+    it "should cache all admin JS files as 'all.js'" do
+      described_class.should_receive(:cache_files).with(
+        "#{Rails.root}/public/javascripts/admin", @js_files, 'all.js')
+      described_class.cache_admin_js
+    end
+  end
 end

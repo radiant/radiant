@@ -1,44 +1,44 @@
 require 'spec_helper'
 
-class ReverseFilter < TextFilter
-  description %{Reverses text.}
-  def filter(text)
-    text.reverse
-  end
-end
-
-class CustomFilter < TextFilter
-  filter_name "Really Custom"
-  description_file File.dirname(__FILE__) + "/../fixtures/sample.txt"
-end
-
 describe TextFilter do
-  it 'should allow description annotation' do
-    expect(ReverseFilter.description).to eq(%{Reverses text.})
+  class ReverseFilter < TextFilter
+    description %{Reverses text.}
+    def filter(text)
+      text.reverse
+    end
   end
 
+  class CustomFilter < TextFilter
+    filter_name "Really Custom"
+    description_file File.dirname(__FILE__) + "/../fixtures/sample.txt"
+  end
+
+  it 'should allow description annotation' do
+    ReverseFilter.description.should == %{Reverses text.}
+  end
+  
   it 'should allow description_file annotation' do
-    expect(CustomFilter.description).to eq(File.read(File.dirname(__FILE__) + "/../fixtures/sample.txt"))
+    CustomFilter.description.should == File.read(File.dirname(__FILE__) + "/../fixtures/sample.txt")
   end
 
   it 'should return an array of filter_names of all available filters' do
-    expect(TextFilter.descendants_names).to include("Really Custom", "Reverse")
+    TextFilter.descendants_names.should include("Pseudo Markdown", "Pseudo Textile", "Really Custom", "Reverse")
   end
 
   it 'should filter text with base filter' do
     filter = TextFilter.new
-    expect(filter.filter('test')).to eq('test')
+    filter.filter('test').should == 'test'
   end
-
+  
   it 'should filter text with subclass' do
-    expect(ReverseFilter.filter('test')).to eq('tset')
+    ReverseFilter.filter('test').should == 'tset'
   end
-
+  
   it 'should allow filter_name annotation' do
-    expect(CustomFilter.filter_name).to eq('Really Custom')
+    CustomFilter.filter_name.should == 'Really Custom'
   end
-
+  
   it 'should default filter_name annotation' do
-    expect(ReverseFilter.filter_name).to eq('Reverse')
+    ReverseFilter.filter_name.should == 'Reverse'
   end
 end

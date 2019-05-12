@@ -1,21 +1,19 @@
 RADIANT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), "..")) unless defined? RADIANT_ROOT
 
-module Radiant
-  class << self
-    def detail
-      yield Radiant::Config if block_given?
-      Radiant::Config
-    end
-    def configuration
-      yield Rails.configuration if block_given?
-      Rails.configuration
-    end
+unless defined? Radiant::Version
+  module Radiant
+    module Version
+      Major = '1'
+      Minor = '1'
+      Tiny  = '4'
+      Patch = nil # set to nil for normal release
 
-    def root
-      RADIANT_ROOT
+      class << self
+        def to_s
+          [Major, Minor, Tiny, Patch].delete_if{|v| v.nil? }.join('.')
+        end
+        alias :to_str :to_s
+      end
     end
   end
 end
-
-require 'radiant/engine'
-require 'radiant/version'

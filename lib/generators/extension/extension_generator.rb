@@ -4,7 +4,7 @@ rescue LoadError
 end
 
 class ExtensionGenerator < Rails::Generator::NamedBase
-  default_options with_test_unit: false
+  default_options :with_test_unit => false
   
   attr_reader :extension_path, :extension_file_name
   

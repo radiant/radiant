@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+%html{html_attrs}
+  %head
+    %meta{"http-equiv"=>"Content-type", :content=>"text/html;charset=utf-8"}/
+    %title= @page_title || default_page_title
+    - @stylesheets.uniq.each do |stylesheet|
+      = stylesheet_link_tag stylesheet
+    %script{:type=>"text/javascript"}="var relative_url_root = '#{ActionController::Base.relative_url_root}';"
+    = javascript_include_tag %w(admin/prototype admin/effects admin/dragdrop admin/lowpro admin/dateinput admin/pagestatus admin/cookie admin/popup admin/pagefield admin/dropdown admin/status admin/utility admin/codearea admin/tabcontrol admin/ruledtable admin/sitemap admin/shortcuts admin/toggle admin/validationerror admin/application), :cache => 'admin/all'
+    - @javascripts.uniq.each do |javascript|
+      = javascript_include_tag javascript
+    - if @content_for_page_scripts
+      = javascript_tag @content_for_page_scripts
+    - if @content_for_page_css
+      %style{:type => "text/css"}= @content_for_page_css
+    = yield :meta
+    = stylesheet_and_javascript_overrides
+  %body{:class=>body_classes.join(" ")}
+    #page
+      #header
+        - if logged_in?
+          #site_links
+            = %{#{t('logged_in_as')} #{link_to h(current_user.name), edit_admin_preferences_path} &nbsp; (#{link_to t('log_out'), logout_path})}
+            &nbsp;
+            = link_to t('view_site'), root_path, :id=>"view_site"
+          %ul#navigation
+            - nav_tabs.each do |tab|
+              - if tab.visible?(current_user)
+                %li{:class=>('current ' if current_tab?(tab)).to_s}
+                  = link_to translate_with_default(tab.name), (tab.first.relative_url if tab.first)
+          #toolbar
+            - if @current_tab and @current_tab.size > 1
+              %ul#secondary_navigation
+                - @current_tab.each do |sub_item|
+                  - if sub_item.visible?(current_user)
+                    %li= link_to translate_with_default(sub_item.name), sub_item.relative_url, :class=>('current' if current_item?(sub_item))
+            = yield :toolbar
+      #main
+        - if flash[:notice]
+          #notice
+            %p= flash[:notice]
+        - if flash[:error]
+          #error
+            %p= flash[:error]
+        #content
+          = find_and_preserve(yield)
+
+      - if @content_for_popups
+        #popups
+          = yield :popups

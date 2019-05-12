@@ -1,5 +1,4 @@
-require 'spec_helper'
-require 'radiant/admin_ui'
+require File.dirname(__FILE__) + '/../../../spec_helper'
 
 describe Radiant::AdminUI::NavTab do
   before :each do
@@ -7,25 +6,25 @@ describe Radiant::AdminUI::NavTab do
   end
 
   it "should have a name" do
-    expect(@tab.name).to eq("Content")
+    @tab.name.should == "Content"
   end
 
   it "should be Enumerable" do
-    expect(Enumerable).to be === @tab
-    expect(@tab).to respond_to(:each)
+    Enumerable.should === @tab
+    @tab.should respond_to(:each)
   end
 
   it "should find contained items by name" do
     subtab = Radiant::AdminUI::NavTab.new("The Pages")
     @tab << subtab
-    expect(@tab[:the_pages]).to eq(subtab)
-    expect(@tab['the pages']).to eq(subtab)
+    @tab[:the_pages].should == subtab
+    @tab['the pages'].should == subtab
   end
 
   it "should assign the tab on the sub-item when adding" do
     subtab = Radiant::AdminUI::NavSubItem.new("Pages", "/admin/pages")
     @tab << subtab
-    expect(subtab.tab).to eq(@tab)
+    subtab.tab.should == @tab
   end
 
   describe "inserting sub-items in specific places" do
@@ -39,38 +38,38 @@ describe Radiant::AdminUI::NavTab do
 
     it "should insert at the end by default" do
       @tab << @comments
-      expect(@tab.last).to eq(@comments)
+      @tab.last.should == @comments
     end
-
+    
     it "should insert before the specified sub-item" do
-      @tab.add(@comments, before: :things)
-      expect(@tab[1]).to eq(@comments)
+      @tab.add(@comments, :before => :things)
+      @tab[1].should == @comments
     end
-
+    
     it "should insert after the specified sub-item" do
-      @tab.add(@comments, after: :pages)
-      expect(@tab[1]).to eq(@comments)
+      @tab.add(@comments, :after => :pages)
+      @tab[1].should == @comments
     end
-
+    
     it "should raise an error if a sub-item of the same name already exists" do
       @tab << @comments
-      expect { @tab << @comments.dup }.to raise_error(Radiant::AdminUI::DuplicateTabNameError)
+      lambda { @tab << @comments.dup }.should raise_error(Radiant::AdminUI::DuplicateTabNameError)
     end
   end
 
   describe "visibility" do
-    #dataset :users
-
+    dataset :users
+    
     it "should not be visible by default" do
-      User.all.each {|user| expect(@tab).not_to be_visible(user) }
+      User.all.each {|user| @tab.should_not be_visible(user) }
     end
   end
-
+  
   it "should warn about using the deprecated add method" do
-    expect(ActiveSupport::Deprecation).to receive(:warn)
+    ActiveSupport::Deprecation.should_receive(:warn)
     @tab.add("Pages", "/admin/pages")
-    expect(@tab['Pages'].name).to eq("Pages")
-    expect(@tab['Pages'].url).to eq("/admin/pages")
+    @tab['Pages'].name.should == "Pages"
+    @tab['Pages'].url.should == "/admin/pages"
   end
 end
 
@@ -82,60 +81,58 @@ describe Radiant::AdminUI::NavSubItem do
   end
 
   it "should have a name" do
-    expect(@subitem.name).to eq("Pages")
+    @subitem.name.should == "Pages"
   end
 
   it "should have a URL" do
-    expect(@subitem.url).to eq("/admin/pages")
+    @subitem.url.should == "/admin/pages"
   end
-
+  
   describe "generating a relative url" do
     it "should return the original url when no relative_url_root is set" do
-      expect(@subitem.relative_url).to eq("/admin/pages")
+      @subitem.relative_url.should == "/admin/pages"
     end
-
+    
     it "should make the url relative to the relative_url_root when set" do
       ActionController::Base.relative_url_root = '/radiant'
-      expect(@subitem.relative_url).to eq("/radiant/admin/pages")
+      @subitem.relative_url.should == "/radiant/admin/pages"
     end
-
+    
     after :each do
       ActionController::Base.relative_url_root = nil
     end
   end
-
+  
   it "should have a tab accessor" do
-    expect(@subitem).to respond_to(:tab)
-    expect(@subitem).to respond_to(:tab=)
-    expect(@subitem.tab).to eq(@tab)
+    @subitem.should respond_to(:tab)
+    @subitem.should respond_to(:tab=)
+    @subitem.tab.should == @tab
   end
-
+  
   describe "visibility" do
-    let(:admin){ FactoryBot.build(:user, admin: true) }
-    let(:existing){ FactoryBot.build(:user) }
-
+    dataset :users
     before :each do
-      @controller = Radiant::Admin::UsersController.new
-      allow(Radiant::Admin::UsersController).to receive(:new).and_return(@controller)
+      @controller = Admin::UsersController.new
+      Admin::UsersController.stub!(:new).and_return(@controller)
     end
-
+    
     it "should check the visibility against the controller permissions" do
-      User.all.each {|user| expect(@subitem).to be_visible(user) }
+      User.all.each {|user| @subitem.should be_visible(user) }
     end
-
+    
     describe "when the controller limits access to the action" do
       before :each do
         @subitem.url.sub!('pages', 'users')
       end
-
+      
       it "should not be visible if the user lacks access" do
-        allow(@controller).to receive(:current_user).and_return(existing)
-        expect(@subitem).not_to be_visible(existing)
+        @controller.stub!(:current_user).and_return(users(:existing))
+        @subitem.should_not be_visible(users(:existing))
       end
-
+      
       it "should be visible if the user has access" do
-        allow(@controller).to receive(:current_user).and_return(admin)
-        expect(@subitem).to be_visible(admin)
+        @controller.stub!(:current_user).and_return(users(:admin))
+        @subitem.should be_visible(users(:admin))
       end
     end
   end

@@ -4,7 +4,7 @@ class StubController < ActionController::Base
   include LoginSystem
 
   def rescue_action(e); raise e; end
-  def index; render text: 'just a test'; end
+  def index; render :text => 'just a test'; end
 end
 
 class NoLoginRequiredController < StubController;  no_login_required; end
@@ -17,40 +17,50 @@ class LoginRequiredGrandChildController < NoLoginRequiredChildController; login_
 
 class PrivilegedUsersOnlyController < LoginRequiredController
   only_allow_access_to :edit, :new,
-                       when: [:admin, :designer],
-                       denied_url: '/login_required',
-                       denied_message: 'Fun.'
-  def edit; render text: 'just a test'; end
-  def new; render text: 'just a test'; end
+                       :when => [:admin, :designer],
+                       :denied_url => '/login_required',
+                       :denied_message => 'Fun.'
+  def edit; render :text => 'just a test'; end
+  def new; render :text => 'just a test'; end
 end
 
 class AdminOnlyController < LoginRequiredController
     only_allow_access_to :edit,
-                         when: :admin,
-                         denied_url: '/login_required',
-                         denied_message: 'Fun.'
-    def edit; render text: 'just a test'; end
+                         :when => :admin,
+                         :denied_url => '/login_required',
+                         :denied_message => 'Fun.'
+    def edit; render :text => 'just a test'; end
 end
 
 class ConditionalAccessController < LoginRequiredController
     attr_writer :condition
-    only_allow_access_to :edit, if: :condition?,
-                         denied_url: '/login_required',
-                         denied_message: 'Fun.'
+    only_allow_access_to :edit, :if => :condition?,
+                         :denied_url => '/login_required',
+                         :denied_message => 'Fun.'
 
-    def edit; render text: 'just a test'; end
+    def edit; render :text => 'just a test'; end
     def condition?
       @condition ||= false
     end
 end
 
-describe 'Login System:', type: :controller do
-  #dataset :users
+describe 'Login System:', :type => :controller do
+  dataset :users
+
+  before do
+    map = ActionController::Routing::RouteSet::Mapper.new(ActionController::Routing::Routes)
+    map.connect ':controller/:action/:id'
+    ActionController::Routing::Routes.named_routes.install
+  end
+
+  after do
+    ActionController::Routing::Routes.reload
+  end
 
   describe NoLoginRequiredController do
     it "should not require authentication" do
       get :index
-      expect(response).to be_success
+      response.should be_success
     end
   end
 
@@ -58,20 +68,20 @@ describe 'Login System:', type: :controller do
     it "should authenticate with user in session" do
       login_as :existing
       get :index
-      expect(response).to be_success
+      response.should be_success
     end
 
     it "should not authenticate without user in session" do
       logout
       get :index
-      expect(response).to redirect_to(login_url)
+      response.should redirect_to(login_url)
     end
 
     it "should store location" do
       logout
       session[:return_to] = nil
       get 'protected_action'
-      expect(session[:return_to]).to match(%r{protected_action})
+      session[:return_to].should match(%r{protected_action})
     end
   end
 
@@ -79,7 +89,7 @@ describe 'Login System:', type: :controller do
 
     describe ".authenticate" do
       it "should attempt to login from cookie" do
-        expect(controller).to receive(:login_from_cookie)
+        controller.should_receive(:login_from_cookie)
         get :index
       end
     end
@@ -87,35 +97,35 @@ describe 'Login System:', type: :controller do
     describe ".login_from_cookie" do
       before do
         Time.zone = 'UTC'
-        allow(Radiant::Config).to receive(:[]).with('session_timeout').and_return(2.weeks)
+        Radiant::Config.stub!(:[]).with('session_timeout').and_return(2.weeks)
       end
 
       it "should not login user if no cookie found" do
-        expect(controller).not_to receive(:current_user=)
+        controller.should_not_receive(:current_user=)
         get :index
       end
 
       describe "with session_token" do
         before do
           @user = users(:admin)
-          expect(User).to receive(:find_by_session_token).and_return(@user)
-          @cookies = { session_token: 12345 }
-          allow(controller).to receive(:cookies).and_return(@cookies)
+          User.should_receive(:find_by_session_token).and_return(@user)
+          @cookies = { :session_token => 12345 }
+          controller.stub!(:cookies).and_return(@cookies)
         end
 
         after do
-          expect(controller.send(:login_from_cookie)).to eq(@user)
+          controller.send(:login_from_cookie).should == @user
         end
 
         it "should remember user" do
-          expect(@user).to receive(:remember_me)
+          @user.should_receive(:remember_me)
         end
 
         it "should update cookie" do
-          expect(@cookies).to receive(:[]=) do |name,content|
-            expect(name).to eql(:session_token)
-            expect(content[:value]).to eql(@user.session_token)
-            expect(content[:expires]).to be_within(1.minute).of((Time.zone.now + 2.weeks).utc) # sometimes specs are slow
+          @cookies.should_receive(:[]=) do |name,content|
+            name.should eql(:session_token)
+            content[:value].should eql(@user.session_token)
+            content[:expires].should be_close((Time.zone.now + 2.weeks).utc, 1.minute) # sometimes specs are slow
           end
         end
 
@@ -125,19 +135,19 @@ describe 'Login System:', type: :controller do
 
   describe NoLoginRequiredChildController do
     it "should inherit no_login_required" do
-      expect(controller.class).not_to be_login_required
+      controller.class.should_not be_login_required
     end
   end
 
   describe LoginRequiredGrandChildController do
       it "should override parent with login_required" do
-        expect(controller.class).to be_login_required
+        controller.class.should be_login_required
       end
   end
 
   describe LoginRequiredGreatGrandChildController = Class.new(LoginRequiredGrandChildController) { } do
     it "should inherit login_required" do
-      expect(controller.class).to be_login_required
+      controller.class.should be_login_required
     end
   end
 
@@ -145,20 +155,20 @@ describe 'Login System:', type: :controller do
     it "should only allow access when user in allowed roles" do
       login_as :admin
       get :edit
-      expect(response).to be_success
+      response.should be_success
     end
 
     it "should deny access when user not in allowed roles" do
       login_as :non_admin
       get :edit
-      expect(response).to redirect_to('/login_required')
-      expect(flash[:error]).to eql('Fun.')
+      response.should redirect_to('/login_required')
+      flash[:error].should eql('Fun.')
     end
 
     it "should allow access to unrestricted actions when users not in roles" do
       login_as :non_admin
       get :index
-      expect(response).to be_success
+      response.should be_success
     end
   end
 
@@ -166,8 +176,8 @@ describe 'Login System:', type: :controller do
     it "should not allow access when user not in default roles" do
       login_as :non_admin
       get :edit
-      expect(response).to redirect_to('/login_required')
-      expect(flash[:error]).to eql('Fun.')
+      response.should redirect_to('/login_required')
+      flash[:error].should eql('Fun.')
     end
   end
 
@@ -177,14 +187,14 @@ describe 'Login System:', type: :controller do
       controller.condition = true
       login_as :existing
       get :edit
-      expect(response).to be_success
+      response.should be_success
     end
 
     it "should not allow access if condition is false" do
       controller.condition = false
       login_as :existing
       get :edit
-      expect(response).to redirect_to('/login_required')
+      response.should redirect_to('/login_required')
     end
   end
 

@@ -1,15 +1,12 @@
-require 'rubygems'
-require 'bundler/setup'
-require 'combustion'
+require File.join(File.dirname(__FILE__), 'config', 'boot')
 
-# Dir["#{RADIANT_ROOT}/lib/tasks/**/*.rake"].sort.each { |taskfile| load taskfile }
-# Radiant::ExtensionPath.rake_task_paths.each { |taskfile| load taskfile }
+require 'rake'
+require 'rake/testtask'
+require 'rdoc/task'
 
-# APP_RAKEFILE = File.expand_path("../spec/internal/Rakefile", __FILE__)
-# load 'rails/tasks/engine.rake'
+require 'tasks/rails'
 
-require 'rspec/core/rake_task'
-RSpec::Core::RakeTask.new(:spec)
-task default: :spec
-
-Bundler::GemHelper.install_tasks
+unless Rake::Task.task_defined? "radiant:release"
+  Dir["#{RADIANT_ROOT}/lib/tasks/**/*.rake"].sort.each { |taskfile| load taskfile }
+  Radiant::ExtensionPath.rake_task_paths.each { |taskfile| load taskfile }
+end

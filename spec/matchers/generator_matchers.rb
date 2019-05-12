@@ -1,4 +1,4 @@
-module RSpec
+module Spec
   module Matchers
     module GeneratorMatchers
       class DirectoryGenerated

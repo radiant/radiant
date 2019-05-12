@@ -1,24 +1,28 @@
 rvm:
-  - 2.3.4
+  - 1.8.7
+  - 1.9.3
+
+branches:
+  only:
+    - master
+    - 1.x
 
 before_install:
-  - rm -f Gemfile
-  - gem install -v 1.17.3 bundler
+  - gem install rubygems-update --version 1.8.26
+  - update_rubygems --version=1.8.26
 
-before_script: bin/ci/before_script
+before_script: "./bin/ci/before_script"
 
-bundler_args: --without development
+bundler_args: ''
 
-script: bundle exec rake spec
+script: "bundle exec rake spec --trace"
 
 notifications:
   recipients:
     - ci@spanner.org
+    - git@johnmuhl.com
+    - ci@monkeypatch.be
   irc: "irc.freenode.org#radiantcms"
 
 env:
-  - DB=mysql
-  - DB=postgres
-
-gemfile:
-  - rails40.gemfile
+  - DB=sqlite

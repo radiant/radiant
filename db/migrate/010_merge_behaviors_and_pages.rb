@@ -1,6 +1,6 @@
 class MergeBehaviorsAndPages < ActiveRecord::Migration
   class OldPage < ActiveRecord::Base
-    self.table_name = 'pages'
+    set_table_name 'pages'
   end
   
   @@page_map = {
@@ -11,7 +11,7 @@ class MergeBehaviorsAndPages < ActiveRecord::Migration
   
   def self.up
     announce "converting behavior names to class names"
-    OldPage.all.each do |page|
+    OldPage.find(:all).each do |page|
       unless page.behavior_id.blank?
         page.behavior_id = page_name(page.behavior_id)
         page.save!
@@ -24,7 +24,7 @@ class MergeBehaviorsAndPages < ActiveRecord::Migration
     rename_column :pages, :type, :behavior_id
     OldPage.reset_column_information
     announce "converting class names back to behavior names"
-    OldPage.all.each do |page|
+    OldPage.find(:all).each do |page|
       unless page.behavior_id.blank?
         page.behavior_id = behavior_name(page.behavior_id)
         page.save!

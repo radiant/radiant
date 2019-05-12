@@ -1,4 +1,4 @@
-module RSpec
+module Spec
   module Rails
     module Matchers
       
@@ -18,16 +18,16 @@ module RSpec
             @error_fields.to_fields.each do |field_name, error_message|
               begin
                 @example.assert_tag(
-                  tag: 'div',
-                  attributes: {class: 'error-with-field'},
-                  child: {
-                    tag: /input|select|textarea/,
-                    attributes: {name: field_name}
+                  :tag => 'div',
+                  :attributes => {:class => 'error-with-field'},
+                  :child => {
+                    :tag => /input|select|textarea/,
+                    :attributes => {:name => field_name}
                   },
-                  sibling: {
-                    tag: 'span',
-                    attributes: {class: 'error'},
-                    content: error_message
+                  :child => {
+                    :tag => 'span',
+                    :attributes => {:class => 'error'},
+                    :content => error_message
                   }
                 )
               rescue

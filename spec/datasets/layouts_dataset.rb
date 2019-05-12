@@ -1,7 +1,7 @@
 class LayoutsDataset < Dataset::Base
 
   def load
-    create_layout "Main", content: <<-CONTENT
+    create_layout "Main", :content => <<-CONTENT
 <html>
   <head>
     <title><r:title /></title>
@@ -12,7 +12,7 @@ class LayoutsDataset < Dataset::Base
 </html>
     CONTENT
 
-    create_layout "UTF8", content_type: "text/html;charset=utf8", content: <<-CONTENT
+    create_layout "UTF8", :content_type => "text/html;charset=utf8", :content => <<-CONTENT
 <html>
   <head>
     <title><r:title /></title>
@@ -26,14 +26,14 @@ class LayoutsDataset < Dataset::Base
 
   helpers do
     def create_layout(name, attributes={})
-      create_record :layout, name.symbolize, layout_params(attributes.reverse_merge(name: name))
+      create_record :layout, name.symbolize, layout_params(attributes.reverse_merge(:name => name))
     end
 
     def layout_params(attributes={})
       name = attributes[:name] || unique_layout_name
       {
-        name: name,
-        content: "<r:content />"
+        :name => name,
+        :content => "<r:content />"
       }.merge(attributes)
     end
 

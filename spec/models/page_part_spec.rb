@@ -1,70 +1,61 @@
 require 'spec_helper'
 
-class PseudoTextileFilter < TextFilter
-  def filter(text)
-    text + ' - Filtered with TEXTILE!'
-  end
-end
-
-class PseudoMarkdownFilter < TextFilter
-  def filter(text)
-    text + ' - Filtered with MARKDOWN!'
-  end
-end
-
 describe PagePart do
-
+  dataset :home_page
+  
+  test_helper :validations
+  
   before do
-    @original_filter = Radiant.detail['defaults.page.filter']
-    @part = @model = FactoryBot.build(:page_part)
+    @original_filter = Radiant::Config['defaults.page.filter']
+    @part = @model = PagePart.new(page_part_params)
   end
 
   after do
-    Radiant.detail['defaults.page.filter'] = @original_filter
+    Radiant::Config['defaults.page.filter'] = @original_filter
   end
-
+  
   it "should take the filter from the default filter" do
-    Radiant.detail['defaults.page.filter'] = "Pseudo Textile"
-    part = PagePart.new name: 'new-part'
-    expect(part.filter_id).to eq("Pseudo Textile")
+    Radiant::Config['defaults.page.filter'] = "Pseudo Textile"
+    part = PagePart.new :name => 'new-part'
+    part.filter_id.should == "Pseudo Textile"
   end
 
   it "shouldn't override existing page_parts filters with the default filter" do
-    @part.save!
+    part = PagePart.find(:first, :conditions => {:filter_id => nil})
     selected_filter_name = TextFilter.descendants.first.filter_name
-    Radiant.detail['defaults.page.filter'] = selected_filter_name
-    @part.reload
-    expect(@part.filter_id).not_to eq(selected_filter_name)
+    Radiant::Config['defaults.page.filter'] = selected_filter_name
+    part.reload
+    part.filter_id.should_not == selected_filter_name
   end
-
+  
   it 'should validate length of' do
     {
-      name: 100,
-      filter_id: 25
+      :name => 100,
+      :filter_id => 25
     }.each do |field, max|
-      @part.send("#{field}=", 'x' * max)
-      expect(@part.errors_on(field)).to be_blank
-      @part.send("#{field}=", 'x' * (max + 1))
-      expect(@part.errors_on(field)).to include("this must not be longer than #{max} characters")
+      assert_invalid field, ('this must not be longer than %d characters' % max), 'x' * (max + 1)
+      assert_valid field, 'x' * max
     end
   end
-
+  
   it 'should validate presence of' do
-    @part.name = ''
-    expect(@part.errors_on(:name)).to include("this must not be blank")
+    [:name].each do |field|
+      assert_invalid field, 'this must not be blank', '', ' ', nil
+    end
   end
 end
 
 describe PagePart, 'filter' do
+  dataset :markup_pages
+  
   specify 'getting and setting' do
-    # page = FactoryBot.build(:page)
-    @part = FactoryBot.build(:page_part, name: 'body', filter_id: 'Pseudo Textile')
+    @part = page_parts(:textile_body)
     original = @part.filter
-    expect(original).to be_kind_of(PseudoTextileFilter)
-
-    expect(@part.filter).to equal(original)
-
+    original.should be_kind_of(PseudoTextileFilter)
+    
+    @part.filter.should equal(original)
+    
     @part.filter_id = 'Pseudo Markdown'
-    expect(@part.filter).to be_kind_of(PseudoMarkdownFilter)
+    @part.filter.should be_kind_of(PseudoMarkdownFilter)
   end
 end

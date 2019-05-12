@@ -11,15 +11,15 @@ describe "ExtensionModelGenerator with normal options" do
   end
   
   it 'should generate the migration file in the correct location' do
-    expect('vendor/extensions/example').to have_generated_migration('CreateEvents')
+    'vendor/extensions/example'.should have_generated_migration('CreateEvents')
   end
   
   it 'should generate the model file in the correct location' do
-    expect('vendor/extensions/example').to have_generated_model_for('Event')
+    'vendor/extensions/example'.should have_generated_model_for('Event')
   end
   
   it 'should generate the model spec file in the correct location' do
-    expect('vendor/extensions/example').to have_generated_model_spec_for('Event')
+    'vendor/extensions/example'.should have_generated_model_spec_for('Event')
   end
   
   after(:each) do
@@ -42,15 +42,15 @@ describe "ExtensionModelGenerator with test unit" do
   end
   
   it 'should generate the migration file in the correct location' do
-    expect('vendor/extensions/example').to have_generated_migration('CreateEvents')
+    'vendor/extensions/example'.should have_generated_migration('CreateEvents')
   end
   
   it 'should generate the model file in the correct location' do
-    expect('vendor/extensions/example').to have_generated_model_for('Event')
+    'vendor/extensions/example'.should have_generated_model_for('Event')
   end
   
   it 'should generate the unit test file in the correct location' do
-    expect('vendor/extensions/example').to have_generated_unit_test_for('Event')
+    'vendor/extensions/example'.should have_generated_unit_test_for('Event')
   end
   
   after(:each) do

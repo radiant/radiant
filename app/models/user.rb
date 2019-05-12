@@ -1,35 +1,31 @@
 require 'digest/sha1'
 
 class User < ActiveRecord::Base
-
-  self.table_name = 'users'
-
-  attr_accessible :name, :password_confirmation, :locale, :login, :password, :email
-
-  has_many :pages, foreign_key: :created_by_id
+  has_many :pages, :foreign_key => :created_by_id
 
   # Default Order
-  default_scope { order('name') }
+  default_scope :order => 'name'
 
   # Associations
-  belongs_to :created_by, class_name: 'User'
-  belongs_to :updated_by, class_name: 'User'
+  belongs_to :created_by, :class_name => 'User'
+  belongs_to :updated_by, :class_name => 'User'
 
-  # Validations # TODO: remove unique validation in code
+  # Validations
   validates_uniqueness_of :login
 
-  validates :password, length: { minimum: 5, maximum: 40},
-                      confirmation: true,
-                      allow_blank: true
+  validates_confirmation_of :password, :if => :confirm_password?
 
-  validates :name, presence: true,
-                   length: { maximum: 100 }
+  validates_presence_of :name, :login
+  validates_presence_of :password, :password_confirmation, :if => :new_record?
 
-  validates :login, length: { minimum: 3, maximum: 40 }, allow_nil: true
+  validates_format_of :email, :allow_nil => true, :with => /^$|^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i
 
-  validates :email, length: { maximum: 255 },
-                    format: /\A$|^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
+  validates_length_of :name, :maximum => 100, :allow_nil => true
+  validates_length_of :login, :within => 3..40, :allow_nil => true
+  validates_length_of :password, :within => 5..40, :allow_nil => true, :if => :validate_length_of_password?
+  validates_length_of :email, :maximum => 255, :allow_nil => true
 
+  attr_writer :confirm_password
   class << self
     def unprotected_attributes
       @unprotected_attributes ||= [:name, :email, :login, :password, :password_confirmation, :locale]
@@ -37,20 +33,6 @@ class User < ActiveRecord::Base
 
     def unprotected_attributes=(array)
       @unprotected_attributes = array.map{|att| att.to_sym }
-    end
-
-    def authenticate(login_or_email, password)
-      user = from_access_name(login_or_email)
-      user && user.authenticated?(password) && user
-    end
-
-    private
-
-    def from_access_name(name)
-      table = self.arel_table
-      where(
-        table[:login].eq(name).or(table[:email].eq(name))
-      ).first
     end
   end
 
@@ -62,8 +44,21 @@ class User < ActiveRecord::Base
     Digest::SHA1.hexdigest("--#{salt}--#{phrase}--")
   end
 
+  def self.authenticate(login_or_email, password)
+    user = find(:first, :conditions => ["login = ? OR email = ?", login_or_email, login_or_email])
+    user if user && user.authenticated?(password)
+  end
+
   def authenticated?(password)
     self.password == sha1(password)
+  end
+
+  def after_initialize
+    @confirm_password = true
+  end
+
+  def confirm_password?
+    @confirm_password
   end
 
   def remember_me
@@ -76,6 +71,10 @@ class User < ActiveRecord::Base
 
   private
 
+    def validate_length_of_password?
+      new_record? or not password.to_s.empty?
+    end
+
     before_create :encrypt_password
     def encrypt_password
       self.salt = Digest::SHA1.hexdigest("--#{Time.now}--#{login}--sweet harmonious biscuits--")
@@ -84,9 +83,11 @@ class User < ActiveRecord::Base
 
     before_update :encrypt_password_unless_empty_or_unchanged
     def encrypt_password_unless_empty_or_unchanged
-      if password.blank? && password_changed?
-        self.password = password_was
-      elsif password_was == self.password
+      user = self.class.find(self.id)
+      case password
+      when ''
+        self.password = user.password
+      when user.password
       else
         encrypt_password
       end

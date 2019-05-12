@@ -50,7 +50,7 @@ module MenuRenderer
   end
 
   def separator_item
-    view.content_tag :li, '', class: 'separator'
+    view.content_tag :li, '', :class => 'separator'
   end
 
   def child_items
@@ -64,11 +64,11 @@ module MenuRenderer
   end
 
   def menu_list
-    view.content_tag :ul, menu_items.join.html_safe, class: 'menu', id: "allowed_children_#{id}"
+    view.content_tag :ul, menu_items.join, :class => 'menu', :id => "allowed_children_#{id}"
   end
 
   def remove_link
-    view.link_to view.image('minus') + ' ' + I18n.t('remove'), view.remove_admin_page_url(self), class: "action"
+    view.link_to view.image('minus') + ' ' + I18n.t('remove'), view.remove_admin_page_url(self), :class => "action"
   end
 
   def remove_option
@@ -80,15 +80,15 @@ module MenuRenderer
   end
 
   def disabled_add_child_link
-    view.content_tag :span, view.image('plus_disabled') + ' ' + I18n.t('add_child'), class: 'action disabled'
+    view.content_tag :span, view.image('plus_disabled') + ' ' + I18n.t('add_child'), :class => 'action disabled'
   end
 
   def add_child_link
-    view.link_to((view.image('plus') + ' ' + I18n.t('add_child')), view.new_admin_page_child_path(self, page_class: default_child.name), class: "action")
+    view.link_to((view.image('plus') + ' ' + I18n.t('add_child')), view.new_admin_page_child_path(self, :page_class => default_child.name), :class => "action")
   end
 
   def add_child_link_with_menu_hook
-    view.link_to((view.image('plus') + ' ' + I18n.t('add_child')), "#allowed_children_#{id}", class: "action dropdown")
+    view.link_to((view.image('plus') + ' ' + I18n.t('add_child')), "#allowed_children_#{id}", :class => "action dropdown")
   end
 
   def add_child_menu
@@ -123,11 +123,11 @@ module MenuRenderer
 
   def menu_link(child_class)
     title = clean_page_description(child_class)
-    path = view.new_admin_page_child_path(self, page_class: child_class.name)
+    path = view.new_admin_page_child_path(self, :page_class => child_class.name)
     text = link_text_for_child_class(child_class.name)
-    view.link_to(text, path, title: title)
+    view.link_to(text, path, :title => title)
   end
-
+  
   def link_text_for_child_class(given_class_name)
     translation_key = if given_class_name == 'Page' || given_class_name.blank?
       'normal_page'
@@ -135,6 +135,6 @@ module MenuRenderer
       given_class_name.sub('Page','').underscore
     end
     fallback = given_class_name == 'Page' ? 'Page' : given_class_name.sub('Page','').titleize
-    I18n.t(translation_key, default: fallback)
+    I18n.t(translation_key, :default => fallback)
   end
 end

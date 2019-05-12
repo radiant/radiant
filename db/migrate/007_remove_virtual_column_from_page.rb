@@ -4,6 +4,6 @@ class RemoveVirtualColumnFromPage < ActiveRecord::Migration
   end
   
   def self.down
-    add_column "pages", "virtual", :boolean, null: false, default: false
+    add_column "pages", "virtual", :boolean, :null => false, :default => false
   end
 end
