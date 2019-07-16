@@ -11,7 +11,7 @@ Radiant features:
 * An elegant user interface
 * The ability to arrange pages in a hierarchy
 * Flexible templating with layouts, snippets, page parts, and a custom tagging
-  language (Radius: http://radius.rubyforge.org)
+  language (Radius: https://github.com/jlong/radius)
 * A simple user management/permissions system
 * Support for Markdown and Textile as well as traditional HTML (it's easy to
   create other filters)
