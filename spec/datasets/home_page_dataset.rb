@@ -1,9 +1,7 @@
 class HomePageDataset < Dataset::Base
   
   def load
-    create_page "Home", :slug => "/", :parent_id => nil, 
-                        :description => "The homepage", 
-                        :keywords => "Home, Page" do
+    create_page "Home", :slug => "/", :parent_id => nil do
       create_page_part "body", :content => "Hello world!"
       create_page_part "sidebar", :content => "<r:title /> sidebar."
       create_page_part "extended", :content => "Just a test."
@@ -55,8 +53,8 @@ class HomePageDataset < Dataset::Base
     end
     
     private
-      @@unique_page_title_call_count = 0
       def unique_page_title
+        @@unique_page_title_call_count ||= 0
         @@unique_page_title_call_count += 1
         "Page #{@@unique_page_title_call_count}"
       end

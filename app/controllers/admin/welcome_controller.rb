@@ -1,5 +1,6 @@
 class Admin::WelcomeController < ApplicationController
   no_login_required
+  before_filter :never_cache
   skip_before_filter :verify_authenticity_token
   
   def index
@@ -8,9 +9,9 @@ class Admin::WelcomeController < ApplicationController
   
   def login
     if request.post?
-      login = params[:user][:login]
-      password = params[:user][:password]
-      announce_invalid_user unless self.current_user = User.authenticate(login, password)
+      @username_or_email = params[:username_or_email]
+      password = params[:password]
+      announce_invalid_user unless self.current_user = User.authenticate(@username_or_email, password)
     end
     if current_user
       if params[:remember_me]
@@ -23,8 +24,8 @@ class Admin::WelcomeController < ApplicationController
   end
   
   def logout
-    cookies[:session_token] = { :expires => 1.day.ago }
-    self.current_user.forget_me
+    request.cookies[:session_token] = { :expires => 1.day.ago.utc }
+    self.current_user.forget_me if self.current_user
     self.current_user = nil
     announce_logged_out
     redirect_to login_url
@@ -32,12 +33,16 @@ class Admin::WelcomeController < ApplicationController
   
   private
   
+    def never_cache
+      expires_now
+    end
+  
     def announce_logged_out
-      flash[:notice] = 'You are now logged out.'
+      flash[:notice] = t('welcome_controller.logged_out')
     end
     
     def announce_invalid_user
-      flash[:error] = 'Invalid username or password.'
+      flash.now[:error] = t('welcome_controller.invalid_user')
     end
     
 end

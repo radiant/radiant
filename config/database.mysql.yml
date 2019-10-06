@@ -10,7 +10,7 @@ development:
   password:
   socket: /tmp/mysql.sock
 
-test:
+test: &TEST
   adapter: mysql
   database: radiant_test
   username: root
@@ -23,3 +23,6 @@ production:
   username: root
   password:
   socket: /tmp/mysql.sock
+
+cucumber:
+  <<: *TEST

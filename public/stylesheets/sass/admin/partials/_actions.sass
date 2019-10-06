@@ -1,0 +1,96 @@
+=button-shadow
+  +single-box-shadow(#555, 1px, 2px, 3px)
+=no-button-shadow
+  +single-box-shadow(#555,0,0,0)
+
+#actions
+  position: fixed
+  left: 0
+  right: 0
+  bottom: 0
+  background: #777
+  +linear-gradient(color-stops(#555, #666, #777, #777))
+  ul
+    padding: 14px 8px
+  li
+    display: inline
+    margin-right: 5px
+
+  .pagination
+    position: relative
+    overflow: hidden
+    float: right
+    margin-right: 24px
+    padding: 0 5px 5px 0
+    a, span.current, span.disabled
+      display: block
+      float: left
+      padding: 6px 12px 6px 12px
+      margin-right: 1px
+      background: #ddd
+      +linear-gradient(color-stops(#c5c5c5, #f0f0f0 20%, #fff 35%, #fff))
+      color: #999
+      font-size: 80%
+      text-decoration: none
+      +border-bottom-radius(5px)
+      +border-top-radius(0)
+    a
+      text-shadow: 1px 1px 1px #eee
+      &:hover
+        background: #d8d8d8
+        +linear-gradient(color-stops(#fff, #fff, #ddd))
+        color: #0076a3
+        +button-shadow
+      &:active
+        color: #000
+        +no-button-shadow
+    span.disabled
+      color: #666
+      background-color: #999
+      +linear-gradient(color-stops(#888, #999, #999, #999))
+    span.current
+      color: #000
+      background: white
+      font-weight: bold
+      background-image: none
+      +button-shadow
+    span.gap
+      display: block
+      float: left
+      padding: 6px
+      color: #ccc
+  .depaginate
+    float: right
+    padding: 6px 12px
+    a
+      +no-button-shadow
+      background: none
+      font-size: 80%
+      color: #ccc
+      text-shadow: none
+      text-decoration: none
+      &:hover
+        color: #fff
+      
+.button_form
+  display: inline
+.action_button
+  display: inline
+  background: #d8d8d8
+  +linear-gradient(color-stops(#fff, #ccc))
+  color: #333
+  font-size: 80%
+  padding: 8px 12px
+  text-decoration: none
+  text-shadow: 1px 1px 1px #eee
+  +border-radius(5px)
+  +button-shadow
+  &:hover
+    color: #0076a3
+    text-shadow: 1px 1px 1px #fff
+  &:active
+    background: #fff
+    +no-button-shadow
+    color: black
+  img
+    vertical-align: -20%

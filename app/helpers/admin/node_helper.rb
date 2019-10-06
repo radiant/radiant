@@ -2,8 +2,17 @@ module Admin::NodeHelper
 
   def render_node(page, locals = {})
     @current_node = page
+    page.extend MenuRenderer
+    page.view = self
+    if page.additional_menu_features?
+      page.extend(*page.menu_renderer_modules)
+    end
     locals.reverse_merge!(:level => 0, :simple => false).merge!(:page => page)
-    render :partial => 'node', :locals =>  locals
+    render :partial => 'admin/pages/node', :locals =>  locals
+  end
+
+  def homepage
+    @homepage ||= Page.find_by_parent_id(nil)
   end
 
   def show_all?
@@ -31,18 +40,18 @@ module Admin::NodeHelper
   end
 
   def padding_left(level)
-    (level * 22) + 4
+    (level * 23) + 9
   end
 
   def children_class
     unless @current_node.children.empty?
       if expanded
-        " children-visible"
+        " children_visible"
       else
-        " children-hidden"
+        " children_hidden"
       end
     else
-      " no-children"
+      " no_children"
     end
   end
 
@@ -50,8 +59,8 @@ module Admin::NodeHelper
     @current_node.virtual? ? " virtual": ""
   end
 
-  def expander
-    unless @current_node.children.empty?
+  def expander(level)
+    unless @current_node.children.empty? or level == 0
       image((expanded ? "collapse" : "expand"),
             :class => "expander", :alt => 'toggle children',
             :title => '')
@@ -61,12 +70,12 @@ module Admin::NodeHelper
   end
 
   def icon
-    icon_name = @current_node.virtual? ? 'virtual-page' : 'page'
-    image(icon_name, :class => "icon", :alt => 'page-icon', :title => '')
+    icon_name = @current_node.virtual? ? 'virtual_page' : 'page'
+    image(icon_name, :class => "icon", :alt => '', :title => '')
   end
 
   def node_title
-    %{<span class="title">#{ @current_node.title }</span>}
+    %{<span class="title">#{ h(@current_node.title) }</span>}
   end
 
   def page_type
@@ -74,13 +83,13 @@ module Admin::NodeHelper
     if display_name == 'Page'
       ""
     else
-      %{<small class="info">(#{ display_name })</small>}
+      %{<span class="info">(#{ h(display_name) })</span>}
     end
   end
 
   def spinner
     image('spinner.gif',
-            :class => 'busy', :id => "busy-#{@current_node.id}",
+            :class => 'busy', :id => "busy_#{@current_node.id}",
             :alt => "",  :title => "",
             :style => 'display: none;')
   end

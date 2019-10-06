@@ -6,15 +6,18 @@ ActionController::Routing::Routes.draw do |map|
       pages.resources :children, :controller => "pages"
     end
     admin.resources :layouts
-    admin.resources :snippets
     admin.resources :users
   end
+  map.preview 'admin/preview', :controller => 'admin/pages', :action => 'preview', :conditions => {:method => [:post, :put]}
 
   map.namespace :admin do |admin|
     admin.resource :preferences
-    admin.resources :extensions
+    admin.resource :configuration, :controller => 'configuration'
+    # admin.resources :settings
+    admin.resources :extensions, :only => :index
     admin.resources :page_parts
-    admin.resources :references
+    admin.resources :page_fields
+    admin.reference '/reference/:type.:format', :controller => 'references', :action => 'show', :conditions => {:method => :get}
   end
 
   # Admin Routes
@@ -23,12 +26,6 @@ ActionController::Routing::Routes.draw do |map|
     welcome.welcome        'admin/welcome',                      :action => 'index'
     welcome.login          'admin/login',                        :action => 'login'
     welcome.logout         'admin/logout',                       :action => 'logout'
-  end
-
-  # Export Routes
-  map.with_options(:controller => 'admin/export') do |export|
-    export.export          'admin/export',                             :action => 'yaml'
-    export.export_yaml     'admin/export/yaml',                        :action => 'yaml'
   end
 
   # Site URLs

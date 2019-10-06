@@ -1,0 +1,28 @@
+.dropdown_wrapper
+  border: 1px solid #b3b3b3
+  border-top: 1px solid #c3c3c3
+  +single-box-shadow(rgba(0,0,0,0.35), 0px, 8px, 25px)
+  +border-top-right-radius
+  +border-bottom-radius
+
+ul.menu
+  background: white
+  font-size: 80%
+  padding: 5px 20px
+  +border-top-right-radius
+  +border-bottom-radius
+  li
+    margin: 0 -20px
+    &.separator
+      margin: 5px -18px
+      border-top: 1px solid #e5e5e5
+  a
+    color: black
+    display: block
+    padding: 6px 20px 7px
+    text-decoration: none
+    border-top: 1px solid white
+    &:hover
+      background: #e0f0ff
+      border-top: 1px solid #d5f0ff
+      +linear-gradient(color_stops(#e5f5ff, #b5d0f5))

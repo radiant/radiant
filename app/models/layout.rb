@@ -1,7 +1,7 @@
 class Layout < ActiveRecord::Base
   
   # Default Order
-  order_by 'name'
+  default_scope :order => "name"
 
   # Associations
   has_many :pages
@@ -9,8 +9,7 @@ class Layout < ActiveRecord::Base
   belongs_to :updated_by, :class_name => 'User'
 
   # Validations
-  validates_presence_of :name, :message => 'required'
-  validates_uniqueness_of :name, :message => 'name already in use'
-  validates_length_of :name, :maximum => 100, :message => '%d-character limit'
-
+  validates_presence_of :name
+  validates_uniqueness_of :name
+  validates_length_of :name, :maximum => 100
 end

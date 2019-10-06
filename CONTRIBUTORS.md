@@ -1,0 +1,263 @@
+# Contributors
+
+The following people have submitted changes which have been applied to the
+core:
+
+## Edge
+
+* Jim Gay
+* Sam Whited
+* Johannes Fahrenkrug
+
+## 1.0.0
+
+* Jeff Casimir
+* Mario Visic
+* Mark Reginald James
+* Andrew O'Brian
+* Dirk Kelly
+* Oriol Gual
+* Petrik de Heus
+* Gert Goet
+* Jim Gay
+* Josh French
+* Andrew vonderLuft
+* William Ross
+* John Muhl
+* Johannes Fahrenkrug
+* Benny Degezelle
+* Jason Taylor
+* Wes Gamble
+* Michael Stalker
+* Chris Parrish
+* John W. Long
+* Edmund Haselwanter
+* Michal Cichra
+* Jason Garber
+* Samuel Whited
+* vanderhoorn
+* Sean Cribbs
+
+## 0.9.1 Refraction
+
+* Jim Gay
+
+## 0.9.0 Refraction
+
+* Mario Visic
+* Andrew Cates
+* Janne Asmala
+* Keith Bingman
+* Dirk Kelly
+* Anna billstrom
+* William Ross
+* M. Scott Ford
+* Josh French
+* Travis D. Warlick, Jr.
+* Jason Garber
+* Chris Ricca
+* Jim Gay
+* John Muhl
+* Ben Morrow
+* Sean Cribbs
+* Brandon Mathis
+* Daniel Beach
+* Chris Parrish
+* John Long
+
+## 0.8.2 Lustery
+
+* Jim Gay
+
+## 0.8.1 Luster
+
+* John Long
+* Sean Cribbs
+* Antonio Cangiano
+* alexmek
+* Jeremy Stephens
+* John Muhl
+* Alex Wallace
+* Justin Blecher
+* Kunal Shah
+* Jim Gay
+* Josh French
+
+## 0.8.0 Asterism
+
+* Michael Kessler
+* David Cato
+* Kunal Shah
+* Brett McHargue
+* Jim Gay
+* Kunal Shah
+* Matt Henry
+* Rick DeNatale
+* Jason Garber
+* Pat Allan
+* Josh French
+* Brent Kroeker
+* Sean Cribbs
+
+## 0.7.2 Engravings
+
+* Andrew vonderLuft
+
+## 0.7.1 Engraving
+
+* John Muhl
+* Sean Cribbs
+
+## 0.7.0 Intaglio
+
+* Paul du Coudray
+* Nikolay Karev
+* August Lilleas
+* Brandan Lennox
+* Jeroen Janssen
+* Erik Ostrom
+* Nathaniel Talbott
+* Yevgeny Smirnoff
+* Sytse Sijbrandij
+* Brian Landau
+* Adam Williams
+* Mark Imbriaco
+* Rick DeNatale
+* Clinton Nixon
+* John Muhl
+* Andrew O'Brien
+* Joe Van Dyk
+* Pat Allan
+* Matt Henry
+* Keith Bennett
+* Thomas Ingram
+* Josh French
+* Jason Garber
+* Mislav Marohnić
+* Jim Gay
+* Sean Cribbs
+
+## 0.6.9 Etch
+
+* Mark A. Yoon
+* Jim Gay
+* Sean Cribbs
+
+## 0.6.8 Incise
+
+* Andrew Neil
+* Glenn Murray
+* Tim Gossett
+* John Muhl
+* Josh French
+* Jim Gay
+* Alex Wayne
+* Nick Plante
+* Loren Johnson
+* Sean Cribbs
+* Thomas Watson Steen
+
+## 0.6.7 Mordant
+
+* John Long
+* Josh French
+* Sean Cribbs
+
+## 0.6.6 Chiseled
+
+* Josh French
+* Sean Cribbs
+
+## 0.6.5 Chisel
+
+* Adam Keyes
+* Marty Haught
+* xtoddx
+* skrat
+* Michael Klett
+* Matthew Elder
+* Nick Plante
+* ben
+* jonleighton
+* Josh French
+* abstractioneer
+* andreas
+* Keeran Hawoldar
+* Loren Johnson
+* Benny Degezelle
+* John Long
+* Andrew O'Brien
+* Bjørn Arild Mæland
+* Mislav Marohnić
+* Daniel Sheppard
+* Sean Cribbs
+
+## 0.6.4 Gem Shaper
+
+* Andrew Neil
+* zilkey
+* Mark Gallop
+* Bjørn Arild Mæland
+* ana
+* Bodhi Philpot
+* jay@jay.fm
+* Brian Skahan
+* Mislav Marohnić
+* Daniel Sheppard
+* John Long
+* Peter Berkenbosch
+* Sean Cribbs
+
+## 0.6.3 Rock Grinder
+
+* oli
+* Daniel Sheppard
+* vitali
+* tolbrino
+* Sean Cribbs
+* Earl Chew
+* John Long
+
+## 0.6.2 Jewel Carver
+
+* Sean Cribbs
+* Daniel Sheppard
+* Keita
+
+## 0.6.1 Stone Cutter
+
+* Sean Cribbs
+* Daniel Sheppard
+
+## 0.6.0 Lapidary
+
+* Alexander Horn
+* Adam Williams
+* Sean Santry
+* Sean Cribbs
+* Brian Gernhardt
+* Bodhi Philpot
+* Andrew Barnett
+* Jesse Newland
+* Josh Ferguson
+* Daniel Sheppard
+* Matte Edens
+* Jacob Burkhart
+* Chris Parrish
+
+## 0.5.1 Gemdust
+
+* Daniel Sheppard
+* Paul Smith
+* Bodhi Philpot
+
+## 0.5.0 Grindstone
+
+* Matt McCray
+* Paul Smith
+* Scott Walter
+* Sven Lauer
+* Tristan Boniver
+* Chris Corriveau
+* Ryan Platte
+* Luis Lavena

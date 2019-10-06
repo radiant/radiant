@@ -10,6 +10,50 @@ describe Admin::UsersController do
   it "should handle Users" do
     controller.class.model_class.should == User
   end
+  
+  
+  describe "show" do
+    it "should redirect to the edit action" do
+      login_as :admin
+      get :show, :id => 1
+      response.should redirect_to(edit_admin_user_path(params[:id]))
+    end
+  end
+  
+  describe "with invalid page id" do
+    before do
+      login_as :admin
+    end
+    [:edit, :remove].each do |action|
+      before do
+        @parameters = {:id => 999}
+      end
+      it "should redirect the #{action} action to the index action" do
+        get action, @parameters
+        response.should redirect_to(admin_users_path)
+      end
+      it "should say that the 'User could not be found.' after the #{action} action" do
+        get action, @parameters
+        flash[:notice].should == 'User could not be found.'
+      end
+    end
+    it 'should redirect the update action to the index action' do
+      put :update, @parameters
+      response.should redirect_to(admin_users_path)
+    end
+    it "should say that the 'User could not be found.' after the update action" do
+      put :update, @parameters
+      flash[:notice].should == 'User could not be found.'
+    end
+    it 'should redirect the destroy action to the index action' do
+      delete :destroy, @parameters
+      response.should redirect_to(admin_users_path)
+    end
+    it "should say that the 'User could not be found.' after the destroy action" do
+      delete :destroy, @parameters
+      flash[:notice].should == 'User could not be found.'
+    end
+  end
 
   { :get => [:index, :new, :edit, :remove],
     :post => [:create],
@@ -31,7 +75,7 @@ describe Admin::UsersController do
       it "should deny you access to #{action} action if you are not an admin" do
         lambda { 
           send(method, action, :id => user_id(:existing)) 
-        }.should restrict_access(:deny => [users(:developer), users(:existing)],
+        }.should restrict_access(:deny => [users(:designer), users(:existing)],
                                  :url => '/admin/page')
       end
     end
@@ -44,5 +88,14 @@ describe Admin::UsersController do
     response.should redirect_to(admin_users_url)
     flash[:error].should match(/cannot.*self/i)
     User.find(user.id).should_not be_nil
+  end 
+
+  it "should not allow you to remove your own admin privilege" do
+    user = users(:admin)
+    login_as user
+    put :update, { :id => user.id, :user => {:admin => false} }
+    response.should redirect_to(admin_users_url)
+    flash[:error].should match(/cannot remove yourself from the admin role/i)
+    User.find(user.id).admin.should be_true
   end  
 end

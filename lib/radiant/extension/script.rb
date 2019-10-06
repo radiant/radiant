@@ -1,6 +1,7 @@
 require 'active_resource'
 require 'tmpdir'
 require 'fileutils'
+require 'rake'
 
 module Registry
   class Extension < ActiveResource::Base
@@ -19,18 +20,40 @@ module Registry
 Name:           #{name}
 Description:
   #{description}
-Author:         #{author.first_name} #{author.last_name} <#{author.email}>
+Author:         #{author.name} <#{author.email}>
 Source code:    #{repository_url}
 Download:       #{download_url}
 Install type:   #{install_type}
+Supports:       Radiant #{supports_radiant_version}
 }.strip
     end
   end
 
   class Action
     def rake(command)
-      `rake #{command} RAILS_ENV=#{RAILS_ENV}`
+      puts "rake #{command}"
+      puts `rake #{command} RAILS_ENV=#{RAILS_ENV}` if tasks_include? command
     end
+
+    def tasks_include?(command)
+      command = command.split(':')
+      if command.length > 1 && command[0..1] == ['radiant','extensions']
+        extension = command[2]
+        task = "radiant:extensions:#{extension}:#{command[3].split[0]}"
+      else
+        extension = task = command[0]
+      end
+      rake_file = File.join(RAILS_ROOT, 'vendor', 'extensions', extension) + '/lib/tasks/' + extension + '_extension_tasks.rake'
+      load rake_file if File.exist? rake_file
+      tasks = Rake.application.tasks.map(&:name)
+      tasks.include? task
+    end
+    
+    def file_utils
+      FileUtils
+    end
+    
+    delegate :cd, :cp_r, :rm_r, :to => :file_utils
   end
 
   class Installer < Action
@@ -46,8 +69,8 @@ Install type:   #{install_type}
     end
 
     def copy_to_vendor_extensions
-      FileUtils.cp_r(self.path, File.expand_path(File.join(RAILS_ROOT, 'vendor', 'extensions', name)))
-      FileUtils.rm_r(self.path)
+      cp_r(self.path, File.expand_path(File.join(RAILS_ROOT, 'vendor', 'extensions', name)))
+      rm_r(self.path)
     end
 
     def migrate
@@ -75,7 +98,7 @@ Install type:   #{install_type}
     end
 
     def remove_extension_directory
-      FileUtils.rm_r(File.join(RAILS_ROOT, 'vendor', 'extensions', name))
+      rm_r(File.join(RAILS_ROOT, 'vendor', 'extensions', name))
     end
   end
 
@@ -95,7 +118,7 @@ Install type:   #{install_type}
 
     def checkout
       self.path = File.join(Dir.tmpdir, name)
-      system "cd #{Dir.tmpdir}; #{checkout_command}"
+      cd(Dir.tmpdir) { system "#{checkout_command}" }
     end
   end
 
@@ -136,10 +159,14 @@ Install type:   #{install_type}
     def checkout
       if project_in_git?
         system "git submodule add #{url} vendor/extensions/#{name}"
-        system "cd vendor/extensions/#{name}; git submodule init && git submodule update"
+        cd(File.join('vendor', 'extensions', name)) do
+          system "git submodule init && git submodule update"
+        end
       else
         super
-        system "cd #{path}; git submodule init && git submodule update"
+        cd(path) do
+          system "git submodule init && git submodule update"
+        end
       end
     end
     
@@ -155,18 +182,26 @@ Install type:   #{install_type}
   end
 
   class Gem < Download
+    def gem_name(name)
+      name.gsub(/-\d+\.\d+\.\d+(.+)?\.gem/, '')
+    end
+
     def download
       # Don't download the gem if it's already installed
+      extension = gem_name(filename)
       begin
-        gem filename.split('-').first
+        gem extension
       rescue ::Gem::LoadError
         super
-        `gem install #{filename}`
+        `gem install #{extension}`
       end
     end
 
     def unpack
-      output = `cd #{Dir.tmpdir}; gem unpack #{filename.split('-').first}`
+      output = nil
+      cd(Dir.tmpdir) do
+        output = `gem unpack #{gem_name(filename)}`
+      end
       self.path = output.match(/'(.*)'/)[1]
     end
   end
@@ -177,7 +212,8 @@ Install type:   #{install_type}
     end
 
     def unpack
-      output = `cd #{Dir.tmpdir}; tar xvf #{filename}`
+      output = nil
+      cd(Dir.tmpdir) { output = `tar xvf #{filename}` }
       self.path = File.join(Dir.tmpdir, output.split(/\n/).first.split('/').first)
     end
   end
@@ -188,7 +224,7 @@ Install type:   #{install_type}
     end
 
     def unpack
-      system "cd #{Dir.tmpdir}; gunzip #{self.filename}"
+      cd(Dir.tmpdir) { system "gunzip #{self.filename}" }
       @unpacked = true
       super
     end
@@ -200,7 +236,7 @@ Install type:   #{install_type}
     end
 
     def unpack
-      system "cd #{Dir.tmpdir}; bunzip2 #{self.filename}"
+      cd(Dir.tmpdir) { system "bunzip2 #{self.filename}" }
       @unpacked = true
       super
     end
@@ -208,7 +244,8 @@ Install type:   #{install_type}
 
   class Zip < Download
     def unpack
-      output = `cd #{Dir.tmpdir}; unzip #{filename} -d #{name}`
+      output = nil
+      cd(Dir.tmpdir) { output = `unzip #{filename} -d #{name}` }
       self.path = File.join(Dir.tmpdir, name)
     end
   end
@@ -237,12 +274,18 @@ module Radiant
         end
 
         def installed?
-          path_match = Regexp.compile("#{extension_name}$")
+          path_match = Regexp.compile("(^|/|\\\\)#{extension_name}$")
           extension_paths.any? {|p| p =~ path_match }
         end
 
+        def registered?
+          self.extension
+        end
+
         def extension_paths
-          [RAILS_ROOT, RADIANT_ROOT].uniq.map { |p| Dir["#{p}/vendor/extensions/*"] }.flatten
+          paths = [RAILS_ROOT, RADIANT_ROOT].uniq.map { |p| Dir["#{p}/vendor/extensions/*"] }
+          paths.unshift Dir["#{RADIANT_ROOT}/test/fixtures/extensions/*"] if RAILS_ENV == 'test'    #nasty
+          paths.flatten
         end
 
         def load_extensions
@@ -263,7 +306,12 @@ module Radiant
           if installed?
             puts "#{extension_name} is already installed."
           else
-            find_extension && extension.install
+            find_extension
+            if registered?
+              extension.install
+            else
+              raise ArgumentError, "#{extension_name} is not available in the registry."
+            end
           end
         end
       end
@@ -277,7 +325,7 @@ module Radiant
           if installed?
             find_extension && extension.uninstall
           else
-            puts "#{extension} is not installed."
+            puts "#{extension_name} is not installed."
           end
         end
       end
@@ -295,7 +343,7 @@ module Radiant
       class Help
         def initialize(args=[])
           command = args.shift
-          command = 'help' unless self.class.instance_methods(false).include?(command)
+          command = 'help' unless self.class.instance_methods(false).collect {|im| im.to_s}.include?(command.to_s)
           send(command)
         end
 
@@ -339,7 +387,7 @@ module Radiant
 
         private
           def command_names
-            (Radiant::Extension::Script.constants - ['Util']).sort.map {|n| n.underscore }.join(", ")
+            (Radiant::Extension::Script.constants - ['Util']).sort.map {|n| n.to_s.underscore }.join(", ")
           end
       end
     end

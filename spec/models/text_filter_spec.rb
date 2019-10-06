@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe TextFilter do
   class ReverseFilter < TextFilter
@@ -17,8 +17,12 @@ describe TextFilter do
     ReverseFilter.description.should == %{Reverses text.}
   end
   
-  it 'should description_file annotation' do
+  it 'should allow description_file annotation' do
     CustomFilter.description.should == File.read(File.dirname(__FILE__) + "/../fixtures/sample.txt")
+  end
+
+  it 'should return an array of filter_names of all available filters' do
+    TextFilter.descendants_names.should include("Pseudo Markdown", "Pseudo Textile", "Really Custom", "Reverse")
   end
 
   it 'should filter text with base filter' do

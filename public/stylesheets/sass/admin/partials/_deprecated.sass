@@ -1,0 +1,55 @@
+// The styles here will be deprecated in a future version of Radiant, but
+// will be maintained here for a time so that older extensions continue to
+// look reasonable.
+
+// Use for "empty" instead of "note"
+table.index td.note
+  color: silver
+  font-size: 85%
+  font-style: italic
+  padding: 3em
+  text-align: center
+
+// Use "set" instead of "row" on forms
+.row
+  clear: both
+  margin-top: 20px
+  width: 100%
+  p
+    float: left
+    margin: 0 2em 1.25em 0
+    font-size: 95%
+    label
+      display: inline
+      text-shadow: #666 1px 1px 0
+
+// Use a div with a class of "popup_title" instead of an h3 with a class of "title"
+div.popup h3.title
+  background: #c5dff5
+  +linear-gradient(color_stops(#e5f5ff, #c5dff5))
+  border-bottom: 1px solid #a7cdf0
+  font-size: 100%
+  margin: -10px -20px 20px -20px
+  padding: 6px 10px
+ 
+// Reuse this style instead by applying the "action_button" class
+#actions
+  a
+    background: #d8d8d8
+    +linear-gradient(color-stops(#fff, #ccc))
+    color: #333
+    font-size: 80%
+    padding: 8px 12px
+    text-decoration: none
+    text-shadow: 1px 1px 1px #eee
+    +border-radius(5px)
+    +button-shadow
+    &:hover
+      color: #0076a3
+      text-shadow: 1px 1px 1px #fff
+    &:active
+      background: #fff
+      +no-button-shadow
+      color: black
+    img
+      vertical-align: -20%

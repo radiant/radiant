@@ -7,6 +7,7 @@ describe PageContext do
     @page = pages(:radius)
     @context = PageContext.new(@page)
     @parser = Radius::Parser.new(@context, :tag_prefix => 'r')
+    @context = @parser.context
   end
   
   it 'should raise an error when it encounters a missing tag' do
@@ -49,8 +50,9 @@ describe PageContext, "when errors are not being raised" do
   before :each do
     @page = pages(:radius)
     @context = PageContext.new(@page)
-    @context.stub!(:raise_errors?).and_return(false)
     @parser = Radius::Parser.new(@context, :tag_prefix => 'r')
+    @parser.context.stub!(:raise_errors?).and_return(false)
+    @context = @parser.context
   end
   
   it 'should output an error when it encounters a missing tag' do
@@ -58,8 +60,9 @@ describe PageContext, "when errors are not being raised" do
   end
   
   it 'should pop the stack when an error occurs' do
+    
     @context.current_nesting.should be_empty
-    @context.define_tag("error") { |tag| raise "Broken!" }
+    @parser.context.define_tag("error") { |tag| raise "Broken!" }
     @parser.parse("<r:error/>").should match(/Broken\!/)
     @context.current_nesting.should be_empty
   end

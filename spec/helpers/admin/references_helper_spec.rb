@@ -1,6 +1,11 @@
-require File.dirname(__FILE__) + '/../../spec_helper'
+require 'spec_helper'
 
 describe Admin::ReferencesHelper do
+  class BasicFilter < TextFilter; end
+  class CustomFilter < TextFilter
+    filter_name "Really Custom"
+  end
+
   describe "determining the page class" do
     before :each do
       helper.send(:instance_variable_set, :@page_class, nil)
@@ -31,8 +36,13 @@ describe Admin::ReferencesHelper do
     end
 
     it "should return the filter object for the named filter" do
-      params[:filter_name] = "Textile"
-      helper.filter.should == TextileFilter
+      params[:filter_name] = "Basic"
+      helper.filter.should == BasicFilter
+    end
+
+    it "should return the filter object for a custom named filter" do
+      params[:filter_name] = "Really Custom"
+      helper.filter.should == CustomFilter
     end
 
     it "should return nil when the set filter is blank" do
@@ -45,12 +55,12 @@ describe Admin::ReferencesHelper do
     describe "when getting a filter reference" do
       before :each do
         helper.send(:instance_variable_set, :@filter, nil)
-        params[:id] = 'filters'
+        params[:type] = 'filters'
       end
 
       it "should return the name of the set filter" do
-        params[:filter_name] = "Textile"
-        helper._display_name.should == "Textile"
+        params[:filter_name] = "Basic"
+        helper._display_name.should == "Basic"
       end
 
       it "should return <none> when no filter is set" do
@@ -62,7 +72,7 @@ describe Admin::ReferencesHelper do
     describe "when getting a tag reference" do
       before :each do
         helper.send(:instance_variable_set, :@page_class, nil)
-        params[:id] = 'tags'
+        params[:type] = 'tags'
       end
 
       it "should return the display name of the page class" do
@@ -80,17 +90,18 @@ describe Admin::ReferencesHelper do
   describe "rendering the filter reference" do
     before :each do
       helper.send(:instance_variable_set, :@filter, nil)
-      params[:id] = 'filters'
-      params[:filter_name] = 'Textile'
+      params[:type] = 'filters'
+      params[:filter_name] = 'Basic'
     end
 
     it "should render a helpful message when the description is blank" do
-      TextileFilter.should_receive(:description).and_return('')
+      BasicFilter.should_receive(:description).and_return('')
       helper.filter_reference.should == "There is no documentation on this filter."
     end
 
     it "should render the filter's description when available" do
-      helper.filter_reference.should == TextileFilter.description
+      BasicFilter.should_receive(:description).at_least(:once).and_return('This is basic stuff.')
+      helper.filter_reference.should == BasicFilter.description
     end
 
     it "should render a helpful message when no filter is selected" do
@@ -102,7 +113,7 @@ describe Admin::ReferencesHelper do
   describe "rendering the tag reference" do
     before :each do
       helper.send(:instance_variable_set, :@page_class, nil)
-      params[:id] = 'tags'
+      params[:type] = 'tags'
       params[:class_name] = ''
     end
 

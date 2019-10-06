@@ -1,0 +1,59 @@
+*1.3.0 [Rails 2.3.2] (??)
+
+* Supporting Rails 2.3.2 [mhawkins, underlog]
+* Added tasks to load path so folks can require 'dataset.rake' [aiwilliams]
+* Updated gemspec to include dependencies [aiwilliams]
+
+*1.2.0 [Cucumber] (April 8, 2009)
+
+* Support for cucumber [jgarber, seancribbs]
+
+*1.1.0 [STI, belongs_to] (February 14, 2009)
+
+* STI is better supported for inserting, naming and finding records [aiwilliams]
+
+  class Place < ActiveRecord::Base; end
+  class State < Place; end
+  class NorthCarolina < State; end
+
+  create_record(NorthCarolina, :state)                        # no need to define the 'type' column value
+  states(:state) == places(:state) == north_carolinas(:state) # read with the class names pluralized
+
+* Moved to jeweler for much cleaner, github embracing gem building [aiwilliams]
+* Support for simple belongs to associations [aiwilliams]
+
+  class Person < ActiveRecord::Base; end
+  class Note < ActiveRecord::Base
+    belongs_to :person
+  end
+  
+  person_id = create_record Person, :myguy
+  create_record Note, :person => :myguy
+  Note.last.person_id == person_id
+
+* Models inside modules are supported a little more conveniently [aiwilliams]
+
+  module MList
+    class Message < ActiveRecord::Base
+    end
+  end
+
+  # We'll get rid of the underscore in 'm_list_messages'
+  create_record MList::Message, :test
+  mlist_messages(:test)
+
+* Helper method for converting strings to useful symbols for finding records [siannopollo]
+
+  This is useful if you write creator methods of your own.
+
+  def create_person(attributes)
+    create_record Person, name_to_sym(attributes[:name]), attributes
+  end
+
+  create_person(:name => 'Little John')
+  people(:little_john)
+
+
+*1.0.0 [Scenarios Replacement] (December 15, 2008)
+
+* Drop-in replacement for Scenarios plugin of old [aiwilliams]

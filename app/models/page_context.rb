@@ -3,12 +3,19 @@ class PageContext < Radius::Context
   attr_reader :page
   
   def initialize(page)
-    super()
+    super
     @page = page
     globals.page = @page
     page.tags.each do |name|
       define_tag(name) { |tag_binding| page.render_tag(name, tag_binding) }
     end
+  end
+  
+  def dup
+    rv = self.class.new(page)
+    rv.globals = globals.dup
+    rv.definitions = definitions.dup
+    rv
   end
  
   def render_tag(name, attributes = {}, &block)

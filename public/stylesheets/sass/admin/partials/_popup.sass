@@ -1,0 +1,213 @@
+div.popup
+  color: #333
+  background-color: white
+  border: 1px solid #777
+  padding: 10px 20px
+  
+  strong
+    font-weight: bold
+  
+  em
+    font-style: italic
+  
+  .busy
+    float: right
+    margin-top: 9px
+  
+  .popup_title
+    background: #c5dff5
+    +linear-gradient(color_stops(#e5f5ff, #c5dff5))
+    border-bottom: 1px solid #a7cdf0
+    cursor: move
+    font-weight: bold
+    font-size: 100%
+    margin: -10px -20px 20px -20px
+    padding: 6px 10px
+  
+  p.intro
+    font-size: 90%
+    
+  label
+    display: block
+    font-size: 85%
+    &.inline
+      display: inline
+    span.hint
+      font-size: 90%
+      color: #666
+  
+  input.button
+    font-size: 120%
+  
+  .viewport
+    background: white
+    border: 1px solid #ddd
+    border-top: 1px solid #ccc
+    border-left: 1px solid #ccc
+    +single-box-shadow(#fff, 1px, 1px, 0)
+    margin: 1em 0
+    overflow: auto
+    table.index
+      margin: -1px 0 0
+  
+  .buttons
+    border-top: 1px solid #e5e5e5
+    background: #f5f5f5
+    font-size: 85%
+    margin: 1.5em -20px -10px
+    padding: 10px
+    text-align: right
+    input.button
+      font-size: 120%
+    button
+      font-size: 110%
+      padding: 4px 15px 5px
+      background: #f5f5f5
+      border: 1px solid #959595
+      +border-radius(100px)
+      +single-box-shadow(white, 0, 2px, 0, inset)
+      +linear-gradient(color-stops(#ddd 0%, #eee 15%, #fff 100%))
+      &.default
+        border: 1px solid #154ca6
+        +single-box-shadow(#c7e0f6, 0, 2px, 1px, inset)
+        color: white
+        +linear-gradient(color-stops(#67b4e1, #78b9e1))
+      &:active
+        border: 1px solid #888
+        +single-box-shadow(none)
+        +linear-gradient(color-stops(#ccc 0%, #ddd 15%, #eee 100%))
+      &.default:active
+        border: 1px solid #002c86
+        +linear-gradient(color-stops(#4794c1, #78b9e1))
+      &:focus
+        border-width: 2px
+    a.cancel
+      color: $alt-link-color
+  
+  .tag_description, .snippet_description
+    border-bottom: 1px dotted silver
+    font-size: 95%
+    padding: 6px 0
+    h4
+      color: green
+      font-size: 120%
+      margin-top: 0
+      margin-bottom: 8px
+    code
+      background-color: #f5f5f5
+      color: #666
+      font-family: Monaco, "Courier New", Courier, monospace
+      padding-top: 1px
+      padding-bottom: 1px
+    pre
+      background-color: #f5f5f5
+      border: 1px solid #ddd
+      color: #666
+      font-family: Monaco, "Courier New", Courier, monospace
+      overflow: hidden
+      padding: 10px
+  
+  .reference
+    font-size: 90%
+    border: 1px solid silver
+    overflow: auto
+    overflow-y: auto
+    overflow-x: hidden
+    line-height: 140%
+    padding: 12px
+    padding-top: 1px
+    height: 300px
+    width: 40em
+    code
+      background-color: #f5f5f5
+      color: #666
+      font-family: Monaco, "Courier New", Courier, monospace
+      padding-top: 1px
+      padding-bottom: 1px
+    pre
+      background-color: #f5f5f5
+      border: 1px solid #ddd
+      color: #666
+      font-family: Monaco, "Courier New", Courier, monospace
+      overflow: auto
+      padding: 10px
+    table
+      width: 100%
+      th
+        color: green
+        font-size: 120%
+        padding: 5px
+        padding-left: 0
+        padding-right: 0
+      td
+        border-bottom: 1px dotted silver
+        padding-top: 8px
+        padding-bottom: 8px
+        text-align: left
+      h1
+        color: black
+        margin: 0
+        margin-bottom: .5em
+      acronym
+        border-bottom: 1px dotted silver
+      blockquote
+        border-left: 4px solid silver
+        padding-left: 1em
+        padding-right: 1em
+        margin: 0
+        margin-top: 1em
+        margin-bottom: 1em  
+  
+  .close_link
+    font-size: 85%
+    text-align: center
+
+.tag
+  color: green
+  cursor: pointer
+  font-size: 120%
+  margin-top: 0
+  margin-bottom: 8px
+.tag_options
+  margin-left: 1em
+  li
+    margin-bottom: 8px
+.tag_option_value_list
+  margin-left: 1em
+  li
+    display: inline
+    &:last-child
+      border: none
+    code
+      padding-left: 0.3em
+      padding-right: 0.3em
+      &:hover
+        background: #666
+        color: #fff
+
+div.popup .reference table
+  th
+    border-bottom: 1px dotted silver
+    padding-top: 8px
+    padding-bottom: 8px
+    text-align: left
+  h2, h3, h4
+    color: black
+    margin: 0
+    margin-bottom: .5em
+
+div.popup.textured
+  background: #eee
+  
+  .head
+    background: white
+    padding: 10px 20px
+    margin: -20px -20px 20px
+    border-bottom: 1px solid #ccc
+    +single-box-shadow(#fff, 0, 1px, 0)
+  
+  .buttons
+    border-top: 1px solid white
+    margin: 20px -20px -10px
+    padding: 20px
+    +single-box-shadow(#ccc, 0, -1px, 0)

@@ -16,28 +16,28 @@ describe Admin::WelcomeController do
   end
   
   it "should set the current user and redirect when login was successful" do
-    post :login, :user => {:login => "admin", :password => "password"}
+    post :login, :username_or_email => "admin", :password => "password"
     controller.send(:current_user).should == users(:admin)
     response.should be_redirect
     response.should redirect_to(welcome_url)
   end
   
   it "should render the login template when login failed" do
+    controller.should_receive(:announce_invalid_user) # Can't test flash.now!
     post :login, :user => {:login => "admin", :password => "wrong"}
     response.should render_template("login")
-    flash[:error].should_not be_nil
   end
   
   describe "remember me" do
 
     before do
-      Radiant::Config.stub!(:[]).with('session_timeout').and_return(2.weeks)
+      Radiant::Config['session_timeout'] = 2.weeks
       @user = users(:admin)
       controller.stub!(:current_user).and_return(@user)
     end
 
     after do
-      post :login, :user => {:login => "admin", :password => "password"}, :remember_me => 1
+      post :login, :username_or_email => "admin", :password => "password", :remember_me => 1
     end
 
     it "should remember user" do
@@ -74,7 +74,7 @@ describe Admin::WelcomeController do
     describe "and a stored location" do
       before do
         session[:return_to] = '/stored/path'
-        post :login, :user => {:login => "admin", :password => "password"}
+        post :login, :username_or_email => "admin", :password => "password"
       end
 
       it "should redirect" do
@@ -86,4 +86,13 @@ describe Admin::WelcomeController do
       end
     end
   end
+
+  describe "without a user" do
+    it "should gracefully handle logout" do
+      controller.stub!(:current_member).and_return(nil)
+      get :logout
+      response.should redirect_to(login_url)
+    end
+  end
+
 end

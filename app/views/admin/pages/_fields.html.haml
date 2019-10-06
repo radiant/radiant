@@ -1,60 +1,71 @@
+- include_javascript 'admin/page_preview'
 = fields.hidden_field :lock_version
 = fields.hidden_field :parent_id
-= render_region :form_top
-.form-area
-  - render_region :form do |form|
-    - form.edit_title do
-      %p.title
-        %label{:for=>"page_title"}
-          Page Title
-        = fields.text_field :title, :class => 'textbox', :maxlength => 255
-    - form.edit_extended_metadata do
-      #extended-metadata.row{meta_visible(:meta)}
+= fields.hidden_field :class_name
+
+= render_region :form_top, :locals => {:f => fields}
+
+- render_region :form, :locals => {:f => fields} do |form|
+  - form.edit_title do
+    %p.title
+      %label{:for=>"page_title"}= t('page_title')
+      = fields.text_field :title, :class => 'textbox', :maxlength => 255
+  - form.edit_extended_metadata do
+    .drawer
+      .drawer_contents#attributes
         %table.fieldset
           = render :partial => "meta_row", :collection => @meta, :locals => {:f => fields}
+          = render :partial => 'admin/page_fields/page_field', :collection => @page.fields
           = render_region :extended_metadata, :locals => {:f => fields}
-      %p.more-or-less
-        %small
-          %a#more-extended-metadata{meta_visible(:meta_more), :href => "#", :onclick=>toggle_javascript_for('extended-metadata')} More
-          %a#less-extended-metadata{meta_visible(:meta_less), :href => "#", :onclick=>toggle_javascript_for('extended-metadata')} Less
-    - form.edit_page_parts do
-      #tab-control
-        #tabs.tabs
-          #tab-toolbar
-            = link_to_function image('plus', :alt => 'plus'), 'toggle_add_part_popup()', :title => 'Add Tab'
-            = link_to_function image('minus', :alt => 'minus'), 'if(confirm(\'Delete the current tab?\')) { tabControl.removeTab(tabControl.selected) }', :title => 'Remove Tab'
-        #pages.pages
-          = render :partial => 'admin/page_parts/page_part', :collection => @page.parts
-      - render_region :parts_bottom do |parts_bottom|
-        - parts_bottom.edit_layout_and_type do
-          .row
-            %p
-              %label{:for=>"page_layout_id"}
-                Layout
-              = fields.select :layout_id, [['<inherit>', '']] + Layout.find(:all).map { |s| [s.name, s.id] }
-            %p
-              %label{:for=>"page_class_name"}
-                Page Type
-              = fields.select :class_name, [['<normal>', '']] + Page.descendants.map { |p| [p.display_name, p.name] }.sort_by { |p| p.first }
-            %p
-              %label{:for=>"page_status_id"}
-                Status
-              = fields.select :status_id, Status.find_all.map { |s| [s.name, s.id] }, {}
-            - if @config['page.edit.published_date?']
-              %p#publication-date{:style => "display: none"}
-                %label{:for=>"page_published_at"}
-                  Published At
-                = fields.datetime_select :published_at, :disabled => true
-            = render_region :layout_row, :locals => {:f => fields}
-          %span.clear &nbsp;
-        - parts_bottom.edit_timestamp do
-          = updated_stamp @page
-- render_region :form_bottom do |form_bottom|
+      .drawer_handle
+        %a.toggle{:href=>'#attributes', :rel=>"toggle[attributes]", :class=>"#{(meta_errors? ? 'less' : 'more')}"}= meta_label
+  - form.edit_page_parts do
+    #tab_control
+      #tabs.tabs
+        #tab_toolbar
+          %a.popup{:href=> '#add_part_popup', :title=>t('add_part')}
+            = image('add_tab', :alt=>t('add_part'), :title=>"")
+      #pages.pages
+        = render :partial => 'admin/page_parts/page_part', :collection => @page.parts
+    = render_region :parts_bottom, :locals => {:f => fields}
+
+.set
+  - render_region :layout, :locals => {:f => fields} do |layout|
+    - layout.edit_layout do
+      %p
+        = fields.label :layout_id, t('layout')
+        = fields.select :layout_id, [[t('select.inherit') , '']] + Layout.find(:all).map { |s| [s.name, s.id] }
+    - layout.edit_type do
+      %p
+        = fields.label :class_name, t('page_type')
+        = fields.select :class_name, [[t('select.normal'), '']] + Page.descendants.map { |p| [p.display_name, p.name] }.sort_by { |p| p.first }
+    - layout.edit_status do
+      %p
+        = fields.label :status_id, t('status')
+        = fields.select :status_id, status_to_display
+    - layout.edit_published_at do
+      %p#published_at{:class => (@page.published? ? nil : 'hidden')}
+        = fields.label :published_at, t('published_on')
+        = fields.text_field :published_at, :class=> "date", :value => (@page.published_at? ? I18n.localize(@page.published_at.to_date, :format =>:long) : nil)
+    = render_region :layout_row, :locals => {:f => fields}
+
+- render_region :form_bottom, :locals => {:f => fields} do |form_bottom|
   - form_bottom.edit_buttons do
     - @buttons_partials.each do |partial|
       = render :partial => partial, :locals => {:f => fields}
-    %p.buttons
+    .buttons{:style=>"clear: left"}
       = save_model_button(@page)
       = save_model_and_continue_editing_button(@page)
-      or
-      = link_to 'Cancel', admin_pages_url
+      = submit_tag(t('preview', :default => 'Preview'), :class => 'button', :id => 'show-preview')
+      = t('or')
+      = link_to t('cancel'), admin_pages_url
+    #preview_panel.fullcover.grey_out{:style => 'display: none;'}
+      %iframe{:id => 'page-preview', :class => 'fullcover', :name => 'page-preview', :src =>  ActionController::Base.relative_url_root.to_s + '/loading-iframe.html', :frameborder => 0, :scrolling => "auto"}
+      .preview_tools
+        =submit_tag(t('buttons.save_changes'), :class => 'big save_changes')
+        =submit_tag(t('buttons.save_and_continue'), :class => 'big save_and_continue', :name => 'continue')
+        %span.info
+          = t('or')
+          =link_to(t('edit_page'),{}, :class => 'cancel')
+  - form_bottom.edit_timestamp do
+    = updated_stamp @page

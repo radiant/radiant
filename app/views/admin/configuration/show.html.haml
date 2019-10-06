@@ -1,0 +1,58 @@
+- body_classes << "reversed"
+
+#preferences.box
+  - render_region :user do |user|
+    - user.preferences do
+      %h3
+        .actions
+          = button_to t("edit_preferences"), "/admin/preferences", :method => :get
+        = t('personal_preferences')
+      = image_tag(gravatar_url(@user.email, :size=>"64px"), :class=>"avatar", :width=>64, :height=>64, :alt=>"")
+      %p.ruled
+        %label 
+          = t('name') 
+        %span
+          = current_user.name
+      %p.ruled
+        %label 
+          = t('email_address') 
+        %span.uri 
+          = current_user.email
+      %p.ruled
+        %label 
+          = t('login') 
+        %span
+          = current_user.login
+      %p.ruled
+        %label 
+          = t('password') 
+        %big &bull;&bull;&bull;&bull;&bull;
+      %p.ruled
+        %label
+          = t('language') 
+        %span 
+          = current_user.locale
+
+#config.box
+  - render_region :config do |config|
+    - config.site do
+      %h3
+        - if admin?
+          .actions
+            = button_to t("edit_configuration"), edit_admin_configuration_url, :method => :get
+        Configuration
+      - Radiant.config.site_settings.each do |site_setting|
+        %p.ruled
+          = show_config site_setting, :class => (site_setting =~ /host$/ ? 'uri' : nil)
+
+    - config.defaults do
+      %h4 Defaults
+      - Radiant.config.default_settings.each do |default_setting|
+        %p.ruled
+          = show_config default_setting
+
+    - config.users do
+      %h4 Passwords
+      - Radiant.config.user_settings.each do |user_setting|
+        %p.ruled
+          = show_config user_setting

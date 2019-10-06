@@ -1,16 +1,17 @@
+require 'will_paginate'
 class Admin::ResourceController < ApplicationController
   extend Radiant::ResourceResponses
   
   helper_method :model, :current_object, :models, :current_objects, :model_symbol, :plural_model_symbol, :model_class, :model_name, :plural_model_name
   before_filter :populate_format
+  before_filter :never_cache
   before_filter :load_models, :only => :index
   before_filter :load_model, :only => [:new, :create, :edit, :update, :remove, :destroy]
   after_filter :clear_model_cache, :only => [:create, :update, :destroy]
 
-  def self.model_class(model_class = nil)
-    @model_class ||= (model_class || self.controller_name).to_s.singularize.camelize.constantize
-  end
-
+  cattr_reader :paginated
+  cattr_accessor :default_per_page, :will_paginate_options
+  
   responses do |r|
     # Equivalent respond_to block for :plural responses:
     # respond_to do |wants|
@@ -21,9 +22,13 @@ class Admin::ResourceController < ApplicationController
     r.plural.publish(:xml, :json) { render format_symbol => models }
 
     r.singular.publish(:xml, :json) { render format_symbol => model }
+    r.singular.default { redirect_to edit_model_path if action_name == "show" }
+    
+    r.not_found.publish(:xml, :json) { head :not_found }
+    r.not_found.default { announce_not_found; redirect_to :action => "index" }
 
     r.invalid.publish(:xml, :json) { render format_symbol => model.errors, :status => :unprocessable_entity }
-    r.invalid.default {  announce_validation_errors; render :action => template_name }
+    r.invalid.default { announce_validation_errors; render :action => template_name }
 
     r.stale.publish(:xml, :json) { head :conflict }
     r.stale.default { announce_update_conflict; render :action => template_name }
@@ -54,7 +59,6 @@ class Admin::ResourceController < ApplicationController
     class_eval %{
       def #{action}                                       # def create
         model.update_attributes!(params[model_symbol])    #   model.update_attributes!(params[model_symbol])
-        announce_saved                                    #   announce_saved
         response_for :#{action}                           #   response_for :create
       end                                                 # end
     }, __FILE__, __LINE__
@@ -62,8 +66,53 @@ class Admin::ResourceController < ApplicationController
 
   def destroy
     model.destroy
-    announce_removed
     response_for :destroy
+  end
+  
+  def self.model_class(model_class = nil)
+    @model_class ||= (model_class || self.controller_name).to_s.singularize.camelize.constantize
+  end
+
+  # call paginate_models to declare that will_paginate should be used in the index view
+  # options specified here are accessible in the view by calling will_paginate_options
+  # eg.
+  #
+  # Class MyController < Admin::ResourceController
+  #   paginate_models :per_page => 100
+
+  def self.paginate_models(options={})
+    @@paginated = true
+    @@will_paginate_options = options.slice(:class, :previous_label, :next_label, :inner_window, :outer_window, :separator, :container).merge(:param_name => :p)
+    @@default_per_page = options[:per_page]
+  end
+
+  # returns a hash of options that can be passed to will_paginate
+  # the @pagination_for@ helper method calls @will_paginate_options@ unless other options are supplied.
+  #
+  # pagination_for(@events)
+  
+  def will_paginate_options
+    self.class.will_paginate_options || {}
+  end
+  helper_method :will_paginate_options
+
+  # a convenience method that returns true if paginate_models has been called on this controller class
+  # and can be used to make display decisions in controller and view
+  def paginated?
+    self.class.paginated == true && params[:pp] != 'all'
+  end
+  helper_method :paginated?
+
+  # return a hash of page and per_page that can be used to build a will_paginate collection
+  # the per_page figure can be set in several ways:
+  # request parameter > declared by paginate_models > default set in config entry @admin.pagination.per_page@ > overall default of 50
+  def pagination_parameters
+    pp = params[:pp] || Radiant.config['admin.pagination.per_page']
+    pp = (self.class.default_per_page || 50) if pp.blank?
+    {
+      :page => (params[:p] || 1).to_i, 
+      :per_page => pp.to_i
+    }
   end
 
   protected
@@ -74,19 +123,10 @@ class Admin::ResourceController < ApplicationController
         response_for :invalid
       when ActiveRecord::StaleObjectError
         response_for :stale
+      when ActiveRecord::RecordNotFound
+        response_for :not_found
       else
         super
-      end
-    end
-
-    def template_name
-      case self.action_name
-      when 'new','create'
-        'new'
-      when 'edit', 'update'
-        'edit'
-      when 'remove', 'destroy'
-        'remove'
       end
     end
     
@@ -105,7 +145,7 @@ class Admin::ResourceController < ApplicationController
       self.model = if params[:id]
         model_class.find(params[:id])
       else
-        model_class.new
+        model_class.new()
       end
     end
 
@@ -117,7 +157,7 @@ class Admin::ResourceController < ApplicationController
       instance_variable_set("@#{plural_model_symbol}", objects)
     end
     def load_models
-      self.models = model_class.all
+      self.models = paginated? ? model_class.paginate(pagination_parameters) : model_class.all
     end
 
     def model_name
@@ -137,31 +177,46 @@ class Admin::ResourceController < ApplicationController
     alias :models_symbol :plural_model_symbol
 
     def humanized_model_name
-      model_name.underscore.humanize
+      t(model_name.underscore.downcase)
     end
 
     def continue_url(options)
-      options[:redirect_to] || (params[:continue] ? {:action => 'edit', :id => model.id} : {:action => "index"})
+      options[:redirect_to] || (params[:continue] ? {:action => 'edit', :id => model.id} : index_page_for_model)
+    end
+    
+    def index_page_for_model
+      parts = {:action => "index"}
+      if paginated? && model && i = model_class.all.index(model)
+        p = (i / pagination_parameters[:per_page].to_i) + 1
+        parts[:p] = p if p && p > 1
+      end
+      parts
     end
 
-    def announce_saved(message = nil)
-      flash[:notice] = message || "#{humanized_model_name} saved below."
+    def edit_model_path
+      method = "edit_admin_#{model_name.underscore}_path"
+      send method.to_sym, params[:id]
     end
 
     def announce_validation_errors
-      flash.now[:error] = "Validation errors occurred while processing this form. Please take a moment to review the form and correct any input errors before continuing."
+      flash.now[:error] = t("resource_controller.validation_errors")
     end
 
     def announce_removed
-      flash[:notice] = "#{humanized_model_name} has been deleted."
+      ActiveSupport::Deprecation.warn("announce_removed is no longer encouraged in Radiant 0.9.x.", caller)
+      flash[:notice] = t("resource_controller.removed", :humanized_model_name => humanized_model_name)    
+    end
+    
+    def announce_not_found
+      flash[:notice] = t("resource_controller.not_found", :humanized_model_name => humanized_model_name)    
     end
 
     def announce_update_conflict
-      flash.now[:error] = "#{humanized_model_name} has been modified since it was last loaded. Changes cannot be saved without potentially losing data."
+      flash.now[:error] =  t("resource_controller.update_conflict", :humanized_model_name => humanized_model_name)  
     end
 
     def clear_model_cache
-      cache.clear
+      Radiant::Cache.clear if defined?(Radiant::Cache)
     end
 
     def format_symbol
@@ -172,9 +227,18 @@ class Admin::ResourceController < ApplicationController
       params[:format] || 'html'
     end
     
+    
+    # I would like to set this to expires_in(1.minute, :private => true) to allow for more fluid navigation
+    # but the annoyance for concurrent authors would be too great.
+    def never_cache
+      expires_now
+    end
+    
     # Assist with user agents that cause improper content-negotiation
-    warn "Remove default HTML format, Accept header no longer used. (#{__FILE__}: #{__LINE__})" if Rails.version !~ /^2\.1/
+    # warn "Remove default HTML format, Accept header no longer used. (#{__FILE__}: #{__LINE__})" if Rails.version !~ /^2\.1/
     def populate_format
       params[:format] ||= 'html' unless request.xhr?
     end
+    
+    
 end

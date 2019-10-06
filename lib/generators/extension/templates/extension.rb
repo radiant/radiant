@@ -1,23 +1,21 @@
 # Uncomment this if you reference any of your controllers in activate
-# require_dependency 'application'
+# require_dependency "application_controller"
+require "radiant-<%= file_name %>-extension"
 
 class <%= class_name %> < Radiant::Extension
-  version "1.0"
-  description "Describe your extension here"
-  url "http://yourwebsite.com/<%= file_name %>"
-  
-  # define_routes do |map|
-  #   map.namespace :admin, :member => { :remove => :get } do |admin|
-  #     admin.resources :<%= file_name %>
-  #   end
-  # end
-  
+  version     Radiant<%= class_name %>::VERSION
+  description Radiant<%= class_name %>::DESCRIPTION
+  url         Radiant<%= class_name %>::URL
+
+  # See your config/routes.rb file in this extension to define custom routes
+
+  extension_config do |config|
+    # config is the Radiant.configuration object
+  end
+
   def activate
-    # admin.tabs.add "<%= extension_name %>", "/admin/<%= file_name %>", :after => "Layouts", :visibility => [:all]
+    # tab 'Content' do
+    #   add_item "<%= extension_name %>", "/admin/<%= file_name %>", :after => "Pages"
+    # end
   end
-  
-  def deactivate
-    # admin.tabs.remove "<%= extension_name %>"
-  end
-  
 end

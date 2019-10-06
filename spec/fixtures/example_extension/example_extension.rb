@@ -4,11 +4,7 @@
 class ExampleExtension < Radiant::Extension
   version "1.0"
   description "Describe your extension here"
-  url "http://yourwebsite.com/example"
-  
-  # define_routes do |map|
-  #   map.connect 'admin/example/:action', :controller => 'admin/example'
-  # end
+  url "http://example.com/example"
   
   def activate
     # admin.tabs.add "Example", "/admin/example", :after => "Layouts", :visibility => [:all]

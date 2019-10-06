@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe UserActionObserver do
-  dataset :users, :pages_with_layouts, :snippets
+  dataset :users, :pages_with_layouts
   
   before(:each) do
     @user = users(:existing)
@@ -12,8 +12,7 @@ describe UserActionObserver do
     [
       User.create!(user_params),
       Page.create!(page_params),
-      Layout.create!(layout_params),
-      Snippet.create!(snippet_params)
+      Layout.create!(layout_params)
     ].each do |model|
       model.created_by.should == @user
     end
@@ -23,8 +22,7 @@ describe UserActionObserver do
     [
       users(:existing),
       pages(:home),
-      layouts(:main),
-      snippets(:first)
+      layouts(:main)
     ].each do |model|
       model.attributes = model.attributes.dup
       model.save.should == true

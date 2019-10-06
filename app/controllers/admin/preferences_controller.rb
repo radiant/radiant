@@ -7,7 +7,8 @@ class Admin::PreferencesController < ApplicationController
   end
 
   def show
-    redirect_to :action => 'edit'
+    set_standard_body_style
+    render :edit
   end
 
   def edit
@@ -17,15 +18,14 @@ class Admin::PreferencesController < ApplicationController
   def update
     if valid_params?
       if @user.update_attributes(params[:user])
-        flash[:notice] = 'Your preferences have been updated.'
-        redirect_to admin_pages_path
+        redirect_to admin_configuration_path
       else
-        flash[:error] = 'There was an error updating your preferences.'
-        render :action => 'edit'
+        flash[:error] = t('preferences_controller.error_updating')
+        render :edit
       end
     else
       announce_bad_data
-      render :action => 'edit'
+      render :edit
     end
   end
 
@@ -37,7 +37,7 @@ class Admin::PreferencesController < ApplicationController
 
   def valid_params?
     hash = (params[:user] || {}).symbolize_keys
-    (hash.keys - [:password, :password_confirmation, :email]).size == 0
+    (hash.keys - User.unprotected_attributes).size == 0
   end
 
   def announce_bad_data

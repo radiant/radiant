@@ -1,18 +1,6 @@
 #!/usr/bin/env ruby
-require File.dirname(__FILE__) + '/../config/boot'
-require "#{RAILS_ROOT}/config/environment"
-require 'rails_generator'
-require 'rails_generator/scripts/generate'
+require File.expand_path('../../config/boot',  __FILE__)
+require 'generators/generator_base_extension'
 
-class Rails::Generator::Base
-  def self.use_application_sources!
-    reset_sources
-    sources << Rails::Generator::PathSource.new(:builtin, "#{RADIANT_ROOT}/lib/generators")
-    plugins_path = File.expand_path(File.join(RAILS_ROOT, %w(vendor plugins)))
-    sources << Rails::Generator::PathSource.new(:"plugins (vendor/plugins)", "#{plugins_path}/*/**/{,rails_}generators")
-  end
-end
-
-Rails::Generator::Base.use_application_sources!
-
+Rails::Generator::Base.prepend_sources(Rails::Generator::PathSource.new(:builtin, "#{Radiant.root}/lib/generators"))
 require 'commands/generate'

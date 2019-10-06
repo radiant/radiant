@@ -1,10 +1,26 @@
 require 'rbconfig'
 
+# Small addition to enable the enqueing of "bundle install"
+class Rails::Generator::Commands::Create
+  def run_bundler(destination_root)
+    # thanks to http://spectator.in/2011/01/28/bundler-in-subshells/
+    bundler_vars = %w(BUNDLE_GEMFILE RUBYOPT )
+    command = %{"#{Gem.ruby}" -rubygems "#{Gem.bin_path('bundler', 'bundle')}" install --gemfile="#{File.join(File.expand_path(destination_root), 'Gemfile')}"}
+    begin
+      bundled_env = ENV.to_hash
+      bundler_vars.each{ |var| ENV.delete(var) }
+      print `#{command}`
+    ensure
+      ENV.replace(bundled_env)
+    end
+  end
+end
+
 class InstanceGenerator < Rails::Generator::Base
   DEFAULT_SHEBANG = File.join(Config::CONFIG['bindir'],
                               Config::CONFIG['ruby_install_name'])
   
-  DATABASES = %w( mysql postgresql sqlite3 sqlserver )
+  DATABASES = %w( mysql postgresql sqlite3 sqlserver db2 )
   
   MYSQL_SOCKET_LOCATIONS = [
     "/tmp/mysql.sock",                        # default
@@ -17,7 +33,7 @@ class InstanceGenerator < Rails::Generator::Base
     "/opt/local/var/run/mysql5/mysqld.sock"   # mac + darwinports + mysql5
   ]
     
-  default_options :db => "mysql", :shebang => DEFAULT_SHEBANG, :freeze => false
+  default_options :db => "sqlite3", :shebang => DEFAULT_SHEBANG, :freeze => false
 
   def initialize(runtime_args, runtime_options = {})
     super
@@ -39,13 +55,16 @@ class InstanceGenerator < Rails::Generator::Base
       m.directory ""
       
       # Standard files and directories
-      base_dirs = %w(config config/environments db log script public vendor/plugins vendor/extensions)
-      text_files = %w(CHANGELOG CONTRIBUTORS LICENSE INSTALL README)
+      base_dirs = %w(config config/environments config/initializers db log script public vendor/plugins vendor/extensions)
+      text_files = %w(CHANGELOG.md CONTRIBUTORS.md LICENSE.md INSTALL.md README.md)
       environments = Dir["#{root}/config/environments/*.rb"]
+      bundler_compatibility_files = %w{config/preinitializer.rb}
+      schema_file = %w{db/schema.rb}
       scripts = Dir["#{root}/script/**/*"].reject { |f| f =~ /(destroy|generate|plugin)$/ }
       public_files = ["public/.htaccess"] + Dir["#{root}/public/**/*"]
+      test_files = ["config/cucumber.yml"]
       
-      files = base_dirs + text_files + environments + scripts + public_files
+      files = base_dirs + text_files + environments + bundler_compatibility_files + schema_file + scripts + public_files + test_files
       files.map! { |f| f = $1 if f =~ %r{^#{root}/(.+)$}; f }
       files.sort!
       
@@ -71,8 +90,17 @@ class InstanceGenerator < Rails::Generator::Base
         :socket   => options[:db] == "mysql" ? mysql_socket_location : nil
       }
 
+      # Instance Gemfile
+      m.template "instance_gemfile", "Gemfile", :assigns => {
+        :radiant_version => Radiant::Version.to_s,
+        :db => options[:db]
+      }
+
       # Instance Rakefile
       m.file "instance_rakefile", "Rakefile"
+
+      # Config.ru is useful in rack-based situations like Pow
+      m.file "instance_config.ru", "config.ru"
 
       # Instance Configurations
       m.file "instance_routes.rb", "config/routes.rb"
@@ -81,9 +109,12 @@ class InstanceGenerator < Rails::Generator::Base
         :app_name => File.basename(File.expand_path(@destination_root))
       }
       m.template "instance_boot.rb", "config/boot.rb"
+      m.file "instance_radiant_config.rb", "config/initializers/radiant_config.rb"
       
-      # Install Readme
-      m.readme radiant_root("INSTALL")
+      # Run bundler
+      m.run_bundler @destination_root
+      
+      m.readme radiant_root("INSTALL.md")
     end
   end
 
@@ -101,7 +132,7 @@ class InstanceGenerator < Rails::Generator::Base
              "Default: #{DEFAULT_SHEBANG}") { |v| options[:shebang] = v }
       opt.on("-d", "--database=name", String,
             "Preconfigure for selected database (options: #{DATABASES.join(", ")}).",
-            "Default: mysql") { |v| options[:db] = v }
+            "Default: sqlite3") { |v| options[:db] = v }
     end
     
     def mysql_socket_location

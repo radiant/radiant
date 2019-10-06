@@ -1,11 +1,12 @@
 require File.dirname(__FILE__) + "/extension_generators_spec_helper"
 
 describe "ExtensionMailerGenerator with normal options" do
-  it_should_behave_like AllGenerators
-  it_should_behave_like AllExtensionGenerators
+  include GeneratorSpecHelperMethods
+  it_should_behave_like "all generators"
+  it_should_behave_like "all extension generators"
   
   before(:each) do
-    cp_r File.join(BASE_ROOT, 'lib/generators/extension_mailer'), File.join(RADIANT_ROOT, 'vendor/generators')
+    FileUtils.cp_r File.join(BASE_ROOT, 'lib/generators/extension_mailer'), File.join(RADIANT_ROOT, 'vendor/generators')
     run_generator('extension_mailer', %w(example SignupNotifications thankyou))
   end
   
@@ -14,23 +15,24 @@ describe "ExtensionMailerGenerator with normal options" do
   end
   
   it 'should generate the view file in the correct location' do
-    'vendor/extensions/example'.should have_generated_views_for('SignupNotifications', %w(thankyou), 'erb')
+    'vendor/extensions/example'.should have_generated_view_for('SignupNotifications', 'thankyou', 'erb')
   end
   
   after(:each) do
     extension_dir = File.join(RADIANT_ROOT, 'vendor/extensions/example')
-    rm_rf Dir["#{extension_dir}/app/models/*"]
-    rm_rf Dir["#{extension_dir}/app/views/*"]
-    rm_rf Dir["#{RADIANT_ROOT}/vendor/generators/*"]
+    FileUtils.rm_rf Dir["#{extension_dir}/app/models/*"]
+    FileUtils.rm_rf Dir["#{extension_dir}/app/views/*"]
+    FileUtils.rm_rf Dir["#{RADIANT_ROOT}/vendor/generators/*"]
   end
 end
 
 describe "ExtensionMailerGenerator with test unit" do
-  it_should_behave_like AllGenerators
-  it_should_behave_like AllExtensionGenerators
+  include GeneratorSpecHelperMethods
+  it_should_behave_like "all generators"
+  it_should_behave_like "all extension generators"
   
   before(:each) do
-    cp_r File.join(BASE_ROOT, 'lib/generators/extension_mailer'), File.join(RADIANT_ROOT, 'vendor/generators')
+    FileUtils.cp_r File.join(BASE_ROOT, 'lib/generators/extension_mailer'), File.join(RADIANT_ROOT, 'vendor/generators')
     run_generator('extension_mailer', %w(example SignupNotifications thankyou --with-test-unit))
   end
   
@@ -39,11 +41,11 @@ describe "ExtensionMailerGenerator with test unit" do
   end
   
   it 'should generate the view file in the correct location' do
-    'vendor/extensions/example'.should have_generated_views_for('SignupNotifications', %w(thankyou), 'erb')
+    'vendor/extensions/example'.should have_generated_view_for('SignupNotifications', 'thankyou', 'erb')
   end
   
   it 'should generate the unit test file in the correct location' do
-    'vendor/extensions/example'.should have_generated_unit_test_for('SignupNotifications')
+    'vendor/extensions/example'.should have_generated_unit_test_for('SignupNotifications', 'ActionMailer::TestCase')
   end
   
   it 'should generate the fixture file in the correct location' do
@@ -52,9 +54,9 @@ describe "ExtensionMailerGenerator with test unit" do
   
   after(:each) do
     extension_dir = File.join(RADIANT_ROOT, 'vendor/extensions/example')
-    rm_rf Dir["#{extension_dir}/app/models/*"]
-    rm_rf Dir["#{extension_dir}/app/views/*"]
-    rm_rf Dir["#{RADIANT_ROOT}/vendor/generators/*"]
-    rm_rf Dir["#{extension_dir}/test/*"]
+    FileUtils.rm_rf Dir["#{extension_dir}/app/models/*"]
+    FileUtils.rm_rf Dir["#{extension_dir}/app/views/*"]
+    FileUtils.rm_rf Dir["#{RADIANT_ROOT}/vendor/generators/*"]
+    FileUtils.rm_rf Dir["#{extension_dir}/test/*"]
   end
 end

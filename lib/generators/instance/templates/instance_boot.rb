@@ -1,7 +1,8 @@
 # Don't change this file!
 # Configure your app in config/environment.rb and config/environments/*.rb
 
-RAILS_ROOT = File.expand_path("#{File.dirname(__FILE__)}/..") unless defined?(RAILS_ROOT)
+RAILS_ROOT = "#{File.dirname(__FILE__)}/.." unless defined?(RAILS_ROOT)
+RAILS_ENV = (ENV['RAILS_ENV'] || 'development').dup unless defined?(RAILS_ENV)
 
 module Rails
   class << self
@@ -46,7 +47,7 @@ module Radiant
     def preinitialize
       load(preinitializer_path) if File.exist?(preinitializer_path)
     end
-    
+
     def loaded_via_gem?
       pick_boot.is_a? GemBoot
     end
@@ -58,7 +59,19 @@ module Radiant
 
   class Boot
     def run
+      load_mutex
       load_initializer
+    end
+    
+    # RubyGems from version 1.6 does not require thread but Rails depend on it
+    # This should newer rails do automaticly
+    def load_mutex
+      begin
+        require "thread" unless defined?(Mutex)
+      rescue LoadError => e
+        $stderr.puts %(Mutex could not be initialized. #{load_error_message})
+        exit 1
+      end
     end
     
     def load_initializer
@@ -70,6 +83,8 @@ module Radiant
         exit 1
       end
       Radiant::Initializer.run(:set_load_path)
+      Radiant::Initializer.run(:install_gem_spec_stubs)
+      Rails::GemDependency.add_frozen_gem_path
     end
   end
 
@@ -77,8 +92,6 @@ module Radiant
     def load_initializer
       $LOAD_PATH.unshift "#{RAILS_ROOT}/vendor/radiant/lib" 
       super
-      #require "#{RAILS_ROOT}/vendor/rails/railties/lib/initializer"
-      #Rails::Initializer.run(:install_gem_spec_stubs)
     end
         
     def load_error_message
@@ -98,64 +111,9 @@ module Radiant
   end
 
   class GemBoot < Boot
-    def load_initializer
-      self.class.load_rubygems
-      load_radiant_gem
-      # require 'initializer'
-      super
-    end
-      
+    # The location and version of the radiant gem should be set in your Gemfile
     def load_error_message
-     "Please reinstall the Radiant gem with the command 'gem install radiant'."
-    end
-
-    def load_radiant_gem
-      if version = self.class.gem_version
-        gem 'radiant', version
-      else
-        gem 'radiant'
-      end
-    rescue Gem::LoadError => load_error
-      $stderr.puts %(Missing the Radiant #{version} gem. Please `gem install -v=#{version} rails`, update your RADIANT_GEM_VERSION setting in config/environment.rb for the Rails version you do have installed, or comment out RADIANT_GEM_VERSION to use the latest version installed.)
-      exit 1
-    end
-
-    class << self
-      def rubygems_version
-        Gem::RubyGemsVersion if defined? Gem::RubyGemsVersion
-      end
-
-      def gem_version
-        if defined? RADIANT_GEM_VERSION
-          RADIANT_GEM_VERSION
-        elsif ENV.include?('RADIANT_GEM_VERSION')
-          ENV['RADIANT_GEM_VERSION']
-        else
-          parse_gem_version(read_environment_rb)
-        end
-      end
-
-      def load_rubygems
-        require 'rubygems'
-
-        unless rubygems_version >= '0.9.4'
-          $stderr.puts %(Radiant requires RubyGems >= 0.9.4 (you have #{rubygems_version}). Please `gem update --system` and try again.)
-          exit 1
-        end
-
-      rescue LoadError
-        $stderr.puts %(Radiant requires RubyGems >= 0.9.4. Please install RubyGems and try again: http://rubygems.rubyforge.org)
-        exit 1
-      end
-
-      def parse_gem_version(text)
-        $1 if text =~ /^[^#]*RADIANT_GEM_VERSION\s*=\s*["']([!~<>=]*\s*[\d.]+)["']/
-      end
-
-      private
-        def read_environment_rb
-          File.read("#{RAILS_ROOT}/config/environment.rb")
-        end
+      "Have you run `bundle install`?'."
     end
   end
 end

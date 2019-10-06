@@ -1,0 +1,230 @@
+---
+en: 
+  account: 'Account'
+  activerecord:
+    errors:
+      messages:
+        blank: 'this must not be blank' # required
+        invalid: 'this does not match the expected format' #invalid_format
+        not_a_number: 'this must be a number' # must be number
+        not_a_page: "there must be a page at this address"
+        not_permitted: 'this must be one of the permitted values'
+        taken: 'this name is already in use' # name_in_use
+        too_long: 'this must not be longer than %{count} characters' # character_limit
+        too_short: 'this must be at least %{count} characters long' # character_minimum
+      models:
+        page:
+          attributes:
+            slug:
+              taken: 'this slug is already in use by a sibling of this page' # slug_in_use
+        user:
+          attributes:
+            email:
+              invalid: 'this is not a valid e-mail address' # invalid_email
+            login:
+              taken: 'this login is already in use' # login already in use
+            password:
+              confirmation: 'this must match confirmation' # password_confirmation
+  add_child: 'Add Child'
+  add_field: 'Add Field'
+  add_part: 'Add Part'
+  add_tab: 'Add Tab'
+  admin: 'Administrator' 
+  available_tags: 'Available Tags'
+  available_tags_for: 'Available Tags for %{name}'
+  body: 'Body'  
+  breadcrumb: 'Breadcrumb'
+  buttons:
+    create: 'Create %{name}'
+    save_and_continue: 'Save and Continue Editing'
+    save_changes: 'Save Changes'  
+  cancel: 'Cancel'
+  change: 'Change'
+  close: 'Close'
+  config:
+    admin:
+      title: 'admin header title'
+    defaults:
+      locale: 'default language'
+      page:
+        fields: "page fields"
+        filter: "page filter"
+        parts: "page parts"
+        status: "page status"
+    dev:
+      host: "dev site domain"
+    local:
+      timezone: "local timezone"
+    site:
+      title: "site title"
+      host: "site domain"
+    user:
+      allow_password_reset?: "allow password reset"
+  content: 'Content'
+  content_type: 'Content&#8209;Type'    
+  creating_status: 'Creating %{model}&#8230;'
+  date:
+    abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
+    abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+    day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+    formats:
+      default: "%Y-%m-%d"
+      long: "%B %e, %Y"
+      only_day: "%e"
+      short: "%e %b"
+    month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]   
+    order:
+      - :year
+      - :month
+      - :day
+  delete_layout: 'Delete Layout'
+  delete_pages: 'Delete %{pages}'
+  delete_user: 'Delete User'
+  description: 'Description'
+  design: 'Design'
+  designer: 'Designer'
+  draft: 'Draft'
+  edit: 'Edit'
+  edit_configuration: 'Edit Configuration'
+  edit_layout: 'Edit Layout'
+  edit_page:  'Edit Page'   
+  edit_preferences: 'Edit Preferences'
+  edit_settings: 'Edit Settings'
+  edit_user: 'Edit User'
+  email_address: 'E-mail Address'
+  extension: 'Extension'
+  extensions: 'Extensions'
+  filter: 'Filter'
+  hidden: 'Hidden'
+  hide: 'Hide' 
+  keywords: 'Keywords'
+  language: 'Language'
+  layout: 'Layout'
+  layouts: 'Layouts'
+  log_out: 'Logout'
+  logged_in_as: 'Logged in as'
+  login: 'Login'
+  modify: 'Modify'
+  more: 'More'
+  more_info: 'More Info'
+  name: 'Name'
+  new_homepage: 'New Homepage'
+  new_layout: 'New Layout'    
+  new_page: 'New Page'
+  new_password: 'New Password'
+  new_user: 'New User'  
+  'no': 'No'
+  no_layouts: 'No Layouts'
+  no_pages: 'No Pages'
+  normal_page: 'Normal Page'
+  notes: 'Notes'    
+  optional: 'Optional'
+  or: 'or'
+  page: 'Page'
+  page_hierarchy: 'Page hierarchy of the current site'
+  page_page: 'Page Part'
+  page_title: 'Page Title'  
+  page_type: 'Page Type'
+  pages: 'Pages'
+  pages_controller:
+    removed_many: "The pages were successfully removed from the site."   
+    removed_one: "The page was successfully removed from the site."  
+    saved: "Your page has been saved below."  
+  password: 'Password' 
+  password_confirmation: 'Confirm New Password'
+  personal: 'Personal'
+  personal_preferences: 'Personal Preferences'
+  please_login: 'Please Login'
+  powered_by: 'Powered by'
+  preferences: 'Preferences' 
+  preferences_controller:
+    error_updating: 'There was an error updating your preferences.'      
+    updated: 'Your preferences have been updated.' 
+  preview: 'Preview'
+  published: 'Published'
+  published_at: 'Published at' 
+  published_on: 'Published On'
+  reference:  'Reference'
+  remember_me: 'Remember me'
+  remember_me_in_this_browser: 'Remember me in this browser'
+  remove: 'Remove'
+  remove_field: 'Remove Field'
+  remove_layout: 'Remove Layout'
+  remove_page: 'Remove Page'
+  remove_pages: 'Remove %{pages}'
+  remove_tab: 'Remove Tab'
+  remove_user: 'Remove user'
+  required: 'Required'  
+  resource_controller:
+    not_found: "%{humanized_model_name} could not be found."
+    removed: "%{humanized_model_name} has been deleted."
+    saved: "%{humanized_model_name} saved below."
+    update_conflict: "%{humanized_model_name} has been modified since it was last loaded. Changes cannot be saved without potentially losing data."
+    validation_errors: "Validation errors occurred while processing this form. Please take a moment to  review the form and correct any input errors before continuing."
+  reviewed: 'Reviewed'
+  roles: 'Roles'
+  saving_changes: Saving Changes
+  saving_preferences: Saving preferences 
+  scheduled: "Scheduled"
+  search_tags: 'Search Tags:'
+  select:
+    default: '<default>'
+    inherit: '<inherit>'
+    none: '<none>' 
+    normal: '<normal>'
+  settings: 'Settings'
+  show_all: 'Show all'
+  slug: 'Slug'
+  status: 'Status'
+    # Warnings and info text:
+  testing: Testing
+  text:
+    layouts:
+      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following layout?'   
+    pages: 
+      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following %{pages}?'
+    users: 
+      remove_warning: 'Are you sure you want to <strong class="warning">permanently remove</strong> the following user?'
+  this_file_language: "English" 
+  time:
+    am: 'am'
+    formats:
+      datetime:
+        formats:
+          default: "%Y-%m-%dT%H:%M:%S%Z"
+      default: "%a %b %d %H:%M:%S %Z %Y"   
+      long: "%B %d, %Y %H:%M"
+      only_second: "%S"
+      short: "%d %b %H:%M"
+      time: "%H:%M"
+      timestamp: "%I:%M %p on %B %d, %Y" 
+    pm: 'pm'
+  timestamp:
+    at: 'at'
+    by: 'by'
+    last_updated: 'Last Updated'
+  type: 'Type'
+  units:
+    KB: "KB"
+    MB: "MB"
+    GB: "GB"
+    seconds: "seconds"
+    minutes: "minutes"
+    hours: "hours"
+    days: "days"
+    weeks: "weeks"
+    months: "months"
+  user: 'User'
+  username: 'Username'
+  username_or_email: 'Username or E-mail Address'
+  users: 'Users'
+  users_controller:
+    cannot_delete_self: 'You cannot delete yourself.'    
+  version: 'Version'
+  view_site: 'View Site'
+  warning: 'Warning'
+  website: 'Website'
+  welcome_controller:
+    invalid_user: 'Invalid username, e-mail address, or password.' 
+    logged_out: 'You are now logged out.'  
+  'yes': 'Yes'

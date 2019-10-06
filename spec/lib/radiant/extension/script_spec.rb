@@ -47,14 +47,42 @@ describe "Radiant::Extension::Script::Util" do
   it "should determine extension paths" do
     # Bad coupling, but will work by default
     extension_paths.should be_kind_of(Array)
-    extension_paths.should include("#{RADIANT_ROOT}/vendor/extensions/archive")
+    extension_paths.should include("#{RADIANT_ROOT}/test/fixtures/extensions/basic")
   end
 
   it "should determine whether an extension is installed" do
     # Bad coupling, but will work by default
     @script = mock('script action')
     @script.extend Radiant::Extension::Script::Util
-    @script.extension_name = 'archive'
+    @script.extension_name = 'basic'
+    @script.should be_installed
+  end
+
+  it "should determine whether an extension is not installed" do
+    @script = mock('script action',:extension_paths => ['/path/to/extension/html_tags'])
+    @script.extend Radiant::Extension::Script::Util
+    @script.extension_name = 'tags'
+    @script.should_not be_installed
+  end
+
+  it "should determine whether an extension is installed" do
+    @script = mock('script action',:extension_paths => ['tags'])
+    @script.extend Radiant::Extension::Script::Util
+    @script.extension_name = 'tags'
+    @script.should be_installed
+  end
+
+  it "should determine whether an extension is installed" do
+    @script = mock('script action',:extension_paths => ['/path/to/extension/tags'])
+    @script.extend Radiant::Extension::Script::Util
+    @script.extension_name = 'tags'
+    @script.should be_installed
+  end
+
+  it "should determine whether an extension is installed on windows system" do
+    @script = mock('script action',:extension_paths => ['c:\path\to\extension\tags'])
+    @script.extend Radiant::Extension::Script::Util
+    @script.extension_name = 'tags'
     @script.should be_installed
   end
 
@@ -88,26 +116,29 @@ describe "Radiant::Extension::Script::Install" do
     @install = Radiant::Extension::Script::Install.new ['page_attachments']
   end
 
+  it "should fail if the extension is not found" do
+    lambda { Radiant::Extension::Script::Install.new ['non_existent_extension'] }.should raise_error
+  end
+
   it "should fail if an extension name is not given" do
     lambda { Radiant::Extension::Script::Install.new []}.should raise_error
   end
 end
 
 describe "Radiant::Extension::Script::Uninstall" do
-
   before :each do
-    @extension = mock('Extension', :uninstall => true, :name => 'archive')
+    @extension = mock('Extension', :uninstall => true, :name => 'basic')
     Registry::Extension.stub!(:find).and_return([@extension])
   end
 
   it "should read the extension name from the command line" do
-    @uninstall = Radiant::Extension::Script::Uninstall.new ['archive']
-    @uninstall.extension_name.should == 'archive'
+    @uninstall = Radiant::Extension::Script::Uninstall.new ['basic']
+    @uninstall.extension_name.should == 'basic'
   end
 
   it "should attempt to find the extension and uninstall it" do
     @extension.should_receive(:uninstall).and_return(true)
-    @uninstall = Radiant::Extension::Script::Uninstall.new ['archive']
+    @uninstall = Radiant::Extension::Script::Uninstall.new ['basic']
   end
 
   it "should fail if an extension name is not given" do
@@ -173,9 +204,17 @@ describe "Registry::Action" do
     @action = Registry::Action.new
   end
 
-  it "should shell out with the specified rake task" do
-    @action.should_receive(:`).with("rake sample RAILS_ENV=#{RAILS_ENV}")
-    @action.rake('sample')
+  it "should shell out with the specified rake task if it exists" do
+    rails_gemspec = Bundler.load.specs.find{|s| s.name == 'rails' }
+    rake_file = File.join(rails_gemspec.full_gem_path, 'lib', 'tasks', 'misc.rake')
+    load rake_file
+    @action.should_receive(:`).with("rake secret RAILS_ENV=#{RAILS_ENV}")
+    @action.rake('secret')
+  end
+
+  it "should not shell out with the specified rake task if it does not exist" do
+    @action.should_not_receive(:`).with("rake non_existant_task RAILS_ENV=#{RAILS_ENV}")
+    @action.rake('non_existant_task')
   end
 end
 
@@ -244,6 +283,7 @@ describe "Registry::Checkout" do
     @methods = [:copy_to_vendor_extensions, :migrate, :update].each do |method|
       @checkout.stub!(method).and_return(true)
     end
+    @checkout.stub!(:cd).and_yield
   end
 
   it "should set the name and url" do
@@ -263,7 +303,8 @@ describe "Registry::Checkout" do
 
   it "should checkout the source" do
     @checkout.stub!(:checkout_command).and_return('echo')
-    @checkout.should_receive(:system).with(/^cd (.*); echo/)
+    @checkout.should_receive(:cd)
+    @checkout.should_receive(:system).with('echo')
     @checkout.checkout
     @checkout.path.should_not be_nil
     @checkout.path.should =~ /example/
@@ -313,6 +354,7 @@ describe "Registry::Git" do
     @extension = mock("Extension", :name => 'example', :repository_url => 'http://localhost/')
     @git = Registry::Git.new(@extension)
     @git.stub!(:system)
+    @git.stub!(:cd).and_yield
   end
 
   describe "when the Radiant project is not stored in git" do
@@ -326,15 +368,17 @@ describe "Registry::Git" do
 
     it "should initialize and update submodules" do
       Dir.stub!(:tmpdir).and_return('/tmp')
-      @git.should_receive(:system).with("cd /tmp; git clone http://localhost/ example").ordered
-      @git.should_receive(:system).with("cd /tmp/example; git submodule init && git submodule update").ordered
+      @git.should_receive(:cd).with("/tmp").ordered
+      @git.should_receive(:system).with("git clone http://localhost/ example").ordered
+      @git.should_receive(:cd).with("/tmp/example").ordered
+      @git.should_receive(:system).with("git submodule init && git submodule update").ordered
       @git.checkout
     end
 
     it "should copy the extension to vendor/extensions" do
       @git.path = "/tmp"
-      FileUtils.should_receive(:cp_r).with('/tmp', "#{RAILS_ROOT}/vendor/extensions/example")
-      FileUtils.should_receive(:rm_r).with('/tmp')
+      @git.should_receive(:cp_r).with('/tmp', "#{RAILS_ROOT}/vendor/extensions/example")
+      @git.should_receive(:rm_r).with('/tmp')
       @git.copy_to_vendor_extensions
     end
   end
@@ -346,13 +390,14 @@ describe "Registry::Git" do
 
     it "should add the extension as a submodule and initialize and update its submodules" do
       @git.should_receive(:system).with("git submodule add http://localhost/ vendor/extensions/example").ordered
-      @git.should_receive(:system).with("cd vendor/extensions/example; git submodule init && git submodule update").ordered
+      @git.should_receive(:cd).with("vendor/extensions/example").ordered
+      @git.should_receive(:system).with("git submodule init && git submodule update").ordered
       @git.checkout
     end
 
     it "should not copy the extension" do
-      FileUtils.should_not_receive(:cp_r)
-      FileUtils.should_not_receive(:rm_r)
+      @git.should_not_receive(:cp_r)
+      @git.should_not_receive(:rm_r)
       @git.copy_to_vendor_extensions
     end
   end
@@ -381,7 +426,7 @@ describe "Registry::Gem" do
     File.should_receive(:open).with(/example-1.0.0\.gem/, 'w').and_yield(@file)
     @gem.should_receive(:open).and_return(StringIO.new('test'))
     @file.should_receive(:write).with('test')
-    @gem.should_receive(:`).with("gem install example-1.0.0.gem")
+    @gem.should_receive(:`).with("gem install example")
     @gem.download
   end
 

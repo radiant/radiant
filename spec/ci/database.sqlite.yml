@@ -1,0 +1,6 @@
+test: &TEST
+  adapter: sqlite3
+  database: db/radiant_test.db
+
+cucumber:
+  <<: *TEST

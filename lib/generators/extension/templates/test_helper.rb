@@ -13,7 +13,7 @@ unless defined? RADIANT_ROOT
 end
 require "#{RADIANT_ROOT}/test/test_helper"
 
-class Test::Unit::TestCase
+class ActiveSupport::TestCase
   
   # Include a helper to make testing Radius tags easier
   test_helper :extension_tags

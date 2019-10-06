@@ -11,6 +11,8 @@ describe Admin::PagesHelper do
     @page = mock_model(Page)
     @errors = mock("errors")
     @page.stub!(:errors).and_return(@errors)
+    helper.stub!(:image).and_return('')
+    helper.stub!(:admin?).and_return(true)
     helper.instance_variable_set(:@page, @page)
   end
 
@@ -36,11 +38,6 @@ describe Admin::PagesHelper do
       helper.filter.should be_kind_of(TextFilter)
     end
     
-    it "should render the filter reference" do
-      helper.stub!(:filter).and_return(TextileFilter)
-      helper.filter_reference.should == TextileFilter.description
-    end
-    
     it "should render the filter reference for complex filter names" do
       MarkdownPlusFilter.stub!(:description).and_return("Markdown rocks!")
       helper.stub!(:filter).and_return(MarkdownPlusFilter)
@@ -60,4 +57,5 @@ describe Admin::PagesHelper do
   it "should render javascript for the page editing form" do
     helper.should respond_to(:page_edit_javascripts)
   end
+
 end

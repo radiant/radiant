@@ -1,0 +1,27 @@
+Description:
+    The language_extension generator creates stubs for a new Radiant translation.
+
+    The generator takes an language abbreviation as its argument.  The extension name may be
+    given as a language abbreviation 'en' or a localized abbreviation 'en-GB' and should not 
+    be prefixed with 'i18n' or suffixed with 'Extension'.
+
+    The generator creates an extension directory in vendor/extensions that includes
+    i18n_<extension_name>_extension.rb, README and Rakefile files as well as lib, task,
+    and test directories.
+
+Example:
+    ./script/generate language_extension fr 
+
+    This will create:
+    vendor/extensions/i18n_fr/config/locales/fr.yml
+    vendor/extensions/i18n_fr/lib/tasks
+    vendor/extensions/i18n_fr/README
+    vendor/extensions/i18n_fr/i18n_fr_extension.rb
+    vendor/extensions/i18n_fr/lib/tasks/i18n_fr_extension_tasks.rake
+    vendor/extensions/i18n_fr/spec/controllers
+    vendor/extensions/i18n_fr/spec/models
+    vendor/extensions/i18n_fr/spec/views
+    vendor/extensions/i18n_fr/spec/helpers
+    vendor/extensions/i18n_fr/Rakefile
+    vendor/extensions/i18n_fr/spec/spec_helper.rb
+    vendor/extensions/i18n_fr/spec/spec.opts

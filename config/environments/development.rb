@@ -8,11 +8,10 @@ config.cache_classes     = false
 # Log error messages when you accidentally call methods on nil.
 config.whiny_nils        = true
 
-# Show full error reports and caching is turned off, but ResponseCache caching is on
+# Show full error reports and caching is turned off
 config.action_controller.consider_all_requests_local = true
 config.action_view.debug_rjs                         = true
 config.action_controller.perform_caching             = false
-ResponseCache.defaults[:perform_caching]             = true
 
 # Don't care if the mailer can't send
 config.action_mailer.raise_delivery_errors = false

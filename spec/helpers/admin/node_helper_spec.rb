@@ -1,17 +1,22 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
 describe Admin::NodeHelper do
+  dataset :users_and_pages
 
   before :each do
-    @controller = mock("controller")
     @cookies = {}
+    @errors = mock("errors")
     helper.stub!(:cookies).and_return(@cookies)
     helper.stub!(:homepage).and_return(nil)
-    @page = mock_model(Page)
+    @page = mock_model(Page, :class_name => 'Page')
+    @page.stub!(:sheet?).and_return(false) # core extension alters the behavior
+    helper.stub!(:image).and_return('')
+    helper.stub!(:admin?).and_return(true)
+    helper.instance_variable_set(:@page, @page)
   end
 
   it "should render a sitemap node" do
-    helper.should_receive(:render).with(:partial => "node", :locals => {:level => 0, :simple => false, :page => @page}).and_return(@current_node)
+    helper.should_receive(:render).with(:partial => "admin/pages/node", :locals => {:level => 0, :simple => false, :page => @page}).and_return(@current_node)
     helper.render_node(@page)
     helper.assigns[:current_node] == @page
   end
@@ -39,9 +44,9 @@ describe Admin::NodeHelper do
   end
 
   it "should determine the left padding for the current level" do
-    helper.padding_left(0).should == 4
-    helper.padding_left(1).should == 26
-    helper.padding_left(2).should == 48
+    helper.padding_left(0).should == 9
+    helper.padding_left(1).should == 32
+    helper.padding_left(2).should == 55
   end
 
   it "should determine the class of a parent node" do
@@ -49,20 +54,20 @@ describe Admin::NodeHelper do
     child = mock("child")
     @page.should_receive(:children).and_return([child])
     helper.should_receive(:expanded).and_return(true)
-    helper.children_class.should == " children-visible"
+    helper.children_class.should == " children_visible"
   end
 
   it "should display an icon for the current node" do
     assigns[:current_node] = @page
     @page.should_receive(:virtual?).and_return(false)
-    helper.should_receive(:image).with("page", :class => "icon", :alt => 'page-icon', :title => '')
+    helper.should_receive(:image).with("page", :class => "icon", :alt => '', :title => '')
     helper.icon
   end
   
   it "should display the virtual icon if the current node is virtual" do
     assigns[:current_node] = @page
     @page.should_receive(:virtual?).and_return(true)
-    helper.should_receive(:image).with("virtual-page", :class => "icon", :alt => 'page-icon', :title => '')
+    helper.should_receive(:image).with("virtual_page", :class => "icon", :alt => '', :title => '')
     helper.icon
   end
 
@@ -72,12 +77,18 @@ describe Admin::NodeHelper do
     helper.node_title.should == %{<span class="title">Title</span>}
   end
 
+  it "should render the title of the current node with HTML entities escaped" do
+    assigns[:current_node] = @page
+    @page.should_receive(:title).and_return("Ham & Cheese")
+    helper.node_title.should == %{<span class="title">Ham &amp; Cheese</span>}
+  end
+
   it "should render the page type if it's not Page" do
     assigns[:current_node] = @page
     @class = mock("Class")
     @page.should_receive(:class).and_return(@class)
     @class.should_receive(:display_name).and_return("Special")
-    helper.page_type.should ==  %{<small class="info">(Special)</small>}
+    helper.page_type.should ==  %{<span class="info">(Special)</span>}
   end
 
   it "should not render the page type if it's Page" do
@@ -90,10 +101,11 @@ describe Admin::NodeHelper do
     assigns[:current_node] = @page
     @page.should_receive(:id).and_return(1)
     helper.should_receive(:image).with('spinner.gif',
-            :class => 'busy', :id => "busy-1",
+            :class => 'busy', :id => "busy_1",
             :alt => "",  :title => "",
             :style => 'display: none;')
     helper.spinner
   end
+  
 
 end

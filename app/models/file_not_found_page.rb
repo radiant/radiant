@@ -1,5 +1,9 @@
 class FileNotFoundPage < Page
   
+  def allowed_children
+    []
+  end
+  
   description %{
     A "File Not Found" page can be used to override the default error
     page in the event that a page is not found among a page's children.
@@ -9,7 +13,7 @@ class FileNotFoundPage < Page
     page type.
   }
   
-  tag "attempted_url" do
+  tag "attempted_url" do |tag|
     CGI.escapeHTML(request.request_uri) unless request.nil?
   end
    
@@ -17,10 +21,10 @@ class FileNotFoundPage < Page
     true
   end
    
-  def headers
-    { 'Status' => '404 Not Found' }
+  def response_code
+    404
   end
-   
+  
   def cache?
     false
   end

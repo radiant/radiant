@@ -8,8 +8,9 @@ module Radiant
       end
       
       def migrate_extensions
-        Extension.descendants.each do |ext|
-          ext.migrator.migrate
+        Radiant.configuration.enabled_extensions.each do |ext|
+          to_migrate = Extension.descendants.detect{|descendant| descendant.name == "#{ext.to_s.camelize}Extension" }
+          to_migrate.migrator.migrate
         end
       end
 
@@ -23,6 +24,7 @@ module Radiant
     def initialize(direction, migrations_path, target_version = nil)
       super
       initialize_extension_schema_migrations
+      initialize_received_migrations
     end
     
     private
@@ -43,6 +45,16 @@ module Radiant
         if current_version
           assume_migrated_upto_version(current_version.to_i) 
           ActiveRecord::Base.connection.delete("DELETE FROM extension_meta WHERE name = #{quote(extension_name)}")
+        end
+      end
+
+      def initialize_received_migrations
+        if donors = self.class.extension.migrates_from
+          donors.each do |extension_name, until_migration|
+            replaced = ActiveRecord::Base.connection.select_values("SELECT version FROM #{ActiveRecord::Migrator.schema_migrations_table_name} WHERE version LIKE '#{extension_name}-%'").map{|v| v.sub(/^#{extension_name}\-/, '').to_i}
+            replaced.delete_if{|v| v > until_migration.to_i} if until_migration
+            assume_migrated_upto_version(replaced.max) if replaced.any?
+          end
         end
       end
       

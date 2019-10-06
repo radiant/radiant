@@ -7,16 +7,47 @@ module Radiant
     include Simpleton
     include Annotatable
 
-    annotate :version, :description, :url, :root, :extension_name
+    annotate :version, :description, :url, :extension_name, :path
 
     attr_writer :active
-
+    
     def active?
       @active
     end
     
+    def root
+      path.to_s
+    end
+    
+    def migrated?
+      migrator.new(:up, migrations_path).pending_migrations.empty?
+    end
+    
+    def enabled?
+      active? and migrated?
+    end
+    
+    # Conventional plugin-like routing
+    def routed?
+      File.exist?(routing_file)
+    end
+    
     def migrations_path
       File.join(self.root, 'db', 'migrate')
+    end
+    
+    def migrates_from
+      @migrates_from ||= {}
+    end
+    
+    def routing_file
+      File.join(self.root, 'config', 'routes.rb')
+    end
+        
+    def load_initializers
+      Dir["#{self.root}/config/initializers/**/*.rb"].sort.each do |initializer|
+        load(initializer)
+      end
     end
     
     def migrator
@@ -26,9 +57,50 @@ module Radiant
       end
       @migrator
     end
-
+    
     def admin
       AdminUI.instance
+    end
+    
+    def tab(name, options={}, &block)
+      @the_tab = admin.nav[name]
+      unless @the_tab
+        @the_tab = Radiant::AdminUI::NavTab.new(name)
+        before = options.delete(:before)
+        after = options.delete(:after)
+        tab_name = before || after
+        tab_object = admin.nav[tab_name]
+        if tab_object
+          index = admin.nav.index(tab_object)
+          index += 1 unless before
+          admin.nav.insert(index, @the_tab)
+        else
+          admin.nav << @the_tab
+        end
+      end
+      if block_given?
+        block.call(@the_tab)
+      end
+      return @the_tab
+    end
+    alias :add_tab :tab
+    
+    def add_item(*args)
+      @the_tab.add_item(*args)
+    end
+
+    # Determine if another extension is installed and up to date.
+    #
+    # if MyExtension.extension_enabled?(:third_party)
+    #   ThirdPartyExtension.extend(MyExtension::IntegrationPoints)
+    # end
+    def extension_enabled?(extension)
+      begin
+        extension = (extension.to_s.camelcase + 'Extension').constantize
+        extension.enabled?
+      rescue NameError
+        false
+      end
     end
 
     class << self
@@ -36,6 +108,7 @@ module Radiant
       def activate_extension
         return if instance.active?
         instance.activate if instance.respond_to? :activate
+        ActionController::Routing::Routes.configuration_files.unshift(instance.routing_file) if instance.routed?
         ActionController::Routing::Routes.reload
         instance.active = true
       end
@@ -48,17 +121,26 @@ module Radiant
       end
       alias :deactivate :deactivate_extension
 
-      def define_routes(&block)
-        route_definitions << block
-      end
-
       def inherited(subclass)
         subclass.extension_name = subclass.name.to_name('Extension')
       end
 
-      def route_definitions
-        @route_definitions ||= []
+      def migrate_from(extension_name, until_migration=nil)
+        instance.migrates_from[extension_name] = until_migration
       end
+
+      # Expose the configuration object for init hooks
+      # class MyExtension < ActiveRecord::Base
+      #   extension_config do |config|
+      #     config.after_initialize do
+      #       run_something
+      #     end
+      #   end
+      # end
+      def extension_config(&block)
+        yield Rails.configuration
+      end
+      
     end
   end
 end

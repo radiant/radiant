@@ -1,0 +1,15 @@
+take any instance variables already in context and make them available to dataset blocks - this is for nested describes
+  I'm not sure about this one. It can be very frustrating to lose context of when the state of an iv is modified.
+  
+add ability to clear the database (some tests wanted to guarantee a clear db)
+  This is acheived with "dataset {}"
+
+clear database completely at beginning of session, only tables where data was created within a session??
+
+clear all dumps on new run of tests
+be sure we are capturing a dataset if it has already be captured before during a run
+describe what happens when someone has a fixtures file - they get loaded after our datasets, thereby causing all the data in the table of the fixture file (like things.yml) to be deleted - the fixtures are then loaded
+look into truncating database instead individual table deletes
+allow configuration of dataset
+  * permatable / global scope
+re-evaluation location of some tests that depend on TestCase in non-test/unit tests
