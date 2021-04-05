@@ -1,6 +1,6 @@
 # MIT License
 
-Copyright (c) 2006-2019, John W. Long and Sean D. Cribbs.
+Copyright (c) 2006-2021, John W. Long and Sean D. Cribbs.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
