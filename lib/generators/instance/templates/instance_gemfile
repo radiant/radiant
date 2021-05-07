@@ -1,3 +1,5 @@
+ruby "1.9.3"
+
 source 'https://rubygems.org'
 
 # If you make any changes in this file, please run `bundle install`.
@@ -5,6 +7,10 @@ source 'https://rubygems.org'
 
 gem "radiant", "~> <%= radiant_version %>"
 gem "compass-rails", "~> 1.0.3"
+gem "rake", "12.2.1"
+gem "rdoc", "~> 4.3.0"
+gem "mime-types", "~> 2.99.3"
+gem "rack-cache", "~>1.2.0"
 
 # alternatively, in development
 # gem "radiant", :path => "/path/to/radiant/root"
