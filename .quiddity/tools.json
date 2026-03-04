@@ -1,0 +1,32 @@
+{
+  "issues": {
+    "tool": "github-issues",
+    "repo": "radiant/radiant",
+    "states": {
+      "backlog": "Backlog",
+      "todo": "Todo",
+      "inProgress": "In Progress",
+      "done": "Done"
+    },
+    "labels": ["bug", "feature", "chore"]
+  },
+  "source-control": {
+    "tool": "github",
+    "repo": "radiant/radiant",
+    "baseBranch": "master",
+    "branchFormat": "{{number}}-{{slug}}",
+    "commitFormat": "conventional"
+  },
+  "ci": {
+    "tool": "none",
+    "checks": [],
+    "localChecks": ["bundle exec rspec", "bundle exec cucumber"]
+  },
+  "pr": {
+    "mergeStrategy": "squash",
+    "deleteBranch": true,
+    "requiredApprovals": 1,
+    "hasTemplate": false,
+    "titleFormat": "conventional"
+  }
+}
