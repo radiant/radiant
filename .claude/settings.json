@@ -23,7 +23,14 @@
       "Bash(which *)",
       "Bash(pwd)",
       "Bash(echo *)",
-      "Bash(mkdir *)"
+      "Bash(mkdir *)",
+      "Bash(gh pr *)",
+      "Bash(gh issue *)",
+      "Bash(gh run *)",
+      "Bash(gh repo view*)",
+      "Bash(gh api *)",
+      "Bash(gh auth status*)",
+      "Bash(gh search *)"
     ],
     "deny": [
       "Bash(rm -rf *)",
