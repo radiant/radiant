@@ -1,6 +1,6 @@
 class Admin::PagesController < Admin::ResourceController
-  before_filter :initialize_meta_rows_and_buttons, :only => [:new, :edit, :create, :update]
-  before_filter :count_deleted_pages, :only => [:destroy]
+  before_action :initialize_meta_rows_and_buttons, :only => [:new, :edit, :create, :update]
+  before_action :count_deleted_pages, :only => [:destroy]
   
   class PreviewStop < ActiveRecord::Rollback
     def message

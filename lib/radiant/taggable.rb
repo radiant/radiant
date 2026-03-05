@@ -9,7 +9,7 @@ module Radiant::Taggable
       def self.included(new_base)
         super
         new_base.class_eval do
-          include ActionController::UrlWriter
+          include Rails.application.routes.url_helpers
         end
         class << new_base
           def default_url_options

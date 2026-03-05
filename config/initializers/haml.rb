@@ -1,2 +1,1 @@
-Haml::Template.options[:format] = :html5
-Haml::Template.options[:ugly] = RAILS_ENV == 'production'
+# TODO: Remove when migrating from HAML to ERB (Phase 3)

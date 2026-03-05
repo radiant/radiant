@@ -1,41 +1,37 @@
-ActionController::Routing::Routes.draw do |map|
-
+Rails.application.routes.draw do
   # Admin RESTful Routes
-  map.namespace :admin, :member => { :remove => :get } do |admin|
-    admin.resources :pages do |pages|
-      pages.resources :children, :controller => "pages"
+  namespace :admin do
+    resources :pages do
+      resources :children, controller: "pages"
+      member { get :remove }
+      collection { post :preview }
     end
-    admin.resources :layouts
-    admin.resources :users
-  end
-  map.preview 'admin/preview', :controller => 'admin/pages', :action => 'preview', :conditions => {:method => [:post, :put]}
-
-  map.namespace :admin do |admin|
-    admin.resource :preferences
-    admin.resource :configuration, :controller => 'configuration'
-    # admin.resources :settings
-    admin.resources :extensions, :only => :index
-    admin.resources :page_parts
-    admin.resources :page_fields
-    admin.reference '/reference/:type.:format', :controller => 'references', :action => 'show', :conditions => {:method => :get}
-  end
-
-  # Admin Routes
-  map.with_options(:controller => 'admin/welcome') do |welcome|
-    welcome.admin          'admin',                              :action => 'index'
-    welcome.welcome        'admin/welcome',                      :action => 'index'
-    welcome.login          'admin/login',                        :action => 'login'
-    welcome.logout         'admin/logout',                       :action => 'logout'
+    resources :layouts do
+      member { get :remove }
+    end
+    resources :users do
+      member { get :remove }
+    end
+    resource :preferences, only: [:show, :update]
+    resource :configuration, controller: "configuration", only: [:show]
+    resources :extensions, only: :index
+    resources :page_parts
+    resources :page_fields
+    get "reference/:type", to: "references#show", as: :reference, defaults: { format: :html }
   end
 
-  # Site URLs
-  map.with_options(:controller => 'site') do |site|
-    site.root                                                    :action => 'show_page', :url => '/'
-    site.not_found         'error/404',                          :action => 'not_found'
-    site.error             'error/500',                          :action => 'error'
+  # Admin welcome/login
+  get  "admin/welcome", to: "admin/welcome#index", as: :welcome
+  get  "admin/login",   to: "admin/welcome#login", as: :login
+  post "admin/login",   to: "admin/welcome#login", as: :login_post
+  get  "admin/logout",  to: "admin/welcome#logout", as: :logout
+  get  "admin",         to: "admin/welcome#index"
 
-    # Everything else
-    site.connect           '*url',                               :action => 'show_page'
-  end
+  # Error pages
+  get "error/404", to: "site#not_found"
+  get "error/500", to: "site#error"
 
+  # Front-end page serving (catch-all, must be last)
+  root to: "site#show_page"
+  get "*url", to: "site#show_page"
 end

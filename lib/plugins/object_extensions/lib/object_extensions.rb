@@ -1,8 +1,2 @@
-class Object
-  def self.descendants
-    subclasses_of(self)
-  end
-  def presence
-    return self if present?
-  end
-end
+# Legacy object extensions - neutralized for Rails 8
+# Object.descendants and Object#presence are provided by modern Ruby/ActiveSupport

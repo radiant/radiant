@@ -2,7 +2,7 @@ module LoginSystem
   def self.included(base)
     base.extend ClassMethods
     base.class_eval do
-      prepend_before_filter :authenticate, :authorize
+      prepend_before_action :authenticate, :authorize
       helper_method :current_user
     end
   end
@@ -30,7 +30,7 @@ module LoginSystem
         session['user_id'] = current_user.id
         true
       else
-        session[:return_to] = request.request_uri
+        session[:return_to] = request.fullpath
         respond_to do |format|
           format.html { redirect_to login_url }
           format.any(:xml,:json) { request_http_basic_authentication }
@@ -71,7 +71,7 @@ module LoginSystem
     end
 
     def login_from_http
-      if [Mime::XML, Mime::JSON].include?(request.format)
+      if [Mime[:xml], Mime[:json]].include?(request.format)
         authenticate_with_http_basic do |user_name, password|
           User.authenticate(user_name, password)
         end
@@ -84,17 +84,17 @@ module LoginSystem
 
   module ClassMethods
     def no_login_required
-      skip_before_filter :authenticate
-      skip_before_filter :authorize
+      skip_before_action :authenticate
+      skip_before_action :authorize
     end
 
     def login_required?
-      filter_chain.any? {|f| f.method == :authenticate || f.method == :authorize }
+      _process_action_callbacks.any? { |c| [:authenticate, :authorize].include?(c.filter) }
     end
 
     def login_required
       unless login_required?
-        prepend_before_filter :authenticate, :authorize
+        prepend_before_action :authenticate, :authorize
       end
     end
 

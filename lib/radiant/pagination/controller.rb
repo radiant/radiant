@@ -23,7 +23,7 @@ module Radiant::Pagination::Controller
   def self.included(base)
     base.class_eval {
       helper_method :pagination_parameters
-      before_filter :configure_pagination
+      before_action :configure_pagination
     }
   end
 

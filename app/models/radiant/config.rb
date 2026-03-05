@@ -67,7 +67,7 @@ module Radiant
     #   edit_setting('admin.name)
     #
     
-    set_table_name "config"
+    self.table_name = "config"
     after_save :update_cache
     attr_reader :definition
     
@@ -87,20 +87,20 @@ module Radiant
 
       def []=(key, value)
         if table_exists?
-          setting = find_or_initialize_by_key(key)
+          setting = find_or_initialize_by(key: key)
           setting.value = value
         end
       end
       
       def to_hash
-        Hash[ *find(:all).map { |pair| [pair.key, pair.value] }.flatten ]
+        Hash[ *all.map { |pair| [pair.key, pair.value] }.flatten ]
       end
       
       def initialize_cache
         Radiant::Config.ensure_cache_file
         Rails.cache.write('Radiant::Config',Radiant::Config.to_hash)
         Rails.cache.write('Radiant.cache_mtime', File.mtime(cache_file))
-        Rails.cache.silence!
+        # Rails.cache.silence! removed in modern Rails
       end
       
       def cache_file_exists?

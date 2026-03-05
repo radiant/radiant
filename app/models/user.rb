@@ -4,11 +4,11 @@ class User < ActiveRecord::Base
   has_many :pages, :foreign_key => :created_by_id
 
   # Default Order
-  default_scope :order => 'name'
+  default_scope { order(:name) }
 
   # Associations
-  belongs_to :created_by, :class_name => 'User'
-  belongs_to :updated_by, :class_name => 'User'
+  belongs_to :created_by, :class_name => 'User', optional: true
+  belongs_to :updated_by, :class_name => 'User', optional: true
 
   # Validations
   validates_uniqueness_of :login
@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
   validates_presence_of :name, :login
   validates_presence_of :password, :password_confirmation, :if => :new_record?
 
-  validates_format_of :email, :allow_nil => true, :with => /^$|^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i
+  validates_format_of :email, :allow_nil => true, :with => /\A\z|\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
 
   validates_length_of :name, :maximum => 100, :allow_nil => true
   validates_length_of :login, :within => 3..40, :allow_nil => true
@@ -45,7 +45,7 @@ class User < ActiveRecord::Base
   end
 
   def self.authenticate(login_or_email, password)
-    user = find(:first, :conditions => ["login = ? OR email = ?", login_or_email, login_or_email])
+    user = where("login = ? OR email = ?", login_or_email, login_or_email).first
     user if user && user.authenticated?(password)
   end
 
@@ -53,7 +53,7 @@ class User < ActiveRecord::Base
     self.password == sha1(password)
   end
 
-  def after_initialize
+  after_initialize do
     @confirm_password = true
   end
 

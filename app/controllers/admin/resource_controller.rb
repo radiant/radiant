@@ -3,11 +3,11 @@ class Admin::ResourceController < ApplicationController
   extend Radiant::ResourceResponses
   
   helper_method :model, :current_object, :models, :current_objects, :model_symbol, :plural_model_symbol, :model_class, :model_name, :plural_model_name
-  before_filter :populate_format
-  before_filter :never_cache
-  before_filter :load_models, :only => :index
-  before_filter :load_model, :only => [:new, :create, :edit, :update, :remove, :destroy]
-  after_filter :clear_model_cache, :only => [:create, :update, :destroy]
+  before_action :populate_format
+  before_action :never_cache
+  before_action :load_models, :only => :index
+  before_action :load_model, :only => [:new, :create, :edit, :update, :remove, :destroy]
+  after_action :clear_model_cache, :only => [:create, :update, :destroy]
 
   cattr_reader :paginated
   cattr_accessor :default_per_page, :will_paginate_options
@@ -58,7 +58,7 @@ class Admin::ResourceController < ApplicationController
   [:create, :update].each do |action|
     class_eval %{
       def #{action}                                       # def create
-        model.update_attributes!(params[model_symbol])    #   model.update_attributes!(params[model_symbol])
+        model.update!(params[model_symbol])    #   model.update!(params[model_symbol])
         response_for :#{action}                           #   response_for :create
       end                                                 # end
     }, __FILE__, __LINE__
@@ -117,18 +117,9 @@ class Admin::ResourceController < ApplicationController
 
   protected
 
-    def rescue_action(exception)
-      case exception
-      when ActiveRecord::RecordInvalid
-        response_for :invalid
-      when ActiveRecord::StaleObjectError
-        response_for :stale
-      when ActiveRecord::RecordNotFound
-        response_for :not_found
-      else
-        super
-      end
-    end
+    rescue_from ActiveRecord::RecordInvalid do response_for :invalid end
+    rescue_from ActiveRecord::StaleObjectError do response_for :stale end
+    rescue_from ActiveRecord::RecordNotFound do response_for :not_found end
     
     def model_class
       self.class.model_class

@@ -8,6 +8,7 @@ modernization to Rails 8, with a guiding principle:
 > Embrace the framework. Radiant should be a textbook Rails 8 application.
 
 This means:
+
 - **ERB** over HAML (Rails default templating)
 - **Minitest** over RSpec (Rails default test framework)
 - **Fixtures** over FactoryBot (Rails default test data)
@@ -28,6 +29,7 @@ This means:
 ### Tasks
 
 1. **Create `.github/workflows/ci.yml`**
+
    - Single Ruby version matching `.ruby-version` (Ruby 3.2+)
    - SQLite only — it's the Rails default and Radiant's primary database
    - Steps: checkout, setup Ruby, `bundle install`, `bin/rails test`
@@ -38,6 +40,7 @@ This means:
    - Require 1 approval
 
 ### Notes
+
 - CI will initially run the legacy test suite (RSpec/Cucumber); it will be
   updated when tests are migrated to Minitest in Phase 6
 - No caching, no artifacts, no fancy stuff — just run the tests
@@ -59,6 +62,7 @@ When in doubt, match what `rails new` produces.
 ### Sub-phase 2a: Update dependencies
 
 1. **Rewrite the Gemfile from scratch**
+
    - Start with what `rails new` gives you, then add only what Radiant needs
    - `rails` ~> 8.0
    - `propshaft` (Rails 8 default asset pipeline)
@@ -96,6 +100,7 @@ conventions:
 ### Sub-phase 2c: Rewrite routing
 
 1. **Rewrite `config/routes.rb`** to modern DSL:
+
    ```ruby
    Rails.application.routes.draw do
      namespace :admin do
@@ -124,11 +129,13 @@ conventions:
 ### Sub-phase 2d: Update controllers
 
 1. **Replace deprecated callbacks everywhere**
+
    - `before_filter` → `before_action`
    - `prepend_before_filter` → `prepend_before_action`
    - `skip_before_filter` → `skip_before_action`
 
 2. **Simplify `ApplicationController`**
+
    - Remove `rescue_action_in_public` → use `rescue_from`
    - Remove `filter_parameter_logging` → use `config.filter_parameters`
    - Standard `protect_from_forgery with: :exception`
@@ -145,6 +152,7 @@ conventions:
 ### Sub-phase 2e: Update models
 
 1. **Replace all deprecated ActiveRecord patterns**
+
    - `named_scope` → `scope`
    - `find(:all, ...)` → `where(...)`
    - `update_attributes` → `update`
@@ -176,6 +184,7 @@ DHH doesn't use HAML. Neither should we.
 ### Tasks
 
 1. **Convert all HAML files to ERB**
+
    - Use `haml2erb` or manual conversion
    - Organize by directory:
      - `app/views/layouts/`
@@ -192,6 +201,7 @@ DHH doesn't use HAML. Neither should we.
 2. **Review each converted file** — automated conversion is imperfect
 
 3. **Remove HAML entirely**
+
    - Delete `haml` from Gemfile
    - Delete `config/initializers/haml.rb`
    - No HAML files should remain
@@ -208,16 +218,19 @@ JavaScript. No Webpack, no Node.js, no esbuild. Keep it simple.
 ### Tasks
 
 1. **Set up Propshaft** (already added to Gemfile in Phase 2)
+
    - `app/assets/stylesheets/` for CSS
    - `app/assets/images/` for images
    - Standard `application.css` manifest
 
 2. **Set up import maps** for JavaScript
+
    - `bin/importmap` for managing JS dependencies
    - Pin any needed JS libraries
    - No build step required
 
 3. **Migrate assets from `public/`**
+
    - `public/stylesheets/` → `app/assets/stylesheets/`
    - `public/images/` → `app/assets/images/`
    - `public/javascripts/` → `app/javascript/`
@@ -225,6 +238,7 @@ JavaScript. No Webpack, no Node.js, no esbuild. Keep it simple.
    - Remove Prototype.js — use Hotwire (Turbo + Stimulus) if JS is needed
 
 4. **Embrace Hotwire** where appropriate
+
    - Turbo Drive for page navigation (free with Rails 8)
    - Turbo Frames for partial page updates in the admin
    - Stimulus for small JS behaviors
@@ -246,11 +260,13 @@ No Devise. No gems. Just Rails.
 ### Tasks
 
 1. **Run `rails generate authentication`**
+
    - Generates: `Session` model, `SessionsController`, `Authentication`
      concern, bcrypt password hashing
    - This is the Rails 8 Way
 
 2. **Migrate the User model**
+
    - Add `password_digest` column for bcrypt
    - Remove legacy columns: `salt`, `session_token`
    - Keep the role system (`admin`, `designer`, `editor`) — authorization
@@ -259,12 +275,15 @@ No Devise. No gems. Just Rails.
      password resets since SHA1 hashes can't be converted to bcrypt)
 
 3. **Wire up authentication**
+
    - Include the generated `Authentication` concern in `ApplicationController`
    - Remove `LoginSystem` module entirely
    - `current_user` comes from the generated auth system
 
 4. **Simplify authorization**
+
    - Replace `only_allow_access_to` DSL with simple `before_action` methods:
+
      ```ruby
      before_action :require_admin
 
@@ -272,12 +291,14 @@ No Devise. No gems. Just Rails.
        head :forbidden unless current_user&.admin?
      end
      ```
+
    - DHH would keep this dead simple — a few `before_action` helpers, no
      authorization framework
 
 5. **Update login/logout views** (already ERB from Phase 3)
 
 6. **Delete legacy auth code**
+
    - `lib/login_system.rb`
    - Related matchers and specs
 
@@ -295,6 +316,7 @@ fixtures — so do we.
 ### Tasks
 
 1. **Set up Minitest** (it's already there — Rails includes it)
+
    - Create `test/test_helper.rb` from Rails 8 defaults
    - Directory structure:
      ```
@@ -309,6 +331,7 @@ fixtures — so do we.
      ```
 
 2. **Create fixtures** to replace Dataset
+
    - `test/fixtures/users.yml`
    - `test/fixtures/pages.yml`
    - `test/fixtures/layouts.yml`
@@ -316,6 +339,7 @@ fixtures — so do we.
    - Keep them minimal and readable — fixtures are underrated
 
 3. **Migrate tests** (convert RSpec → Minitest syntax)
+
    - `describe`/`it` → `class FooTest < ActiveSupport::TestCase` / `test "..."`
    - `expect(x).to eq(y)` → `assert_equal y, x`
    - `before` → `setup`
@@ -325,11 +349,13 @@ fixtures — so do we.
    - Lib specs → `test/lib/`
 
 4. **Convert Cucumber features → system tests**
+
    - Use `ActionDispatch::SystemTestCase` with Capybara (built into Rails)
    - These are browser-level tests — the Rails replacement for Cucumber
    - Convert the 9 feature files to system tests in `test/system/`
 
 5. **Remove all legacy test dependencies**
+
    - Delete: `rspec`, `rspec-rails`, `cucumber-rails`, `webrat`,
      `database_cleaner`, `dataset`, `test-unit`
    - Delete `spec/` directory entirely
@@ -348,6 +374,7 @@ Engines. If Rails already has a plugin system (it does — Engines), use it.
 ### Tasks
 
 1. **Design the new extension architecture**
+
    - Each extension is a standard Rails Engine packaged as a gem
    - No custom loader, no custom path scanning, no custom activation
    - Extensions declare themselves in the host app's Gemfile — that's it
@@ -355,6 +382,7 @@ Engines. If Rails already has a plugin system (it does — Engines), use it.
    - Migrations install via `rails radiant_archive:install:migrations`
 
 2. **Create `Radiant::Engine` base class**
+
    - Thin wrapper around `Rails::Engine` providing Radiant-specific hooks:
      - Register admin navigation tabs
      - Register Radius tags
@@ -362,6 +390,7 @@ Engines. If Rails already has a plugin system (it does — Engines), use it.
    - Keep it minimal — don't re-invent what Rails Engines already provide
 
 3. **Remove custom extension infrastructure**
+
    - Delete `Radiant::ExtensionLoader`
    - Delete `Radiant::ExtensionPath`
    - Simplify or delete `Radiant::ExtensionMigrator` (use Rails migration
@@ -369,6 +398,7 @@ Engines. If Rails already has a plugin system (it does — Engines), use it.
    - Remove `config.extensions` array — Bundler is the extension manager now
 
 4. **Create an extension generator**
+
    - `rails generate radiant:extension my_extension`
    - Generates a proper Rails Engine with:
      - `lib/radiant/my_extension/engine.rb`
@@ -377,6 +407,7 @@ Engines. If Rails already has a plugin system (it does — Engines), use it.
      - Gemspec
 
 5. **Migrate core extensions** to the Engine pattern
+
    - Each becomes an independent gem:
      - `radiant-archive` (page archiving)
      - `radiant-snippets` (reusable content fragments)
@@ -386,6 +417,7 @@ Engines. If Rails already has a plugin system (it does — Engines), use it.
    - Drop any extensions that are no longer relevant
 
 6. **Simplify the admin extensions page**
+
    - List installed engines discovered via `Rails::Engine.subclasses`
    - No activation/deactivation — if it's in the Gemfile, it's active
    - Show version, description from gemspec metadata
@@ -405,8 +437,8 @@ Phase 1: GitHub Actions (CI foundation)
 Phase 2: Rails 8 Core Upgrade (the big one)
     ↓
 Phase 3: HAML → ERB ──────┐
-    ↓                      │ (can run in parallel)
-Phase 4: Asset Pipeline ───┘
+    ↓                     │ (can run in parallel)
+Phase 4: Asset Pipeline ──┘
     ↓
 Phase 5: Rails 8 Built-in Auth
     ↓
@@ -423,27 +455,30 @@ moving to the next. Commit frequently. Open a PR per sub-phase when possible.
 ## Gems to keep vs. remove
 
 ### Keep (Radiant needs these, Rails doesn't provide them)
-| Gem | Reason |
-|---|---|
-| `radius` | Radiant's custom template language — core to the product |
-| `acts_as_tree` | Page hierarchy data model |
-| `RedCloth` | Textile filter (evaluate if still needed) |
+
+| Gem            | Reason                                                   |
+| -------------- | -------------------------------------------------------- |
+| `radius`       | Radiant's custom template language — core to the product |
+| `acts_as_tree` | Page hierarchy data model                                |
+| `RedCloth`     | Textile filter (evaluate if still needed)                |
 
 ### Remove (Rails 8 provides these or they're no longer needed)
-| Gem | Replacement |
-|---|---|
-| `haml` | ERB (Rails default) |
-| `compass` / `compass-rails` | Plain CSS + Propshaft |
-| `will_paginate` | Rails built-in pagination or simple `limit`/`offset` |
-| `delocalize` | Rails I18n |
-| `highline` | Not needed (or use Ruby stdlib) |
-| `rack` / `rack-cache` | Rails manages these |
-| `tzinfo` | Rails bundles this |
-| `stringex` | ActiveSupport provides most of what this does |
-| `rdoc` | Not a runtime dependency |
-| `rspec` / `rspec-rails` | Minitest (Rails default) |
-| `cucumber-rails` / `webrat` | System tests (Rails default) |
-| `database_cleaner` / `dataset` | Fixtures + transactional tests |
+
+| Gem                            | Replacement                                          |
+| ------------------------------ | ---------------------------------------------------- |
+| `haml`                         | ERB (Rails default)                                  |
+| `compass` / `compass-rails`    | Plain CSS + Propshaft                                |
+| `will_paginate`                | Rails built-in pagination or simple `limit`/`offset` |
+| `delocalize`                   | Rails I18n                                           |
+| `highline`                     | Not needed (or use Ruby stdlib)                      |
+| `rack` / `rack-cache`          | Rails manages these                                  |
+| `tzinfo`                       | Rails bundles this                                   |
+| `stringex`                     | ActiveSupport provides most of what this does        |
+| `rdoc`                         | Not a runtime dependency                             |
+| `rspec` / `rspec-rails`        | Minitest (Rails default)                             |
+| `cucumber-rails` / `webrat`    | System tests (Rails default)                         |
+| `database_cleaner` / `dataset` | Fixtures + transactional tests                       |
 
 ### The test: before adding any gem, ask
+
 > "Does Rails already do this?" If yes, don't add the gem.

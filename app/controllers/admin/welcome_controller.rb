@@ -1,7 +1,7 @@
 class Admin::WelcomeController < ApplicationController
   no_login_required
-  before_filter :never_cache
-  skip_before_filter :verify_authenticity_token
+  before_action :never_cache
+  skip_before_action :verify_authenticity_token
   
   def index
     redirect_to admin_pages_url

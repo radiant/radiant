@@ -1,7 +1,7 @@
 class SiteController < ApplicationController
   include Radiant::Pagination::Controller
 
-  skip_before_filter :verify_authenticity_token
+  skip_before_action :verify_authenticity_token
   no_login_required
 
   def self.cache_timeout=(val)
@@ -22,7 +22,7 @@ class SiteController < ApplicationController
       batch_page_status_refresh if (url == "/" || url == "")
       process_page(@page)
       set_cache_control
-      @performed_render ||= true
+      self.response_body = response.body
     else
       render :template => 'site/not_found', :status => 404
     end
@@ -33,22 +33,18 @@ class SiteController < ApplicationController
   def cacheable_request?
     (request.head? || request.get?) && live?
   end
-  hide_action :cacheable_request?
-
   def set_expiry(time, options={})
     expires_in time, options
   end
-  hide_action :set_expiry
 
   def set_etag(val)
     headers['ETag'] = val
   end
-  hide_action :set_expiry
 
   private
     def batch_page_status_refresh
       @changed_pages = []
-      @pages = Page.find(:all, :conditions => {:status_id => Status[:scheduled].id})
+      @pages = Page.where(status_id: Status[:scheduled].id).to_a
       @pages.each do |page|
         if page.published_at <= Time.now
            page.status_id = Status[:published].id
@@ -87,7 +83,7 @@ class SiteController < ApplicationController
     end
 
     def dev?
-      request.host == @config['dev.host'] || request.host =~ /^dev\./
+      request.host == Radiant::Config['dev.host'] || request.host =~ /^dev\./
     end
 
     def live?

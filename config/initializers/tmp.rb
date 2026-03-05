@@ -1,2 +1,1 @@
-require 'fileutils'
-FileUtils.mkdir_p(Rails.root.join("tmp", "stylesheets"))
+# tmp directory creation is handled by Rails 8 automatically

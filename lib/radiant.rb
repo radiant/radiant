@@ -15,5 +15,9 @@ unless defined? Radiant::Version
         alias :to_str :to_s
       end
     end
+
+    def self.loaded_via_gem?
+      false
+    end
   end
 end
