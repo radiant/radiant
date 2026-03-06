@@ -184,17 +184,13 @@ class PageTest < ActiveSupport::TestCase
   # Rendering
 
   test "renders body part content" do
-    page = pages(:home)
-    page.request = ActionDispatch::TestRequest.create
-    page.response = ActionDispatch::TestResponse.new
+    page = prepare_page_for_render(:home)
     rendered = page.render_part(:body)
     assert_equal "Hello world!", rendered
   end
 
   test "renders radius tags" do
-    page = pages(:radius)
-    page.request = ActionDispatch::TestRequest.create
-    page.response = ActionDispatch::TestResponse.new
+    page = prepare_page_for_render(:radius)
     rendered = page.render_part(:body)
     assert_equal "Radius", rendered
   end

@@ -2,15 +2,11 @@ require "test_helper"
 
 class NavigationTagsTest < ActiveSupport::TestCase
   setup do
-    @page = pages(:home)
-    @page.request = ActionDispatch::TestRequest.create
-    @page.response = ActionDispatch::TestResponse.new
+    @page = prepare_page_for_render(:home)
   end
 
   test "navigation tag renders normal state for unrelated pages" do
-    page = pages(:first)
-    page.request = ActionDispatch::TestRequest.create
-    page.response = ActionDispatch::TestResponse.new
+    page = prepare_page_for_render(:first)
 
     content = %{<r:navigation paths="Home: / | News: /news">
       <r:normal><a href="<r:path />"><r:title /></a></r:normal>
@@ -44,9 +40,7 @@ class NavigationTagsTest < ActiveSupport::TestCase
   end
 
   test "navigation tag renders selected state for child pages" do
-    page = pages(:child)
-    page.request = ActionDispatch::TestRequest.create
-    page.response = ActionDispatch::TestResponse.new
+    page = prepare_page_for_render(:child)
 
     content = %{<r:navigation paths="Home: / | Parent: /parent/">
       <r:normal>[normal:<r:title />]</r:normal>

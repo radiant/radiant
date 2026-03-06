@@ -11,9 +11,7 @@ class Admin::LayoutsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "index requires login" do
-    logout
-    get admin_layouts_path
-    assert_redirected_to login_path
+    assert_requires_login admin_layouts_path
   end
 
   test "show redirects to edit" do

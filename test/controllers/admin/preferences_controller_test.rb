@@ -11,9 +11,7 @@ class Admin::PreferencesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "edit requires login" do
-    logout
-    get edit_admin_preferences_path
-    assert_redirected_to login_path
+    assert_requires_login edit_admin_preferences_path
   end
 
   test "update changes user preferences" do

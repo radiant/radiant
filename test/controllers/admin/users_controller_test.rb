@@ -18,9 +18,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "index requires login" do
-    logout
-    get admin_users_path
-    assert_redirected_to login_path
+    assert_requires_login admin_users_path
   end
 
   test "show redirects to edit" do

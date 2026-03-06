@@ -2,9 +2,7 @@ require "test_helper"
 
 class PageContextTest < ActiveSupport::TestCase
   setup do
-    @page = pages(:radius)
-    @page.request = ActionDispatch::TestRequest.create
-    @page.response = ActionDispatch::TestResponse.new
+    @page = prepare_page_for_render(:radius)
     @context = PageContext.new(@page)
     @parser = Radius::Parser.new(@context, tag_prefix: 'r')
   end

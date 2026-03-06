@@ -11,9 +11,7 @@ class Admin::ConfigurationControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "show requires login" do
-    logout
-    get admin_configuration_path
-    assert_redirected_to login_path
+    assert_requires_login admin_configuration_path
   end
 
   test "edit renders successfully for admin" do

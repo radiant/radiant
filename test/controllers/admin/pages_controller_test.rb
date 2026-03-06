@@ -13,9 +13,7 @@ class Admin::PagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "index requires login" do
-    logout
-    get admin_pages_path
-    assert_redirected_to login_path
+    assert_requires_login admin_pages_path
   end
 
   # Show

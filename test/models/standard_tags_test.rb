@@ -4,23 +4,13 @@ class StandardTagsTest < ActiveSupport::TestCase
   fixtures :pages, :page_parts, :snippets, :layouts, :users
 
   def setup
-    @page = pages(:home)
-    @page.request = ActionDispatch::TestRequest.create
-    @page.response = ActionDispatch::TestResponse.new
+    @page = prepare_page_for_render(:home)
   end
 
   def render_tag(tag_content, page = @page)
-    page.parts.find_or_create_by!(name: "body") do |part|
-      part.content = tag_content
-    end.update!(content: tag_content)
+    part = page.parts.find_or_create_by!(name: "body")
+    part.update!(content: tag_content) if part.content != tag_content
     page.render_part(:body)
-  end
-
-  def setup_page(fixture_name)
-    page = pages(fixture_name)
-    page.request = ActionDispatch::TestRequest.create
-    page.response = ActionDispatch::TestResponse.new
-    page
   end
 
   # ===========================================================================
@@ -32,7 +22,7 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:title renders title for child page" do
-    page = setup_page(:first)
+    page = prepare_page_for_render(:first)
     assert_equal "First", render_tag('<r:title />', page)
   end
 
@@ -41,7 +31,7 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:slug renders child page slug" do
-    page = setup_page(:first)
+    page = prepare_page_for_render(:first)
     assert_equal "first", render_tag('<r:slug />', page)
   end
 
@@ -50,7 +40,7 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:breadcrumb for child page" do
-    page = setup_page(:first)
+    page = prepare_page_for_render(:first)
     assert_equal "First", render_tag('<r:breadcrumb />', page)
   end
 
@@ -59,12 +49,12 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:path renders child page path" do
-    page = setup_page(:first)
+    page = prepare_page_for_render(:first)
     assert_equal "/first/", render_tag('<r:path />', page)
   end
 
   test "r:path renders deeply nested page path" do
-    page = setup_page(:grandchild)
+    page = prepare_page_for_render(:grandchild)
     assert_equal "/parent/child/grandchild/", render_tag('<r:path />', page)
   end
 
@@ -83,12 +73,12 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:content with part attribute renders named part" do
-    page = setup_page(:party)
+    page = prepare_page_for_render(:party)
     assert_equal "favors", render_tag('<r:content part="favors" />', page)
   end
 
   test "r:content with part attribute renders games part" do
-    page = setup_page(:party)
+    page = prepare_page_for_render(:party)
     assert_equal "games", render_tag('<r:content part="games" />', page)
   end
 
@@ -102,17 +92,17 @@ class StandardTagsTest < ActiveSupport::TestCase
   # ===========================================================================
 
   test "r:parent:title renders parent page title" do
-    page = setup_page(:first)
+    page = prepare_page_for_render(:first)
     assert_equal "Home", render_tag('<r:parent><r:title /></r:parent>', page)
   end
 
   test "r:parent:title for deeply nested page" do
-    page = setup_page(:grandchild)
+    page = prepare_page_for_render(:grandchild)
     assert_equal "Child", render_tag('<r:parent><r:title /></r:parent>', page)
   end
 
   test "r:if_parent renders content when page has a parent" do
-    page = setup_page(:first)
+    page = prepare_page_for_render(:first)
     assert_equal "yes", render_tag('<r:if_parent>yes</r:if_parent>', page)
   end
 
@@ -126,7 +116,7 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:unless_parent does not render for child page" do
-    page = setup_page(:first)
+    page = prepare_page_for_render(:first)
     result = render_tag('<r:unless_parent>root</r:unless_parent>', page)
     assert_equal "", result
   end
@@ -179,7 +169,7 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:find locates root page" do
-    page = setup_page(:first)
+    page = prepare_page_for_render(:first)
     result = render_tag('<r:find path="/"><r:title /></r:find>', page)
     assert_equal "Home", result
   end
@@ -247,7 +237,7 @@ class StandardTagsTest < ActiveSupport::TestCase
   # ===========================================================================
 
   test "r:date renders published_at date with default format" do
-    page = setup_page(:dated)
+    page = prepare_page_for_render(:dated)
     result = render_tag('<r:date />', page)
     # Default format is "%A, %B %d, %Y" -- published_at is 2006-01-11
     assert_includes result, "2006"
@@ -256,19 +246,19 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:date with custom format" do
-    page = setup_page(:dated)
+    page = prepare_page_for_render(:dated)
     result = render_tag('<r:date format="%Y-%m-%d" />', page)
     assert_equal "2006-01-11", result
   end
 
   test "r:date for created_at" do
-    page = setup_page(:dated)
+    page = prepare_page_for_render(:dated)
     result = render_tag('<r:date for="created_at" format="%Y-%m-%d" />', page)
     assert_equal "2006-01-10", result
   end
 
   test "r:date for updated_at" do
-    page = setup_page(:dated)
+    page = prepare_page_for_render(:dated)
     result = render_tag('<r:date for="updated_at" format="%Y-%m-%d" />', page)
     assert_equal "2006-01-12", result
   end
@@ -312,7 +302,7 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:link for child page" do
-    page = setup_page(:first)
+    page = prepare_page_for_render(:first)
     result = render_tag('<r:link />', page)
     assert_includes result, "/first/"
     assert_includes result, "First"
@@ -328,7 +318,7 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:breadcrumbs renders trail for child page" do
-    page = setup_page(:first)
+    page = prepare_page_for_render(:first)
     result = render_tag('<r:breadcrumbs />', page)
     assert_includes result, "Home"
     assert_includes result, "First"
@@ -336,7 +326,7 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:breadcrumbs renders trail for deeply nested page" do
-    page = setup_page(:grandchild)
+    page = prepare_page_for_render(:grandchild)
     result = render_tag('<r:breadcrumbs />', page)
     assert_includes result, "Home"
     assert_includes result, "Parent"
@@ -345,13 +335,13 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:breadcrumbs with custom separator" do
-    page = setup_page(:first)
+    page = prepare_page_for_render(:first)
     result = render_tag('<r:breadcrumbs separator=" / " />', page)
     assert_includes result, " / "
   end
 
   test "r:breadcrumbs with nolinks" do
-    page = setup_page(:first)
+    page = prepare_page_for_render(:first)
     result = render_tag('<r:breadcrumbs nolinks="true" />', page)
     assert_not_includes result, "<a href"
     assert_includes result, "Home"
@@ -359,7 +349,7 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:breadcrumbs with noself" do
-    page = setup_page(:first)
+    page = prepare_page_for_render(:first)
     result = render_tag('<r:breadcrumbs noself="true" />', page)
     assert_includes result, "Home"
     assert_not_includes result, "First"
@@ -417,13 +407,13 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:status renders Draft for draft page" do
-    page = setup_page(:draft)
+    page = prepare_page_for_render(:draft)
     result = render_tag('<r:status />', page)
     assert_equal "Draft", result
   end
 
   test "r:status renders Hidden for hidden page" do
-    page = setup_page(:hidden)
+    page = prepare_page_for_render(:hidden)
     result = render_tag('<r:status />', page)
     assert_equal "Hidden", result
   end
@@ -448,13 +438,13 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:if_path matches child page path" do
-    page = setup_page(:first)
+    page = prepare_page_for_render(:first)
     result = render_tag('<r:if_path matches="first">yes</r:if_path>', page)
     assert_equal "yes", result
   end
 
   test "r:if_path with regex pattern" do
-    page = setup_page(:child)
+    page = prepare_page_for_render(:child)
     result = render_tag('<r:if_path matches="parent/child">matched</r:if_path>', page)
     assert_equal "matched", result
   end
@@ -478,7 +468,7 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:page:title inside find still refers to actual page" do
-    page = setup_page(:first)
+    page = prepare_page_for_render(:first)
     result = render_tag('<r:find path="/parent/child/"><r:page><r:title /></r:page></r:find>', page)
     assert_equal "First", result
   end
@@ -488,7 +478,7 @@ class StandardTagsTest < ActiveSupport::TestCase
   # ===========================================================================
 
   test "r:field renders field content" do
-    page = setup_page(:home)
+    page = prepare_page_for_render(:home)
     page.fields.find_or_create_by!(name: "Keywords").update!(content: "cms, radiant")
     result = render_tag('<r:field name="Keywords" />', page)
     assert_equal "cms, radiant", result
@@ -501,21 +491,21 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:if_field renders when field exists" do
-    page = setup_page(:home)
+    page = prepare_page_for_render(:home)
     page.fields.find_or_create_by!(name: "author").update!(content: "John")
     result = render_tag('<r:if_field name="author">has author</r:if_field>', page)
     assert_equal "has author", result
   end
 
   test "r:if_field with equals attribute" do
-    page = setup_page(:home)
+    page = prepare_page_for_render(:home)
     page.fields.find_or_create_by!(name: "author").update!(content: "John")
     result = render_tag('<r:if_field name="author" equals="John">matched</r:if_field>', page)
     assert_equal "matched", result
   end
 
   test "r:if_field with equals attribute not matching" do
-    page = setup_page(:home)
+    page = prepare_page_for_render(:home)
     page.fields.find_or_create_by!(name: "author").update!(content: "John")
     result = render_tag('<r:if_field name="author" equals="Jane">matched</r:if_field>', page)
     assert_equal "", result
@@ -527,7 +517,7 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:unless_field does not render when field exists" do
-    page = setup_page(:home)
+    page = prepare_page_for_render(:home)
     page.fields.find_or_create_by!(name: "author").update!(content: "John")
     result = render_tag('<r:unless_field name="author">missing</r:unless_field>', page)
     assert_equal "", result
@@ -585,7 +575,7 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "nested tags render correctly" do
-    page = setup_page(:child)
+    page = prepare_page_for_render(:child)
     result = render_tag('<r:parent><r:parent><r:title /></r:parent></r:parent>', page)
     assert_equal "Home", result
   end
@@ -599,14 +589,14 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:content with inherit attribute finds parent part" do
-    page = setup_page(:child)
+    page = prepare_page_for_render(:child)
     result = render_tag('<r:content part="sidebar" inherit="true" />', page)
     # Child has no sidebar, should inherit from home which has sidebar
     assert_includes result, "sidebar"
   end
 
   test "radius tag renders title via tag" do
-    page = setup_page(:radius)
+    page = prepare_page_for_render(:radius)
     result = page.render_part(:body)
     assert_equal "Radius", result
   end

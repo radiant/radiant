@@ -2,9 +2,7 @@ require "test_helper"
 
 class DeprecatedTagsTest < ActiveSupport::TestCase
   setup do
-    @page = pages(:home)
-    @page.request = ActionDispatch::TestRequest.create
-    @page.response = ActionDispatch::TestResponse.new
+    @page = prepare_page_for_render(:home)
   end
 
   test "meta tag renders meta tags for fields" do

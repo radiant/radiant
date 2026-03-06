@@ -49,8 +49,8 @@ class PageServingTest < ActionDispatch::IntegrationTest
     get "/"
     assert_response :success
     cache_control = response.headers["Cache-Control"]
-    # Live GET requests should get public cache headers
-    assert_match(/public/, cache_control) if cache_control.present?
+    assert cache_control.present?, "Expected Cache-Control header to be set"
+    assert_match(/public/, cache_control)
   end
 
   test "sets ETag header" do
