@@ -19,7 +19,7 @@ class Admin::PreferencesController < ApplicationController
 
   def update
     if valid_params?
-      if @user.update(params[:user])
+      if @user.update(params[:user].permit(*User.unprotected_attributes))
         redirect_to admin_configuration_path
       else
         flash[:error] = t('preferences_controller.error_updating')
@@ -38,7 +38,7 @@ class Admin::PreferencesController < ApplicationController
   end
 
   def valid_params?
-    hash = (params[:user] || {}).symbolize_keys
+    hash = (params[:user] || {}).to_unsafe_h.symbolize_keys
     (hash.keys - User.unprotected_attributes).size == 0
   end
 

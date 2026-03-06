@@ -1,0 +1,7 @@
+first:
+  name: first
+  content: "test snippet"
+
+markdown:
+  name: markdown
+  content: "**markdown** snippet"

@@ -207,7 +207,9 @@ class Admin::ResourceController < ApplicationController
     end
 
     def clear_model_cache
-      Radiant::Cache.clear if defined?(Radiant::Cache)
+      Radiant::Cache.clear
+    rescue LoadError, NameError
+      # rack/cache not available or Radiant::Cache not defined - skip
     end
 
     def format_symbol

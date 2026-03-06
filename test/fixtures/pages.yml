@@ -1,0 +1,174 @@
+home:
+  title: Home
+  slug: /
+  breadcrumb: Home
+  status_id: 100
+  parent_id:
+  published_at: <%= Time.utc(2006, 1, 1) %>
+  created_at: <%= Time.utc(2006, 1, 1) %>
+  updated_at: <%= Time.utc(2006, 1, 1) %>
+
+first:
+  title: First
+  slug: first
+  breadcrumb: First
+  status_id: 100
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:home) %>
+  published_at: <%= Time.utc(2006, 1, 1) %>
+
+another:
+  title: Another
+  slug: another
+  breadcrumb: Another
+  status_id: 100
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:home) %>
+  published_at: <%= Time.utc(2006, 1, 1) %>
+
+radius:
+  title: Radius
+  slug: radius
+  breadcrumb: Radius
+  status_id: 100
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:home) %>
+  published_at: <%= Time.utc(2006, 1, 1) %>
+
+parent:
+  title: Parent
+  slug: parent
+  breadcrumb: Parent
+  status_id: 100
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:home) %>
+  published_at: <%= Time.utc(2006, 1, 1) %>
+
+child:
+  title: Child
+  slug: child
+  breadcrumb: Child
+  status_id: 100
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:parent) %>
+  published_at: <%= Time.utc(2006, 1, 1) %>
+
+grandchild:
+  title: Grandchild
+  slug: grandchild
+  breadcrumb: Grandchild
+  status_id: 100
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:child) %>
+  published_at: <%= Time.utc(2006, 1, 1) %>
+
+great_grandchild:
+  title: Great Grandchild
+  slug: great-grandchild
+  breadcrumb: Great Grandchild
+  status_id: 100
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:grandchild) %>
+  published_at: <%= Time.utc(2006, 1, 1) %>
+
+child_2:
+  title: Child 2
+  slug: child-2
+  breadcrumb: Child 2
+  status_id: 100
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:parent) %>
+  published_at: <%= Time.utc(2006, 1, 1) %>
+
+child_3:
+  title: Child 3
+  slug: child-3
+  breadcrumb: Child 3
+  status_id: 100
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:parent) %>
+  published_at: <%= Time.utc(2006, 1, 1) %>
+
+childless:
+  title: Childless
+  slug: childless
+  breadcrumb: Childless
+  status_id: 100
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:home) %>
+  published_at: <%= Time.utc(2006, 1, 1) %>
+
+draft:
+  title: Draft
+  slug: draft
+  breadcrumb: Draft
+  status_id: 1
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:home) %>
+
+hidden:
+  title: Hidden
+  slug: hidden
+  breadcrumb: Hidden
+  status_id: 101
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:home) %>
+  published_at: <%= Time.utc(2006, 1, 1) %>
+
+dated:
+  title: Dated
+  slug: dated
+  breadcrumb: Dated
+  status_id: 100
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:home) %>
+  published_at: <%= Time.utc(2006, 1, 11) %>
+  created_at: <%= Time.utc(2006, 1, 10) %>
+  updated_at: <%= Time.utc(2006, 1, 12) %>
+
+virtual:
+  title: Virtual
+  slug: virtual
+  breadcrumb: Virtual
+  status_id: 100
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:home) %>
+  virtual: true
+  published_at: <%= Time.utc(2006, 1, 1) %>
+
+file_not_found:
+  title: File Not Found
+  slug: missing
+  breadcrumb: File Not Found
+  class_name: FileNotFoundPage
+  status_id: 100
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:home) %>
+  virtual: true
+  published_at: <%= Time.utc(2006, 1, 1) %>
+
+news:
+  title: News
+  slug: news
+  breadcrumb: News
+  status_id: 100
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:home) %>
+  published_at: <%= Time.utc(2006, 1, 1) %>
+
+article:
+  title: Article
+  slug: article
+  breadcrumb: Article
+  status_id: 100
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:news) %>
+  published_at: <%= Time.utc(2000, 12, 1, 8, 41, 7) %>
+
+article_2:
+  title: Article 2
+  slug: article-2
+  breadcrumb: Article 2
+  status_id: 100
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:news) %>
+  published_at: <%= Time.utc(2001, 2, 9, 8, 42, 4) %>
+
+party:
+  title: Party
+  slug: party
+  breadcrumb: Party
+  status_id: 100
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:home) %>
+  published_at: <%= Time.utc(2006, 1, 1) %>
+
+page_with_layout:
+  title: Page With Layout
+  slug: page-with-layout
+  breadcrumb: Page With Layout
+  status_id: 100
+  parent_id: <%= ActiveRecord::FixtureSet.identify(:home) %>
+  layout_id: <%= ActiveRecord::FixtureSet.identify(:main) %>
+  published_at: <%= Time.utc(2006, 1, 1) %>
