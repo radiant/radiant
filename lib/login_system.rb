@@ -40,6 +40,7 @@ module LoginSystem
     end
 
     def authorize
+      return true unless current_user
       action = action_name.to_s.intern
       if user_has_access_to_action?(action)
         true

@@ -1,0 +1,89 @@
+home_body:
+  name: body
+  content: "Hello world!"
+  page_id: <%= ActiveRecord::FixtureSet.identify(:home) %>
+
+home_sidebar:
+  name: sidebar
+  content: "<r:title /> sidebar."
+  page_id: <%= ActiveRecord::FixtureSet.identify(:home) %>
+
+home_extended:
+  name: extended
+  content: "Just a test."
+  page_id: <%= ActiveRecord::FixtureSet.identify(:home) %>
+
+first_body:
+  name: body
+  content: "First body."
+  page_id: <%= ActiveRecord::FixtureSet.identify(:first) %>
+
+another_body:
+  name: body
+  content: "Another body."
+  page_id: <%= ActiveRecord::FixtureSet.identify(:another) %>
+
+radius_body:
+  name: body
+  content: "<r:title />"
+  page_id: <%= ActiveRecord::FixtureSet.identify(:radius) %>
+
+parent_body:
+  name: body
+  content: "Parent body."
+  page_id: <%= ActiveRecord::FixtureSet.identify(:parent) %>
+
+child_body:
+  name: body
+  content: "Child body."
+  page_id: <%= ActiveRecord::FixtureSet.identify(:child) %>
+
+grandchild_body:
+  name: body
+  content: "Grandchild body."
+  page_id: <%= ActiveRecord::FixtureSet.identify(:grandchild) %>
+
+childless_body:
+  name: body
+  content: "Childless body."
+  page_id: <%= ActiveRecord::FixtureSet.identify(:childless) %>
+
+draft_body:
+  name: body
+  content: "Draft body."
+  page_id: <%= ActiveRecord::FixtureSet.identify(:draft) %>
+
+party_body:
+  name: body
+  content: "Party body."
+  page_id: <%= ActiveRecord::FixtureSet.identify(:party) %>
+
+party_favors:
+  name: favors
+  content: "favors"
+  page_id: <%= ActiveRecord::FixtureSet.identify(:party) %>
+
+party_games:
+  name: games
+  content: "games"
+  page_id: <%= ActiveRecord::FixtureSet.identify(:party) %>
+
+page_with_layout_body:
+  name: body
+  content: "Page with layout body."
+  page_id: <%= ActiveRecord::FixtureSet.identify(:page_with_layout) %>
+
+news_body:
+  name: body
+  content: "News body."
+  page_id: <%= ActiveRecord::FixtureSet.identify(:news) %>
+
+article_body:
+  name: body
+  content: "Article body."
+  page_id: <%= ActiveRecord::FixtureSet.identify(:article) %>
+
+file_not_found_body:
+  name: body
+  content: "File not found."
+  page_id: <%= ActiveRecord::FixtureSet.identify(:file_not_found) %>
