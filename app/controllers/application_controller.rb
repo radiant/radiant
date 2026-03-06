@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
   end
   
   def include_javascript(script)
-    @javascripts << script
+    # Skip legacy JS includes - assets no longer exist
   end
 
   def template_name
@@ -59,7 +59,8 @@ class ApplicationController < ActionController::Base
     end
 
     def set_timezone
-      Time.zone = Radiant::Config['local.timezone'] || Time.zone_default
+      tz = Radiant::Config['local.timezone']
+      Time.zone = tz.present? ? tz : Time.zone_default
     end
   
     def set_javascripts_and_stylesheets

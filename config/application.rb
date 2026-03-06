@@ -16,6 +16,15 @@ module Radiant
     config.autoload_paths << Rails.root.join("lib")
     config.eager_load_paths << Rails.root.join("lib")
 
+    # Zeitwerk inflection overrides for non-standard acronyms
+    initializer "radiant.inflections", before: "zeitwerk.eager_load" do
+      Rails.autoloaders.each do |autoloader|
+        autoloader.inflector.inflect(
+          "admin_ui" => "AdminUI"
+        )
+      end
+    end
+
     # Load legacy plugins that monkey-patch core classes (must happen before autoloading)
     config.before_initialize do
       %w[active_record_extensions object_extensions].each do |plugin|

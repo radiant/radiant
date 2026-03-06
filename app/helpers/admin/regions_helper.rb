@@ -14,14 +14,14 @@ module Admin::RegionsHelper
       rescue ::ActionView::TemplateError => e # error in template
         raise e
       end
-    end.join
-    block_given? ? concat(output) : output
+    end.join.html_safe
+    block_given? ? concat(output.html_safe) : output.html_safe
   end
 
   def lazy_initialize_region_set
     unless @region_set
-      @controller_name ||= @controller.controller_name
-      @template_name ||= @controller.template_name
+      @controller_name ||= controller.controller_name
+      @template_name ||= controller.template_name
       @region_set = admin.send(@controller_name).send(@template_name)
     end
   end

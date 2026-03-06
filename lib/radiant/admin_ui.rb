@@ -18,7 +18,7 @@ module Radiant
       end
       
       def [](id)
-        unless id.kind_of? Fixnum
+        unless id.kind_of? Integer
           self.find {|subnav_item| subnav_item.name.to_s.titleize == id.to_s.titleize }
         else
           super
@@ -93,13 +93,15 @@ module Radiant
       
       private
       def visible_by_controller?(user)
-        params = ActionController::Routing::Routes.recognize_path(url, :method => :get)
+        params = Rails.application.routes.recognize_path(url, method: :get)
         if params && params[:controller]
           klass = "#{params[:controller].camelize}Controller".constantize
           klass.user_has_access_to_action?(user, params[:action])
         else
           false
         end
+      rescue ActionController::RoutingError
+        false
       end
     end
     

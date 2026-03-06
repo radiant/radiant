@@ -246,7 +246,7 @@ class Page < ActiveRecord::Base
         @display_name = string
       else
         @display_name ||= begin
-          n = name.to_s
+          n = name.to_s.dup
           n.sub!(/^(.+?)Page$/, '\1')
           n.gsub!(/([A-Z])/, ' \1')
           n.strip

@@ -26,7 +26,7 @@ class Admin::ConfigurationController < ApplicationController
       begin
         Radiant.config.transaction do
           params["config"].each_pair do |key, value|
-            @config[key] = Radiant::Config.find_or_create_by_key(key)
+            @config[key] = Radiant::Config.find_or_create_by(key: key)
             @config[key].value = value      # validation sets errors on @config['key'] that the helper methods will pick up
           end
           redirect_to :action => :show

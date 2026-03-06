@@ -19,5 +19,9 @@ unless defined? Radiant::Version
     def self.loaded_via_gem?
       false
     end
+
+    def self.config
+      Radiant::Config
+    end
   end
 end

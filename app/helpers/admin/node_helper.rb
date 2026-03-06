@@ -16,7 +16,7 @@ module Admin::NodeHelper
   end
 
   def show_all?
-    @controller.action_name == 'remove'
+    controller.action_name == 'remove'
   end
 
   def expanded_rows
@@ -65,7 +65,7 @@ module Admin::NodeHelper
             :class => "expander", :alt => 'toggle children',
             :title => '')
     else
-      ""
+      "".html_safe
     end
   end
 
@@ -75,7 +75,7 @@ module Admin::NodeHelper
   end
 
   def node_title
-    %{<span class="title">#{ h(@current_node.title) }</span>}
+    %{<span class="title">#{ h(@current_node.title) }</span>}.html_safe
   end
 
   def page_type
@@ -83,7 +83,7 @@ module Admin::NodeHelper
     if display_name == 'Page'
       ""
     else
-      %{<span class="info">(#{ h(display_name) })</span>}
+      %{<span class="info">(#{ h(display_name) })</span>}.html_safe
     end
   end
 

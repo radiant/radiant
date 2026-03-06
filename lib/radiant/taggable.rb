@@ -25,7 +25,7 @@ module Radiant::Taggable
         end
 
         def request_uri
-          @request_url ||= request.request_uri unless request.nil?
+          @request_url ||= request.fullpath unless request.nil?
         end
     end
   end

@@ -34,7 +34,7 @@
     - layout.edit_layout do
       %p
         = fields.label :layout_id, t('layout')
-        = fields.select :layout_id, [[t('select.inherit') , '']] + Layout.find(:all).map { |s| [s.name, s.id] }
+        = fields.select :layout_id, [[t('select.inherit') , '']] + Layout.all.map { |s| [s.name, s.id] }
     - layout.edit_type do
       %p
         = fields.label :class_name, t('page_type')

@@ -1,15 +1,9 @@
 - @page_title = t('extensions') + ' - ' + default_page_title
 
 - content_for :page_css do
-  :sass
-    table.index 
-      h4
-        font-size: 110%
-        margin-top: .5em
-        margin-bottom: .25em
-      p
-        margin-top: .25em
-        margin-bottom: .5em
+  :css
+    table.index h4 { font-size: 110%; margin-top: .5em; margin-bottom: .25em; }
+    table.index p { margin-top: .25em; margin-bottom: .5em; }
 
 = render_region :top
 

@@ -1,9 +1,16 @@
 module ApplicationHelper
   include LocalTime
   include Admin::RegionsHelper
-  
+
   def config
     Radiant::Config
+  end
+
+  def link_to_function(name, function, html_options = {})
+    onclick = html_options.delete(:onclick) || ""
+    onclick = "#{onclick}; " if onclick.present?
+    onclick += "#{function}; return false;"
+    link_to(name, "#", html_options.merge(onclick: onclick))
   end
   
   def default_page_title
@@ -62,7 +69,7 @@ module ApplicationHelper
     else
       options.to_s
     end
-    request.request_uri =~ Regexp.new('^' + Regexp.quote(clean(url)))
+    request.fullpath =~ Regexp.new('^' + Regexp.quote(clean(url)))
   end
   
   def clean(url)

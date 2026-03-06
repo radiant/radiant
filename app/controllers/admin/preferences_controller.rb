@@ -1,7 +1,9 @@
 class Admin::PreferencesController < ApplicationController
   before_action :load_user
 
-  def initialize
+  before_action :set_region_names
+
+  def set_region_names
     @controller_name = 'user'
     @template_name = 'preferences'
   end
@@ -17,7 +19,7 @@ class Admin::PreferencesController < ApplicationController
 
   def update
     if valid_params?
-      if @user.update_attributes(params[:user])
+      if @user.update(params[:user])
         redirect_to admin_configuration_path
       else
         flash[:error] = t('preferences_controller.error_updating')

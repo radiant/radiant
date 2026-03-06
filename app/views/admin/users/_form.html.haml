@@ -1,4 +1,4 @@
-- form_for [:admin, @user] do |f|
+= form_for [:admin, @user] do |f|
   = hidden_field "user", "lock_version"
   
   = render :partial => 'avatar' unless @user.new_record?

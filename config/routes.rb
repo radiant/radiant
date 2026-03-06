@@ -12,8 +12,8 @@ Rails.application.routes.draw do
     resources :users do
       member { get :remove }
     end
-    resource :preferences, only: [:show, :update]
-    resource :configuration, controller: "configuration", only: [:show]
+    resource :preferences, only: [:show, :edit, :update]
+    resource :configuration, controller: "configuration", only: [:show, :edit, :update]
     resources :extensions, only: :index
     resources :page_parts
     resources :page_fields
