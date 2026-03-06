@@ -1,0 +1,3 @@
+<% models.each do |child| %>
+  <%= render_node child, :expand => 1, :level => @level + 1 %>
+<% end %>

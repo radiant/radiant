@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+  <head>
+    <meta http-equiv="Content-type" content="text/html;charset=utf-8" />
+    <title><%= @page_title || default_page_title %></title>
+    <% @stylesheets.uniq.each do |stylesheet| %>
+      <%= stylesheet_link_tag stylesheet %>
+    <% end %>
+    <% @javascripts.uniq.each do |javascript| %>
+      <%= javascript_include_tag javascript %>
+    <% end %>
+    <%= yield :meta %>
+  </head>
+  <body class="<%= body_classes.join(" ") %>">
+    <div id="page">
+      <div id="header">
+        <% if logged_in? %>
+          <div id="site_links">
+            <%= raw "#{t('logged_in_as')} #{link_to current_user.name, edit_admin_preferences_path} &nbsp; (#{link_to t('log_out'), logout_path})" %>
+            &nbsp;
+            <%= link_to t('view_site'), root_path, id: "view_site" %>
+          </div>
+          <ul id="navigation">
+            <% nav_tabs.each do |tab| %>
+              <% if tab.visible?(current_user) %>
+                <li class="<%= 'current ' if current_tab?(tab) %>">
+                  <%= link_to translate_with_default(tab.name), (tab.first.relative_url if tab.first) %>
+                </li>
+              <% end %>
+            <% end %>
+          </ul>
+          <div id="toolbar">
+            <% if @current_tab and @current_tab.size > 1 %>
+              <ul id="secondary_navigation">
+                <% @current_tab.each do |sub_item| %>
+                  <% if sub_item.visible?(current_user) %>
+                    <li><%= link_to translate_with_default(sub_item.name), sub_item.relative_url, class: ('current' if current_item?(sub_item)) %></li>
+                  <% end %>
+                <% end %>
+              </ul>
+            <% end %>
+            <%= yield :toolbar %>
+          </div>
+        <% end %>
+      </div>
+      <div id="main">
+        <% if flash[:notice] %>
+          <div id="notice">
+            <p><%= flash[:notice] %></p>
+          </div>
+        <% end %>
+        <% if flash[:error] %>
+          <div id="error">
+            <p><%= flash[:error] %></p>
+          </div>
+        <% end %>
+        <div id="content">
+          <%= yield %>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

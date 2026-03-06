@@ -31,7 +31,6 @@ a general purpose content managment system--not merely a blogging engine.}
   s.add_dependency "compass",       "~> 0.12.2"
   s.add_dependency "compass-rails", "~> 1.0.3"
   s.add_dependency "delocalize",    "~> 0.2.3"
-  s.add_dependency "haml",          "~> 3.1.1"
   s.add_dependency "highline",      "~> 1.6.10"
   s.add_dependency "rack",          "~> 1.1.6"
   s.add_dependency "rack-cache",    "~> 1.2"

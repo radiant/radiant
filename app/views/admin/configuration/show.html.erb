@@ -1,0 +1,73 @@
+<% body_classes << "reversed" %>
+
+<div id="preferences" class="box">
+  <% render_region :user do |user| %>
+    <% user.preferences do %>
+      <h3>
+        <div class="actions">
+          <%= button_to t("edit_preferences"), "/admin/preferences", :method => :get %>
+        </div>
+        <%= t('personal_preferences') %>
+      </h3>
+      <%= image_tag(gravatar_url(@user.email, :size=>"64px"), :class=>"avatar", :width=>64, :height=>64, :alt=>"") %>
+      <p class="ruled">
+        <label><%= t('name') %></label>
+        <span><%= current_user.name %></span>
+      </p>
+      <p class="ruled">
+        <label><%= t('email_address') %></label>
+        <span class="uri"><%= current_user.email %></span>
+      </p>
+      <p class="ruled">
+        <label><%= t('login') %></label>
+        <span><%= current_user.login %></span>
+      </p>
+      <p class="ruled">
+        <label><%= t('password') %></label>
+        <big>&bull;&bull;&bull;&bull;&bull;</big>
+      </p>
+      <p class="ruled">
+        <label><%= t('language') %></label>
+        <span><%= current_user.locale %></span>
+      </p>
+    <% end %>
+  <% end %>
+</div>
+
+<div id="config" class="box">
+  <% render_region :config do |config| %>
+    <% config.site do %>
+      <h3>
+        <% if admin? %>
+          <div class="actions">
+            <%= button_to t("edit_configuration"), edit_admin_configuration_url, :method => :get %>
+          </div>
+        <% end %>
+        Configuration
+      </h3>
+      <% Radiant.config.site_settings.each do |site_setting| %>
+        <p class="ruled">
+          <%= show_config site_setting, :class => (site_setting =~ /host$/ ? 'uri' : nil) %>
+        </p>
+      <% end %>
+    <% end %>
+
+    <% config.defaults do %>
+      <h4>Defaults</h4>
+      <% Radiant.config.default_settings.each do |default_setting| %>
+        <p class="ruled">
+          <%= show_config default_setting %>
+        </p>
+      <% end %>
+    <% end %>
+
+    <% config.users do %>
+      <h4>Passwords</h4>
+      <% Radiant.config.user_settings.each do |user_setting| %>
+        <p class="ruled">
+          <%= show_config user_setting %>
+        </p>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

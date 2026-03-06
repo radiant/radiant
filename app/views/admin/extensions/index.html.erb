@@ -1,0 +1,54 @@
+<% @page_title = t('extensions') + ' - ' + default_page_title %>
+
+<% content_for :page_css do %>
+  <style>
+    table.index h4 { font-size: 110%; margin-top: .5em; margin-bottom: .25em; }
+    table.index p { margin-top: .25em; margin-bottom: .5em; }
+  </style>
+<% end %>
+
+<%= render_region :top %>
+
+<div class="outset">
+  <table id="extensions" class="index">
+    <thead>
+      <tr>
+        <% render_region :thead do |thead| %>
+          <% thead.title_header do %>
+            <th class="extension"><%= t('extension') %></th>
+          <% end %>
+          <% thead.website_header do %>
+            <th class="website"><%= t('more_info') %></th>
+          <% end %>
+          <% thead.version_header do %>
+            <th class="version"><%= t('version') %></th>
+          <% end %>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @extensions.each do |extension| %>
+        <tr class="node level_1">
+          <% render_region :tbody, :locals => {:extension => extension} do |tbody| %>
+            <% tbody.title_cell do %>
+              <td class="extension">
+                <h4><%= h extension.extension_name %></h4>
+                <p><%= h extension.description %></p>
+              </td>
+            <% end %>
+            <% tbody.website_cell do %>
+              <td class="website">
+                <%= extension.url.nil? || extension.url.empty? ? "" : link_to(t('more_info'), extension.url, :target => "_blank") %>
+              </td>
+            <% end %>
+            <% tbody.version_cell do %>
+              <td class="version"><%= h extension.version %></td>
+            <% end %>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<%= render_region :bottom %>
