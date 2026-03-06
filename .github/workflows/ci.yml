@@ -20,7 +20,9 @@ jobs:
         run: bundle install
 
       - name: Set up database
-        run: bin/rails db:setup
+        run: |
+          cp config/database.sqlite.yml config/database.yml
+          bin/rails db:setup
 
       - name: Run tests
         run: bin/rails test
