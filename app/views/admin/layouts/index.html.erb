@@ -1,0 +1,58 @@
+<% @page_title = t('layouts') + ' - ' + default_page_title %>
+
+<div class="outset">
+  <%= render_region :top %>
+  <table class="index" id="layouts">
+    <thead>
+      <tr>
+        <% render_region :thead do |thead| %>
+          <% thead.title_header do %>
+            <th class="name">
+              <%= t('layout') %>
+            </th>
+          <% end %>
+          <% thead.actions_header do %>
+            <th class="actions" style="width:9em">
+              <%= t('modify') %>
+            </th>
+          <% end %>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% if @layouts.any? %>
+        <% @layouts.each do |layout| %>
+          <tr class="<%= dom_class(layout) %>" id="<%= dom_id(layout) %>">
+            <% render_region :tbody, :locals => {:layout => layout} do |tbody| %>
+              <% tbody.title_cell do %>
+                <td class="name">
+                  <%= link_to image('layout', :alt => '') + ' ' + layout.name, edit_admin_layout_url(layout) %>
+                </td>
+              <% end %>
+              <% tbody.actions_cell do %>
+                <td class="actions">
+                  <%= link_to image('minus') + ' ' + t('remove'), remove_admin_layout_url(layout), :class => "action" %>
+                </td>
+              <% end %>
+            <% end %>
+          </tr>
+        <% end %>
+      <% else %>
+        <tr>
+          <td class="empty" colspan="<%= admin.layout.index.tbody.length %>"><%= t('no_layouts') %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<% render_region :bottom do |bottom| %>
+  <% bottom.new_button do %>
+    <div id="actions">
+      <%= pagination_for(@layouts) %>
+      <ul>
+        <li><%= link_to image('plus') + " " + t('new_layout'), new_admin_layout_url, :class => 'action_button' %></li>
+      </ul>
+    </div>
+  <% end %>
+<% end %>

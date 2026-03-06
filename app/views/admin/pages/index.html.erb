@@ -1,0 +1,40 @@
+<% @page_title = t('pages') + ' - ' + default_page_title %>
+
+<div class="outset">
+  <%= render_region :top %>
+  <table class="index" id="pages" summary="<%= t('page_hierarchy') %>">
+    <thead>
+      <tr>
+        <% render_region :sitemap_head do |sitemap_head| %>
+          <% sitemap_head.title_column_header do %>
+            <th class="name"><%= t('page') %></th>
+          <% end %>
+          <% sitemap_head.status_column_header do %>
+            <th class="status"><%= t('status') %></th>
+          <% end %>
+          <% sitemap_head.actions_column_header do %>
+            <th class="actions"><%= t('modify') %></th>
+          <% end %>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% if @homepage %>
+        <%= render_node @homepage %>
+      <% else %>
+        <tr>
+          <td class="empty" colspan="<%= admin.page.index.node.length %>"><%= t('no_pages') %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= render_region :bottom %>
+</div>
+
+<% unless @homepage %>
+  <div id="actions">
+    <ul>
+      <li><%= link_to image('plus') + ' ' + t("new_homepage"), new_admin_page_path, :class => 'action_button' %></li>
+    </ul>
+  </div>
+<% end %>

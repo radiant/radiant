@@ -93,10 +93,6 @@ GEM
     erubi (1.13.1)
     globalid (1.3.0)
       activesupport (>= 6.1)
-    haml (7.2.0)
-      temple (>= 0.8.2)
-      thor
-      tilt
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
     io-console (0.8.2)
@@ -217,9 +213,7 @@ GEM
     sqlite3 (2.9.1-x86_64-linux-gnu)
     sqlite3 (2.9.1-x86_64-linux-musl)
     stringio (3.2.0)
-    temple (0.10.4)
     thor (1.5.0)
-    tilt (2.7.0)
     timeout (0.6.0)
     tsort (0.2.0)
     tzinfo (2.0.6)
@@ -247,7 +241,6 @@ DEPENDENCIES
   RedCloth
   acts_as_tree
   debug
-  haml
   propshaft
   puma
   radius (~> 0.7)

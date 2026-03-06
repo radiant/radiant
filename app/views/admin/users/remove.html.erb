@@ -1,0 +1,21 @@
+<h1><%= t('remove_user') %></h1>
+
+<p><%= t('text.users.remove_warning') %></p>
+
+<table class="index" id="users">
+  <tbody>
+    <tr class="node level_1">
+      <td class="user">
+        <span class="title"><%= @user.name %></span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<%= form_for [:admin, @user], :html => { :method => :delete, 'data-onsubmit_status' => "Removing user&#8230;" } do %>
+  <div class="buttons">
+    <input class="button" type="submit" value="<%= t('delete_user') %>" />
+    <%= t('or') %>
+    <%= link_to t('cancel'), admin_users_path %>
+  </div>
+<% end %>

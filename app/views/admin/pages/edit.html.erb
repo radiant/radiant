@@ -1,0 +1,17 @@
+<% @page_title = @page.title + ' - ' + default_page_title %>
+
+<% render_region :main do |main| %>
+  <% main.edit_header do %>
+    <h1><%= t('edit_page') %></h1>
+  <% end %>
+  <% main.edit_form do %>
+    <%= form_for @page, :as => :page, :url => admin_page_path(@page), :html => {:method => :put, :multipart => true, :id => 'edit_page', 'data-onsubmit_status' => t('saving_changes')} do |fields| %>
+      <%= render :partial => "fields", :object => fields %>
+    <% end %>
+  <% end %>
+  <% main.edit_popups do %>
+    <%= render :partial => "popups" %>
+  <% end %>
+<% end %>
+
+<% content_for 'page_scripts', page_edit_javascripts %>

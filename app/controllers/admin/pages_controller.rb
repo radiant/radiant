@@ -14,7 +14,7 @@ class Admin::PagesController < Admin::ResourceController
       @template_name = 'index'
       self.models = Page.find(params[:page_id]).children.all
       response.headers['Content-Type'] = 'text/html;charset=utf-8'
-      render :action => 'children.html.haml', :layout => false
+      render :action => 'children', :layout => false
     end
   end
 

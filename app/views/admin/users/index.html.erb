@@ -1,0 +1,61 @@
+<% @page_title = t('users') + ' - ' + default_page_title %>
+
+<%= render_region :top %>
+
+<div class="outset">
+  <table class="index" id="users">
+    <thead>
+      <tr>
+        <% render_region :thead do |thead| %>
+          <% thead.title_header do %>
+            <th class="user"><%= t('name') %> / <%= t('username') %></th>
+          <% end %>
+          <% thead.roles_header do %>
+            <th class="roles"><%= t('roles') %></th>
+          <% end %>
+          <% thead.actions_header do %>
+            <th class="actions" style="width:9em"><%= t('modify') %></th>
+          <% end %>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr id="<%= dom_id(user) %>">
+          <% render_region :tbody, :locals => {:user => user} do |tbody| %>
+            <% tbody.title_cell do %>
+              <td class="name">
+                <%= link_to image_tag(gravatar_url(user.email, :size=>"32px"), :class=>"avatar avatar_32x32", :width=>32, :height=>32, :alt=>""), edit_admin_user_url(user) %>
+                <%= link_to user.name, edit_admin_user_url(user) %>
+                <span class="login">(<%= h user.login %>)</span>
+              </td>
+            <% end %>
+            <% tbody.roles_cell do %>
+              <td class="roles"><%= roles(user) %></td>
+            <% end %>
+            <% tbody.actions_cell do %>
+              <td class="actions">
+                <% if user == current_user %>
+                  <span class="action disabled"><%= image('minus_disabled') + ' ' + t('remove') %></span>
+                <% else %>
+                  <%= link_to image('minus') + ' ' + t('remove'), remove_admin_user_url(user), :class => "action" %>
+                <% end %>
+              </td>
+            <% end %>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<% render_region :bottom do |bottom| %>
+  <% bottom.new_button do %>
+    <div id="actions">
+      <%= pagination_for(@users) %>
+      <ul>
+        <li><%= link_to image('plus') + " " + t('new_user'), new_admin_user_url, :class => 'action_button' %></li>
+      </ul>
+    </div>
+  <% end %>
+<% end %>
