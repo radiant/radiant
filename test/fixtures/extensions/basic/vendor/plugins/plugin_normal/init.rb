@@ -1,1 +1,0 @@
-require 'normal_plugin'

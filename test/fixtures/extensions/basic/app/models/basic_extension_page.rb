@@ -1,2 +1,0 @@
-class BasicExtensionPage < Page
-end

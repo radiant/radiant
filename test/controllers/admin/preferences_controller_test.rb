@@ -21,4 +21,15 @@ class Admin::PreferencesControllerTest < ActionDispatch::IntegrationTest
     assert_response :redirect
     assert_equal "Updated Name", users(:existing).reload.name
   end
+
+  test "update rejects invalid params" do
+    patch admin_preferences_path, params: {user: {admin: true}}
+    # Should reject attempt to escalate privileges
+    assert_not users(:existing).reload.admin?
+  end
+
+  test "show renders successfully" do
+    get admin_preferences_path
+    assert_response :success
+  end
 end

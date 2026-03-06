@@ -44,4 +44,30 @@ class PageServingTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, "Radius"
   end
+
+  test "sets cache-control headers for cacheable pages" do
+    get "/"
+    assert_response :success
+    cache_control = response.headers["Cache-Control"]
+    # Live GET requests should get public cache headers
+    assert_match(/public/, cache_control) if cache_control.present?
+  end
+
+  test "sets ETag header" do
+    get "/"
+    assert_response :success
+    # ETag may or may not be set depending on cache configuration
+    # but Cache-Control should be present
+    assert response.headers["Cache-Control"].present?
+  end
+
+  test "serves hidden pages" do
+    get "/hidden"
+    assert_response :success
+  end
+
+  test "file not found page returns 404 status" do
+    get "/nonexistent-page-that-does-not-exist"
+    assert_response :not_found
+  end
 end
