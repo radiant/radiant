@@ -5,7 +5,7 @@ class Admin::ConfigurationController < ApplicationController
   # Note that configuration is routed as a singular resource so we only deal with show/edit/update
   # and the show and edit views determine what set of config values is shown and made editable.
   
-  before_filter :initialize_config
+  before_action :initialize_config
   
   only_allow_access_to :edit, :update,
     :when => [:admin],

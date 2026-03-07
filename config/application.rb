@@ -9,6 +9,7 @@ module Radiant
     config.load_defaults 8.0
 
     config.time_zone = "UTC"
+    config.filter_parameters += [:password, :password_confirmation]
 
     # Radiant-specific inflections
     config.after_initialize do

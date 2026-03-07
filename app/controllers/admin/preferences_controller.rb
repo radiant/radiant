@@ -1,5 +1,5 @@
 class Admin::PreferencesController < ApplicationController
-  before_filter :load_user
+  before_action :load_user
 
   def initialize
     @controller_name = 'user'
@@ -17,7 +17,7 @@ class Admin::PreferencesController < ApplicationController
 
   def update
     if valid_params?
-      if @user.update_attributes(params[:user])
+      if @user.update(params[:user])
         redirect_to admin_configuration_path
       else
         flash[:error] = t('preferences_controller.error_updating')

@@ -5,7 +5,7 @@ class Admin::UsersController < Admin::ResourceController
     :denied_url => { :controller => 'pages', :action => 'index' },
     :denied_message => 'You must have administrative privileges to perform this action.'
 
-  before_filter :ensure_deletable, :only => [:remove, :destroy]
+  before_action :ensure_deletable, :only => [:remove, :destroy]
   
   def show
     redirect_to edit_admin_user_path(params[:id])
@@ -17,7 +17,7 @@ class Admin::UsersController < Admin::ResourceController
       user_params.delete('admin')
       annouce_cannot_remove_self_from_admin_role
     end
-    model.update_attributes!(user_params)
+    model.update!(user_params)
     response_for :update
   end
   

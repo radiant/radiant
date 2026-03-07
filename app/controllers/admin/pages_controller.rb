@@ -1,6 +1,6 @@
 class Admin::PagesController < Admin::ResourceController
-  before_filter :initialize_meta_rows_and_buttons, :only => [:new, :edit, :create, :update]
-  before_filter :count_deleted_pages, :only => [:destroy]
+  before_action :initialize_meta_rows_and_buttons, :only => [:new, :edit, :create, :update]
+  before_action :count_deleted_pages, :only => [:destroy]
   
   class PreviewStop < ActiveRecord::Rollback
     def message
@@ -32,7 +32,7 @@ class Admin::PagesController < Admin::ResourceController
   def preview
     render_preview
   rescue PreviewStop => exception
-    render :text => exception.message unless @performed_render
+    render :plain => exception.message unless performed?
   end
 
   private
@@ -58,7 +58,7 @@ class Admin::PagesController < Admin::ResourceController
         page_class = Page.descendants.include?(model_class) ? model_class : Page
         if request.referer =~ %r{/admin/pages/(\d+)/edit}
           page = Page.find($1).becomes(page_class)
-          page.update_attributes(params[:page])
+          page.update(params[:page])
           page.published_at ||= Time.now
         else
           page = page_class.new(params[:page])
@@ -72,7 +72,6 @@ class Admin::PagesController < Admin::ResourceController
     
     def process_with_exception(page)
       page.process(request, response)
-      @performed_render = true
       raise PreviewStop
     end
 
