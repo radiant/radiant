@@ -2,15 +2,19 @@ require "RedCloth"
 
 module Admin::ReferencesHelper
   def tag_reference
+    page_class = (params[:class_name].presence || 'Page').constantize
     String.new.tap do |output|
-      class_of_page.tag_descriptions.sort.each do |tag_name, description|
-        value = t("desc.#{tag_name.gsub(':','-')}").match('desc') ? description : t("desc.#{tag_name.gsub(':','-')}")
+      page_class.tag_descriptions.sort.each do |tag_name, description|
         output << render(:partial => "admin/references/tag_reference",
             :locals => {:tag_name => tag_name,
-                        :description =>  RedCloth.new(Radiant::Taggable::Util.strip_leading_whitespace(value)).to_html
+                        :description =>  begin
+                          rc = RedCloth.new(Radiant::Taggable::Util.strip_leading_whitespace(description))
+                          rc.hard_breaks = false
+                          rc.to_html
+                        end
                        })
       end
-    end
+    end.html_safe
   end
 
   def filter_reference
@@ -30,7 +34,8 @@ module Admin::ReferencesHelper
     when 'filters'
       filter ? filter.filter_name : t('select.none')
     when 'tags'
-      class_of_page.display_name
+      page_class = (params[:class_name].presence || 'Page').constantize
+      page_class.display_name
     end
   end
 
@@ -43,4 +48,5 @@ module Admin::ReferencesHelper
   def class_of_page
     @page_class ||= (params[:class_name].blank? ? 'Page' : params[:class_name]).constantize
   end
+
 end

@@ -923,13 +923,16 @@ div.popup .buttons a.cancel { color: red; }
 div.popup .tag_description, div.popup .snippet_description {
   border-bottom: 1px dotted silver;
   font-size: 95%;
-  padding: 6px 0;
+  padding: 14px 0;
 }
 div.popup .tag_description h4, div.popup .snippet_description h4 {
   color: green;
   font-size: 120%;
   margin-top: 0;
   margin-bottom: 8px;
+}
+div.popup .tag_description p, div.popup .snippet_description p {
+  margin: 0.5em 0;
 }
 div.popup code {
   background-color: #f5f5f5;

@@ -51,6 +51,8 @@ en:
         filter: "page filter"
         parts: "page parts"
         status: "page status"
+      snippet:
+        filter: "snippet filter"
     dev:
       host: "dev site domain"
     local:
@@ -61,8 +63,8 @@ en:
     user:
       allow_password_reset?: "allow password reset"
   content: 'Content'
-  content_type: 'Content&#8209;Type'    
-  creating_status: 'Creating %{model}&#8230;'
+  content_type: 'Content‑Type'
+  creating_status: 'Creating %{model}…'
   date:
     abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
     abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]

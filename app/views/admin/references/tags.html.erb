@@ -3,42 +3,10 @@
     <%= t('available_tags_for', :name => _display_name) %>
   </div>
   <p>
-    <label class="inline" for="search_<%= class_of_page.name.underscore %>_tag_reference">Filter Tags</label>
-    <input id="search_<%= class_of_page.name.underscore %>_tag_reference" type="search" name="search_tag_reference" />
+    <label class="inline" for="search_tag_reference">Filter Tags</label>
+    <input id="search_tag_reference" type="search" name="search_tag_reference" />
     <span id="tag_search_found_count" class="info"></span>
   </p>
   <div class="reference"><%= tag_reference %></div>
   <p class="close_link"><%= link_to_function "Close Help", "window.closePopup(this.closest('.popup'))" %></p>
-  <script type="text/javascript">
-    (function() {
-      var searchInput = document.getElementById('search_<%= class_of_page.name.underscore %>_tag_reference');
-      var popup = searchInput.closest('.popup');
-      var tags = null;
-      var searchingOn = "";
-      var countEl = document.getElementById('tag_search_found_count');
-      var debounceTimer = null;
-
-      searchInput.addEventListener('input', function() {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(function() {
-          var value = searchInput.value;
-          if (!tags) tags = Array.from(popup.querySelectorAll('.reference .tag_description'));
-          if (value.length < 3 && searchingOn !== "") {
-            searchingOn = "";
-            tags.forEach(function(div) { div.style.display = ''; });
-            countEl.textContent = 'Found ' + tags.length + ' tags';
-          } else if (value.length >= 3 && searchingOn !== value) {
-            searchingOn = value;
-            var found = 0;
-            tags.forEach(function(div) {
-              var match = div.textContent.toLowerCase().indexOf(value.toLowerCase()) !== -1;
-              div.style.display = match ? '' : 'none';
-              if (match) found++;
-            });
-            countEl.textContent = 'Found ' + found + ' tags';
-          }
-        }, 300);
-      });
-    })();
-  </script>
 </div>

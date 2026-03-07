@@ -2,7 +2,6 @@
 <html lang="<%= I18n.locale %>">
   <head>
     <meta http-equiv="Content-type" content="text/html;charset=utf-8" />
-    <meta name="turbo-visit-control" content="reload">
     <title><%= @page_title || default_page_title %></title>
     <%= stylesheet_link_tag "admin/main" %>
     <% (@stylesheets || []).uniq.each do |stylesheet| %>

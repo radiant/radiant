@@ -13,7 +13,7 @@
   <% end %>
   <% form.edit_extended_metadata do %>
     <div class="drawer">
-      <div class="drawer_contents" id="attributes">
+      <div class="drawer_contents" id="attributes"<%= ' style="display: none"'.html_safe unless meta_errors? %>>
         <table class="fieldset">
           <%= render :partial => "meta_row", :collection => @meta, :locals => {:f => fields} %>
           <%= render :partial => 'admin/page_fields/page_field', :collection => @page.fields %>

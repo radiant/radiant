@@ -12,7 +12,7 @@ module Admin::PagesHelper
   
   def meta_errors?
     return false unless @page
-    !!(@page.errors[:slug] or @page.errors[:breadcrumb])
+    @page.errors[:slug].any? || @page.errors[:breadcrumb].any?
   end
 
   def default_filter_name
@@ -53,14 +53,24 @@ module Admin::PagesHelper
     }
     function removePart() {
       if (confirm('Remove the current part?')) {
-        var tabs = document.querySelectorAll('#tab_control .tabs .tab');
         var pages = document.querySelectorAll('#tab_control .pages .page');
+        var tabs = document.querySelectorAll('#tab_control .tabs .tab');
         tabs.forEach(function(tab, i) {
           if (tab.classList.contains('here')) {
+            if (pages[i]) {
+              var destroyInput = pages[i].querySelector('.delete_input');
+              if (destroyInput) destroyInput.value = '1';
+              pages[i].style.display = 'none';
+            }
             tab.remove();
-            if (pages[i]) pages[i].remove();
           }
         });
+        // Select first remaining tab
+        var remainingTabs = document.querySelectorAll('#tab_control .tabs .tab');
+        if (remainingTabs.length > 0) {
+          var tabControl = document.getElementById('tab_control');
+          if (window.selectTab) window.selectTab(tabControl, 0);
+        }
       }
     }
     function partAdded() {
@@ -68,6 +78,7 @@ module Admin::PagesHelper
       document.getElementById('add_part_button').disabled = false;
       if (window.closePopup) window.closePopup(document.getElementById('add_part_popup'));
       document.getElementById('part_name_field').value = '';
+      if (window.refreshTabControl) window.refreshTabControl();
     }
     function partLoading() {
       document.getElementById('add_part_button').disabled = true;
@@ -104,6 +115,7 @@ module Admin::PagesHelper
           div.id = 'tag_reference_popup';
           div.innerHTML = html;
           document.body.appendChild(div);
+          if (window.initTagFilter) window.initTagFilter();
         });
       lastPageType = pageType;
       return false;

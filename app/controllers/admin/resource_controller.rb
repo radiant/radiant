@@ -20,6 +20,7 @@ class Admin::ResourceController < ApplicationController
     #   wants.any
     # end
     r.plural.publish(:xml, :json) { render format_symbol => models }
+    r.plural.default { render action: "index", formats: [:html] }
 
     r.singular.publish(:xml, :json) { render format_symbol => model }
     r.singular.default { redirect_to edit_model_path if action_name == "show" }
@@ -34,13 +35,13 @@ class Admin::ResourceController < ApplicationController
     r.stale.default { announce_update_conflict; render :action => template_name }
 
     r.create.publish(:xml, :json) { render format_symbol => model, :status => :created, :location => url_for(:format => format_symbol, :id => model) }
-    r.create.default { redirect_to continue_url(params) }
+    r.create.default { redirect_to continue_url(params), status: :see_other }
 
     r.update.publish(:xml, :json) { head :ok }
-    r.update.default { redirect_to continue_url(params) }
+    r.update.default { redirect_to continue_url(params), status: :see_other }
 
     r.destroy.publish(:xml, :json) { head :deleted }
-    r.destroy.default { redirect_to continue_url(params) }
+    r.destroy.default { redirect_to continue_url(params), status: :see_other }
   end
 
   def index

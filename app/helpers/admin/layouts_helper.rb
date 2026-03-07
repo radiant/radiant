@@ -12,6 +12,7 @@ module Admin::LayoutsHelper
           div.id = 'tag_reference_popup';
           div.innerHTML = html;
           document.body.appendChild(div);
+          if (window.initTagFilter) window.initTagFilter();
         });
       return false;
     }
