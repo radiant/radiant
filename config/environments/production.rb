@@ -1,24 +1,18 @@
-# Settings specified here will take precedence over those in config/environment.rb
+require "active_support/core_ext/integer/time"
 
-# The production environment is meant for finished, "live" apps.
-# Code is not reloaded between requests
-config.cache_classes = true
-
-# Use a different logger for distributed setups
-# config.logger        = SyslogLogger.new
-
-
-# Full error reports are disabled and caching is on
-config.action_controller.consider_all_requests_local = false
-config.action_controller.perform_caching             = true
-
-# Enable serving of images, stylesheets, and javascripts from an asset server
-# config.action_controller.asset_host                  = "http://assets.example.com"
-
-# Disable delivery errors if you bad email addresses should just be ignored
-# config.action_mailer.raise_delivery_errors = false
-
-# Cache your content for a longer time, the default is 5.minutes
-# config.after_initialize do 
-#   SiteController.cache_timeout = 12.hours
-# end
+Rails.application.configure do
+  config.enable_reloading = false
+  config.eager_load = true
+  config.consider_all_requests_local = false
+  config.action_controller.perform_caching = true
+  config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
+  config.active_storage.service = :local
+  config.force_ssl = true
+  config.logger = ActiveSupport::TaggedLogging.logger(STDOUT)
+  config.log_tags = [:request_id]
+  config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
+  config.action_mailer.perform_caching = false
+  config.active_support.deprecation = :notify
+  config.active_support.report_deprecations = false
+  config.active_record.dump_schema_after_migration = false
+end
