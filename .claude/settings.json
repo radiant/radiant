@@ -1,0 +1,102 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bundle *)",
+      "Bash(bin/rails *)",
+      "Bash(bin/rake *)",
+      "Bash(ruby *)",
+
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git branch*)",
+      "Bash(git checkout*)",
+      "Bash(git stash*)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git pull*)",
+      "Bash(git merge*)",
+      "Bash(git rebase*)",
+      "Bash(git cherry-pick*)",
+      "Bash(git remote*)",
+      "Bash(git fetch*)",
+      "Bash(git rev-parse*)",
+      "Bash(git show*)",
+      "Bash(git apply*)",
+
+      "Bash(gh issue *)",
+      "Bash(gh pr *)",
+      "Bash(gh api *)",
+
+      "Bash(ls *)",
+      "Bash(mkdir *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Bash(sort *)",
+      "Bash(which *)",
+      "Bash(echo *)",
+      "Bash(cd *)",
+      "Bash(pwd)",
+
+      "Bash(rm config/initializers/*)",
+      "Bash(rm config/environments/*)",
+      "Bash(rm config/compass*)",
+      "Bash(rm config/preinitializer*)",
+      "Bash(rm db/migrate/*)",
+      "Bash(rm Gemfile.lock)",
+      "Bash(rm tmp/*)",
+      "Bash(rm log/*)",
+
+      "Bash(curl -s *localhost*)",
+      "Bash(timeout *)",
+
+      "Read",
+      "Edit",
+      "Write",
+      "Glob",
+      "Grep",
+      "Agent",
+
+      "mcp__puppeteer__puppeteer_navigate",
+      "mcp__puppeteer__puppeteer_screenshot",
+      "mcp__puppeteer__puppeteer_click",
+      "mcp__puppeteer__puppeteer_fill",
+      "mcp__puppeteer__puppeteer_evaluate"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git push * --force*)",
+      "Bash(git reset --hard*)",
+      "Bash(git clean -f*)",
+      "Bash(git checkout -- .)",
+      "Bash(git restore .)",
+
+      "Bash(rm -rf *)",
+      "Bash(rm -r /)*",
+      "Bash(rm -rf /)*",
+
+      "Bash(> /dev/*)",
+      "Bash(chmod 777*)",
+      "Bash(curl * | sh*)",
+      "Bash(curl * | bash*)",
+      "Bash(wget * | sh*)",
+      "Bash(eval *)",
+      "Bash(sudo *)",
+
+      "Bash(rails credentials:edit*)",
+      "Bash(rails db:drop*)",
+      "Bash(rails db:reset*)",
+      "Bash(DROP TABLE*)",
+      "Bash(DROP DATABASE*)",
+
+      "Bash(gem push*)",
+      "Bash(kill -9*)",
+      "Bash(pkill*)"
+    ]
+  }
+}
