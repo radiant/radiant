@@ -11,14 +11,14 @@
       <div class="buttons">
         <%= submit_tag t('add_part'), :id => 'add_part_button', :class => "button" %>
         <%= t('or') %>
-        <%= link_to_function t('cancel'), "$(this).closePopup()", :class => "cancel" %>
+        <%= link_to_function t('cancel'), "this.closest('.popup').style.display='none'", :class => "cancel" %>
       </div>
     <% end %>
   </div>
   <div id="add_field_popup" class="popup" style="display: none">
     <div id="add_field_busy" class="busy" style="display: none"><%= image('spinner.gif', :alt => "") %></div>
     <div class="popup_title"><%= t('add_field') %></div>
-    <%= form_for [:admin, PageField.new], :html => { :onsubmit => "event.stop(); addField(this)" } do |f| %>
+    <%= form_for [:admin, PageField.new], :html => { :onsubmit => "event.preventDefault(); addField(this)" } do |f| %>
       <p>
         <label for="page_field_name"><%= t('name') %></label>
         <%= f.text_field :name, :maxlength => 100, :class => 'textbox big', :style => "width: 15em" %>
@@ -28,7 +28,7 @@
       <div class="buttons">
         <%= submit_tag t('add_field'), :class => 'button', :id => 'add_page_field_button' %>
         <%= t('or') %>
-        <%= link_to_function t('cancel'), "$(this).closePopup()", :class => "cancel" %>
+        <%= link_to_function t('cancel'), "this.closest('.popup').style.display='none'", :class => "cancel" %>
       </div>
     <% end %>
   </div>

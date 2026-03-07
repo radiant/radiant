@@ -1,4 +1,3 @@
-<% include_javascript 'admin/page_preview' %>
 <%= fields.hidden_field :lock_version %>
 <%= fields.hidden_field :parent_id %>
 <%= fields.hidden_field :class_name %>
@@ -86,7 +85,7 @@
       <%= link_to t('cancel'), admin_pages_url %>
     </div>
     <div id="preview_panel" class="fullcover grey_out" style="display: none;">
-      <iframe id="page-preview" class="fullcover" name="page-preview" src="<%= ActionController::Base.relative_url_root.to_s + '/loading-iframe.html' %>" frameborder="0" scrolling="auto"></iframe>
+      <iframe id="page-preview" class="fullcover" name="page-preview" src="about:blank" frameborder="0" scrolling="auto"></iframe>
       <div class="preview_tools">
         <%= submit_tag(t('buttons.save_changes'), :class => 'big save_changes') %>
         <%= submit_tag(t('buttons.save_and_continue'), :class => 'big save_and_continue', :name => 'continue') %>

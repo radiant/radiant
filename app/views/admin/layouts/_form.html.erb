@@ -33,7 +33,7 @@
       <% end %>
     <% end %>
   </div>
-  <%= javascript_tag "$('layout_name').activate()" %>
+  <%= javascript_tag "document.getElementById('layout_name')?.focus()" %>
   <% render_region :form_bottom, :locals => {:f => f} do |form_bottom| %>
     <% form_bottom.reference_links do %>
       <p>

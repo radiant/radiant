@@ -8,27 +8,37 @@
     <span id="tag_search_found_count" class="info"></span>
   </p>
   <div class="reference"><%= tag_reference %></div>
-  <p class="close_link"><%= link_to_function "Close Help", "$(this).closePopup()" %></p>
+  <p class="close_link"><%= link_to_function "Close Help", "this.closest('.popup').style.display='none'" %></p>
   <script type="text/javascript">
-    var tags, searchingOn = "";
-    var found_count = 0;
-    var popup = $('search_<%= class_of_page.name.underscore %>_tag_reference').up('.popup');
-    new Form.Element.Observer('search_<%= class_of_page.name.underscore %>_tag_reference', 0.5, function(element, value) {
-      if (!tags) tags = popup.select('.reference .tag_description');
-      if (value.length < 3 && searchingOn != "") {
-        searchingOn = "";
-        found_count = tags.length;
-        tags.invoke('show');
-        $('tag_search_found_count').update('Found '+found_count+' tags').highlight();
-      } else if (value.length >= 3 && searchingOn != value) {
-        searchingOn = value;
-        found_count = tags.length;
-        tags.each(function(div) {
-          if (!div.hasWord(value)) found_count=--found_count;
-          div[div.hasWord(value) ? 'show' : 'hide']();
-        });
-        $('tag_search_found_count').update('Found '+found_count+' tags').highlight();
-      }
-    });
+    (function() {
+      var searchInput = document.getElementById('search_<%= class_of_page.name.underscore %>_tag_reference');
+      var popup = searchInput.closest('.popup');
+      var tags = null;
+      var searchingOn = "";
+      var countEl = document.getElementById('tag_search_found_count');
+      var debounceTimer = null;
+
+      searchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+          var value = searchInput.value;
+          if (!tags) tags = Array.from(popup.querySelectorAll('.reference .tag_description'));
+          if (value.length < 3 && searchingOn !== "") {
+            searchingOn = "";
+            tags.forEach(function(div) { div.style.display = ''; });
+            countEl.textContent = 'Found ' + tags.length + ' tags';
+          } else if (value.length >= 3 && searchingOn !== value) {
+            searchingOn = value;
+            var found = 0;
+            tags.forEach(function(div) {
+              var match = div.textContent.toLowerCase().indexOf(value.toLowerCase()) !== -1;
+              div.style.display = match ? '' : 'none';
+              if (match) found++;
+            });
+            countEl.textContent = 'Found ' + found + ' tags';
+          }
+        }, 300);
+      });
+    })();
   </script>
 </div>

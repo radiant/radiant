@@ -4,5 +4,5 @@
     Reference
   </div>
   <div class="reference"><%= filter_reference %></div>
-  <p class="close_link"><%= link_to_function "Close Help", "$(this).closePopup();" %></p>
+  <p class="close_link"><%= link_to_function "Close Help", "this.closest('.popup').style.display='none'" %></p>
 </div>

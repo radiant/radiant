@@ -3,12 +3,12 @@
   <head>
     <meta http-equiv="Content-type" content="text/html;charset=utf-8" />
     <title><%= @page_title || default_page_title %></title>
-    <% @stylesheets.uniq.each do |stylesheet| %>
+    <%= stylesheet_link_tag "admin/main" %>
+    <% (@stylesheets || []).uniq.each do |stylesheet| %>
+      <% next if stylesheet == "admin/main" %>
       <%= stylesheet_link_tag stylesheet %>
     <% end %>
-    <% @javascripts.uniq.each do |javascript| %>
-      <%= javascript_include_tag javascript %>
-    <% end %>
+    <%= javascript_importmap_tags %>
     <%= yield :meta %>
   </head>
   <body class="<%= body_classes.join(" ") %>">
@@ -59,5 +59,11 @@
         </div>
       </div>
     </div>
+    <% if content_for?('page_scripts') %>
+      <script type="text/javascript">
+        <%= yield 'page_scripts' %>
+      </script>
+    <% end %>
+    <%= yield 'popups' %>
   </body>
 </html>
