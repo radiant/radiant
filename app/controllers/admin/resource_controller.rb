@@ -117,9 +117,18 @@ class Admin::ResourceController < ApplicationController
 
   protected
 
-    rescue_from ActiveRecord::RecordInvalid do response_for :invalid end
-    rescue_from ActiveRecord::StaleObjectError do response_for :stale end
-    rescue_from ActiveRecord::RecordNotFound do response_for :not_found end
+    rescue_from ActiveRecord::RecordInvalid do |e|
+      announce_validation_errors
+      render action: template_name
+    end
+    rescue_from ActiveRecord::StaleObjectError do |e|
+      announce_update_conflict
+      render action: template_name
+    end
+    rescue_from ActiveRecord::RecordNotFound do |e|
+      announce_not_found
+      redirect_to action: "index"
+    end
     
     def model_class
       self.class.model_class

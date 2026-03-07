@@ -1,6 +1,11 @@
 require_relative "boot"
 
-require "rails/all"
+require "active_record/railtie"
+require "action_controller/railtie"
+require "action_view/railtie"
+require "action_mailer/railtie"
+require "active_job/railtie"
+require "rails/test_unit/railtie"
 
 Bundler.require(*Rails.groups)
 
@@ -21,6 +26,20 @@ module Radiant
       Rails.autoloaders.each do |autoloader|
         autoloader.inflector.inflect(
           "admin_ui" => "AdminUI"
+        )
+        autoloader.ignore(
+          Rails.root.join("lib/generators"),
+          Rails.root.join("lib/plugins"),
+          Rails.root.join("lib/radiant/initializer.rb"),
+          Rails.root.join("lib/radiant/cache.rb"),
+          Rails.root.join("lib/radiant/setup.rb"),
+          Rails.root.join("lib/radiant/extension"),
+          Rails.root.join("lib/radiant/extension.rb"),
+          Rails.root.join("lib/radiant/extension_loader.rb"),
+          Rails.root.join("lib/radiant/extension_migrator.rb"),
+          Rails.root.join("lib/radiant/extension_path.rb"),
+          Rails.root.join("lib/radiant/pagination/link_renderer.rb"),
+          Rails.root.join("lib/radiant/task_support.rb")
         )
       end
     end

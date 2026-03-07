@@ -10,11 +10,15 @@ class Admin::PagesController < Admin::ResourceController
 
   responses do |r|
     r.plural.js do
-      @level = params[:level].to_i
-      @template_name = 'index'
-      self.models = Page.find(params[:page_id]).children.all
-      response.headers['Content-Type'] = 'text/html;charset=utf-8'
-      render :action => 'children', :layout => false
+      if params[:page_id].present?
+        @level = params[:level].to_i
+        @template_name = 'index'
+        self.models = Page.find(params[:page_id]).children.all
+        response.headers['Content-Type'] = 'text/html;charset=utf-8'
+        render :action => 'children', :layout => false
+      else
+        head :bad_request
+      end
     end
   end
 
