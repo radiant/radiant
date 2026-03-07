@@ -11,6 +11,7 @@ module Admin::PagesHelper
   end
   
   def meta_errors?
+    return false unless @page
     !!(@page.errors[:slug] or @page.errors[:breadcrumb])
   end
 

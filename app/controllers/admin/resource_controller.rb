@@ -58,7 +58,7 @@ class Admin::ResourceController < ApplicationController
   [:create, :update].each do |action|
     class_eval %{
       def #{action}                                       # def create
-        model.update!(params[model_symbol])    #   model.update!(params[model_symbol])
+        model.update!(permitted_resource_params)          #   model.update!(permitted_resource_params)
         response_for :#{action}                           #   response_for :create
       end                                                 # end
     }, __FILE__, __LINE__
@@ -130,6 +130,10 @@ class Admin::ResourceController < ApplicationController
       redirect_to action: "index"
     end
     
+    def permitted_resource_params
+      params.require(model_symbol).permit!
+    end
+
     def model_class
       self.class.model_class
     end
