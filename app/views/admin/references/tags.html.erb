@@ -8,7 +8,7 @@
     <span id="tag_search_found_count" class="info"></span>
   </p>
   <div class="reference"><%= tag_reference %></div>
-  <p class="close_link"><%= link_to_function "Close Help", "this.closest('.popup').style.display='none'" %></p>
+  <p class="close_link"><%= link_to_function "Close Help", "window.closePopup(this.closest('.popup'))" %></p>
   <script type="text/javascript">
     (function() {
       var searchInput = document.getElementById('search_<%= class_of_page.name.underscore %>_tag_reference');

@@ -11,7 +11,7 @@
       <div class="buttons">
         <%= submit_tag t('add_part'), :id => 'add_part_button', :class => "button" %>
         <%= t('or') %>
-        <%= link_to_function t('cancel'), "this.closest('.popup').style.display='none'", :class => "cancel" %>
+        <%= link_to_function t('cancel'), "window.closePopup(this.closest('.popup'))", :class => "cancel" %>
       </div>
     <% end %>
   </div>
@@ -28,7 +28,7 @@
       <div class="buttons">
         <%= submit_tag t('add_field'), :class => 'button', :id => 'add_page_field_button' %>
         <%= t('or') %>
-        <%= link_to_function t('cancel'), "this.closest('.popup').style.display='none'", :class => "cancel" %>
+        <%= link_to_function t('cancel'), "window.closePopup(this.closest('.popup'))", :class => "cancel" %>
       </div>
     <% end %>
   </div>

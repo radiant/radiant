@@ -28,8 +28,32 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
+  // Popup helpers
+  function showPopup(popup) {
+    // Create overlay backdrop
+    var overlay = document.createElement("div");
+    overlay.className = "popup-overlay";
+    overlay.setAttribute("data-popup-id", popup.id);
+    document.body.appendChild(overlay);
+
+    popup.style.display = "";
+
+    // Close on overlay click
+    overlay.addEventListener("click", function() {
+      closePopup(popup);
+    });
+  }
+
+  function closePopup(popup) {
+    popup.style.display = "none";
+    var overlay = document.querySelector('.popup-overlay[data-popup-id="' + popup.id + '"]');
+    if (overlay) overlay.remove();
+  }
+
+  // Make closePopup available globally for inline onclick handlers
+  window.closePopup = closePopup;
+
   // Popup behavior: elements with class="popup" and href="#popupId"
-  // Clicking toggles visibility of the referenced popup element
   document.addEventListener("click", function(e) {
     var link = e.target.closest('a.popup[href^="#"]');
     if (link) {
@@ -38,7 +62,22 @@ document.addEventListener("DOMContentLoaded", function() {
       var popup = document.getElementById(targetId);
       if (popup) {
         var isHidden = popup.style.display === "none";
-        popup.style.display = isHidden ? "" : "none";
+        if (isHidden) {
+          showPopup(popup);
+        } else {
+          closePopup(popup);
+        }
+      }
+    }
+  });
+
+  // Close popup when clicking a cancel link inside a popup
+  document.addEventListener("click", function(e) {
+    var cancelLink = e.target.closest("div.popup .cancel");
+    if (cancelLink) {
+      var popup = cancelLink.closest("div.popup");
+      if (popup) {
+        closePopup(popup);
       }
     }
   });

@@ -840,6 +840,24 @@ div.popup {
   background-color: white;
   border: 1px solid #777;
   padding: 10px 20px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  max-width: 90vw;
+  max-height: 85vh;
+  overflow: auto;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+div.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 9999;
 }
 div.popup strong { font-weight: bold; }
 div.popup em { font-style: italic; }

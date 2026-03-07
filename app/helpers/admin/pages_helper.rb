@@ -62,7 +62,7 @@ module Admin::PagesHelper
     function partAdded() {
       document.getElementById('add_part_busy').style.display = 'none';
       document.getElementById('add_part_button').disabled = false;
-      document.getElementById('add_part_popup').style.display = 'none';
+      if (window.closePopup) window.closePopup(document.getElementById('add_part_popup'));
       document.getElementById('part_name_field').value = '';
     }
     function partLoading() {
