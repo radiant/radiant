@@ -37,14 +37,18 @@ module Admin::PagesHelper
         fetch('#{admin_page_parts_path}', {
           method: 'POST',
           body: formData,
-          headers: { 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content || '' }
+          headers: {
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content || '',
+            'Accept': 'text/html'
+          }
         })
         .then(function(response) { return response.text(); })
         .then(function(html) {
           var pages = document.querySelector('#tab_control .pages');
           pages.insertAdjacentHTML('beforeend', html);
           partAdded();
-        });
+        })
+        .catch(function(err) { console.error('addPart error:', err); partAdded(); });
       }
     }
     function removePart() {
@@ -110,13 +114,16 @@ module Admin::PagesHelper
       fetch('#{admin_page_fields_path}', {
         method: 'POST',
         body: formData,
-        headers: { 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content || '' }
+        headers: {
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content || '',
+          'Accept': 'text/html'
+        }
       })
       .then(function(response) { return response.text(); })
       .then(function(html) {
         var table = document.querySelector('.drawer_contents table.fieldset');
         if (table) table.insertAdjacentHTML('beforeend', html);
-        document.getElementById('add_field_popup').style.display = 'none';
+        if (window.closePopup) window.closePopup(document.getElementById('add_field_popup'));
         document.querySelector('#add_field_popup input[type="text"]').value = '';
       });
     }
@@ -154,5 +161,6 @@ module Admin::PagesHelper
       return false;
     }
     CODE
+    .html_safe
   end
 end

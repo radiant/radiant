@@ -2,6 +2,7 @@
 <html lang="<%= I18n.locale %>">
   <head>
     <meta http-equiv="Content-type" content="text/html;charset=utf-8" />
+    <meta name="turbo-visit-control" content="reload">
     <title><%= @page_title || default_page_title %></title>
     <%= stylesheet_link_tag "admin/main" %>
     <% (@stylesheets || []).uniq.each do |stylesheet| %>
@@ -59,11 +60,11 @@
         </div>
       </div>
     </div>
-    <% if content_for?('page_scripts') %>
-      <script type="text/javascript">
-        <%= yield 'page_scripts' %>
+    <% if content_for?(:page_scripts) %>
+      <script>
+        <%= yield :page_scripts %>
       </script>
     <% end %>
-    <%= yield 'popups' %>
+    <%= yield :popups %>
   </body>
 </html>

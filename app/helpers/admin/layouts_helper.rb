@@ -16,5 +16,6 @@ module Admin::LayoutsHelper
       return false;
     }
     CODE
+    .html_safe
   end
 end
