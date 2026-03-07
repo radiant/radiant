@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   has_many :pages, :foreign_key => :created_by_id
 
   # Default Order
-  default_scope :order => 'name'
+  default_scope { order(:name) }
 
   # Associations
   belongs_to :created_by, :class_name => 'User'
@@ -45,7 +45,7 @@ class User < ActiveRecord::Base
   end
 
   def self.authenticate(login_or_email, password)
-    user = find(:first, :conditions => ["login = ? OR email = ?", login_or_email, login_or_email])
+    user = where("login = ? OR email = ?", login_or_email, login_or_email).first
     user if user && user.authenticated?(password)
   end
 
@@ -53,7 +53,7 @@ class User < ActiveRecord::Base
     self.password == sha1(password)
   end
 
-  def after_initialize
+  after_initialize do
     @confirm_password = true
   end
 

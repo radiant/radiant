@@ -39,7 +39,7 @@ module Radiant
       }
       admin = User.find_by_login(username)
       admin = User.new unless admin
-      admin.update_attributes(attributes)
+      admin.update(attributes)
       admin
     end
     

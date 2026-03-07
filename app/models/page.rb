@@ -11,9 +11,9 @@ class Page < ActiveRecord::Base
 
   # Associations
   acts_as_tree :order => 'virtual DESC, title ASC'
-  has_many :parts, :class_name => 'PagePart', :order => 'id', :dependent => :destroy
+  has_many :parts, -> { order(:id) }, :class_name => 'PagePart', :dependent => :destroy
   accepts_nested_attributes_for :parts, :allow_destroy => true
-  has_many :fields, :class_name => 'PageField', :order => 'id', :dependent => :destroy
+  has_many :fields, -> { order(:id) }, :class_name => 'PageField', :dependent => :destroy
   accepts_nested_attributes_for :fields, :allow_destroy => true
   belongs_to :layout
   belongs_to :created_by, :class_name => 'User'
@@ -38,19 +38,14 @@ class Page < ActiveRecord::Base
 
   annotate :description
   attr_accessor :request, :response, :pagination_parameters
-  class_inheritable_accessor :default_child
+  class_attribute :default_child
   self.default_child = self
 
   set_inheritance_column :class_name
 
-  def layout_with_inheritance
-    unless layout_without_inheritance
-      parent.layout if parent?
-    else
-      layout_without_inheritance
-    end
+  def layout
+    super || (parent.layout if parent?)
   end
-  alias_method_chain :layout, :inheritance
 
   def description
     self["description"]
@@ -195,7 +190,7 @@ class Page < ActiveRecord::Base
       file_not_found_names = file_not_found_types.collect { |x| x.name }
       condition = (['class_name = ?'] * file_not_found_names.length).join(' or ')
       condition = "status_id = #{Status[:published].id} and (#{condition})" if live
-      children.find(:first, :conditions => [condition] + file_not_found_names)
+      children.where(condition, *file_not_found_names).first
     end
   end
   alias_method :find_by_url, :find_by_path

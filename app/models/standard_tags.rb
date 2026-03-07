@@ -69,7 +69,7 @@ module StandardTags
   }
   tag 'children:first' do |tag|
     options = children_find_options(tag)
-    children = tag.locals.children.find(:all, options)
+    children = find_with_options(tag.locals.children, options)
     if first = children.first
       tag.locals.page = first
       tag.expand
@@ -81,12 +81,12 @@ module StandardTags
     the last child. Takes the same ordering options as @<r:children:each>@.
 
     *Usage:*
-    
+
     <pre><code><r:children:last>...</r:children:last></code></pre>
   }
   tag 'children:last' do |tag|
     options = children_find_options(tag)
-    children = tag.locals.children.find(:all, options)
+    children = find_with_options(tag.locals.children, options)
     if last = children.last
       tag.locals.page = last
       tag.expand
@@ -377,7 +377,7 @@ module StandardTags
     result = []
     children = tag.locals.children
     tag.locals.previous_headers = {}
-    children.find(:all, options).each do |item|
+    find_with_options(children, options).each do |item|
       tag.locals.child = item
       tag.locals.page = item
       result << tag.expand
@@ -403,7 +403,7 @@ module StandardTags
     options = aggregate_children(tag)
     if ActiveRecord::Base.connection.adapter_name.downcase == 'postgresql'
       options[:group] = Page.columns.map {|c| c.name}.join(', ')
-      Page.find(:all, options).size
+      find_with_options(Page, options).size
     else
       Page.count(options)
     end
@@ -438,7 +438,7 @@ module StandardTags
   }
   tag "aggregate:children:first" do |tag|
     options = aggregate_children(tag)
-    children = Page.find(:all, options)
+    children = find_with_options(Page, options)
     if first = children.first
       tag.locals.page = first
       tag.expand
@@ -459,7 +459,7 @@ module StandardTags
   }
   tag "aggregate:children:last" do |tag|
     options = aggregate_children(tag)
-    children = Page.find(:all, options)
+    children = find_with_options(Page, options)
     if last = children.last
       tag.locals.page = last
       tag.expand
@@ -1158,7 +1158,7 @@ module StandardTags
       paging = pagination_find_options(tag)
       result = []
       tag.locals.previous_headers = {}
-      displayed_children = paging ? findable.paginate(options.merge(paging)) : findable.all(options)
+      displayed_children = paging ? findable.paginate(options.merge(paging)) : find_with_options(findable, options)
       displayed_children.each_with_index do |item, i|
         tag.locals.child = item
         tag.locals.page = item
@@ -1307,5 +1307,16 @@ module StandardTags
         request.host =~ /^dev\./
       end
     end
-    
+
+    # Converts a legacy-style options hash (with :conditions, :order, :limit, :offset)
+    # into a modern ActiveRecord query chain.
+    def find_with_options(scope, options = {})
+      scope = scope.where(*options[:conditions]) if options[:conditions]
+      scope = scope.order(options[:order])        if options[:order]
+      scope = scope.limit(options[:limit])        if options[:limit]
+      scope = scope.offset(options[:offset])      if options[:offset]
+      scope = scope.group(options[:group])         if options[:group]
+      scope.to_a
+    end
+
 end

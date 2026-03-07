@@ -47,7 +47,7 @@ class PageContext < Radius::Context
     end
     
     def raise_errors?
-      RAILS_ENV != 'production'
+      !Rails.env.production?
     end
     
 end
