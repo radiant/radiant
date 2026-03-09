@@ -6,10 +6,24 @@ import { Controller } from "@hotwired/stimulus"
 //        data-page-editor-parts-url-value="/admin/page_parts"
 //        data-page-editor-fields-url-value="/admin/page_fields">
 export default class extends Controller {
-  static targets = ["partName", "addPartButton", "addPartBusy",
-                     "partsContainer", "fieldsTable",
-                     "addPartPopup", "addFieldPopup", "addFieldName"]
+  static targets = ["partsContainer", "fieldsTable"]
   static values = { partsUrl: String, fieldsUrl: String }
+
+  connect() {
+    this.addPartHandler = (e) => { this.addPart(e) }
+    this.addFieldHandler = (e) => { this.addField(e) }
+    const partForm = document.getElementById("new_page_part")
+    const fieldForm = document.getElementById("new_page_field")
+    if (partForm) partForm.addEventListener("submit", this.addPartHandler)
+    if (fieldForm) fieldForm.addEventListener("submit", this.addFieldHandler)
+  }
+
+  disconnect() {
+    const partForm = document.getElementById("new_page_part")
+    const fieldForm = document.getElementById("new_page_field")
+    if (partForm) partForm.removeEventListener("submit", this.addPartHandler)
+    if (fieldForm) fieldForm.removeEventListener("submit", this.addFieldHandler)
+  }
 
   addPart(event) {
     event.preventDefault()
@@ -54,9 +68,20 @@ export default class extends Controller {
     .then(response => response.text())
     .then(html => {
       this.fieldsTableTarget.insertAdjacentHTML("beforeend", html)
-      this.closeAddFieldPopup()
-      if (this.hasAddFieldNameTarget) this.addFieldNameTarget.value = ""
+      this.closePopup("add_field_popup")
+      const nameField = document.getElementById("page_field_name")
+      if (nameField) nameField.value = ""
     })
+  }
+
+  showAddPartPopup(event) {
+    event.preventDefault()
+    this.openPopup("add_part_popup")
+  }
+
+  showAddFieldPopup(event) {
+    event.preventDefault()
+    this.openPopup("add_field_popup")
   }
 
   removeField(event) {
@@ -72,7 +97,8 @@ export default class extends Controller {
   // Private
 
   validatePartName() {
-    const name = this.partNameTarget.value.toLowerCase().trim()
+    const nameField = document.getElementById("part_name_field")
+    const name = nameField ? nameField.value.toLowerCase().trim() : ""
     if (name === "") {
       alert("Part name cannot be empty.")
       return false
@@ -91,29 +117,41 @@ export default class extends Controller {
   }
 
   showPartLoading() {
-    if (this.hasAddPartButtonTarget) this.addPartButtonTarget.disabled = true
-    if (this.hasAddPartBusyTarget) this.addPartBusyTarget.style.display = ""
+    const button = document.getElementById("add_part_button")
+    const busy = document.getElementById("add_part_busy")
+    if (button) button.disabled = true
+    if (busy) busy.style.display = ""
   }
 
   partAdded() {
-    if (this.hasAddPartBusyTarget) this.addPartBusyTarget.style.display = "none"
-    if (this.hasAddPartButtonTarget) this.addPartButtonTarget.disabled = false
-    this.closeAddPartPopup()
-    if (this.hasPartNameTarget) this.partNameTarget.value = ""
+    const button = document.getElementById("add_part_button")
+    const busy = document.getElementById("add_part_busy")
+    if (busy) busy.style.display = "none"
+    if (button) button.disabled = false
+    this.closePopup("add_part_popup")
+    const nameField = document.getElementById("part_name_field")
+    if (nameField) nameField.value = ""
   }
 
-  closeAddPartPopup() {
-    if (this.hasAddPartPopupTarget) {
-      this.addPartPopupTarget.style.display = "none"
-      const overlay = document.querySelector(`.popup-overlay[data-popup-id="${this.addPartPopupTarget.id}"]`)
-      if (overlay) overlay.remove()
-    }
+  openPopup(id) {
+    const dialog = document.getElementById(id)
+    if (!dialog) return
+    const overlay = document.createElement("div")
+    overlay.className = "popup-overlay"
+    overlay.setAttribute("data-popup-id", id)
+    overlay.addEventListener("click", () => {
+      dialog.style.display = "none"
+      overlay.remove()
+    })
+    document.body.appendChild(overlay)
+    dialog.style.display = ""
   }
 
-  closeAddFieldPopup() {
-    if (this.hasAddFieldPopupTarget) {
-      this.addFieldPopupTarget.style.display = "none"
-      const overlay = document.querySelector(`.popup-overlay[data-popup-id="${this.addFieldPopupTarget.id}"]`)
+  closePopup(id) {
+    const dialog = document.getElementById(id)
+    if (dialog) {
+      dialog.style.display = "none"
+      const overlay = document.querySelector(`.popup-overlay[data-popup-id="${id}"]`)
       if (overlay) overlay.remove()
     }
   }

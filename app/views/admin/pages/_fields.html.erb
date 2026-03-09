@@ -29,7 +29,7 @@
     <div id="tab_control" data-controller="tab-control">
       <div id="tabs" class="tabs" data-tab-control-target="tabs">
         <div id="tab_toolbar" data-tab-control-target="toolbar">
-          <a class="popup" href="#add_part_popup" title="<%= t('add_part') %>">
+          <a href="#" title="<%= t('add_part') %>" data-action="page-editor#showAddPartPopup">
             <%= image('add_tab', :alt => t('add_part'), :title => "") %>
           </a>
         </div>
