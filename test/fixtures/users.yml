@@ -2,8 +2,7 @@ existing:
   name: Existing
   email: existing@example.com
   login: existing
-  password: <%= Digest::SHA1.hexdigest("--#{salt = Digest::SHA1.hexdigest("--2006-01-01--existing--sweet harmonious biscuits--")}--password--") %>
-  salt: <%= Digest::SHA1.hexdigest("--2006-01-01--existing--sweet harmonious biscuits--") %>
+  password_digest: <%= BCrypt::Password.create("password") %>
   admin: false
   designer: false
   created_at: <%= Time.utc(2006, 1, 1) %>
@@ -13,8 +12,7 @@ another:
   name: Another
   email: another@example.com
   login: another
-  password: <%= Digest::SHA1.hexdigest("--#{salt = Digest::SHA1.hexdigest("--2006-01-01--another--sweet harmonious biscuits--")}--password--") %>
-  salt: <%= Digest::SHA1.hexdigest("--2006-01-01--another--sweet harmonious biscuits--") %>
+  password_digest: <%= BCrypt::Password.create("password") %>
   admin: false
   designer: false
   created_at: <%= Time.utc(2006, 1, 1) %>
@@ -24,8 +22,7 @@ admin:
   name: Admin
   email: admin@example.com
   login: admin
-  password: <%= Digest::SHA1.hexdigest("--#{salt = Digest::SHA1.hexdigest("--2006-01-01--admin--sweet harmonious biscuits--")}--password--") %>
-  salt: <%= Digest::SHA1.hexdigest("--2006-01-01--admin--sweet harmonious biscuits--") %>
+  password_digest: <%= BCrypt::Password.create("password") %>
   admin: true
   designer: false
   created_at: <%= Time.utc(2006, 1, 1) %>
@@ -35,8 +32,7 @@ designer:
   name: Designer
   email: ""
   login: designer
-  password: <%= Digest::SHA1.hexdigest("--#{salt = Digest::SHA1.hexdigest("--2006-01-01--designer--sweet harmonious biscuits--")}--password--") %>
-  salt: <%= Digest::SHA1.hexdigest("--2006-01-01--designer--sweet harmonious biscuits--") %>
+  password_digest: <%= BCrypt::Password.create("password") %>
   admin: false
   designer: true
   created_at: <%= Time.utc(2006, 1, 1) %>
@@ -46,8 +42,7 @@ non_admin:
   name: Non_admin
   email: non_admin@example.com
   login: non_admin
-  password: <%= Digest::SHA1.hexdigest("--#{salt = Digest::SHA1.hexdigest("--2006-01-01--non_admin--sweet harmonious biscuits--")}--password--") %>
-  salt: <%= Digest::SHA1.hexdigest("--2006-01-01--non_admin--sweet harmonious biscuits--") %>
+  password_digest: <%= BCrypt::Password.create("password") %>
   admin: false
   designer: false
   created_at: <%= Time.utc(2006, 1, 1) %>

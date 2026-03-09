@@ -1,6 +1,6 @@
 require "test_helper"
 
-class LoginSystemTest < ActionDispatch::IntegrationTest
+class AuthenticationConcernTest < ActionDispatch::IntegrationTest
   test "unauthenticated request redirects to login" do
     get admin_pages_path
     assert_redirected_to login_path

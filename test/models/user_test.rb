@@ -83,20 +83,20 @@ class UserTest < ActiveSupport::TestCase
     assert_nil User.authenticate("nonexistent", "password")
   end
 
-  # Password encryption
+  # Password hashing
 
-  test "encrypts password on create" do
+  test "uses bcrypt for password storage" do
     user = User.create!(name: "New User", login: "newuser", password: "password", password_confirmation: "password")
-    assert_not_equal "password", user.password
-    assert user.salt.present?
+    assert user.password_digest.present?
+    assert user.authenticate("password")
+    assert_not user.authenticate("wrong")
   end
 
-  test "authenticated? returns true for correct password" do
-    assert users(:existing).authenticated?("password")
-  end
-
-  test "authenticated? returns false for wrong password" do
-    assert_not users(:existing).authenticated?("wrong")
+  test "can update user without changing password" do
+    user = users(:existing)
+    user.update!(name: "Updated Name")
+    assert_equal "Updated Name", user.reload.name
+    assert User.authenticate("existing", "password")
   end
 
   # Roles
@@ -109,22 +109,5 @@ class UserTest < ActiveSupport::TestCase
   test "has_role? designer" do
     assert users(:designer).has_role?(:designer)
     assert_not users(:existing).has_role?(:designer)
-  end
-
-  # Remember me
-
-  test "remember_me sets session token" do
-    user = users(:existing)
-    assert_nil user.session_token
-    user.remember_me
-    assert user.session_token.present?
-  end
-
-  test "forget_me clears session token" do
-    user = users(:existing)
-    user.remember_me
-    assert user.session_token.present?
-    user.forget_me
-    assert_nil user.session_token
   end
 end

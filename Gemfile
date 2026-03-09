@@ -7,6 +7,7 @@ gem "turbo-rails"
 gem "stimulus-rails"
 gem "sqlite3"
 gem "puma"
+gem "bcrypt", "~> 3.1"
 
 # Radiant-specific dependencies
 gem "radius", "~> 0.7"

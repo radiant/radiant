@@ -1,38 +1,29 @@
-require 'digest/sha1'
-
 class User < ActiveRecord::Base
-  has_many :pages, :foreign_key => :created_by_id
+  has_secure_password
+
+  has_many :pages, foreign_key: :created_by_id
 
   # Default Order
   default_scope { order(:name) }
 
   # Associations
-  belongs_to :created_by, :class_name => 'User', optional: true
-  belongs_to :updated_by, :class_name => 'User', optional: true
+  belongs_to :created_by, class_name: "User", optional: true
+  belongs_to :updated_by, class_name: "User", optional: true
 
   # Validations
-  validates_uniqueness_of :login
+  validates :login, presence: true, uniqueness: true, length: { within: 3..40 }
+  validates :name, presence: true, length: { maximum: 100 }
+  validates :email, allow_nil: true, length: { maximum: 255 },
+    format: { with: /\A\z|\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
+  validates :password, length: { within: 5..72 }, if: :password_required?
 
-  validates_confirmation_of :password, :if => :confirm_password?
-
-  validates_presence_of :name, :login
-  validates_presence_of :password, :password_confirmation, :if => :new_record?
-
-  validates_format_of :email, :allow_nil => true, :with => /\A\z|\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
-
-  validates_length_of :name, :maximum => 100, :allow_nil => true
-  validates_length_of :login, :within => 3..40, :allow_nil => true
-  validates_length_of :password, :within => 5..40, :allow_nil => true, :if => :validate_length_of_password?
-  validates_length_of :email, :maximum => 255, :allow_nil => true
-
-  attr_writer :confirm_password
   class << self
     def unprotected_attributes
       @unprotected_attributes ||= [:name, :email, :login, :password, :password_confirmation, :locale]
     end
 
     def unprotected_attributes=(array)
-      @unprotected_attributes = array.map{|att| att.to_sym }
+      @unprotected_attributes = array.map { |att| att.to_sym }
     end
   end
 
@@ -40,57 +31,14 @@ class User < ActiveRecord::Base
     respond_to?("#{role}?") && send("#{role}?")
   end
 
-  def sha1(phrase)
-    Digest::SHA1.hexdigest("--#{salt}--#{phrase}--")
-  end
-
   def self.authenticate(login_or_email, password)
     user = where("login = ? OR email = ?", login_or_email, login_or_email).first
-    user if user && user.authenticated?(password)
-  end
-
-  def authenticated?(password)
-    self.password == sha1(password)
-  end
-
-  after_initialize do
-    @confirm_password = true
-  end
-
-  def confirm_password?
-    @confirm_password
-  end
-
-  def remember_me
-    update_attribute(:session_token, sha1(Time.now + Radiant::Config['session_timeout'].to_i)) unless self.session_token?
-  end
-
-  def forget_me
-    update_attribute(:session_token, nil)
+    user&.authenticate(password) || nil
   end
 
   private
 
-    def validate_length_of_password?
-      new_record? or not password.to_s.empty?
-    end
-
-    before_create :encrypt_password
-    def encrypt_password
-      self.salt = Digest::SHA1.hexdigest("--#{Time.now}--#{login}--sweet harmonious biscuits--")
-      self.password = sha1(password)
-    end
-
-    before_update :encrypt_password_unless_empty_or_unchanged
-    def encrypt_password_unless_empty_or_unchanged
-      user = self.class.find(self.id)
-      case password
-      when ''
-        self.password = user.password
-      when user.password
-      else
-        encrypt_password
-      end
-    end
-
+  def password_required?
+    new_record? || password.present?
+  end
 end
