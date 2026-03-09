@@ -6,13 +6,6 @@ module ApplicationHelper
     Radiant::Config
   end
 
-  def link_to_function(name, function, html_options = {})
-    onclick = html_options.delete(:onclick) || ""
-    onclick = "#{onclick}; " if onclick.present?
-    onclick += "#{function}; return false;"
-    link_to(name, "#", html_options.merge(onclick: onclick))
-  end
-  
   def default_page_title
     title + ' - ' + subtitle
   end
@@ -93,10 +86,6 @@ module ApplicationHelper
     current_user and (current_user.designer? or current_user.admin?)
   end
   
-  def focus(field_name)
-    javascript_tag "document.getElementById('#{field_name}')?.focus();"
-  end
-  
   def updated_stamp(model)
     unless model.new_record?
       updated_by = (model.updated_by || model.created_by)
@@ -133,10 +122,6 @@ module ApplicationHelper
   
   def meta_label
     meta_errors? ? 'Less' : 'More'
-  end
-  
-  def toggle_javascript_for(id)
-    "document.getElementById('#{id}').hidden = !document.getElementById('#{id}').hidden; document.getElementById('more-#{id}').hidden = !document.getElementById('more-#{id}').hidden; document.getElementById('less-#{id}').hidden = !document.getElementById('less-#{id}').hidden; return false;"
   end
   
   def image(name, options = {})

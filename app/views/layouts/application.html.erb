@@ -59,11 +59,6 @@
         </div>
       </div>
     </div>
-    <% if content_for?(:page_scripts) %>
-      <script>
-        <%= yield :page_scripts %>
-      </script>
-    <% end %>
     <%= yield :popups %>
   </body>
 </html>

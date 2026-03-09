@@ -1,34 +1,34 @@
 <% content_for :popups do %>
-  <div id="add_part_popup" class="popup" style="display: none">
-    <div id="add_part_busy" class="busy" style="display: none"><%= image('spinner.gif', :alt => "") %></div>
+  <div id="add_part_popup" class="popup" style="display: none" data-controller="popup" data-popup-target="dialog" data-page-editor-target="addPartPopup">
+    <div id="add_part_busy" class="busy" style="display: none" data-page-editor-target="addPartBusy"><%= image('spinner.gif', :alt => "") %></div>
     <div class="popup_title"><%= t('add_part') %></div>
-    <%= form_for([:admin, PagePart.new], :html => { :onsubmit => "addPart(this); return false" }) do |f| %>
+    <%= form_for([:admin, PagePart.new], :html => { 'data-action' => 'submit->page-editor#addPart' }) do |f| %>
       <p>
         <label for="part_name_field"><%= t('name') %></label>
-        <%= f.text_field :name, :id => 'part_name_field', :maxlength => 100, :style => "width: 15em", :class => "textbox big" %>
+        <%= f.text_field :name, :id => 'part_name_field', :maxlength => 100, :style => "width: 15em", :class => "textbox big", 'data-page-editor-target' => 'partName' %>
         <%= hidden_field_tag 'index', 0, :id => 'page_part_index_field' %>
       </p>
       <div class="buttons">
-        <%= submit_tag t('add_part'), :id => 'add_part_button', :class => "button" %>
+        <%= submit_tag t('add_part'), :id => 'add_part_button', :class => "button", 'data-page-editor-target' => 'addPartButton' %>
         <%= t('or') %>
-        <%= link_to_function t('cancel'), "window.closePopup(this.closest('.popup'))", :class => "cancel" %>
+        <a href="#" class="cancel" data-action="popup#close"><%= t('cancel') %></a>
       </div>
     <% end %>
   </div>
-  <div id="add_field_popup" class="popup" style="display: none">
+  <div id="add_field_popup" class="popup" style="display: none" data-controller="popup" data-popup-target="dialog" data-page-editor-target="addFieldPopup">
     <div id="add_field_busy" class="busy" style="display: none"><%= image('spinner.gif', :alt => "") %></div>
     <div class="popup_title"><%= t('add_field') %></div>
-    <%= form_for [:admin, PageField.new], :html => { :onsubmit => "event.preventDefault(); addField(this)" } do |f| %>
+    <%= form_for [:admin, PageField.new], :html => { 'data-action' => 'submit->page-editor#addField' } do |f| %>
       <p>
         <label for="page_field_name"><%= t('name') %></label>
-        <%= f.text_field :name, :maxlength => 100, :class => 'textbox big', :style => "width: 15em" %>
+        <%= f.text_field :name, :maxlength => 100, :class => 'textbox big', :style => "width: 15em", 'data-page-editor-target' => 'addFieldName' %>
         <%= hidden_field_tag 'index', 2, :id => 'page_field_index_field' %>
         <%= hidden_field_tag 'page_field_counter', @page.fields.size %>
       </p>
       <div class="buttons">
         <%= submit_tag t('add_field'), :class => 'button', :id => 'add_page_field_button' %>
         <%= t('or') %>
-        <%= link_to_function t('cancel'), "window.closePopup(this.closest('.popup'))", :class => "cancel" %>
+        <a href="#" class="cancel" data-action="popup#close"><%= t('cancel') %></a>
       </div>
     <% end %>
   </div>
