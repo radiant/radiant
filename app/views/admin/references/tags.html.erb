@@ -3,32 +3,10 @@
     <%= t('available_tags_for', :name => _display_name) %>
   </div>
   <p>
-    <label class="inline" for="search_<%= class_of_page.name.underscore %>_tag_reference">Filter Tags</label>
-    <input id="search_<%= class_of_page.name.underscore %>_tag_reference" type="search" name="search_tag_reference" />
+    <label class="inline" for="search_tag_reference">Filter Tags</label>
+    <input id="search_tag_reference" type="search" name="search_tag_reference" />
     <span id="tag_search_found_count" class="info"></span>
   </p>
   <div class="reference"><%= tag_reference %></div>
-  <p class="close_link"><%= link_to_function "Close Help", "$(this).closePopup()" %></p>
-  <script type="text/javascript">
-    var tags, searchingOn = "";
-    var found_count = 0;
-    var popup = $('search_<%= class_of_page.name.underscore %>_tag_reference').up('.popup');
-    new Form.Element.Observer('search_<%= class_of_page.name.underscore %>_tag_reference', 0.5, function(element, value) {
-      if (!tags) tags = popup.select('.reference .tag_description');
-      if (value.length < 3 && searchingOn != "") {
-        searchingOn = "";
-        found_count = tags.length;
-        tags.invoke('show');
-        $('tag_search_found_count').update('Found '+found_count+' tags').highlight();
-      } else if (value.length >= 3 && searchingOn != value) {
-        searchingOn = value;
-        found_count = tags.length;
-        tags.each(function(div) {
-          if (!div.hasWord(value)) found_count=--found_count;
-          div[div.hasWord(value) ? 'show' : 'hide']();
-        });
-        $('tag_search_found_count').update('Found '+found_count+' tags').highlight();
-      }
-    });
-  </script>
+  <p class="close_link"><%= link_to_function "Close Help", "window.closePopup(this.closest('.popup'))" %></p>
 </div>

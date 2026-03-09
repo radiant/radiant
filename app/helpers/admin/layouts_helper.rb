@@ -1,21 +1,22 @@
 module Admin::LayoutsHelper
   def layout_edit_javascripts
     <<-CODE
-    var tagReferenceWindows = {};
     function loadTagReference() {
-      var pageType = 'Page';
-      if (!tagReferenceWindows[pageType])
-        tagReferenceWindows[pageType] = new Popup.AjaxWindow("#{admin_reference_path('tags')}?class_name=" + encodeURIComponent(pageType), {reload: false});
-      var window = tagReferenceWindows[pageType];
-      if('Page' != pageType) {
-        $('tag_reference_link').highlight();
-        window.show();
-      } else {
-        window.toggle();
-      }
-      lastPageType = pageType;
+      var url = "#{admin_reference_path('tags')}?class_name=" + encodeURIComponent('Page');
+      fetch(url)
+        .then(function(response) { return response.text(); })
+        .then(function(html) {
+          var existing = document.getElementById('tag_reference_popup');
+          if (existing) { existing.remove(); return; }
+          var div = document.createElement('div');
+          div.id = 'tag_reference_popup';
+          div.innerHTML = html;
+          document.body.appendChild(div);
+          if (window.initTagFilter) window.initTagFilter();
+        });
       return false;
     }
     CODE
+    .html_safe
   end
 end

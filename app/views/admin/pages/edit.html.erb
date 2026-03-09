@@ -1,4 +1,5 @@
 <% @page_title = @page.title + ' - ' + default_page_title %>
+<% content_for :page_scripts, page_edit_javascripts %>
 
 <% render_region :main do |main| %>
   <% main.edit_header do %>
@@ -13,5 +14,3 @@
     <%= render :partial => "popups" %>
   <% end %>
 <% end %>
-
-<% content_for 'page_scripts', page_edit_javascripts %>

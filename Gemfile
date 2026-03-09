@@ -2,6 +2,9 @@ source "https://rubygems.org"
 
 gem "rails", "~> 8.0"
 gem "propshaft"
+gem "importmap-rails"
+gem "turbo-rails"
+gem "stimulus-rails"
 gem "sqlite3"
 gem "puma"
 

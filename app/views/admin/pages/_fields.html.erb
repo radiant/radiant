@@ -1,4 +1,3 @@
-<% include_javascript 'admin/page_preview' %>
 <%= fields.hidden_field :lock_version %>
 <%= fields.hidden_field :parent_id %>
 <%= fields.hidden_field :class_name %>
@@ -14,7 +13,7 @@
   <% end %>
   <% form.edit_extended_metadata do %>
     <div class="drawer">
-      <div class="drawer_contents" id="attributes">
+      <div class="drawer_contents" id="attributes"<%= ' style="display: none"'.html_safe unless meta_errors? %>>
         <table class="fieldset">
           <%= render :partial => "meta_row", :collection => @meta, :locals => {:f => fields} %>
           <%= render :partial => 'admin/page_fields/page_field', :collection => @page.fields %>
@@ -81,12 +80,12 @@
     <div class="buttons" style="clear: left">
       <%= save_model_button(@page) %>
       <%= save_model_and_continue_editing_button(@page) %>
-      <%= submit_tag(t('preview', :default => 'Preview'), :class => 'button', :id => 'show-preview') %>
+      <button type="button" class="button" id="show-preview"><%= t('preview', :default => 'Preview') %></button>
       <%= t('or') %>
       <%= link_to t('cancel'), admin_pages_url %>
     </div>
     <div id="preview_panel" class="fullcover grey_out" style="display: none;">
-      <iframe id="page-preview" class="fullcover" name="page-preview" src="<%= ActionController::Base.relative_url_root.to_s + '/loading-iframe.html' %>" frameborder="0" scrolling="auto"></iframe>
+      <iframe id="page-preview" class="fullcover" name="page-preview" src="about:blank" frameborder="0" scrolling="auto"></iframe>
       <div class="preview_tools">
         <%= submit_tag(t('buttons.save_changes'), :class => 'big save_changes') %>
         <%= submit_tag(t('buttons.save_and_continue'), :class => 'big save_and_continue', :name => 'continue') %>

@@ -17,7 +17,7 @@ class Admin::UsersController < Admin::ResourceController
       user_params.delete('admin')
       annouce_cannot_remove_self_from_admin_role
     end
-    model.update_attributes!(user_params)
+    model.update!(user_params.permit(:name, :email, :login, :password, :password_confirmation, :admin, :locale, :notes))
     response_for :update
   end
   
