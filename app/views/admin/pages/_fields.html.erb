@@ -80,7 +80,7 @@
     <div class="buttons" style="clear: left">
       <%= save_model_button(@page) %>
       <%= save_model_and_continue_editing_button(@page) %>
-      <%= submit_tag(t('preview', :default => 'Preview'), :class => 'button', :id => 'show-preview') %>
+      <button type="button" class="button" id="show-preview"><%= t('preview', :default => 'Preview') %></button>
       <%= t('or') %>
       <%= link_to t('cancel'), admin_pages_url %>
     </div>

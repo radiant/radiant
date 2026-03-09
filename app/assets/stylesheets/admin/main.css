@@ -240,13 +240,18 @@ img.avatar.avatar_32x32 {
   border-bottom-right-radius: 4px;
 }
 ul.menu {
+  display: none;
+  position: fixed;
+  z-index: 100;
   background: white;
   font-size: 80%;
   padding: 5px 20px;
-  border-top-right-radius: 4px;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
+  border: 1px solid #b3b3b3;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border-radius: 4px;
+  list-style: none;
 }
+ul.menu.visible { display: block; }
 ul.menu li { margin: 0 -20px; }
 ul.menu li.separator { margin: 5px -18px; border-top: 1px solid #e5e5e5; }
 ul.menu a {
@@ -376,9 +381,18 @@ ul.menu a:hover {
   text-shadow: #666 1px 1px 0;
   text-decoration: none;
 }
+.drawer_handle a.more,
+.drawer_handle a.less {
+  background-image: url(metadata_toggle.png);
+  background-repeat: no-repeat;
+  background-position: right 6px top 5px;
+}
+.drawer_handle a.less {
+  background-position: right 6px bottom 5px;
+}
 .drawer_handle a:hover,
 .drawer_handle a:active,
-.drawer_handle a:focus { text-decoration: underline; }
+.drawer_handle a:focus { text-decoration: none; }
 
 /* Box */
 .box {
@@ -599,7 +613,7 @@ table.index td.name a {
   text-decoration: none;
 }
 table.index td.name a:hover { color: #0066cc; text-decoration: underline; }
-table.index td.actions { font-size: 85%; white-space: nowrap; }
+table.index td.actions { font-size: 85%; white-space: nowrap; position: relative; }
 table.index tr:first-child { border-top: 1px solid white; }
 table.index tr:hover td,
 table.index tr.hover td {
@@ -636,33 +650,18 @@ table.index#pages td.status { font-size: 80%; }
 /* Status badges */
 .status a { color: #333; text-decoration: none; }
 .status a:hover { text-decoration: underline; color: #0066cc; }
-.draft_status {
+.draft_status, .hidden_status, .published_status, .scheduled_status, .reviewed_status {
   color: white;
-  background: #cc494c;
-  display: block;
-  padding: 0 6px;
-  width: 5em;
+  display: inline-block;
+  padding: 0 8px;
+  white-space: nowrap;
   text-align: center;
   border-radius: 100px;
+  font-size: 0.85em;
 }
-.hidden_status {
-  color: white;
-  background: #9eb3bf;
-  display: block;
-  padding: 0 6px;
-  width: 5em;
-  text-align: center;
-  border-radius: 100px;
-}
-.published_status {
-  color: white;
-  background: #6ea737;
-  display: block;
-  padding: 0 6px;
-  width: 5em;
-  text-align: center;
-  border-radius: 100px;
-}
+.draft_status { background: #cc494c; }
+.hidden_status { background: #9eb3bf; }
+.published_status { background: #6ea737; }
 
 /* Users index */
 table.index#users td.name { padding-top: 8px; padding-bottom: 8px; }

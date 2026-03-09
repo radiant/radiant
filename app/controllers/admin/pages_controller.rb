@@ -28,7 +28,7 @@ class Admin::PagesController < Admin::ResourceController
   end
 
   def new
-    @page = self.model = model_class.new_with_defaults(config)
+    @page = self.model = model_class.new_with_defaults
     assign_page_attributes
     response_for :new
   end
@@ -62,10 +62,10 @@ class Admin::PagesController < Admin::ResourceController
         page_class = Page.descendants.include?(model_class) ? model_class : Page
         if request.referer =~ %r{/admin/pages/(\d+)/edit}
           page = Page.find($1).becomes(page_class)
-          page.update_attributes(params[:page])
+          page.assign_attributes(params[:page].permit!)
           page.published_at ||= Time.now
         else
-          page = page_class.new(params[:page])
+          page = page_class.new(params[:page].permit!)
           page.published_at = page.updated_at = page.created_at = Time.now
           page.parent = Page.find($1) if request.referer =~ %r{/admin/pages/(\d+)/children/new}
         end

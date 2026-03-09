@@ -78,9 +78,10 @@ function initAdmin() {
   });
 
   // Tab Control behavior for page parts
-  // Reads .page elements inside #tab_control .pages, creates tab buttons,
-  // and shows/hides pages when tabs are clicked
   initTabControl();
+
+  // Page preview behavior
+  initPreview();
 }
 
 if (document.readyState === "loading") {
@@ -88,6 +89,50 @@ if (document.readyState === "loading") {
 } else {
   initAdmin();
 }
+
+// Re-initialize on Turbo navigations
+document.addEventListener("turbo:load", initAdmin);
+
+// Close dropdown menus on scroll or resize
+function closeAllMenus() {
+  document.querySelectorAll("ul.menu.visible").forEach(function(m) {
+    m.classList.remove("visible");
+  });
+}
+window.addEventListener("scroll", closeAllMenus, true);
+window.addEventListener("resize", closeAllMenus);
+
+// Dropdown menu behavior (registered once, not per-navigation)
+document.addEventListener("click", function(e) {
+  var link = e.target.closest('a.dropdown[href^="#"]');
+  if (link) {
+    e.preventDefault();
+    var targetId = link.getAttribute("href").substring(1);
+    var menu = document.getElementById(targetId);
+    if (menu) {
+      // Close any other open menus
+      document.querySelectorAll("ul.menu.visible").forEach(function(m) {
+        if (m !== menu) m.classList.remove("visible");
+      });
+      // Position below the link, right-aligned
+      var rect = link.getBoundingClientRect();
+      menu.style.top = (rect.bottom + 1) + "px";
+      menu.classList.toggle("visible");
+      // Right-align after visible so we can measure menu width
+      if (menu.classList.contains("visible")) {
+        var menuWidth = menu.offsetWidth;
+        menu.style.left = (rect.right - menuWidth) + "px";
+      }
+    }
+    return;
+  }
+  // Close open menus when clicking elsewhere
+  if (!e.target.closest("ul.menu")) {
+    document.querySelectorAll("ul.menu.visible").forEach(function(m) {
+      m.classList.remove("visible");
+    });
+  }
+});
 
 function initTabControl() {
   var tabControl = document.getElementById("tab_control");
@@ -200,3 +245,64 @@ window.initTagFilter = function() {
     }, 300);
   });
 };
+
+// Page preview: submits form data to preview endpoint in an iframe overlay
+function initPreview() {
+  var showBtn = document.getElementById("show-preview");
+  if (!showBtn) return;
+
+  var previewer = document.getElementById("preview_panel");
+  var frame = document.getElementById("page-preview");
+  var previewTools = previewer.querySelector(".preview_tools");
+  if (!previewer || !frame) return;
+
+  showBtn.addEventListener("click", function(e) {
+    e.preventDefault();
+    var form = showBtn.closest("form");
+    if (!form) return;
+
+    window.scrollTo(0, 0);
+    previewer.style.display = "";
+    previewTools.style.opacity = "1";
+    document.body.classList.add("clipped");
+
+    // Create a hidden form targeting the iframe to avoid Turbo interception
+    // and to POST (the preview route expects POST, not PUT)
+    var previewForm = document.createElement("form");
+    previewForm.method = "POST";
+    previewForm.action = "/admin/pages/preview";
+    previewForm.target = frame.id;
+    previewForm.style.display = "none";
+    previewForm.setAttribute("data-turbo", "false");
+
+    // Copy all form data
+    var formData = new FormData(form);
+    // Remove the _method override so it submits as POST
+    formData.delete("_method");
+    for (var pair of formData.entries()) {
+      var input = document.createElement("input");
+      input.type = "hidden";
+      input.name = pair[0];
+      input.value = pair[1];
+      previewForm.appendChild(input);
+    }
+
+    document.body.appendChild(previewForm);
+    previewForm.submit();
+    previewForm.remove();
+  });
+
+  frame.addEventListener("load", function() {
+    previewTools.style.opacity = null;
+  });
+
+  previewer.addEventListener("click", function(e) {
+    var cancelLink = e.target.closest(".preview_tools a.cancel");
+    if (cancelLink) {
+      e.preventDefault();
+      previewer.style.display = "none";
+      document.body.classList.remove("clipped");
+      frame.src = "about:blank";
+    }
+  });
+}

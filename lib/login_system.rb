@@ -80,7 +80,7 @@ module LoginSystem
     end
 
     def set_session_cookie(user = current_user)
-      cookies[:session_token] = { :value => user.session_token , :expires => Radiant::Config['session_timeout'].to_i.from_now.utc }
+      cookies[:session_token] = { :value => user.session_token , :expires => Radiant::Config['session_timeout'].to_i.seconds.from_now.utc }
     end
 
   module ClassMethods
