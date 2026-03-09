@@ -12,29 +12,29 @@
     </p>
   <% end %>
   <% form.edit_extended_metadata do %>
-    <div class="drawer">
-      <div class="drawer_contents" id="attributes"<%= ' style="display: none"'.html_safe unless meta_errors? %>>
-        <table class="fieldset">
+    <div class="drawer" data-controller="toggle" data-toggle-open-value="<%= meta_errors? %>">
+      <div class="drawer_contents" id="attributes" data-toggle-target="content"<%= ' style="display: none"'.html_safe unless meta_errors? %>>
+        <table class="fieldset" data-page-editor-target="fieldsTable">
           <%= render :partial => "meta_row", :collection => @meta, :locals => {:f => fields} %>
           <%= render :partial => 'admin/page_fields/page_field', :collection => @page.fields %>
           <%= render_region :extended_metadata, :locals => {:f => fields} %>
         </table>
       </div>
       <div class="drawer_handle">
-        <a class="toggle <%= meta_errors? ? 'less' : 'more' %>" href="#attributes" rel="toggle[attributes]"><%= meta_label %></a>
+        <a class="<%= meta_errors? ? 'less' : 'more' %>" href="#" data-action="toggle#toggle" data-toggle-target="link"><%= meta_label %></a>
       </div>
     </div>
   <% end %>
   <% form.edit_page_parts do %>
-    <div id="tab_control">
-      <div id="tabs" class="tabs">
-        <div id="tab_toolbar">
-          <a class="popup" href="#add_part_popup" title="<%= t('add_part') %>">
+    <div id="tab_control" data-controller="tab-control">
+      <div id="tabs" class="tabs" data-tab-control-target="tabs">
+        <div id="tab_toolbar" data-tab-control-target="toolbar">
+          <a href="#" title="<%= t('add_part') %>" data-action="page-editor#showAddPartPopup">
             <%= image('add_tab', :alt => t('add_part'), :title => "") %>
           </a>
         </div>
       </div>
-      <div id="pages" class="pages">
+      <div id="pages" class="pages" data-page-editor-target="partsContainer">
         <%= render :partial => 'admin/page_parts/page_part', :collection => @page.parts %>
       </div>
     </div>
@@ -80,18 +80,18 @@
     <div class="buttons" style="clear: left">
       <%= save_model_button(@page) %>
       <%= save_model_and_continue_editing_button(@page) %>
-      <button type="button" class="button" id="show-preview"><%= t('preview', :default => 'Preview') %></button>
+      <button type="button" class="button" data-action="preview#show"><%= t('preview', :default => 'Preview') %></button>
       <%= t('or') %>
       <%= link_to t('cancel'), admin_pages_url %>
     </div>
-    <div id="preview_panel" class="fullcover grey_out" style="display: none;">
-      <iframe id="page-preview" class="fullcover" name="page-preview" src="about:blank" frameborder="0" scrolling="auto"></iframe>
-      <div class="preview_tools">
+    <div id="preview_panel" class="fullcover grey_out" style="display: none;" data-preview-target="panel">
+      <iframe id="page-preview" class="fullcover" name="page-preview" src="about:blank" frameborder="0" scrolling="auto" data-preview-target="frame" data-action="load->preview#frameLoaded"></iframe>
+      <div class="preview_tools" data-preview-target="tools">
         <%= submit_tag(t('buttons.save_changes'), :class => 'big save_changes') %>
         <%= submit_tag(t('buttons.save_and_continue'), :class => 'big save_and_continue', :name => 'continue') %>
         <span class="info">
           <%= t('or') %>
-          <%= link_to(t('edit_page'), {}, :class => 'cancel') %>
+          <a href="#" class="cancel" data-action="preview#close"><%= t('edit_page') %></a>
         </span>
       </div>
     </div>

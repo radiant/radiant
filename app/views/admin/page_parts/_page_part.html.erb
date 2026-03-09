@@ -1,4 +1,4 @@
-<div class="page" id="page_<%= page_part.name.to_slug %>" data-caption="<%= h(page_part.name) %>">
+<div class="page" id="page_<%= page_part.name.to_slug %>" data-caption="<%= h(page_part.name) %>" data-tab-control-target="page">
   <div class="part" id="part-<%= page_part.name.to_slug %>">
     <%= hidden_field_tag "page[parts_attributes][#{page_part_counter}][name]", page_part.name, :id => "part_#{page_part.name.to_slug}_name" %>
     <% unless page_part.new_record? %>
@@ -11,10 +11,10 @@
       <span class="reference_links">
         <%= t('reference') %>
         <span id="filter_reference_link_<%= page_part.name.to_slug %>">
-          <%= link_to_function t('filter'), "loadFilterReference('#{page_part.name.to_slug}');" %>
+          <a href="#" data-action="reference#loadFilter" data-part-slug="<%= page_part.name.to_slug %>"><%= t('filter') %></a>
         </span>
         <span id="tag_reference_link_<%= page_part.name.to_slug %>">
-          <%= link_to_function t('available_tags'), "loadTagReference('#{page_part.name.to_slug}');" %>
+          <a href="#" data-action="reference#loadTags"><%= t('available_tags') %></a>
         </span>
       </span>
       <%= render_region :part_controls, :locals => {:page_part => page_part} %>

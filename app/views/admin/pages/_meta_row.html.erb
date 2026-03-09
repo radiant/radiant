@@ -5,7 +5,7 @@
   <td class="field"><%= f.send(meta_row[:type], meta_row[:field], *meta_row[:args]) %></td>
   <td class="actions">
     <% if meta_row_counter + 1 == @meta.size %>
-      <% link_to '#add_field_popup', :class => 'popup' do %>
+      <%= link_to '#', 'data-action' => 'page-editor#showAddFieldPopup' do %>
         <%= image 'plus_grey', :alt => t('add_field') %>
       <% end %>
     <% end %>

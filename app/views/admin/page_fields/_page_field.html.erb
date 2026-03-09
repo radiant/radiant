@@ -11,9 +11,9 @@
     <%= text_field_tag "page[fields_attributes][#{page_field_counter}][content]", page_field.content, :id => "page_fields_attributes_#{page_field_counter}_content", :class => "textbox", :maxlength => 200 %>
   </td>
   <td class="actions">
-    <%= link_to '#add_field_popup', :class=>'popup', :alt => t('add_field') do %>
-      <%= image 'plus_grey' %>
+    <%= link_to '#', 'data-action' => 'page-editor#showAddFieldPopup' do %>
+      <%= image 'plus_grey', :alt => t('add_field') %>
     <% end %>
-    <%= link_to_function image('minus_grey', :alt => t('remove_field')), "event.preventDefault(); window.removeField(this)", :title => t('remove_field') %>
+    <a href="#" data-action="page-editor#removeField" title="<%= t('remove_field') %>"><%= image 'minus_grey', :alt => t('remove_field') %></a>
   </td>
 </tr>
