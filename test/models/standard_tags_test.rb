@@ -121,37 +121,40 @@ class StandardTagsTest < ActiveSupport::TestCase
     assert_equal "", result
   end
 
-  # Note: children:each, children:first, children:last, and children:count
-  # all use Rails 2.3-style find(:all, options) and count(:conditions => ...)
-  # in standard_tags.rb. These are pre-existing Rails 8 compatibility bugs
-  # that need to be fixed separately. Tests are marked with skip.
-
   test "r:children:each iterates over published children" do
-    skip "standard_tags.rb uses Rails 2.3 find(:all) syntax — needs modernization"
+    result = render_tag('<r:children:each><r:title /> </r:children:each>')
+    assert_match(/\w+/, result)
   end
 
   test "r:children:each by title asc" do
-    skip "standard_tags.rb uses Rails 2.3 find(:all) syntax — needs modernization"
+    result = render_tag('<r:children:each by="title" order="asc"><r:title /> </r:children:each>')
+    assert_match(/\w+/, result)
   end
 
   test "r:children:first renders first child" do
-    skip "standard_tags.rb uses Rails 2.3 find(:all) syntax — needs modernization"
+    result = render_tag('<r:children:first><r:title /></r:children:first>')
+    assert_match(/\w+/, result)
   end
 
   test "r:children:last renders last child" do
-    skip "standard_tags.rb uses Rails 2.3 find(:all) syntax — needs modernization"
+    result = render_tag('<r:children:last><r:title /></r:children:last>')
+    assert_match(/\w+/, result)
   end
 
   test "r:children:count renders number of published children" do
-    skip "standard_tags.rb uses Rails 2.3 count(:conditions) syntax — needs modernization"
+    result = render_tag('<r:children:count />')
+    assert_match(/\d+/, result)
   end
 
   test "r:children:count for home page includes published children" do
-    skip "standard_tags.rb uses Rails 2.3 count(:conditions) syntax — needs modernization"
+    result = render_tag('<r:children:count />')
+    assert result.to_i > 0, "Home page should have children"
   end
 
   test "r:children:count for childless page returns 0" do
-    skip "standard_tags.rb uses Rails 2.3 count(:conditions) syntax — needs modernization"
+    page = prepare_page_for_render(:childless)
+    result = render_tag('<r:children:count />', page)
+    assert_equal "0", result
   end
 
   # ===========================================================================
@@ -217,19 +220,25 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:if_children renders when page has children" do
-    skip "standard_tags.rb uses Rails 2.3 count(:conditions) syntax — needs modernization"
+    result = render_tag('<r:if_children>has kids</r:if_children>')
+    assert_equal "has kids", result
   end
 
   test "r:if_children does not render when page has no children" do
-    skip "standard_tags.rb uses Rails 2.3 count(:conditions) syntax — needs modernization"
+    page = prepare_page_for_render(:childless)
+    result = render_tag('<r:if_children>has kids</r:if_children>', page)
+    assert_equal "", result
   end
 
   test "r:unless_children renders when page has no children" do
-    skip "standard_tags.rb uses Rails 2.3 count(:conditions) syntax — needs modernization"
+    page = prepare_page_for_render(:childless)
+    result = render_tag('<r:unless_children>no kids</r:unless_children>', page)
+    assert_equal "no kids", result
   end
 
   test "r:unless_children does not render when page has children" do
-    skip "standard_tags.rb uses Rails 2.3 count(:conditions) syntax — needs modernization"
+    result = render_tag('<r:unless_children>no kids</r:unless_children>')
+    assert_equal "", result
   end
 
   # ===========================================================================
@@ -385,11 +394,15 @@ class StandardTagsTest < ActiveSupport::TestCase
   # ===========================================================================
 
   test "r:cycle with values cycles through options" do
-    skip "depends on children:each which uses Rails 2.3 syntax"
+    result = render_tag('<r:children:each><r:cycle values="a,b" /> </r:children:each>')
+    assert_includes result, "a"
+    assert_includes result, "b"
   end
 
   test "r:cycle without values returns incrementing counter" do
-    skip "depends on children:each which uses Rails 2.3 syntax"
+    result = render_tag('<r:children:each><r:cycle /> </r:children:each>')
+    assert_includes result, "1"
+    assert_includes result, "2"
   end
 
   # ===========================================================================
@@ -542,15 +555,22 @@ class StandardTagsTest < ActiveSupport::TestCase
   # ===========================================================================
 
   test "r:children:each:if_first renders for first child only" do
-    skip "depends on children:each which uses Rails 2.3 syntax"
+    result = render_tag('<r:children:each><r:if_first>FIRST </r:if_first><r:title /> </r:children:each>')
+    assert_match(/\AFIRST /, result)
+    # FIRST should only appear once
+    assert_equal 1, result.scan("FIRST").size
   end
 
   test "r:children:each:if_last renders for last child only" do
-    skip "depends on children:each which uses Rails 2.3 syntax"
+    result = render_tag('<r:children:each><r:if_last>LAST </r:if_last><r:title /> </r:children:each>')
+    assert_includes result, "LAST"
+    assert_equal 1, result.scan("LAST").size
   end
 
   test "r:children:each:unless_first does not render for first child" do
-    skip "depends on children:each which uses Rails 2.3 syntax"
+    result = render_tag('<r:children:each><r:unless_first>NOT_FIRST </r:unless_first><r:title /> </r:children:each>')
+    # NOT_FIRST should not appear before the first child's title
+    refute_match(/\ANOT_FIRST/, result)
   end
 
   test "r:if_self renders when contextual page is actual page" do
@@ -581,11 +601,17 @@ class StandardTagsTest < ActiveSupport::TestCase
   end
 
   test "r:children:each with limit attribute" do
-    skip "depends on children:each which uses Rails 2.3 syntax"
+    result = render_tag('<r:children:each limit="1"><r:title /> </r:children:each>')
+    titles = result.strip.split(/\s+/)
+    assert_equal 1, titles.size
   end
 
   test "r:children:each with order desc by title" do
-    skip "depends on children:each which uses Rails 2.3 syntax"
+    result_asc = render_tag('<r:children:each by="title" order="asc"><r:title />|</r:children:each>')
+    result_desc = render_tag('<r:children:each by="title" order="desc"><r:title />|</r:children:each>')
+    titles_asc = result_asc.split("|").map(&:strip).reject(&:empty?)
+    titles_desc = result_desc.split("|").map(&:strip).reject(&:empty?)
+    assert_equal titles_asc.reverse, titles_desc
   end
 
   test "r:content with inherit attribute finds parent part" do
