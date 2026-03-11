@@ -10,16 +10,18 @@ module Radiant
         empty_directory "#{extension_path}/app/views"
         empty_directory "#{extension_path}/config"
         empty_directory "#{extension_path}/db/migrate"
-        empty_directory "#{extension_path}/lib"
+        empty_directory "#{extension_path}/lib/radiant"
         empty_directory "#{extension_path}/test"
       end
 
-      def create_engine_file
-        template "engine.rb.tt", "#{extension_path}/lib/#{file_name}_extension.rb"
+      def create_entry_point
+        # Bundler auto-requires "radiant/file_name" for gem "radiant-file_name"
+        template "entry_point.rb.tt", "#{extension_path}/lib/radiant/#{file_name}.rb"
       end
 
-      def create_lib_file
-        template "lib.rb.tt", "#{extension_path}/lib/#{file_name}.rb"
+      def create_engine_file
+        template "engine.rb.tt", "#{extension_path}/lib/radiant/#{file_name}/engine.rb"
+        empty_directory "#{extension_path}/lib/radiant/#{file_name}"
       end
 
       def create_gemspec

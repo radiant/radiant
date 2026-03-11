@@ -1,5 +1,3 @@
-require "radiant/admin_ui"
-
 module Radiant
   # Base class for Radiant extensions. Inherits from Rails::Engine so that
   # extensions are standard Rails Engines — routes, models, controllers,
@@ -24,11 +22,12 @@ module Radiant
     class_attribute :extension_config, instance_writer: false, default: {}
 
     class << self
+      # Metadata DSL methods. Called with a value to set, without to get.
       def extension_name(value = nil)
         if value
           extension_config_set(:extension_name, value)
         else
-          extension_config_get(:extension_name) || name&.demodulize&.chomp("Extension")&.titleize || "Unknown"
+          extension_config_get(:extension_name) || default_extension_name
         end
       end
 
@@ -57,11 +56,6 @@ module Radiant
       # Returns all navigation registrations for this extension.
       def nav_registrations
         @nav_registrations ||= []
-      end
-
-      # Returns all Radiant::Extension subclasses that have been loaded.
-      def descendants
-        super.select { |klass| klass < Radiant::Extension }
       end
 
       # Applies all deferred navigation registrations for all extensions.
@@ -102,6 +96,20 @@ module Radiant
 
       def extension_config_get(key)
         extension_config[key]
+      end
+
+      # Derives a display name from the class name.
+      # Handles both conventions:
+      #   MyFeatureExtension         => "My Feature"
+      #   Radiant::MyFeature::Engine => "My Feature"
+      def default_extension_name
+        return "Unknown" unless name
+        leaf = name.demodulize
+        if leaf == "Engine"
+          name.deconstantize.demodulize.titleize.presence || "Unknown"
+        else
+          leaf.chomp("Extension").titleize.presence || "Unknown"
+        end
       end
     end
   end

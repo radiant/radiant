@@ -5,8 +5,8 @@ Example:
     bin/rails generate radiant:extension archive
 
     This will create:
-        radiant-archive/lib/archive_extension.rb
-        radiant-archive/lib/archive.rb
+        radiant-archive/lib/radiant/archive.rb           (entry point)
+        radiant-archive/lib/radiant/archive/engine.rb    (engine class)
         radiant-archive/radiant-archive.gemspec
         radiant-archive/Gemfile
         radiant-archive/README.md

@@ -28,8 +28,10 @@ radiant-my_feature/
   db/
     migrate/
   lib/
-    my_feature.rb
-    my_feature_extension.rb   # Engine class
+    radiant/
+      my_feature.rb            # Entry point (required by Bundler)
+      my_feature/
+        engine.rb              # Engine class
   test/
   radiant-my_feature.gemspec
   Gemfile
@@ -38,23 +40,31 @@ radiant-my_feature/
 
 ## Defining an Extension
 
-The main engine class inherits from `Radiant::Extension`:
+The engine class inherits from `Radiant::Extension`:
 
 ```ruby
-# lib/my_feature_extension.rb
-require "my_feature"
+# lib/radiant/my_feature/engine.rb
+module Radiant
+  module MyFeature
+    class Engine < Radiant::Extension
+      extension_name "My Feature"
+      description    "Adds a useful feature to Radiant"
+      version        "1.0.0"
+      url            "https://github.com/example/radiant-my_feature"
 
-class MyFeatureExtension < Radiant::Extension
-  extension_name "My Feature"
-  description    "Adds a useful feature to Radiant"
-  version        "1.0.0"
-  url            "https://github.com/example/radiant-my_feature"
-
-  # Add admin navigation
-  nav "Content" do |tab|
-    tab.add_item "My Feature", "/admin/my_feature"
+      nav "Content" do |tab|
+        tab.add_item "My Feature", "/admin/my_feature"
+      end
+    end
   end
 end
+```
+
+The entry point file loads the engine:
+
+```ruby
+# lib/radiant/my_feature.rb
+require "radiant/my_feature/engine"
 ```
 
 ## Metadata Methods
@@ -105,7 +115,7 @@ end
 Place migrations in `db/migrate/`. Install them in the host app:
 
 ```bash
-bin/rails my_feature_extension:install:migrations
+bin/rails radiant_my_feature:install:migrations
 bin/rails db:migrate
 ```
 
@@ -150,7 +160,7 @@ Run `bundle install`, copy migrations, and migrate:
 
 ```bash
 bundle install
-bin/rails my_feature_extension:install:migrations
+bin/rails radiant_my_feature:install:migrations
 bin/rails db:migrate
 ```
 

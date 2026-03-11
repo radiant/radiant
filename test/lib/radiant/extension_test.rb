@@ -17,6 +17,13 @@ class Radiant::ExtensionTest < ActiveSupport::TestCase
     # No metadata set — tests defaults
   end
 
+  # Simulates the Radiant::MyFeature::Engine naming convention from the generator
+  module SampleFeature
+    class Engine < Radiant::Extension
+      description "Sample feature for testing"
+    end
+  end
+
   test "extension_name returns configured name" do
     assert_equal "Test", TestExtension.extension_name
   end
@@ -35,6 +42,10 @@ class Radiant::ExtensionTest < ActiveSupport::TestCase
 
   test "extension_name defaults to class name when not set" do
     assert_equal "Minimal", MinimalExtension.extension_name
+  end
+
+  test "extension_name defaults correctly for Engine naming convention" do
+    assert_equal "Sample Feature", SampleFeature::Engine.extension_name
   end
 
   test "description returns nil when not set" do
