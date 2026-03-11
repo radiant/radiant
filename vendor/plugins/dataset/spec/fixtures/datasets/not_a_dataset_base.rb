@@ -1,2 +1,0 @@
-class NotADatasetBase
-end
