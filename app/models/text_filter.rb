@@ -10,7 +10,7 @@ class TextFilter
   
   class << self
     def inherited(subclass)
-      subclass.filter_name = subclass.name.to_name('Filter')
+      subclass.filter_name = subclass.name.underscore.gsub("/", " ").humanize.titlecase.gsub(/\s*Filter$/, "")
     end
     
     def filter(text)
