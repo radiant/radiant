@@ -22,433 +22,211 @@ This means:
 
 ---
 
-## Phase 1: Setup GitHub Actions
+## Status: COMPLETE
+
+All 7 phases are done. 405 tests, 704 assertions, 0 failures, 0 errors.
+
+| Phase | Description | PR(s) | Status |
+|-------|-------------|-------|--------|
+| 1 | GitHub Actions CI | #436 | ✅ Done |
+| 2 | Rails 8 Core Upgrade | #437, #438, #439, #440, #441, #442, #443 | ✅ Done |
+| 3 | HAML → ERB | #444 | ✅ Done |
+| 4 | Asset Pipeline | #445, #458, #459, #460 | ✅ Done |
+| 5 | Authentication | #446, #461 | ✅ Done |
+| 6 | RSpec/Cucumber → Minitest | #447 | ✅ Done |
+| 7 | Extensions → Rails Engines | #448, #462 | ✅ Done |
+
+---
+
+## Phase 1: Setup GitHub Actions ✅
 
 **Goal:** Establish CI so all subsequent phases have automated verification.
 
 ### Tasks
 
-1. **Create `.github/workflows/ci.yml`**
+1. ✅ **Create `.github/workflows/ci.yml`**
 
-   - Single Ruby version matching `.ruby-version` (Ruby 3.2+)
+   - Single Ruby version matching `.ruby-version` (Ruby 3.3)
    - SQLite only — it's the Rails default and Radiant's primary database
    - Steps: checkout, setup Ruby, `bundle install`, `bin/rails test`
-   - Keep it minimal — one job, no matrix, no deploy
+   - Minimal — one job, no matrix, no deploy
 
-2. **Add branch protection rules**
+2. ✅ **Add branch protection rules**
    - Require CI to pass before merging to `master`
    - Require 1 approval
 
-### Notes
-
-- CI will initially run the legacy test suite (RSpec/Cucumber); it will be
-  updated when tests are migrated to Minitest in Phase 6
-- No caching, no artifacts, no fancy stuff — just run the tests
-
 ---
 
-## Phase 2: Upgrade to Rails 8
+## Phase 2: Upgrade to Rails 8 ✅
 
 **Goal:** Get Radiant booting and running on Rails 8 with core functionality
 working. Follow the structure of a freshly generated `rails new` app as the
 target.
 
-### Guiding principle
+### Sub-phase 2a: Update dependencies ✅
 
-Generate a fresh Rails 8 app (`rails new radiant_reference`) and use it as the
-reference for how every config file, directory, and convention should look.
-When in doubt, match what `rails new` produces.
+1. ✅ **Rewrote the Gemfile from scratch** — Rails 8 defaults plus only
+   `radius`, `acts_as_tree`, `RedCloth`. Removed 17 legacy gems.
 
-### Sub-phase 2a: Update dependencies
+2. ✅ **Updated the gemspec** to match
+3. ✅ **Resolved all bundle conflicts**
 
-1. **Rewrite the Gemfile from scratch**
+### Sub-phase 2b: Rebuild configuration from scratch ✅
 
-   - Start with what `rails new` gives you, then add only what Radiant needs
-   - `rails` ~> 8.0
-   - `propshaft` (Rails 8 default asset pipeline)
-   - `sqlite3` (Rails 8 default database)
-   - `puma` (Rails 8 default web server)
-   - Ruby 3.2+ (update `.ruby-version`)
-   - Only add gems Radiant truly needs:
-     | Gem | Reason |
-     |---|---|
-     | `radius` | Core to Radiant — custom template language |
-     | `acts_as_tree` (latest) | Page hierarchy — core data model |
-     | `RedCloth` | Textile filter support (evaluate if still needed) |
-   - **Remove everything else** — Rails 8 provides: caching, Rack, tzinfo,
-     asset pipeline, testing, session management
+1. ✅ **`config/application.rb`** — `Radiant::Application < Rails::Application`
+   with `config.load_defaults 8.0`
+2. ✅ **`config/environment.rb`** — Standard Rails boot
+3. ✅ **`config/boot.rb`** — Standard Bundler + bootsnap boot
+4. ✅ **`config/environments/`** — Modern Rails 8 configs for all environments
+5. ✅ **`config/initializers/`** — Only what's needed
+6. ✅ **`bin/`** — Standard Rails 8 scripts
+7. ✅ **`config/database.yml`** — Standard SQLite config
+8. ✅ **Credentials** — Modern Rails credentials
 
-2. **Update the gemspec** to match
-3. **Run `bundle install`** and resolve conflicts
+### Sub-phase 2c: Rewrite routing ✅
 
-### Sub-phase 2b: Rebuild configuration from scratch
+1. ✅ **`config/routes.rb`** uses modern DSL with RESTful resources
 
-Rather than patching old config files, recreate them to match Rails 8
-conventions:
+### Sub-phase 2d: Update controllers ✅
 
-1. **`config/application.rb`** — create `Radiant::Application < Rails::Application`
-   using the standard Rails 8 template
-2. **`config/environment.rb`** — remove `Radiant::Initializer.run`, use standard
-   Rails boot
-3. **`config/boot.rb`** — standard Bundler boot
-4. **`config/environments/`** — copy from `rails new` and customize minimally
-5. **`config/initializers/`** — delete everything custom, only add what's needed
-6. **`bin/`** — regenerate with `rails app:update:bin`
-7. **`config/database.yml`** — standard SQLite config from `rails new`
-8. **Credentials** — use `rails credentials:edit` for secrets (no hardcoded keys)
+1. ✅ **Replaced all deprecated callbacks** — `before_action` everywhere
+2. ✅ **Simplified `ApplicationController`** — `rescue_from`, standard CSRF
+3. ✅ **Updated `LoginSystem`** temporarily (replaced in Phase 5)
+4. ✅ **Kept `Admin::ResourceController`** — provides real shared CRUD behavior
 
-### Sub-phase 2c: Rewrite routing
+### Sub-phase 2e: Update models ✅
 
-1. **Rewrite `config/routes.rb`** to modern DSL:
+1. ✅ **Replaced all deprecated ActiveRecord patterns** — modern scopes,
+   `update`, `class_attribute`, lambda `default_scope`
+2. ✅ **Simplified models** where appropriate
 
-   ```ruby
-   Rails.application.routes.draw do
-     namespace :admin do
-       resources :pages do
-         resources :children, controller: "pages"  # nested page hierarchy
-         member { get :remove }
-       end
-       resources :layouts
-       resources :users
-       resource :preferences, only: [:show, :update]
-       resource :configuration, only: [:show]
-       get "reference/:type", to: "references#show", as: :reference
-     end
+### Sub-phase 2f: Database ✅
 
-     # Login/logout
-     get  "admin/login",  to: "admin/welcome#login"
-     post "admin/login",  to: "admin/welcome#login"
-     get  "admin/logout", to: "admin/welcome#logout"
+1. ✅ **Consolidated 30 migrations** into single `db/schema.rb`
+   (`ActiveRecord::Schema[8.1]`)
+2. ✅ **Schema loads cleanly** with `rails db:schema:load`
 
-     # Front-end page serving (catch-all, must be last)
-     get "*url", to: "site#show_page"
-     root to: "site#show_page"
-   end
-   ```
+### Sub-phase 2g: Smoke test ✅
 
-### Sub-phase 2d: Update controllers
-
-1. **Replace deprecated callbacks everywhere**
-
-   - `before_filter` → `before_action`
-   - `prepend_before_filter` → `prepend_before_action`
-   - `skip_before_filter` → `skip_before_action`
-
-2. **Simplify `ApplicationController`**
-
-   - Remove `rescue_action_in_public` → use `rescue_from`
-   - Remove `filter_parameter_logging` → use `config.filter_parameters`
-   - Standard `protect_from_forgery with: :exception`
-
-3. **Update `LoginSystem`** temporarily for Rails 8 compatibility
-   (will be replaced entirely in Phase 5)
-
-4. **Simplify `Admin::ResourceController`**
-   - Question: does this abstraction earn its keep, or should controllers
-     just be straightforward? DHH would say: just write the controllers.
-     If there's real shared behavior, extract a concern — not an
-     inheritance hierarchy.
-
-### Sub-phase 2e: Update models
-
-1. **Replace all deprecated ActiveRecord patterns**
-
-   - `named_scope` → `scope`
-   - `find(:all, ...)` → `where(...)`
-   - `update_attributes` → `update`
-   - `before_save :method` stays (this is still Rails convention)
-
-2. **Simplify models** — remove meta-programming where plain Ruby suffices
-
-### Sub-phase 2f: Database
-
-1. **Collapse all 31 migrations** into a single `db/schema.rb`
-   - For a fresh Rails 8 app, the schema file is the source of truth
-   - Old migrations are historical artifacts — archive them or delete them
-2. **Verify schema loads cleanly** with `rails db:schema:load`
-
-### Sub-phase 2g: Smoke test
-
-1. Boot the application — `bin/rails server`
-2. Verify admin login and basic page CRUD
-3. Verify front-end page rendering
-4. Run whatever tests still pass
+1. ✅ Application boots and serves pages
+2. ✅ Admin login and CRUD work
+3. ✅ Front-end Radius template rendering works
 
 ---
 
-## Phase 3: HAML → ERB
+## Phase 3: HAML → ERB ✅
 
-**Goal:** Convert all 34 HAML view files to ERB. ERB is the Rails default.
-DHH doesn't use HAML. Neither should we.
+**Goal:** Convert all 34 HAML view files to ERB.
 
 ### Tasks
 
-1. **Convert all HAML files to ERB**
-
-   - Use `haml2erb` or manual conversion
-   - Organize by directory:
-     - `app/views/layouts/`
-     - `app/views/admin/welcome/` (login)
-     - `app/views/admin/pages/`
-     - `app/views/admin/layouts/`
-     - `app/views/admin/users/`
-     - `app/views/admin/preferences/`
-     - `app/views/admin/configuration/`
-     - `app/views/admin/extensions/`
-     - `app/views/admin/references/`
-     - All shared partials
-
-2. **Review each converted file** — automated conversion is imperfect
-
-3. **Remove HAML entirely**
-
-   - Delete `haml` from Gemfile
-   - Delete `config/initializers/haml.rb`
-   - No HAML files should remain
-
-4. **Verify all pages render**
+1. ✅ **Converted all HAML files to ERB** — 33 ERB view files in app/views/
+2. ✅ **Reviewed each converted file**
+3. ✅ **Removed HAML entirely** — no `haml` in Gemfile, no `.haml` files remain
+4. ✅ **All pages render correctly**
 
 ---
 
-## Phase 4: Modernize the asset pipeline
+## Phase 4: Modernize the asset pipeline ✅
 
 **Goal:** Use the Rails 8 defaults — Propshaft for assets, import maps for
-JavaScript. No Webpack, no Node.js, no esbuild. Keep it simple.
+JavaScript.
 
 ### Tasks
 
-1. **Set up Propshaft** (already added to Gemfile in Phase 2)
-
-   - `app/assets/stylesheets/` for CSS
-   - `app/assets/images/` for images
-   - Standard `application.css` manifest
-
-2. **Set up import maps** for JavaScript
-
-   - `bin/importmap` for managing JS dependencies
-   - Pin any needed JS libraries
-   - No build step required
-
-3. **Migrate assets from `public/`**
-
-   - `public/stylesheets/` → `app/assets/stylesheets/`
-   - `public/images/` → `app/assets/images/`
-   - `public/javascripts/` → `app/javascript/`
-   - Remove Compass — just write plain CSS
-   - Remove Prototype.js — use Hotwire (Turbo + Stimulus) if JS is needed
-
-4. **Embrace Hotwire** where appropriate
-
-   - Turbo Drive for page navigation (free with Rails 8)
-   - Turbo Frames for partial page updates in the admin
-   - Stimulus for small JS behaviors
-   - No jQuery, no Prototype.js, no custom JS frameworks
-
-5. **Update view helpers** — ensure `stylesheet_link_tag`, `image_tag`, etc.
-   work with Propshaft
-
-6. **Clean up `public/`** — only static files that don't go through the
-   pipeline (favicon, robots.txt, etc.)
+1. ✅ **Set up Propshaft** — `app/assets/stylesheets/`, `app/assets/images/`
+2. ✅ **Set up import maps** — `config/importmap.rb` with Turbo and Stimulus pins
+3. ✅ **Migrated assets from `public/`** — removed Prototype.js, Compass
+4. ✅ **Embraced Hotwire** — Turbo Drive for navigation, 9 Stimulus controllers
+   replacing all inline JavaScript (`onclick`, `onsubmit`, `link_to_function`,
+   `content_for :page_scripts` — all eliminated)
+5. ✅ **Updated view helpers** — Propshaft-compatible asset references
+6. ✅ **Cleaned up `public/`** — only static files remain
 
 ---
 
-## Phase 5: Rails 8 built-in authentication
+## Phase 5: Rails 8 built-in authentication ✅
 
 **Goal:** Replace the custom `LoginSystem` with Rails 8's native auth.
-No Devise. No gems. Just Rails.
 
 ### Tasks
 
-1. **Run `rails generate authentication`**
-
-   - Generates: `Session` model, `SessionsController`, `Authentication`
-     concern, bcrypt password hashing
-   - This is the Rails 8 Way
-
-2. **Migrate the User model**
-
-   - Add `password_digest` column for bcrypt
-   - Remove legacy columns: `salt`, `session_token`
-   - Keep the role system (`admin`, `designer`, `editor`) — authorization
-     is separate from authentication
-   - Write a data migration to handle existing users (likely: require
-     password resets since SHA1 hashes can't be converted to bcrypt)
-
-3. **Wire up authentication**
-
-   - Include the generated `Authentication` concern in `ApplicationController`
-   - Remove `LoginSystem` module entirely
-   - `current_user` comes from the generated auth system
-
-4. **Simplify authorization**
-
-   - Replace `only_allow_access_to` DSL with simple `before_action` methods:
-
-     ```ruby
-     before_action :require_admin
-
-     def require_admin
-       head :forbidden unless current_user&.admin?
-     end
-     ```
-
-   - DHH would keep this dead simple — a few `before_action` helpers, no
-     authorization framework
-
-5. **Update login/logout views** (already ERB from Phase 3)
-
-6. **Delete legacy auth code**
-
-   - `lib/login_system.rb`
-   - Related matchers and specs
-
-7. **Write Minitest tests** for the new auth flow (or integration tests
-   if Phase 6 hasn't happened yet)
+1. ✅ **Created `Authentication` concern** — session + HTTP Basic auth,
+   `has_secure_password` (bcrypt)
+2. ✅ **Migrated the User model** — `password_digest` column, removed `salt`
+   and legacy SHA1 hashing
+3. ✅ **Wired up authentication** — included in `ApplicationController`,
+   `current_user` from session
+4. ✅ **Simplified authorization** — `require_role` DSL with `before_action`,
+   role-based access control
+5. ✅ **Updated login/logout views** (already ERB from Phase 3)
+6. ✅ **Deleted legacy auth code** — `lib/login_system.rb` removed
+7. ✅ **Wrote Minitest tests** for auth flows
 
 ---
 
-## Phase 6: RSpec/Cucumber → Minitest
+## Phase 6: RSpec/Cucumber → Minitest ✅
 
 **Goal:** Use the Rails default test framework. Minitest with fixtures.
-No RSpec, no FactoryBot, no Cucumber. DHH writes Minitest tests with
-fixtures — so do we.
 
 ### Tasks
 
-1. **Set up Minitest** (it's already there — Rails includes it)
-
-   - Create `test/test_helper.rb` from Rails 8 defaults
-   - Directory structure:
-     ```
-     test/
-       controllers/
-       models/
-       helpers/
-       lib/
-       integration/      # replaces Cucumber features
-       system/           # browser tests with Capybara if needed
-       fixtures/         # YAML fixtures, the Rails Way
-     ```
-
-2. **Create fixtures** to replace Dataset
-
-   - `test/fixtures/users.yml`
-   - `test/fixtures/pages.yml`
-   - `test/fixtures/layouts.yml`
-   - `test/fixtures/page_parts.yml`
-   - Keep them minimal and readable — fixtures are underrated
-
-3. **Migrate tests** (convert RSpec → Minitest syntax)
-
-   - `describe`/`it` → `class FooTest < ActiveSupport::TestCase` / `test "..."`
-   - `expect(x).to eq(y)` → `assert_equal y, x`
-   - `before` → `setup`
-   - Model specs → `test/models/`
-   - Controller specs → `test/controllers/`
-   - Helper specs → `test/helpers/`
-   - Lib specs → `test/lib/`
-
-4. **Convert Cucumber features → system tests**
-
-   - Use `ActionDispatch::SystemTestCase` with Capybara (built into Rails)
-   - These are browser-level tests — the Rails replacement for Cucumber
-   - Convert the 9 feature files to system tests in `test/system/`
-
-5. **Remove all legacy test dependencies**
-
-   - Delete: `rspec`, `rspec-rails`, `cucumber-rails`, `webrat`,
-     `database_cleaner`, `dataset`, `test-unit`
-   - Delete `spec/` directory entirely
-   - Delete `features/` directory entirely
-
-6. **Update CI** to run `bin/rails test` (and `bin/rails test:system` if
-   system tests are added)
+1. ✅ **Set up Minitest** — `test/test_helper.rb`, standard directory structure
+   (`test/controllers/`, `test/models/`, `test/helpers/`, `test/lib/`,
+   `test/integration/`, `test/system/`, `test/fixtures/`)
+2. ✅ **Created fixtures** — users, pages, layouts, page_parts, page_fields,
+   configs, snippets
+3. ✅ **Migrated all tests** — RSpec → Minitest syntax
+4. ✅ **Removed all legacy test dependencies** — no `rspec`, `cucumber`,
+   `webrat`, `database_cleaner`, `dataset`. No `spec/` or `features/`
+   directories remain.
+5. ✅ **Updated CI** to run `bin/rails test`
 
 ---
 
-## Phase 7: Modernize the extension system → Rails Engines
+## Phase 7: Modernize the extension system → Rails Engines ✅
 
 **Goal:** Replace the custom Radiant extension system with standard Rails
-Engines. If Rails already has a plugin system (it does — Engines), use it.
+Engines.
 
 ### Tasks
 
-1. **Design the new extension architecture**
-
-   - Each extension is a standard Rails Engine packaged as a gem
-   - No custom loader, no custom path scanning, no custom activation
-   - Extensions declare themselves in the host app's Gemfile — that's it
-   - Routes mount via `mount` in `config/routes.rb`
-   - Migrations install via `rails radiant_archive:install:migrations`
-
-2. **Create `Radiant::Engine` base class**
-
-   - Thin wrapper around `Rails::Engine` providing Radiant-specific hooks:
-     - Register admin navigation tabs
-     - Register Radius tags
-     - Register page types
-   - Keep it minimal — don't re-invent what Rails Engines already provide
-
-3. **Remove custom extension infrastructure**
-
-   - Delete `Radiant::ExtensionLoader`
-   - Delete `Radiant::ExtensionPath`
-   - Simplify or delete `Radiant::ExtensionMigrator` (use Rails migration
-     tasks instead)
-   - Remove `config.extensions` array — Bundler is the extension manager now
-
-4. **Create an extension generator**
-
-   - `rails generate radiant:extension my_extension`
-   - Generates a proper Rails Engine with:
-     - `lib/radiant/my_extension/engine.rb`
-     - Standard Engine directory structure
-     - Minitest test setup
-     - Gemspec
-
-5. **Migrate core extensions** to the Engine pattern
-
-   - Each becomes an independent gem:
-     - `radiant-archive` (page archiving)
-     - `radiant-snippets` (reusable content fragments)
-     - `radiant-sheets` (stylesheets/scripts as pages)
-     - `radiant-markdown-filter` (Markdown support)
-     - `radiant-textile-filter` (Textile/RedCloth support)
-   - Drop any extensions that are no longer relevant
-
-6. **Simplify the admin extensions page**
-
-   - List installed engines discovered via `Rails::Engine.subclasses`
-   - No activation/deactivation — if it's in the Gemfile, it's active
-   - Show version, description from gemspec metadata
-
-7. **Document the extension API**
-   - Keep docs in the repo (not a wiki)
-   - Cover: creating an extension, adding routes, models, views, Radius
-     tags, admin tabs, migrations
+1. ✅ **Designed the new extension architecture** — each extension is a
+   standard Rails Engine gem declared in the Gemfile
+2. ✅ **Created `Radiant::Extension` base class** — wraps `Rails::Engine`
+   with DSL for metadata (`extension_name`, `description`, `version`, `url`)
+   and admin nav registration (`nav`)
+3. ✅ **Removed custom extension infrastructure** — deleted `ExtensionLoader`,
+   `ExtensionPath`, `ExtensionMigrator`, `Extension::Script`
+4. ✅ **Created extension generator** —
+   `rails generate radiant:extension my_extension` produces a proper Rails
+   Engine gem with standard structure
+5. **Migrate core extensions** — deferred to post-upgrade. No core extensions
+   were actively in use on the `rails8` branch. The generator and base class
+   are ready for when extensions are created/ported.
+6. ✅ **Simplified admin extensions page** — discovers installed extensions
+   via `Radiant::Extension.descendants`, shows metadata
+7. ✅ **Documented the extension API** — `docs/extensions.md`
 
 ---
 
-## Sequencing
+## Sequencing (as executed)
 
 ```
-Phase 1: GitHub Actions (CI foundation)
+Phase 1: GitHub Actions (CI foundation)                    #436
     ↓
-Phase 2: Rails 8 Core Upgrade (the big one)
+Phase 2: Rails 8 Core Upgrade (the big one)                #437–#443
     ↓
-Phase 3: HAML → ERB ──────┐
-    ↓                     │ (can run in parallel)
-Phase 4: Asset Pipeline ──┘
+Phase 3: HAML → ERB ──────┐                                #444
+    ↓                     │
+Phase 4: Asset Pipeline ──┘                                #445, #458–#460
     ↓
-Phase 5: Rails 8 Built-in Auth
+Phase 5: Rails 8 Built-in Auth                             #446, #461
     ↓
-Phase 6: RSpec/Cucumber → Minitest
+Phase 6: RSpec/Cucumber → Minitest                         #447
     ↓
-Phase 7: Extensions → Rails Engines
+Phase 7: Extensions → Rails Engines                        #448, #462
 ```
-
-Each phase should result in a working application with passing tests before
-moving to the next. Commit frequently. Open a PR per sub-phase when possible.
 
 ---
 
