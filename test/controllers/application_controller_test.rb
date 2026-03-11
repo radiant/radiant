@@ -1,8 +1,8 @@
 require "test_helper"
 
 class ApplicationControllerTest < ActionDispatch::IntegrationTest
-  test "ApplicationController includes LoginSystem" do
-    assert ApplicationController.included_modules.include?(LoginSystem)
+  test "ApplicationController includes Authentication" do
+    assert ApplicationController.included_modules.include?(Authentication)
   end
 
   test "ApplicationController responds to template_name" do

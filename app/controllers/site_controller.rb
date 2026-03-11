@@ -2,7 +2,7 @@ class SiteController < ApplicationController
   include Radiant::Pagination::Controller
 
   skip_before_action :verify_authenticity_token
-  no_login_required
+  skip_login_required
 
   def self.cache_timeout=(val)
     Radiant::PageResponseCacheDirector.cache_timeout=(val)
