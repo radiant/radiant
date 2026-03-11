@@ -2,12 +2,13 @@ require 'ostruct'
 module Radiant
   module ResourceResponses
     def self.extended(base)
-      base.send :class_inheritable_writer, :responses
+      base.class_attribute :responses_store, instance_writer: true, default: nil
       base.send :include, InstanceMethods
     end
-    
+
     def responses
-      r = (self.responses = read_inheritable_attribute(:responses) || Collector.new)
+      self.responses_store ||= Collector.new
+      r = self.responses_store
       yield r if block_given?
       r
     end
@@ -37,12 +38,6 @@ module Radiant
       def wrap(proc)
         # Makes sure our response blocks get evaluated in the right context
         lambda do
-          # Ruby 1.9.2 yields self in instance_eval... see https://gist.github.com/479572
-          # lambdas are as strict as methods in 1.9.x, making sure that the args match, Procs are not.
-          if RUBY_VERSION =~ /^1\.9/ and proc.lambda? and proc.arity != 1
-            raise "You can only pass a proc ('Proc.new') or a lambda that takes exactly one arg (for self) to the wrap method."
-          end
-          
           instance_eval(&proc)
         end
       end

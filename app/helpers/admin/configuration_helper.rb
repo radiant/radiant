@@ -20,8 +20,8 @@ module Admin::ConfigurationHelper
       html << content_tag(:span, value, :id => domkey, :class => options[:class])
     end
     html << content_tag(:span, " #{t("units.#{setting.units}")}", :class => 'units') if setting.units
-    html << content_tag(:span, " #{t('warning')}: #{[setting.errors.on(:value)].flatten.first}", :class => 'warning') if setting.errors.on(:value)
-    html
+    html << content_tag(:span, " #{t('warning')}: #{setting.errors[:value].first}", :class => 'warning') if setting.errors[:value].present?
+    html.html_safe
   end
   
   # Renders the setting as label and appropriate input field:
@@ -59,16 +59,16 @@ module Admin::ConfigurationHelper
       html << content_tag(:label, title, :for => domkey)
       html << text_field_tag(name, value, :class => 'textbox', :id => domkey)
     end
-    if setting.errors.on(:value)
-      html << content_tag(:span, [setting.errors.on(:value)].flatten.first, :class => 'error')
+    if setting.errors[:value].present?
+      html << content_tag(:span, setting.errors[:value].first, :class => 'error')
       html = content_tag(:span, html, :class => "error-with-field")
     end
-    html
+    html.html_safe
   end
   
   def setting_for(key)
     @config ||= {}    # normally initialized in Admin::ConfigurationController
-    @config[key] ||= Radiant.config.find_or_create_by_key(key)
+    @config[key] ||= Radiant::Config.find_or_create_by(key: key)
   end
   
   def definition_for(key)

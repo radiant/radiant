@@ -3,11 +3,11 @@ class Admin::ResourceController < ApplicationController
   extend Radiant::ResourceResponses
   
   helper_method :model, :current_object, :models, :current_objects, :model_symbol, :plural_model_symbol, :model_class, :model_name, :plural_model_name
-  before_filter :populate_format
-  before_filter :never_cache
-  before_filter :load_models, :only => :index
-  before_filter :load_model, :only => [:new, :create, :edit, :update, :remove, :destroy]
-  after_filter :clear_model_cache, :only => [:create, :update, :destroy]
+  before_action :populate_format
+  before_action :never_cache
+  before_action :load_models, :only => :index
+  before_action :load_model, :only => [:new, :create, :edit, :update, :remove, :destroy]
+  after_action :clear_model_cache, :only => [:create, :update, :destroy]
 
   cattr_reader :paginated
   cattr_accessor :default_per_page, :will_paginate_options
@@ -20,6 +20,7 @@ class Admin::ResourceController < ApplicationController
     #   wants.any
     # end
     r.plural.publish(:xml, :json) { render format_symbol => models }
+    r.plural.default { render action: "index", formats: [:html] }
 
     r.singular.publish(:xml, :json) { render format_symbol => model }
     r.singular.default { redirect_to edit_model_path if action_name == "show" }
@@ -34,13 +35,13 @@ class Admin::ResourceController < ApplicationController
     r.stale.default { announce_update_conflict; render :action => template_name }
 
     r.create.publish(:xml, :json) { render format_symbol => model, :status => :created, :location => url_for(:format => format_symbol, :id => model) }
-    r.create.default { redirect_to continue_url(params) }
+    r.create.default { redirect_to continue_url(params), status: :see_other }
 
     r.update.publish(:xml, :json) { head :ok }
-    r.update.default { redirect_to continue_url(params) }
+    r.update.default { redirect_to continue_url(params), status: :see_other }
 
     r.destroy.publish(:xml, :json) { head :deleted }
-    r.destroy.default { redirect_to continue_url(params) }
+    r.destroy.default { redirect_to continue_url(params), status: :see_other }
   end
 
   def index
@@ -58,7 +59,7 @@ class Admin::ResourceController < ApplicationController
   [:create, :update].each do |action|
     class_eval %{
       def #{action}                                       # def create
-        model.update_attributes!(params[model_symbol])    #   model.update_attributes!(params[model_symbol])
+        model.update!(permitted_resource_params)          #   model.update!(permitted_resource_params)
         response_for :#{action}                           #   response_for :create
       end                                                 # end
     }, __FILE__, __LINE__
@@ -107,7 +108,7 @@ class Admin::ResourceController < ApplicationController
   # the per_page figure can be set in several ways:
   # request parameter > declared by paginate_models > default set in config entry @admin.pagination.per_page@ > overall default of 50
   def pagination_parameters
-    pp = params[:pp] || Radiant.config['admin.pagination.per_page']
+    pp = params[:pp] || Radiant::Config['admin.pagination.per_page']
     pp = (self.class.default_per_page || 50) if pp.blank?
     {
       :page => (params[:p] || 1).to_i, 
@@ -117,19 +118,23 @@ class Admin::ResourceController < ApplicationController
 
   protected
 
-    def rescue_action(exception)
-      case exception
-      when ActiveRecord::RecordInvalid
-        response_for :invalid
-      when ActiveRecord::StaleObjectError
-        response_for :stale
-      when ActiveRecord::RecordNotFound
-        response_for :not_found
-      else
-        super
-      end
+    rescue_from ActiveRecord::RecordInvalid do |e|
+      announce_validation_errors
+      render action: template_name
+    end
+    rescue_from ActiveRecord::StaleObjectError do |e|
+      announce_update_conflict
+      render action: template_name
+    end
+    rescue_from ActiveRecord::RecordNotFound do |e|
+      announce_not_found
+      redirect_to action: "index"
     end
     
+    def permitted_resource_params
+      params.require(model_symbol).permit!
+    end
+
     def model_class
       self.class.model_class
     end
@@ -216,7 +221,9 @@ class Admin::ResourceController < ApplicationController
     end
 
     def clear_model_cache
-      Radiant::Cache.clear if defined?(Radiant::Cache)
+      Radiant::Cache.clear
+    rescue LoadError, NameError
+      # rack/cache not available or Radiant::Cache not defined - skip
     end
 
     def format_symbol

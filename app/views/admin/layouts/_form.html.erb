@@ -1,0 +1,59 @@
+<%= form_for [:admin, @layout], :html => {'data-onsubmit_status' => onsubmit_status(@layout), 'data-controller' => 'reference', 'data-reference-tags-url-value' => admin_reference_path('tags'), 'data-reference-filters-url-value' => admin_reference_path('filters')} do |f| %>
+  <%= f.hidden_field :lock_version %>
+  <%= render_region :form_top, :locals => {:f => f} %>
+  <div class="form_area">
+    <% render_region :form, :locals => {:f => f} do |form| %>
+      <% form.edit_title do %>
+        <p class="title">
+          <%= f.label :name, t('name') %>
+          <%= f.text_field :name, :maxlength => 100, :class => "textbox", :autofocus => true %>
+        </p>
+      <% end %>
+      <% form.edit_extended_metadata do %>
+        <div class="drawer" data-controller="toggle" data-toggle-open-value="<%= meta_errors? %>">
+          <div class="drawer_contents" id="attributes" data-toggle-target="content"<%= ' style="display: none"'.html_safe unless meta_errors? %>>
+            <table class="fieldset">
+              <tr>
+                <th class="label"><%= f.label :content_type, t('content_type') %></th>
+                <td class="field"><%= f.text_field :content_type, :maxlength => 40, :class => "textbox" %></td>
+              </tr>
+              <%= render_region :extended_metadata, :locals => {:f => f} %>
+            </table>
+          </div>
+          <div class="drawer_handle">
+            <a class="<%= meta_errors? ? 'less' : 'more' %>" href="#" data-action="toggle#toggle" data-toggle-target="link"><%= meta_label %></a>
+          </div>
+        </div>
+      <% end %>
+      <% form.edit_content do %>
+        <p class="content">
+          <%= f.label :layout_content, "Body" %>
+          <%= f.text_area :content, :size => "40x20", :style => "width: 100%", :class => "textarea large" %>
+        </p>
+      <% end %>
+    <% end %>
+  </div>
+  <% render_region :form_bottom, :locals => {:f => f} do |form_bottom| %>
+    <% form_bottom.reference_links do %>
+      <p>
+        <span class="reference_links">
+          Reference:
+          <span id="tag_reference_link">
+            <a href="#" data-action="reference#loadTags"><%= t('available_tags') %></a>
+          </span>
+        </span>
+      </p>
+    <% end %>
+    <% form_bottom.edit_buttons do %>
+      <div class="buttons">
+        <%= save_model_button @layout %>
+        <%= save_model_and_continue_editing_button @layout %>
+        <%= t('or') %>
+        <%= link_to t('cancel'), admin_layouts_url %>
+      </div>
+    <% end %>
+    <% form_bottom.edit_timestamp do %>
+      <%= updated_stamp @layout %>
+    <% end %>
+  <% end %>
+<% end %>

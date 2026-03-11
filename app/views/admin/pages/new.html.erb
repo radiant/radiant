@@ -1,0 +1,13 @@
+<% render_region :main do |main| %>
+  <% main.edit_header do %>
+    <h1><%= t('new_page') %></h1>
+  <% end %>
+  <% main.edit_form do %>
+    <%= form_for @page, :as => :page, :url => admin_pages_path, :html => {:id => 'new_page', :multipart => true, 'data-onsubmit_status' => "Creating page&#8230;", 'data-controller' => 'page-editor reference preview', 'data-page-editor-parts-url-value' => admin_page_parts_path, 'data-page-editor-fields-url-value' => admin_page_fields_path, 'data-reference-tags-url-value' => admin_reference_path('tags'), 'data-reference-filters-url-value' => admin_reference_path('filters'), 'data-preview-url-value' => '/admin/pages/preview'} do |f| %>
+      <%= render :partial => "fields", :object => f %>
+    <% end %>
+  <% end %>
+  <% main.edit_popups do %>
+    <%= render :partial => "popups" %>
+  <% end %>
+<% end %>

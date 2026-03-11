@@ -1,0 +1,30 @@
+<% body_classes << "single_form" %>
+
+<div id="single_form">
+  <h1><%= t('please_login') %></h1>
+
+  <%= form_tag login_url do %>
+    <p>
+      <label for="username_or_email"><%= t('username_or_email') %></label>
+      <%= text_field_tag "username_or_email", @username_or_email, :class => 'textbox activate', :maxlength => 40, :size => 40 %>
+    </p>
+    <p>
+      <label for="password"><%= t('password') %></label>
+      <%= password_field_tag "password", '', :class => 'textbox password', :maxlength => 40, :size => 40 %>
+    </p>
+    <p class="remember_me">
+      <%= check_box_tag :remember_me, 1, false, :class => 'checkbox' %>
+      <label class="checkbox" for="remember_me"><%= t('remember_me_in_this_browser') %></label>
+    </p>
+    <div class="buttons">
+      <input class="button" type="submit" value="<%= t('login') %>" />
+    </div>
+  <% end %>
+</div>
+
+<p class="version">
+  <%= t('powered_by') %>
+  <a href="http://radiantcms.org">Radiant CMS</a>
+  <%= t('version') %>
+  <%= Radiant.loaded_via_gem? ? "#{Radiant::Version} (gem)." : "#{Radiant::Version}." %>
+</p>

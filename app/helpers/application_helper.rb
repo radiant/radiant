@@ -1,11 +1,11 @@
 module ApplicationHelper
   include LocalTime
   include Admin::RegionsHelper
-  
+
   def config
     Radiant::Config
   end
-  
+
   def default_page_title
     title + ' - ' + subtitle
   end
@@ -62,7 +62,7 @@ module ApplicationHelper
     else
       options.to_s
     end
-    request.request_uri =~ Regexp.new('^' + Regexp.quote(clean(url)))
+    request.fullpath =~ Regexp.new('^' + Regexp.quote(clean(url)))
   end
   
   def clean(url)
@@ -86,10 +86,6 @@ module ApplicationHelper
     current_user and (current_user.designer? or current_user.admin?)
   end
   
-  def focus(field_name)
-    javascript_tag "Field.activate('#{field_name}');"
-  end
-  
   def updated_stamp(model)
     unless model.new_record?
       updated_by = (model.updated_by || model.created_by)
@@ -100,7 +96,7 @@ module ApplicationHelper
         html << %{#{t('timestamp.by')} <strong>#{name}</strong> } if name
         html << %{#{t('timestamp.at')} #{timestamp(time)}} if time
         html << %{</p>}
-        html
+        html.html_safe
       end
     end
   end
@@ -126,10 +122,6 @@ module ApplicationHelper
   
   def meta_label
     meta_errors? ? 'Less' : 'More'
-  end
-  
-  def toggle_javascript_for(id)
-    "Element.toggle('#{id}'); Element.toggle('more-#{id}'); Element.toggle('less-#{id}'); return false;"
   end
   
   def image(name, options = {})
@@ -166,11 +158,8 @@ module ApplicationHelper
   
   def stylesheet_and_javascript_overrides
     overrides = ''
-    if File.exist?("#{Rails.root}/public/stylesheets/admin/overrides.css") || File.exist?("#{Rails.root}/public/stylesheets/sass/admin/overrides.sass")
+    if Rails.application.assets&.load_path&.find("admin/overrides.css")
       overrides << stylesheet_link_tag('admin/overrides')
-    end
-    if File.exist?("#{Rails.root}/public/javascripts/admin/overrides.js")
-      overrides << javascript_include_tag('admin/overrides')
     end
     overrides
   end
@@ -186,8 +175,8 @@ module ApplicationHelper
 
     # Default image url to be used when no gravatar is found
     # or when an image exceeds the rating parameter.
-    local_avatar_url = "/images/admin/avatar_#{([options[:size].to_i] * 2).join('x')}.png"
-    default_avatar_url = "#{request.protocol}#{request.host_with_port}#{ActionController::Base.relative_url_root}#{local_avatar_url}"
+    local_avatar_url = ActionController::Base.helpers.asset_path("admin/avatar_#{([options[:size].to_i] * 2).join('x')}.png")
+    default_avatar_url = "#{request.protocol}#{request.host_with_port}#{local_avatar_url}"
     options[:default] ||= default_avatar_url
 
     unless email.blank?

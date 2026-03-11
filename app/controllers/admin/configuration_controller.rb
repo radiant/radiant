@@ -4,29 +4,29 @@ class Admin::ConfigurationController < ApplicationController
   # It accepts any set of config name-value pairs but is accessible only to administrators.
   # Note that configuration is routed as a singular resource so we only deal with show/edit/update
   # and the show and edit views determine what set of config values is shown and made editable.
-  
-  before_filter :initialize_config
-  
-  only_allow_access_to :edit, :update,
-    :when => [:admin],
-    :denied_url => { :controller => 'admin/configuration', :action => 'show' },
-    :denied_message => 'You must have admin privileges to edit site configuration.'
+
+  before_action :initialize_config
+
+  require_role :admin,
+    only: [:edit, :update],
+    denied_url: {controller: "admin/configuration", action: "show"},
+    denied_message: "You must have admin privileges to edit site configuration."
 
   def show
     @user = current_user
     render
   end
-  
+
   def edit
     render
   end
-  
+
   def update
     if params[:config]
       begin
         Radiant.config.transaction do
           params["config"].each_pair do |key, value|
-            @config[key] = Radiant::Config.find_or_create_by_key(key)
+            @config[key] = Radiant::Config.find_or_create_by(key: key)
             @config[key].value = value      # validation sets errors on @config['key'] that the helper methods will pick up
           end
           redirect_to :action => :show
@@ -40,11 +40,11 @@ class Admin::ConfigurationController < ApplicationController
       end
     end
   end
-  
+
 protected
 
   def initialize_config
     @config = {}
   end
-  
+
 end

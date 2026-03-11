@@ -1,0 +1,49 @@
+existing:
+  name: Existing
+  email: existing@example.com
+  login: existing
+  password_digest: <%= BCrypt::Password.create("password") %>
+  admin: false
+  designer: false
+  created_at: <%= Time.utc(2006, 1, 1) %>
+  updated_at: <%= Time.utc(2006, 1, 1) %>
+
+another:
+  name: Another
+  email: another@example.com
+  login: another
+  password_digest: <%= BCrypt::Password.create("password") %>
+  admin: false
+  designer: false
+  created_at: <%= Time.utc(2006, 1, 1) %>
+  updated_at: <%= Time.utc(2006, 1, 1) %>
+
+admin:
+  name: Admin
+  email: admin@example.com
+  login: admin
+  password_digest: <%= BCrypt::Password.create("password") %>
+  admin: true
+  designer: false
+  created_at: <%= Time.utc(2006, 1, 1) %>
+  updated_at: <%= Time.utc(2006, 1, 1) %>
+
+designer:
+  name: Designer
+  email: ""
+  login: designer
+  password_digest: <%= BCrypt::Password.create("password") %>
+  admin: false
+  designer: true
+  created_at: <%= Time.utc(2006, 1, 1) %>
+  updated_at: <%= Time.utc(2006, 1, 1) %>
+
+non_admin:
+  name: Non_admin
+  email: non_admin@example.com
+  login: non_admin
+  password_digest: <%= BCrypt::Password.create("password") %>
+  admin: false
+  designer: false
+  created_at: <%= Time.utc(2006, 1, 1) %>
+  updated_at: <%= Time.utc(2006, 1, 1) %>

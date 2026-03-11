@@ -1,84 +1,96 @@
-## Welcome to Radiant
+# Radiant CMS
 
 Radiant is a no-fluff, open source content management system designed for
-small teams. It is similar to Textpattern or MovableType, but is a general
-purpose content management system (not just a blogging engine).
+small teams. It is built with Ruby on Rails and uses a custom tag language
+called [Radius](https://github.com/jlong/radius) for templating.
 
-[![Build Status](https://secure.travis-ci.org/radiant/radiant.png?branch=1.x)](http://travis-ci.org/radiant/radiant)
+[![CI](https://github.com/radiant/radiant/actions/workflows/ci.yml/badge.svg)](https://github.com/radiant/radiant/actions/workflows/ci.yml)
 
-Radiant features:
+## Features
 
-* An elegant user interface
-* The ability to arrange pages in a hierarchy
-* Flexible templating with layouts, snippets, page parts, and a custom tagging
-  language (Radius: http://radius.rubyforge.org)
-* A simple user management/permissions system
-* Support for Markdown and Textile as well as traditional HTML (it's easy to
-  create other filters)
-* An advanced plugin system
-* Operates in two modes: dev and production depending on the URL
-* A caching system which expires pages every 5 minutes
-* Built using Ruby on Rails
-* And much more...
+* An elegant admin interface built with Turbo and Stimulus
+* Pages arranged in a hierarchy with flexible URL mapping
+* Layouts, page parts, and Radius tags for flexible templating
+* Support for Markdown, Textile, and HTML content filters
+* A simple role-based user management system (admin, designer, editor)
+* An extension system built on standard Rails Engines
+* Built with Ruby on Rails 8
+
+## Requirements
+
+* Ruby 3.3+
+* SQLite3 (default), PostgreSQL, or MySQL
+* Bundler
+
+## Getting Started
+
+Clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/radiant/radiant.git
+cd radiant
+bundle install
+```
+
+Set up the database and seed data:
+
+```bash
+bin/rails db:setup
+```
+
+Start the server:
+
+```bash
+bin/rails server
+```
+
+Visit `http://localhost:3000/admin` and log in with:
+
+* **Username:** `admin`
+* **Password:** `radiant`
+
+## Running Tests
+
+```bash
+bin/rails test
+```
+
+## Extensions
+
+Radiant extensions are standard Rails Engines that inherit from
+`Radiant::Extension`. They are packaged as gems and installed via the
+Gemfile.
+
+Generate a new extension:
+
+```bash
+bin/rails generate radiant:extension my_feature
+```
+
+See [docs/extensions.md](docs/extensions.md) for the full extension API.
+
+## Key Concepts
+
+| Concept     | Description                                           |
+|-------------|-------------------------------------------------------|
+| Pages       | Content organized in a tree hierarchy                 |
+| Layouts     | Define the overall HTML structure for pages            |
+| Page Parts  | Named content regions within a page (body, sidebar)   |
+| Radius Tags | Custom template tags for dynamic content              |
+| Extensions  | Rails Engine plugins for adding functionality         |
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b my-feature`)
+3. Write tests for your changes
+4. Make your changes
+5. Run `bin/rails test` to verify
+6. Commit with a [conventional commit](https://www.conventionalcommits.org/)
+   message (`feat:`, `fix:`, `chore:`, etc.)
+7. Open a pull request
 
 ## License
 
-Radiant is released under the MIT license and is copyright (c) 2006-2018
-John W. Long and Sean Cribbs. A copy of the MIT license can be found in the
-LICENSE file.
-
-## Installation and Setup
-
-Radiant is a traditional Ruby on Rails application, meaning that you can
-configure and run it the way you would a normal Rails application.
-
-See the INSTALL file for more details.
-
-### Installation of a Prerelease
-
-As Radiant nears newer releases, you can experiment with any prerelease version.
-
-Install the prerelease gem with the following command:
-
-    $ gem install radiant --prerelease
-
-This will install the gem with the prerelease name, for example: ‘radiant-0.9.0.rc2’.
-
-### Upgrading an Existing Project to a newer version
-
-1. Update the Radiant assets from in your project:
-
-        $ rake radiant:update
-
-2. Migrate the database:
-
-        $ rake production db:migrate
-
-3. Restart the web server
-
-## Development Requirements
-
-To run tests you will need to have the following gems installed:
-
-    gem install ZenTest rspec rspec-rails cucumber webrat nokogiri sqlite3-ruby
-
-## Support
-
-The best place to get support is on the mailing list:
-
-http://radiantcms.org/mailing-list/
-
-Most of the development for Radiant happens on Github:
-
-http://github.com/radiant/radiant/
-
-The project wiki is here:
-
-http://wiki.github.com/radiant/radiant/
-
-
-Enjoy!
-
---
-The Radiant Dev Team
-http://radiantcms.org
+Radiant is released under the MIT license. Copyright (c) 2006-2026
+John W. Long and Sean Cribbs. See [LICENSE.md](LICENSE.md) for details.

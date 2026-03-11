@@ -15,5 +15,13 @@ unless defined? Radiant::Version
         alias :to_str :to_s
       end
     end
+
+    def self.loaded_via_gem?
+      false
+    end
+
+    def self.config
+      Radiant::Config
+    end
   end
 end

@@ -64,7 +64,7 @@ module MenuRenderer
   end
 
   def menu_list
-    view.content_tag :ul, menu_items.join, :class => 'menu', :id => "allowed_children_#{id}"
+    view.content_tag :ul, menu_items.join.html_safe, :class => 'menu', :id => "allowed_children_#{id}", 'data-dropdown-target' => 'menu'
   end
 
   def remove_link
@@ -88,7 +88,7 @@ module MenuRenderer
   end
 
   def add_child_link_with_menu_hook
-    view.link_to((view.image('plus') + ' ' + I18n.t('add_child')), "#allowed_children_#{id}", :class => "action dropdown")
+    view.link_to((view.image('plus') + ' ' + I18n.t('add_child')), "#", :class => "action", 'data-action' => 'dropdown#toggle')
   end
 
   def add_child_menu
@@ -96,7 +96,7 @@ module MenuRenderer
   end
 
   def add_child_link_with_menu
-    add_child_link_with_menu_hook + add_child_menu
+    view.content_tag(:span, add_child_link_with_menu_hook + add_child_menu, 'data-controller' => 'dropdown')
   end
 
   def add_child_option

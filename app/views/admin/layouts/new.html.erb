@@ -1,0 +1,8 @@
+<% render_region :main do |main| %>
+  <% main.edit_header do %>
+    <h1><%= t('new_layout') %></h1>
+  <% end %>
+  <% main.edit_form do %>
+    <%= render :partial => 'form' %>
+  <% end %>
+<% end %>

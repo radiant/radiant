@@ -51,7 +51,7 @@ module Radiant
       # Reads through the layout file and returns an array of JS filenames
       #
       def find_admin_js
-        layout = "#{RADIANT_ROOT}/app/views/layouts/application.html.haml"
+        layout = "#{RADIANT_ROOT}/app/views/layouts/application.html.erb"
         js_regexp = /javascript_include_tag %w\((.*)\), :cache => 'admin\/all/
         files = File.open(layout) { |f| f.read.match(js_regexp)[1].split }
         files.collect { |f| f.split('/').last + '.js' }

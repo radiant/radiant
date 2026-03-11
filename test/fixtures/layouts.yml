@@ -1,0 +1,24 @@
+main:
+  name: Main
+  content: |
+    <html>
+      <head>
+        <title><r:title /></title>
+      </head>
+      <body>
+        <r:content />
+      </body>
+    </html>
+
+utf8:
+  name: UTF8
+  content_type: "text/html;charset=utf8"
+  content: |
+    <html>
+      <head>
+        <title><r:title /></title>
+      </head>
+      <body>
+        <r:content />
+      </body>
+    </html>

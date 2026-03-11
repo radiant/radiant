@@ -1,0 +1,27 @@
+admin_title:
+  key: admin.title
+  value: Radiant CMS
+
+admin_subtitle:
+  key: admin.subtitle
+  value: Publishing for Small Teams
+
+defaults_page_parts:
+  key: defaults.page.parts
+  value: "body, extended"
+
+defaults_page_status:
+  key: defaults.page.status
+  value: Draft
+
+defaults_page_fields:
+  key: defaults.page.fields
+  value: "Keywords, Description"
+
+session_timeout:
+  key: session_timeout
+  value: "<%= 2.weeks.to_i %>"
+
+default_locale:
+  key: default_locale
+  value: en

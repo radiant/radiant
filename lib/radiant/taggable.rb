@@ -9,7 +9,7 @@ module Radiant::Taggable
       def self.included(new_base)
         super
         new_base.class_eval do
-          include ActionController::UrlWriter
+          include Rails.application.routes.url_helpers
         end
         class << new_base
           def default_url_options
@@ -25,7 +25,7 @@ module Radiant::Taggable
         end
 
         def request_uri
-          @request_url ||= request.request_uri unless request.nil?
+          @request_url ||= request.fullpath unless request.nil?
         end
     end
   end
@@ -52,7 +52,7 @@ module Radiant::Taggable
     message = "Deprecated radius tag <r:#{tag_name}>"
     message << " will be removed or significantly changed in radiant #{options[:deadline]}." if options[:deadline]
     message << " Please use <r:#{options[:substitute]}> instead." if options[:substitute]
-    ActiveSupport::Deprecation.warn(message)
+    Rails.application.deprecators[:radiant]&.warn(message) || ActiveSupport::Deprecation.new.warn(message)
   end
 
   module ClassMethods

@@ -1,0 +1,25 @@
+<% pages = @page.children.count > 1 ? t('pages') : t('page') %>
+
+<h1>
+  <%= t('remove_pages', :pages => pages) %>
+</h1>
+
+<p>
+  <%= t('text.pages.remove_warning', :pages => pages) %>
+</p>
+
+<div class="inset">
+  <table class="index" id="site_map">
+    <tbody>
+      <%= render_node @page, :simple => true %>
+    </tbody>
+  </table>
+</div>
+
+<%= form_for [:admin, @page.becomes(Page)], :html => {:method => :delete, 'data-onsubmit_status' => "Removing pages&#8230;"} do %>
+  <div class="buttons">
+    <input class="button" type="submit" value="<%= t('delete_pages', :pages => pages) %>" />
+    <%= t('or') %>
+    <%= link_to t('cancel'), admin_pages_url %>
+  </div>
+<% end %>

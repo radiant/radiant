@@ -1,0 +1,14 @@
+Description:
+    Generates a new Radiant CMS extension as a Rails Engine gem.
+
+Example:
+    bin/rails generate radiant:extension archive
+
+    This will create:
+        radiant-archive/lib/radiant/archive.rb           (entry point)
+        radiant-archive/lib/radiant/archive/engine.rb    (engine class)
+        radiant-archive/radiant-archive.gemspec
+        radiant-archive/Gemfile
+        radiant-archive/README.md
+        radiant-archive/config/routes.rb
+        radiant-archive/test/test_helper.rb

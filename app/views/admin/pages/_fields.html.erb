@@ -1,0 +1,102 @@
+<%= fields.hidden_field :lock_version %>
+<%= fields.hidden_field :parent_id %>
+<%= fields.hidden_field :class_name %>
+
+<%= render_region :form_top, :locals => {:f => fields} %>
+
+<% render_region :form, :locals => {:f => fields} do |form| %>
+  <% form.edit_title do %>
+    <p class="title">
+      <label for="page_title"><%= t('page_title') %></label>
+      <%= fields.text_field :title, :class => 'textbox', :maxlength => 255 %>
+    </p>
+  <% end %>
+  <% form.edit_extended_metadata do %>
+    <div class="drawer" data-controller="toggle" data-toggle-open-value="<%= meta_errors? %>">
+      <div class="drawer_contents" id="attributes" data-toggle-target="content"<%= ' style="display: none"'.html_safe unless meta_errors? %>>
+        <table class="fieldset" data-page-editor-target="fieldsTable">
+          <%= render :partial => "meta_row", :collection => @meta, :locals => {:f => fields} %>
+          <%= render :partial => 'admin/page_fields/page_field', :collection => @page.fields %>
+          <%= render_region :extended_metadata, :locals => {:f => fields} %>
+        </table>
+      </div>
+      <div class="drawer_handle">
+        <a class="<%= meta_errors? ? 'less' : 'more' %>" href="#" data-action="toggle#toggle" data-toggle-target="link"><%= meta_label %></a>
+      </div>
+    </div>
+  <% end %>
+  <% form.edit_page_parts do %>
+    <div id="tab_control" data-controller="tab-control">
+      <div id="tabs" class="tabs" data-tab-control-target="tabs">
+        <div id="tab_toolbar" data-tab-control-target="toolbar">
+          <a href="#" title="<%= t('add_part') %>" data-action="page-editor#showAddPartPopup">
+            <%= image('add_tab', :alt => t('add_part'), :title => "") %>
+          </a>
+        </div>
+      </div>
+      <div id="pages" class="pages" data-page-editor-target="partsContainer">
+        <%= render :partial => 'admin/page_parts/page_part', :collection => @page.parts %>
+      </div>
+    </div>
+    <%= render_region :parts_bottom, :locals => {:f => fields} %>
+  <% end %>
+<% end %>
+
+<div class="set">
+  <% render_region :layout, :locals => {:f => fields} do |layout| %>
+    <% layout.edit_layout do %>
+      <p>
+        <%= fields.label :layout_id, t('layout') %>
+        <%= fields.select :layout_id, [[t('select.inherit'), '']] + Layout.all.map { |s| [s.name, s.id] } %>
+      </p>
+    <% end %>
+    <% layout.edit_type do %>
+      <p>
+        <%= fields.label :class_name, t('page_type') %>
+        <%= fields.select :class_name, [[t('select.normal'), '']] + Page.descendants.map { |p| [p.display_name, p.name] }.sort_by { |p| p.first } %>
+      </p>
+    <% end %>
+    <% layout.edit_status do %>
+      <p>
+        <%= fields.label :status_id, t('status') %>
+        <%= fields.select :status_id, status_to_display %>
+      </p>
+    <% end %>
+    <% layout.edit_published_at do %>
+      <p id="published_at" class="<%= 'hidden' unless @page.published? %>">
+        <%= fields.label :published_at, t('published_on') %>
+        <%= fields.text_field :published_at, :class => "date", :value => (@page.published_at? ? I18n.localize(@page.published_at.to_date, :format => :long) : nil) %>
+      </p>
+    <% end %>
+    <%= render_region :layout_row, :locals => {:f => fields} %>
+  <% end %>
+</div>
+
+<% render_region :form_bottom, :locals => {:f => fields} do |form_bottom| %>
+  <% form_bottom.edit_buttons do %>
+    <% @buttons_partials.each do |partial| %>
+      <%= render :partial => partial, :locals => {:f => fields} %>
+    <% end %>
+    <div class="buttons" style="clear: left">
+      <%= save_model_button(@page) %>
+      <%= save_model_and_continue_editing_button(@page) %>
+      <button type="button" class="button" data-action="preview#show"><%= t('preview', :default => 'Preview') %></button>
+      <%= t('or') %>
+      <%= link_to t('cancel'), admin_pages_url %>
+    </div>
+    <div id="preview_panel" class="fullcover grey_out" style="display: none;" data-preview-target="panel">
+      <iframe id="page-preview" class="fullcover" name="page-preview" src="about:blank" frameborder="0" scrolling="auto" data-preview-target="frame" data-action="load->preview#frameLoaded"></iframe>
+      <div class="preview_tools" data-preview-target="tools">
+        <%= submit_tag(t('buttons.save_changes'), :class => 'big save_changes') %>
+        <%= submit_tag(t('buttons.save_and_continue'), :class => 'big save_and_continue', :name => 'continue') %>
+        <span class="info">
+          <%= t('or') %>
+          <a href="#" class="cancel" data-action="preview#close"><%= t('edit_page') %></a>
+        </span>
+      </div>
+    </div>
+  <% end %>
+  <% form_bottom.edit_timestamp do %>
+    <%= updated_stamp @page %>
+  <% end %>
+<% end %>

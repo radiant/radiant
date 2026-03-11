@@ -1,146 +1,116 @@
-require 'annotatable'
-require 'simpleton'
-require 'radiant/admin_ui'
-
 module Radiant
-  class Extension
-    include Simpleton
-    include Annotatable
-
-    annotate :version, :description, :url, :extension_name, :path
-
-    attr_writer :active
-    
-    def active?
-      @active
-    end
-    
-    def root
-      path.to_s
-    end
-    
-    def migrated?
-      migrator.new(:up, migrations_path).pending_migrations.empty?
-    end
-    
-    def enabled?
-      active? and migrated?
-    end
-    
-    # Conventional plugin-like routing
-    def routed?
-      File.exist?(routing_file)
-    end
-    
-    def migrations_path
-      File.join(self.root, 'db', 'migrate')
-    end
-    
-    def migrates_from
-      @migrates_from ||= {}
-    end
-    
-    def routing_file
-      File.join(self.root, 'config', 'routes.rb')
-    end
-        
-    def load_initializers
-      Dir["#{self.root}/config/initializers/**/*.rb"].sort.each do |initializer|
-        load(initializer)
-      end
-    end
-    
-    def migrator
-      unless @migrator
-        extension = self
-        @migrator = Class.new(ExtensionMigrator){ self.extension = extension }
-      end
-      @migrator
-    end
-    
-    def admin
-      AdminUI.instance
-    end
-    
-    def tab(name, options={}, &block)
-      @the_tab = admin.nav[name]
-      unless @the_tab
-        @the_tab = Radiant::AdminUI::NavTab.new(name)
-        before = options.delete(:before)
-        after = options.delete(:after)
-        tab_name = before || after
-        tab_object = admin.nav[tab_name]
-        if tab_object
-          index = admin.nav.index(tab_object)
-          index += 1 unless before
-          admin.nav.insert(index, @the_tab)
-        else
-          admin.nav << @the_tab
-        end
-      end
-      if block_given?
-        block.call(@the_tab)
-      end
-      return @the_tab
-    end
-    alias :add_tab :tab
-    
-    def add_item(*args)
-      @the_tab.add_item(*args)
-    end
-
-    # Determine if another extension is installed and up to date.
-    #
-    # if MyExtension.extension_enabled?(:third_party)
-    #   ThirdPartyExtension.extend(MyExtension::IntegrationPoints)
-    # end
-    def extension_enabled?(extension)
-      begin
-        extension = (extension.to_s.camelcase + 'Extension').constantize
-        extension.enabled?
-      rescue NameError
-        false
-      end
-    end
+  # Base class for Radiant extensions. Inherits from Rails::Engine so that
+  # extensions are standard Rails Engines — routes, models, controllers,
+  # views, migrations, and assets all work the normal Rails way.
+  #
+  # Extensions register admin navigation items, Radius tags, and page types
+  # through a simple DSL:
+  #
+  #   class MyExtension < Radiant::Extension
+  #     extension_name "My Extension"
+  #     description    "Does something useful"
+  #     version        "1.0.0"
+  #     url            "https://github.com/example/radiant-my-extension"
+  #
+  #     nav "Content" do |tab|
+  #       tab.add_item "Things", "/admin/things"
+  #     end
+  #   end
+  #
+  class Extension < Rails::Engine
+    # Class-level metadata accessors
+    class_attribute :extension_config, instance_writer: false, default: {}
 
     class << self
-
-      def activate_extension
-        return if instance.active?
-        instance.activate if instance.respond_to? :activate
-        ActionController::Routing::Routes.configuration_files.unshift(instance.routing_file) if instance.routed?
-        ActionController::Routing::Routes.reload
-        instance.active = true
-      end
-      alias :activate :activate_extension
-
-      def deactivate_extension
-        return unless instance.active?
-        instance.active = false
-        instance.deactivate if instance.respond_to? :deactivate
-      end
-      alias :deactivate :deactivate_extension
-
-      def inherited(subclass)
-        subclass.extension_name = subclass.name.to_name('Extension')
+      # Metadata DSL methods. Called with a value to set, without to get.
+      def extension_name(value = nil)
+        if value
+          extension_config_set(:extension_name, value)
+        else
+          extension_config_get(:extension_name) || default_extension_name
+        end
       end
 
-      def migrate_from(extension_name, until_migration=nil)
-        instance.migrates_from[extension_name] = until_migration
+      def description(value = nil)
+        value ? extension_config_set(:description, value) : extension_config_get(:description)
       end
 
-      # Expose the configuration object for init hooks
-      # class MyExtension < ActiveRecord::Base
-      #   extension_config do |config|
-      #     config.after_initialize do
-      #       run_something
-      #     end
+      def version(value = nil)
+        value ? extension_config_set(:version, value) : extension_config_get(:version)
+      end
+
+      def url(value = nil)
+        value ? extension_config_set(:url, value) : extension_config_get(:url)
+      end
+
+      # Register admin navigation items. Called during class definition.
+      #
+      #   nav "Content" do |tab|
+      #     tab.add_item "Archive", "/admin/archive"
       #   end
-      # end
-      def extension_config(&block)
-        yield Rails.configuration
+      #
+      def nav(tab_name, options = {}, &block)
+        nav_registrations << {tab_name: tab_name, options: options, block: block}
       end
-      
+
+      # Returns all navigation registrations for this extension.
+      def nav_registrations
+        @nav_registrations ||= []
+      end
+
+      # Applies all deferred navigation registrations for all extensions.
+      # Called once during app initialization after AdminUI is available.
+      def activate_extensions
+        descendants.each(&:activate_navigation)
+      end
+
+      # Applies this extension's navigation registrations to the admin UI.
+      def activate_navigation
+        admin = AdminUI.instance
+        nav_registrations.each do |reg|
+          tab = admin.nav[reg[:tab_name]]
+          unless tab
+            tab = AdminUI::NavTab.new(reg[:tab_name])
+            opts = reg[:options]
+            before = opts[:before]
+            after = opts[:after]
+            anchor_name = before || after
+            anchor = admin.nav[anchor_name]
+            if anchor
+              index = admin.nav.index(anchor)
+              index += 1 unless before
+              admin.nav.insert(index, tab)
+            else
+              admin.nav << tab
+            end
+          end
+          reg[:block]&.call(tab)
+        end
+      end
+
+      private
+
+      def extension_config_set(key, value)
+        self.extension_config = extension_config.merge(key => value)
+      end
+
+      def extension_config_get(key)
+        extension_config[key]
+      end
+
+      # Derives a display name from the class name.
+      # Handles both conventions:
+      #   MyFeatureExtension         => "My Feature"
+      #   Radiant::MyFeature::Engine => "My Feature"
+      def default_extension_name
+        return "Unknown" unless name
+        leaf = name.demodulize
+        if leaf == "Engine"
+          name.deconstantize.demodulize.titleize.presence || "Unknown"
+        else
+          leaf.chomp("Extension").titleize.presence || "Unknown"
+        end
+      end
     end
   end
 end

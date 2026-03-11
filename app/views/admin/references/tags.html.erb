@@ -1,0 +1,12 @@
+<div class="popup">
+  <div class="popup_title">
+    <%= t('available_tags_for', :name => _display_name) %>
+  </div>
+  <p>
+    <label class="inline" for="search_tag_reference">Filter Tags</label>
+    <input id="search_tag_reference" type="search" name="search_tag_reference" />
+    <span id="tag_search_found_count" class="info"></span>
+  </p>
+  <div class="reference"><%= tag_reference %></div>
+  <p class="close_link"><a href="#" data-action="reference#closePopup">Close Help</a></p>
+</div>
