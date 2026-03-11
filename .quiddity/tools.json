@@ -18,9 +18,9 @@
     "commitFormat": "conventional"
   },
   "ci": {
-    "tool": "none",
-    "checks": [],
-    "localChecks": ["bundle exec rspec", "bundle exec cucumber"]
+    "tool": "github-actions",
+    "checks": ["CI"],
+    "localChecks": ["bundle exec rake test"]
   },
   "pr": {
     "mergeStrategy": "squash",

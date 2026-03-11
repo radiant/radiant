@@ -6,8 +6,8 @@ You use GitHub flow. Short-lived feature branches are created off `master`
 (the main branch) and merged back via pull requests. The `rails8` branch is a
 long-lived branch for the Rails 8 upgrade effort.
 
-No strict branch naming convention is enforced, but descriptive names are
-preferred.
+Branch names follow the convention `<issue-number>-<slug>` (e.g.,
+`448-modernize-extension-system`).
 
 ## Code review
 
@@ -37,12 +37,11 @@ the "why" behind the change and include any relevant context.
 
 ## Testing
 
-Tests are required for all new code. You use RSpec for unit and integration
-tests, and Cucumber for acceptance tests. Existing test coverage should be
-maintained when refactoring. The change author is responsible for writing tests.
+Tests are required for all new code. You use Minitest for unit and integration
+tests with YAML fixtures. Existing test coverage should be maintained when
+refactoring. The change author is responsible for writing tests.
 
-- Run RSpec: `bundle exec rspec`
-- Run Cucumber: `bundle exec cucumber`
+- Run tests: `bin/rails test`
 - Run all tests: `bundle exec rake`
 
 ## Release and deployment
