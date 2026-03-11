@@ -33,11 +33,6 @@ module Radiant
           Rails.root.join("lib/radiant/initializer.rb"),
           Rails.root.join("lib/radiant/cache.rb"),
           Rails.root.join("lib/radiant/setup.rb"),
-          Rails.root.join("lib/radiant/extension"),
-          Rails.root.join("lib/radiant/extension.rb"),
-          Rails.root.join("lib/radiant/extension_loader.rb"),
-          Rails.root.join("lib/radiant/extension_migrator.rb"),
-          Rails.root.join("lib/radiant/extension_path.rb"),
           Rails.root.join("lib/radiant/pagination/link_renderer.rb"),
           Rails.root.join("lib/radiant/task_support.rb")
         )

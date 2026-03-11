@@ -1,0 +1,15 @@
+module Radiant
+  module <%= module_name %>
+    class Engine < Radiant::Extension
+      extension_name "<%= class_name.titleize %>"
+      description    "A Radiant CMS extension"
+      version        "0.1.0"
+      # url          "https://github.com/example/radiant-<%= file_name %>"
+
+      # Register admin navigation items:
+      # nav "Content" do |tab|
+      #   tab.add_item "<%= class_name.titleize %>", "/admin/<%= file_name %>"
+      # end
+    end
+  end
+end

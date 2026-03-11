@@ -1,0 +1,1 @@
+require "radiant/<%= file_name %>/engine"
