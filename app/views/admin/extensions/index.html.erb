@@ -27,25 +27,35 @@
       </tr>
     </thead>
     <tbody>
-      <% @extensions.each do |extension| %>
-        <tr class="node level_1">
-          <% render_region :tbody, :locals => {:extension => extension} do |tbody| %>
-            <% tbody.title_cell do %>
-              <td class="extension">
-                <h4><%= h extension.extension_name %></h4>
-                <p><%= h extension.description %></p>
-              </td>
-            <% end %>
-            <% tbody.website_cell do %>
-              <td class="website">
-                <%= extension.url.nil? || extension.url.empty? ? "" : link_to(t('more_info'), extension.url, :target => "_blank") %>
-              </td>
-            <% end %>
-            <% tbody.version_cell do %>
-              <td class="version"><%= h extension.version %></td>
-            <% end %>
-          <% end %>
+      <% if @extensions.empty? %>
+        <tr>
+          <td colspan="3" style="text-align: center; padding: 2em;">
+            No extensions installed. Add Radiant extensions to your Gemfile to get started.
+          </td>
         </tr>
+      <% else %>
+        <% @extensions.each do |extension| %>
+          <tr class="node level_1">
+            <% render_region :tbody, :locals => {:extension => extension} do |tbody| %>
+              <% tbody.title_cell do %>
+                <td class="extension">
+                  <h4><%= h extension.extension_name %></h4>
+                  <% if extension.description.present? %>
+                    <p><%= h extension.description %></p>
+                  <% end %>
+                </td>
+              <% end %>
+              <% tbody.website_cell do %>
+                <td class="website">
+                  <%= extension.url.present? ? link_to(t('more_info'), extension.url, :target => "_blank") : "" %>
+                </td>
+              <% end %>
+              <% tbody.version_cell do %>
+                <td class="version"><%= h extension.version %></td>
+              <% end %>
+            <% end %>
+          </tr>
+        <% end %>
       <% end %>
     </tbody>
   </table>

@@ -1,0 +1,15 @@
+Gem::Specification.new do |s|
+  s.name        = "radiant-<%= file_name %>"
+  s.version     = "0.1.0"
+  s.authors     = ["Your Name"]
+  s.email       = ["you@example.com"]
+  s.summary     = "A Radiant CMS extension"
+  s.description = "Describe your extension here."
+  s.license     = "MIT"
+
+  s.files = Dir.chdir(File.expand_path(__dir__)) do
+    Dir["{app,config,db,lib}/**/*", "README.md"]
+  end
+
+  s.add_dependency "radiant", ">= 2.0"
+end

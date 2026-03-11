@@ -1,0 +1,20 @@
+# Radiant <%= class_name.titleize %> Extension
+
+A Radiant CMS extension.
+
+## Installation
+
+Add to your Gemfile:
+
+```ruby
+gem "radiant-<%= file_name %>"
+```
+
+Run `bundle install`.
+
+Copy and run migrations:
+
+```
+bin/rails radiant_<%= file_name %>:install:migrations
+bin/rails db:migrate
+```

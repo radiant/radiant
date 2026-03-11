@@ -5,6 +5,6 @@ class Admin::ExtensionsController < ApplicationController
 
   def index
     @template_name = 'index' # for Admin::RegionsHelper
-    @extensions = []
+    @extensions = Radiant::Extension.descendants.sort_by { |ext| ext.extension_name.downcase }
   end
 end
